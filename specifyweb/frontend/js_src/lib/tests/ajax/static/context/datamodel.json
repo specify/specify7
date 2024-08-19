@@ -516,8 +516,6 @@
     "classname": "edu.ku.brc.specify.datamodel.AccessionAuthorization",
     "table": "accessionauthorization",
     "tableId": 13,
-    "view": null,
-    "searchDialog": null,
     "system": false,
     "idColumn": "AccessionAuthorizationID",
     "idFieldName": "accessionAuthorizationId",
@@ -722,7 +720,6 @@
     "table": "address",
     "tableId": 8,
     "view": "Address",
-    "searchDialog": null,
     "system": false,
     "idColumn": "AddressID",
     "idFieldName": "addressId",
@@ -1632,7 +1629,6 @@
     "table": "agentattachment",
     "tableId": 109,
     "view": "AgentAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "AgentAttachmentID",
     "idFieldName": "agentAttachmentId",
@@ -1810,7 +1806,6 @@
     "table": "agentidentifier",
     "tableId": 168,
     "view": "AgentIdentifier",
-    "searchDialog": null,
     "system": false,
     "idColumn": "AgentIdentifierID",
     "idFieldName": "agentIdentifierId",
@@ -2097,7 +2092,6 @@
     "table": "agentvariant",
     "tableId": 107,
     "view": "AgentVariant",
-    "searchDialog": null,
     "system": false,
     "idColumn": "AgentVariantID",
     "idFieldName": "agentVariantId",
@@ -2328,7 +2322,6 @@
     "table": "attachment",
     "tableId": 41,
     "view": "AttachmentsForm",
-    "searchDialog": null,
     "system": true,
     "idColumn": "AttachmentID",
     "idFieldName": "attachmentId",
@@ -3550,7 +3543,6 @@
     "table": "borrow",
     "tableId": 18,
     "view": "Borrow",
-    "searchDialog": null,
     "system": false,
     "idColumn": "BorrowID",
     "idFieldName": "borrowId",
@@ -3806,7 +3798,6 @@
     "table": "borrowagent",
     "tableId": 19,
     "view": "BorrowAgent",
-    "searchDialog": null,
     "system": false,
     "idColumn": "BorrowAgentID",
     "idFieldName": "borrowAgentId",
@@ -3904,7 +3895,6 @@
     "table": "borrowattachment",
     "tableId": 145,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "BorrowAttachmentID",
     "idFieldName": "borrowAttachmentId",
@@ -3994,7 +3984,6 @@
     "table": "borrowmaterial",
     "tableId": 20,
     "view": "BorrowMaterial",
-    "searchDialog": null,
     "system": false,
     "idColumn": "BorrowMaterialID",
     "idFieldName": "borrowMaterialId",
@@ -4152,7 +4141,6 @@
     "table": "borrowreturnmaterial",
     "tableId": 21,
     "view": "BorrowReturnMaterial",
-    "searchDialog": null,
     "system": false,
     "idColumn": "BorrowReturnMaterialID",
     "idFieldName": "borrowReturnMaterialId",
@@ -4698,7 +4686,6 @@
     "table": "collectingeventattachment",
     "tableId": 110,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "CollectingEventAttachmentID",
     "idFieldName": "collectingEventAttachmentId",
@@ -5355,8 +5342,6 @@
     "classname": "edu.ku.brc.specify.datamodel.CollectingEventAuthorization",
     "table": "collectingeventauthorization",
     "tableId": 152,
-    "view": null,
-    "searchDialog": null,
     "system": false,
     "idColumn": "CollectingEventAuthorizationID",
     "idFieldName": "collectingEventAuthorizationId",
@@ -5823,7 +5808,6 @@
     "table": "collectingtripattachment",
     "tableId": 156,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "CollectingTripAttachmentID",
     "idFieldName": "collectingTripAttachmentId",
@@ -6375,8 +6359,6 @@
     "classname": "edu.ku.brc.specify.datamodel.CollectingTripAuthorization",
     "table": "collectingtripauthorization",
     "tableId": 158,
-    "view": null,
-    "searchDialog": null,
     "system": false,
     "idColumn": "CollectingTripAuthorizationID",
     "idFieldName": "collectingTripAuthorizationId",
@@ -6458,7 +6440,6 @@
     "table": "collection",
     "tableId": 23,
     "view": "Collection",
-    "searchDialog": null,
     "system": false,
     "idColumn": "UserGroupScopeId",
     "idFieldName": "userGroupScopeId",
@@ -6780,6 +6761,15 @@
         "dependent": false,
         "relatedModelName": "SpPrincipal",
         "otherSideName": "scope"
+      },
+      {
+        "name": "collectionObjectType",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectType",
+        "column": "CollectionObjectTypeID",
+        "otherSideName": "collections"
       }
     ],
     "fieldAliases": []
@@ -7562,6 +7552,22 @@
         "dependent": true,
         "relatedModelName": "VoucherRelationship",
         "otherSideName": "collectionObject"
+      },
+      {
+        "name": "collectionObjectType",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectType",
+        "column": "CollectionObjectTypeID"
+      },
+      {
+        "name": "cojo",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "CollectionObjectGroupJoin",
+        "otherSideName": "childco"
       }
     ],
     "fieldAliases": []
@@ -7571,7 +7577,6 @@
     "table": "collectionobjectattachment",
     "tableId": 111,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "CollectionObjectAttachmentID",
     "idFieldName": "collectionObjectAttachmentId",
@@ -8969,7 +8974,6 @@
     "table": "collectionobjectproperty",
     "tableId": 153,
     "view": "CollectionObjectProperty",
-    "searchDialog": null,
     "system": false,
     "idColumn": "CollectionObjectPropertyID",
     "idFieldName": "collectionObjectPropertyId",
@@ -10378,7 +10382,6 @@
     "classname": "edu.ku.brc.specify.datamodel.CollectionRelType",
     "table": "collectionreltype",
     "tableId": 98,
-    "view": null,
     "searchDialog": "CollectionRelTypeSearch",
     "system": false,
     "idColumn": "CollectionRelTypeID",
@@ -10470,7 +10473,6 @@
     "table": "collectionrelationship",
     "tableId": 99,
     "view": "CollectionRelationship",
-    "searchDialog": null,
     "system": false,
     "idColumn": "CollectionRelationshipID",
     "idFieldName": "collectionRelationshipId",
@@ -11460,7 +11462,6 @@
     "table": "conservdescriptionattachment",
     "tableId": 112,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "ConservDescriptionAttachmentID",
     "idFieldName": "conservDescriptionAttachmentId",
@@ -11822,7 +11823,6 @@
     "table": "conserveventattachment",
     "tableId": 113,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "ConservEventAttachmentID",
     "idFieldName": "conservEventAttachmentId",
@@ -12691,7 +12691,6 @@
     "table": "dnasequenceattachment",
     "tableId": 147,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "DnaSequenceAttachmentId",
     "idFieldName": "dnaSequenceAttachmentId",
@@ -13142,7 +13141,6 @@
     "table": "dnasequencerunattachment",
     "tableId": 135,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "DnaSequencingRunAttachmentId",
     "idFieldName": "dnaSequencingRunAttachmentId",
@@ -14811,6 +14809,15 @@
         "otherSideName": "disciplines"
       },
       {
+        "name": "taxonTreeDef",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TaxonTreeDef",
+        "column": "TaxonTreeDefID",
+        "otherSideName": "disciplines"
+      },
+      {
         "name": "geologicTimePeriodTreeDef",
         "type": "many-to-one",
         "required": true,
@@ -14858,15 +14865,6 @@
         "required": false,
         "dependent": false,
         "relatedModelName": "SpLocaleContainer",
-        "otherSideName": "discipline"
-      },
-      {
-        "name": "taxonTreeDef",
-        "type": "one-to-one",
-        "required": false,
-        "dependent": false,
-        "relatedModelName": "TaxonTreeDef",
-        "column": "TaxonTreeDefID",
         "otherSideName": "discipline"
       },
       {
@@ -15248,7 +15246,6 @@
     "table": "disposalpreparation",
     "tableId": 36,
     "view": "DisposalPreparation",
-    "searchDialog": null,
     "system": false,
     "idColumn": "DisposalPreparationID",
     "idFieldName": "disposalPreparationId",
@@ -15533,7 +15530,6 @@
     "table": "exchangein",
     "tableId": 39,
     "view": "ExchangeIn",
-    "searchDialog": null,
     "system": false,
     "idColumn": "ExchangeInID",
     "idFieldName": "exchangeInId",
@@ -15849,7 +15845,6 @@
     "table": "exchangeinprep",
     "tableId": 140,
     "view": "ExchangeInPrep",
-    "searchDialog": null,
     "system": false,
     "idColumn": "ExchangeInPrepID",
     "idFieldName": "exchangeInPrepId",
@@ -15979,7 +15974,6 @@
     "table": "exchangeout",
     "tableId": 40,
     "view": "ExchangeOut",
-    "searchDialog": null,
     "system": false,
     "idColumn": "ExchangeOutID",
     "idFieldName": "exchangeOutId",
@@ -16312,7 +16306,6 @@
     "table": "exchangeoutprep",
     "tableId": 141,
     "view": "ExchangeOutPrep",
-    "searchDialog": null,
     "system": false,
     "idColumn": "ExchangeOutPrepID",
     "idFieldName": "exchangeOutPrepId",
@@ -16630,7 +16623,6 @@
     "table": "extractor",
     "tableId": 160,
     "view": "Extractor",
-    "searchDialog": null,
     "system": false,
     "idColumn": "ExtractorID",
     "idFieldName": "extractorId",
@@ -16889,7 +16881,6 @@
     "table": "fieldnotebookattachment",
     "tableId": 127,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "FieldNotebookAttachmentId",
     "idFieldName": "fieldNotebookAttachmentId",
@@ -17093,7 +17084,6 @@
     "table": "fieldnotebookpageattachment",
     "tableId": 129,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "FieldNotebookPageAttachmentId",
     "idFieldName": "fieldNotebookPageAttachmentId",
@@ -17319,7 +17309,6 @@
     "table": "fieldnotebookpagesetattachment",
     "tableId": 128,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "FieldNotebookPageSetAttachmentId",
     "idFieldName": "fieldNotebookPageSetAttachmentId",
@@ -17409,7 +17398,6 @@
     "table": "fundingagent",
     "tableId": 146,
     "view": "FundingAgent",
-    "searchDialog": null,
     "system": false,
     "idColumn": "FundingAgentID",
     "idFieldName": "fundingAgentId",
@@ -18275,12 +18263,13 @@
         "column": "CreatedByAgentID"
       },
       {
-        "name": "disciplines",
-        "type": "one-to-many",
-        "required": false,
+        "name": "discipline",
+        "type": "many-to-one",
+        "required": true,
         "dependent": false,
         "relatedModelName": "Discipline",
-        "otherSideName": "geographyTreeDef"
+        "column": "DisciplineID",
+        "otherSideName": "geographyTreeDefs"
       },
       {
         "name": "modifiedByAgent",
@@ -18294,7 +18283,7 @@
         "name": "treeDefItems",
         "type": "one-to-many",
         "required": false,
-        "dependent": false,
+        "dependent": true,
         "relatedModelName": "GeographyTreeDefItem",
         "otherSideName": "treeDef"
       },
@@ -18806,12 +18795,13 @@
         "column": "CreatedByAgentID"
       },
       {
-        "name": "disciplines",
-        "type": "one-to-many",
-        "required": false,
+        "name": "discipline",
+        "type": "many-to-one",
+        "required": true,
         "dependent": false,
         "relatedModelName": "Discipline",
-        "otherSideName": "geologicTimePeriodTreeDef"
+        "column": "DisciplineID",
+        "otherSideName": "geologicTimePeriodTreeDefs"
       },
       {
         "name": "modifiedByAgent",
@@ -18825,7 +18815,7 @@
         "name": "treeDefItems",
         "type": "one-to-many",
         "required": false,
-        "dependent": false,
+        "dependent": true,
         "relatedModelName": "GeologicTimePeriodTreeDefItem",
         "otherSideName": "treeDef"
       },
@@ -19010,7 +19000,6 @@
     "table": "gift",
     "tableId": 131,
     "view": "Gift",
-    "searchDialog": null,
     "system": false,
     "idColumn": "GiftID",
     "idFieldName": "giftId",
@@ -19354,7 +19343,6 @@
     "table": "giftagent",
     "tableId": 133,
     "view": "GiftAgent",
-    "searchDialog": null,
     "system": false,
     "idColumn": "GiftAgentID",
     "idFieldName": "giftAgentId",
@@ -19460,7 +19448,6 @@
     "table": "giftattachment",
     "tableId": 144,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "GiftAttachmentID",
     "idFieldName": "giftAttachmentId",
@@ -19550,7 +19537,6 @@
     "table": "giftpreparation",
     "tableId": 132,
     "view": "GiftItems",
-    "searchDialog": null,
     "system": false,
     "idColumn": "GiftPreparationID",
     "idFieldName": "giftPreparationId",
@@ -19720,7 +19706,6 @@
     "table": "groupperson",
     "tableId": 49,
     "view": "GroupPerson",
-    "searchDialog": null,
     "system": false,
     "idColumn": "GroupPersonID",
     "idFieldName": "groupPersonId",
@@ -19818,7 +19803,6 @@
     "table": "inforequest",
     "tableId": 50,
     "view": "InfoRequest",
-    "searchDialog": null,
     "system": false,
     "idColumn": "InfoRequestID",
     "idFieldName": "infoRequestID",
@@ -19967,7 +19951,6 @@
     "table": "institution",
     "tableId": 94,
     "view": "Institution",
-    "searchDialog": null,
     "system": false,
     "idColumn": "UserGroupScopeId",
     "idFieldName": "userGroupScopeId",
@@ -21068,12 +21051,13 @@
         "column": "CreatedByAgentID"
       },
       {
-        "name": "disciplines",
-        "type": "one-to-many",
-        "required": false,
+        "name": "discipline",
+        "type": "many-to-one",
+        "required": true,
         "dependent": false,
         "relatedModelName": "Discipline",
-        "otherSideName": "lithoStratTreeDef"
+        "column": "DisciplineID",
+        "otherSideName": "lithoStratTreeDefs"
       },
       {
         "name": "modifiedByAgent",
@@ -21087,7 +21071,7 @@
         "name": "treeDefItems",
         "type": "one-to-many",
         "required": false,
-        "dependent": false,
+        "dependent": true,
         "relatedModelName": "LithoStratTreeDefItem",
         "otherSideName": "treeDef"
       },
@@ -21272,7 +21256,6 @@
     "table": "loan",
     "tableId": 52,
     "view": "Loan",
-    "searchDialog": null,
     "system": false,
     "idColumn": "LoanID",
     "idFieldName": "loanId",
@@ -21632,7 +21615,6 @@
     "table": "loanagent",
     "tableId": 53,
     "view": "LoanAgent",
-    "searchDialog": null,
     "system": false,
     "idColumn": "LoanAgentID",
     "idFieldName": "loanAgentId",
@@ -21730,7 +21712,6 @@
     "table": "loanattachment",
     "tableId": 114,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "LoanAttachmentID",
     "idFieldName": "loanAttachmentId",
@@ -21820,7 +21801,6 @@
     "table": "loanpreparation",
     "tableId": 54,
     "view": "LoanItems",
-    "searchDialog": null,
     "system": false,
     "idColumn": "LoanPreparationID",
     "idFieldName": "loanPreparationId",
@@ -22646,7 +22626,6 @@
     "table": "localityattachment",
     "tableId": 115,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "LocalityAttachmentID",
     "idFieldName": "localityAttachmentId",
@@ -23973,7 +23952,6 @@
     "table": "otheridentifier",
     "tableId": 61,
     "view": "OtherIdentifiers",
-    "searchDialog": null,
     "system": false,
     "idColumn": "OtherIdentifierID",
     "idFieldName": "otherIdentifierId",
@@ -24470,7 +24448,6 @@
     "table": "pcrperson",
     "tableId": 161,
     "view": "PcrPerson",
-    "searchDialog": null,
     "system": false,
     "idColumn": "PcrPersonID",
     "idFieldName": "pcrPersonId",
@@ -24901,7 +24878,6 @@
     "table": "permitattachment",
     "tableId": 116,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "PermitAttachmentID",
     "idFieldName": "permitAttachmentId",
@@ -24991,7 +24967,6 @@
     "table": "picklist",
     "tableId": 500,
     "view": "PickList",
-    "searchDialog": null,
     "system": true,
     "idColumn": "PickListID",
     "idFieldName": "pickListId",
@@ -25158,7 +25133,6 @@
     "table": "picklistitem",
     "tableId": 501,
     "view": "PickListItem",
-    "searchDialog": null,
     "system": true,
     "idColumn": "PickListItemID",
     "idFieldName": "pickListItemId",
@@ -25871,7 +25845,6 @@
     "table": "preparationattachment",
     "tableId": 117,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "PreparationAttachmentID",
     "idFieldName": "preparationAttachmentId",
@@ -26490,7 +26463,6 @@
     "table": "preparationproperty",
     "tableId": 154,
     "view": "PreparationProperty",
-    "searchDialog": null,
     "system": false,
     "idColumn": "PreparationPropertyID",
     "idFieldName": "preparationPropertyId",
@@ -28628,7 +28600,6 @@
     "table": "referenceworkattachment",
     "tableId": 143,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "ReferenceWorkAttachmentID",
     "idFieldName": "referenceWorkAttachmentId",
@@ -28940,7 +28911,6 @@
     "table": "repositoryagreementattachment",
     "tableId": 118,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "RepositoryAgreementAttachmentID",
     "idFieldName": "repositoryAgreementAttachmentId",
@@ -32531,7 +32501,6 @@
     "table": "storageattachment",
     "tableId": 148,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "StorageAttachmentID",
     "idFieldName": "storageAttachmentId",
@@ -32685,12 +32654,13 @@
         "column": "CreatedByAgentID"
       },
       {
-        "name": "institutions",
-        "type": "one-to-many",
-        "required": false,
+        "name": "institution",
+        "type": "many-to-one",
+        "required": true,
         "dependent": false,
         "relatedModelName": "Institution",
-        "otherSideName": "storageTreeDef"
+        "column": "InstitutionID",
+        "otherSideName": "storageTreeDefs"
       },
       {
         "name": "modifiedByAgent",
@@ -32704,7 +32674,7 @@
         "name": "treeDefItems",
         "type": "one-to-many",
         "required": false,
-        "dependent": false,
+        "dependent": true,
         "relatedModelName": "StorageTreeDefItem",
         "otherSideName": "treeDef"
       },
@@ -33794,7 +33764,6 @@
     "table": "taxonattachment",
     "tableId": 119,
     "view": "ObjectAttachment",
-    "searchDialog": null,
     "system": true,
     "idColumn": "TaxonAttachmentID",
     "idFieldName": "taxonAttachmentId",
@@ -35548,11 +35517,12 @@
       },
       {
         "name": "discipline",
-        "type": "one-to-one",
-        "required": false,
+        "type": "many-to-one",
+        "required": true,
         "dependent": false,
         "relatedModelName": "Discipline",
-        "otherSideName": "taxonTreeDef"
+        "column": "DisciplineID",
+        "otherSideName": "taxonTreeDefs"
       },
       {
         "name": "modifiedByAgent",
@@ -35566,7 +35536,7 @@
         "name": "treeDefItems",
         "type": "one-to-many",
         "required": false,
-        "dependent": false,
+        "dependent": true,
         "relatedModelName": "TaxonTreeDefItem",
         "otherSideName": "treeDef"
       },
@@ -36165,7 +36135,6 @@
     "table": "voucherrelationship",
     "tableId": 155,
     "view": "VoucherRelationship",
-    "searchDialog": null,
     "system": false,
     "idColumn": "VoucherRelationshipID",
     "idFieldName": "voucherRelationshipId",
@@ -37236,6 +37205,1467 @@
         "relatedModelName": "WorkbenchTemplate",
         "column": "WorkbenchTemplateID",
         "otherSideName": "workbenchTemplateMappingItems"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Spuserexternalid",
+    "table": "spuserexternalid",
+    "tableId": 1000,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "spUserExternalIdId",
+    "fields": [
+      {
+        "name": "provider",
+        "column": "Provider",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "providerid",
+        "column": "ProviderId",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 4094
+      },
+      {
+        "name": "enabled",
+        "column": "Enabled",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "idtoken",
+        "column": "IdToken",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 4094
+      }
+    ],
+    "relationships": [
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "specifyuser_id"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Spattachmentdataset",
+    "table": "attachmentdataset",
+    "tableId": 1001,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "spAttachmentDataSetId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "data",
+        "column": "Data",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "uploadplan",
+        "column": "UploadPlan",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "uploadresult",
+        "column": "UploadResult",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "importedfilename",
+        "column": "ImportedFileName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "Collection_ID"
+      },
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUser_ID"
+      },
+      {
+        "name": "createdbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgent_ID"
+      },
+      {
+        "name": "modifiedbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgent_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.UniquenessRule",
+    "table": "uniquenessrule",
+    "tableId": 1002,
+    "system": true,
+    "idColumn": "UniquenessRuleID",
+    "idFieldName": "uniquenessRuleId",
+    "fields": [
+      {
+        "name": "isdatabaseconstraint",
+        "column": "IsDatabaseConstraint",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "modelname",
+        "column": "ModelName",
+        "indexed": true,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      }
+    ],
+    "relationships": [
+      {
+        "name": "discipline",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Discipline",
+        "column": "DisciplineID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.UniquenessRuleField",
+    "table": "uniquenessrule_fields",
+    "tableId": 1003,
+    "system": true,
+    "idColumn": "uniquenessrule_fieldid",
+    "idFieldName": "uniquenessRuleFieldId",
+    "fields": [
+      {
+        "name": "fieldpath",
+        "column": "FieldPath",
+        "indexed": true,
+        "unique": false,
+        "required": true,
+        "type": "text"
+      },
+      {
+        "name": "isscope",
+        "column": "IsScope",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "uniquenessrule",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "UniquenessRule",
+        "column": "uniquenessruleid"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Message",
+    "table": "notifications_message",
+    "tableId": 1004,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "messageId",
+    "fields": [
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "content",
+        "column": "Content",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "read",
+        "column": "Read",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "user",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "user_id"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Spmerging",
+    "table": "spmerging",
+    "tableId": 1005,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "spMergingId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "taskid",
+        "column": "TaskID",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "status",
+        "column": "MergingStatus",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "response",
+        "column": "Response",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "table",
+        "column": "Table",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "newrecordid",
+        "column": "NewRecordID",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "newrecorddata",
+        "column": "NewRecorData",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "oldrecordids",
+        "column": "OldRecordIDs",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionID"
+      },
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUserID"
+      },
+      {
+        "name": "createdbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.LocalityUpdate",
+    "table": "localityupdate",
+    "tableId": 1013,
+    "system": true,
+    "idColumn": "LocalityUpdateID",
+    "idFieldName": "localityUpdateId",
+    "fields": [
+      {
+        "name": "taskid",
+        "column": "TaskID",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "status",
+        "column": "MergingStatus",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "recordset",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "RecordSet",
+        "column": "RecordSetID"
+      },
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionID"
+      },
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUserID"
+      },
+      {
+        "name": "createdbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.LocalityUpdateRowResult",
+    "table": "localityupdaterowresult",
+    "tableId": 1014,
+    "system": true,
+    "idColumn": "LocalityUpdateRowResultID",
+    "idFieldName": "localityUpdateRowResultId",
+    "fields": [
+      {
+        "name": "rownumber",
+        "column": "rownumber",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "result",
+        "column": "result",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "json"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "localityupdate",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "LocalityUpdate",
+        "column": "LocalityUpdateID",
+        "otherSideName": "results"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.UserPolicy",
+    "table": "spuserpolicy",
+    "tableId": 1006,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "userPolicyId",
+    "fields": [
+      {
+        "name": "resource",
+        "column": "Resource",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "action",
+        "column": "Action",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "Collection_ID"
+      },
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUser_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Role",
+    "table": "sprole",
+    "tableId": 1007,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "roleId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "description",
+        "column": "Description",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "Collection_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.LibraryRole",
+    "table": "splibraryrole",
+    "tableId": 1008,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "libraryRoleId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "description",
+        "column": "Description",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      }
+    ],
+    "relationships": [],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.UserRole",
+    "table": "spuserrole",
+    "tableId": 1009,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "userRoleId",
+    "fields": [],
+    "relationships": [
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUser_ID"
+      },
+      {
+        "name": "role",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Role",
+        "column": "Role_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.RolePolicy",
+    "table": "sprolepolicy",
+    "tableId": 1010,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "rolePolicyId",
+    "fields": [
+      {
+        "name": "resource",
+        "column": "Resource",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 1023
+      },
+      {
+        "name": "action",
+        "column": "Action",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 1023
+      }
+    ],
+    "relationships": [
+      {
+        "name": "role",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Role",
+        "column": "Role_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.LibraryRolePolicy",
+    "table": "splibraryrolepolicy",
+    "tableId": 1011,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "libraryRolePolicyId",
+    "fields": [
+      {
+        "name": "resource",
+        "column": "Resource",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 1023
+      },
+      {
+        "name": "action",
+        "column": "Action",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 1023
+      }
+    ],
+    "relationships": [
+      {
+        "name": "role",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "LibraryRole",
+        "column": "Role_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.Spdataset",
+    "table": "spdataset",
+    "tableId": 1012,
+    "system": true,
+    "idColumn": "id",
+    "idFieldName": "spDataSetId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "columns",
+        "column": "Columns",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "json"
+      },
+      {
+        "name": "data",
+        "column": "Data",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "uploadplan",
+        "column": "UploadPlan",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "uploadresult",
+        "column": "UploadResult",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "rowresults",
+        "column": "RowResults",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "visualorder",
+        "column": "VisualOrder",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "json"
+      },
+      {
+        "name": "importedfilename",
+        "column": "ImportedFileName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "Collection_ID"
+      },
+      {
+        "name": "specifyuser",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "SpecifyUser",
+        "column": "SpecifyUser_ID"
+      },
+      {
+        "name": "createdbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgent_ID"
+      },
+      {
+        "name": "modifiedbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgent_ID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.CollectionObjectType",
+    "table": "collectionobjecttype",
+    "tableId": 1015,
+    "system": false,
+    "idColumn": "CollectionObjectTypeID",
+    "idFieldName": "collectionObjectTypeId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text3",
+        "column": "Text3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionID"
+      },
+      {
+        "name": "taxonTreeDef",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "TaxonTreeDef",
+        "column": "TaxonTreeDefID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.CollectionObjectGroup",
+    "table": "collectionobjectgroup",
+    "tableId": 1016,
+    "system": false,
+    "idColumn": "CollectionObjectGroupID",
+    "idFieldName": "collectionObjectGroupId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "description",
+        "column": "Description",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "igsn",
+        "column": "IGSN",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "guid",
+        "column": "GUID",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text3",
+        "column": "Text3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "integer1",
+        "column": "Integer1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer2",
+        "column": "Integer2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer3",
+        "column": "Integer3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "decimal1",
+        "column": "Decimal1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Double"
+      },
+      {
+        "name": "decimal2",
+        "column": "Decimal2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Double"
+      },
+      {
+        "name": "decimal3",
+        "column": "Decimal3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Double"
+      },
+      {
+        "name": "yesno1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno3",
+        "column": "YesNo3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionID"
+      },
+      {
+        "name": "cogtype",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectGroupType",
+        "column": "COGTypeID"
+      },
+      {
+        "name": "parentcojos",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "CollectionObjectGroupJoin",
+        "otherSideName": "parentcog"
+      },
+      {
+        "name": "cojo",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "CollectionObjectGroupJoin",
+        "otherSideName": "childcog"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin",
+    "table": "collectionobjectgroupjoin",
+    "tableId": 1017,
+    "system": false,
+    "idColumn": "CollectionObjectGroupJoinID",
+    "idFieldName": "collectionObjectGroupJoinId",
+    "fields": [
+      {
+        "name": "isprimary",
+        "column": "IsPrimary",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "issubstrate",
+        "column": "IsSubstrate",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "precedence",
+        "column": "Precedence",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text3",
+        "column": "Text3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "integer1",
+        "column": "Integer1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer2",
+        "column": "Integer2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "integer3",
+        "column": "Integer3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "yesno1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno3",
+        "column": "YesNo3",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "parentcog",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectGroup",
+        "column": "ParentCOGID",
+        "otherSideName": "parentcojos"
+      },
+      {
+        "name": "childcog",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectGroup",
+        "column": "ChildCOGID",
+        "otherSideName": "cojo"
+      },
+      {
+        "name": "childco",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "CollectionObject",
+        "column": "ChildCOID",
+        "otherSideName": "cojo"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.CollectionObjectGroupType",
+    "table": "collectionobjectgrouptype",
+    "tableId": 1018,
+    "system": false,
+    "idColumn": "COGTypeID",
+    "idFieldName": "cogTypeId",
+    "fields": [
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "type",
+        "column": "Type",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "timestampcreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampmodified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collection",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
       }
     ],
     "fieldAliases": []

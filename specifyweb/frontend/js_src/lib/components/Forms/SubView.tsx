@@ -72,7 +72,7 @@ export function SubView({
           .rgetCollection(relationship.name)
           .then((collection) => {
             // TEST: check if this can ever happen
-            if (collection === null)
+            if (collection === null || collection === undefined)
               return new relationship.relatedTable.DependentCollection({
                 related: parentResource,
                 field: relationship.getReverse(),

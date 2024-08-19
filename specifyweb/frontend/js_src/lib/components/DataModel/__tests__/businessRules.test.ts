@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
@@ -9,7 +9,12 @@ import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type { Taxon, TaxonTreeDefItem } from '../types';
+import type {
+  CollectionObjectType,
+  Determination,
+  Taxon,
+  TaxonTreeDefItem,
+} from '../types';
 
 mockTime();
 requireContext();
@@ -49,6 +54,28 @@ describe('Borrow Material business rules', () => {
 });
 
 describe('Collection Object business rules', () => {
+  const collectionObjectTypeUrl = getResourceApiUrl('CollectionObjectType', 1);
+  const collectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 1,
+    name: 'Entomology',
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 1),
+    resource_uri: collectionObjectTypeUrl,
+  };
+  overrideAjax(collectionObjectTypeUrl, collectionObjectType);
+
+  const otherTaxonId = 1;
+  const otherTaxon: Partial<SerializedResource<Taxon>> = {
+    id: otherTaxonId,
+    isAccepted: true,
+    rankId: 10,
+    definition: getResourceApiUrl('TaxonTreeDef', 2),
+    resource_uri: getResourceApiUrl('Taxon', otherTaxonId),
+  };
+
+  overrideAjax(getResourceApiUrl('Taxon', otherTaxonId), otherTaxon);
+
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
@@ -58,7 +85,17 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
+      collectionobjecttype: collectionObjectTypeUrl,
+      determinations: [
+        {
+          taxon: getResourceApiUrl('Taxon', otherTaxonId),
+          preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
+          isCurrent: true,
+        } as SerializedResource<Determination>,
+      ],
       resource_uri: collectionObjectUrl,
+      description: 'Base collection object',
+      catalogNumber: '123',
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
@@ -79,6 +116,97 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
+  });
+
+  test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {
+    const collectionObject = getBaseCollectionObject();
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('taxon'))
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('taxon');
+    });
+
+    expect(result.current[0]).toStrictEqual([
+      'Taxon does not belong to the same tree as this Object Type',
+    ]);
+  });
+
+  const otherCollectionObjectTypeUrl = getResourceApiUrl(
+    'CollectionObjectType',
+    2
+  );
+  const otherCollectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 2,
+    name: 'Fossil',
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 2),
+    resource_uri: otherCollectionObjectTypeUrl,
+  };
+  overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
+
+  test('CollectionObject -> determinations: New determinations are current by default', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    determinations?.add(new tables.Determination.Resource());
+
+    // Old determination gets unchecked as current
+    expect(determinations?.models[0].get('isCurrent')).toBe(false);
+    // New determination becomes current by default
+    expect(determinations?.models[1].get('isCurrent')).toBe(true);
+  });
+
+  test('CollectionObject -> determinations: Save blocked when no current determinations exist', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    determination?.set('isCurrent', false);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([
+      'A current determination is required.',
+    ]);
+  });
+
+  test('CollectionObject -> determinations: Save is not blocked when all determinations are deleted', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    const determination = determinations?.models[0];
+
+    determinations?.remove(determination!);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([]);
   });
 });
 

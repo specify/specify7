@@ -150,7 +150,6 @@
   /* Make spinner buttons larger */
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
-    -webkit-appearance: inner-spin-button !important;
     @apply absolute right-0 top-0 h-full w-2;
   }
 
