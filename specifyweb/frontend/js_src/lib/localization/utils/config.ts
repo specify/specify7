@@ -22,6 +22,7 @@ export const languageCodeMapper = {
   'fr-fr': 'fr',
   'es-es': 'es',
   'de-ch': 'de_CH',
+  'pt-br': 'pt_BR',
 } as const;
 
 export const languages = Object.keys(languageCodeMapper);
