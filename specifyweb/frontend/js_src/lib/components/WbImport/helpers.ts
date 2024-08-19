@@ -1,6 +1,5 @@
 import { parse } from 'csv-parse/browser/esm';
 import type { LocalizedString } from 'typesafe-i18n';
-import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
@@ -20,10 +19,6 @@ import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
  *   https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-webpack-loader-syntax.md
  *   and update the usages in code to fix that rule
  */
-
-/** Remove the extension from the file name */
-export const extractFileName = (fileName: string): string =>
-  fileName.replace(/\.[^.]*$/u, '');
 
 export const wbImportPreviewSize = 100;
 
@@ -127,7 +122,8 @@ export const parseXls = async (
   limit?: number
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
-    const worker = new ImportXLSWorker();
+    // @ts-expect-error Specify is running with target 'esnext' with type 'module'. import.meta.url should be allowed
+    const worker = new Worker(new URL('xls.worker.ts', import.meta.url));
     const dateFormat =
       fullDateFormat() === databaseDateFormat ? undefined : fullDateFormat();
     worker.postMessage({ file, previewSize: limit, dateFormat });

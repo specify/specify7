@@ -16,10 +16,12 @@ import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { HIDDEN_GEO_TABLES } from '../Toolbar/QueryTablesEdit';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -85,7 +87,9 @@ export function tablesFilter(
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
 
-  const isRestricted = overrides.isHidden || overrides.isSystem;
+  const isRestricted = userInformation.isadmin
+    ? overrides.isHidden
+    : overrides.isHidden || overrides.isSystem;
   if (!showHiddenTables && isRestricted) return false;
   const hasAccess = hasTablePermission(name, 'read');
   if (!showNoAccessTables && !hasAccess) return false;
@@ -123,6 +127,8 @@ export function TableList({
     () =>
       Object.values(genericTables)
         .filter((table) => filter(showHiddenTables, table))
+        // TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
+        .filter((table) => !HIDDEN_GEO_TABLES.has(table.name))
         .sort(sortFunction(({ name }) => name)),
     [filter, showHiddenTables]
   );

@@ -33,7 +33,7 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
 ];
 
 const collectionObjectResponse = {
-  id: 100,
+  id: collectionObjectId,
   resource_uri: collectionObjectUrl,
   accession: accessionUrl,
   catalognumber: '000029432',

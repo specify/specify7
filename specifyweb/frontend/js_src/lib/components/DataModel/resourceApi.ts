@@ -140,12 +140,14 @@ export const ResourceBase = Backbone.Model.extend({
   handleChanged() {
     this.needsSaved = true;
   },
-  async clone(cloneAll = false) {
+  async clone(cloneAll = false, isBulkCarry = false) {
     const self = this;
 
-    const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(
-      (fieldName) => fieldName.toLowerCase()
-    );
+    const exemptFields = getFieldsToNotClone(
+      this.specifyTable,
+      cloneAll,
+      isBulkCarry
+    ).map((fieldName) => fieldName.toLowerCase());
 
     const newResource = new this.constructor(
       removeKey(this.attributes, ...specialFields, ...exemptFields),
@@ -166,7 +168,10 @@ export const ResourceBase = Backbone.Model.extend({
                * this is the case for paleocontext. really more like
                * a one-to-one.
                */
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             case 'one-to-many': {
@@ -175,14 +180,19 @@ export const ResourceBase = Backbone.Model.extend({
                 .then(async (newCollection) =>
                   Promise.all(
                     related.models.map(async (resource) =>
-                      newCollection.add(await resource?.clone(cloneAll))
+                      newCollection.add(
+                        await resource?.clone(cloneAll, isBulkCarry)
+                      )
                     )
                   )
                 );
               break;
             }
             case 'zero-to-one': {
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             default: {
@@ -445,6 +455,12 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger(`change:${fieldName}`, this);
         this.trigger('change', this);
         return undefined;
+      }
+      /*
+       * Needed for taxonTreeDef on discipline because field.isVirtual equals false
+       */
+      case 'one-to-one': {
+        return value;
       }
     }
     if (!field.isVirtual)
