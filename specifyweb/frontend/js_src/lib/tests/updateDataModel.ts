@@ -4,6 +4,8 @@ import { group, sortFunction } from '../utils/utils';
 
 const javaTypeToTypeScript = {
   text: 'string',
+  json: 'string',
+  blob: 'string',
   'java.lang.String': 'string',
   'java.lang.Byte': 'number',
   'java.lang.Short': 'number',
@@ -51,7 +53,11 @@ function regenerate(): string {
               relationships.map((relationship) => [
                 `${
                   relationship.type.endsWith('-to-many') ? 'toMany' : 'toOne'
-                }${relationship.isDependent() ? 'Dependent' : 'Independent'}`,
+                }${
+                  relationship.datamodelDefinition.dependent
+                    ? 'Dependent'
+                    : 'Independent'
+                }`,
                 `readonly ${relationship.name}:${
                   relationship.type.endsWith('-to-many')
                     ? `RA<${relationship.relatedTable.name}>`

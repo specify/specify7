@@ -79,6 +79,24 @@ test('required String empty', () => {
   expectInvalid(result, formsText.requiredField());
 });
 
+test('white space sensitive', () => {
+  const parser = resolveParser({
+    type: 'java.lang.String',
+    whiteSpaceSensitive: true,
+  });
+  const whiteSpaceString = ' \n\t ';
+  const result = parseValue(parser, undefined, whiteSpaceString);
+  expectValid(result, whiteSpaceString);
+});
+
+test('non white space sensitive', () => {
+  const parser = resolveParser({
+    type: 'java.lang.String',
+  });
+  const result = parseValue(parser, undefined, ' \n\t ');
+  expectValid(result, null);
+});
+
 describe('Boolean', () => {
   const parser = () =>
     resolveParser({

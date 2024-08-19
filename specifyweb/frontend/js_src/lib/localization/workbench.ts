@@ -157,7 +157,7 @@ export const wbText = createDictionary({
       которая не заменяет обычную проверку.
     `,
     'uk-ua': `
-      Зауважте, перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -570,7 +570,7 @@ export const wbText = createDictionary({
     'es-es': 'Validar completado sin errores',
     'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
-    'de-ch': 'Upload-Status des Datensatzes',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   validationNoErrorsDescription: {
     'en-us': `

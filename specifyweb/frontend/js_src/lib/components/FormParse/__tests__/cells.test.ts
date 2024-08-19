@@ -123,6 +123,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: false,
         },
       })
     ));
@@ -150,7 +151,72 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: false,
         },
+      })
+    ));
+
+  test('white space sensitivity required by schema', async () =>
+    expect(
+      parseFormCell(
+        tables.TaxonTreeDefItem,
+        xml('<cell type="field" uiType="text" name="fullNameSeparator" />')
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+          whiteSpaceSensitive: true,
+        },
+        fieldNames: ['fullNameSeparator'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      })
+    ));
+
+  test('white space sensitivity on field', async () =>
+    expect(
+      parseFormCell(
+        tables.CollectionObject,
+        xml(
+          '<cell type="field" uitype="text" name="text1" initialize="whiteSpaceSensitive=true" />'
+        )
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+          whiteSpaceSensitive: true,
+        },
+        fieldNames: ['text1'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
       })
     ));
 
@@ -193,6 +259,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: undefined,
         },
       })
     );
@@ -220,6 +287,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           minLength: undefined,
           maxLength: undefined,
+          whiteSpaceSensitive: false,
         },
       })
     ));

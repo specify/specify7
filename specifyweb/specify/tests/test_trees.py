@@ -4,7 +4,11 @@ from specifyweb.specify import api, models
 from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.specify.tree_extras import set_fullnames
+from specifyweb.specify.tree_views import get_tree_rows
+from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.tests import SQLAlchemySetup
+from contextlib import contextmanager
+from django.db import connection
 
 class TestTreeSetup(ApiTests):
     def setUp(self) -> None:
@@ -29,104 +33,48 @@ class TestTreeSetup(ApiTests):
         self.taxontreedef.treedefitems.create(name='Species', rankid=220)
         self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
 
+        self.collectionobjecttype.taxontreedef = self.taxontreedef
+        self.collectionobjecttype.save()
+        self.collection.collectionobjecttype = self.collectionobjecttype
+        self.collection.save()
+
 class TestTree:
+
     def setUp(self)->None:
         super().setUp()
-        self.earth = get_table('Geography').objects.create(
-            name="Earth",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Planet"),
-            definition=self.geographytreedef,
-        )
+    
+        self.earth = self.make_geotree("Earth", "Planet")
 
-        self.na = get_table('Geography').objects.create(
-            name="North America",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Continent"),
-            definition=self.geographytreedef,
-            parent=self.earth,
-        )
+        self.na = self.make_geotree("North America", "Continent", parent=self.earth)
 
-        self.usa = get_table('Geography').objects.create(
-            name="USA",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Country"),
-            definition=self.geographytreedef,
-            parent=self.na,
-        )
+        self.usa = self.make_geotree("USA", "Country", parent=self.na)
 
-        self.kansas = get_table('Geography').objects.create(
-            name="Kansas",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
+        self.kansas = self.make_geotree("Kansas", "State", parent=self.usa)
+        self.mo = self.make_geotree("Missouri", "State", parent=self.usa)
+        self.ohio = self.make_geotree("Ohio", "State", parent=self.usa)
+        self.ill = self.make_geotree("Illinois", "State", parent=self.usa)
 
-        self.mo = get_table('Geography').objects.create(
-            name="Missouri",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
+        self.doug = self.make_geotree("Douglas", "County", parent=self.kansas)
+        self.greene = self.make_geotree("Greene", "County", parent=self.mo)
+        self.greeneoh = self.make_geotree("Greene", "County", parent=self.ohio)
+        self.sangomon = self.make_geotree("Sangamon", "County", parent=self.ill)
 
-        self.ohio = get_table('Geography').objects.create(
-            name="Ohio",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
+        self.springmo = self.make_geotree("Springfield", "City", parent=self.greene)
+        self.springill = self.make_geotree("Springfield", "City", parent=self.sangomon)
 
-        self.ill = get_table('Geography').objects.create(
-            name="Illinois",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
+    def make_geotree(self, name, rank_name, **extra_kwargs):
+        return get_table("Geography").objects.create(
+            name=name,
+            definitionitem=get_table('Geographytreedefitem').objects.get(name=rank_name),
             definition=self.geographytreedef,
-            parent=self.usa,
+            **extra_kwargs
         )
-
-        self.doug = get_table('Geography').objects.create(
-            name="Douglas",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.kansas,
-        )
-
-        self.greene = get_table('Geography').objects.create(
-            name="Greene",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.mo,
-        )
-
-        self.greeneoh = get_table('Geography').objects.create(
-            name="Greene",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.ohio,
-        )
-
-        self.sangomon = get_table('Geography').objects.create(
-            name="Sangamon",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.ill,
-        )
-
-        self.springmo = get_table('Geography').objects.create(
-            name="Springfield",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
-            definition=self.geographytreedef,
-            parent=self.greene,
-        )
-
-        self.springill = get_table('Geography').objects.create(
-            name="Springfield",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
-            definition=self.geographytreedef,
-            parent=self.sangomon,
-        )
-
+    
 class GeographyTree(TestTree, TestTreeSetup): pass
 
 class SqlTreeSetup(SQLAlchemySetup, GeographyTree): pass
 
-class TreeStatsTest(SqlTreeSetup):
+class TreeViewsTest(SqlTreeSetup):
 
     def setUp(self):
         super().setUp()
@@ -180,13 +128,14 @@ class TreeStatsTest(SqlTreeSetup):
         )
 
         def _run_nn_and_cte(*args, **kwargs):
-            cte_results = get_tree_stats(*args, **kwargs, session_context=TreeStatsTest.test_session_context, using_cte=True)
-            node_number_results = get_tree_stats(*args, **kwargs, session_context=TreeStatsTest.test_session_context, using_cte=False)
+            cte_results = get_tree_stats(*args, **kwargs, session_context=TreeViewsTest.test_session_context, using_cte=True)
+            node_number_results = get_tree_stats(*args, **kwargs, session_context=TreeViewsTest.test_session_context, using_cte=False)
             self.assertCountEqual(cte_results, node_number_results)
             return cte_results
 
         self.validate_tree_stats = lambda *args, **kwargs: (
             lambda true_results: self.assertCountEqual(_run_nn_and_cte(*args, **kwargs), true_results))
+        
 
     def test_counts_correctness(self):
         correct_results = {
@@ -204,12 +153,77 @@ class TreeStatsTest(SqlTreeSetup):
             self.sangomon.id: [
                 (self.springill.id, 1, 1)
             ]
-        }
+        } 
 
         _results = [
             self.validate_tree_stats(self.geographytreedef.id, 'geography', parent_id, self.collection)(correct)
             for parent_id, correct in correct_results.items()
         ]
+    
+    def test_test_synonyms_concat(self):
+        self.maxDiff = None
+        na_syn_0 = self.make_geotree("NA Syn 0", "Continent",
+                                     acceptedgeography=self.na, 
+                                     # fullname is not set by default for not-accepted
+                                     fullname="NA Syn 0",
+                                     parent=self.earth
+                                     )
+        na_syn_1 = self.make_geotree("NA Syn 1", "Continent", acceptedgeography=self.na, fullname="NA Syn 1", parent=self.earth)
+
+        usa_syn_0 = self.make_geotree("USA Syn 0", "Country", acceptedgeography=self.usa, parent=self.na, fullname="USA Syn 0")
+        usa_syn_1 = self.make_geotree("USA Syn 1", "Country", acceptedgeography=self.usa, parent=self.na, fullname="USA Syn 1")
+        usa_syn_2 = self.make_geotree("USA Syn 2", "Country", acceptedgeography=self.usa, parent=self.na, fullname="USA Syn 2")
+
+        # need to refresh _some_ nodes (but not all)
+        # just the immediate parents and siblings inserted before us
+        # to be safe, we could refresh all, but I'm not going to, so that bug in those sections can be caught here
+        self.earth.refresh_from_db()
+        self.na.refresh_from_db()
+        self.usa.refresh_from_db()
+
+        na_syn_0.refresh_from_db()
+        na_syn_1.refresh_from_db()
+
+        usa_syn_1.refresh_from_db()
+        usa_syn_0.refresh_from_db()
+
+        @contextmanager
+        def _run_for_row():
+            with TreeViewsTest.test_session_context() as session:
+                # this needs to be run via django, but not directly via test_session_context
+                set_group_concat_max_len(connection.cursor())
+                yield session
+
+        with _run_for_row() as session:
+            results = get_tree_rows(
+                self.geographytreedef.id, "Geography", self.earth.id, "geographyid", False, session
+            )
+            expected = [
+                    (self.na.id, self.na.name, self.na.fullname, self.na.nodenumber, self.na.highestchildnodenumber, self.na.rankid, None, None, 'NULL', self.na.children.count(), 'NA Syn 0, NA Syn 1'),
+                    (na_syn_0.id, na_syn_0.name, na_syn_0.fullname, na_syn_0.nodenumber, na_syn_0.highestchildnodenumber, na_syn_0.rankid, self.na.id, self.na.fullname, 'NULL', na_syn_0.children.count(), None),
+                    (na_syn_1.id, na_syn_1.name, na_syn_1.fullname, na_syn_1.nodenumber, na_syn_1.highestchildnodenumber, na_syn_1.rankid, self.na.id, self.na.fullname, 'NULL', na_syn_1.children.count(), None),
+                ]
+
+            self.assertCountEqual(
+                results,
+                expected
+            )
+        
+        with _run_for_row() as session:
+            results = get_tree_rows(
+                self.geographytreedef.id, "Geography", self.na.id, "name", False, session
+            )
+            expected = [
+                    (self.usa.id, self.usa.name, self.usa.fullname, self.usa.nodenumber, self.usa.highestchildnodenumber, self.usa.rankid, None, None, 'NULL', self.usa.children.count(), 'USA Syn 0, USA Syn 1, USA Syn 2'),
+                    (usa_syn_0.id, usa_syn_0.name, usa_syn_0.fullname, usa_syn_0.nodenumber, usa_syn_0.highestchildnodenumber, usa_syn_0.rankid, self.usa.id, self.usa.fullname, 'NULL', 0, None),
+                    (usa_syn_1.id, usa_syn_1.name, usa_syn_1.fullname, usa_syn_1.nodenumber, usa_syn_1.highestchildnodenumber, usa_syn_1.rankid, self.usa.id, self.usa.fullname, 'NULL', 0, None),
+                    (usa_syn_2.id, usa_syn_2. name, usa_syn_2.fullname, usa_syn_2.nodenumber, usa_syn_2.highestchildnodenumber, usa_syn_2.rankid, self.usa.id, self.usa.fullname, 'NULL', 0, None)
+
+                ]
+            self.assertCountEqual(
+                results,
+                expected
+            )
 
 class AddDeleteRankResourcesTest(ApiTests):
     def test_add_ranks_without_defaults(self):
@@ -293,9 +307,6 @@ class AddDeleteRankResourcesTest(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        for obj in models.Taxontreedefitem.objects.all():
-            obj.delete()
-
         treedef_taxon = models.Taxontreedef.objects.create(name='TaxonTest')
 
         # Test adding default rank on empty heirarchy
@@ -340,7 +351,7 @@ class AddDeleteRankResourcesTest(ApiTests):
                          models.Taxontreedefitem.objects.get(name='Taxonomy Root').id)
 
         # Test foreign keys
-        for rank in models.Taxontreedefitem.objects.all():
+        for rank in models.Taxontreedefitem.objects.filter(treedef=treedef_taxon):
             self.assertEqual(treedef_taxon.id, rank.treedef.id)
 
         # Create test nodes

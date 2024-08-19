@@ -1170,8 +1170,28 @@ export const userPreferenceDefinitions = {
             renderer: f.never,
             container: 'div',
           }),
+          bulkCarryForward: definePref<{
+            readonly [TABLE_NAME in keyof Tables]?: RA<
+              TableFields<Tables[TABLE_NAME]>
+            >;
+          }>({
+            title: localized('_bulkCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {},
+            renderer: f.never,
+            container: 'div',
+          }),
           enableCarryForward: definePref<RA<keyof Tables>>({
             title: localized('_enableCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
+          enableBukCarryForward: definePref<RA<keyof Tables>>({
+            title: localized('_enableBulkCarryForward'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1228,6 +1248,14 @@ export const userPreferenceDefinitions = {
           }),
           carryForwardShowHidden: definePref<boolean>({
             title: localized('_carryForwardShowHidden'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+            container: 'div',
+          }),
+          bulkCarryForwardShowHidden: definePref<boolean>({
+            title: localized('_bulkCarryForwardShowHidden'),
             requiresReload: false,
             visible: false,
             defaultValue: false,
@@ -1543,6 +1571,16 @@ export const userPreferenceDefinitions = {
                 title: wbText.pipe(),
               },
             ],
+          }),
+          exportCsvUtf8Bom: definePref<boolean>({
+            title: preferencesText.exportCsvUtf8Bom(),
+            description: (
+              <span>{preferencesText.exportCsvUtf8BomDescription()}</span>
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           displayBasicView: definePref<boolean>({
             title: preferencesText.displayBasicView(),
