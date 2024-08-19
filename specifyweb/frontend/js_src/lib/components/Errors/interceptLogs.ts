@@ -117,6 +117,13 @@ export function interceptLogs(): void {
       const context = getLogContext();
       const hasContext = Object.keys(context).length > 0;
 
+      // Silencing https://github.com/reactjs/react-modal/issues/808
+      if (
+        args[0] ===
+        "React-Modal: Cannot register modal instance that's already open"
+      )
+        return;
+
       /**
        * If actively redirecting log output, don't print to console
        * (printing object to console prevents garbage collection

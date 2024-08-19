@@ -24,6 +24,9 @@ DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 # Pull out author or groupnumber field from taxon query fields.
 TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
 
+# Pull out geographyCode field from geography query fields.
+GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
+
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
 
@@ -118,8 +121,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 tree_rank = tree_id_match.group(1)
                 tree_field = 'ID'
             else:
-                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
-                                   if node is datamodel.get_table('Taxon') else None
+                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Taxon') else GEOGRAPHY_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Geography') else None
                 if tree_field_match:
                     tree_rank = tree_field_match.group(1)
                     tree_field = tree_field_match.group(2)
@@ -178,6 +180,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
     def is_temporal(self):
         field = self.get_field()
         return field is not None and field.is_temporal()
+
+    def is_json(self):
+        field = self.get_field()
+        return field is not None and field.type == 'json'
 
     def build_join(self, query, join_path):
         return query.build_join(self.root_table, self.root_sql_table, join_path)

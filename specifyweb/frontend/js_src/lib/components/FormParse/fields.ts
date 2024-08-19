@@ -79,6 +79,7 @@ export type FieldTypes = {
       readonly step: number | 'any' | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
+      readonly whiteSpaceSensitive: boolean | undefined;
     }
   >;
   readonly Plugin: State<
@@ -202,6 +203,10 @@ const processFieldType: {
     if (defaults.defaultValue === undefined && field === undefined)
       return { type: 'Blank' };
 
+    const whiteSpaceSensitive =
+      getProperty('whiteSpaceSensitive')?.toLowerCase() === 'true' ||
+      (field?.isRelationship ? undefined : field?.whiteSpaceSensitive);
+
     return {
       type: 'Text',
       ...defaults,
@@ -210,6 +215,7 @@ const processFieldType: {
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
       maxLength: f.parseInt(getProperty('maxLength')),
+      whiteSpaceSensitive,
     };
   },
   QueryComboBox({ getProperty, fields }) {

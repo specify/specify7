@@ -9,6 +9,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
+import type { RR, ValueOf } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -77,6 +78,38 @@ export function WbUploaded({
         </div>
       </div>
     </ErrorBoundary>
+  );
+}
+
+export function TableRecordCounts({
+  recordCounts,
+  sortFunction: rawSortFunction,
+}: {
+  readonly recordCounts: Partial<RR<Lowercase<keyof Tables>, number>>;
+  readonly sortFunction?: (
+    value: readonly [
+      Lowercase<keyof Tables>,
+      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>
+    ]
+  ) => ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>;
+}): JSX.Element {
+  const resolvedRecords =
+    typeof rawSortFunction === 'function'
+      ? Object.entries(recordCounts).sort(sortFunction(rawSortFunction))
+      : Object.entries(recordCounts);
+
+  return (
+    <Ul className="flex flex-1 flex-col gap-2">
+      {resolvedRecords.map(([tableName, recordCount], index) =>
+        typeof recordCount === 'number' ? (
+          <TableResults
+            key={index}
+            recordCount={recordCount}
+            tableName={tableName}
+          />
+        ) : null
+      )}
+    </Ul>
   );
 }
 

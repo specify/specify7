@@ -64,17 +64,19 @@ class SchemaTests(UploadTestsBase):
 
 class OtherSchemaTests(unittest.TestCase):
 
+    @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(name=infer, wbcols=infer)
     def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
         upload_table = UploadTable(name=name, wbcols=wbcols, overrideScope=None, static={}, toOne={}, toMany={})
         validate(upload_table.unparse(), schema)
 
+    @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(column_opts=from_schema(schema['definitions']['columnOptions']))
     def test_column_options_parse(self, column_opts: Dict):
         validate(column_opts, schema['definitions']['columnOptions'])
         parse_column_options(column_opts)
 
-    @settings(deadline=None)
+    @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(column_opts=infer)
     def test_column_options_to_json(self, column_opts: ColumnOptions):
         j = column_opts.to_json()

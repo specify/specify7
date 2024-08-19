@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -754,7 +754,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
     'ru-ru': 'Форматеры записи',
-    'uk-ua': 'Форматувальники записів',
+    'uk-ua': 'Формати записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',

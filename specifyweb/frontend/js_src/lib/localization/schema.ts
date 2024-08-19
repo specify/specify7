@@ -431,7 +431,7 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експорт дублікатів',
+    'uk-ua': 'Експортувати дублікати',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',

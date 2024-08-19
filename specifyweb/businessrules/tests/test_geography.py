@@ -5,6 +5,7 @@ from django.db.models import ProtectedError
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
+
 class GeographyTests(ApiTests):
     def test_delete_blocked_by_locality(self):
         geography = models.Geography.objects.create(
@@ -38,6 +39,30 @@ class GeographyTests(ApiTests):
 
         models.Agentgeography.objects.filter(geography=geography).delete()
         geography.delete()
+
+    def test_isaccepted_on_save(self):
+        earth = models.Geography.objects.create(
+            name="Earth",
+            definition=self.geographytreedef,
+            definitionitem=self.geographytreedef.treedefitems.all()[0])
+
+        continent = earth.definitionitem.children.create(
+            name="Continent",
+            treedef=earth.definition)
+
+        na = earth.children.create(
+            name="North America",
+            definition=earth.definition,
+            definitionitem=continent)
+
+        other_na = earth.children.create(
+            name="Americas",
+            acceptedgeography=na,
+            definition=earth.definition,
+            definitionitem=continent)
+
+        self.assertTrue(na.isaccepted)
+        self.assertFalse(other_na.isaccepted)
 
     @skip("this behavior was eliminated by https://github.com/specify/specify7/issues/136")
     def test_delete_cascades_to_deletable_children(self):
@@ -73,7 +98,8 @@ class GeographyTests(ApiTests):
 
         earth.delete()
 
-        self.assertEqual(models.Geography.objects.filter(id__in=(na.id, sa.id)).count(), 0)
+        self.assertEqual(models.Geography.objects.filter(
+            id__in=(na.id, sa.id)).count(), 0)
 
     @skip("not clear if this is correct.")
     def test_accepted_children_acceptedparent_set_to_null_on_delete(self):
@@ -109,4 +135,5 @@ class GeographyTests(ApiTests):
             definitionitem=country)
 
         asia.delete()
-        self.assertEqual(models.Geography.objects.get(id=lugash.id).acceptedgeography, None)
+        self.assertEqual(models.Geography.objects.get(
+            id=lugash.id).acceptedgeography, None)
