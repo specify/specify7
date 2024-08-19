@@ -1,8 +1,8 @@
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import CollectionObjectGroupJoin
+from specifyweb.specify.models import Collectionobjectgroupjoin
 
-@orm_signal_handler('pre_save', 'CollectionObjectGroupJoin')
+@orm_signal_handler('pre_save', 'Collectionobjectgroupjoin')
 def cojo_pre_save(cojo):
     # Ensure the both the childcog and childco fields are not null.
     if cojo.childcog == None and cojo.childco == None:
@@ -16,12 +16,12 @@ def cojo_pre_save(cojo):
     # So when a record is saved with isPrimary set to True, we need to set all other records with the same parentcog
     # to isPrimary = False.
     if cojo.isprimary == True:
-        (CollectionObjectGroupJoin.objects
+        (Collectionobjectgroupjoin.objects
          .filter(parentcog=cojo.parentcog)
          .update(isprimary=False))
 
     if cojo.issubstrate == True:
-        (CollectionObjectGroupJoin.objects
+        (Collectionobjectgroupjoin.objects
          .filter(parentcog=cojo.parentcog)
          .update(issubstrate=False))
         

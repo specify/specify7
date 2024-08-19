@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
@@ -10,6 +11,7 @@ import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
+import { AppResourceContext } from '../AppResources/Editor';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Ul } from '../Atoms';
@@ -20,10 +22,12 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import {
+  fetchResource,
   getResourceApiUrl,
   idFromUrl,
   resourceOn,
 } from '../DataModel/resource';
+import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import { tables } from '../DataModel/tables';
 import { CollectionPicker } from '../Header/ChooseCollection';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -247,6 +251,7 @@ function FeedExportItem({
                 }),
             ]}
             isRequired
+            type="userId"
           />
         </Label.Block>
         <Label.Block>
@@ -261,6 +266,7 @@ function FeedExportItem({
                 }),
             ]}
             isRequired={false}
+            type="notifyUserId"
           />
         </Label.Block>
         <Label.Block>
@@ -353,21 +359,66 @@ const specifyUserTypeSearch = f.store<TypeSearch>(() => ({
 }));
 
 function UserPicker({
+  type,
   id: [id, setId],
   isRequired,
 }: {
+  readonly type: 'notifyUserId' | 'userId';
   readonly id: GetSet<number | undefined>;
   readonly isRequired: boolean;
 }): JSX.Element {
   const resource = React.useMemo(() => new tables.Agent.Resource(), []);
-  React.useEffect(
-    () =>
-      void resource.set(
-        'specifyUser',
-        id === undefined ? null : getResourceApiUrl('SpecifyUser', id)
-      ),
-    [resource, id]
+  const field = getField(tables.Agent, 'specifyUser');
+
+  const appResource = React.useContext(AppResourceContext);
+
+  // Form field blocker
+  const [_, setBlockers] = useSaveBlockers(resource, field);
+  // Need to set a blocker on app resource to disable the save button
+  const [__, setAppResourceBlocker] = useSaveBlockers(
+    appResource,
+    getField(tables.SpAppResource, 'specifyUser')
   );
+
+  React.useEffect(() => {
+    void resource.set(
+      'specifyUser',
+      id === undefined ? null : getResourceApiUrl('SpecifyUser', id)
+    );
+    if (id === undefined) return;
+    // Fetch resource to check for invalid SpecifyUser id entered through XML editor
+    fetchResource('SpecifyUser', id, false).then((res) => {
+      if (destructorCalled) return;
+      if (res?.id !== id)
+        void resource.set(
+          'specifyUser',
+          res === undefined ? null : getResourceApiUrl('SpecifyUser', id)
+        );
+      if (res === undefined) {
+        setBlockers(
+          [formsText.invalidValue()],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+        setAppResourceBlocker(
+          [formsText.invalidValue()],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+      } else {
+        setBlockers(
+          [],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+        setAppResourceBlocker(
+          [],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+      }
+    });
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [id]);
 
   const setIdRef = React.useRef(setId);
   setIdRef.current = setId;
@@ -384,7 +435,7 @@ function UserPicker({
 
   return (
     <QueryComboBox
-      field={getField(tables.Agent, 'specifyUser')}
+      field={field}
       forceCollection={undefined}
       formType="form"
       id={undefined}

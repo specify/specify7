@@ -5,12 +5,13 @@ import django.utils.timezone
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
-    CollectionObjectType,
+    Collectionobjecttype,
     Collection,
     Discipline,
     Institution,
     Picklist,
     Picklistitem,
+    Taxontreedef
 )
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
@@ -59,7 +60,7 @@ def create_default_collection_types():
     for collection in Collection.objects.all():
         discipline = collection.discipline
         discipline_name = discipline.name
-        cot, created = CollectionObjectType.objects.get_or_create(
+        cot, created = Collectionobjecttype.objects.get_or_create(
             name=discipline_name,
             collection=collection,
             taxontreedef_id=discipline.taxontreedef_id
@@ -68,6 +69,11 @@ def create_default_collection_types():
         Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
         collection.save()
+        # try:
+        #     collection.save()
+        # except BusinessRuleException as e:
+        #     # TODO: Resolve th business rule exception so that the collection can be saved and not null
+        #     continue
 
 def revert_default_collection_types():
     # Reverse handeled by table deletion.
@@ -117,7 +123,7 @@ def create_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist = Picklist.objects.create(
             name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
+            tablename='Collectionobjectgrouptype',
             issystem=False,
             type=1,
             readonly=False,
@@ -134,7 +140,7 @@ def revert_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
+            tablename='Collectionobjectgrouptype',
             collection=collection
         )
         if cog_type_picklist_qs.exists():
@@ -142,6 +148,19 @@ def revert_default_collection_object_types():
             Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
             cog_type_picklist.delete()
 
+def set_discipline_for_taxon_treedefs():
+    for treedef in Taxontreedef.objects.all():
+        if treedef.discipline:
+            continue
+        cot = Collectionobjecttype.objects.filter(taxontreedef=treedef).first()
+        if cot:
+            treedef.discipline = cot.collection.discipline
+            treedef.save()
+
+def revert_discipline_for_taxon_treedefs():
+    for treedef in Taxontreedef.objects.all():
+        treedef.discipline = None
+        treedef.save()
 
 class Migration(migrations.Migration):
 
@@ -156,8 +175,10 @@ class Migration(migrations.Migration):
         create_default_discipline_for_tree_defs()
         create_table_schema_config_with_defaults()
         create_default_collection_object_types()
+        set_discipline_for_taxon_treedefs()
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        revert_discipline_for_taxon_treedefs()
         revert_default_collection_object_types()
         revert_table_schema_config_with_defaults()
         revert_default_discipline_for_tree_defs()
@@ -165,7 +186,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CollectionObjectType',
+            name='Collectionobjecttype',
             fields=[
                 ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255)),
@@ -186,7 +207,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupType',
+            name='Collectionobjectgrouptype',
             fields=[
                 ('id', models.AutoField(db_column='COGTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255, null=False)),
@@ -214,7 +235,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=models.SET_NULL, related_name='collections', to='specify.collectionobjecttype'),
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroup',
+            name='Collectionobjectgroup',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupid', primary_key=True, serialize=False)),
                 ('name', models.CharField(blank=True, db_column='Name', max_length=255, null=True)),
@@ -247,7 +268,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupJoin',
+            name='Collectionobjectgroupjoin',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
                 ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),

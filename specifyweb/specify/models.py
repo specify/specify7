@@ -2799,7 +2799,7 @@ class Determiner(models.Model):
     
     save = partialmethod(custom_save)
 
-class Discipline(models.Model):
+class Discipline(model_extras.Discipline):
     specify_model = datamodel.get_table('discipline')
 
     # ID Field
@@ -7486,7 +7486,7 @@ class Workbenchtemplatemappingitem(models.Model):
     
     save = partialmethod(custom_save)
 
-class CollectionObjectType(models.Model):
+class Collectionobjecttype(models.Model):
     specify_model = datamodel.get_table('collectionobjecttype')
 
     # ID Field
@@ -7513,7 +7513,7 @@ class CollectionObjectType(models.Model):
 
     save = partialmethod(custom_save)
 
-class CollectionObjectGroupType(models.Model):
+class Collectionobjectgrouptype(models.Model):
     specify_model = datamodel.get_table('collectionobjectgrouptype')
 
     # ID Field
@@ -7537,7 +7537,7 @@ class CollectionObjectGroupType(models.Model):
     
     save = partialmethod(custom_save)
 
-class CollectionObjectGroup(models.Model): # aka. Cog
+class Collectionobjectgroup(models.Model): # aka. Cog
     specify_model = datamodel.get_table('collectionobjectgroup')
 
     # ID Field
@@ -7576,7 +7576,7 @@ class CollectionObjectGroup(models.Model): # aka. Cog
 
     save = partialmethod(custom_save)
 
-class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
+class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
     specify_model = datamodel.get_table('collectionobjectgroupjoin')
 
     # ID Field

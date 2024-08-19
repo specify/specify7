@@ -24,11 +24,13 @@ const DEFAULT_FETCH_SEARCH_LIMIT = 200;
 
 export function TreeViewSearch<SCHEMA extends AnyTree>({
   tableName,
+  treeDefinitionId,
   treeDefinitionItems,
   forwardRef,
   onFocusPath: handleFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
+  readonly treeDefinitionId: number;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
@@ -74,6 +76,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             tableName as AnyTree['tableName'],
             {
+              definition: treeDefinitionId,
               limit: DEFAULT_FETCH_SEARCH_LIMIT,
               orderBy: 'name',
               domainFilter: true,

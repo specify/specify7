@@ -34,7 +34,7 @@ def update_table_schema_config_with_defaults(
     table_name = table.name
     table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
     table_config = TableSchemaConfig(
-        name=table_name,
+        name=table_name.lower(),
         discipline_id=discipline_id,
         schema_type=0,
         description=table_desc,
@@ -43,8 +43,8 @@ def update_table_schema_config_with_defaults(
 
     fields_config = []
     for field in table.all_fields:
-        field_desc = field.name
-        field_name = re.sub(r'(?<!^)(?=[A-Z])', ' ', field_desc).capitalize()
+        field_name=field.name
+        field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).capitalize()
         fields_config.append(FieldSchemaConfig(
             name=field_name,
             column=field.column,
@@ -57,9 +57,9 @@ def update_table_schema_config_with_defaults(
         "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
     ]
 
-    # Create Splocalecontainer for the tbale
+    # Create Splocalecontainer for the table
     sp_local_container = Splocalecontainer.objects.create(
-        name=table.name,
+        name=table.name.lower(),
         discipline=discipline,
         schematype=table_config.schema_type,
         ishidden=False,
@@ -68,7 +68,7 @@ def update_table_schema_config_with_defaults(
     )
 
     # Create a Splocaleitemstr for the table name and description
-    for k, text in {'containername': table_config.name, 'containerdesc': table_config.description}.items():
+    for k, text in {'containername': table_config.description, 'containerdesc': table_config.description}.items():
         item_str = {
             'text': text,
             'language': 'en',

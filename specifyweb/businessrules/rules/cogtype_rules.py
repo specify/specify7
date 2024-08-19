@@ -3,7 +3,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Picklist, Picklistitem
 
-@orm_signal_handler('pre_save', 'CollectionObjectGroupType')
+@orm_signal_handler('pre_save', 'Collectionobjectgrouptype')
 def cogtype_pre_save(cog_type):
 
     # Ensure the cog_type type is validated by being the picklist.

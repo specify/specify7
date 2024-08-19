@@ -204,6 +204,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
+
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 

@@ -7,7 +7,7 @@ import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { tables } from '../DataModel/tables';
 import {
-  getTreeDefinitionItems,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import {
@@ -98,7 +98,8 @@ function useGenusRankId(): number | false | undefined {
       async () =>
         treeRanksPromise.then(
           () =>
-            getTreeDefinitionItems('Taxon', false)!.find(
+            // REFACTOR: Narrow the TreeDefinition used to find the rankId of the Genus Rank
+            strictGetTreeDefinitionItems('Taxon', false, 'all').find(
               (item) => (item.name || item.title)?.toLowerCase() === 'genus'
             )?.rankId ?? false
         ),

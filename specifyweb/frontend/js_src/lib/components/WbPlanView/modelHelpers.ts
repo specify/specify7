@@ -74,7 +74,7 @@ export function findRequiredMissingFields(
   // Handle trees
   else if (isTreeTable(tableName) && !valueIsTreeRank(path.at(-1)))
     return (
-      getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
+      getTreeDefinitionItems(tableName, false, 'all')?.flatMap(
         ({ name: rankName }) => {
           const formattedRankName = formatTreeRank(rankName);
           const localPath = [...path, formattedRankName];
