@@ -204,6 +204,12 @@ export const getFrontEndPickLists = f.store<{
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
     },
+    CollectionObjectType: {
+      name: definePicklist('_CollectionObjectType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjecttype')
+        .set('fieldName', 'name'),
+    },
     CollectionRelType: {
       name: definePicklist('_CollectionRelType', [])
         .set('type', PickListTypes.FIELDS)

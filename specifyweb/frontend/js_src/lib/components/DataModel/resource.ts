@@ -6,12 +6,18 @@ import { f } from '../../utils/functools';
 import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
+import type { InteractionWithPreps } from '../Interactions/helpers';
+import {
+  interactionPrepTables,
+  interactionsWithPrepTables,
+} from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { getFieldsFromPath } from './businessRules';
 import type {
+  AnyInteractionPreparation,
   AnySchema,
   SerializedRecord,
   SerializedResource,
@@ -227,9 +233,10 @@ export const parseJavaClassName = (className: string): string =>
 
 export function getFieldsToNotClone(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const fieldsToClone = getCarryOverPreference(table, cloneAll, isBulkCarry);
   const uniqueFields = getUniqueFields(table);
   return table.fields
     .map(({ name }) => name)
@@ -241,11 +248,16 @@ export function getFieldsToNotClone(
 
 function getCarryOverPreference(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
   const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
     ? {}
-    : userPreferences.get('form', 'preferences', 'carryForward');
+    : userPreferences.get(
+        'form',
+        'preferences',
+        isBulkCarry ? 'bulkCarryForward' : 'carryForward'
+      );
   return config?.[table.name] ?? getFieldsToClone(table);
 }
 
@@ -294,6 +306,22 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
      */
     ...table.relationships
       .filter(({ relatedTable }) => relatedTable.name.endsWith('Attachment'))
+      .map(({ name }) => name),
+    /*
+     * Interaction Preparations should be considered unique for each
+     * Interaction
+     * See https://github.com/specify/specify7/issues/4012
+     */
+    ...table.relationships
+      .filter(
+        ({ relatedTable }) =>
+          interactionsWithPrepTables.includes(
+            table.name as InteractionWithPreps['tableName']
+          ) &&
+          interactionPrepTables.includes(
+            relatedTable.name as AnyInteractionPreparation['tableName']
+          )
+      )
       .map(({ name }) => name),
     ...filterArray(
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)

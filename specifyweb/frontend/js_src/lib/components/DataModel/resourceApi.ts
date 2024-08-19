@@ -75,6 +75,12 @@ function eventHandlerForToMany(_related, field) {
   };
 }
 
+// Always returns a resource
+const maybeMakeResource = (value, relatedTable) =>
+  value instanceof ResourceBase
+    ? value
+    : new relatedTable.Resource(value, { parse: true });
+
 export const ResourceBase = Backbone.Model.extend({
   __name__: 'ResourceBase',
   populated: false, // Indicates if this resource has data
@@ -134,12 +140,14 @@ export const ResourceBase = Backbone.Model.extend({
   handleChanged() {
     this.needsSaved = true;
   },
-  async clone(cloneAll = false) {
+  async clone(cloneAll = false, isBulkCarry = false) {
     const self = this;
 
-    const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(
-      (fieldName) => fieldName.toLowerCase()
-    );
+    const exemptFields = getFieldsToNotClone(
+      this.specifyTable,
+      cloneAll,
+      isBulkCarry
+    ).map((fieldName) => fieldName.toLowerCase());
 
     const newResource = new this.constructor(
       removeKey(this.attributes, ...specialFields, ...exemptFields),
@@ -160,7 +168,10 @@ export const ResourceBase = Backbone.Model.extend({
                * this is the case for paleocontext. really more like
                * a one-to-one.
                */
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             case 'one-to-many': {
@@ -169,14 +180,19 @@ export const ResourceBase = Backbone.Model.extend({
                 .then(async (newCollection) =>
                   Promise.all(
                     related.models.map(async (resource) =>
-                      newCollection.add(await resource?.clone(cloneAll))
+                      newCollection.add(
+                        await resource?.clone(cloneAll, isBulkCarry)
+                      )
                     )
                   )
                 );
               break;
             }
             case 'zero-to-one': {
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             default: {
@@ -414,10 +430,7 @@ export const ResourceBase = Backbone.Model.extend({
           return value;
         }
 
-        const toOne =
-          value instanceof ResourceBase
-            ? value
-            : new relatedTable.Resource(value, { parse: true });
+        const toOne = maybeMakeResource(value, relatedTable);
 
         field.isDependent() && this.storeDependent(field, toOne);
         this.trigger(`change:${fieldName}`, this);
@@ -432,7 +445,7 @@ export const ResourceBase = Backbone.Model.extend({
         const oneTo = _.isArray(value)
           ? value.length === 0
             ? null
-            : new relatedTable.Resource(_.first(value), { parse: true })
+            : maybeMakeResource(_.first(value), relatedTable)
           : value || null; // In case it was undefined
 
         assert(oneTo == null || oneTo instanceof ResourceBase);
@@ -442,6 +455,12 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger(`change:${fieldName}`, this);
         this.trigger('change', this);
         return undefined;
+      }
+      /*
+       * Needed for taxonTreeDef on discipline because field.isVirtual equals false
+       */
+      case 'one-to-one': {
+        return value;
       }
     }
     if (!field.isVirtual)

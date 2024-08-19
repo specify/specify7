@@ -226,6 +226,19 @@ export const routes: RA<EnhancedRoute> = [
     element: <Redirect to="/specify/workbench/import" />,
   },
   {
+    path: 'import',
+    children: [
+      {
+        path: 'locality-dataset',
+        element: () =>
+          import('../LocalityUpdate').then(
+            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
+              ImportLocalitySet
+          ),
+      },
+    ],
+  },
+  {
     path: 'resources',
     title: resourcesText.appResources(),
     element: () =>
