@@ -83,6 +83,7 @@ export type Parser = Partial<{
   readonly value: boolean | number | string;
   // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
+  readonly whiteSpaceSensitive: boolean;
 }>;
 
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
@@ -289,6 +290,9 @@ export function resolveParser(
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
+    whiteSpaceSensitive: fullField.isRelationship
+      ? undefined
+      : (fullField as LiteralField).whiteSpaceSensitive,
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
@@ -308,13 +312,17 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         'required',
         base?.required === true || extra?.required === true ? true : undefined,
       ],
+      [
+        'whiteSpaceSensitive',
+        base.whiteSpaceSensitive || extra.whiteSpaceSensitive,
+      ],
+      ['step', resolveStep(base.step, extra.step)],
       ...uniqueConcat
         .map((key) => [
           key,
           f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
         ])
         .filter(([_key, value]) => value.length > 0),
-      ['step', resolveStep(base.step, extra.step)],
       ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
         .map((key) => [key, resolveDate(base[key], extra[key], false)])

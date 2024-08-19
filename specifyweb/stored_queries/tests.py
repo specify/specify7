@@ -55,7 +55,6 @@ with session.context() as session:
 
 """
 
-
 class SQLAlchemySetup(ApiTests):
 
     test_sa_url = None
@@ -85,7 +84,7 @@ class SQLAlchemySetup(ApiTests):
             columns = django_cursor.description
             django_cursor.close()
             # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
-            selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+            selects = [sqlalchemy.select([sqlalchemy.literal(sqlalchemy.null() if column is None else column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
                        in result_set]
             # union all instead of union because rows can be duplicated in the original query,
             # but still need to preserve the duplication
@@ -93,7 +92,6 @@ class SQLAlchemySetup(ApiTests):
             # Tests will fail when migrated to different background. TODO: Auto-detect dialects
             final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
             return final_query, ()
-
 
 
 class SQLAlchemySetupTest(SQLAlchemySetup):
@@ -750,7 +748,7 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
-def test_sqlalchemy_model(datamodel_table):
+def validate_sqlalchemy_model(datamodel_table):
     table_errors = {
         'not_found': [],  # Fields / Relationships not found
         'incorrect_direction': {},  # Relationship direct not correct
@@ -802,7 +800,7 @@ def test_sqlalchemy_model(datamodel_table):
 class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
         for table in spmodels.datamodel.tables:
-            table_errors = test_sqlalchemy_model(table)
+            table_errors = validate_sqlalchemy_model(table)
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
@@ -1259,7 +1257,7 @@ expected_errors = {
   "CollectionObject": {
     "not_found": [
       "projects"
-    ]
+    ],
   },
   "DNASequencingRun": {
     "incorrect_table": {
@@ -1273,13 +1271,7 @@ expected_errors = {
     "not_found": [
       "numberingSchemes",
       "userGroups"
-    ],
-    "incorrect_direction": {
-      "taxonTreeDef": [
-        "manytoone",
-        "onetoone"
-      ]
-    }
+    ]
   },
   "Division": {
     "not_found": [
@@ -1357,5 +1349,25 @@ expected_errors = {
         "onetoone"
       ]
     }
-  }
+  },
+  "CollectionObjectGroupJoin": {
+    "incorrect_direction": {
+      "childCog": [
+        "manytoone",
+        "onetoone"
+      ],
+      "childCo": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
 }

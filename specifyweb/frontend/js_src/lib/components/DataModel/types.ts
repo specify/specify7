@@ -3,8 +3,8 @@
  * Afterward, some manual edits have been made. Those are marked with
  * "NOTE:" comments
  *
- * Schema version: 2.10
- * Date generated: January 5, 2023
+ * Schema version: 2.11
+ * Date generated: July 17, 2024
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -210,21 +210,42 @@ export type Tables = {
   readonly WorkbenchRowImage: WorkbenchRowImage;
   readonly WorkbenchTemplate: WorkbenchTemplate;
   readonly WorkbenchTemplateMappingItem: WorkbenchTemplateMappingItem;
+  readonly Spuserexternalid: Spuserexternalid;
+  readonly Spattachmentdataset: Spattachmentdataset;
+  readonly UniquenessRule: UniquenessRule;
+  readonly UniquenessRuleField: UniquenessRuleField;
+  readonly Message: Message;
+  readonly Spmerging: Spmerging;
+  readonly LocalityUpdate: LocalityUpdate;
+  readonly LocalityUpdateRowResult: LocalityUpdateRowResult;
+  readonly UserPolicy: UserPolicy;
+  readonly Role: Role;
+  readonly LibraryRole: LibraryRole;
+  readonly UserRole: UserRole;
+  readonly RolePolicy: RolePolicy;
+  readonly LibraryRolePolicy: LibraryRolePolicy;
+  readonly Spdataset: Spdataset;
+  readonly CollectionObjectType: CollectionObjectType;
+  readonly CollectionObjectGroup: CollectionObjectGroup;
+  readonly CollectionObjectGroupJoin: CollectionObjectGroupJoin;
+  readonly CollectionObjectGroupType: CollectionObjectGroupType;
 };
 export type Accession = {
   readonly tableName: 'Accession';
   readonly fields: {
-    readonly number1: number | null;
-    readonly number2: number | null;
     readonly accessionNumber: string;
     readonly accessionCondition: string | null;
     readonly dateAccessioned: string | null;
     readonly actualTotalCountAmt: number | null;
+    readonly collectionObjectCount: number | null;
     readonly dateAcknowledged: string | null;
     readonly remarks: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
+    readonly number1: number | null;
+    readonly number2: number | null;
+    readonly preparationCount: number | null;
     readonly dateReceived: string | null;
     readonly status: string | null;
     readonly text1: string | null;
@@ -234,6 +255,7 @@ export type Accession = {
     readonly text5: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
+    readonly totalCountAmt: number | null;
     readonly totalValue: number | null;
     readonly type: string | null;
     readonly verbatimDate: string | null;
@@ -898,13 +920,13 @@ export type BorrowMaterial = {
   readonly tableName: 'BorrowMaterial';
   readonly fields: {
     readonly collectionMemberId: number;
-    readonly description: string | null;
     readonly inComments: string | null;
     readonly materialNumber: string;
     readonly outComments: string | null;
     readonly quantity: number | null;
     readonly quantityResolved: number | null;
     readonly quantityReturned: number | null;
+    readonly description: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
     readonly timestampCreated: string;
@@ -946,19 +968,17 @@ export type BorrowReturnMaterial = {
 export type CollectingEvent = {
   readonly tableName: 'CollectingEvent';
   readonly fields: {
-    readonly text4: string | null;
-    readonly text2: string | null;
     readonly startDate: string | null;
     readonly endDate: string | null;
     readonly endDatePrecision: number | null;
     readonly endDateVerbatim: string | null;
+    readonly endTime: number | null;
     readonly stationFieldNumber: string | null;
     readonly method: string | null;
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly remarks: string | null;
-    readonly text5: string | null;
     readonly reservedInteger3: number | null;
     readonly reservedInteger4: number | null;
     readonly reservedText1: string | null;
@@ -966,22 +986,24 @@ export type CollectingEvent = {
     readonly sgrStatus: number | null;
     readonly startDatePrecision: number | null;
     readonly startDateVerbatim: string | null;
-    readonly text3: string | null;
+    readonly startTime: number | null;
     readonly stationFieldNumberModifier1: string | null;
     readonly stationFieldNumberModifier2: string | null;
     readonly stationFieldNumberModifier3: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly text4: string | null;
+    readonly text5: string | null;
     readonly text6: string | null;
     readonly text7: string | null;
     readonly text8: string | null;
-    readonly startTime: number | null;
-    readonly endTime: number | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly uniqueIdentifier: string | null;
     readonly verbatimDate: string | null;
     readonly verbatimLocality: string | null;
     readonly version: number | null;
-    readonly text1: string | null;
     readonly visibility: number | null;
   };
   readonly toOneDependent: {
@@ -1048,9 +1070,10 @@ export type CollectingEventAttr = {
 export type CollectingEventAttribute = {
   readonly tableName: 'CollectingEventAttribute';
   readonly fields: {
-    readonly text4: string | null;
     readonly text8: string | null;
-    readonly text6: string | null;
+    readonly text5: string | null;
+    readonly text4: string | null;
+    readonly text9: string | null;
     readonly integer1: number | null;
     readonly integer10: number | null;
     readonly integer2: number | null;
@@ -1061,13 +1084,11 @@ export type CollectingEventAttribute = {
     readonly integer7: number | null;
     readonly integer8: number | null;
     readonly integer9: number | null;
-    readonly text2: string | null;
-    readonly text1: string | null;
+    readonly number12: number | null;
+    readonly number13: number | null;
     readonly number1: number | null;
     readonly number10: number | null;
     readonly number11: number | null;
-    readonly number12: number | null;
-    readonly number13: number | null;
     readonly number2: number | null;
     readonly number3: number | null;
     readonly number4: number | null;
@@ -1076,23 +1097,24 @@ export type CollectingEventAttribute = {
     readonly number7: number | null;
     readonly number8: number | null;
     readonly number9: number | null;
-    readonly yesNo1: boolean | null;
     readonly remarks: string | null;
-    readonly text7: string | null;
+    readonly text6: string | null;
+    readonly text1: string | null;
     readonly text10: string | null;
     readonly text11: string | null;
-    readonly text12: string | null;
     readonly text13: string | null;
     readonly text14: string | null;
     readonly text15: string | null;
     readonly text16: string | null;
     readonly text17: string | null;
+    readonly text2: string | null;
+    readonly text7: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
-    readonly text9: string | null;
+    readonly text12: string | null;
     readonly version: number | null;
     readonly text3: string | null;
-    readonly text5: string | null;
+    readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
@@ -1131,8 +1153,8 @@ export type CollectingEventAuthorization = {
 export type CollectingTrip = {
   readonly tableName: 'CollectingTrip';
   readonly fields: {
-    readonly text1: string | null;
     readonly cruise: string | null;
+    readonly text2: string | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
     readonly date2: string | null;
@@ -1141,7 +1163,7 @@ export type CollectingTrip = {
     readonly endDatePrecision: number | null;
     readonly endDateVerbatim: string | null;
     readonly endTime: number | null;
-    readonly text2: string | null;
+    readonly expedition: string | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly remarks: string | null;
@@ -1150,7 +1172,6 @@ export type CollectingTrip = {
     readonly startDatePrecision: number | null;
     readonly startDateVerbatim: string | null;
     readonly startTime: number | null;
-    readonly expedition: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
     readonly text5: string | null;
@@ -1162,6 +1183,7 @@ export type CollectingTrip = {
     readonly timestampModified: string | null;
     readonly collectingTripName: string | null;
     readonly version: number | null;
+    readonly text1: string | null;
     readonly vessel: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
@@ -1315,6 +1337,7 @@ export type Collection = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly adminContact: Agent | null;
+    readonly collectionObjectType: CollectionObjectType | null;
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly institutionNetwork: Institution | null;
@@ -1336,16 +1359,16 @@ export type Collection = {
 export type CollectionObject = {
   readonly tableName: 'CollectionObject';
   readonly fields: {
-    readonly countAmt: number | null;
     readonly actualTotalCountAmt: number | null;
-    readonly altCatalogNumber: string | null;
     readonly availability: string | null;
-    readonly text1: string | null;
     readonly catalogNumber: string | null;
     readonly catalogedDate: string | null;
     readonly catalogedDatePrecision: number | null;
     readonly catalogedDateVerbatim: string | null;
     readonly collectionMemberId: number;
+    readonly countAmt: number | null;
+    readonly reservedText: string | null;
+    readonly timestampModified: string | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
     readonly deaccessioned: boolean | null;
@@ -1357,9 +1380,9 @@ export type CollectionObject = {
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
+    readonly text2: string | null;
     readonly inventoryDate: string | null;
     readonly inventoryDatePrecision: number | null;
-    readonly timestampModified: string | null;
     readonly modifier: string | null;
     readonly name: string | null;
     readonly notifications: string | null;
@@ -1368,18 +1391,17 @@ export type CollectionObject = {
     readonly number2: number | null;
     readonly objectCondition: string | null;
     readonly ocr: string | null;
-    readonly fieldNumber: string | null;
+    readonly altCatalogNumber: string | null;
     readonly projectNumber: string | null;
     readonly remarks: string | null;
     readonly reservedInteger3: number | null;
     readonly reservedInteger4: number | null;
-    readonly reservedText: string | null;
     readonly reservedText2: string | null;
     readonly reservedText3: string | null;
     readonly restrictions: string | null;
     readonly sgrStatus: number | null;
+    readonly text1: string | null;
     readonly description: string | null;
-    readonly text2: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
     readonly text5: string | null;
@@ -1392,6 +1414,7 @@ export type CollectionObject = {
     readonly uniqueIdentifier: string | null;
     readonly version: number | null;
     readonly visibility: number | null;
+    readonly fieldNumber: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
@@ -1407,20 +1430,22 @@ export type CollectionObject = {
     readonly agent1: Agent | null;
     readonly appraisal: Appraisal | null;
     readonly cataloger: Agent | null;
-    readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
+    readonly collectionObjectType: CollectionObjectType;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
     readonly currentDetermination: Determination | null;
+    readonly modifiedByAgent: Agent | null;
     readonly embargoAuthority: Agent | null;
+    readonly collectingEvent: CollectingEvent | null;
     readonly fieldNotebookPage: FieldNotebookPage | null;
     readonly inventorizedBy: Agent | null;
-    readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
+    readonly cojo: RA<CollectionObjectGroupJoin>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
@@ -1482,7 +1507,6 @@ export type CollectionObjectAttribute = {
   readonly fields: {
     readonly bottomDistance: number | null;
     readonly collectionMemberId: number;
-    readonly text8: string | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
     readonly direction: string | null;
@@ -1497,12 +1521,11 @@ export type CollectionObjectAttribute = {
     readonly integer7: number | null;
     readonly integer8: number | null;
     readonly integer9: number | null;
-    readonly text5: string | null;
+    readonly number12: number | null;
+    readonly number13: number | null;
     readonly number1: number | null;
     readonly number10: number | null;
     readonly number11: number | null;
-    readonly number12: number | null;
-    readonly number13: number | null;
     readonly number14: number | null;
     readonly number15: number | null;
     readonly number16: number | null;
@@ -1540,17 +1563,14 @@ export type CollectionObjectAttribute = {
     readonly number7: number | null;
     readonly number8: number | null;
     readonly number9: number | null;
-    readonly positionState: string | null;
-    readonly remarks: string | null;
-    readonly text2: string | null;
-    readonly text3: string | null;
-    readonly text6: string | null;
-    readonly text1: string | null;
-    readonly text10: string | null;
-    readonly text11: string | null;
-    readonly text12: string | null;
     readonly text13: string | null;
     readonly text14: string | null;
+    readonly text1: string | null;
+    readonly positionState: string | null;
+    readonly text10: string | null;
+    readonly remarks: string | null;
+    readonly text8: string | null;
+    readonly text11: string | null;
     readonly text15: string | null;
     readonly text16: string | null;
     readonly text17: string | null;
@@ -1566,6 +1586,7 @@ export type CollectionObjectAttribute = {
     readonly text27: string | null;
     readonly text28: string | null;
     readonly text29: string | null;
+    readonly text3: string | null;
     readonly text30: string | null;
     readonly text31: string | null;
     readonly text32: string | null;
@@ -1576,14 +1597,18 @@ export type CollectionObjectAttribute = {
     readonly text37: string | null;
     readonly text38: string | null;
     readonly text39: string | null;
+    readonly text4: string | null;
     readonly text40: string | null;
+    readonly text5: string | null;
+    readonly text6: string | null;
+    readonly text7: string | null;
     readonly text9: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
+    readonly text12: string | null;
     readonly topDistance: number | null;
-    readonly text7: string | null;
     readonly version: number | null;
-    readonly text4: string | null;
+    readonly text2: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo10: boolean | null;
     readonly yesNo11: boolean | null;
@@ -1821,7 +1846,7 @@ export type CollectionObjectProperty = {
 export type CollectionRelType = {
   readonly tableName: 'CollectionRelType';
   readonly fields: {
-    readonly name: string | null;
+    readonly name: string;
     readonly remarks: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
@@ -1848,7 +1873,7 @@ export type CollectionRelationship = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
-    readonly collectionRelType: CollectionRelType | null;
+    readonly collectionRelType: CollectionRelType;
     readonly createdByAgent: Agent | null;
     readonly leftSide: CollectionObject;
     readonly modifiedByAgent: Agent | null;
@@ -2145,12 +2170,11 @@ export type DNAPrimer = {
 export type DNASequence = {
   readonly tableName: 'DNASequence';
   readonly fields: {
-    readonly genbankAccessionNumber: string | null;
     readonly ambiguousResidues: number | null;
+    readonly boldBarcodeId: string | null;
     readonly boldLastUpdateDate: string | null;
     readonly boldSampleId: string | null;
     readonly boldTranslationMatrix: string | null;
-    readonly boldBarcodeId: string | null;
     readonly collectionMemberId: number;
     readonly compA: number | null;
     readonly compC: number | null;
@@ -2159,6 +2183,8 @@ export type DNASequence = {
     readonly extractionDate: string | null;
     readonly extractionDatePrecision: number | null;
     readonly text2: string | null;
+    readonly genbankAccessionNumber: string | null;
+    readonly text1: string | null;
     readonly geneSequence: string | null;
     readonly moleculeType: string | null;
     readonly number1: number | null;
@@ -2168,7 +2194,6 @@ export type DNASequence = {
     readonly sequenceDate: string | null;
     readonly sequenceDatePrecision: number | null;
     readonly targetMarker: string | null;
-    readonly text1: string | null;
     readonly text3: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
@@ -2354,6 +2379,8 @@ export type Deaccession = {
     readonly text4: string | null;
     readonly text5: string | null;
     readonly timestampCreated: string;
+    readonly totalItems: number | null;
+    readonly totalPreps: number | null;
     readonly type: string | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
@@ -2361,8 +2388,6 @@ export type Deaccession = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
-    readonly totalPreps: number | null;
-    readonly totalItems: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -2430,6 +2455,7 @@ export type Determination = {
     readonly determinedDatePrecision: number | null;
     readonly featureOrBasis: string | null;
     readonly guid: string | null;
+    readonly yesNo1: boolean | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
@@ -2458,7 +2484,6 @@ export type Determination = {
     readonly typeStatusName: string | null;
     readonly varQualifier: string | null;
     readonly version: number | null;
-    readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
@@ -2572,12 +2597,12 @@ export type Disposal = {
     readonly text1: string | null;
     readonly text2: string | null;
     readonly timestampCreated: string;
+    readonly totalItems: number | null;
+    readonly totalPreps: number | null;
     readonly type: string | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
-    readonly totalPreps: number | null;
-    readonly totalItems: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -2775,11 +2800,11 @@ export type ExchangeOut = {
     readonly text2: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
+    readonly totalItems: number | null;
+    readonly totalPreps: number | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
-    readonly totalPreps: number | null;
-    readonly totalItems: number | null;
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
@@ -3067,6 +3092,7 @@ export type GeoCoordDetail = {
     readonly integer3: number | null;
     readonly integer4: number | null;
     readonly integer5: number | null;
+    readonly maxUncertaintyEst: number | null;
     readonly maxUncertaintyEstUnit: string | null;
     readonly namedPlaceExtent: number | null;
     readonly noGeoRefBecause: string | null;
@@ -3085,7 +3111,6 @@ export type GeoCoordDetail = {
     readonly text5: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
-    readonly maxUncertaintyEst: number | null;
     readonly uncertaintyPolygon: string | null;
     readonly validation: string | null;
     readonly version: number | null;
@@ -3162,14 +3187,11 @@ export type GeographyTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
-    readonly treeDefItems: RA<GeographyTreeDefItem>;
-    readonly treeEntries: RA<Geography>;
-  };
+  readonly toManyDependent: { readonly treeDefItems: RA<GeographyTreeDefItem> };
+  readonly toManyIndependent: { readonly treeEntries: RA<Geography> };
 };
 export type GeographyTreeDefItem = {
   readonly tableName: 'GeographyTreeDefItem';
@@ -3253,14 +3275,13 @@ export type GeologicTimePeriodTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
+  readonly toManyDependent: {
     readonly treeDefItems: RA<GeologicTimePeriodTreeDefItem>;
-    readonly treeEntries: RA<GeologicTimePeriod>;
   };
+  readonly toManyIndependent: { readonly treeEntries: RA<GeologicTimePeriod> };
 };
 export type GeologicTimePeriodTreeDefItem = {
   readonly tableName: 'GeologicTimePeriodTreeDefItem';
@@ -3313,18 +3334,18 @@ export type Gift = {
     readonly srcTaxonomy: string | null;
     readonly specialConditions: string | null;
     readonly status: string | null;
-    readonly text1: string | null;
     readonly text2: string | null;
+    readonly text1: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
     readonly text5: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
+    readonly totalItems: number | null;
+    readonly totalPreps: number | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
-    readonly totalPreps: number | null;
-    readonly totalItems: number | null;
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
@@ -3638,14 +3659,13 @@ export type LithoStratTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
+  readonly toManyDependent: {
     readonly treeDefItems: RA<LithoStratTreeDefItem>;
-    readonly treeEntries: RA<LithoStrat>;
   };
+  readonly toManyIndependent: { readonly treeEntries: RA<LithoStrat> };
 };
 export type LithoStratTreeDefItem = {
   readonly tableName: 'LithoStratTreeDefItem';
@@ -3680,11 +3700,10 @@ export type Loan = {
   readonly tableName: 'Loan';
   readonly fields: {
     readonly contents: string | null;
+    readonly currentDueDate: string | null;
     readonly dateClosed: string | null;
     readonly dateReceived: string | null;
-    readonly currentDueDate: string | null;
     readonly yesNo1: boolean | null;
-    readonly remarks: string | null;
     readonly text2: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
@@ -3699,6 +3718,7 @@ export type Loan = {
     readonly overdueNotiSentDate: string | null;
     readonly purposeOfLoan: string | null;
     readonly receivedComments: string | null;
+    readonly remarks: string | null;
     readonly resolvedItems: number | null;
     readonly resolvedPreps: number | null;
     readonly srcGeography: string | null;
@@ -3833,7 +3853,6 @@ export type Locality = {
   readonly fields: {
     readonly datum: string | null;
     readonly elevationAccuracy: number | null;
-    readonly elevationMethod: string | null;
     readonly gml: string | null;
     readonly guid: string | null;
     readonly latLongMethod: string | null;
@@ -3871,6 +3890,7 @@ export type Locality = {
     readonly verbatimLongitude: string | null;
     readonly version: number | null;
     readonly visibility: number | null;
+    readonly elevationMethod: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
@@ -3968,6 +3988,7 @@ export type LocalityDetail = {
     readonly startDepth: number | null;
     readonly startDepthUnit: string | null;
     readonly startDepthVerbatim: string | null;
+    readonly text1: string | null;
     readonly text2: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
@@ -3987,7 +4008,6 @@ export type LocalityDetail = {
     readonly utmZone: number | null;
     readonly version: number | null;
     readonly waterBody: string | null;
-    readonly text1: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
@@ -4025,31 +4045,23 @@ export type LocalityNameAlias = {
 export type MaterialSample = {
   readonly tableName: 'MaterialSample';
   readonly fields: {
-    readonly collectionMemberId: number;
-    readonly extractionDate: string | null;
-    readonly GGBN_absorbanceRatioMethod: string | null;
     readonly GGBN_absorbanceRatio260_230: number | null;
     readonly GGBN_absorbanceRatio260_280: number | null;
+    readonly GGBN_absorbanceRatioMethod: string | null;
+    readonly collectionMemberId: number;
     readonly GGBN_concentration: number | null;
     readonly GGBN_concentrationUnit: string | null;
-    readonly GGBN_materialSampleType: string | null;
+    readonly extractionDate: string | null;
+    readonly guid: string | null;
+    readonly integer1: number | null;
+    readonly integer2: number | null;
     readonly GGBN_medium: string | null;
+    readonly number1: number | null;
+    readonly number2: number | null;
     readonly GGBN_purificationMethod: string | null;
     readonly GGBN_quality: string | null;
     readonly GGBN_qualityCheckDate: string | null;
     readonly GGBN_qualityRemarks: string | null;
-    readonly GGBN_sampleDesignation: string | null;
-    readonly GGBN_sampleSize: number | null;
-    readonly GGBN_volume: number | null;
-    readonly GGBN_volumeUnit: string | null;
-    readonly GGBN_weight: number | null;
-    readonly GGBN_weightMethod: string | null;
-    readonly GGBN_weightUnit: string | null;
-    readonly guid: string | null;
-    readonly integer1: number | null;
-    readonly integer2: number | null;
-    readonly number1: number | null;
-    readonly number2: number | null;
     readonly remarks: string | null;
     readonly reservedInteger3: number | null;
     readonly reservedInteger4: number | null;
@@ -4057,6 +4069,9 @@ export type MaterialSample = {
     readonly reservedNumber4: number | null;
     readonly reservedText3: string | null;
     readonly reservedText4: string | null;
+    readonly GGBN_sampleDesignation: string | null;
+    readonly GGBN_sampleSize: number | null;
+    readonly GGBN_materialSampleType: string | null;
     readonly sraBioProjectID: string | null;
     readonly sraBioSampleID: string | null;
     readonly sraProjectID: string | null;
@@ -4066,6 +4081,11 @@ export type MaterialSample = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
+    readonly GGBN_volume: number | null;
+    readonly GGBN_volumeUnit: string | null;
+    readonly GGBN_weight: number | null;
+    readonly GGBN_weightMethod: string | null;
+    readonly GGBN_weightUnit: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
@@ -4337,7 +4357,6 @@ export type PrepType = {
 export type Preparation = {
   readonly tableName: 'Preparation';
   readonly fields: {
-    readonly text2: string | null;
     readonly actualCountAmt: number | null;
     readonly barCode: string | null;
     readonly collectionMemberId: number;
@@ -4364,6 +4383,7 @@ export type Preparation = {
     readonly reservedInteger4: number | null;
     readonly sampleNumber: string | null;
     readonly status: string | null;
+    readonly storageLocation: string | null;
     readonly text10: string | null;
     readonly text11: string | null;
     readonly text12: string | null;
@@ -4377,10 +4397,10 @@ export type Preparation = {
     readonly text9: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
-    readonly storageLocation: string | null;
     readonly text1: string | null;
     readonly yesNo1: boolean | null;
     readonly version: number | null;
+    readonly text2: string | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
@@ -4757,7 +4777,10 @@ export type RecordSetItem = {
 export type ReferenceWork = {
   readonly tableName: 'ReferenceWork';
   readonly fields: {
+    readonly text1: string | null;
+    readonly workDate: string | null;
     readonly doi: string | null;
+    readonly text2: string | null;
     readonly guid: string | null;
     readonly isPublished: boolean | null;
     readonly isbn: string | null;
@@ -4768,8 +4791,6 @@ export type ReferenceWork = {
     readonly placeOfPublication: string | null;
     readonly publisher: string | null;
     readonly remarks: string | null;
-    readonly text1: string | null;
-    readonly text2: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly title: string;
@@ -4778,7 +4799,6 @@ export type ReferenceWork = {
     readonly url: string | null;
     readonly version: number | null;
     readonly volume: string | null;
-    readonly workDate: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
@@ -4876,9 +4896,9 @@ export type RepositoryAgreementAttachment = {
 export type Shipment = {
   readonly tableName: 'Shipment';
   readonly fields: {
+    readonly numberOfPackages: number | null;
     readonly insuredForAmount: string | null;
     readonly shipmentMethod: string | null;
-    readonly numberOfPackages: number | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly remarks: string | null;
@@ -5549,14 +5569,11 @@ export type StorageTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly institution: Institution;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly institutions: RA<Institution>;
-    readonly treeDefItems: RA<StorageTreeDefItem>;
-    readonly treeEntries: RA<Storage>;
-  };
+  readonly toManyDependent: { readonly treeDefItems: RA<StorageTreeDefItem> };
+  readonly toManyIndependent: { readonly treeEntries: RA<Storage> };
 };
 export type StorageTreeDefItem = {
   readonly tableName: 'StorageTreeDefItem';
@@ -5591,12 +5608,10 @@ export type Taxon = {
   readonly tableName: 'Taxon';
   readonly fields: {
     readonly author: string | null;
-    readonly text6: string | null;
     readonly citesStatus: string | null;
     readonly colStatus: string | null;
     readonly commonName: string | null;
     readonly cultivarName: string | null;
-    readonly environmentalProtectionStatus: string | null;
     readonly esaStatus: string | null;
     readonly fullName: string | null;
     readonly groupNumber: string | null;
@@ -5613,24 +5628,20 @@ export type Taxon = {
     readonly labelFormat: string | null;
     readonly lsid: string | null;
     readonly name: string;
-    readonly text4: string | null;
-    readonly text3: string | null;
-    readonly text5: string | null;
     readonly ncbiTaxonNumber: string | null;
     readonly nodeNumber: number | null;
-    readonly text1: string | null;
-    readonly text2: string | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly number3: number | null;
     readonly number4: number | null;
     readonly number5: number | null;
+    readonly environmentalProtectionStatus: string | null;
     readonly rankId: number;
-    readonly text7: string | null;
     readonly remarks: string | null;
     readonly source: string | null;
-    readonly text8: string | null;
     readonly taxonomicSerialNumber: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
     readonly text10: string | null;
     readonly text11: string | null;
     readonly text12: string | null;
@@ -5642,6 +5653,12 @@ export type Taxon = {
     readonly text18: string | null;
     readonly text19: string | null;
     readonly text20: string | null;
+    readonly text3: string | null;
+    readonly text4: string | null;
+    readonly text5: string | null;
+    readonly text6: string | null;
+    readonly text7: string | null;
+    readonly text8: string | null;
     readonly text9: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
@@ -5941,14 +5958,11 @@ export type TaxonTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
-    readonly discipline: Discipline | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly treeDefItems: RA<TaxonTreeDefItem>;
-    readonly treeEntries: RA<Taxon>;
-  };
+  readonly toManyDependent: { readonly treeDefItems: RA<TaxonTreeDefItem> };
+  readonly toManyIndependent: { readonly treeEntries: RA<Taxon> };
 };
 export type TaxonTreeDefItem = {
   readonly tableName: 'TaxonTreeDefItem';
@@ -6236,4 +6250,309 @@ export type WorkbenchTemplateMappingItem = {
   readonly toManyIndependent: {
     readonly workbenchDataItems: RA<WorkbenchDataItem>;
   };
+};
+export type Spuserexternalid = {
+  readonly tableName: 'Spuserexternalid';
+  readonly fields: {
+    readonly enabled: boolean;
+    readonly idtoken: string | null;
+    readonly provider: string;
+    readonly providerid: string;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly specifyuser: SpecifyUser };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Spattachmentdataset = {
+  readonly tableName: 'Spattachmentdataset';
+  readonly fields: {
+    readonly data: string | null;
+    readonly importedfilename: string | null;
+    readonly name: string;
+    readonly remarks: string | null;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly uploadplan: string | null;
+    readonly uploadresult: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly createdbyagent: Agent | null;
+    readonly modifiedbyagent: Agent | null;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type UniquenessRule = {
+  readonly tableName: 'UniquenessRule';
+  readonly fields: {
+    readonly isdatabaseconstraint: boolean;
+    readonly modelname: string;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly discipline: Discipline | null };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type UniquenessRuleField = {
+  readonly tableName: 'UniquenessRuleField';
+  readonly fields: { readonly fieldpath: string; readonly isscope: boolean };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly uniquenessrule: UniquenessRule };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Message = {
+  readonly tableName: 'Message';
+  readonly fields: {
+    readonly content: string | null;
+    readonly read: boolean;
+    readonly timestampcreated: string;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly user: SpecifyUser };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Spmerging = {
+  readonly tableName: 'Spmerging';
+  readonly fields: {
+    readonly name: string;
+    readonly newrecorddata: string | null;
+    readonly newrecordid: number;
+    readonly oldrecordids: string | null;
+    readonly response: string | null;
+    readonly status: string;
+    readonly table: string;
+    readonly taskid: string;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly createdbyagent: Agent | null;
+    readonly modifiedbyagent: Agent | null;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type LocalityUpdate = {
+  readonly tableName: 'LocalityUpdate';
+  readonly fields: {
+    readonly status: string;
+    readonly taskid: string;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly createdbyagent: Agent | null;
+    readonly modifiedbyagent: Agent | null;
+    readonly recordset: RecordSet | null;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type LocalityUpdateRowResult = {
+  readonly tableName: 'LocalityUpdateRowResult';
+  readonly fields: { readonly result: string; readonly rownumber: number };
+  readonly toOneDependent: { readonly localityupdate: LocalityUpdate | null };
+  readonly toOneIndependent: RR<never, never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type UserPolicy = {
+  readonly tableName: 'UserPolicy';
+  readonly fields: { readonly action: string; readonly resource: string };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Role = {
+  readonly tableName: 'Role';
+  readonly fields: {
+    readonly description: string | null;
+    readonly name: string;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly collection: Collection | null };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type LibraryRole = {
+  readonly tableName: 'LibraryRole';
+  readonly fields: {
+    readonly description: string | null;
+    readonly name: string;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: RR<never, never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type UserRole = {
+  readonly tableName: 'UserRole';
+  readonly fields: {};
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly role: Role;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type RolePolicy = {
+  readonly tableName: 'RolePolicy';
+  readonly fields: { readonly action: string; readonly resource: string };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly role: Role };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type LibraryRolePolicy = {
+  readonly tableName: 'LibraryRolePolicy';
+  readonly fields: { readonly action: string; readonly resource: string };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: { readonly role: LibraryRole };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Spdataset = {
+  readonly tableName: 'Spdataset';
+  readonly fields: {
+    readonly columns: string;
+    readonly data: string | null;
+    readonly importedfilename: string | null;
+    readonly name: string;
+    readonly remarks: string | null;
+    readonly rowresults: string | null;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly uploadplan: string | null;
+    readonly uploadresult: string | null;
+    readonly visualorder: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly createdbyagent: Agent | null;
+    readonly modifiedbyagent: Agent | null;
+    readonly specifyuser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectType = {
+  readonly tableName: 'CollectionObjectType';
+  readonly fields: {
+    readonly name: string;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly version: number | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+    readonly taxonTreeDef: TaxonTreeDef;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectGroup = {
+  readonly tableName: 'CollectionObjectGroup';
+  readonly fields: {
+    readonly decimal1: number | null;
+    readonly decimal2: number | null;
+    readonly decimal3: number | null;
+    readonly description: string | null;
+    readonly guid: string | null;
+    readonly igsn: string | null;
+    readonly integer1: number | null;
+    readonly integer2: number | null;
+    readonly integer3: number | null;
+    readonly name: string;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly version: number | null;
+    readonly yesno1: boolean | null;
+    readonly yesno2: boolean | null;
+    readonly yesno3: boolean | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly cogtype: CollectionObjectGroupType;
+    readonly collection: Collection | null;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toManyDependent: {
+    readonly cojo: RA<CollectionObjectGroupJoin>;
+    readonly parentcojos: RA<CollectionObjectGroupJoin>;
+  };
+  readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectGroupJoin = {
+  readonly tableName: 'CollectionObjectGroupJoin';
+  readonly fields: {
+    readonly integer1: number | null;
+    readonly integer2: number | null;
+    readonly integer3: number | null;
+    readonly isprimary: boolean;
+    readonly issubstrate: boolean;
+    readonly precedence: number;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly version: number | null;
+    readonly yesno1: boolean | null;
+    readonly yesno2: boolean | null;
+    readonly yesno3: boolean | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly childco: CollectionObject | null;
+    readonly childcog: CollectionObjectGroup | null;
+    readonly parentcog: CollectionObjectGroup;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectGroupType = {
+  readonly tableName: 'CollectionObjectGroupType';
+  readonly fields: {
+    readonly name: string;
+    readonly timestampcreated: string;
+    readonly timestampmodified: string | null;
+    readonly type: string;
+    readonly version: number | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly collection: Collection | null;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
