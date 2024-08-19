@@ -87,7 +87,9 @@ const checkRegistry = async (): Promise<void> =>
       ).then((policies) =>
         sortPolicies(policies) === sortPolicies(operationPolicies)
           ? undefined
-          : error('Front-end has outdated list of operation policies')
+          : error(
+              'Front-end list of operation policies is out of date. To resolve this error, please update "operationPolicies" in specifyweb/frontend/js_src/lib/components/Permissions/definitions.ts based on the response from the http://localhost/permissions/registry/ endpoint'
+            )
       );
 
 export type PermissionsQueryItem = {

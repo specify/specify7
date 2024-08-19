@@ -413,12 +413,14 @@ const subViewSpec = (
         syncer(
           (raw: string) => {
             const cellName = cell.rest.node.attributes.name;
-            const cellRelationship = table?.fields
-              .filter((field) => field.isRelationship)
-              .find((table) => table.name === cellName) as
-              | Relationship
-              | undefined;
-            const cellRelatedTableName = cellRelationship?.relatedTable.name;
+            const cellRelationship =
+              typeof cellName === 'string'
+                ? syncers.field(table?.name).serializer(cellName)?.at(-1)
+                : undefined;
+            const cellRelatedTableName =
+              cellRelationship?.isRelationship === true
+                ? cellRelationship.relatedTable.name
+                : undefined;
             const parsed = toLargeSortConfig(raw);
             const fieldNames = syncers
               .field(cellRelatedTableName)
@@ -781,11 +783,8 @@ const textSpec = f.store(() =>
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
-  {
-    rawType,
-  }: {
-    readonly rawType: string;
-  }
+  _: unknown,
+  rawType: string
 ) =>
   createXmlSpec({
     rows: pipe(
