@@ -132,10 +132,6 @@ function TableHeader({
   );
 }
 
-type DataSetFilter = {
-  readonly with_plan: number;
-  readonly isupdate: number
-}
 
 type WB_VARIANT = keyof Omit<typeof datasetVariants, "bulkAttachment">;
 

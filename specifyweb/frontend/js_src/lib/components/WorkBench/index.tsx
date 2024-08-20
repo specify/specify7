@@ -16,14 +16,14 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbView } from './WbView';
 
-export function WorkBench(): JSX.Element | undefined {
+export function WorkBench(): JSX.Element {
   const { id } = useParams();
   const datasetId = f.parseInt(id);
 
   const [dataset, setDataset] = useDataset(datasetId);
   return datasetId === undefined ?
    <NotFoundView/> : 
-   dataset === undefined ? undefined : <WorkBenchSafe getSetDataset={[dataset, setDataset]}/>;
+   dataset === undefined ? <LoadingScreen/> : <WorkBenchSafe getSetDataset={[dataset, setDataset]}/>;
 }
 
 export function WorkBenchSafe({getSetDataset}: {readonly getSetDataset: GetSet<Dataset>}): JSX.Element {

@@ -4,13 +4,13 @@ import { isTreeTable } from "../InitialContext/treeRanks"
 import { MappingPath } from "../WbPlanView/Mapper"
 import { getNumberFromToManyIndex, relationshipIsToMany } from "../WbPlanView/mappingHelpers"
 
-const NULL_RECORD = 'null_record';
+export const BATCH_EDIT_NULL_RECORD = "null_record";
 
 // The key in the last column
-export const BATCH_EDIT_KEY =  'batch_edit';
+export const BATCH_EDIT_KEY =  "batch_edit"
 
 type BatchEditRecord = {
-    readonly id: typeof NULL_RECORD | number | undefined,
+    readonly id: typeof BATCH_EDIT_NULL_RECORD | number | undefined,
     readonly ordernumber: number | undefined,
     readonly version: number | undefined
 }
@@ -23,7 +23,7 @@ export type BatchEditPack = {
 
 export const isBatchEditNullRecord = (batchEditPack: BatchEditPack | undefined, currentTable: SpecifyTable, mappingPath: MappingPath): boolean => {
     if (batchEditPack == undefined) return false;
-    if (mappingPath.length <= 1) return batchEditPack?.self?.id === NULL_RECORD;
+    if (mappingPath.length <= 1) return batchEditPack?.self?.id === BATCH_EDIT_NULL_RECORD;
     const [node, ...rest] = mappingPath;
     if (isTreeTable(currentTable.name)) return false;
     const relationship = defined(currentTable.getRelationship(node));
