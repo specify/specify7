@@ -25,7 +25,7 @@ export const batchEditText = createDictionary({
     errorInQuery: {
         'en-us': "Following errors were found in the query"
     },
-    createDataSetInstructions: {
+    createUpdateDataSetInstructions: {
         'en-us': "Use the query builder to make a new batch edit dataset"
     }
 } as const)

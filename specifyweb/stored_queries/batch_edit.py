@@ -173,9 +173,11 @@ class BatchEditPack(NamedTuple):
             return False
         return isinstance(join_path[-2], TreeRankQuery)
 
+
 # These constants are purely for memory optimization, no code depends and/or cares if this is constant.
 EMPTY_FIELD = BatchEditFieldPack()
 EMPTY_PACK = BatchEditPack(id=EMPTY_FIELD, order=EMPTY_FIELD, version=EMPTY_FIELD)
+
 
 # FUTURE: this already supports nested-to-many for most part
 # wb plan, but contains query fields along with indexes to look-up in a result row.
@@ -189,38 +191,37 @@ class RowPlanMap(NamedTuple):
     has_filters: bool = False
 
     @staticmethod
-    def _merge(has_filters: bool):
-        def _merger(
-            current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
-        ) -> Dict[str, "RowPlanMap"]:
-            key, other_plan = other
-            return {
-                **current,
-                # merge if other is also found in ours
-                key: (
+    def _merge(
+        current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
+    ) -> Dict[str, "RowPlanMap"]:
+        key, other_plan = other
+        return {
+            **current,
+            # merge if other is also found in ours
+            key: (
+                other_plan
+                if key not in current
+                else current[key].merge(
                     other_plan
-                    if key not in current
-                    else current[key].merge(
-                        other_plan, has_filter_on_parent=has_filters
-                    )
-                ),
-            }
+                )
+            ),
+        }
 
-        return _merger
 
     # takes two row plans, combines them together. Adjusts has_filters.
     def merge(
-        self: "RowPlanMap", other: "RowPlanMap", has_filter_on_parent=False
+        self: "RowPlanMap", other: "RowPlanMap"
     ) -> "RowPlanMap":
         new_columns = [*self.columns, *other.columns]
         batch_edit_pack = other.batch_edit_pack or self.batch_edit_pack
-        has_self_filters = has_filter_on_parent or self.has_filters or other.has_filters
+        has_self_filters = self.has_filters or other.has_filters
         to_one = reduce(
-            RowPlanMap._merge(has_self_filters), other.to_one.items(), self.to_one
+            RowPlanMap._merge, other.to_one.items(), self.to_one
         )
-        to_many = reduce(RowPlanMap._merge(False), other.to_many.items(), self.to_many)
+        to_many = reduce(RowPlanMap._merge, other.to_many.items(), self.to_many)
+        any_filter = any(node.has_filters for node in [*to_one.values(), *to_many.values()])
         return RowPlanMap(
-            batch_edit_pack, new_columns, to_one, to_many, has_filters=has_self_filters
+            batch_edit_pack, new_columns, to_one, to_many, has_filters=has_self_filters or any_filter
         )
 
     @staticmethod
@@ -366,7 +367,7 @@ class RowPlanMap(NamedTuple):
             for field in fields
         ]
         return reduce(
-            lambda current, other: current.merge(other, has_filter_on_parent=False),
+            lambda current, other: current.merge(other),
             iter,
             RowPlanMap(batch_edit_pack=EMPTY_PACK),
         )

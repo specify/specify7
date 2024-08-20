@@ -391,10 +391,11 @@ def rollback_batch_edit(parent: Spdataset, collection, agent, progress: Optional
     
     unupload_dataset(parent, agent, progress)
     
-    parent.rowresults = json.dumps([r.to_json() for r in results])
-    parent.save(update_fields=['rowresults'])
+    # parent.rowresults = json.dumps([r.to_json() for r in results])
+    # parent.save(update_fields=['rowresults'])
 
-    
+    parent.rowresults = None
+    parent.save(update_fields=['rowresults'])
 
 
         

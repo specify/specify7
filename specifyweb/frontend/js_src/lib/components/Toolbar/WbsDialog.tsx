@@ -299,7 +299,7 @@ export const datasetVariants = {
     // Cannot import via the header
     canImport: ()=>false,
     header: (count: number)=>commonText.countLine({resource: wbText.dataSets({variant: batchEditText.batchEdit()}), count}),
-    onEmpty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create') ? batchEditText.createDataSetInstructions() : ''}`,
+    onEmpty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
     canEdit: ()=>hasPermission('/workbench/dataset', 'update'),
     route: baseWbVariant.route,
     metaRoute: baseWbVariant.metaRoute

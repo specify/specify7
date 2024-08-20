@@ -1561,9 +1561,6 @@ export const wbText = createDictionary({
   deletedCells: {
     'en-us': "Deleted Cells"
   },
-  updateResults: {
-    'en-us': 'Update Results'
-  },
   affectedResults: {
     'en-us': "Records affected"
   },

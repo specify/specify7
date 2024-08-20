@@ -72,8 +72,7 @@ class MainSetupTearDown:
             isloggedin=False,
             isloggedinreport=False,
             name="testuser",
-            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C",
-        )  # testuser
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
         UserPolicy.objects.create(
             collection=None,
@@ -732,8 +731,7 @@ class UserApiTests(ApiTests):
             isloggedin=False,
             isloggedinreport=False,
             name="testuser2",
-            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C",
-        )  # testuser
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
         c = Client()
         c.force_login(self.specifyuser)
