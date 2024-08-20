@@ -19,9 +19,27 @@ import specifyweb.specify.models as models
 from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
+from specifyweb.stored_queries.tests.static.co_query_row_plan import row_plan_map
+
 
 def apply_visual_order(headers, order):
     return [headers[col] for col in order]
+
+
+def props_builder(self, session_maker):
+    def _builder(query_fields, base_table):
+        return BatchEditProps(
+            collection=self.collection,
+            user=self.specifyuser,
+            contexttableid=datamodel.get_table_strict(base_table).tableId,
+            fields=query_fields,
+            session_maker=session_maker,
+            captions=None,
+            limit=None,
+            recordsetid=None,
+        )
+
+    return _builder
 
 
 # NOTES: Yes, it is more convenient to hard code ids (instead of defining variables.).
@@ -52,165 +70,18 @@ class QueryConstructionTests(SQLAlchemySetup):
             collection=self.collection,
         )
 
-        self.build_props = lambda query_fields, base_table: BatchEditProps(
-            collection=self.collection,
-            user=self.specifyuser,
-            contexttableid=datamodel.get_table_strict(base_table).tableId,
-            fields=query_fields,
-            session_maker=QueryConstructionTests.test_session_context,
-            captions=None,
-            limit=None,
-            recordsetid=None,
+        self.build_props = props_builder(
+            self, QueryConstructionTests.test_session_context
         )
 
     def test_query_construction(self):
-        query = json.load(
-            open("specifyweb/stored_queries/tests/static/test_co_query.json")
-        )
+        query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
         visible_fields = [field for field in query_fields if field.display]
         row_plan = RowPlanMap.get_row_plan(visible_fields)
         plan, fields = row_plan.index_plan()
 
-        prev_plan = RowPlanMap(
-            columns=[
-                BatchEditFieldPack(field=None, idx=1, value=None),
-                BatchEditFieldPack(field=None, idx=2, value=None),
-                BatchEditFieldPack(field=None, idx=3, value=None),
-                BatchEditFieldPack(field=None, idx=4, value=None),
-                BatchEditFieldPack(field=None, idx=5, value=None),
-                BatchEditFieldPack(field=None, idx=6, value=None),
-            ],
-            to_one={
-                "cataloger": RowPlanMap(
-                    columns=[
-                        BatchEditFieldPack(field=None, idx=9, value=None),
-                        BatchEditFieldPack(field=None, idx=10, value=None),
-                        BatchEditFieldPack(field=None, idx=11, value=None),
-                    ],
-                    to_one={},
-                    to_many={
-                        "collectors": RowPlanMap(
-                            columns=[
-                                BatchEditFieldPack(field=None, idx=14, value=None),
-                                BatchEditFieldPack(field=None, idx=15, value=None),
-                            ],
-                            to_one={
-                                "collectingevent": RowPlanMap(
-                                    columns=[
-                                        BatchEditFieldPack(
-                                            field=None, idx=19, value=None
-                                        )
-                                    ],
-                                    to_one={},
-                                    to_many={},
-                                    batch_edit_pack=BatchEditPack(
-                                        id=BatchEditFieldPack(
-                                            field=None, idx=20, value=None
-                                        ),
-                                        order=None,
-                                        version=BatchEditFieldPack(
-                                            field=None, idx=21, value=None
-                                        ),
-                                    ),
-                                    has_filters=False,
-                                )
-                            },
-                            to_many={},
-                            batch_edit_pack=BatchEditPack(
-                                id=BatchEditFieldPack(field=None, idx=16, value=None),
-                                order=BatchEditFieldPack(
-                                    field=None, idx=18, value=None
-                                ),
-                                version=BatchEditFieldPack(
-                                    field=None, idx=17, value=None
-                                ),
-                            ),
-                            has_filters=False,
-                        )
-                    },
-                    batch_edit_pack=BatchEditPack(
-                        id=BatchEditFieldPack(field=None, idx=12, value=None),
-                        order=None,
-                        version=BatchEditFieldPack(field=None, idx=13, value=None),
-                    ),
-                    has_filters=False,
-                ),
-                "collectingevent": RowPlanMap(
-                    columns=[],
-                    to_one={
-                        "locality": RowPlanMap(
-                            columns=[
-                                BatchEditFieldPack(field=None, idx=24, value=None),
-                                BatchEditFieldPack(field=None, idx=25, value=None),
-                                BatchEditFieldPack(field=None, idx=26, value=None),
-                                BatchEditFieldPack(field=None, idx=27, value=None),
-                                BatchEditFieldPack(field=None, idx=28, value=None),
-                                BatchEditFieldPack(field=None, idx=29, value=None),
-                                BatchEditFieldPack(field=None, idx=30, value=None),
-                                BatchEditFieldPack(field=None, idx=31, value=None),
-                                BatchEditFieldPack(field=None, idx=32, value=None),
-                            ],
-                            to_one={},
-                            to_many={},
-                            batch_edit_pack=BatchEditPack(
-                                id=BatchEditFieldPack(field=None, idx=33, value=None),
-                                order=None,
-                                version=BatchEditFieldPack(
-                                    field=None, idx=34, value=None
-                                ),
-                            ),
-                            has_filters=False,
-                        )
-                    },
-                    to_many={},
-                    batch_edit_pack=BatchEditPack(
-                        id=BatchEditFieldPack(field=None, idx=22, value=None),
-                        order=None,
-                        version=BatchEditFieldPack(field=None, idx=23, value=None),
-                    ),
-                    has_filters=False,
-                ),
-            },
-            to_many={
-                "determinations": RowPlanMap(
-                    columns=[
-                        BatchEditFieldPack(field=None, idx=35, value=None),
-                        BatchEditFieldPack(field=None, idx=36, value=None),
-                    ],
-                    to_one={},
-                    to_many={},
-                    batch_edit_pack=BatchEditPack(
-                        id=BatchEditFieldPack(field=None, idx=37, value=None),
-                        order=None,
-                        version=BatchEditFieldPack(field=None, idx=38, value=None),
-                    ),
-                    has_filters=False,
-                ),
-                "preparations": RowPlanMap(
-                    columns=[
-                        BatchEditFieldPack(field=None, idx=39, value=None),
-                        BatchEditFieldPack(field=None, idx=40, value=None),
-                    ],
-                    to_one={},
-                    to_many={},
-                    batch_edit_pack=BatchEditPack(
-                        id=BatchEditFieldPack(field=None, idx=41, value=None),
-                        order=None,
-                        version=BatchEditFieldPack(field=None, idx=42, value=None),
-                    ),
-                    has_filters=False,
-                ),
-            },
-            batch_edit_pack=BatchEditPack(
-                id=BatchEditFieldPack(field=None, idx=7, value=None),
-                order=None,
-                version=BatchEditFieldPack(field=None, idx=8, value=None),
-            ),
-            has_filters=False,
-        )
-
-        self.assertEqual(plan, prev_plan)
+        self.assertEqual(plan, row_plan_map)
 
     def test_basic_run(self):
         base_table = "collectionobject"

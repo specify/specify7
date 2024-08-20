@@ -4,7 +4,7 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, cast
+from typing import List, Dict, Literal, Union, Callable, Optional, Sized, Tuple, Any, TypedDict
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
@@ -18,7 +18,7 @@ from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Deleted, RecordResult, Updated, Uploaded, UploadResult, ParseFailures
-from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor, Uploadable
+from .uploadable import Extra, ScopedUploadable, Row, Disambiguation, Auditor, Uploadable, BatchEditJson
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -172,12 +172,12 @@ def create_recordset(ds: Spdataset, name: str):
     return rs
 
 def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
-    extra = json.loads(row[ncols]) if row[ncols] else None
+    extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
-def get_batch_edit_pack_from_row(ncols: int, row: List) -> Optional[Dict[str, Any]]:
-    extra: Optional[Dict[str, Any]] = json.loads(row[ncols]) if row[ncols] else None
-    return extra.get('batch_edit', None) if extra else None
+def get_batch_edit_pack_from_row(ncols: int, row: List) -> Optional[BatchEditJson]:
+    extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
+    return extra.get('batch_edit') if extra is not None else None
 
 def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
     if ds.uploadplan is None:
@@ -205,7 +205,7 @@ def do_upload(
         no_commit: bool=False,
         allow_partial: bool=True,
         progress: Optional[Progress]=None,
-        batch_edit_packs: Optional[List[Optional[Dict[str, Any]]]] = None
+        batch_edit_packs: Optional[List[Optional[BatchEditJson]]] = None
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,

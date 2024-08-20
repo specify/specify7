@@ -19,7 +19,7 @@ from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
     MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
     TreeInfo
-from .uploadable import Row, Disambiguation as DA, Auditor, ScopeGenerator
+from .uploadable import Row, Disambiguation as DA, Auditor, ScopeGenerator, BatchEditJson
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class ScopedTreeRecord(NamedTuple):
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
-    def apply_batch_edit_pack(self, batch_edit_pack: Optional[Dict[str, Any]]) -> "ScopedTreeRecord":
+    def apply_batch_edit_pack(self, batch_edit_pack: Optional[BatchEditJson]) -> "ScopedTreeRecord":
         if batch_edit_pack is None:
             return self
         # batch-edit considers ranks as self-relationships, and are trivially stored in to-one
@@ -186,7 +186,6 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(match_result, {}, {})
 
     def _to_match(self, references=None) -> List[TreeDefItemWithParseResults]:
-        print(references)
         return [
             TreeDefItemWithParseResults(tdi, self.parsedFields[tdi.name])
             for tdi in self.treedefitems

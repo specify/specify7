@@ -246,7 +246,7 @@ def resolve_reference_attributes(fields_to_skip, model, reference_record) -> Dic
 
     all_fields = [
         field.attname for field in model._meta.get_fields(include_hidden=True) 
-        if field.concrete and (field.attname not in fields_to_skip)
+        if field.concrete and (field.attname not in fields_to_skip and field.name not in fields_to_skip)
         ]
 
     clone_attrs = {

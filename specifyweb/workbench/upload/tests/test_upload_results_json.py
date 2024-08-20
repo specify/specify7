@@ -104,7 +104,6 @@ class UploadResultsTests(unittest.TestCase):
             toMany={k: [UploadResult(v, {}, {}) for v in vs] for k, vs in toMany.items()}
         )
         d = uploadResult.to_json()
-        print(d)
         j = json.dumps(d)
         e = json.loads(j)
         validate([e], schema) 

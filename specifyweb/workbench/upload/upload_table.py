@@ -2,7 +2,6 @@ import logging
 from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Literal, Tuple
 
 from django.db import transaction, IntegrityError
-from django.db.models import Model
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
@@ -41,6 +40,7 @@ from .upload_result import (
 )
 from .uploadable import (
     NULL_RECORD,
+    ModelWithTable,
     Row,
     ScopeGenerator,
     Uploadable,
@@ -48,6 +48,8 @@ from .uploadable import (
     BoundUploadable,
     Disambiguation,
     Auditor,
+    BatchEditJson,
+    BatchEditSelf,
 )
 
 
@@ -56,6 +58,7 @@ logger = logging.getLogger(__name__)
 # This doesn't cause race conditions, since the cache itself is local to a dataset.
 # Even if you've another validation on the same thread, this won't cause an issue
 REFERENCE_KEY = object()
+
 
 class UploadTable(NamedTuple):
     name: str
@@ -102,15 +105,26 @@ class UploadTable(NamedTuple):
     def unparse(self) -> Dict:
         return {"baseTableName": self.name, "uploadable": self.to_json()}
 
-def static_adjustments(table: str, wbcols: Dict[str, ColumnOptions], static: Dict[str, Any]) -> Dict[str, Any]:
-    # not sure if this is the right place for this, but it will work for now.
-    if table.lower() == 'agent' and 'agenttype' not in wbcols and 'agenttype' not in static:
-        static = {'agenttype': 1, **static}
-    elif table.lower() == 'Determination' and 'iscurrent' not in wbcols and 'iscurrent' not in static:
-        static = {'iscurrent': True, **static}
+
+def static_adjustments(
+    table: str, wbcols: Dict[str, ExtendedColumnOptions], static: Dict[str, Any]
+) -> Dict[str, Any]:
+    if (
+        table.lower() == "agent"
+        and "agenttype" not in wbcols
+        and "agenttype" not in static
+    ):
+        static = {"agenttype": 1, **static}
+    elif (
+        table.lower() == "determination"
+        and "iscurrent" not in wbcols
+        and "iscurrent" not in static
+    ):
+        static = {"iscurrent": True, **static}
     else:
         static = static
     return static
+
 
 class ScopedUploadTable(NamedTuple):
     name: str
@@ -121,7 +135,7 @@ class ScopedUploadTable(NamedTuple):
     scopingAttrs: Dict[str, int]
     disambiguation: Optional[int]
     to_one_fields: Dict[str, List[str]]  # TODO: Consider making this a payload..
-    match_payload: Optional[Dict[str, Any]]
+    match_payload: Optional[BatchEditSelf]
     strong_ignore: List[str]
 
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
@@ -148,13 +162,11 @@ class ScopedUploadTable(NamedTuple):
         )
 
     def apply_batch_edit_pack(
-        self, batch_edit_pack: Optional[Dict[str, Any]]
+        self, batch_edit_pack: Optional[BatchEditJson]
     ) -> "ScopedUploadable":
-        # Static adjustments cannot happen before this without handling around a dirty prop for it.
-        # Plus, adding static adjustments here make things MUCH simpler when we realize "oh shoot, we need to create a record" bc it was null initially.
         if batch_edit_pack is None:
-            return self._replace(static=static_adjustments(self.name, self.wbcols, self.static))
-        
+            return self
+
         return self._replace(
             match_payload=batch_edit_pack["self"],
             toOne={
@@ -237,7 +249,13 @@ class ScopedUploadTable(NamedTuple):
 
         return BoundUploadTable(
             name=self.name,
-            static=self.static,
+            # Static adjustments should not happen for records selected for batch-edit. Handling it here makes things simple: it'll be even added for records
+            # that we may potentially create.
+            static=(
+                static_adjustments(self.name, self.wbcols, self.static)
+                if self.match_payload is None
+                else self.static
+            ),
             scopingAttrs=self.scopingAttrs,
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
@@ -248,7 +266,7 @@ class ScopedUploadTable(NamedTuple):
             cache=cache,
             to_one_fields=self.to_one_fields,
             match_payload=self.match_payload,
-            strong_ignore=self.strong_ignore
+            strong_ignore=self.strong_ignore,
         )
 
 
@@ -264,7 +282,13 @@ class OneToOneTable(UploadTable):
 
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundOneToOneTable", ParseFailures]:
+    def bind(
+        self,
+        row: Row,
+        uploadingAgentId: int,
+        auditor: Auditor,
+        cache: Optional[Dict] = None,
+    ) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
@@ -279,9 +303,15 @@ class MustMatchTable(UploadTable):
     def to_json(self) -> Dict:
         return {"mustMatchTable": self._to_json()}
 
+
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self,row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None
-             ) -> Union["BoundMustMatchTable", ParseFailures]:
+    def bind(
+        self,
+        row: Row,
+        uploadingAgentId: int,
+        auditor: Auditor,
+        cache: Optional[Dict] = None,
+    ) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
@@ -298,8 +328,10 @@ class BoundUploadTable(NamedTuple):
     auditor: Auditor
     cache: Optional[Dict]
     to_one_fields: Dict[str, List[str]]
-    match_payload: Optional[Dict[str, Any]]
-    strong_ignore: List[str] # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See comment in "test_batch_edit_table.py/test_to_many_match_is_possible"
+    match_payload: Optional[BatchEditSelf]
+    strong_ignore: List[
+        str
+    ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See ctest_to_many_match_is_possibleomment in "test_batch_edit_table.py/test_to_many_match_is_possible"
 
     @property
     def current_id(self):
@@ -323,7 +355,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> Model:
+    def django_model(self) -> ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -426,8 +458,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> Optional[Model]:
-        model: Model = self.django_model
+    def _get_reference(self, should_cache=True) -> Optional[ModelWithTable]:
+        model: ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -454,11 +486,17 @@ class BoundUploadTable(NamedTuple):
 
         return reference_record
 
-
     def _resolve_reference_attributes(self, model, reference_record) -> Dict[str, Any]:
 
         return resolve_reference_attributes(
-            [*self.scopingAttrs.keys(), *self.strong_ignore], model, reference_record
+            [
+                *self.scopingAttrs.keys(),
+                *self.strong_ignore,
+                *self.toOne.keys(),
+                *self.toMany.keys(),
+            ],
+            model,
+            reference_record,
         )
 
     def _handle_row(self, skip_match: bool, allow_null: bool) -> UploadResult:
@@ -521,7 +559,6 @@ class BoundUploadTable(NamedTuple):
         ) and allow_null:
             # nothing to upload
             return UploadResult(NullRecord(info), to_one_results, {})
-
         if not skip_match:
             match = self._match(filter_predicate, info)
             if match:
@@ -576,7 +613,6 @@ class BoundUploadTable(NamedTuple):
         elif n_matched == 1:
             return Matched(id=ids[0], info=info)
         else:
-            print('did not find for', predicates)
             return None
 
     def _check_missing_required(self) -> Optional[ParseFailures]:
@@ -594,7 +630,10 @@ class BoundUploadTable(NamedTuple):
         return None
 
     def _do_upload(
-        self, model, to_one_results: Dict[str, UploadResult], info: ReportInfo
+        self,
+        model: ModelWithTable,
+        to_one_results: Dict[str, UploadResult],
+        info: ReportInfo,
     ) -> UploadResult:
 
         missing_required = self._check_missing_required()
@@ -633,7 +672,7 @@ class BoundUploadTable(NamedTuple):
             **self.scopingAttrs,
             **self.static,
             **{
-                model._meta.get_field(fieldname).attname: id
+                model._meta.get_field(fieldname).attname: id  # type: ignore
                 for fieldname, id in to_one_ids.items()
             },
             **(
@@ -661,7 +700,7 @@ class BoundUploadTable(NamedTuple):
 
         return UploadResult(record, to_one_results, to_many_results)
 
-    def _handle_to_many(self, update: bool, parent_id: int, model: Model):
+    def _handle_to_many(self, update: bool, parent_id: int, model: ModelWithTable):
         return {
             fieldname: _upload_to_manys(
                 model,
@@ -740,9 +779,7 @@ class BoundUploadTable(NamedTuple):
         # We could check to_one_fields, but we are not going to, because that is just redundant with is_one_to_one.
         if field_name in self.toOne:
             return self.toOne[field_name].is_one_to_one()
-        return django_model.specify_model.get_relationship(
-            field_name
-        ).dependent  #  type: ignore
+        return django_model.specify_model.get_relationship(field_name).dependent
 
 
 class BoundOneToOneTable(BoundUploadTable):
@@ -934,7 +971,11 @@ class BoundUpdateTable(BoundUploadTable):
                         FailedBusinessRule(str(e), {}, info), to_one_results, {}
                     )
 
-        record = Updated(updated.pk, info, picklist_additions) if changed else NoChange(reference_record.pk, info)
+        record: Union[Updated, NoChange] = (
+            Updated(updated.pk, info, picklist_additions)
+            if changed
+            else NoChange(reference_record.pk, info)
+        )
         to_many_results = self._handle_to_many(True, record.get_id(), model)
 
         to_one_adjusted, to_many_adjusted = self._clean_up_fks(

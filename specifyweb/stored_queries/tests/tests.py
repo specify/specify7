@@ -29,11 +29,14 @@ with session.context() as session:
 
 
 def setup_sqlalchemy(url: str):
-    engine = sqlalchemy.create_engine(url, pool_recycle=settings.SA_POOL_RECYCLE,
-                                      connect_args={'cursorclass': SSCursor})
+    engine = sqlalchemy.create_engine(
+        url,
+        pool_recycle=settings.SA_POOL_RECYCLE,
+        connect_args={"cursorclass": SSCursor},
+    )
 
     # BUG: Raise 0-row exception somewhere here.
-    @event.listens_for(engine, 'before_cursor_execute', retval=True)
+    @event.listens_for(engine, "before_cursor_execute", retval=True)
     # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
     # by Django, and then return a wrapped sql statement which will return the same result set.
     def run_django_query(conn, cursor, statement, parameters, context, executemany):
@@ -48,13 +51,29 @@ def setup_sqlalchemy(url: str):
         # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
         selects = [
             sqlalchemy.select(
-                [(sqlalchemy.sql.null() if column is None else sqlalchemy.literal(column)).label(columns[idx][0])
-                 for idx, column in enumerate(row)]) for row in result_set]
+                [
+                    (
+                        sqlalchemy.sql.null()
+                        if column is None
+                        else sqlalchemy.literal(column)
+                    ).label(columns[idx][0])
+                    for idx, column in enumerate(row)
+                ]
+            )
+            for row in result_set
+        ]
         # union all instead of union because rows can be duplicated in the original query,
         # but still need to preserve the duplication
         unioned = sqlalchemy.union_all(*selects)
         # Tests will fail when migrated to different background. TODO: Auto-detect dialects
-        final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
+        final_query = str(
+            unioned.compile(
+                compile_kwargs={
+                    "literal_binds": True,
+                },
+                dialect=mysql.dialect(),
+            )
+        )
 
         return final_query, ()
 
@@ -85,21 +104,28 @@ class SQLAlchemySetupTest(SQLAlchemySetup):
         with SQLAlchemySetupTest.test_session_context() as session:
 
             co_aliased = orm.aliased(models.CollectionObject)
-            sa_collection_objects = list(session.query(co_aliased._id).filter(
-                co_aliased.collectionMemberId == self.collection.id))
-            sa_ids = [_id for (_id, ) in sa_collection_objects]
+            sa_collection_objects = list(
+                session.query(co_aliased._id).filter(
+                    co_aliased.collectionMemberId == self.collection.id
+                )
+            )
+            sa_ids = [_id for (_id,) in sa_collection_objects]
             ids = [co.id for co in self.collectionobjects]
 
             self.assertEqual(sa_ids, ids)
-            min_co_id, = session.query(
-                sqlalchemy.sql.func.min(co_aliased.collectionObjectId)).filter(
-                co_aliased.collectionMemberId == self.collection.id).first()
+            (min_co_id,) = (
+                session.query(sqlalchemy.sql.func.min(co_aliased.collectionObjectId))
+                .filter(co_aliased.collectionMemberId == self.collection.id)
+                .first()
+            )
 
             self.assertEqual(min_co_id, min(ids))
 
-            max_co_id, = session.query(
-                sqlalchemy.sql.func.max(co_aliased.collectionObjectId)).filter(
-                co_aliased.collectionMemberId == self.collection.id).first()
+            (max_co_id,) = (
+                session.query(sqlalchemy.sql.func.max(co_aliased.collectionObjectId))
+                .filter(co_aliased.collectionMemberId == self.collection.id)
+                .first()
+            )
 
             self.assertEqual(max_co_id, max(ids))
 
@@ -107,22 +133,24 @@ class SQLAlchemySetupTest(SQLAlchemySetup):
 class SQLAlchemyModelTest(TestCase):
 
     @staticmethod
-    def test_sqlalchemy_model(datamodel_table):
+    def validate_sqlalchemy_model(datamodel_table):
         table_errors = {
-            'not_found': [],  # Fields / Relationships not found
-            'incorrect_direction': {},  # Relationship direct not correct
-            'incorrect_columns': {},  # Relationship columns not correct
-            'incorrect_table': {}  # Relationship related model not correct
+            "not_found": [],  # Fields / Relationships not found
+            "incorrect_direction": {},  # Relationship direct not correct
+            "incorrect_columns": {},  # Relationship columns not correct
+            "incorrect_table": {},  # Relationship related model not correct
         }
         orm_table = orm.aliased(getattr(models, datamodel_table.name))
         known_fields = datamodel_table.all_fields
 
         for field in known_fields:
 
-            in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
+            in_sql = getattr(orm_table, field.name, None) or getattr(
+                orm_table, field.name.lower(), None
+            )
 
             if in_sql is None:
-                table_errors['not_found'].append(field.name)
+                table_errors["not_found"].append(field.name)
                 continue
 
             if not field.is_relationship:
@@ -131,39 +159,60 @@ class SQLAlchemyModelTest(TestCase):
             sa_relationship = inspect(in_sql).property
 
             sa_direction = sa_relationship.direction.name.lower()
-            datamodel_direction = field.type.replace('-', '').lower()
+            datamodel_direction = field.type.replace("-", "").lower()
 
             if sa_direction != datamodel_direction:
-                table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
-                print(f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}")
+                table_errors["incorrect_direction"][field.name] = [
+                    sa_direction,
+                    datamodel_direction,
+                ]
+                print(
+                    f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}"
+                )
 
             remote_sql_table = sa_relationship.target.name.lower()
             remote_datamodel_table = field.relatedModelName.lower()
 
             if remote_sql_table.lower() != remote_datamodel_table:
                 # Check case where the relation model's name is different from the DB table name
-                remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
+                remote_sql_table = (
+                    sa_relationship.mapper._log_desc.split("(")[1].split("|")[0].lower()
+                )
                 if remote_sql_table.lower() != remote_datamodel_table:
-                    table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
-                    print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
+                    table_errors["incorrect_table"][field.name] = [
+                        remote_sql_table,
+                        remote_datamodel_table,
+                    ]
+                    print(
+                        f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}"
+                    )
 
             sa_column = list(sa_relationship.local_columns)[0].name
             if sa_column.lower() != (
-                    datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
-                table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
-                                                                 getattr(field, 'column', None)]
+                datamodel_table.idColumn.lower()
+                if not getattr(field, "column", None)
+                else field.column.lower()
+            ):
+                table_errors["incorrect_columns"][field.name] = [
+                    sa_column,
+                    datamodel_table.idColumn.lower(),
+                    getattr(field, "column", None),
+                ]
                 print(
-                    f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")
+                    f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}"
+                )
 
         return {key: value for key, value in table_errors.items() if len(value) > 0}
 
     def test_sqlalchemy_model_errors(self):
         for table in spmodels.datamodel.tables:
-            table_errors = SQLAlchemyModelTest.test_sqlalchemy_model(table)
-            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors,
-                            f"Did not find {table.name}. Has errors: {table_errors}")
-            if 'not_found' in table_errors:
-                table_errors['not_found'] = sorted(table_errors['not_found'])
+            table_errors = SQLAlchemyModelTest.validate_sqlalchemy_model(table)
+            self.assertTrue(
+                len(table_errors) == 0 or table.name in expected_errors,
+                f"Did not find {table.name}. Has errors: {table_errors}",
+            )
+            if "not_found" in table_errors:
+                table_errors["not_found"] = sorted(table_errors["not_found"])
             if table_errors:
                 self.assertDictEqual(table_errors, expected_errors[table.name])
 
@@ -173,123 +222,39 @@ expected_errors = {
         "incorrect_table": {
             "dnaSequencingRunAttachments": [
                 "dnasequencerunattachment",
-                "dnasequencingrunattachment"
+                "dnasequencingrunattachment",
             ]
         }
     },
-    "AutoNumberingScheme": {
-        "not_found": [
-            "collections",
-            "disciplines",
-            "divisions"
-        ]
-    },
-    "Collection": {
-        "not_found": [
-            "numberingSchemes",
-            "userGroups"
-        ]
-    },
-    "CollectionObject": {
-        "not_found": [
-            "projects"
-        ]
-    },
+    "AutoNumberingScheme": {"not_found": ["collections", "disciplines", "divisions"]},
+    "Collection": {"not_found": ["numberingSchemes", "userGroups"]},
+    "CollectionObject": {"not_found": ["projects"]},
     "DNASequencingRun": {
         "incorrect_table": {
-            "attachments": [
-                "dnasequencerunattachment",
-                "dnasequencingrunattachment"
-            ]
+            "attachments": ["dnasequencerunattachment", "dnasequencingrunattachment"]
         }
     },
     "Discipline": {
-        "not_found": [
-            "numberingSchemes",
-            "userGroups"
-        ],
-        "incorrect_direction": {
-            "taxonTreeDef": [
-                "manytoone",
-                "onetoone"
-            ]
-        }
+        "not_found": ["numberingSchemes", "userGroups"],
+        "incorrect_direction": {"taxonTreeDef": ["manytoone", "onetoone"]},
     },
-    "Division": {
-        "not_found": [
-            "numberingSchemes",
-            "userGroups"
-        ]
-    },
-    "Institution": {
-        "not_found": [
-            "userGroups"
-        ]
-    },
-    "InstitutionNetwork": {
-        "not_found": [
-            "collections",
-            "contacts"
-        ]
-    },
+    "Division": {"not_found": ["numberingSchemes", "userGroups"]},
+    "Institution": {"not_found": ["userGroups"]},
+    "InstitutionNetwork": {"not_found": ["collections", "contacts"]},
     "Locality": {
         "incorrect_direction": {
-            "geoCoordDetails": [
-                "onetomany",
-                "zerotoone"
-            ],
-            "localityDetails": [
-                "onetomany",
-                "zerotoone"
-            ]
+            "geoCoordDetails": ["onetomany", "zerotoone"],
+            "localityDetails": ["onetomany", "zerotoone"],
         }
     },
-    "Project": {
-        "not_found": [
-            "collectionObjects"
-        ]
-    },
-    "SpExportSchema": {
-        "not_found": [
-            "spExportSchemaMappings"
-        ]
-    },
-    "SpExportSchemaMapping": {
-        "not_found": [
-            "spExportSchemas"
-        ]
-    },
-    "SpPermission": {
-        "not_found": [
-            "principals"
-        ]
-    },
-    "SpPrincipal": {
-        "not_found": [
-            "permissions",
-            "scope",
-            "specifyUsers"
-        ]
-    },
+    "Project": {"not_found": ["collectionObjects"]},
+    "SpExportSchema": {"not_found": ["spExportSchemaMappings"]},
+    "SpExportSchemaMapping": {"not_found": ["spExportSchemas"]},
+    "SpPermission": {"not_found": ["principals"]},
+    "SpPrincipal": {"not_found": ["permissions", "scope", "specifyUsers"]},
     "SpReport": {
-        "incorrect_direction": {
-            "workbenchTemplate": [
-                "manytoone",
-                "onetoone"
-            ]
-        }
+        "incorrect_direction": {"workbenchTemplate": ["manytoone", "onetoone"]}
     },
-    "SpecifyUser": {
-        "not_found": [
-            "spPrincipals"
-        ]
-    },
-    "TaxonTreeDef": {
-        "incorrect_direction": {
-            "discipline": [
-                "onetomany",
-                "onetoone"
-            ]
-        }
-    }
+    "SpecifyUser": {"not_found": ["spPrincipals"]},
+    "TaxonTreeDef": {"incorrect_direction": {"discipline": ["onetomany", "onetoone"]}},
 }

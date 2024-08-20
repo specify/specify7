@@ -1,14 +1,29 @@
-from contextlib import contextmanager
-import re
-from typing import Dict, Generator, Callable, Literal, NamedTuple, Tuple, Any, Optional, TypedDict, Union, Set
+from typing import Dict, Generator, Callable, Any, List, Optional, TypedDict, Union, Set
 from typing_extensions import Protocol
 
-
-from specifyweb.context.remote_prefs import get_remote_prefs
+from specifyweb.specify.load_datamodel import Table
 from specifyweb.workbench.upload.predicates import DjangoPredicates, ToRemove
+
+from django.db.models import Model
 
 from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor
+
+class BatchEditSelf(TypedDict):
+    id: int
+    ordernumber: Optional[int]
+    version: Optional[int]
+    
+class BatchEditJson(TypedDict):
+    self: BatchEditSelf
+    to_one: Dict[str, Any]
+    to_many: Dict[str, List[Any]]
+
+class Extra(TypedDict):
+    batch_edit: Optional[BatchEditJson]
+    disambiguation: Dict[str, int]
+
+Disambiguation = Optional["DisambiguationInfo"]
 
 NULL_RECORD = 'null_record'
 
@@ -20,6 +35,11 @@ Row = Dict[str, str]
 
 Filter = Dict[str, Any]
 
+# TODO: Use this everywhere
+class ModelWithTable(Model):
+    specify_model: Table
+    class Meta: 
+        abstract = True
 class Uploadable(Protocol):
     # also returns if the scoped table returned can be cached or not.
     # depends on whether scope depends on other columns. if any definition is found,
@@ -50,9 +70,6 @@ class DisambiguationInfo(Protocol):
     def disambiguate_to_many(self, to_many: str, record_index: int) -> "Disambiguation":
         ...
 
-Disambiguation = Optional[DisambiguationInfo]
-
-
 class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
@@ -63,7 +80,7 @@ class ScopedUploadable(Protocol):
     def get_treedefs(self) -> Set:
         ...
     
-    def apply_batch_edit_pack(self, batch_edit_pack: Optional[Dict[str, Any]]) -> "ScopedUploadable":
+    def apply_batch_edit_pack(self, batch_edit_pack: Optional[BatchEditJson]) -> "ScopedUploadable":
         ...
 
 class BoundUploadable(Protocol):

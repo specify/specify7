@@ -163,7 +163,7 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-    orderby = tree_table.name.lower() + "." + sortfield
+    orderby = getattr(node, tree_table.get_field_strict(sortfield).name)
 
     col_args = [
         node.name,

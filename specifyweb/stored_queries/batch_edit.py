@@ -1,12 +1,18 @@
+# type: ignore
+
+# ^^ The above is because we etensively use recursive typedefs of named tuple in this file not supported on our MyPy 0.97 version.
+# When typechecked in MyPy 1.11 (supports recursive typedefs), there is no type issue in the file.
+# However, using 1.11 makes things slower in other files.
+
 from functools import reduce
 from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, TypedDict
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.load_datamodel import Field, Table
+from specifyweb.specify.load_datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
-    FieldSpecJoinPath,
     QueryFieldSpec,
+    QueryNode,
     TreeRankQuery,
 )
 from specifyweb.workbench.models import Spdataset
@@ -53,14 +59,14 @@ batch_edit_fields: Dict[str, Tuple[MaybeField, int]] = {
 
 class BatchEditFieldPack(NamedTuple):
     field: Optional[QueryField] = None
-    idx: Optional[int] = None
+    idx: Optional[int] = None  # default value not there, for type safety
     value: Any = None  # stricten this?
 
 
 class BatchEditPack(NamedTuple):
     id: BatchEditFieldPack
-    order: Optional[BatchEditFieldPack] = None
-    version: Optional[BatchEditFieldPack] = None
+    order: BatchEditFieldPack
+    version: BatchEditFieldPack
 
     # extends a path to contain the last field + for a defined fields
     @staticmethod
@@ -70,17 +76,22 @@ class BatchEditPack(NamedTuple):
         if batch_edit_fields["id"][1] == 0 or batch_edit_fields["order"][1] == 0:
             raise Exception("the ID field should always be sorted!")
 
-        def extend_callback(field):
-            return field_spec._replace(
-                join_path=(*field_spec.join_path, field), date_part=None
-            )
+        def extend_callback(sort_type):
+            def _callback(field):
+                return BatchEditPack._query_field(
+                    field_spec._replace(
+                        join_path=(*field_spec.join_path, field), date_part=None
+                    ),
+                    sort_type,
+                )
+
+            return _callback
 
         new_field_specs = {
-            key: Func.maybe(
-                Func.maybe(callback(field_spec), extend_callback),
-                lambda field_spec: BatchEditFieldPack(
-                    field=BatchEditPack._query_field(field_spec, sort_type)
-                ),
+            key: BatchEditFieldPack(
+                idx=None,
+                field=Func.maybe(callback(field_spec), extend_callback(sort_type)),
+                value=None,
             )
             for key, (callback, sort_type) in batch_edit_fields.items()
         }
@@ -102,48 +113,53 @@ class BatchEditPack(NamedTuple):
     def _index(
         self,
         start_idx: int,
-        current: Tuple[Dict[str, Optional[BatchEditFieldPack]], List[QueryField]],
+        current: Tuple[Dict[str, BatchEditFieldPack], List[QueryField]],
         next: Tuple[int, Tuple[str, Tuple[MaybeField, int]]],
     ):
         current_dict, fields = current
         field_idx, (field_name, _) = next
-        value: Optional[BatchEditFieldPack] = getattr(self, field_name)
+        value: BatchEditFieldPack = getattr(self, field_name)
         new_dict = {
             **current_dict,
-            field_name: (
-                None
-                if value is None
-                else value._replace(idx=(field_idx + start_idx), field=None)
+            field_name: value._replace(
+                field=None, idx=((field_idx + start_idx) if value.field else None)
             ),
         }
-        new_fields = fields if value is None else [*fields, value.field]
+        new_fields = fields if value.field is None else [*fields, value.field]
         return new_dict, new_fields
 
     def index_plan(self, start_index=0) -> Tuple["BatchEditPack", List[QueryField]]:
+        init: Tuple[Dict[str, BatchEditFieldPack], List[QueryField]] = (
+            {},
+            [],
+        )
         _dict, fields = reduce(
             lambda accum, next: self._index(
                 start_idx=start_index, current=accum, next=next
             ),
             enumerate(batch_edit_fields.items()),
-            ({}, []),
+            init,
         )
         return BatchEditPack(**_dict), fields
 
     def bind(self, row: Tuple[Any]):
         return BatchEditPack(
-            **{
-                key: Func.maybe(
-                    getattr(self, key), lambda pack: pack._replace(value=row[pack.idx])
-                )
-                for key in batch_edit_fields.keys()
-            }
+            id=BatchEditFieldPack(
+                value=row[self.id.idx] if self.id.idx is not None else None
+            ),
+            order=BatchEditFieldPack(
+                value=row[self.order.idx] if self.order.idx is not None else None
+            ),
+            version=BatchEditFieldPack(
+                value=row[self.version.idx] if self.version.idx is not None else None
+            ),
         )
 
     def to_json(self) -> Dict[str, Any]:
         return {
             "id": self.id.value,
-            "ordernumber": self.order.value if self.order is not None else None,
-            "version": self.version.value if self.version is not None else None,
+            "ordernumber": self.order.value,
+            "version": self.version.value,
         }
 
     # we not only care that it is part of tree, but also care that there is rank to tree
@@ -157,16 +173,19 @@ class BatchEditPack(NamedTuple):
             return False
         return isinstance(join_path[-2], TreeRankQuery)
 
+# These constants are purely for memory optimization, no code depends and/or cares if this is constant.
+EMPTY_FIELD = BatchEditFieldPack()
+EMPTY_PACK = BatchEditPack(id=EMPTY_FIELD, order=EMPTY_FIELD, version=EMPTY_FIELD)
 
 # FUTURE: this already supports nested-to-many for most part
 # wb plan, but contains query fields along with indexes to look-up in a result row.
 # TODO: see if it can be moved + combined with front-end logic. I kept all parsing on backend, but there might be possible beneft in doing this
 # on the frontend (it already has code from mapping path -> upload plan)
 class RowPlanMap(NamedTuple):
+    batch_edit_pack: BatchEditPack
     columns: List[BatchEditFieldPack] = []
     to_one: Dict[str, "RowPlanMap"] = {}
     to_many: Dict[str, "RowPlanMap"] = {}
-    batch_edit_pack: Optional[BatchEditPack] = None
     has_filters: bool = False
 
     @staticmethod
@@ -194,16 +213,17 @@ class RowPlanMap(NamedTuple):
         self: "RowPlanMap", other: "RowPlanMap", has_filter_on_parent=False
     ) -> "RowPlanMap":
         new_columns = [*self.columns, *other.columns]
-        batch_edit_pack = self.batch_edit_pack or other.batch_edit_pack
+        batch_edit_pack = other.batch_edit_pack or self.batch_edit_pack
         has_self_filters = has_filter_on_parent or self.has_filters or other.has_filters
         to_one = reduce(
             RowPlanMap._merge(has_self_filters), other.to_one.items(), self.to_one
         )
         to_many = reduce(RowPlanMap._merge(False), other.to_many.items(), self.to_many)
         return RowPlanMap(
-            new_columns, to_one, to_many, batch_edit_pack, has_filters=has_self_filters
+            batch_edit_pack, new_columns, to_one, to_many, has_filters=has_self_filters
         )
 
+    @staticmethod
     def _index(
         current: Tuple[int, Dict[str, "RowPlanMap"], List[QueryField]],
         other: Tuple[str, "RowPlanMap"],
@@ -231,16 +251,19 @@ class RowPlanMap(NamedTuple):
             else (None, [])
         )
         next_index += len(_batch_fields)
+        init: Callable[[int], Tuple[int, Dict[str, RowPlanMap], List[QueryField]]] = (
+            lambda _start: (_start, {}, [])
+        )
         next_index, _to_one, to_one_fields = reduce(
             RowPlanMap._index,
             # makes the order deterministic, would be funny otherwise
             Func.sort_by_key(self.to_one),
-            (next_index, {}, []),
+            init(next_index),
         )
         next_index, _to_many, to_many_fields = reduce(
-            RowPlanMap._index, Func.sort_by_key(self.to_many), (next_index, {}, [])
+            RowPlanMap._index, Func.sort_by_key(self.to_many), (init(next_index))
         )
-        column_fields = [column.field for column in self.columns]
+        column_fields = [column.field for column in self.columns if column.field]
         return (
             RowPlanMap(
                 columns=_columns,
@@ -259,8 +282,8 @@ class RowPlanMap(NamedTuple):
     # on the colletors table (as a column). Instead, we put it as a column in collectingevent. This has no visual difference (it is unmapped) anyways.
     @staticmethod
     def _recur_row_plan(
-        running_path: FieldSpecJoinPath,
-        next_path: FieldSpecJoinPath,
+        running_path: List[QueryNode],  # using tuple causes typing issue
+        next_path: List[QueryNode],
         next_table: Table,  # bc queryfieldspecs will be terminated early on
         original_field: QueryField,
     ) -> "RowPlanMap":
@@ -269,15 +292,22 @@ class RowPlanMap(NamedTuple):
 
         # contains partial path
         partial_field_spec = original_field_spec._replace(
-            join_path=running_path, table=next_table
+            join_path=tuple(running_path), table=next_table
         )
 
         # to handle CO->(formatted), that's it. this function will never be called with empty path other than top-level formatted/aggregated
-        node, *rest = (None,) if not next_path else next_path
+        rest: List[QueryNode] = []
+
+        if len(next_path) == 0:
+            node = None
+            rest = []
+        else:
+            node = next_path[0]
+            rest = next_path[1:]
 
         # we can't edit relationships's formatted/aggregated anyways.
         batch_edit_pack = (
-            None
+            EMPTY_PACK
             if original_field_spec.needs_formatted()
             else BatchEditPack.from_field_spec(partial_field_spec)
         )
@@ -290,7 +320,9 @@ class RowPlanMap(NamedTuple):
                 has_filters=(original_field.op_num != 8),
             )
 
-        assert node.is_relationship, "using a non-relationship as a pass through!"
+        assert isinstance(node, TreeRankQuery) or isinstance(
+            node, Relationship
+        ), "using a non-relationship as a pass through!"
 
         rel_type = (
             "to_many"
@@ -301,18 +333,21 @@ class RowPlanMap(NamedTuple):
         rel_name = (
             node.name.lower() if not isinstance(node, TreeRankQuery) else node.name
         )
-        return RowPlanMap(
-            **{
-                rel_type: {
-                    rel_name: RowPlanMap._recur_row_plan(
-                        (*running_path, node),
-                        rest,
-                        datamodel.get_table(node.relatedModelName),
-                        original_field,
-                    )
-                },
-                "batch_edit_pack": batch_edit_pack,
-            }
+
+        rest_plan = {
+            rel_name: RowPlanMap._recur_row_plan(
+                [*running_path, node],
+                rest,
+                datamodel.get_table_strict(node.relatedModelName),
+                original_field,
+            )
+        }
+
+        boiler = RowPlanMap(columns=[], batch_edit_pack=batch_edit_pack)
+        return (
+            boiler._replace(to_one=rest_plan)
+            if rel_type == "to_one"
+            else boiler._replace(to_many=rest_plan)
         )
 
     # generates multiple row plan maps, and merges them into one
@@ -320,16 +355,20 @@ class RowPlanMap(NamedTuple):
     # instead, see usage of index_plan() which indexes the plan in one go.
     @staticmethod
     def get_row_plan(fields: List[QueryField]) -> "RowPlanMap":
+        start: List[QueryNode] = []
         iter = [
             RowPlanMap._recur_row_plan(
-                (), field.fieldspec.join_path, field.fieldspec.root_table, field
+                start,
+                list(field.fieldspec.join_path),
+                field.fieldspec.root_table,
+                field,
             )
             for field in fields
         ]
         return reduce(
             lambda current, other: current.merge(other, has_filter_on_parent=False),
             iter,
-            RowPlanMap(),
+            RowPlanMap(batch_edit_pack=EMPTY_PACK),
         )
 
     @staticmethod
@@ -342,14 +381,16 @@ class RowPlanMap(NamedTuple):
         columns = [
             column._replace(value=row[column.idx], field=None)
             for column in self.columns
+            # Careful: this can be 0, so not doing "if not column.idx"
+            if column.idx is not None
         ]
         to_ones = {key: value.bind(row) for (key, value) in self.to_one.items()}
         to_many = {
             key: RowPlanMap._bind_null(value.bind(row))
             for (key, value) in self.to_many.items()
         }
-        pack = self.batch_edit_pack.bind(row) if self.batch_edit_pack else None
-        return RowPlanCanonical(columns, to_ones, to_many, pack)
+        pack = self.batch_edit_pack.bind(row)
+        return RowPlanCanonical(pack, columns, to_ones, to_many)
 
     # gets a null record to fill-out empty space
     # doesn't support nested-to-many's yet - complicated
@@ -361,12 +402,12 @@ class RowPlanMap(NamedTuple):
             for pack in self.columns
         ]
         to_ones = {key: value.nullify() for (key, value) in self.to_one.items()}
-        batch_edit_pack = (
-            BatchEditPack(id=BatchEditFieldPack(value=NULL_RECORD))
-            if self.has_filters
-            else None
+        batch_edit_pack = BatchEditPack(
+            id=BatchEditFieldPack(value=(NULL_RECORD if self.has_filters else None)),
+            order=EMPTY_FIELD,
+            version=EMPTY_FIELD,
         )
-        return RowPlanCanonical(columns, to_ones, batch_edit_pack=batch_edit_pack)
+        return RowPlanCanonical(batch_edit_pack, columns, to_ones)
 
     # a fake upload plan that keeps track of the maximum ids / order numbrs seen in to-manys
     def to_many_planner(self) -> "RowPlanMap":
@@ -375,16 +416,27 @@ class RowPlanMap(NamedTuple):
             key: RowPlanMap(
                 batch_edit_pack=(
                     BatchEditPack(
-                        order=BatchEditFieldPack(value=0), id=BatchEditFieldPack()
+                        order=BatchEditFieldPack(value=0),
+                        id=EMPTY_FIELD,
+                        version=EMPTY_FIELD,
                     )
-                    if value.batch_edit_pack.order
+                    if value.batch_edit_pack.order.idx is not None
                     # only use id if order field is not present
-                    else BatchEditPack(id=BatchEditFieldPack(value=0))
+                    else BatchEditPack(
+                        id=BatchEditFieldPack(value=0),
+                        order=EMPTY_FIELD,
+                        version=EMPTY_FIELD,
+                    )
                 )
             )
             for (key, value) in self.to_many.items()
         }
-        return RowPlanMap(to_one=to_one, to_many=to_many)
+        return RowPlanMap(
+            batch_edit_pack=EMPTY_PACK,
+            columns=[],
+            to_one=to_one,
+            to_many=to_many,
+        )
 
 
 # the main data-structure which stores the data
@@ -393,14 +445,14 @@ class RowPlanMap(NamedTuple):
 
 
 class RowPlanCanonical(NamedTuple):
+    batch_edit_pack: BatchEditPack
     columns: List[BatchEditFieldPack] = []
     to_one: Dict[str, "RowPlanCanonical"] = {}
-    to_many: Dict[str, List[Optional["RowPlanCanonical"]]] = {}
-    batch_edit_pack: Optional[BatchEditPack] = None
+    to_many: Dict[str, List["RowPlanCanonical"]] = {}
 
     @staticmethod
     def _maybe_extend(
-        values: List[Optional["RowPlanCanonical"]],
+        values: List["RowPlanCanonical"],
         result: Tuple[bool, "RowPlanCanonical"],
     ):
         is_new = result[0]
@@ -412,7 +464,7 @@ class RowPlanCanonical(NamedTuple):
         self, row: Tuple[Any], indexed_plan: RowPlanMap
     ) -> Tuple[bool, "RowPlanCanonical"]:
         # nothing to compare against. useful for recursion + handing default null as default value for reduce
-        if self.batch_edit_pack is None:
+        if self.batch_edit_pack.id.value is None:
             return False, indexed_plan.bind(row)
 
         # trying to defer actual bind to later
@@ -432,12 +484,13 @@ class RowPlanCanonical(NamedTuple):
             new_stalled, result = (
                 (True, value)
                 if is_stalled
-                else value.merge(row, indexed_plan.to_one.get(key))
+                else value.merge(row, indexed_plan.to_one[key])
             )
             return (is_stalled or new_stalled, {**previous_chain, key: result})
 
+        init: Tuple[bool, Dict[str, RowPlanCanonical]] = (False, {})
         to_one_stalled, to_one = reduce(
-            _reduce_to_one, Func.sort_by_key(self.to_one), (False, {})
+            _reduce_to_one, Func.sort_by_key(self.to_one), init
         )
 
         # the most tricky lines in this file
@@ -456,7 +509,7 @@ class RowPlanCanonical(NamedTuple):
                     (True, values)
                     if is_stalled
                     else RowPlanCanonical._maybe_extend(
-                        values, values[-1].merge(row, indexed_plan.to_many.get(key))
+                        values, values[-1].merge(row, indexed_plan.to_many[key])
                     )
                 )
             return (
@@ -469,8 +522,11 @@ class RowPlanCanonical(NamedTuple):
             to_many_stalled = True
         else:
             # We got stalled early on.
+            init_to_many: Tuple[
+                int, List[Tuple[str, bool, List["RowPlanCanonical"]]]
+            ] = (0, [])
             most_length, to_many_result = reduce(
-                _reduce_to_many, Func.sort_by_key(self.to_many), (0, [])
+                _reduce_to_many, Func.sort_by_key(self.to_many), init_to_many
             )
 
             to_many_stalled = (
@@ -481,12 +537,15 @@ class RowPlanCanonical(NamedTuple):
         # TODO: explain why those arguments
         stalled = to_one_stalled or to_many_stalled
         return stalled, RowPlanCanonical(
-            self.columns, to_one, to_many, self.batch_edit_pack
+            self.batch_edit_pack,
+            self.columns,
+            to_one,
+            to_many,
         )
 
     @staticmethod
     def _update_id_order(values: List["RowPlanCanonical"], plan: RowPlanMap):
-        is_id = plan.batch_edit_pack.order is None
+        is_id = plan.batch_edit_pack.order.value is None
         new_value = (
             len(values)
             if is_id
@@ -501,13 +560,12 @@ class RowPlanCanonical(NamedTuple):
             if not is_id
             else plan.batch_edit_pack.id.value
         )
+        new_pack = BatchEditFieldPack(field=None, value=max(new_value, current_value))
         return RowPlanMap(
-            batch_edit_pack=plan.batch_edit_pack._replace(
-                **{
-                    ("id" if is_id else "order"): BatchEditFieldPack(
-                        value=max(new_value, current_value)
-                    )
-                }
+            batch_edit_pack=(
+                plan.batch_edit_pack._replace(id=new_pack)
+                if is_id
+                else plan.batch_edit_pack._replace(order=new_pack)
             )
         )
 
@@ -515,16 +573,14 @@ class RowPlanCanonical(NamedTuple):
     # this is done to expand the rows at the end
     def update_to_manys(self, to_many_planner: RowPlanMap) -> RowPlanMap:
         to_one = {
-            key: value.update_to_manys(to_many_planner.to_one.get(key))
+            key: value.update_to_manys(to_many_planner.to_one[key])
             for (key, value) in self.to_one.items()
         }
         to_many = {
-            key: RowPlanCanonical._update_id_order(
-                values, to_many_planner.to_many.get(key)
-            )
+            key: RowPlanCanonical._update_id_order(values, to_many_planner.to_many[key])
             for key, values in self.to_many.items()
         }
-        return RowPlanMap(to_one=to_one, to_many=to_many)
+        return RowPlanMap(batch_edit_pack=EMPTY_PACK, to_one=to_one, to_many=to_many)
 
     @staticmethod
     def _extend_id_order(
@@ -532,7 +588,7 @@ class RowPlanCanonical(NamedTuple):
         to_many_planner: RowPlanMap,
         indexed_plan: RowPlanMap,
     ) -> List["RowPlanCanonical"]:
-        is_id = to_many_planner.batch_edit_pack.order is None
+        is_id = to_many_planner.batch_edit_pack.order.value is None
         fill_out = None
         # minor memoization, hehe
         null_record = indexed_plan.nullify()
@@ -573,9 +629,7 @@ class RowPlanCanonical(NamedTuple):
         _ids = [
             value.batch_edit_pack.id.value
             for value in values
-            if value
-            and value.batch_edit_pack
-            and value.batch_edit_pack.id.value != NULL_RECORD
+            if isinstance(value.batch_edit_pack.id.value, int)
         ]
         if len(_ids) != len(set(_ids)):
             raise Exception("Inserted duplicate ids")
@@ -585,19 +639,21 @@ class RowPlanCanonical(NamedTuple):
         self, to_many_planner: RowPlanMap, plan: RowPlanMap
     ) -> "RowPlanCanonical":
         to_ones = {
-            key: value.extend(to_many_planner.to_one.get(key), plan.to_one.get(key))
+            key: value.extend(to_many_planner.to_one[key], plan.to_one[key])
             for (key, value) in self.to_one.items()
         }
         to_many = {
             key: RowPlanCanonical._extend_id_order(
-                values, to_many_planner.to_many.get(key), plan.to_many.get(key)
+                values, to_many_planner.to_many[key], plan.to_many[key]
             )
             for (key, values) in self.to_many.items()
         }
         return self._replace(to_one=to_ones, to_many=to_many)
 
     @staticmethod
-    def _make_to_one_flat(callback: Callable[[str, Func.I], Func.O]):
+    def _make_to_one_flat(
+        callback: Callable[[str, Func.I], Tuple[List[Any], Dict[str, Func.O]]]
+    ):
         def _flat(
             accum: Tuple[List[Any], Dict[str, Func.O]], current: Tuple[str, Func.I]
         ):
@@ -607,10 +663,12 @@ class RowPlanCanonical(NamedTuple):
         return _flat
 
     @staticmethod
-    def _make_to_many_flat(callback: Callable[[str, Func.I], Func.O]):
+    def _make_to_many_flat(
+        callback: Callable[[str, Func.I], Tuple[List[Any], Dict[str, Func.O]]]
+    ):
         def _flat(
-            accum: Tuple[List[Any], Dict[str, Any]],
-            current: Tuple[str, List["RowPlanCanonical"]],
+            accum: Tuple[List[Any], Dict[str, Func.O]],
+            current: Tuple[str, List[Func.I]],
         ):
             rel_name, to_many = current
             to_many_flattened = [callback(rel_name, canonical) for canonical in to_many]
@@ -620,12 +678,11 @@ class RowPlanCanonical(NamedTuple):
 
         return _flat
 
-    def flatten(self) -> Tuple[List[Any], Dict[str, Any]]:
+    def flatten(self) -> Tuple[List[Any], Optional[Dict[str, Any]]]:
         cols = [col.value for col in self.columns]
         base_pack = (
             self.batch_edit_pack.to_json()
-            if self.batch_edit_pack is not None
-            and self.batch_edit_pack.id.value is not None
+            if self.batch_edit_pack.id.value is not None
             else None
         )
 
@@ -634,8 +691,12 @@ class RowPlanCanonical(NamedTuple):
 
         _to_one_reducer = RowPlanCanonical._make_to_one_flat(_flatten)
         _to_many_reducer = RowPlanCanonical._make_to_many_flat(_flatten)
-        to_ones = reduce(_to_one_reducer, Func.sort_by_key(self.to_one), ([], {}))
-        to_many = reduce(_to_many_reducer, Func.sort_by_key(self.to_many), ([], {}))
+
+        to_one_init: Tuple[List[Any], Dict[str, Any]] = ([], {})
+        to_many_init: Tuple[List[Any], Dict[str, List[Any]]] = ([], {})
+
+        to_ones = reduce(_to_one_reducer, Func.sort_by_key(self.to_one), to_one_init)
+        to_many = reduce(_to_many_reducer, Func.sort_by_key(self.to_many), to_many_init)
         all_data = [*cols, *to_ones[0], *to_many[0]]
 
         # Removing all the unnecceary keys to save up on the size of the dataset
@@ -734,11 +795,21 @@ class RowPlanCanonical(NamedTuple):
         _to_one_reducer = RowPlanCanonical._make_to_one_flat(_to_upload_plan)
         _to_many_reducer = RowPlanCanonical._make_to_many_flat(_to_upload_plan)
 
+        # will don't modify the list directly, so we can use it for both to-one and to-many
+        headers_init: List[Tuple[Tuple[int, int], str]] = []
+        _to_one_table: Dict[str, Uploadable] = {}
+
         to_one_headers, to_one_upload_tables = reduce(
-            _to_one_reducer, Func.sort_by_key(self.to_one), ([], {})
+            _to_one_reducer,
+            Func.sort_by_key(self.to_one),
+            (headers_init, _to_one_table),
         )
+
+        _to_many_table: Dict[str, List[Uploadable]] = {}
         to_many_headers, to_many_upload_tables = reduce(
-            _to_many_reducer, Func.sort_by_key(self.to_many), ([], {})
+            _to_many_reducer,
+            Func.sort_by_key(self.to_many),
+            (headers_init, _to_many_table),
         )
 
         raw_headers = [
@@ -748,10 +819,10 @@ class RowPlanCanonical(NamedTuple):
 
         if intermediary_to_tree:
             assert len(to_many_upload_tables) == 0, "Found to-many for tree!"
-            upload_plan = TreeRecord(
+            upload_plan: Uploadable = TreeRecord(
                 name=base_table.django_name,
                 ranks={
-                    key: upload_table.wbcols
+                    key: upload_table.wbcols  # type: ignore
                     for (key, upload_table) in to_one_upload_tables.items()
                 },
             )
@@ -794,7 +865,7 @@ def run_batch_edit(collection, user, spquery, agent):
     mapped_raws = [
         [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
     ]
-    regularized_rows = regularize_rows(len(headers), mapped_raws)
+    regularized_rows = regularize_rows(len(headers), mapped_raws, skip_empty=False)
     return make_dataset(
         user=user,
         collection=collection,
@@ -811,11 +882,11 @@ def run_batch_edit(collection, user, spquery, agent):
 class BatchEditProps(TypedDict):
     collection: Any
     user: Any
-    contexttableid: int = None
-    captions: Any = None
-    limit: Optional[int] = 0
-    recordsetid: Optional[int] = None
-    session_maker: Any = models.session_context
+    contexttableid: int
+    captions: Any
+    limit: Optional[int]
+    recordsetid: Optional[int]
+    session_maker: Any
     fields: List[QueryField]
 
 
@@ -875,7 +946,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     visited_rows: List[RowPlanCanonical] = []
     previous_id = None
-    previous_row = RowPlanCanonical()
+    previous_row = RowPlanCanonical(EMPTY_PACK)
     for row in rows["results"]:
         _, new_row = previous_row.merge(row, indexed)
         to_many_planner = new_row.update_to_manys(to_many_planner)
@@ -891,7 +962,7 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows = visited_rows[1:]
     assert len(visited_rows) > 0, "nothing to return!"
 
-    raw_rows: List[Tuple[List[Any], Dict[str, Any]]] = []
+    raw_rows: List[Tuple[List[Any], Optional[Dict[str, Any]]]] = []
     for visited_row in visited_rows:
         extend_row = visited_row.extend(to_many_planner, indexed)
         row_data, row_batch_edit_pack = extend_row.flatten()
@@ -911,7 +982,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
-        datamodel.get_table_by_id(tableid),
+        datamodel.get_table_by_id_strict(tableid, strict=True),
         localization_dump,
         query_fields,
         {},
