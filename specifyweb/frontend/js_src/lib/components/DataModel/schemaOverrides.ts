@@ -193,9 +193,6 @@ const globalFieldOverrides: {
   LithoStratTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
   },
-  CollectionObject: {
-    collectionObjectType: { visibility: 'hidden' }
-  }
 };
 
 /*
