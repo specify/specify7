@@ -188,8 +188,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     if table.name == 'Taxon':
         # TODO: Add scoping in the workbench via the Upload Plan
-        # treedef = get_taxon_treedef(collection)
-        treedef = collection.discipline.taxontreedef
+        treedef = models.Taxontreedef.objects.filter(id=tr.treedef_id).first()
 
     elif table.name == 'Geography':
         treedef = collection.discipline.geographytreedef

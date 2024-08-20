@@ -23,25 +23,48 @@ logger = logging.getLogger(__name__)
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
+    # treedef_id: int
 
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
     def get_cols(self) -> Set[str]:
-        return set(col.column for r in self.ranks.values() for col in r.values())
+        return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
 
     def to_json(self) -> Dict:
         result = {
-            'ranks': {
-                rank: cols['name'].to_json() if len(cols) == 1 else dict(treeNodeCols={k: v.to_json() for k, v in cols.items()})
+            "ranks": {
+                rank: (
+                    cols["name"].to_json()
+                    if len(cols) == 1
+                    else dict(
+                        treeNodeCols={
+                            k: v.to_json() if hasattr(v, "to_json") else v
+                            for k, v in cols.items()
+                        }
+                    )
+                )
                 for rank, cols in self.ranks.items()
             },
         }
-        return { 'treeRecord': result }
+        return {'treeRecord': result}
+
+    # def to_json(self) -> Dict:
+    #     result = {'ranks': {}}
+    #     for rank, cols in self.ranks.items():
+    #         if len(cols) == 1:
+    #             result['ranks'][rank] = cols['name'].to_json()
+    #         else:
+    #             treeNodeCols = {}
+    #             for k, v in cols.items():
+    #                 treeNodeCols[k] = v.to_json() if hasattr(v, 'to_json') else v
+    #             result['ranks'][rank] = {'treeNodeCols': treeNodeCols}
+    #     return {'treeRecord': result}
 
     def unparse(self) -> Dict:
-        return { 'baseTableName': self.name, 'uploadble': self.to_json() }
+        return { 'baseTableName': self.name,
+                'uploadble': self.to_json() }
 
 class ScopedTreeRecord(NamedTuple):
     name: str
@@ -50,6 +73,7 @@ class ScopedTreeRecord(NamedTuple):
     treedefitems: List
     root: Optional[Any]
     disambiguation: Dict[str, int]
+    ranks_treedefid_map: Dict[str, int]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
@@ -87,6 +111,24 @@ class ScopedTreeRecord(NamedTuple):
             auditor=auditor,
             cache=cache,
         )
+    
+    def get_cols(self) -> Set[str]:
+        return set(col.column for r in self.ranks.values() for col in r.values())
+
+    # def apply_scoping(self, collection) -> "ScopedTreeRecord":
+    #     return self
+    
+    # def to_json(self) -> Dict:
+    #     result = {
+    #         'ranks': {
+    #             rank: cols['name'].to_json() if len(cols) == 1 else dict(treeNodeCols={k: v.to_json() for k, v in cols.items()})
+    #             for rank, cols in self.ranks.items()
+    #         },
+    #     }
+    #     return { 'treeRecord': result }
+
+    # def unparse(self) -> Dict:
+    #     return { 'baseTableName': self.name, 'uploadble': self.to_json() }
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(self, collection) -> "ScopedMustMatchTreeRecord":
