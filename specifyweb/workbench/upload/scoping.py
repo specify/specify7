@@ -187,8 +187,10 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
-        # TODO: Add scoping in the workbench via the Upload Plan
-        treedef = models.Taxontreedef.objects.filter(id=tr.treedef_id).first()
+        if tr.treedef_id is not None:
+            treedef = models.Taxontreedef.objects.filter(id=tr.treedef_id).first()
+        else:
+            treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
         treedef = collection.discipline.geographytreedef
@@ -205,6 +207,9 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     else:
         raise Exception(f'unexpected tree type: {table.name}')
 
+    if treedef is None:
+        raise ValueError(f"Could not find treedef for table {table.name}")
+
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
@@ -217,7 +222,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         name=tr.name,
         ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
         treedef=treedef,
-        treedefitems=list(treedef.treedefitems.order_by('rankid')),
+        treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )

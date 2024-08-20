@@ -480,15 +480,10 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                         # TODO fix this
                         # return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
                         pass
-
-                    extra = {}
-                    if 'taxonTreeId' in plan.keys():
-                        extra['treedefid'] = plan['taxonTreeId']
                     
-                    parsed_plan = upload_plan_schema.parse_plan(request.specify_collection, plan, extra)
+                    parsed_plan = upload_plan_schema.parse_plan(request.specify_collection, plan)
                     new_cols = parsed_plan.get_cols() - set(ds.columns)
                     if plan['baseTableName'] == 'taxon':
-                        # plan['uploadable'] = parsed_plan.to_json()
                         plan = upload_plan_schema.adjust_upload_plan(plan)
                     if new_cols:
                         ncols = len(ds.columns)
