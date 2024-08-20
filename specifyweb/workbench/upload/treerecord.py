@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
-    treedef_id: Optional[int] = None
+    treedef_id: Optional[int] = None # TODO: Determine if this is needed
 
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
@@ -51,8 +51,7 @@ class TreeRecord(NamedTuple):
         return {'treeRecord': result}
 
     def unparse(self) -> Dict:
-        return { 'baseTableName': self.name,
-                'uploadble': self.to_json() }
+        return { 'baseTableName': self.name, 'uploadble': self.to_json() }
 
 class ScopedTreeRecord(NamedTuple):
     name: str

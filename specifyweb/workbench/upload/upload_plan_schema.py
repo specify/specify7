@@ -309,6 +309,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
         }
     )
 
+# TODO: Determine if it is better to return ScopedTreeRecord
 def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
     ranks = {
         rank: {'name': parse_column_options(name_or_cols)} if isinstance(name_or_cols, str)
@@ -335,7 +336,7 @@ def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional
     def find_treedef(treedef_id: Optional[int] = None):
         filter_kwargs = {'name': rank_name}
         if treedef_id is not None:
-            filter_kwargs['treedef_id'] = str(treedef_id) # or treedef_id ?
+            filter_kwargs['treedef_id'] = str(treedef_id)
         return Taxontreedefitem.objects.filter(**filter_kwargs).first()
 
     treedef = find_treedef(base_treedef_id)
