@@ -331,13 +331,19 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         ranks=ranks,
         treedef_id=base_treedefid
     )
-    
+
 def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional[int] = None) -> Optional[int]:
-    def find_treedef(treedef_id: Optional[int] = None):
+    def find_treedef(treedef_id: Optional[int] = None, is_adjusting: bool = False) -> Optional['Taxontreedef']:
         filter_kwargs = {'name': rank_name}
         if treedef_id is not None:
             filter_kwargs['treedef_id'] = str(treedef_id)
-        return Taxontreedefitem.objects.filter(**filter_kwargs).first()
+        ranks = Taxontreedefitem.objects.filter(**filter_kwargs)
+        if ranks.count() == 0:
+            return None
+        elif ranks.count() > 1:
+            if is_adjusting:
+                raise ValueError(f"Multiple treedefitems with name {rank_name}") 
+        return ranks.first().treedef
 
     treedef = find_treedef(base_treedef_id)
     if treedef:
@@ -346,6 +352,30 @@ def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional
     treedef = find_treedef()
     if treedef:
         return treedef.id
+
+    if is_adjusting:
+        raise ValueError(f"Could not find treedefitem with name {rank_name}")
+    return None
+
+
+def find_treedef(
+    rank_name: str, treedef_id: Optional[int] = None, is_adjusting: bool = False
+) -> Optional["Taxontreedef"]:
+    filter_kwargs = {'name': rank_name}
+    if treedef_id is not None:
+        filter_kwargs['treedef_id'] = str(treedef_id)
+    ranks = Taxontreedefitem.objects.filter(**filter_kwargs)
+    if ranks.count() == 0:
+        return None
+    elif ranks.count() > 1 and is_adjusting and treedef_id is not None:
+        raise ValueError(f"Multiple treedefitems with name {rank_name} and treedef_id {treedef_id}")
+    return ranks.first().treedef
+
+def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional[int] = None) -> Optional[int]:
+    for treedef_id in [base_treedef_id, None]:
+        treedef = find_treedef(rank_name, treedef_id, is_adjusting)
+        if treedef:
+            return treedef.id
 
     if is_adjusting:
         raise ValueError(f"Could not find treedefitem with name {rank_name}")
