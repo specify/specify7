@@ -186,10 +186,11 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
+    treedef = None
     if table.name == 'Taxon':
         if tr.treedef_id is not None:
             treedef = models.Taxontreedef.objects.filter(id=tr.treedef_id).first()
-        else:
+        if treedef is None:
             treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':

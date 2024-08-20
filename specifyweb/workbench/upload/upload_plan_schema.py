@@ -331,7 +331,7 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         treedef_id=base_treedefid
     )
     
-def get_treedef_id(rank_name: str, is_adjusting: bool = False, base_treedef_id: Optional[int] = None) -> Optional[int]:
+def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional[int] = None) -> Optional[int]:
     def find_treedef(treedef_id: Optional[int] = None):
         filter_kwargs = {'name': rank_name}
         if treedef_id is not None:
