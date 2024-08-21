@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-20 23:09+0000\n"
+"PO-Revision-Date: 2024-08-21 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -232,7 +232,7 @@ msgstr "Tableaux d'interactions"
 #: components/AppResources/types.tsx:190
 #, fuzzy
 msgid "otherXmlResource"
-msgstr "Sélectionnez le type de ressource"
+msgstr "Sélectionner le type de ressource"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
@@ -493,7 +493,7 @@ msgstr "Publier"
 #: components/ExportFeed/Editor.tsx:184
 #, fuzzy
 msgid "fileName"
-msgstr "Sélectionnez d'abord le tableau"
+msgstr "Sélectionnez d'abord la table"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
