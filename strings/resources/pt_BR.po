@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-20 23:09+0000\n"
+"PO-Revision-Date: 2024-08-21 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/resources/pt_BR/>\n"
@@ -98,7 +98,7 @@ msgstr ""
 #: components/AppResources/types.tsx:30
 #, fuzzy
 msgid "appResource"
-msgstr ""
+msgstr "Subcategorias"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:127
@@ -229,7 +229,7 @@ msgstr "Tabelas de Interações"
 #: components/AppResources/types.tsx:190
 #, fuzzy
 msgid "otherXmlResource"
-msgstr ""
+msgstr "Selecione o tipo de recurso"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
@@ -420,7 +420,7 @@ msgstr ""
 #: components/WebLinks/Definition.tsx:27
 #, fuzzy
 msgid "urlPart"
-msgstr ""
+msgstr "Outro recurso JSON"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -486,7 +486,7 @@ msgstr ""
 #: components/ExportFeed/Editor.tsx:184
 #, fuzzy
 msgid "fileName"
-msgstr ""
+msgstr "Selecione a tabela primeiro"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
@@ -522,7 +522,7 @@ msgstr ""
 #: components/FormEditor/Create.tsx:84
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr ""
+msgstr "Formatadores de Registros"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
