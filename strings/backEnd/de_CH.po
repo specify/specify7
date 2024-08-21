@@ -1,194 +1,196 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-21 12:09+0000\n"
+"PO-Revision-Date: 2024-08-21 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/backEnd/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/backEnd/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 
-#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:180
 #, fuzzy
 msgid "failedParsingBoolean"
-msgstr "Wert \"{value:string}\" kann nicht in True oder False aufgelöst werden"
+msgstr "Wert „{value:string}“ kann nicht in True oder False aufgelöst werden"
 
-#: components/WorkBench/resultsParser.ts:182
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:182
 msgid "failedParsingDecimal"
 msgstr "\"{value:string}\" ist kein gültiger Dezimalwert"
 
-#: components/WorkBench/resultsParser.ts:184
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:184
 msgid "failedParsingFloat"
 msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
 
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #: components/WorkBench/CellMeta.ts:130
 #: components/WorkBench/hooks.ts:126
 #: components/WorkBench/hooks.ts:135
 #: components/WorkBench/resultsParser.ts:235
-#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} ist in diesem Auswahllistenfeld kein gültiger Wert.\n"
 "Klicken Sie auf den Pfeil, um aus den verfügbaren Optionen auszuwählen."
 
-#: components/WorkBench/resultsParser.ts:186
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:186
 #, fuzzy
 msgid "failedParsingAgentType"
 msgstr ""
 "schlecht {agentTypeField:string}: \"{badType:string}\". Erwartet wurde "
 "eines von {validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:239
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:239
 #, fuzzy
 msgid "pickListValueTooLong"
 msgstr ""
 "Wert von {pickListTable:string} {pickList:string} länger als das Maximum "
 "von {maxLength:number|formatted} für das Feld"
 
-#: components/WorkBench/resultsParser.ts:194
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:194
 #, fuzzy
 msgid "valueTooLong"
 msgstr "Der Wert darf nicht länger als {maxLength:number|formatted} sein."
 
-#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:198
 #, fuzzy
 msgid "invalidYear"
 msgstr "Datumswert muss vierstellige Jahreszahl enthalten: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:202
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:202
 #, fuzzy
 msgid "badDateFormat"
 msgstr "ungültiger Datumswert: {value:string}. erwartet: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:207
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:207
 #, fuzzy
 msgid "coordinateBadFormat"
-msgstr "[X0X] Knoten \"[X25X]\" zum synonymisierten übergeordneten Knoten \"[X67X]\""
+msgstr "falscher Breiten- oder Längengradwert: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:211
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "Der Breitengrad muss zwischen -90 und 90 liegen. Tatsächlich: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:215
 #, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:219
 #, fuzzy
 msgid "formatMismatch"
 msgstr ""
 "Wert {value:string} stimmt nicht mit Formatierungsprogramm "
 "{formatter:string} überein"
 
-#: components/WorkBench/resultsParser.ts:245
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:245
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "dieses Feld muss leer sein, wenn {column:string} leer ist"
 
-#: components/WorkBench/resultsParser.ts:249
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:249
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "Das Feld ist für die Upload-Plan-Zuordnung erforderlich"
 
-#: components/WorkBench/resultsParser.ts:251
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:251
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "Es gibt mehrere „Hochgeladene“ Platzhalterwerte im Baum!"
 
-#: components/WorkBench/resultsParser.ts:253
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:253
 #, fuzzy
 msgid "missingRequiredTreeParent"
 msgstr ""
 "Für „{names:string}“ fehlt oder ist der erforderliche Rangwert des "
 "übergeordneten Baums nicht zugeordnet."
 
-#: components/Errors/JsonError.tsx:70
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:70
 #, fuzzy
 msgid "showTraceback"
 msgstr "Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden"
 
-#: components/Errors/JsonError.tsx:189
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:189
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} muss eindeutig sein {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:194
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:194
 #, fuzzy
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} muss eindeutige {fieldName:string} in "
 "{parentField:string} haben"
 
-#: components/Errors/JsonError.tsx:154
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:154
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Baumdefinitionselement auf Stammebene kann nicht gelöscht werden"
 
-#: components/Errors/JsonError.tsx:156
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:156
 #, fuzzy
 msgid "nodeParentInvalidRank"
 msgstr ""
 "Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er "
 "selbst."
 
-#: components/Errors/JsonError.tsx:158
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:158
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
-msgstr "Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden"
+msgstr ""
+"Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten "
+"Knoten."
 
-#: components/Errors/JsonError.tsx:160
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:160
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} Knoten \"{nodeName:string}\" zum synonymisierten "
 "übergeordneten Knoten \"{parentName:string}\""
 
-#: components/Errors/JsonError.tsx:166
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:166
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
 "Synonymisierung von \"{nodeName:string}\" zum synonymisierten Knoten "
 "\"{intoName:string}\""
 
-#: components/Errors/JsonError.tsx:171
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:171
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
 msgstr "Synonymisierender Knoten \"{nodeName:string}\", der Kinder hat"
 
-#: components/Errors/JsonError.tsx:150
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:150
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
@@ -196,94 +198,94 @@ msgstr ""
 "gefunden, in denen der Rang eines Knotens nicht höher ist als der des "
 "übergeordneten Knotens."
 
-#: components/Errors/JsonError.tsx:175
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:175
 #, fuzzy
 msgid "invalidNodeType"
 msgstr ""
 "Unerwarteter Knotentyp „{node:string}“ während {operation:string}. Erwartet "
 "„{nodeModel:string}“"
 
-#: components/Errors/JsonError.tsx:181
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:181
 #, fuzzy
 msgid "operationAcrossTrees"
 msgstr "{operation:string} über Bäume"
 
-#: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:185
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
 "Für das synonymisierte Taxon mit der ID {taxonId:number} konnte kein "
 "akzeptiertes Taxon gefunden werden."
 
-#: components/Errors/JsonError.tsx:200
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:200
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Ressource {resource:string} bereits in der Berechtigungsregistrierung"
 
-#: components/Errors/JsonError.tsx:204
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:204
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} ist kein {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:210
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:210
 #, fuzzy
 msgid "unexpectedCollectionType"
 msgstr ""
 "Unerwarteter Typ der Sammlung „{unexpectedTypeName:string}“. Erwartet "
 "„{collectionName:string}“"
 
-#: components/Errors/JsonError.tsx:215
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:215
 #, fuzzy
 msgid "invalidReportMimetype"
 msgstr ""
 "Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder "
 "„jrxml/label“ noch „jrxml/report“"
 
-#: components/Errors/JsonError.tsx:219
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:219
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Feld {field:string} ist keine Beziehung"
 
-#: components/Errors/JsonError.tsx:221
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:221
 #, fuzzy
 msgid "unexpectedTableId"
 msgstr ""
 "Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet "
 "„{expectedTableId:string}“"
 
-#: components/Errors/JsonError.tsx:226
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:226
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "Keine Sammlung in der Abfrage für Tabelle {table:string} gefunden"
 
-#: components/Errors/JsonError.tsx:228
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:228
 #, fuzzy
 msgid "invalidDatePart"
 msgstr ""
 "Ungültiger Datumsteil \"{datePart:string}\". Erwartet wird einer von "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:233
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:233
 #, fuzzy
 msgid "invalidUploadStatus"
 msgstr ""
 "Ungültiger Status \"{uploadStatus:string}\" für {operation:string}. "
 "Erwartet wird {expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:239
 #. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:239
 #, fuzzy
 msgid "datasetAlreadyUploaded"
 msgstr "Datensatz bereits hochgeladen"
