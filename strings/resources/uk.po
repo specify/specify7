@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-20 23:09+0000\n"
+"PO-Revision-Date: 2024-08-21 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -172,9 +172,9 @@ msgstr "Агрегація таблиць"
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом "
-"в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування "
-"та ліміт попереднього перегляду запису можна налаштувати. Він може "
+"«Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в "
+"один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування та "
+"ліміт попереднього перегляду запису можна налаштувати. Він може "
 "відображатися в результатах запитів і у форматах таблиць."
 
 #. Used in: Components > Web Links > Definition
@@ -408,7 +408,7 @@ msgstr "Визначення"
 #: components/Formatters/Definitions.tsx:85
 #, fuzzy
 msgid "addDefinition"
-msgstr "Додайте визначення"
+msgstr "Додати визначення"
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
@@ -465,7 +465,7 @@ msgstr ""
 msgid "wrongScopeWarning"
 msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
-"перебуваєте. Рекомендується змінити колекцію перед редагуванням цього ресурсу"
+"перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
