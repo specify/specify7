@@ -600,20 +600,19 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
-            assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
             rel_model = field.related_model
             if 'id' in val:
                 # The related object is an existing resource with an id.
-                # This should never happen.
+                # This should never happen for dependent resources.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
                                      val['version'], val,
-                                     parent_obj=obj)
+                                     parent_obj=obj if dependent else None)
             else:
                 # The related object is to be created.
                 rel_obj = create_obj(collection, agent,
                                      rel_model, val,
-                                     parent_obj=obj)
+                                     parent_obj=obj if dependent else None)
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
@@ -678,11 +677,11 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
                 rel_obj = update_obj(collection, agent,
                                      rel_model, rel_data['id'],
                                      rel_data['version'], rel_data,
-                                     parent_obj=obj if is_dependent_field(obj, field_name) else None)
+                                     parent_obj=obj if is_dependent else None)
 
             else:
                 # Create a new related object.
-                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
+                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj if is_dependent else None)
 
             if not is_dependent and not (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'):
                 getattr(obj, field_name).add(rel_obj)
@@ -807,7 +806,7 @@ def parse_uri(uri: str) -> Tuple[str, str]:
 
 def strict_uri_to_model(uri: str, model: str) -> Tuple[str, int]:
     uri_model, uri_id = parse_uri(uri)
-    assert model.lower() == uri_model.lower()
+    assert model.lower() == uri_model.lower(), f"{model} does not match model in uri: {uri_model}"
     assert uri_id is not None
     return uri_model, int(uri_id)
 

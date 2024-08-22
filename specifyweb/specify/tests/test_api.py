@@ -494,7 +494,7 @@ class InlineApiTests(ApiTests):
 
         self.assertEqual(obj.collectionobjectattribute.text1, text1_data)
 
-    def test_independent_set_inline(self):
+    def test_independent_to_many_set_inline(self):
         accession_data = {
             'accessionnumber': "a",
             'division': api.uri_for_model('division', self.division.id),
@@ -510,7 +510,19 @@ class InlineApiTests(ApiTests):
         self.assertEqual(accession, self.collectionobjects[0].accession)
         self.assertEqual(accession, self.collectionobjects[1].accession)
 
-    def test_indepenent_removing_from_inline(self):
+    def test_independent_to_one_set_inline(self):
+        collection_object_data = {
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'accession': {
+                'accessionnumber': "a",
+                'division': api.uri_for_model('division', self.division.id),
+            }
+        }
+
+        created_co = api.create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        self.assertIsNotNone(created_co.accession)
+
+    def test_indepenent_to_many_removing_from_inline(self):
         accession = models.Accession.objects.create(
             accessionnumber="a",
             version="0",
@@ -539,7 +551,7 @@ class InlineApiTests(ApiTests):
         # ensure the other CollectionObjects have not been deleted
         self.assertEqual(len(models.Collectionobject.objects.all()), len(self.collectionobjects))
 
-    def test_updating_independent_resource(self): 
+    def test_updating_independent_to_many_resource(self): 
         co_to_modify = api.obj_to_data(self.collectionobjects[2])
         co_to_modify.update({
             'integer1': 10,
@@ -567,7 +579,34 @@ class InlineApiTests(ApiTests):
         self.assertEqual(self.collectionobjects[2].integer1, 10)
         self.assertEqual(len(self.collectionobjects[2].determinations.all()), 1)
 
-    def test_independent_creating_from_remoteside(self):
+    def test_updating_independent_to_one_resource(self): 
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id)
+        }
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+
+        accession_text = 'someText'
+        accession_data.update({
+            'id': accession.id,
+            'accessionnumber': "a1",
+            'text1': accession_text,
+            'version': accession.version
+        })
+
+        collection_object_data = {
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'accession': accession_data
+        }
+
+        self.assertEqual(accession.text1, None)
+        self.assertEqual(accession.accessionnumber, 'a')
+        created_co = api.create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        accession.refresh_from_db()
+        self.assertEqual(accession.text1, accession_text)
+        self.assertEqual(accession.accessionnumber, 'a1')
+
+    def test_independent_to_many_creating_from_remoteside(self):
         new_catalognumber = f'num-{len(self.collectionobjects)}'
         accession_data = {
             'accessionnumber': "a",
@@ -583,7 +622,7 @@ class InlineApiTests(ApiTests):
         accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.assertTrue(models.Collectionobject.objects.filter(catalognumber=new_catalognumber).exists())
 
-    def test_reassigning_independent(self): 
+    def test_reassigning_independent_to_many(self): 
         acc1 = models.Accession.objects.create(
             accessionnumber="a",
             division = self.division

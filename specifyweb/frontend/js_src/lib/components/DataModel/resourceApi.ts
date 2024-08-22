@@ -300,10 +300,61 @@ export const ResourceBase = Backbone.Model.extend({
     this.dependentResources[field.name.toLowerCase()] = toMany;
     toMany.on('all', eventHandlerForToMany(toMany, field), this);
   },
-  storeIndependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
-    assert(!field.isDependent() && relationshipIsToMany(field));
-    const oldToMany = this.independentResources[field.name.toLowerCase()];
-    if (oldToMany !== undefined) oldToMany.off('all', null, this);
+  storeIndependent(
+    field: Relationship,
+    related: Collection<AnySchema> | SpecifyResource<AnySchema> | null
+  ) {
+    assert(!field.isDependent());
+
+    if (field.type === 'one-to-many')
+      this._storeIndependentToMany(field, related);
+    else this._storeIndependentToOne(field, related);
+  },
+  _storeIndependentToOne(
+    field: Relationship,
+    related: SpecifyResource<AnySchema> | null
+  ) {
+    const oldRelated = this.independentResources[field.name.toLowerCase()];
+    if (!related) {
+      if (oldRelated) {
+        oldRelated.off('all', null, this);
+        this.trigger('saverequired');
+      }
+      this.independentResources[field.name.toLowerCase()] = null;
+      return;
+    }
+    related.toApiJSON = (options) =>
+      related.isNew() || related.needsSaved
+        ? related.toJSON(options)
+        : related.url();
+
+    if (oldRelated && oldRelated.cid === related.cid) return;
+
+    oldRelated && oldRelated.off('all', null, this);
+
+    related.on('all', eventHandlerForToOne(related, field), this);
+
+    switch (field.type) {
+      case 'one-to-one':
+      case 'many-to-one': {
+        this.independentResources[field.name.toLowerCase()] = related;
+        break;
+      }
+      case 'zero-to-one': {
+        this.independentResources[field.name.toLowerCase()] = related;
+        related.set(field.otherSideName, this.url());
+        break;
+      }
+      default: {
+        throw new Error(
+          `setDependentToOne: unhandled field type: ${field.type}`
+        );
+      }
+    }
+  },
+  _storeIndependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
+    const oldIndependent = this.independentResources[field.name.toLowerCase()];
+    if (oldIndependent !== undefined) oldIndependent.off('all', null, this);
 
     this.independentResources[field.name.toLowerCase()] = toMany;
     toMany.on('all', eventHandlerForToMany(toMany, field), this);
@@ -428,7 +479,7 @@ export const ResourceBase = Backbone.Model.extend({
   },
   _handleInlineDataOrResource(value, fieldName) {
     // BUG: check type of value
-    const field: Relationship = this.specifyTable.getField(fieldName);
+    const field: Relationship = this.specifyTable.strictGetField(fieldName);
     const relatedTable = field.relatedTable;
     // BUG: don't do anything for virtual fields
 
@@ -448,7 +499,7 @@ export const ResourceBase = Backbone.Model.extend({
             collectionOptions,
             value
           );
-          this.storeIndependentToMany(field, collection);
+          this.storeIndependent(field, collection);
         }
 
         // Because the foreign key is on the other side
@@ -469,13 +520,14 @@ export const ResourceBase = Backbone.Model.extend({
            * BUG: tighten up this check.
            * The FK is null, or not a URI or inlined resource at any rate
            */
-          field.isDependent() && this.storeDependent(field, null);
+          if (field.isDependent()) this.storeDependent(field, null);
+          else this.storeIndependent(field, null);
           return value;
         }
 
         const toOne = maybeMakeResource(value, relatedTable);
-
-        field.isDependent() && this.storeDependent(field, toOne);
+        if (field.isDependent()) this.storeDependent(field, toOne);
+        else this.storeIndependent(field, toOne);
         this.trigger(`change:${fieldName}`, this);
         this.trigger('change', this);
         return toOne.url();
@@ -646,6 +698,8 @@ export const ResourceBase = Backbone.Model.extend({
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
+          } else {
+            this.storeIndependent(field, toOne);
           }
         }
         // If we want a field within the related resource then recur
@@ -762,7 +816,7 @@ export const ResourceBase = Backbone.Model.extend({
         : existingToMany;
 
     return collection.fetch({ limit: 0 }).then((collection) => {
-      this.storeIndependentToMany(field, collection);
+      this.storeIndependent(field, collection);
       return collection;
     });
   },
@@ -835,8 +889,7 @@ export const ResourceBase = Backbone.Model.extend({
 
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
-        const field = self.specifyTable.getField(fieldName);
-        if (field.type === 'one-to-many' && related) {
+        if (related) {
           json[fieldName] = related.toApiJSON();
         }
       }
