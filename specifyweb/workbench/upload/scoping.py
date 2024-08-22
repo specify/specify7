@@ -9,7 +9,7 @@ from specifyweb.stored_queries.format import get_date_format
 from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
-from .treerecord import TreeRecord, ScopedTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
@@ -188,8 +188,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     treedef = None
     if table.name == 'Taxon':
-        if tr.treedef_id is not None:
-            treedef = models.Taxontreedef.objects.filter(id=tr.treedef_id).first()
+        if tr.base_treedef_id is not None:
+            treedef = models.Taxontreedef.objects.filter(id=tr.base_treedef_id).first()
         if treedef is None:
             treedef = collection.discipline.taxontreedef
 
@@ -214,16 +214,50 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
-        if rank not in treedef_ranks:
+        if rank not in treedef_ranks and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
+    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {}
+    for r, cols in tr.ranks.items():
+        if isinstance(r, str):
+            r = TreeRank(r, table.name, treedef.id if treedef else None, tr.base_treedef_id).tree_rank_record()
+        scoped_ranks[r] = {}
+        for f, colopts in cols.items():
+            scoped_ranks[r][f] = extend_columnoptions(colopts, collection, table.name, f)
+
     return ScopedTreeRecord(
         name=tr.name,
-        ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
+        # ranks={
+        #     r: {
+        #         f: extend_columnoptions(colopts, collection, table.name, f)
+        #         for f, colopts in cols.items()
+        #     }
+        #     for r, cols in tr.ranks.items()
+        # },
+        ranks=scoped_ranks,
         treedef=treedef,
         treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )
+
+# def scope_taxon_rank(rank_name: str, treedef_id: Optional[int] = None) -> Optional[int]:
+#     # rank_id = None
+#     treedefitems = None
+#     if treedef_id is None:
+#         treedefitems = models.Taxontreedefitem.objects.filter(name=rank_name, treedef_id=treedef_id)
+#     else:
+#         treedefitems = models.Taxontreedefitem.objects.filter(name=rank_name)
+
+#     if treedefitems is None:
+#         return None
+
+#     if treedefitems.count() == 1:
+#         # rank_id = treedefitems.first().id
+#         return treedefitems.first().id
+#     elif treedefitems.count() > 1:
+#         raise Exception(f"Multiple treedefitems found for rank {rank_name}")
+#     elif treedefitems.count() == 0:
+#         return None

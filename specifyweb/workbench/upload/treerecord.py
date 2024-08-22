@@ -19,11 +19,156 @@ from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
 
 logger = logging.getLogger(__name__)
 
+class TreeRank:
+    rank_name: str
+    treedef_id: int
+    tree: str
+
+    def __init__(
+        self,
+        rank_name: str,
+        tree: str,
+        treedef_id: Optional[int] = None,
+        base_treedef_id: Optional[int] = None,
+    ):
+        self.rank_name = rank_name
+        self.treedef_id = self._get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
+        self.tree = tree.lower()
+
+    def _get_treedef_id(
+        self,
+        rank_name: str,
+        tree: str,
+        treedef_id: Optional[int],
+        base_treedef_id: Optional[int],
+    ) -> int:
+        filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
+        tree_model = getattr(models, tree.lower().title() + 'treedefitem')
+        treedefitems = tree_model.objects.filter(**filter_kwargs)
+
+        if not treedefitems.exists():
+            raise ValueError(f"No treedefitems found for rank {rank_name}")
+
+        if treedefitems.count() > 1:
+            treedefitems = self._filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
+
+        first_item = treedefitems.first()
+        if first_item is None:
+            raise ValueError(f"No treedefitems found for rank {rank_name}")
+
+        return first_item.treedef_id
+
+    def _build_filter_kwargs(self, rank_name: str, treedef_id: Optional[int]) -> Dict[str, Any]:
+        filter_kwargs = {'name': rank_name}
+        if treedef_id is not None:
+            filter_kwargs['treedef_id'] = treedef_id # type: ignore
+        return filter_kwargs
+
+    def _filter_by_base_treedef_id(self, treedefitems, rank_name: str, base_treedef_id: Optional[int]):
+        if base_treedef_id is None:
+            raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
+        treedefitems = treedefitems.filter(treedef_id=base_treedef_id)
+        if not treedefitems.exists():
+            raise ValueError(f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+        if treedefitems.count() > 1:
+            raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+        return treedefitems
+    
+    # def get_tree_model(self):
+    #     return getattr(models, self.tree.lower().title() + 'treedefitem')
+
+    def check_rank(self) -> bool:
+        tree_model = getattr(models, self.tree.lower().title() + 'treedefitem')
+        rank = tree_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id)
+        return rank.exists() and rank.count() == 1
+
+    def validate_rank(self) -> None:
+        if not self.check_rank():
+            raise ValueError(f"Invalid rank {self.rank_name} for treedef {self.treedef_id}")
+
+    def tree_rank_record(self) -> 'TreeRankRecord':
+        assert self.rank_name is not None, "Rank name is required"
+        assert self.treedef_id is not None, "Treedef ID is required"
+        assert self.tree is not None and self.tree.lower() in {
+            "taxon", "storage", "geography", "geologictimeperiod", "lithostrat" # TODO: Replace with constants
+        }, "Tree is required"
+        return TreeRankRecord(self.rank_name, self.treedef_id)
+
+class TreeRankRecord(NamedTuple):
+    rank_name: str
+    treedef_id: int
+
+    def to_json(self) -> Dict:
+        return {
+            "rank": self.rank_name,
+            "treedefId": self.treedef_id,
+        }
+
+    def check_rank(self, tree: str) -> bool:
+        return TreeRank(self.rank_name, tree, self.treedef_id).check_rank()
+    
+    def validate_rank(self, tree) -> None:
+        TreeRank(self.rank_name, tree, self.treedef_id).validate_rank()
+
+# def create_tree_record(rank_name: str, tree: str, treedef_id: Optional[int] = None, base_treedef_id: Optional[int] = None) -> TreeRankRecord:
+#     # tree_id = 
+#     pass
+
+# def get_treedef_id(rank_name: str, tree: str, treedef_id: Optional[int], base_treedef_id: Optional[int]) -> int:
+#     filter_kwargs = build_filter_kwargs(rank_name, treedef_id)
+#     tree_model = getattr(models, tree.lower().title() + 'treedefitem')
+#     treedefitems = tree_model.objects.filter(**filter_kwargs)
+
+#     if not treedefitems.exists():
+#         raise ValueError(f"No treedefitems found for rank {rank_name}")
+
+#     if treedefitems.count() > 1:
+#         treedefitems = filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
+
+#     first_item = treedefitems.first()
+#     if first_item is None:
+#         raise ValueError(f"No treedefitems found for rank {rank_name}")
+
+#     return first_item.treedef_id
+
+# def build_filter_kwargs(rank_name: str, treedef_id: Optional[int]) -> Dict[str, Any]:
+#     filter_kwargs = {'name': rank_name}
+#     if treedef_id is not None:
+#         filter_kwargs['treedef_id'] = treedef_id # type: ignore
+#     return filter_kwargs
+
+# def filter_by_base_treedef_id(self, treedefitems, rank_name: str, base_treedef_id: Optional[int]):
+#     if base_treedef_id is None:
+#         raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
+#     treedefitems = treedefitems.filter(treedef_id=base_treedef_id)
+#     if not treedefitems.exists():
+#         raise ValueError(f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+#     if treedefitems.count() > 1:
+#         raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+#     return treedefitems
+
+# def check_rank() -> bool:
+#     rank = models.Taxontreedefitem.objects.filter(name=rank_name, treedef_id=treedef_id)
+#     return rank.exists() and rank.count() == 1
+
+# def validate_rank() -> None:
+#     if not self.check_rank():
+#         raise ValueError(f"Invalid rank {self.rank_name} for treedef {self.treedef_id}")
+
+# def tree_rank_record() -> 'TreeRankRecord':
+#     assert self.rank_name is not None, "Rank name is required"
+#     assert self.treedef_id is not None, "Treedef ID is required"
+#     assert self.tree is not None and self.tree.lower() in {
+#         "taxon", "storage", "geography", "geologictimeperiod", "lithostrat" # TODO: Replace with constants
+#     }, "Tree is required"
+#     return TreeRankRecord(self.rank_name, self.treedef_id)
 
 class TreeRecord(NamedTuple):
     name: str
-    ranks: Dict[str, Dict[str, ColumnOptions]]
-    treedef_id: Optional[int] = None # TODO: Determine if this is needed
+    # ranks: Dict[str, Dict[str, ColumnOptions]]
+    # ranks: Dict[TreeRankRecord, Dict[str, ColumnOptions]]
+    ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
+    base_treedef_id: Optional[int] = None
 
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
@@ -55,7 +200,7 @@ class TreeRecord(NamedTuple):
 
 class ScopedTreeRecord(NamedTuple):
     name: str
-    ranks: Dict[str, Dict[str, ExtendedColumnOptions]]
+    ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]]
     treedef: Any
     treedefitems: List
     root: Optional[Any]
@@ -70,15 +215,15 @@ class ScopedTreeRecord(NamedTuple):
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
-        for rank, cols in self.ranks.items():
+        for tree_rank_record, cols in self.ranks.items():
             nameColumn = cols['name']
-            presults, pfails = parse_many(collection, self.name, cols, row)
-            parsedFields[rank] = presults
+            presults, pfails = parse_many(collection, self.name, cols, row) # TODO: fix
+            parsedFields[tree_rank_record.rank_name] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters.get('name', None) is None:
                 parseFails += [
-                    WorkBenchParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
+                    WorkBenchParseFailure('invalidPartialRecord', {'column': nameColumn.column}, result.column)
                     for result in presults
                     if any(v is not None for v in result.filter_on.values())
                 ]
