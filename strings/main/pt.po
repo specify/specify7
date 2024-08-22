@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-03 01:09+0000\n"
+"PO-Revision-Date: 2024-08-22 03:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "main/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:65
@@ -37,15 +37,15 @@ msgstr "Página não encontrada"
 #: components/Router/NotFoundView.tsx:25
 #, fuzzy
 msgid "nothingWasFound"
-msgstr "Ops! Nada foi encontrado"
+msgstr "Opa! Nada foi encontrado"
 
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
 #, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
-"A página que você procura pode ter sido removida, ter seu nome alterado ou "
-"estar temporariamente indisponível."
+"A página que você está procurando pode ter sido removida, teve seu nome "
+"alterado ou está temporariamente indisponível."
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:62
@@ -60,8 +60,8 @@ msgstr "Lamentamos, algo deu errado"
 #, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
-"Lamentamos, mas parece que você encontrou um erro no Especificar 7 do qual "
-"talvez não tenhamos conhecimento."
+"Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez "
+"não estejamos cientes."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:188
@@ -76,8 +76,8 @@ msgstr ""
 #, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
-"Se o problema persistir, entre em contato com o suporte de TI. Se este for "
-"um banco de dados Especificar Nuvem, baixe a mensagem de erro e envie-a para "
+"Se o problema persistir, entre em contato com o suporte de TI. Se for um "
+"banco de dados do Specify Cloud, baixe a mensagem de erro e envie para "
 "<email />."
 
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
@@ -85,9 +85,9 @@ msgstr ""
 #, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
-"Usuários de instituições membros do <memberLink></memberLink> podem "
-"pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum "
-"da comunidade</discourseLink>."
+"Usuários de <memberLink>instituições membros</memberLink> podem procurar "
+"respostas para perguntas e pedir ajuda em nosso <discourseLink>Fórum da "
+"Comunidade</discourseLink>."
 
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
@@ -117,7 +117,7 @@ msgstr "Deixar"
 #: components/Core/VersionMismatch.tsx:22
 #, fuzzy
 msgid "versionMismatch"
-msgstr "Especifique a versão que não corresponde à versão do banco de dados"
+msgstr "A versão especificada não corresponde à versão do banco de dados"
 
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:26
@@ -132,13 +132,14 @@ msgstr ""
 #, fuzzy
 msgid "versionMismatchSecondDescription"
 msgstr ""
-"Alguns recursos do Especificar 7 podem, portanto, não funcionar corretamente."
+"Alguns recursos do Specify 7 podem, portanto, não funcionar corretamente."
 
 #. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:34
 #, fuzzy
 msgid "versionMismatchInstructions"
-msgstr "Instruções para resolver Especificar incompatibilidade de esquema"
+msgstr ""
+"Instruções para resolver a incompatibilidade do esquema de especificação"
 
 #. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:38
@@ -150,13 +151,13 @@ msgstr "on-line"
 #: components/Core/OnlineStatus.tsx:44
 #, fuzzy
 msgid "offline"
-msgstr "desligada"
+msgstr "desconectado"
 
 #. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:29
 #, fuzzy
 msgid "returnToHomepage"
-msgstr "Retornar a página inicial"
+msgstr "Retornar à página inicial"
 
 #. Used in: Components > Errors > Toasts
 #: components/Errors/Toasts.tsx:97
