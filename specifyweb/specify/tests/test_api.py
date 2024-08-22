@@ -29,8 +29,8 @@ from specifyweb.specify.models import (
     Preptype,
     Agent,
     Specifyuser,
-    CollectionObjectGroupType,
-    CollectionObjectType,
+    Collectionobjectgrouptype,
+    Collectionobjecttype,
     Recordset,
     Disposal,
     Loan,
@@ -109,7 +109,7 @@ class MainSetupTearDown:
         self.collectingevent = Collectingevent.objects.create(
             discipline=self.discipline)
 
-        self.collectionobjecttype = CollectionObjectType.objects.create(
+        self.collectionobjecttype = Collectionobjecttype.objects.create(
             name="Test", collection=self.collection, taxontreedef=self.taxontreedef
         )
 
@@ -822,6 +822,6 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
             value='Discrete',
             picklist=cog_type_picklist
         )
-        self.cogtype = CollectionObjectGroupType.objects.create(
+        self.cogtype = Collectionobjectgrouptype.objects.create(
             name="Test", type="Discrete", collection=self.collection
         )

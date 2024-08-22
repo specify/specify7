@@ -5,7 +5,7 @@ import django.utils.timezone
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
-    CollectionObjectType,
+    Collectionobjecttype,
     Collection,
     Discipline,
     Institution,
@@ -60,7 +60,7 @@ def create_default_collection_types():
     for collection in Collection.objects.all():
         discipline = collection.discipline
         discipline_name = discipline.name
-        cot, created = CollectionObjectType.objects.get_or_create(
+        cot, created = Collectionobjecttype.objects.get_or_create(
             name=discipline_name,
             collection=collection,
             taxontreedef_id=discipline.taxontreedef_id
@@ -123,7 +123,7 @@ def create_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist = Picklist.objects.create(
             name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
+            tablename='Collectionobjectgrouptype',
             issystem=False,
             type=1,
             readonly=False,
@@ -140,7 +140,7 @@ def revert_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
+            tablename='Collectionobjectgrouptype',
             collection=collection
         )
         if cog_type_picklist_qs.exists():
@@ -152,7 +152,7 @@ def set_discipline_for_taxon_treedefs():
     for treedef in Taxontreedef.objects.all():
         if treedef.discipline:
             continue
-        cot = CollectionObjectType.objects.filter(taxontreedef=treedef).first()
+        cot = Collectionobjecttype.objects.filter(taxontreedef=treedef).first()
         if cot:
             treedef.discipline = cot.collection.discipline
             treedef.save()
@@ -186,7 +186,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CollectionObjectType',
+            name='Collectionobjecttype',
             fields=[
                 ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255)),
@@ -207,7 +207,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupType',
+            name='Collectionobjectgrouptype',
             fields=[
                 ('id', models.AutoField(db_column='COGTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255, null=False)),
@@ -235,7 +235,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=models.SET_NULL, related_name='collections', to='specify.collectionobjecttype'),
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroup',
+            name='Collectionobjectgroup',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupid', primary_key=True, serialize=False)),
                 ('name', models.CharField(blank=True, db_column='Name', max_length=255, null=True)),
@@ -268,7 +268,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupJoin',
+            name='Collectionobjectgroupjoin',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
                 ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),

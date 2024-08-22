@@ -192,7 +192,10 @@ export const ResourceBase = Backbone.Model.extend({
                * this is the case for paleocontext. really more like
                * a one-to-one.
                */
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             case 'one-to-many': {
@@ -201,14 +204,19 @@ export const ResourceBase = Backbone.Model.extend({
                 .then(async (newCollection) =>
                   Promise.all(
                     related.models.map(async (resource) =>
-                      newCollection.add(await resource?.clone(cloneAll))
+                      newCollection.add(
+                        await resource?.clone(cloneAll, isBulkCarry)
+                      )
                     )
                   )
                 );
               break;
             }
             case 'zero-to-one': {
-              newResource.set(fieldName, await related?.clone(cloneAll));
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
               break;
             }
             default: {
