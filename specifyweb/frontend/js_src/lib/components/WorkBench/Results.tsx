@@ -19,7 +19,7 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
-import { RecordCounts } from './WbValidation';
+import { RecordCountPriority, RecordCounts } from './WbValidation';
 import { LocalizedString } from 'typesafe-i18n';
 
 
@@ -56,7 +56,7 @@ export function WbUploaded({
           </p>
         </div>
         <Ul className="flex flex-1 flex-col gap-2">
-          {Object.entries(recordCounts).sort(sortFunction(([value])=>value)).map(
+          {Object.entries(recordCounts).sort(sortFunction(([value])=>RecordCountPriority.indexOf(value))).map(
             ([resultType, recordsPerType], id)=><ResultsPerType resultType={resultType} recordsPerType={recordsPerType} key={id}/>)}
         </Ul>
         <div className="flex flex-wrap gap-2">

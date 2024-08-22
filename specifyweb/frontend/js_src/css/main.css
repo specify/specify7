@@ -256,7 +256,7 @@
     --search-result: theme('colors.green.300');
     --updated-cell: theme('colors.cyan.200');
     --deleted-cell: theme('colors.brand.100');
-    --matched-and-changed-cell: theme('colors.gray.200');
+    --matched-and-changed-cell: theme('colors.blue.200');
     @apply dark:[--invalid-cell:theme('colors.red.900')]
       dark:[--modified-cell:theme('colors.yellow.900')]
       dark:[--new-cell:theme('colors.indigo.900')]

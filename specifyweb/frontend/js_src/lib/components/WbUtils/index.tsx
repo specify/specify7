@@ -14,6 +14,7 @@ import type { WbUtils } from './Utils';
 
 export function WbUtilsComponent({
   isUploaded,
+  isUpdate,
   cellCounts,
   utils,
   cells,
@@ -21,6 +22,7 @@ export function WbUtilsComponent({
   searchRef,
 }: {
   readonly isUploaded: boolean;
+  readonly isUpdate: boolean;
   readonly cellCounts: WbCellCounts;
   readonly utils: WbUtils;
   readonly cells: WbCellMeta;
@@ -127,7 +129,9 @@ export function WbUtilsComponent({
         totalCount={cellCounts.newCells}
         utils={utils}
       />
-      <Navigation
+      {
+      // Only show these cells if batch-edit
+       isUpdate === true && <><Navigation
         label={wbText.updatedCells()}
         name="updatedCells"
         totalCount={cellCounts.updatedCells}
@@ -145,6 +149,8 @@ export function WbUtilsComponent({
         totalCount={cellCounts.matchedAndChangedCells}
         utils={utils}
       />
+      </>
+      }
       {!isUploaded && (
         <Navigation
           label={wbText.errorCells()}

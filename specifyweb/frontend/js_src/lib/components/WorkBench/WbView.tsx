@@ -251,6 +251,7 @@ export function WbView({
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent
+          isUpdate={dataset.isupdate}
           cellCounts={cellCounts}
           cells={workbench.cells}
           debounceRate={throttleRate}

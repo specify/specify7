@@ -35,6 +35,9 @@ type RecordCountsKey = keyof Pick<UploadResult['UploadResult']['record_result'],
 
 export type RecordCounts = Partial<Record<RecordCountsKey, Partial<Record<Lowercase<keyof Tables>, number>>>>;
 
+export const RecordCountPriority: RA<RecordCountsKey> = ['Updated', 'Uploaded', 'MatchedAndChanged', 'Deleted'];
+
+
 type UploadResults = {
   readonly ambiguousMatches: WritableArray<
     WritableArray<{
