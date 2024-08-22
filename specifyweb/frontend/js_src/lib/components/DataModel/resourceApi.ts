@@ -323,10 +323,6 @@ export const ResourceBase = Backbone.Model.extend({
       this.independentResources[field.name.toLowerCase()] = null;
       return;
     }
-    related.toApiJSON = (options) =>
-      related.isNew() || related.needsSaved
-        ? related.toJSON(options)
-        : related.url();
 
     if (oldRelated && oldRelated.cid === related.cid) return;
 
@@ -890,7 +886,11 @@ export const ResourceBase = Backbone.Model.extend({
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
         if (related) {
-          json[fieldName] = related.toApiJSON();
+          json[fieldName] = isRelationshipCollection(related)
+            ? related.toApiJSON()
+            : related.isNew() || related.needsSaved
+            ? related.toJSON(options)
+            : related.url();
         }
       }
     );
