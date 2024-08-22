@@ -73,9 +73,6 @@ class TreeRank:
         if treedefitems.count() > 1:
             raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
         return treedefitems
-    
-    # def get_tree_model(self):
-    #     return getattr(models, self.tree.lower().title() + 'treedefitem')
 
     def check_rank(self) -> bool:
         tree_model = getattr(models, self.tree.lower().title() + 'treedefitem')
@@ -104,69 +101,19 @@ class TreeRankRecord(NamedTuple):
             "treedefId": self.treedef_id,
         }
 
+    def to_key(self) -> Tuple[str, int]:
+        return (self.rank_name, self.treedef_id)
+
     def check_rank(self, tree: str) -> bool:
         return TreeRank(self.rank_name, tree, self.treedef_id).check_rank()
     
     def validate_rank(self, tree) -> None:
         TreeRank(self.rank_name, tree, self.treedef_id).validate_rank()
 
-# def create_tree_record(rank_name: str, tree: str, treedef_id: Optional[int] = None, base_treedef_id: Optional[int] = None) -> TreeRankRecord:
-#     # tree_id = 
-#     pass
-
-# def get_treedef_id(rank_name: str, tree: str, treedef_id: Optional[int], base_treedef_id: Optional[int]) -> int:
-#     filter_kwargs = build_filter_kwargs(rank_name, treedef_id)
-#     tree_model = getattr(models, tree.lower().title() + 'treedefitem')
-#     treedefitems = tree_model.objects.filter(**filter_kwargs)
-
-#     if not treedefitems.exists():
-#         raise ValueError(f"No treedefitems found for rank {rank_name}")
-
-#     if treedefitems.count() > 1:
-#         treedefitems = filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
-
-#     first_item = treedefitems.first()
-#     if first_item is None:
-#         raise ValueError(f"No treedefitems found for rank {rank_name}")
-
-#     return first_item.treedef_id
-
-# def build_filter_kwargs(rank_name: str, treedef_id: Optional[int]) -> Dict[str, Any]:
-#     filter_kwargs = {'name': rank_name}
-#     if treedef_id is not None:
-#         filter_kwargs['treedef_id'] = treedef_id # type: ignore
-#     return filter_kwargs
-
-# def filter_by_base_treedef_id(self, treedefitems, rank_name: str, base_treedef_id: Optional[int]):
-#     if base_treedef_id is None:
-#         raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
-#     treedefitems = treedefitems.filter(treedef_id=base_treedef_id)
-#     if not treedefitems.exists():
-#         raise ValueError(f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
-#     if treedefitems.count() > 1:
-#         raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
-#     return treedefitems
-
-# def check_rank() -> bool:
-#     rank = models.Taxontreedefitem.objects.filter(name=rank_name, treedef_id=treedef_id)
-#     return rank.exists() and rank.count() == 1
-
-# def validate_rank() -> None:
-#     if not self.check_rank():
-#         raise ValueError(f"Invalid rank {self.rank_name} for treedef {self.treedef_id}")
-
-# def tree_rank_record() -> 'TreeRankRecord':
-#     assert self.rank_name is not None, "Rank name is required"
-#     assert self.treedef_id is not None, "Treedef ID is required"
-#     assert self.tree is not None and self.tree.lower() in {
-#         "taxon", "storage", "geography", "geologictimeperiod", "lithostrat" # TODO: Replace with constants
-#     }, "Tree is required"
-#     return TreeRankRecord(self.rank_name, self.treedef_id)
-
 class TreeRecord(NamedTuple):
     name: str
     # ranks: Dict[str, Dict[str, ColumnOptions]]
-    # ranks: Dict[TreeRankRecord, Dict[str, ColumnOptions]]
+    # ranks: Dict[Union[str, Tuple[str, int]], Dict[str, ColumnOptions]]
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
     base_treedef_id: Optional[int] = None
 
@@ -180,7 +127,7 @@ class TreeRecord(NamedTuple):
     def to_json(self) -> Dict:
         result = {
             "ranks": {
-                rank: (
+                rank.rank_name if isinstance(rank, TreeRankRecord) else rank: (
                     cols["name"].to_json()
                     if len(cols) == 1
                     else dict(

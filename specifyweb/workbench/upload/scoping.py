@@ -229,35 +229,9 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     return ScopedTreeRecord(
         name=tr.name,
-        # ranks={
-        #     r: {
-        #         f: extend_columnoptions(colopts, collection, table.name, f)
-        #         for f, colopts in cols.items()
-        #     }
-        #     for r, cols in tr.ranks.items()
-        # },
         ranks=scoped_ranks,
         treedef=treedef,
         treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )
-
-# def scope_taxon_rank(rank_name: str, treedef_id: Optional[int] = None) -> Optional[int]:
-#     # rank_id = None
-#     treedefitems = None
-#     if treedef_id is None:
-#         treedefitems = models.Taxontreedefitem.objects.filter(name=rank_name, treedef_id=treedef_id)
-#     else:
-#         treedefitems = models.Taxontreedefitem.objects.filter(name=rank_name)
-
-#     if treedefitems is None:
-#         return None
-
-#     if treedefitems.count() == 1:
-#         # rank_id = treedefitems.first().id
-#         return treedefitems.first().id
-#     elif treedefitems.count() > 1:
-#         raise Exception(f"Multiple treedefitems found for rank {rank_name}")
-#     elif treedefitems.count() == 0:
-#         return None

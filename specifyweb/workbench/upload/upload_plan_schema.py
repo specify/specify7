@@ -310,28 +310,6 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
         }
     )
 
-def parse_tree_record_old(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
-    ranks = {
-        rank: {'name': parse_column_options(name_or_cols)} if isinstance(name_or_cols, str)
-        else {k: parse_column_options(v) for k,v in name_or_cols['treeNodeCols'].items() }
-        for rank, name_or_cols in to_parse['ranks'].items()
-    }
-    for rank, cols in ranks.items():
-        assert 'name' in cols, to_parse
-
-    if base_treedefid is None:
-        for rank, cols in ranks.items():
-            treedefid = get_treedef_id(cols['name'].column, False, base_treedefid)
-            if treedefid is not None:
-                base_treedefid = treedefid 
-                break
-
-    return TreeRecord(
-        name=table.django_name,
-        ranks=ranks,
-        base_treedef_id=base_treedefid
-    )
-
 def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]] = {}
     for rank, name_or_cols in to_parse['ranks'].items():
@@ -346,22 +324,6 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         treedefid = get_treedef_id(rank_name, False, base_treedefid)
         tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
         ranks[tree_rank_record] = parsed_cols
-
-    # for rank, name_or_cols in to_parse['ranks'].items():
-    #     if isinstance(name_or_cols, str):
-    #         rank_name = name_or_cols
-    #         treedefid = get_treedef_id(rank_name, False, base_treedefid)
-    #         tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
-    #         ranks[tree_rank_record] = {'name': parse_column_options(name_or_cols)}
-    #     else:
-    #         tree_node_cols = {}
-    #         for k, v in name_or_cols['treeNodeCols'].items():
-    #             tree_node_cols[k] = parse_column_options(v)
-            
-    #         rank_name = name_or_cols['treeNodeCols']['name']
-    #         treedefid = get_treedef_id(rank_name, False, base_treedefid)
-    #         tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
-    #         ranks[tree_rank_record] = tree_node_cols
 
     for rank, cols in ranks.items():
         assert 'name' in cols, to_parse
