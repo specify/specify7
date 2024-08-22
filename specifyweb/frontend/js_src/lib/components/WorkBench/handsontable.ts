@@ -72,12 +72,16 @@ function getIdentifyNullRecords(hot: Handsontable, mappings: WbMapping | undefin
   const makeNullRecordsReadOnly: GetProperty = (physicalRow, physicalCol, _property) => {
     const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
     const mappingCol = physicalColToMappingCol(physicalCol);
-    const batchEditRaw: string | undefined = hot.getDataAtRow(physicalRow).at(-1) ?? undefined;
     if (mappingCol === -1 || mappingCol === undefined){
       // Definitely don't need to anything, not even mapped
       return {readOnly: true};
     }
-    if (batchEditRaw === undefined){
+
+    const batchEditRaw: string | undefined = hot.getDataAtRow(hot.toVisualRow(physicalRow)).at(-1) ?? undefined;
+    if ((batchEditRaw === undefined) || (
+      // will happen for new rows + rows auto-added at the bottom.
+      batchEditRaw.trim() === ''
+    )){
       return {readOnly: false};
     }
     const batchEditPack: BatchEditPack | undefined = JSON.parse(batchEditRaw)[BATCH_EDIT_KEY];

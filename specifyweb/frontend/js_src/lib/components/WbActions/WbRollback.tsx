@@ -2,18 +2,20 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbStatus } from '../WorkBench/WbView';
+import { WbVariantUiSpec } from '../Toolbar/WbsDialog';
 
 export function WbRollback({
   datasetId,
   triggerStatusComponent,
+  uiSpec
 }: {
   readonly datasetId: number;
+  readonly uiSpec: WbVariantUiSpec,
   readonly triggerStatusComponent: (mode: WbStatus) => void;
 }): JSX.Element {
   const [confirmRollback, handleOpen, handleClose] = useBooleanState();
@@ -27,13 +29,14 @@ export function WbRollback({
         aria-pressed={confirmRollback}
         onClick={handleOpen}
       >
-        {wbText.rollback()}
+        {uiSpec.undo}
       </Button.Small>
       {confirmRollback && (
         <RollbackConfirmation
           datasetId={datasetId}
           onClose={handleClose}
           onRollback={handleRollback}
+          uiSpec={uiSpec}
         />
       )}
     </>
@@ -42,10 +45,12 @@ export function WbRollback({
 
 function RollbackConfirmation({
   datasetId,
+  uiSpec,
   onClose: handleClose,
   onRollback: handleRollback,
 }: {
   readonly datasetId: number;
+  readonly uiSpec: WbVariantUiSpec;
   readonly onClose: () => void;
   readonly onRollback: () => void;
 }): JSX.Element {
@@ -66,17 +71,17 @@ function RollbackConfirmation({
               )
             }
           >
-            {wbText.rollback()}
+            {uiSpec.undo}
           </Button.Danger>
         </>
       }
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={wbText.beginRollback()}
+      header={uiSpec.undoConfirm}
       onClose={handleClose}
     >
-      {wbText.beginRollbackDescription()}
+      {uiSpec.undoStartDescription}
     </Dialog>
   );
 }

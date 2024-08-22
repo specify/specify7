@@ -29,7 +29,6 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { hasPermission } from '../Permissions/helpers';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -46,6 +45,7 @@ import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
+import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -147,7 +147,7 @@ export function WbView({
   }, []);
 
   const isMapped = mappings !== undefined;
-  const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const canUpdate = resolveVariantFromDataset(workbench.dataset).canEdit();
 
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();

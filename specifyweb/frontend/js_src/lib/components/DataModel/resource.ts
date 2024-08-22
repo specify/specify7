@@ -318,6 +318,8 @@ export const getUniqueFields = (table: SpecifyTable, schemaAware: boolean =true)
           )
       )
       .map(({ name }) => name),
+    // Don't clone specifyuser.
+    ...(table.name === 'Agent' ? table.relationships.filter(({relatedTable})=>relatedTable.name ==='SpecifyUser').map(({name})=>name) : []),
     ...filterArray(
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),

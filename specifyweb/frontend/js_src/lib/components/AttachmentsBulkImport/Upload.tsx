@@ -106,8 +106,8 @@ async function prepareForUpload(
 
 const dialogText = {
   onAction: wbText.uploading(),
-  onCancelled: wbText.uploadCanceled(),
-  onCancelledDescription: wbText.uploadCanceledDescription(),
+  onCancelled: wbText.uploadCanceled({type: wbText.upload()}),
+  onCancelledDescription: wbText.uploadCanceledDescription({type: wbText.upload()}),
 } as const;
 
 export function AttachmentUpload({

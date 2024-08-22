@@ -2,8 +2,8 @@ from typing import Literal, Union
 from unittest.mock import patch
 from specifyweb.specify.func import Func
 from specifyweb.specify.tests.test_api import get_table
-from specifyweb.stored_queries.batch_edit import run_batch_edit_query # type: ignore
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
+from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.stored_queries.tests.test_batch_edit import props_builder
 from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
@@ -41,6 +41,7 @@ from specifyweb.specify.models import (
     Collectingevent,
     Address,
     Agentspecialty,
+    Collector,
 )
 
 lookup_in_auditlog = lambda model, _id: get_table("Spauditlog").objects.filter(
@@ -250,15 +251,24 @@ class OneToOneUpdateTests(UploadTestsBase):
             catalognumber="88".zfill(9),
         )
 
-        data = [*data, {"catno": "88", "number": "902"}]
-        batch_edit_pack = [*batch_edit_pack, {"self": {"id": co_to_create.id}}]
+        co_to_create_2 = get_table("Collectionobject").objects.create(
+            collection=self.collection,
+            catalognumber="42".zfill(9),
+        )
+
+        data = [*data, {"catno": "88", "number": "902"}, {"catno": "42", "number": ""}]
+        batch_edit_pack = [
+            *batch_edit_pack,
+            {"self": {"id": co_to_create.id}},
+            {"self": {"id": co_to_create_2.id}},
+        ]
         results = do_upload(
             self.collection, data, plan, self.agent.id, batch_edit_packs=batch_edit_pack
         )
 
         correct = [
             (NoChange, coa_result)
-            for coa_result in [Updated, NoChange, Updated, Uploaded]
+            for coa_result in [Updated, NoChange, Updated, Uploaded, NullRecord]
         ]
 
         for _id, result in enumerate(zip(results, correct)):
@@ -410,7 +420,8 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
     def setUp(self):
         super().setUp()
         self.build_props = props_builder(self, SQLUploadTests.test_session_context)
-        get_table("Collectionobject").objects.all().delete()
+        Collectionobject.objects.all().delete()
+        Collectingevent.objects.all().delete()
         self.test_agent_1 = Agent.objects.create(
             firstname="John", lastname="Doe", division=self.division, agenttype=0
         )
@@ -508,7 +519,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
     def _build_props(self, query_fields, base_table):
         raw = self.build_props(query_fields, base_table)
-        raw["session_maker"] = SQLUploadTests.test_session_context
+        raw["session_maker"] = self.__class__.test_session_context
         return raw
 
     def make_query(self, field_spec, sort_type):
@@ -570,24 +581,31 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         # We didn't change anything, nothing should change. verify just that
         list([self.enforcer(result) for result in results])
 
-    def enforce_in_log(self, record_id, table, audit_code: Union[Literal['INSERT'], Literal['UPDATE'], Literal['REMOVE']]):
+    def enforce_in_log(
+        self,
+        record_id,
+        table,
+        audit_code: Union[Literal["INSERT"], Literal["UPDATE"], Literal["REMOVE"]],
+    ):
         entries = lookup_in_auditlog(table, record_id)
         self.assertEqual(1, entries.count())
         entry = entries.first()
         self.assertEqual(entry.action, getattr(auditcodes, audit_code))
 
-    def query_to_results(self, base_table, query_paths):
+    def make_query_fields(self, base_table, query_paths):
         added = [(base_table, *path) for path in query_paths]
 
         query_fields = [
             self.make_query(QueryFieldSpec.from_path(path), 0) for path in added
         ]
 
+        return base_table, query_fields
+
+    def query_to_results(self, base_table, query_fields):
         props = self._build_props(query_fields, base_table)
 
         (headers, rows, packs, plan_json, _) = run_batch_edit_query(props)
 
-        validate(plan_json, schema)
         plan = parse_plan(plan_json)
 
         regularized_rows = regularize_rows(len(headers), rows)
@@ -659,9 +677,9 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             ce_created.collectingeventattribute.integer1, self.cea_1.integer1
         )
 
-        self.enforce_in_log(ce_created_id, "collectingevent", 'INSERT')
+        self.enforce_in_log(ce_created_id, "collectingevent", "INSERT")
         self.enforce_in_log(
-            ce_created.collectingeventattribute.id, "collectingeventattribute", 'INSERT'
+            ce_created.collectingeventattribute.id, "collectingeventattribute", "INSERT"
         )
 
     def _run_matching_test(self):
@@ -679,7 +697,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         ]
 
         (headers, rows, pack, plan) = self.query_to_results(
-            "collectionobject", query_paths
+            *self.make_query_fields("collectionobject", query_paths)
         )
 
         dicted = [dict(zip(headers, row)) for row in rows]
@@ -778,7 +796,8 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
         defer = make_defer(
             # These reulsts below should how true for all these cases
-            match=False, null=False
+            match=False,
+            null=False,
         )
 
         query_paths = [
@@ -792,7 +811,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         ]
 
         (headers, rows, pack, plan) = self.query_to_results(
-            "collectionobject", query_paths
+            *self.make_query_fields("collectionobject", query_paths)
         )
 
         dicted = [dict(zip(headers, row)) for row in rows]
@@ -863,135 +882,235 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             results = do_upload(
                 self.collection, data, plan, self.agent.id, batch_edit_packs=pack
             )
-        
+
         result_map = {}
 
         def wrap_is_instance(result, instance):
             self.assertIsInstance(result, instance)
             is_success = isinstance(result.get_id(), int)
             if is_success:
-                result_map[instance] = [*result_map.get(instance, []), (result.info.tableName, result.get_id())]
+                result_map[instance] = [
+                    *result_map.get(instance, []),
+                    (result.info.tableName, result.get_id()),
+                ]
 
         wrap_is_instance(results[0].record_result, Updated)
-        self.assertEqual(['CollectionObject integer1'], results[0].record_result.info.columns)
+        self.assertEqual(
+            ["CollectionObject integer1"], results[0].record_result.info.columns
+        )
 
-        self.assertIsInstance(results[0].toOne['cataloger'].record_result, Matched)
+        self.assertIsInstance(results[0].toOne["cataloger"].record_result, Matched)
 
-        co_1_prep_1 = results[0].toMany['preparations'][0]
+        co_1_prep_1 = results[0].toMany["preparations"][0]
 
         wrap_is_instance(co_1_prep_1.record_result, Updated)
         self.assertEqual(["Preparation text1"], co_1_prep_1.record_result.info.columns)
-        
-        self.assertIsInstance(co_1_prep_1.toOne['preptype'].record_result, Uploaded)
 
-        co_1_prep_2 = results[0].toMany['preparations'][1]
+        self.assertIsInstance(co_1_prep_1.toOne["preptype"].record_result, Uploaded)
+
+        co_1_prep_2 = results[0].toMany["preparations"][1]
         wrap_is_instance(co_1_prep_2.record_result, Updated)
-        self.assertCountEqual(co_1_prep_2.record_result.info.columns, ["Preparation text1 #2", "Preparation countAmt #2"])
-        self.assertIsInstance(co_1_prep_2.toOne['preptype'].record_result, Matched)
+        self.assertCountEqual(
+            co_1_prep_2.record_result.info.columns,
+            ["Preparation text1 #2", "Preparation countAmt #2"],
+        )
+        self.assertIsInstance(co_1_prep_2.toOne["preptype"].record_result, Matched)
 
-        co_1_prep_3 = results[0].toMany['preparations'][2]
+        co_1_prep_3 = results[0].toMany["preparations"][2]
         wrap_is_instance(co_1_prep_3.record_result, Updated)
-        self.assertCountEqual(co_1_prep_3.record_result.info.columns, ["Preparation text1 #3", "Preparation countAmt #3"])
-        self.assertIsInstance(co_1_prep_3.toOne['preptype'].record_result, Matched)
+        self.assertCountEqual(
+            co_1_prep_3.record_result.info.columns,
+            ["Preparation text1 #3", "Preparation countAmt #3"],
+        )
+        self.assertIsInstance(co_1_prep_3.toOne["preptype"].record_result, Matched)
 
-        self.assertEqual(co_1_prep_3.toOne['preptype'].record_result.get_id(), self.preptype.id)
-        self.assertEqual(co_1_prep_2.toOne['preptype'].record_result.get_id(), self.preptype.id)
+        self.assertEqual(
+            co_1_prep_3.toOne["preptype"].record_result.get_id(), self.preptype.id
+        )
+        self.assertEqual(
+            co_1_prep_2.toOne["preptype"].record_result.get_id(), self.preptype.id
+        )
 
         self.assertIsInstance(results[1].record_result, NoChange)
-        self.assertIsInstance(results[1].toOne['cataloger'].record_result, Matched)
+        self.assertIsInstance(results[1].toOne["cataloger"].record_result, Matched)
 
-        wrap_is_instance(results[1].toMany['preparations'][0].record_result, Updated)
-        self.assertCountEqual(results[1].toMany['preparations'][0].record_result.info.columns, ["Preparation countAmt", "Preparation text1"])
+        wrap_is_instance(results[1].toMany["preparations"][0].record_result, Updated)
+        self.assertCountEqual(
+            results[1].toMany["preparations"][0].record_result.info.columns,
+            ["Preparation countAmt", "Preparation text1"],
+        )
 
-        self.assertIsInstance(results[1].toMany['preparations'][1].record_result, NoChange)
+        self.assertIsInstance(
+            results[1].toMany["preparations"][1].record_result, NoChange
+        )
 
-        self.assertIsInstance(results[1].toMany['preparations'][2].record_result, NullRecord)
+        self.assertIsInstance(
+            results[1].toMany["preparations"][2].record_result, NullRecord
+        )
 
         self.assertIsInstance(results[2].record_result, NoChange)
 
-        co_3_preps = results[2].toMany['preparations']
+        co_3_preps = results[2].toMany["preparations"]
 
         wrap_is_instance(co_3_preps[0].record_result, Deleted)
 
         wrap_is_instance(co_3_preps[1].record_result, Uploaded)
         wrap_is_instance(co_3_preps[2].record_result, Uploaded)
 
-        self.assertIsInstance(co_3_preps[1].toOne['preptype'].record_result, Matched)
-        self.assertEqual(co_3_preps[1].toOne['preptype'].record_result.get_id(), co_1_prep_1.toOne['preptype'].record_result.get_id())
+        self.assertIsInstance(co_3_preps[1].toOne["preptype"].record_result, Matched)
+        self.assertEqual(
+            co_3_preps[1].toOne["preptype"].record_result.get_id(),
+            co_1_prep_1.toOne["preptype"].record_result.get_id(),
+        )
 
-        self.assertEqual(co_3_preps[2].toOne['preptype'].record_result.get_id(), self.preptype.id)
-        self.assertFalse(Preparation.objects.filter(id=results[2].toMany['preparations'][0].record_result.get_id()).exists())
+        self.assertEqual(
+            co_3_preps[2].toOne["preptype"].record_result.get_id(), self.preptype.id
+        )
+        self.assertFalse(
+            Preparation.objects.filter(
+                id=results[2].toMany["preparations"][0].record_result.get_id()
+            ).exists()
+        )
 
-        [self.enforce_in_log(result_id, table, ('INSERT' if _type == Uploaded else ('REMOVE' if _type == Deleted else 'UPDATE')))
-        for (_type, results) in result_map.items()
-        for (table, result_id) in results]
+        [
+            self.enforce_in_log(
+                result_id,
+                table,
+                (
+                    "INSERT"
+                    if _type == Uploaded
+                    else ("REMOVE" if _type == Deleted else "UPDATE")
+                ),
+            )
+            for (_type, results) in result_map.items()
+            for (table, result_id) in results
+        ]
 
     def _run_with_defer(self):
         query_paths = [
-            ['integer1'],
-            ['cataloger', 'firstname'],
-            ['preparations', 'countAmt']
+            ["integer1"],
+            ["cataloger", "firstname"],
+            ["preparations", "countAmt"],
         ]
-        (headers, rows, pack, plan) = self.query_to_results('collectionobject', query_paths)
+        (headers, rows, pack, plan) = self.query_to_results(
+            *self.make_query_fields("collectionobject", query_paths)
+        )
         data = [
-            {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Preparation countAmt': '', 'Preparation countAmt #2': '', 'Preparation countAmt #3': ''},
-            {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Preparation countAmt': '', 'Preparation countAmt #2': '', 'Preparation countAmt #3': ''},
-            {'CollectionObject integer1': '', 'Agent firstName': 'Jame', 'Preparation countAmt': '', 'Preparation countAmt #2': '', 'Preparation countAmt #3': ''}
-            ]
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "John",
+                "Preparation countAmt": "",
+                "Preparation countAmt #2": "",
+                "Preparation countAmt #3": "",
+            },
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "John",
+                "Preparation countAmt": "",
+                "Preparation countAmt #2": "",
+                "Preparation countAmt #3": "",
+            },
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "Jame",
+                "Preparation countAmt": "",
+                "Preparation countAmt #2": "",
+                "Preparation countAmt #3": "",
+            },
+        ]
         return (headers, data, pack, plan)
-    
+
     def test_update_to_many_with_defer(self):
 
         with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=make_defer(match=True, null=False)
+            "specifyweb.workbench.upload.preferences.should_defer_fields",
+            new=make_defer(match=True, null=False),
         ):
             (headers, data, pack, plan) = self._run_with_defer()
 
-            results = do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=pack)
+            results = do_upload(
+                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
+            )
 
-            self.assertIsInstance(results[0].toMany['preparations'][0].record_result, Updated)
-            self.assertIsInstance(results[0].toMany['preparations'][1].record_result, Updated)
-            self.assertIsInstance(results[0].toMany['preparations'][2].record_result, Updated)
+            self.assertIsInstance(
+                results[0].toMany["preparations"][0].record_result, Updated
+            )
+            self.assertIsInstance(
+                results[0].toMany["preparations"][1].record_result, Updated
+            )
+            self.assertIsInstance(
+                results[0].toMany["preparations"][2].record_result, Updated
+            )
 
-            self.assertIsInstance(results[1].toMany['preparations'][0].record_result, Updated)
-            self.assertIsInstance(results[1].toMany['preparations'][1].record_result, Updated)
-            self.assertIsInstance(results[1].toMany['preparations'][2].record_result, NullRecord)
+            self.assertIsInstance(
+                results[1].toMany["preparations"][0].record_result, Updated
+            )
+            self.assertIsInstance(
+                results[1].toMany["preparations"][1].record_result, Updated
+            )
+            self.assertIsInstance(
+                results[1].toMany["preparations"][2].record_result, NullRecord
+            )
 
-            self.assertIsInstance(results[2].toMany['preparations'][0].record_result, NoChange)
-            self.assertIsInstance(results[2].toMany['preparations'][1].record_result, NullRecord)
-            self.assertIsInstance(results[2].toMany['preparations'][2].record_result, NullRecord)
+            self.assertIsInstance(
+                results[2].toMany["preparations"][0].record_result, NoChange
+            )
+            self.assertIsInstance(
+                results[2].toMany["preparations"][1].record_result, NullRecord
+            )
+            self.assertIsInstance(
+                results[2].toMany["preparations"][2].record_result, NullRecord
+            )
 
-        with patch("specifyweb.workbench.upload.preferences.should_defer_fields", new=make_defer
-                   (match=False, 
-                    null=True,
-                    force='match'
-                    )):
+        with patch(
+            "specifyweb.workbench.upload.preferences.should_defer_fields",
+            new=make_defer(match=False, null=True, force="match"),
+        ):
 
             (headers, data, pack, plan) = self._run_with_defer()
 
-            results = do_upload(self.collection, data, plan, self.agent.id, batch_edit_packs=pack)
+            results = do_upload(
+                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
+            )
 
-            self.assertIsInstance(results[0].toMany['preparations'][0].record_result, Deleted)
-            self.assertIsInstance(results[0].toMany['preparations'][1].record_result, Deleted)
-            self.assertIsInstance(results[0].toMany['preparations'][2].record_result, Deleted)
+            self.assertIsInstance(
+                results[0].toMany["preparations"][0].record_result, Deleted
+            )
+            self.assertIsInstance(
+                results[0].toMany["preparations"][1].record_result, Deleted
+            )
+            self.assertIsInstance(
+                results[0].toMany["preparations"][2].record_result, Deleted
+            )
 
-            self.assertIsInstance(results[1].toMany['preparations'][0].record_result, Deleted)
-            self.assertIsInstance(results[1].toMany['preparations'][1].record_result, Deleted)
-            self.assertIsInstance(results[1].toMany['preparations'][2].record_result, NullRecord)
+            self.assertIsInstance(
+                results[1].toMany["preparations"][0].record_result, Deleted
+            )
+            self.assertIsInstance(
+                results[1].toMany["preparations"][1].record_result, Deleted
+            )
+            self.assertIsInstance(
+                results[1].toMany["preparations"][2].record_result, NullRecord
+            )
 
-            self.assertIsInstance(results[2].toMany['preparations'][0].record_result, Deleted)
-            self.assertIsInstance(results[2].toMany['preparations'][1].record_result, NullRecord)
-            self.assertIsInstance(results[2].toMany['preparations'][2].record_result, NullRecord)
+            self.assertIsInstance(
+                results[2].toMany["preparations"][0].record_result, Deleted
+            )
+            self.assertIsInstance(
+                results[2].toMany["preparations"][1].record_result, NullRecord
+            )
+            self.assertIsInstance(
+                results[2].toMany["preparations"][2].record_result, NullRecord
+            )
 
         # original_data = [
         #     {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Preparation countAmt': '20', 'Preparation countAmt #2': '5', 'Preparation countAmt #3': '88'},
         #     {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Preparation countAmt': '89', 'Preparation countAmt #2': '27', 'Preparation countAmt #3': ''},
         #     {'CollectionObject integer1': '', 'Agent firstName': 'Jame', 'Preparation countAmt': '', 'Preparation countAmt #2': '', 'Preparation countAmt #3': ''}
         #     ]
-    
 
     def test_bidirectional_to_many(self):
-        self._update(self.test_agent_1, {'remarks': 'changed for dup testing'})
+        self._update(self.test_agent_1, {"remarks": "changed for dup testing"})
         self.co_4 = Collectionobject.objects.create(
             catalognumber="84".zfill(9),
             cataloger=self.test_agent_2,
@@ -1018,14 +1137,14 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             ["cataloger", "firstname"],
             ["cataloger", "lastname"],
             ["cataloger", "addresses", "address"],
-            ['cataloger', 'agenttype'],
+            ["cataloger", "agenttype"],
             ["preparations", "countamt"],
             ["preparations", "text1"],
             ["preparations", "preptype", "name"],
         ]
 
         (headers, rows, pack, plan) = self.query_to_results(
-            "collectionobject", query_paths
+            *self.make_query_fields("collectionobject", query_paths)
         )
 
         dicted = [dict(zip(headers, row)) for row in rows]
@@ -1038,58 +1157,174 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         #     ]
 
         data = [
-            {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Agent lastName': 'Dew', 'Agent agentType': 'Organization', 'Address address': 'testaddress1 changed', 'Address address #2': 'testaddress2', 'Preparation countAmt': '288', 'Preparation text1': 'Value for preparation', 'PrepType name': 'testPrepType', 'Preparation countAmt #2': '5', 'Preparation text1 #2': 'Second value for preparation', 'PrepType name #2': 'testPrepType', 'Preparation countAmt #3': '88', 'Preparation text1 #3': 'Third value for preparation', 'PrepType name #3': 'testPrepType'},
-            {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Agent lastName': 'Dew', 'Agent agentType': 'Organization', 'Address address': 'testaddress1 changed', 'Address address #2': 'testaddress2', 'Preparation countAmt': '892', 'Preparation text1': 'Value for preparation for second CO', 'PrepType name': 'testPrepType', 'Preparation countAmt #2': '27', 'Preparation text1 #2': '', 'PrepType name #2': 'testPrepType', 'Preparation countAmt #3': '', 'Preparation text1 #3': '', 'PrepType name #3': ''},
-            {'CollectionObject integer1': '', 'Agent firstName': '', 'Agent lastName': '', 'Agent agentType': '', 'Address address': '', 'Address address #2': '', 'Preparation countAmt': '', 'Preparation text1': 'Needs to be deleted', 'PrepType name': 'testPrepType', 'Preparation countAmt #2': '', 'Preparation text1 #2': '', 'PrepType name #2': '', 'Preparation countAmt #3': '', 'Preparation text1 #3': '', 'PrepType name #3': ''},
-            ]
-        
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "John",
+                "Agent lastName": "Dew",
+                "Agent agentType": "Organization",
+                "Address address": "testaddress1 changed",
+                "Address address #2": "testaddress2",
+                "Preparation countAmt": "288",
+                "Preparation text1": "Value for preparation",
+                "PrepType name": "testPrepType",
+                "Preparation countAmt #2": "5",
+                "Preparation text1 #2": "Second value for preparation",
+                "PrepType name #2": "testPrepType",
+                "Preparation countAmt #3": "88",
+                "Preparation text1 #3": "Third value for preparation",
+                "PrepType name #3": "testPrepType",
+            },
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "John",
+                "Agent lastName": "Dew",
+                "Agent agentType": "Organization",
+                "Address address": "testaddress1 changed",
+                "Address address #2": "testaddress2",
+                "Preparation countAmt": "892",
+                "Preparation text1": "Value for preparation for second CO",
+                "PrepType name": "testPrepType",
+                "Preparation countAmt #2": "27",
+                "Preparation text1 #2": "",
+                "PrepType name #2": "testPrepType",
+                "Preparation countAmt #3": "",
+                "Preparation text1 #3": "",
+                "PrepType name #3": "",
+            },
+            {
+                "CollectionObject integer1": "",
+                "Agent firstName": "",
+                "Agent lastName": "",
+                "Agent agentType": "",
+                "Address address": "",
+                "Address address #2": "",
+                "Preparation countAmt": "",
+                "Preparation text1": "Needs to be deleted",
+                "PrepType name": "testPrepType",
+                "Preparation countAmt #2": "",
+                "Preparation text1 #2": "",
+                "PrepType name #2": "",
+                "Preparation countAmt #3": "",
+                "Preparation text1 #3": "",
+                "PrepType name #3": "",
+            },
+        ]
+
         results = do_upload(
             self.collection, data, plan, self.agent.id, batch_edit_packs=pack
         )
         self.assertIsInstance(results[0].record_result, NoChange)
-        self.assertIsInstance(results[0].toOne['cataloger'].record_result, Uploaded)
-        [self.enforcer(record_result, [Uploaded]) for record_result in results[0].toOne['cataloger'].toMany['addresses']]
-        self.assertIsInstance(results[0].toMany['preparations'][0].record_result, Updated)
-        self.assertCountEqual(results[0].toMany['preparations'][0].record_result.info.columns, ['Preparation countAmt'])
-        [self.enforcer(record_result, [NoChange]) for record_result in results[0].toMany['preparations'][1:]]
+        self.assertIsInstance(results[0].toOne["cataloger"].record_result, Uploaded)
+        [
+            self.enforcer(record_result, [Uploaded])
+            for record_result in results[0].toOne["cataloger"].toMany["addresses"]
+        ]
+        self.assertIsInstance(
+            results[0].toMany["preparations"][0].record_result, Updated
+        )
+        self.assertCountEqual(
+            results[0].toMany["preparations"][0].record_result.info.columns,
+            ["Preparation countAmt"],
+        )
+        [
+            self.enforcer(record_result, [NoChange])
+            for record_result in results[0].toMany["preparations"][1:]
+        ]
 
         self.co_1.refresh_from_db()
-        self.assertEqual(self.co_1.cataloger_id, results[0].toOne['cataloger'].record_result.get_id())
+        self.assertEqual(
+            self.co_1.cataloger_id, results[0].toOne["cataloger"].record_result.get_id()
+        )
         cataloger_created = self.co_1.cataloger
 
         # All assertions below check if clone was correct
 
-        self.assertEqual(cataloger_created.addresses.all().count(), self.test_agent_1.addresses.all().count())
-        self.assertEqual(cataloger_created.agentspecialties.all().count(), self.test_agent_1.agentspecialties.all().count())
-        self.assertEqual(cataloger_created.addresses.all().filter(address='testaddress1 changed').count(), 1)
-        self.assertEqual(cataloger_created.addresses.all().filter(address='testaddress2').count(), 1)
-        self.assertEqual(cataloger_created.agentspecialties.all().filter(specialtyname='specialty1').count(), 1)
-        self.assertEqual(cataloger_created.agentspecialties.all().filter(specialtyname='specialty2').count(), 1)
+        self.assertEqual(
+            cataloger_created.addresses.all().count(),
+            self.test_agent_1.addresses.all().count(),
+        )
+        self.assertEqual(
+            cataloger_created.agentspecialties.all().count(),
+            self.test_agent_1.agentspecialties.all().count(),
+        )
+        self.assertEqual(
+            cataloger_created.addresses.all()
+            .filter(address="testaddress1 changed")
+            .count(),
+            1,
+        )
+        self.assertEqual(
+            cataloger_created.addresses.all().filter(address="testaddress2").count(), 1
+        )
+        self.assertEqual(
+            cataloger_created.agentspecialties.all()
+            .filter(specialtyname="specialty1")
+            .count(),
+            1,
+        )
+        self.assertEqual(
+            cataloger_created.agentspecialties.all()
+            .filter(specialtyname="specialty2")
+            .count(),
+            1,
+        )
         self.assertEqual(cataloger_created.remarks, self.test_agent_1.remarks)
 
         self.assertIsInstance(results[1].record_result, NoChange)
-        self.assertIsInstance(results[1].toOne['cataloger'].record_result, MatchedAndChanged)
-        self.assertEqual(results[1].toOne['cataloger'].record_result.get_id(), cataloger_created.id)
-        self.assertIsInstance(results[1].toMany['preparations'][0].record_result, Updated)
-        self.assertCountEqual(results[1].toMany['preparations'][0].record_result.info.columns, ['Preparation countAmt'])
-        self.assertIsInstance(results[1].toMany['preparations'][1].record_result, NoChange)
-        self.assertIsInstance(results[1].toMany['preparations'][2].record_result, NullRecord)
-
+        self.assertIsInstance(
+            results[1].toOne["cataloger"].record_result, MatchedAndChanged
+        )
+        self.assertEqual(
+            results[1].toOne["cataloger"].record_result.get_id(), cataloger_created.id
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][0].record_result, Updated
+        )
+        self.assertCountEqual(
+            results[1].toMany["preparations"][0].record_result.info.columns,
+            ["Preparation countAmt"],
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][1].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][2].record_result, NullRecord
+        )
 
         self.assertIsInstance(results[2].record_result, NoChange)
-        self.assertIsInstance(results[2].toOne['cataloger'].record_result, NullRecord)
-        
-        self.assertIsInstance(results[2].toMany['preparations'][0].record_result, NoChange)
-        self.assertIsInstance(results[2].toMany['preparations'][1].record_result, NullRecord)
-        self.assertIsInstance(results[2].toMany['preparations'][2].record_result, NullRecord)
+        self.assertIsInstance(results[2].toOne["cataloger"].record_result, NullRecord)
+
+        self.assertIsInstance(
+            results[2].toMany["preparations"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][1].record_result, NullRecord
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][2].record_result, NullRecord
+        )
 
         # Make sure stuff was audited (creating clone is audited)
-        [self.enforce_in_log(record.pk, 'address', 'INSERT') for record in cataloger_created.addresses.all()]
-        [self.enforce_in_log(record.pk, 'agentspecialty', 'INSERT') for record in cataloger_created.agentspecialties.all()]
-        self.enforce_in_log(cataloger_created.pk, 'agent', 'INSERT')
+        [
+            self.enforce_in_log(record.pk, "address", "INSERT")
+            for record in cataloger_created.addresses.all()
+        ]
+        [
+            self.enforce_in_log(record.pk, "agentspecialty", "INSERT")
+            for record in cataloger_created.agentspecialties.all()
+        ]
+        self.enforce_in_log(cataloger_created.pk, "agent", "INSERT")
 
-        self.enforce_in_log(results[1].toMany['preparations'][0].record_result.get_id(), 'preparation', 'UPDATE')
-        self.enforce_in_log(results[0].toMany['preparations'][0].record_result.get_id(), 'preparation', 'UPDATE')
+        self.enforce_in_log(
+            results[1].toMany["preparations"][0].record_result.get_id(),
+            "preparation",
+            "UPDATE",
+        )
+        self.enforce_in_log(
+            results[0].toMany["preparations"][0].record_result.get_id(),
+            "preparation",
+            "UPDATE",
+        )
 
     def test_to_many_match_is_possible(self):
 
@@ -1118,7 +1353,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         ]
 
         (headers, rows, pack, plan) = self.query_to_results(
-            "collectionobject", query_paths
+            *self.make_query_fields("collectionobject", query_paths)
         )
 
         dicted = [dict(zip(headers, row)) for row in rows]
@@ -1174,3 +1409,317 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         self.assertEqual(
             results[2].toOne["cataloger"].record_result.get_id(), self.test_agent_1.id
         )
+
+    def batch_edit_filtering(self, filtering=False):
+
+        self._update(self.test_agent_1, {"integer1": 20})
+        self._update(self.test_agent_2, {"integer1": 21})
+        self._update(self.test_agent_3, {"integer1": 20})
+
+        self.ce_3 = Collectingevent.objects.create(
+            stationfieldnumber="3",
+            discipline=self.discipline,
+        )
+
+        self.ce_4 = Collectingevent.objects.create(
+            stationfieldnumber="4",
+            discipline=self.discipline,
+        )
+
+        ce_1_coll_1 = Collector.objects.create(
+            collectingevent=self.ce_1,
+            agent=self.test_agent_1,
+            remarks="coll_1",
+            division=self.test_agent_1.division,
+        )
+        ce_1_coll_2 = Collector.objects.create(
+            collectingevent=self.ce_1,
+            agent=self.test_agent_2,
+            remarks="coll_2",
+            division=self.test_agent_2.division,
+        )
+        ce_1_coll_3 = Collector.objects.create(
+            collectingevent=self.ce_1,
+            agent=self.test_agent_3,
+            remarks="coll_1",
+            division=self.test_agent_3.division,
+        )
+
+        ce_2_coll_1 = Collector.objects.create(
+            collectingevent=self.ce_2,
+            agent=self.test_agent_1,
+            remarks="coll_1",
+            division=self.test_agent_1.division,
+        )
+        ce_2_coll_2 = Collector.objects.create(
+            collectingevent=self.ce_2,
+            agent=self.test_agent_2,
+            division=self.test_agent_2.division,
+        )
+        ce_2_coll_3 = Collector.objects.create(
+            collectingevent=self.ce_2,
+            agent=self.test_agent_3,
+            division=self.test_agent_3.division,
+        )
+
+        ce_3_coll_1 = Collector.objects.create(
+            collectingevent=self.ce_3,
+            agent=self.test_agent_1,
+            division=self.test_agent_1.division,
+        )
+        ce_3_coll_2 = Collector.objects.create(
+            collectingevent=self.ce_3,
+            agent=self.test_agent_2,
+            remarks="coll_1",
+            division=self.test_agent_2.division,
+        )
+        ce_3_coll_3 = Collector.objects.create(
+            collectingevent=self.ce_3,
+            agent=self.test_agent_3,
+            division=self.test_agent_3.division,
+        )
+
+        ce_4_coll_1 = Collector.objects.create(
+            collectingevent=self.ce_4,
+            agent=self.test_agent_1,
+            division=self.test_agent_1.division,
+        )
+        ce_4_coll_2 = Collector.objects.create(
+            collectingevent=self.ce_4,
+            agent=self.test_agent_2,
+            division=self.test_agent_2.division,
+        )
+        ce_4_coll_3 = Collector.objects.create(
+            collectingevent=self.ce_4,
+            agent=self.test_agent_3,
+            remarks="coll_1",
+            division=self.test_agent_3.division,
+        )
+
+        query_fields = [
+            {
+                "tablelist": "10",
+                "stringid": "10.collectingevent.text4",
+                "fieldname": "text4",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 0,
+                "isdisplay": True,
+                "operstart": 8,
+                "startvalue": "",
+                "isnot": False,
+            },
+            {
+                "tablelist": "10,30-collectors,5",
+                "stringid": "10,30-collectors,5.agent.firstName",
+                "fieldname": "firstName",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 1,
+                "isdisplay": True,
+                "operstart": 8,
+                "startvalue": "",
+                "isnot": False,
+            },
+            {
+                "tablelist": "10,30-collectors,5",
+                "stringid": "10,30-collectors,5.agent.lastName",
+                "fieldname": "lastName",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 2,
+                "isdisplay": True,
+                "operstart": 8,
+                "startvalue": "",
+                "isnot": False,
+            },
+            {
+                "tablelist": "10,30-collectors",
+                "stringid": "10,30-collectors.collector.remarks",
+                "fieldname": "remarks",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 3,
+                "isdisplay": True,
+                "operstart": 1 if filtering else 8,
+                "startvalue": "coll_1",
+                "isnot": False,
+            },
+        ]
+
+        return self.query_to_results("collectingevent", fields_from_json(query_fields))
+
+    def test_batch_edit_no_filtering(self):
+        (headers, rows, pack, plan) = self.batch_edit_filtering()
+
+        rows = [dict(zip(headers, row)) for row in rows]
+
+        data = [
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "coll_1",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "coll_2",
+                "Agent firstName #2": "Jame",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "coll_1",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "coll_1",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "",
+                "Agent firstName #2": "Jame",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "coll_1",
+                "Agent firstName #2": "Jame",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "",
+                "Agent firstName #2": "Jame",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "coll_1",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+        ]
+
+        results = do_upload(
+            self.collection, rows, plan, self.agent.id, batch_edit_packs=pack
+        )
+
+        list([self.enforcer(result) for result in results])
+
+    def test_batch_edit_filtering(self):
+        (headers, rows, pack, plan) = self.batch_edit_filtering(True)
+
+        rows = [dict(zip(headers, row)) for row in rows]
+
+        rows = [
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "coll_1",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "Changes here are ignored",
+                "Agent firstName #2": "",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "This change is not ignored",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "coll_1",
+                "Agent firstName": "John",
+                "Agent lastName": "Doe",
+                "Collector remarks #2": "This changee is also ignoreed",
+                "Agent firstName #2": "",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "",
+                "Agent firstName #3": "And so is this one",
+                "Agent lastName #3": "",
+            },
+            {
+                "CollectingEvent text4": "This will be saved",
+                "Collector remarks": "This will not be saved",
+                "Agent firstName": "",
+                "Agent lastName": "",
+                "Collector remarks #2": "coll_1",
+                "Agent firstName #2": "Jame",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "",
+                "Agent firstName #3": "",
+                "Agent lastName #3": "change ignored",
+            },
+            {
+                "CollectingEvent text4": "",
+                "Collector remarks": "",
+                "Agent firstName": "",
+                "Agent lastName": "",
+                "Collector remarks #2": "",
+                "Agent firstName #2": "",
+                "Agent lastName #2": "",
+                "Collector remarks #3": "Change not ignored",
+                "Agent firstName #3": "Jame",
+                "Agent lastName #3": "Blo",
+            },
+        ]
+
+        results = do_upload(
+            self.collection, rows, plan, self.agent.id, batch_edit_packs=pack
+        )
+
+        self.assertIsInstance(results[0].record_result, NoChange)
+        self.assertIsInstance(results[1].record_result, NoChange)
+        self.assertIsInstance(results[2].record_result, Updated)
+        self.assertEqual(
+            results[2].record_result.info.columns, ["CollectingEvent text4"]
+        )
+        self.assertIsInstance(results[3].record_result, NoChange)
+
+        self.assertIsInstance(
+            results[0].toMany["collectors"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[0].toMany["collectors"][0].toOne["agent"].record_result, Matched
+        )
+        self.assertIsInstance(
+            results[0].toMany["collectors"][1].record_result, NoChange
+        )
+        self.assertIsInstance(results[0].toMany["collectors"][2].record_result, Updated)
+        self.assertIsInstance(
+            results[0].toMany["collectors"][2].toOne["agent"].record_result, Matched
+        )
+
+        self.assertIsInstance(
+            results[1].toMany["collectors"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[1].toMany["collectors"][0].toOne["agent"].record_result, Matched
+        )
+        self.assertIsInstance(
+            results[1].toMany["collectors"][1].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[1].toMany["collectors"][1].record_result, NoChange
+        )
+
+        self.assertIsInstance(
+            results[2].toMany["collectors"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[2].toMany["collectors"][1].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[2].toMany["collectors"][2].record_result, NoChange
+        )
+
+        self.assertIsInstance(
+            results[3].toMany["collectors"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[3].toMany["collectors"][1].record_result, NoChange
+        )
+        self.assertIsInstance(results[3].toMany["collectors"][2].record_result, Updated)

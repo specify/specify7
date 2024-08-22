@@ -27,5 +27,33 @@ export const batchEditText = createDictionary({
     },
     createUpdateDataSetInstructions: {
         'en-us': "Use the query builder to make a new batch edit dataset"
+    },
+    showRollback: {
+        'en-us': "Show revert button"
+    },
+    showRollbackDescription: {
+        'en-us': "Revert is currently an experimental feature. This preference will hide the button"
+    },
+    commit: {
+        'en-us': 'Commit'
+    },
+    startCommitDescription: {
+        'en-us': 'Commiting the Data Set will update, add, and delete the data from the spreadsheet to the  Specify database.',
+    },
+    startRevertDescription: {
+        'en-us': "Rolling back the dataset will re-update the values, delete created records, and create new records"
+    },
+    commitSuccessfulDescription: {
+        'en-us': `Click on the "Results" button to see the number of records affected in each database table`,
+    },
+    dateSetRevertDescription: {
+        'en-us': `This Rolledback Data Set is saved, however, it cannot be edit. Please re-run the query`
+    },
+    committing: {
+        'en-us': 'Committing'
+    },
+    nullRecord: {
+        'en-us': "(Not included in the query results)"
     }
+    
 } as const)

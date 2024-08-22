@@ -76,6 +76,16 @@ export const operationPolicies = {
     'upload',
     'rollback',
   ],
+  '/batch_edit/dataset': [
+    'create',
+    'update',
+    'delete',
+    'commit',
+    'rollback',
+    'validate',
+    'transfer',
+    'create_recordset',
+  ]
 } as const;
 
 /**

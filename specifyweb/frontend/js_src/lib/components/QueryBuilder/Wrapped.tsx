@@ -53,6 +53,7 @@ import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 import { BatchEditFromQuery } from '../BatchEdit';
+import { datasetVariants } from '../Toolbar/WbsDialog';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -590,7 +591,7 @@ function Wrapped({
                 }
                 extraButtons={
                   <>
-                  <BatchEditFromQuery query={queryResource} fields={state.fields} baseTableName={state.baseTableName}/>
+                 { datasetVariants.batchEdit.canCreate() && <BatchEditFromQuery query={queryResource} fields={state.fields} baseTableName={state.baseTableName} recordSetId={recordSet?.id}/> }
                   {query.countOnly ? undefined : (
                     <QueryExportButtons
                       baseTableName={state.baseTableName}

@@ -15,7 +15,7 @@ from sqlalchemy import types
 
 from typing import Tuple, Optional, Union
 
-from specifyweb.context.app_resource import get_app_resource
+import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
@@ -40,7 +40,7 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 class ObjectFormatter(object):
     def __init__(self, collection, user, replace_nulls, format_agent_type=False):
 
-        formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
+        formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)
@@ -182,8 +182,7 @@ class ObjectFormatter(object):
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
-            new_expr = self._fieldformat(formatter_field_spec.get_field(),
-                                         getattr(table, specify_field.name))
+            new_expr = getattr(table, specify_field.name)
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)

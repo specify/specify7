@@ -10,7 +10,6 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { hasPermission } from '../Permissions/helpers';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
@@ -23,6 +22,7 @@ import { WbRollback } from './WbRollback';
 import { WbSave } from './WbSave';
 import { WbUpload } from './WbUpload';
 import { WbValidate } from './WbValidate';
+import { resolveVariantFromDataset, WbVariantUiSpec } from '../Toolbar/WbsDialog';
 
 export function WbActions({
   dataset,
@@ -65,8 +65,11 @@ export function WbActions({
       onOpenStatus: openStatus,
       workbench,
     });
+  
+  const variant = resolveVariantFromDataset(dataset);
+  const uiSpec = variant.uiSpec.viewer;
 
-  const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
+  const message = mode === undefined ? undefined : getMessage(cellCounts, mode, uiSpec);
 
   const isMapped = mappings !== undefined;
 
@@ -85,7 +88,7 @@ export function WbActions({
         onCloseNoUploadPlan={closeNoUploadPlan}
         onOpenNoUploadPlan={openNoUploadPlan}
       />
-      {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
+      {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
             hasUnsavedChanges={hasUnsavedChanges}
@@ -113,15 +116,16 @@ export function WbActions({
           {commonText.results()}
         </Button.Small>
       </ErrorBoundary>
-      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
+      {isUploaded && variant.canUndo() ? (
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
+            uiSpec={uiSpec}
             triggerStatusComponent={triggerStatusComponent}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
+      {!isUploaded && variant.canDo() ? (
         <ErrorBoundary dismissible>
           <WbUpload
             cellCounts={cellCounts}
@@ -129,10 +133,11 @@ export function WbActions({
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
             startUpload={startUpload}
+            uiSpec={uiSpec}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+      {!isUploaded && variant.canEdit() ? (
         <>
           <ErrorBoundary dismissible>
             <WbRevert
@@ -213,7 +218,7 @@ export function WbActions({
               ? wbText.validationCanceled()
               : mode === 'unupload'
               ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled()
+              : wbText.uploadCanceled({type: uiSpec.do})
           }
           onClose={closeAbortedMessage}
         >
@@ -221,7 +226,8 @@ export function WbActions({
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
             ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription()}
+            : wbText.uploadCanceledDescription({type: uiSpec.do})
+            }
         </Dialog>
       )}
     </>
@@ -289,7 +295,8 @@ function useWbActions({
 
 function getMessage(
   cellCounts: WbCellCounts,
-  mode: WbStatus
+  mode: WbStatus,
+  uiSpec: WbVariantUiSpec
 ): {
   readonly header: LocalizedString;
   readonly message: JSX.Element | LocalizedString;
@@ -322,23 +329,23 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: wbText.uploadSuccessful(),
-            message: wbText.uploadSuccessfulDescription(),
+            header: wbText.uploadSuccessful({type: uiSpec.do}),
+            message: uiSpec.doSuccessfulDescription,
           }
         : {
-            header: wbText.uploadErrors(),
+            header: wbText.uploadErrors({type: uiSpec.do}),
             message: (
               <>
-                {wbText.uploadErrorsDescription()}
+                {wbText.uploadErrorsDescription({type: uiSpec.do})}
                 <br />
                 <br />
-                {wbText.uploadErrorsSecondDescription()}
+                {wbText.uploadErrorsSecondDescription({type: uiSpec.do})}
               </>
             ),
           },
     unupload: {
       header: wbText.dataSetRollback(),
-      message: wbText.dataSetRollbackDescription(),
+      message: uiSpec.undoFinishedDescription,
     },
   };
 

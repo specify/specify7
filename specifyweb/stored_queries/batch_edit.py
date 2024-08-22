@@ -25,6 +25,9 @@ from specifyweb.specify.func import Func
 from . import models
 import json
 
+from specifyweb.workbench.upload.upload_plan_schema import schema
+from jsonschema import validate
+
 from django.db import transaction
 
 
@@ -97,6 +100,13 @@ class BatchEditPack(NamedTuple):
         }
         return BatchEditPack(**new_field_specs)
 
+    def merge(self, other: "BatchEditPack") -> "BatchEditPack":
+        return BatchEditPack(
+            id=self.id if self.id.field is not None else other.id,
+            version=self.version if self.version.field is not None else other.version,
+            order=self.order if self.order.field is not None else other.order,
+        )
+
     # a basic query field spec to field
     @staticmethod
     def _query_field(field_spec: QueryFieldSpec, sort_type: int):
@@ -144,13 +154,13 @@ class BatchEditPack(NamedTuple):
 
     def bind(self, row: Tuple[Any]):
         return BatchEditPack(
-            id=BatchEditFieldPack(
-                value=row[self.id.idx] if self.id.idx is not None else None
+            id=self.id._replace(
+                value=row[self.id.idx] if self.id.idx is not None else None,
             ),
-            order=BatchEditFieldPack(
+            order=self.order._replace(
                 value=row[self.order.idx] if self.order.idx is not None else None
             ),
-            version=BatchEditFieldPack(
+            version=self.version._replace(
                 value=row[self.version.idx] if self.version.idx is not None else None
             ),
         )
@@ -164,7 +174,7 @@ class BatchEditPack(NamedTuple):
 
     # we not only care that it is part of tree, but also care that there is rank to tree
     def is_part_of_tree(self, query_fields: List[QueryField]) -> bool:
-        if self.id is None or self.id.idx is None:
+        if self.id is None or self.id.value is None or self.id.value == NULL_RECORD:
             return False
         id_field = self.id.idx
         field = query_fields[id_field - 1]
@@ -188,40 +198,51 @@ class RowPlanMap(NamedTuple):
     columns: List[BatchEditFieldPack] = []
     to_one: Dict[str, "RowPlanMap"] = {}
     to_many: Dict[str, "RowPlanMap"] = {}
-    has_filters: bool = False
+    is_naive: bool = True
 
     @staticmethod
-    def _merge(
-        current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
-    ) -> Dict[str, "RowPlanMap"]:
-        key, other_plan = other
-        return {
-            **current,
-            # merge if other is also found in ours
-            key: (
-                other_plan
-                if key not in current
-                else current[key].merge(
+    def _merge(force_naive=False):
+        def _merge(
+            current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
+        ) -> Dict[str, "RowPlanMap"]:
+            key, other_plan = other
+            return {
+                **current,
+                # merge if other is also found in ours
+                key: (
                     other_plan
-                )
-            ),
-        }
+                    if key not in current
+                    else current[key].merge(other_plan, force_naive)
+                ),
+            }
 
+        return _merge
 
-    # takes two row plans, combines them together. Adjusts has_filters.
+    # takes two row plans, combines them together. Adjusts is_naive.
     def merge(
-        self: "RowPlanMap", other: "RowPlanMap"
+        self: "RowPlanMap", other: "RowPlanMap", force_naive=False
     ) -> "RowPlanMap":
         new_columns = [*self.columns, *other.columns]
-        batch_edit_pack = other.batch_edit_pack or self.batch_edit_pack
-        has_self_filters = self.has_filters or other.has_filters
-        to_one = reduce(
-            RowPlanMap._merge, other.to_one.items(), self.to_one
+        batch_edit_pack = other.batch_edit_pack.merge(self.batch_edit_pack)
+        is_self_naive = self.is_naive and other.is_naive
+        # BUG: Handle this more gracefully for to-ones.
+        to_one = reduce(RowPlanMap._merge(), other.to_one.items(), self.to_one)
+        adjusted_to_one = {
+            key: value._replace(is_naive=True) for (key, value) in to_one.items()
+        }
+        to_many = reduce(
+            RowPlanMap._merge(force_naive), other.to_many.items(), self.to_many
         )
-        to_many = reduce(RowPlanMap._merge, other.to_many.items(), self.to_many)
-        any_filter = any(node.has_filters for node in [*to_one.values(), *to_many.values()])
+        adjusted_naive = (
+            is_self_naive
+            and not (any(not _to_one.is_naive for _to_one in to_one.values()))
+        ) or (force_naive and (batch_edit_pack.order.field is None))
         return RowPlanMap(
-            batch_edit_pack, new_columns, to_one, to_many, has_filters=has_self_filters or any_filter
+            batch_edit_pack,
+            new_columns,
+            adjusted_to_one,
+            to_many,
+            is_naive=adjusted_naive,
         )
 
     @staticmethod
@@ -271,7 +292,7 @@ class RowPlanMap(NamedTuple):
                 to_one=_to_one,
                 to_many=_to_many,
                 batch_edit_pack=_batch_indexed,
-                has_filters=self.has_filters,
+                is_naive=self.is_naive,
             ),
             [*column_fields, *_batch_fields, *to_one_fields, *to_many_fields],
         )
@@ -306,19 +327,17 @@ class RowPlanMap(NamedTuple):
             node = next_path[0]
             rest = next_path[1:]
 
-        # we can't edit relationships's formatted/aggregated anyways.
-        batch_edit_pack = (
-            EMPTY_PACK
-            if original_field_spec.needs_formatted()
-            else BatchEditPack.from_field_spec(partial_field_spec)
-        )
+        # Meh, simplifies other stuff going on in other places
+        # that is, we'll include the pack of CO if query is like CO -> (formatted) or CO -> CE (formatted).
+        # No, this doesn't mean IDs of the formatted/aggregated are including (that is impossible)
+        batch_edit_pack = BatchEditPack.from_field_spec(partial_field_spec)
 
         if node is None or (len(rest) == 0):
             # we are at the end
             return RowPlanMap(
                 columns=[BatchEditFieldPack(field=original_field)],
                 batch_edit_pack=batch_edit_pack,
-                has_filters=(original_field.op_num != 8),
+                is_naive=(original_field.op_num == 8),
             )
 
         assert isinstance(node, TreeRankQuery) or isinstance(
@@ -366,11 +385,25 @@ class RowPlanMap(NamedTuple):
             )
             for field in fields
         ]
-        return reduce(
-            lambda current, other: current.merge(other),
+
+        raw_plan = reduce(
+            lambda current, other: current.merge(other, True),
             iter,
             RowPlanMap(batch_edit_pack=EMPTY_PACK),
         )
+        return raw_plan.skim_plan()
+
+    def skim_plan(self: "RowPlanMap", parent_is_naive=True) -> "RowPlanMap":
+        is_current_naive = parent_is_naive and self.is_naive
+        to_one = {
+            key: value.skim_plan(is_current_naive)
+            for (key, value) in self.to_one.items()
+        }
+        to_many = {
+            key: value.skim_plan(is_current_naive)
+            for (key, value) in self.to_many.items()
+        }
+        return self._replace(to_one=to_one, to_many=to_many, is_naive=is_current_naive)
 
     @staticmethod
     def _bind_null(value: "RowPlanCanonical") -> List["RowPlanCanonical"]:
@@ -395,16 +428,15 @@ class RowPlanMap(NamedTuple):
 
     # gets a null record to fill-out empty space
     # doesn't support nested-to-many's yet - complicated
-    def nullify(self) -> "RowPlanCanonical":
-        columns = [
-            pack._replace(
-                value="(Not included in results)" if self.has_filters else None
-            )
-            for pack in self.columns
-        ]
-        to_ones = {key: value.nullify() for (key, value) in self.to_one.items()}
+    def nullify(self, ignore_naive=False) -> "RowPlanCanonical":
+        # since is_naive is set,
+        is_null = (not self.is_naive) and not ignore_naive
+        columns = [pack._replace(value=None) for pack in self.columns]
+        to_ones = {
+            key: value.nullify(not is_null) for (key, value) in self.to_one.items()
+        }
         batch_edit_pack = BatchEditPack(
-            id=BatchEditFieldPack(value=(NULL_RECORD if self.has_filters else None)),
+            id=BatchEditFieldPack(value=(NULL_RECORD if is_null else None)),
             order=EMPTY_FIELD,
             version=EMPTY_FIELD,
         )
@@ -729,7 +761,8 @@ class RowPlanCanonical(NamedTuple):
     ) -> Tuple[List[Tuple[Tuple[int, int], str]], Uploadable]:
         # Yuk, finally.
 
-        # Whether we are something like [det-> (T -- what we are) -> tree]. Set break points in handle_tree_field in query_construct.py to figure out what this means.
+        # Whether we are something like [det-> (T -- what we are) -> tree].
+        # Set break points in handle_tree_field in query_construct.py to figure out what this means.
         intermediary_to_tree = any(
             canonical.batch_edit_pack is not None
             and canonical.batch_edit_pack.is_part_of_tree(query_fields)
@@ -740,7 +773,7 @@ class RowPlanCanonical(NamedTuple):
             assert _id is not None, "invalid lookup used!"
             field = query_fields[
                 _id - 1
-            ]  # Need to go off by 1, bc we added 1 to account for distinct
+            ]  # Need to go off by 1, bc we added 1 to account for id fields
             string_id = field.fieldspec.to_stringid()
             localized_label = localization_dump.get(
                 string_id, naive_field_format(field.fieldspec)
@@ -758,7 +791,9 @@ class RowPlanCanonical(NamedTuple):
                 fieldspec.needs_formatted()
                 or intermediary_to_tree
                 or (fieldspec.is_temporal() and fieldspec.date_part != "Full Date")
-                or fieldspec.get_field().name.lower() == "fullname"
+                # TODO: Refactor after merge with production
+                or fieldspec.get_field().name.lower()
+                in ["fullname", "nodenumber", "highestchildnodenumber"]
             )
             id_in_original_fields = get_column_id(string_id)
             return (
@@ -833,6 +868,7 @@ class RowPlanCanonical(NamedTuple):
                 overrideScope=None,
                 wbcols=wb_cols,
                 static={},
+                # FEAT: Remove this restriction to allow adding brand new data anywhere
                 toOne=Func.remove_keys(to_one_upload_tables, Func.is_not_empty),
                 toMany=Func.remove_keys(to_many_upload_tables, Func.is_not_empty),
             )
@@ -866,6 +902,7 @@ def run_batch_edit(collection, user, spquery, agent):
     mapped_raws = [
         [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
     ]
+    # Skipping empty because we can have a funny case where all the query fields don't contain any data
     regularized_rows = regularize_rows(len(headers), mapped_raws, skip_empty=False)
     return make_dataset(
         user=user,
@@ -999,6 +1036,7 @@ def run_batch_edit_query(props: BatchEditProps):
     headers = Func.second(key_and_headers)
 
     json_upload_plan = upload_plan.unparse()
+    validate(json_upload_plan, schema)
 
     return (
         headers,

@@ -40,7 +40,6 @@ from .upload_result import (
 )
 from .uploadable import (
     NULL_RECORD,
-    ModelWithTable,
     Row,
     ScopeGenerator,
     Uploadable,
@@ -331,7 +330,7 @@ class BoundUploadTable(NamedTuple):
     match_payload: Optional[BatchEditSelf]
     strong_ignore: List[
         str
-    ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See ctest_to_many_match_is_possibleomment in "test_batch_edit_table.py/test_to_many_match_is_possible"
+    ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See comment in "test_batch_edit_table.py/test_to_many_match_is_possible"
 
     @property
     def current_id(self):
@@ -355,7 +354,7 @@ class BoundUploadTable(NamedTuple):
         return isinstance(self.current_id, int)
 
     @property
-    def django_model(self) -> ModelWithTable:
+    def django_model(self) -> models.ModelWithTable:
         return getattr(models, self.name.capitalize())
 
     @property
@@ -381,6 +380,11 @@ class BoundUploadTable(NamedTuple):
             if model.objects.filter(id=self.disambiguation).exists():
                 return DjangoPredicates(filters={"id": self.disambiguation})
 
+        # here's why the line below matters: If some records were added during record epansion, we cannot _filter_ or _eclude_ on them.
+        # Yes, this also means it will ONLY happen if there is a filter on that side. Something like CO (base) -> Cataloger -> Addresses.
+        # If there's no filter on addresses, below line wouldn't matter (bc presense of no record actually means there is none). If there's a filter,
+        # there could be a hidden record. This is because all we know is that we didnt "see" it, doesn't mean it's actually not there.
+        # See unittest, which covers both branches of this.
         if self.current_id == NULL_RECORD:
             return SkippablePredicate()
 
@@ -458,8 +462,8 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> Optional[ModelWithTable]:
-        model: ModelWithTable = self.django_model
+    def _get_reference(self, should_cache=True) -> Optional[models.ModelWithTable]:
+        model: models.ModelWithTable = self.django_model
         current_id = self.current_id
 
         if current_id is None:
@@ -631,7 +635,7 @@ class BoundUploadTable(NamedTuple):
 
     def _do_upload(
         self,
-        model: ModelWithTable,
+        model: models.ModelWithTable,
         to_one_results: Dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
@@ -700,7 +704,9 @@ class BoundUploadTable(NamedTuple):
 
         return UploadResult(record, to_one_results, to_many_results)
 
-    def _handle_to_many(self, update: bool, parent_id: int, model: ModelWithTable):
+    def _handle_to_many(
+        self, update: bool, parent_id: int, model: models.ModelWithTable
+    ):
         return {
             fieldname: _upload_to_manys(
                 model,
@@ -914,7 +920,7 @@ class BoundUpdateTable(BoundUploadTable):
         ):
             # I don't know what else to do. I don't think this will ever get raised. I don't know what I'll need to debug this, so showing everything.
             raise Exception(
-                f"Attempting to change the scope of the record: {reference_record} at {self}"
+                f"Attempting to change the scope of the record: {reference_record} at {self}. \n\n Diff: {concrete_field_changes}"
             )
 
         to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)

@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from specifyweb.stored_queries.batch_edit import (
     BatchEditFieldPack,
@@ -10,6 +11,7 @@ from specifyweb.stored_queries.batch_edit import (
 
 from specifyweb.stored_queries.queryfield import fields_from_json
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.stored_queries.tests.static import test_plan
 
@@ -41,6 +43,10 @@ def props_builder(self, session_maker):
 
     return _builder
 
+def fake_obj_formatter(*args, **kwargs):
+    return (SIMPLE_DEF, None, None)
+
+OBJ_FORMATTER_PATH = 'specifyweb.context.app_resource.get_app_resource'
 
 # NOTES: Yes, it is more convenient to hard code ids (instead of defining variables.).
 # But, using variables can make bugs apparent
@@ -48,6 +54,7 @@ def props_builder(self, session_maker):
 class QueryConstructionTests(SQLAlchemySetup):
     def setUp(self):
         super().setUp()
+
         agents = [
             {"firstname": "Test1", "lastname": "LastName"},
             {"firstname": "Test2", "lastname": "LastNameAsTest"},
@@ -83,6 +90,8 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         self.assertEqual(plan, row_plan_map)
 
+
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_basic_run(self):
         base_table = "collectionobject"
         query_paths = [
@@ -150,12 +159,12 @@ class QueryConstructionTests(SQLAlchemySetup):
         )
 
         correct_rows = [
-            ["num-0", None, "", "", "Test1", "LastName", None],
-            ["num-1", None, "", "", "Test1", "LastName", None],
-            ["num-2", 99, "", "", "Test2", "LastNameAsTest", None],
-            ["num-3", None, "", "", "Test2", "LastNameAsTest", None],
-            ["num-4", 229, "", "", "Test2", "LastNameAsTest", None],
-        ]
+            ['num-0', None, 'LastName', '', 'Test1', 'LastName', None],
+            ['num-1', None, 'LastName', '', 'Test1', 'LastName', None],
+            ['num-2', 99, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None],
+            ['num-3', None, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None],
+            ['num-4', 229, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None]
+            ]
 
         self.assertEqual(correct_rows, rows)
 
@@ -244,7 +253,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         self.assertEqual(correct_packs, packs)
 
-        plan = {
+        correct_plan = {
             "baseTableName": "Collectionobject",
             "uploadable": {
                 "uploadTable": {
@@ -290,8 +299,9 @@ class QueryConstructionTests(SQLAlchemySetup):
             },
         }
 
-        validate(plan, schema)
+        self.assertDictEqual(correct_plan, plan)
 
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_duplicates_flattened(self):
         base_table = "collectionobject"
         query_paths = [
@@ -574,7 +584,7 @@ class QueryConstructionTests(SQLAlchemySetup):
             {
                 "CollectionObject catalogNumber": "num-0",
                 "CollectionObject integer1": 99,
-                "Agent (formatted)": "",
+                "Agent (formatted)": "LastName",
                 "Agent firstName": "Test1",
                 "Agent lastName": "LastName",
                 "AgentSpecialty specialtyName": "agent1-testspecialty",
@@ -640,7 +650,7 @@ class QueryConstructionTests(SQLAlchemySetup):
             {
                 "CollectionObject catalogNumber": "num-2",
                 "CollectionObject integer1": 412,
-                "Agent (formatted)": "",
+                "Agent (formatted)": "LastNameTest4",
                 "Agent firstName": "Test4",
                 "Agent lastName": "LastNameTest4",
                 "AgentSpecialty specialtyName": None,
@@ -673,7 +683,7 @@ class QueryConstructionTests(SQLAlchemySetup):
             {
                 "CollectionObject catalogNumber": "num-3",
                 "CollectionObject integer1": 322,
-                "Agent (formatted)": "",
+                "Agent (formatted)": "LastNameAsTest",
                 "Agent firstName": "Test2",
                 "Agent lastName": "LastNameAsTest",
                 "AgentSpecialty specialtyName": "agent2-testspecialty",
@@ -1209,6 +1219,7 @@ class QueryConstructionTests(SQLAlchemySetup):
         self.assertEqual(packs, correct_packs)
         self.assertDictEqual(plan, test_plan.plan)
 
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_stalls_within_to_many(self):
         base_table = "collectionobject"
         query_paths = [
@@ -1460,8 +1471,9 @@ class QueryConstructionTests(SQLAlchemySetup):
             ],
         )
 
-        self.assertEqual(packs, correct_packs)
-
+        self.assertEqual(packs, correct_packs)  
+    
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_to_one_does_not_stall_if_not_to_many(self):
         base_table = "collectionobject"
         query_paths = [
@@ -1634,6 +1646,7 @@ class QueryConstructionTests(SQLAlchemySetup):
             ],
         )
 
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_to_one_stalls_within(self):
         # Something like collectionobject -> cataloger -> agent specialty and agent -> agent address self stalls
         base_table = "collectionobject"
@@ -1898,6 +1911,7 @@ class QueryConstructionTests(SQLAlchemySetup):
         ]
         self.assertEqual(correct_packs, packs)
 
+    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_to_one_stalls_to_many(self):
         # To ensure that to-many on to-one side stalls naive to-manys
 

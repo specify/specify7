@@ -8,6 +8,7 @@ import { Dialog } from '../Molecules/Dialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import type { WbStatus } from '../WorkBench/WbView';
+import { WbVariantUiSpec } from '../Toolbar/WbsDialog';
 
 export function WbUpload({
   hasUnsavedChanges,
@@ -15,12 +16,14 @@ export function WbUpload({
   openNoUploadPlan,
   startUpload,
   cellCounts,
+  uiSpec
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping | undefined;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
   readonly cellCounts: WbCellCounts;
+  readonly uiSpec: WbVariantUiSpec
 }): JSX.Element {
   const [showUpload, openUpload, closeUpload] = useBooleanState();
 
@@ -51,7 +54,7 @@ export function WbUpload({
         }
         onClick={handleUpload}
       >
-        {wbText.upload()}
+        {uiSpec.do}
       </Button.Small>
       {showUpload && (
         <Dialog
@@ -59,14 +62,14 @@ export function WbUpload({
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Info onClick={handleConfirmUpload}>
-                {wbText.upload()}
+                {uiSpec.do}
               </Button.Info>
             </>
           }
-          header={wbText.startUpload()}
+          header={wbText.startUpload({type: uiSpec.do})}
           onClose={closeUpload}
         >
-          {wbText.startUploadDescription()}
+          {uiSpec.doStartDescription}
         </Dialog>
       )}
     </>

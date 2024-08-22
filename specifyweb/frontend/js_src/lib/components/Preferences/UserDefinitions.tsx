@@ -1954,7 +1954,21 @@ export const userPreferenceDefinitions = {
             }
           })
         }
+      },
+      editor: {
+        title: preferencesText.general(),
+        items: {
+          showRollback: definePref<boolean>({
+            title: batchEditText.showRollback(),
+            requiresReload: false,
+            defaultValue: true,
+            type: "java.lang.Boolean",
+            visible: true,
+            description: batchEditText.showRollbackDescription()
+          })
+        }
       }
+
     }
   }
 } as const;

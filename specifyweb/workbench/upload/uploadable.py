@@ -35,11 +35,6 @@ Row = Dict[str, str]
 
 Filter = Dict[str, Any]
 
-# TODO: Use this everywhere
-class ModelWithTable(Model):
-    specify_model: Table
-    class Meta: 
-        abstract = True
 class Uploadable(Protocol):
     # also returns if the scoped table returned can be cached or not.
     # depends on whether scope depends on other columns. if any definition is found,

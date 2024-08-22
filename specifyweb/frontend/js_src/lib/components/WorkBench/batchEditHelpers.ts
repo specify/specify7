@@ -21,6 +21,7 @@ export type BatchEditPack = {
     readonly to_many?: R<RA<BatchEditPack>>
 }
 
+
 export const isBatchEditNullRecord = (batchEditPack: BatchEditPack | undefined, currentTable: SpecifyTable, mappingPath: MappingPath): boolean => {
     if (batchEditPack == undefined) return false;
     if (mappingPath.length <= 1) return batchEditPack?.self?.id === BATCH_EDIT_NULL_RECORD;

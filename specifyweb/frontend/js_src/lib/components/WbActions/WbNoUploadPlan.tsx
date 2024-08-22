@@ -27,6 +27,7 @@ export function WbNoUploadPlan({
     if (
       !isUploaded &&
       (mappings?.lines ?? []).length === 0 &&
+      // Not sure about this, since this path will never logically happen for batch-edit
       hasPermission('/workbench/dataset', 'upload')
     ) {
       handleOpenNoUploadPlan();

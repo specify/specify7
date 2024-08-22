@@ -19,6 +19,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { RemainingLoadingTime } from './RemainingLoadingTime';
+import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
 
 // How often to query back-end
 const REFRESH_RATE = 2 * SECOND;
@@ -32,6 +33,8 @@ export function WbStatus({
 }): JSX.Element {
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
+
+  const uiSpec = resolveVariantFromDataset(dataset).uiSpec.viewer;
 
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
@@ -63,7 +66,7 @@ export function WbStatus({
 
   const title = {
     validating: wbText.wbStatusValidation(),
-    uploading: wbText.wbStatusUpload(),
+    uploading: wbText.wbStatusUpload({type: uiSpec.do}),
     unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
@@ -72,13 +75,13 @@ export function WbStatus({
 
   const mappedOperation = {
     validating: wbText.validation(),
-    uploading: wbText.upload(),
+    uploading: uiSpec.do,
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
   const standardizedOperation = {
     validating: wbText.validating(),
-    uploading: wbText.uploading(),
+    uploading: uiSpec.doing,
     unuploading: wbText.rollingBack(),
   }[status.uploaderstatus.operation];
 

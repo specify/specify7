@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional
+from typing import List, Optional, Type, Union
 from uuid import uuid4
 
 from django import http
@@ -38,6 +38,24 @@ class DataSetPT(PermissionTarget):
     validate = PermissionTargetAction()
     transfer = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
+
+
+class BatchEditDataSet(PermissionTarget):
+    resource = "/batch_edit/dataset"
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+    commit = PermissionTargetAction()
+    rollback = PermissionTargetAction()
+    validate = PermissionTargetAction()
+    transfer = PermissionTargetAction()
+    create_recordset = PermissionTargetAction()
+
+
+def resolve_permission(
+    dataset: models.Spdataset,
+) -> Union[Type[DataSetPT], Type[BatchEditDataSet]]:
+    return BatchEditDataSet if dataset.isupdate else DataSetPT
 
 
 def regularize_rows(ncols: int, rows: List[List], skip_empty=True) -> List[List[str]]:
@@ -497,7 +515,7 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
             check_permission_targets(
                 request.specify_collection.id,
                 request.specify_user.id,
-                [DataSetPT.update],
+                [resolve_permission(ds).update],
             )
             attrs = json.load(request)
 
@@ -555,7 +573,7 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
             check_permission_targets(
                 request.specify_collection.id,
                 request.specify_user.id,
-                [DataSetPT.delete],
+                [resolve_permission(ds).delete],
             )
             if ds.uploaderstatus is not None:
                 return http.HttpResponse("dataset in use by uploader", status=409)
@@ -630,7 +648,9 @@ def rows(request, ds) -> http.HttpResponse:
 
     if request.method == "PUT":
         check_permission_targets(
-            request.specify_collection.id, request.specify_user.id, [DataSetPT.update]
+            request.specify_collection.id,
+            request.specify_user.id,
+            [resolve_permission(ds).update],
         )
         if ds.uploaderstatus is not None:
             return http.HttpResponse("dataset in use by uploader.", status=409)
@@ -639,7 +659,9 @@ def rows(request, ds) -> http.HttpResponse:
                 "dataset has been uploaded. changing data not allowed.", status=400
             )
 
-        rows = regularize_rows(len(ds.columns), json.load(request))
+        rows = regularize_rows(
+            len(ds.columns), json.load(request), skip_empty=(not ds.isupdate)
+        )
 
         ds.data = rows
         ds.rowresults = None
@@ -681,10 +703,12 @@ def rows(request, ds) -> http.HttpResponse:
 def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
     "Initiates an upload or validation of dataset <ds_id>."
 
+    do_permission = BatchEditDataSet.commit if ds.isupdate else DataSetPT.upload
+
     check_permission_targets(
         request.specify_collection.id,
         request.specify_user.id,
-        [DataSetPT.validate if no_commit else DataSetPT.upload],
+        [resolve_permission(ds).validate if no_commit else do_permission],
     )
 
     with transaction.atomic():
@@ -745,9 +769,9 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
 def unupload(request, ds) -> http.HttpResponse:
     "Initiates an unupload of dataset <ds_id>."
-
+    permission = BatchEditDataSet.rollback if ds.isupdate else DataSetPT.unupload
     check_permission_targets(
-        request.specify_collection.id, request.specify_user.id, [DataSetPT.unupload]
+        request.specify_collection.id, request.specify_user.id, [permission]
     )
 
     with transaction.atomic():
@@ -958,15 +982,17 @@ def upload_results(request, ds) -> http.HttpResponse:
 @require_POST
 def validate_row(request, ds_id: str) -> http.HttpResponse:
     "Validates a single row for dataset <ds_id>. The row data is passed as POST parameters."
-    check_permission_targets(
-        request.specify_collection.id, request.specify_user.id, [DataSetPT.validate]
-    )
     ds = get_object_or_404(models.Spdataset, id=ds_id)
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [resolve_permission(ds).validate],
+    )
     collection = request.specify_collection
     bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
     row = json.loads(request.body)
     ncols = len(ds.columns)
-    rows = regularize_rows(ncols, [row])
+    rows = regularize_rows(ncols, [row], skip_empty=(not ds.isupdate))
     if not rows:
         return http.JsonResponse(None, safe=False)
     row = rows[0]
@@ -1044,11 +1070,13 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
     if "specifyuserid" not in request.POST:
         return http.HttpResponseBadRequest("missing parameter: specifyuserid")
 
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
     check_permission_targets(
-        request.specify_collection.id, request.specify_user.id, [DataSetPT.transfer]
+        request.specify_collection.id,
+        request.specify_user.id,
+        [resolve_permission(ds).transfer],
     )
 
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
@@ -1133,7 +1161,7 @@ def create_recordset(request, ds) -> http.HttpResponse:
     check_permission_targets(
         request.specify_collection.id,
         request.specify_user.id,
-        [DataSetPT.create_recordset],
+        [resolve_permission(ds).create_recordset],
     )
     check_table_permissions(
         request.specify_collection, request.specify_user, Recordset, "create"

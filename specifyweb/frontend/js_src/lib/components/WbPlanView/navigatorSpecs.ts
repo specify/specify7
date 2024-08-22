@@ -44,10 +44,6 @@ const wbPlanView: NavigatorSpec = {
   includeRootFormattedAggregated: false,
   allowTransientToMany: true,
   useSchemaOverrides: true,
-  /*
-   * Hide nested -to-many relationships as they are not
-   * supported by the WorkBench
-   */
   allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')

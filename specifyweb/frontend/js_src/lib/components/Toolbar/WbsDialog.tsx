@@ -35,6 +35,7 @@ import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 import { formatUrl } from '../Router/queryString';
 import { f } from '../../utils/functools';
 import { batchEditText } from '../../localization/batchEdit';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(
@@ -135,6 +136,8 @@ function TableHeader({
 
 type WB_VARIANT = keyof Omit<typeof datasetVariants, "bulkAttachment">;
 
+export type WbVariantUiSpec = typeof datasetVariants.workbench.uiSpec.viewer;
+
 export function GenericDataSetsDialog({
   onClose: handleClose,
   onDataSetSelect: handleDataSetSelect,
@@ -144,15 +147,15 @@ export function GenericDataSetsDialog({
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
 }): JSX.Element | null {
-  const variant = datasetVariants[wbVariant];
+  const {fetchUrl, sortConfig: sortConfigSpec, canEdit, uiSpec, route, metaRoute, canImport} = datasetVariants[wbVariant];
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
-      async () => ajax<RA<DatasetBriefPlan>>(formatUrl(variant.fetchUrl, {}), { headers: { Accept: 'application/json' } }).then(({data})=>data),
+      async () => ajax<RA<DatasetBriefPlan>>(formatUrl(fetchUrl, {}), { headers: { Accept: 'application/json' } }).then(({data})=>data),
       [wbVariant]
     ),
     true
   );
-  const [sortConfig, handleSort, applySortConfig] = useSortConfig(variant.sortConfig.key, variant.sortConfig.field, false);
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(sortConfigSpec.key, sortConfigSpec.field, false);
 
   const datasets = Array.isArray(unsortedDatasets) ? applySortConfig(
     unsortedDatasets, ({ name, timestampcreated, uploadresult }) =>
@@ -165,13 +168,11 @@ export function GenericDataSetsDialog({
   const navigate = useNavigate();
   const loading = React.useContext(LoadingContext);
 
-  const {canImport, canEdit, header, onEmpty, route, metaRoute} = variant;
-
   return Array.isArray(datasets) ? <Dialog
   buttons={
     <>
       <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-      {variant.canImport() && (
+      {canImport() && (
         <>
           <Link.Info href="/specify/workbench/import/">
             {wbText.importFile()}
@@ -195,13 +196,13 @@ export function GenericDataSetsDialog({
     container: dialogClassNames.wideContainer,
   }}
   dimensionsKey="DataSetsDialog"
-  header={header(datasets.length)}
+  header={uiSpec.datasetsDialog.header(datasets.length)}
   icon={icons.table}
   onClose={handleClose}
 >
   {datasets.length === 0 ? (
     <p>
-      {onEmpty(canImport())}
+      {uiSpec.datasetsDialog.empty()}
     </p>
   ) : (
     <nav>
@@ -271,26 +272,51 @@ const baseWbVariant = {
     field: 'name'
   },
   canImport: ()=>hasPermission('/workbench/dataset', 'create'),
-  header: (count: number)=>commonText.countLine({resource: wbText.dataSets({variant: wbText.workBench()}), count}),
-  onEmpty: (canImport: boolean)=>`${wbText.wbsDialogEmpty()} ${canImport ? wbText.createDataSetInstructions() : ''}`,
   canEdit: ()=>hasPermission('/workbench/dataset', 'update'),
   route: (id: number)=>`/specify/workbench/${id}`,
   metaRoute: (id: number)=>`/specify/overlay/workbench/${id}/meta/`,
+  canCreate: ()=>hasPermission('/workbench/dataset', 'create'),
+  canTransfer: ()=>hasPermission('/workbench/dataset', 'transfer'),
+  canUpdate: ()=>hasPermission('/workbench/dataset', 'update'),
+  canDo: ()=>hasPermission('/workbench/dataset', 'upload'),
+  canUndo: ()=>hasPermission('/workbench/dataset', 'unupload'),
+  canValidate: ()=>hasPermission('/workbench/dataset', 'validate'),
+  uiSpec: {
+    datasetsDialog:{
+      header: (count: number)=>commonText.countLine({resource: wbText.dataSets({variant: wbText.workBench()}), count}),
+      empty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create') ? wbText.createDataSetInstructions() : ''}`,
+    },
+    viewer: {
+      do: wbText.upload(),
+      doStartDescription: wbText.startUploadDescription(),
+      undo: wbText.rollback(),
+      undoConfirm: wbText.beginRollback(),
+      undoStartDescription:  wbText.beginRollbackDescription(),
+      doSuccessfulDescription: wbText.uploadSuccessfulDescription(),
+      undoFinishedDescription: wbText.dataSetRollbackDescription(),
+      doing: wbText.uploading()
+    }
+  }
 } as const;
 
+// Defines a shared interface to access dataset variants
 export const datasetVariants = {
   'workbench': baseWbVariant,
   'workbenchChoosePlan': {
+    ...baseWbVariant,
     fetchUrl: '/api/workbench/dataset/?with_plan',
     sortConfig: baseWbVariant.sortConfig,
     canImport: ()=>false, 
-    header: ()=>wbPlanText.copyPlan(), 
-    onEmpty: ()=>wbPlanText.noPlansToCopyFrom(),
     canEdit: ()=>false,
-    route: baseWbVariant.route,
-    metaRoute: baseWbVariant.metaRoute
+    uiSpec: {
+      datasetsDialog: {
+        header: ()=>wbPlanText.copyPlan(),
+        empty: ()=>wbPlanText.noPlansToCopyFrom(),
+      },
+    }
   },
   'batchEdit': {
+    ...baseWbVariant,
     fetchUrl: '/api/workbench/dataset/?isupdate=1',
     sortConfig: {
       key: 'listOfBatchEditDataSets',
@@ -299,10 +325,29 @@ export const datasetVariants = {
     // Cannot import via the header
     canImport: ()=>false,
     header: (count: number)=>commonText.countLine({resource: wbText.dataSets({variant: batchEditText.batchEdit()}), count}),
-    onEmpty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
-    canEdit: ()=>hasPermission('/workbench/dataset', 'update'),
-    route: baseWbVariant.route,
-    metaRoute: baseWbVariant.metaRoute
+    onEmpty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/batch_edit/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
+    canEdit: ()=>hasPermission('/batch_edit/dataset', 'update'),
+    canCreate: ()=>hasPermission('/batch_edit/dataset', 'create'),
+    canTransfer: ()=>hasPermission('/batch_edit/dataset', 'transfer'),
+    canDo: ()=>hasPermission('/batch_edit/dataset', 'commit'),
+    canUndo: ()=>(userPreferences.get('batchEdit', 'editor', 'showRollback') && hasPermission('/batch_edit/dataset', 'rollback')),
+    canValidate: ()=>hasPermission('/batch_edit/dataset', 'validate'),
+    uiSpec: {
+      datasetsDialog: {
+        header: (count: number)=>commonText.countLine({resource: wbText.dataSets({variant: batchEditText.batchEdit()}), count}),
+        empty: ()=>`${wbText.wbsDialogEmpty()} ${hasPermission('/batch_edit/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
+      },
+      viewer: {
+        do: batchEditText.commit(),
+        doStartDescription: batchEditText.startCommitDescription(),
+        undo: wbText.rollback(),
+        undoConfirm: wbText.beginRollback(),
+        undoStartDescription: batchEditText.startRevertDescription(),
+        doSuccessfulDescription: batchEditText.commitSuccessfulDescription(),
+        undoFinishedDescription: batchEditText.dateSetRevertDescription(),
+        doing: batchEditText.committing()
+      }
+    }
   },
   'bulkAttachment': {
     fetchUrl: '/attachment_gw/dataset/',
@@ -316,9 +361,11 @@ export const datasetVariants = {
     canEdit: ()=>hasPermission('/attachment_import/dataset', 'update'),
     route: (id: number)=>`/specify/attachments/import/${id}`,
     // Actually, in retrorespect, this would be a nice feature
-    metaRoute: f.never
+    metaRoute: f.never,
   }
 } as const;
+
+export const resolveVariantFromDataset = (dataset: Dataset)=>datasetVariants[dataset.isupdate ? 'batchEdit' : 'workbench'];
 
 export function DataSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

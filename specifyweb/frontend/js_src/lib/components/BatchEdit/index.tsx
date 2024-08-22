@@ -12,7 +12,6 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { batchEditText } from '../../localization/batchEdit';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { isNestedToMany } from '../WbPlanView/modelHelpers';
 import {isTreeTable, strictGetTreeDefinitionItems, treeRanksPromise } from '../InitialContext/treeRanks';
 import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import { f } from '../../utils/functools';
@@ -23,16 +22,20 @@ import { dialogIcons } from '../Atoms/Icons';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { H2, H3 } from '../Atoms';
+import { TableIcon } from '../Molecules/TableIcon';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { strictGetTable } from '../DataModel/tables';
 
 export function BatchEditFromQuery({
   query,
   fields,
   baseTableName,
+  recordSetId
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
-  readonly baseTableName: keyof Tables
+  readonly baseTableName: keyof Tables;
+  readonly recordSetId?: number
 }) {
   const navigate = useNavigate();
   const post = (dataSetName: string) =>
@@ -45,6 +48,7 @@ export function BatchEditFromQuery({
           ...serializeResource(query), 
           captions: fields.filter(({isDisplay})=>isDisplay).map(({mappingPath})=>generateMappingPathPreview(baseTableName, mappingPath)),
           name: dataSetName,
+          recordSetId,
           limit: userPreferences.get('batchEdit', 'query', 'limit')
         }),
     });
@@ -92,11 +96,8 @@ type QueryError = {
 function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec) : undefined | string {
   const joinPath = queryFieldSpec.joinPath
   if (joinPath.length <= 1) return undefined;
-  const hasNestedToMany = joinPath.some((currentField, id)=>{
-    const nextField = joinPath[id+1];
-    return nextField !== undefined && currentField.isRelationship && nextField.isRelationship && isNestedToMany(currentField, nextField);
-  });
-  return hasNestedToMany ? (generateMappingPathPreview(queryFieldSpec.baseTable.name, queryFieldSpec.toMappingPath())) : undefined
+  const nestedToManyCount = joinPath.filter((relationship)=>relationship.isRelationship && relationshipIsToMany(relationship));
+  return nestedToManyCount.length > 1 ? (generateMappingPathPreview(queryFieldSpec.baseTable.name, queryFieldSpec.toMappingPath())) : undefined
 } 
 
 const getTreeDefFromName = (rankName: string, treeDefItems: RA<SerializedResource<GeographyTreeDefItem>>)=>defined(treeDefItems.find((treeRank)=>treeRank.name.toLowerCase() === rankName.toLowerCase()));
@@ -137,5 +138,5 @@ function ShowInvalidFields({error}: {readonly error: QueryError['invalidFields']
  
 function ShowMissingRanks({error}: {readonly error: QueryError['missingRanks']}) {
   const hasMissing = Object.values(error).some((rank)=>rank.length > 0);
-  return hasMissing ? <div><div><H2>{batchEditText.addTreeRank()}</H2></div>{Object.entries(error).map(([treeTable, ranks])=><div>{strictGetTable(treeTable).label}<div>{ranks.map((rank)=><H3>{rank}</H3>)}</div></div>)}</div> : null
+  return hasMissing ? <div><div className='flex gap-2 mt-2'><H2>{batchEditText.addTreeRank()}</H2></div>{Object.entries(error).map(([treeTable, ranks])=><div><div><TableIcon label name={treeTable}/><H2>{strictGetTable(treeTable).label}</H2></div><div>{ranks.map((rank)=><H3>{rank}</H3>)}</div></div>)}</div> : null
 }

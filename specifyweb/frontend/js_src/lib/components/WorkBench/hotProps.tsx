@@ -46,7 +46,8 @@ export function useHotProps({
         { length: dataset.columns.length + 1 },
         (_, physicalCol) => ({
           // Get data from nth column for nth column
-          data: physicalCol
+          data: physicalCol,
+          readOnly: ([-1, undefined].includes(physicalColToMappingCol(physicalCol)))
         })
       ),
     [dataset.columns.length]
@@ -116,6 +117,7 @@ export function useHotProps({
   const tabMoves =
     tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const adjustedMinRows = dataset.isupdate ? 0 : minSpareRows;
   return {
     autoWrapCol,
     autoWrapRow,
@@ -125,7 +127,7 @@ export function useHotProps({
     enterBeginsEditing,
     hiddenRows,
     hiddenColumns,
-    minSpareRows,
+    minSpareRows:adjustedMinRows,
     tabMoves,
     comments,
   };

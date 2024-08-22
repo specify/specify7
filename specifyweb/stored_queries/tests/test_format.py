@@ -1,5 +1,6 @@
 from specifyweb.stored_queries.format import ObjectFormatter
 from specifyweb.stored_queries.query_construct import QueryConstruct
+from specifyweb.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
 import specifyweb.specify.models as spmodels
@@ -7,7 +8,6 @@ import specifyweb.stored_queries.models as models
 
 # Used for pretty-formatting sql code for testing
 import sqlparse
-
 
 class FormatterAggregatorTests(SQLAlchemySetup):
 
@@ -21,71 +21,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
 
     def test_basic_formatters(self):
 
-        formatter_def = """
-        <formatters>
-          <format
-            name="Accession"
-            title="Accession"
-            class="edu.ku.brc.specify.datamodel.Accession"
-            default="true"
-          >
-            <switch single="true">
-              <fields>
-                <field>accessionNumber</field>
-              </fields>
-            </switch>
-          </format>
-          <format
-            name="AccessionAgent"
-            title="AccessionAgent"
-            class="edu.ku.brc.specify.datamodel.AccessionAgent"
-            default="true"
-          >
-            <switch single="true">
-              <fields>
-                <field formatter="Agent">agent</field>
-                <field sep=" - ">role</field>
-              </fields>
-            </switch>
-          </format>
-          <format
-            name="Agent"
-            title="Agent"
-            class="edu.ku.brc.specify.datamodel.Agent"
-            default="true"
-          >
-            <switch single="false" field="agentType">
-              <fields value="0">
-                <field>lastName</field>
-              </fields>
-              <fields value="1">
-                <field>lastName</field>
-                <field sep=", ">firstName</field>
-                <field sep=" ">middleInitial</field>
-              </fields>
-              <fields value="2">
-                <field>lastName</field>
-              </fields>
-              <fields value="3">
-                <field>lastName</field>
-              </fields>
-            </switch>
-          </format>
-        <aggregators>
-        <aggregator
-          name="AccessionAgent"
-          title="AccessionAgent"
-          class="edu.ku.brc.specify.datamodel.AccessionAgent"
-          default="true"
-          separator="; "
-          ending=""
-          count="9"
-          format="AccessionAgent"
-          orderfieldname=""
-        />
-        </aggregators>
-        </formatters>
-                        """
+        formatter_def = SIMPLE_DEF
 
         object_formatter = self.get_formatter(formatter_def)
 

@@ -15,10 +15,10 @@ import { f } from '../../utils/functools';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
-import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
+import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -45,10 +45,9 @@ function WbPlanViewSafe({dataSet}:{readonly dataSet: Dataset}): JSX.Element | nu
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   useMenuItem(dataSet.isupdate ? 'batchEdit' : 'workBench');
   useErrorContext('dataSet', dataSet);
-
   const isReadOnly =
     React.useContext(ReadOnlyContext) ||
-    !hasPermission('/workbench/dataset', 'update') ||
+    !resolveVariantFromDataset(dataSet).canEdit() ||
     typeof dataSet !== 'object' ||
     dataSet.uploadresult?.success === true ||
     // FEATURE: Remove this

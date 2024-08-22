@@ -52,7 +52,7 @@ def make_table_list(fs):
 
 
 def make_tree_fieldnames(table: Table, reverse=False):
-    mapping = {"ID": table.idFieldName.lower(), "": "name"}
+    mapping = {"ID": table.idFieldName.lower(), "": "fullname"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
@@ -170,7 +170,8 @@ class QueryFieldSpec(
                 tree_rank.relatedModelName = node.name
                 tree_rank.type = "many-to-one"
                 join_path.append(tree_rank)
-                field = node.get_field(field or "name")  # to replicate 6 for now.
+                assert field is not None
+                field = node.get_field(field)
 
         if field is not None:
             join_path.append(field)
