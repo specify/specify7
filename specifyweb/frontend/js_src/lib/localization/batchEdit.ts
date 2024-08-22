@@ -52,8 +52,5 @@ export const batchEditText = createDictionary({
     committing: {
         'en-us': 'Committing'
     },
-    nullRecord: {
-        'en-us': "(Not included in the query results)"
-    }
     
 } as const)
