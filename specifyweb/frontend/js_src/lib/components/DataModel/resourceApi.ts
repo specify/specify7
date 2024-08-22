@@ -4,16 +4,20 @@ import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
-import { filterArray, ValueOf } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
+import { isRelationshipCollection } from './collectionApi';
 import { backboneFieldSeparator } from './helpers';
-import { AnySchema, SerializedResource, SerializedRecord } from './helperTypes';
-import { SpecifyResource } from './legacyTypes';
+import type {
+  AnySchema,
+  SerializedRecord,
+  SerializedResource,
+} from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -22,12 +26,10 @@ import {
   resourceFromUrl,
 } from './resource';
 import { initializeResource } from './scoping';
-import { serializeResource, specialFields } from './serializers';
-import { LiteralField, Relationship } from './specifyField';
-import { Collection, SpecifyTable } from './specifyTable';
-import { Tables } from './types';
-import { IR } from '../../utils/types';
-import { tables } from './tables';
+import { specialFields } from './serializers';
+import type { LiteralField, Relationship } from './specifyField';
+import type { Collection, SpecifyTable } from './specifyTable';
+import type { Tables } from './types';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -577,6 +579,11 @@ export const ResourceBase = Backbone.Model.extend({
           if (!value) return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
+          /*
+           * Relationship Collections have already been fetched through _rget.
+           * This is needed to prevent refetching the collection with the default
+           * limit of 20
+           */ else if (isRelationshipCollection(value)) return value;
           else if (typeof value.fetch === 'function') return value.fetch();
         }
         return value;
@@ -733,27 +740,23 @@ export const ResourceBase = Backbone.Model.extend({
     const fieldName = field.name.toLowerCase();
     const relatedTable = field.relatedTable;
 
-    let toMany: Collection<AnySchema> = this.independentResources[fieldName];
-
-    if (toMany) return toMany;
+    const existingToMany: Collection<AnySchema> | undefined =
+      this.independentResources[fieldName];
 
     const collectionOptions = {
       field: field.getReverse(),
       related: this,
     };
 
-    if (this.isNew()) {
-      toMany = new relatedTable.IndependentCollection(collectionOptions);
-      this.storeIndependentToMany(field, toMany);
-      return toMany;
-    }
+    const collection =
+      existingToMany === undefined
+        ? new relatedTable.IndependentCollection(collectionOptions)
+        : existingToMany;
 
-    return new relatedTable.IndependentCollection(collectionOptions)
-      .fetch({ limit: 0 })
-      .then((collection) => {
-        this.storeIndependentToMany(field, collection);
-        return collection;
-      });
+    return collection.fetch({ limit: 0 }).then((collection) => {
+      this.storeIndependentToMany(field, collection);
+      return collection;
+    });
   },
   async save({
     onSaveConflict: handleSaveConflict,
@@ -826,7 +829,7 @@ export const ResourceBase = Backbone.Model.extend({
       ([fieldName, related]) => {
         const field = self.specifyTable.getField(fieldName);
         if (field.type === 'one-to-many' && related) {
-          json[fieldName] = related.toJSON();
+          json[fieldName] = related.toApiJSON();
         }
       }
     );

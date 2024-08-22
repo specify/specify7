@@ -1,9 +1,13 @@
 // @ts-nocheck
 
 import _ from 'underscore';
+import { removeKey } from '../../utils/utils';
 
 import { assert } from '../Errors/assert';
+import { formatUrl } from '../Router/queryString';
 import { Backbone } from './backbone';
+import { AnySchema } from './helperTypes';
+import { SpecifyResource } from './legacyTypes';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -13,6 +17,10 @@ const Base = Backbone.Collection.extend({
     return this.length;
   },
 });
+
+export const isRelationshipCollection = (value: unknown): boolean =>
+  value instanceof DependentCollection ||
+  value instanceof IndependentCollection;
 
 function notSupported() {
   throw new Error('method is not supported');
@@ -95,15 +103,25 @@ export const IndependentCollection = Base.extend({
     this.domainfilter =
       Boolean(options.domainfilter) &&
       this.model?.specifyTable.getScopingRelationship() !== undefined;
+
+    this.changedResources = Object.fromEntries(
+      records.map((record) => [record.cid, false])
+    );
   },
   initialize(_tables, options) {
     this.on(
+      'change',
+      function (resource: SpecifyResource<AnySchema>) {
+        if (!resource.isBeingInitialized())
+          this.changedResources[resource.cid] = true;
+        this.trigger('saverequired');
+      },
+      this
+    );
+    this.on(
       'add remove',
-      function () {
-        /*
-         * Warning: changing a collection record does not trigger a
-         * change event in the parent (though it probably should)
-         */
+      function (resource: SpecifyResource<AnySchema>) {
+        this.changedResources[resource.cid] = false;
         this.trigger('saverequired');
       },
       this
@@ -115,15 +133,14 @@ export const IndependentCollection = Base.extend({
     return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
   },
   parse(resp) {
-    let objects;
+    let records;
     if (resp.meta) {
-      objects = resp.objects;
+      records = resp.objects;
     } else {
       console.warn("expected 'meta' in response");
-      objects = resp;
+      records = resp;
     }
-
-    return objects;
+    return records;
   },
   async fetch(options) {
     if (this.related.isNew()) {
@@ -133,24 +150,37 @@ export const IndependentCollection = Base.extend({
     this.filters[this.field.name.toLowerCase()] = this.related.id;
     if (this._fetch) return this._fetch;
 
-    options ||= {};
+    options = { ...(options ?? {}), silent: true };
 
-    options.update = true;
-    options.remove = false;
-    options.silent = true;
     assert(options.at == null);
 
-    options.data =
-      options.data ||
-      _.extend({ domainfilter: this.domainfilter }, this.filters);
-    options.data.offset = this.length;
+    options.data = options.data || {
+      ...this.filters,
+      domainfilter: this.domainfilter,
+      limit: options.limit,
+    };
 
-    _(options).has('limit') && (options.data.limit = options.limit);
     this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
     return this._fetch.then(() => {
       this._fetch = null;
       return this;
     });
+  },
+  isComplete() {
+    return true;
+  },
+  toApiJSON(options) {
+    const self = this;
+    const resources =
+      Object.keys(self.changedResources).length === 0
+        ? formatUrl(this.url(), this.filters)
+        : this.map(function (resource) {
+            return self.changedResources[resource.cid] === true
+              ? resource.toJSON(options)
+              : resource.url();
+          });
+    this.changedResources = [];
+    return resources;
   },
 });
 

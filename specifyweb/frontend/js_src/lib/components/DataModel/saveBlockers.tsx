@@ -9,6 +9,7 @@ import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import type { SET } from '../../utils/utils';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
@@ -108,10 +109,10 @@ export function useSaveBlockers(
   ];
 }
 
-export function setSaveBlockers(
-  resource: SpecifyResource<AnySchema>,
+export function setSaveBlockers<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA>,
   field: LiteralField | Relationship,
-  errors: Parameters<GetOrSet<RA<string>>[1]>[0],
+  errors: Parameters<GetOrSet<RA<string>>[typeof SET]>[0],
   blockerKey: string
 ): void {
   const resolvedErrors =

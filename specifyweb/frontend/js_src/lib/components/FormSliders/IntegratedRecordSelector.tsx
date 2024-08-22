@@ -120,7 +120,7 @@ export function IntegratedRecordSelector({
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
         relationship={relationship}
-        onAdd={(resources) => {
+        onAdd={(resources): void => {
           if (isInteraction) {
             setInteractionResource(resources[0]);
             handleOpenDialog();
@@ -145,6 +145,7 @@ export function IntegratedRecordSelector({
           resource,
           onAdd: handleAdd,
           onRemove: handleRemove,
+          showSearchDialog,
           isLoading,
         }): JSX.Element => (
           <>
@@ -178,9 +179,23 @@ export function IntegratedRecordSelector({
                         !isDependent && dialog === false ? resource : undefined
                       }
                     />
+                    {!isDependent &&
+                    hasTablePermission(
+                      relationship.relatedTable.name,
+                      'read'
+                    ) &&
+                    typeof handleAdd === 'function' ? (
+                      <DataEntry.Search
+                        disabled={
+                          isReadOnly ||
+                          (isToOne && collection.models.length > 0)
+                        }
+                        onClick={showSearchDialog}
+                      />
+                    ) : undefined}
                     {hasTablePermission(
                       relationship.relatedTable.name,
-                      isDependent ? 'create' : 'read'
+                      'create'
                     ) && typeof handleAdd === 'function' ? (
                       <DataEntry.Add
                         disabled={

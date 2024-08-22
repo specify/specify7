@@ -499,13 +499,16 @@ class InlineApiTests(ApiTests):
             'accessionnumber': "a",
             'division': api.uri_for_model('division', self.division.id),
             'collectionobjects': [
-                api.obj_to_data(self.collectionobjects[0])
+                api.obj_to_data(self.collectionobjects[0]),
+                api.uri_for_model('collectionobject', self.collectionobjects[1].id)
             ]
         }
 
         accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
         self.assertEqual(accession, self.collectionobjects[0].accession)
+        self.assertEqual(accession, self.collectionobjects[1].accession)
 
     def test_indepenent_removing_from_inline(self):
         accession = models.Accession.objects.create(
@@ -516,13 +519,17 @@ class InlineApiTests(ApiTests):
 
         accession.collectionobjects.set(self.collectionobjects)
 
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+
         collection_objects_to_set = [self.collectionobjects[0], self.collectionobjects[3]]
 
         accession_data = {
             'accessionnumber': "a",
             'division': api.uri_for_model('division', self.division.id),
             'collectionobjects': [
-                api.obj_to_data(collection_object) for collection_object in collection_objects_to_set
+                api.obj_to_data(collection_object) if index % 2 == 0 
+                else api.uri_for_model('collectionobject', collection_object.id) 
+                for index, collection_object in enumerate(collection_objects_to_set)
             ]
         }
         accession = api.update_obj(self.collection, self.agent, 'Accession', accession.id, accession.version, accession_data)
@@ -553,6 +560,8 @@ class InlineApiTests(ApiTests):
             ]
         }
 
+        self.assertEqual(self.collectionobjects[2].integer1, None)
+        self.assertEqual(list(self.collectionobjects[2].determinations.all()), [])
         accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.collectionobjects[2].refresh_from_db()
         self.assertEqual(self.collectionobjects[2].integer1, 10)
@@ -582,17 +591,54 @@ class InlineApiTests(ApiTests):
 
         self.collectionobjects[0].accession = acc1
         self.collectionobjects[0].save()
+        self.collectionobjects[1].accession = acc1
+        self.collectionobjects[1].save()
 
         accession_data = {
             'accessionnumber': "b",
             'division': api.uri_for_model('division', self.division.id),
             'collectionobjects': [
-                api.obj_to_data(self.collectionobjects[0])
+                api.obj_to_data(self.collectionobjects[0]),
+                api.uri_for_model('collectionobject', self.collectionobjects[1].id)
             ]
         }
         acc2 = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
         self.assertEqual(self.collectionobjects[0].accession, acc2)
+        self.assertEqual(self.collectionobjects[1].accession, acc2)
+    
+    def inline_error_handling(self): 
+        collection_object_data = {
+            'id': self.collectionobjects[0].id,
+            'catalognumber': self.collectionobjects[0].catalognumber,
+            'collection': api.uri_for_model('Collection', self.collection.id),
+            'determinations': f'/api/specify/determination/?collectionobject={self.collectionobjects[0].id}'
+        }
+
+        with self.assertRaises(AssertionError):
+            api.update_obj(self.collection, self.agent, 
+                           'Collectionobject', self.collectionobjects[0].id,
+                            self.collectionobjects[0].version, collection_object_data)
+        
+        new_determination = models.Determination.objects.create(
+            collectionobject=self.collectionobjects[1]
+        )
+
+        other_collection_object_data = {
+            'id': self.collectionobjects[0].id,
+            'catalognumber': self.collectionobjects[0].catalognumber,
+            'collection': api.uri_for_model('Collection', self.collection.id),
+            'determinations': [
+                api.uri_for_model('determination', new_determination.id)
+            ]
+        }
+
+        with self.assertRaises(AssertionError):
+            api.update_obj(self.collection, self.agent, 
+                           'Collectionobject', self.collectionobjects[0].id,
+                            self.collectionobjects[0].version, other_collection_object_data)
+
     
     # version control on inlined resources should be tested
 

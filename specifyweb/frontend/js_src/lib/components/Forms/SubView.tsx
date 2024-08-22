@@ -4,7 +4,7 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
@@ -118,10 +118,9 @@ export function SubView({
                 related: parentResource,
                 field: reverse,
               })
-            : new relationship.relatedTable.LazyCollection({
-                filters: {
-                  [reverse.name]: parentResource.id,
-                },
+            : new relationship.relatedTable.IndependentCollection({
+                related: parentResource,
+                field: reverse,
               })
         ) as Collection<AnySchema>;
         if (relationship.isDependent() && parentResource.isNew())
@@ -154,7 +153,7 @@ export function SubView({
     () =>
       resourceOn(
         parentResource,
-        `change:${relationship.name}`,
+        `change:${relationship.name} saved`,
         (): void => {
           versionRef.current += 1;
           const localVersionRef = versionRef.current;

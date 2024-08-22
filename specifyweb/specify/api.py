@@ -594,9 +594,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         elif isinstance(val, str):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
-            fk_model, fk_id = parse_uri(val)
-            assert fk_model == field.related_model.__name__.lower()
-            assert fk_id is not None
+            fk_model, fk_id = strict_uri_to_model(val, field.related_model.__name__)
             setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
             new_related_id = fk_id
 
@@ -653,8 +651,27 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
                 continue
         
         rel_model = field.related_model
-        ids = [] # Ids not in this list will be deleted at the end.
+        ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+        
+        ids_to_fetch = []
+        cached_objs = dict()
+        fk_model = None
+        if not is_dependent: 
+            for rel_data in val: 
+                if not isinstance(rel_data, str): continue
+                fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+                ids_to_fetch.append(fk_id)
+
+            if fk_model is not None: 
+                cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch)}
+
         for rel_data in val:
+            if isinstance(rel_data, str): 
+                assert not is_dependent, "expected object for dependent field %s in %s: %s" % (field_name, obj, rel_data)
+                fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+                rel_data = cached_objs[fk_id]
+
+            #FIXME: only update related objects when they change
             rel_data[field.field.name] = obj
             if 'id' in rel_data:
                 # Update an existing related object.
@@ -787,6 +804,12 @@ def parse_uri(uri: str) -> Tuple[str, str]:
     assert match is not None, f"Bad URI: {uri}"
     groups = match.groups()
     return groups[0], groups[2]
+
+def strict_uri_to_model(uri: str, model: str) -> Tuple[str, int]:
+    uri_model, uri_id = parse_uri(uri)
+    assert model.lower() == uri_model.lower()
+    assert uri_id is not None
+    return uri_model, int(uri_id)
 
 def obj_to_data(obj) -> Dict[str, Any]:
     "Wrapper for backwards compat w/ other modules that use this function."

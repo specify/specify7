@@ -63,7 +63,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     () =>
       resourceOn(
         collection,
-        'add remove destroy',
+        'add remove destroy sync',
         (): void => setRecords(getRecords),
         true
       ),
@@ -94,8 +94,9 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     ...rest,
     index,
     table: collection.table.specifyTable,
+    field: relationship,
     records,
-    relatedResource: isDependent ? collection.related : undefined,
+    relatedResource: isLazy ? undefined : collection.related,
     totalCount: collection._totalCount ?? records.length,
     onAdd: (rawResources): void => {
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
