@@ -266,7 +266,7 @@ export function SubView({
             }
           />
         </ReadOnlyContext.Provider>
-      ) : isAttachmentMisconfigured ? undefined : (
+      ) : isButton ? undefined : (
         <DataEntry.SubForm>
           <DataEntry.SubFormHeader>
             <DataEntry.SubFormTitle>
