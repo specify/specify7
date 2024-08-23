@@ -23,7 +23,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { H2, H3 } from '../Atoms';
 import { TableIcon } from '../Molecules/TableIcon';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { anyTreeRank, relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { strictGetTable } from '../DataModel/tables';
 
 export function BatchEditFromQuery({
@@ -103,12 +103,12 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec) : undefined 
 const getTreeDefFromName = (rankName: string, treeDefItems: RA<SerializedResource<GeographyTreeDefItem>>)=>defined(treeDefItems.find((treeRank)=>treeRank.name.toLowerCase() === rankName.toLowerCase()));
 
 function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): QueryError['missingRanks'] {
-  const treeFieldSpecs = group(queryFieldSpecs.filter((fieldSpec)=>isTreeTable(fieldSpec.table.name)).map((spec)=>[spec.table, spec.treeRank]));
+  const treeFieldSpecs = group(queryFieldSpecs.filter((fieldSpec)=>isTreeTable(fieldSpec.table.name) && fieldSpec.treeRank !== anyTreeRank).map((spec)=>[spec.table, spec.treeRank]));
   return Object.fromEntries(treeFieldSpecs.map(([treeTable, treeRanks])=>[treeTable.name, findMissingRanks(treeTable, treeRanks)]))
 }
 
-function findMissingRanks(treeTable: SpecifyTable, treeRanks: RA<undefined|string>) {
-  if (treeRanks.every((rank)=>(rank === undefined))) {};
+function findMissingRanks(treeTable: SpecifyTable, treeRanks: RA<undefined|string>): RA<string> {
+  if (treeRanks.every((rank)=>(rank === undefined))) return [];
 
   const allTreeDefItems = strictGetTreeDefinitionItems(treeTable.name as "Geography", false);
 

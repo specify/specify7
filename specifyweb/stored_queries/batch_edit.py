@@ -174,7 +174,7 @@ class BatchEditPack(NamedTuple):
 
     # we not only care that it is part of tree, but also care that there is rank to tree
     def is_part_of_tree(self, query_fields: List[QueryField]) -> bool:
-        if self.id is None or self.id.value is None or self.id.value == NULL_RECORD:
+        if self.id.idx is None:
             return False
         id_field = self.id.idx
         field = query_fields[id_field - 1]
@@ -332,7 +332,7 @@ class RowPlanMap(NamedTuple):
         # No, this doesn't mean IDs of the formatted/aggregated are including (that is impossible)
         batch_edit_pack = BatchEditPack.from_field_spec(partial_field_spec)
 
-        if node is None or (len(rest) == 0):
+        if len(rest) == 0:
             # we are at the end
             return RowPlanMap(
                 columns=[BatchEditFieldPack(field=original_field)],
@@ -435,10 +435,10 @@ class RowPlanMap(NamedTuple):
         to_ones = {
             key: value.nullify(not is_null) for (key, value) in self.to_one.items()
         }
-        batch_edit_pack = BatchEditPack(
-            id=BatchEditFieldPack(value=(NULL_RECORD if is_null else None)),
-            order=EMPTY_FIELD,
-            version=EMPTY_FIELD,
+        batch_edit_pack = self.batch_edit_pack._replace(
+            id=self.batch_edit_pack.id._replace(
+                value=(NULL_RECORD if is_null else None)
+            )
         )
         return RowPlanCanonical(batch_edit_pack, columns, to_ones)
 
