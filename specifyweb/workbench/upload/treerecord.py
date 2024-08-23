@@ -43,7 +43,6 @@ class TreeRank:
         base_treedef_id: Optional[int],
     ) -> int:
         filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
-        # tree_model = getattr(models, tree.lower().title() + 'treedefitem')
         tree_model = get_tree_model(tree)
         treedefitems = tree_model.objects.filter(**filter_kwargs)
 
@@ -76,7 +75,6 @@ class TreeRank:
         return treedefitems
 
     def check_rank(self) -> bool:
-        # tree_model = getattr(models, self.tree.lower().title() + 'treedefitem')
         tree_model = get_tree_model(self.tree)
         rank = tree_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id)
         return rank.exists() and rank.count() == 1
@@ -95,11 +93,6 @@ class TreeRank:
 
 def get_tree_model(tree: str):
     return getattr(models, tree.lower().title() + 'treedefitem')
-
-# def is_rank_identifiable(rank: str, tree: str, treedef_id: int) -> bool:
-#     tree_model = get_tree_model(tree)
-#     results = tree_model.objects.filter(name=rank, treedef_id=treedef_id)
-#     return results.exists() and results.count() == 1
 
 class TreeRankRecord(NamedTuple):
     rank_name: str
