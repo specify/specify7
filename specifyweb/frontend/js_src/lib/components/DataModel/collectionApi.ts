@@ -1,13 +1,12 @@
 // @ts-nocheck
 
 import _ from 'underscore';
-import { removeKey } from '../../utils/utils';
 
 import { assert } from '../Errors/assert';
 import { formatUrl } from '../Router/queryString';
 import { Backbone } from './backbone';
-import { AnySchema } from './helperTypes';
-import { SpecifyResource } from './legacyTypes';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -103,25 +102,11 @@ export const IndependentCollection = Base.extend({
     this.domainfilter =
       Boolean(options.domainfilter) &&
       this.model?.specifyTable.getScopingRelationship() !== undefined;
-
-    this.changedResources = Object.fromEntries(
-      records.map((record) => [record.cid, false])
-    );
   },
   initialize(_tables, options) {
     this.on(
-      'change',
+      'change add remove',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isBeingInitialized())
-          this.changedResources[resource.cid] = true;
-        this.trigger('saverequired');
-      },
-      this
-    );
-    this.on(
-      'add remove',
-      function (resource: SpecifyResource<AnySchema>) {
-        this.changedResources[resource.cid] = false;
         this.trigger('saverequired');
       },
       this
@@ -171,16 +156,11 @@ export const IndependentCollection = Base.extend({
   },
   toApiJSON(options) {
     const self = this;
-    const resources =
-      Object.keys(self.changedResources).length === 0
-        ? formatUrl(this.url(), this.filters)
-        : this.map(function (resource) {
-            return self.changedResources[resource.cid] === true
-              ? resource.toJSON(options)
-              : resource.url();
-          });
-    this.changedResources = [];
-    return resources;
+
+    return this.map(function (resource: SpecifyResource<AnySchema>) {
+      const formatAsObject = resource.needsSaved || resource.isNew();
+      return formatAsObject ? resource.toJSON(options) : resource.url();
+    });
   },
 });
 
