@@ -1,4 +1,5 @@
 import React from 'react';
+import { State } from 'typesafe-reducer';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -70,6 +71,14 @@ export function IntegratedRecordSelector({
 
   const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
     useBooleanState(defaultCollapsed);
+
+  const [state, setState] = React.useState<
+    | State<
+        'AddResourceState',
+        { readonly resource: SpecifyResource<AnySchema> }
+      >
+    | State<'MainState'>
+  >({ type: 'MainState' });
 
   const blockers = useAllSaveBlockers(collection.related, relationship);
   const hasBlockers = blockers.length > 0;
@@ -203,10 +212,22 @@ export function IntegratedRecordSelector({
                           (isToOne && collection.models.length > 0)
                         }
                         onClick={(): void => {
-                          focusFirstField();
                           const resource =
                             new collection.table.specifyTable.Resource();
-                          handleAdd([resource]);
+
+                          if (isDependent) {
+                            focusFirstField();
+                            handleAdd([resource]);
+                            return;
+                          }
+
+                          if (state.type === 'AddResourceState')
+                            setState({ type: 'MainState' });
+                          else
+                            setState({
+                              type: 'AddResourceState',
+                              resource,
+                            });
                         }}
                       />
                     ) : undefined}
@@ -279,6 +300,22 @@ export function IntegratedRecordSelector({
               />
             ) : null}
             {dialogs}
+            {state.type === 'AddResourceState' &&
+            typeof handleAdd === 'function' ? (
+              <ResourceView
+                dialog="nonModal"
+                isDependent={isDependent}
+                isSubForm={false}
+                resource={state.resource}
+                onAdd={undefined}
+                onClose={(): void => setState({ type: 'MainState' })}
+                onDeleted={undefined}
+                onSaved={(): void => {
+                  handleAdd([state.resource]);
+                  setState({ type: 'MainState' });
+                }}
+              />
+            ) : null}
           </>
         )}
       </RecordSelectorFromCollection>
