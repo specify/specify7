@@ -215,7 +215,10 @@ export function IntegratedRecordSelector({
                           const resource =
                             new collection.table.specifyTable.Resource();
 
-                          if (isDependent) {
+                          if (
+                            isDependent ||
+                            viewName === relationship.relatedTable.view
+                          ) {
                             focusFirstField();
                             handleAdd([resource]);
                             return;
