@@ -755,40 +755,40 @@ export const ResourceBase = Backbone.Model.extend({
   ): Promise<Collection<AnySchema>> {
     assert(field.isDependent());
 
+    const self = this;
     const fieldName = field.name.toLowerCase();
     const relatedTable = field.relatedTable;
 
-    let toMany = this.dependentResources[fieldName];
-
-    if (toMany) return toMany;
+    const existingToMany: Collection<AnySchema> | undefined =
+      this.dependentResources[fieldName];
 
     const collectionOptions = {
       field: field.getReverse(),
       related: this,
     };
 
-    if (this.isNew()) {
-      toMany = new relatedTable.DependentCollection(collectionOptions, []);
-      this.storeDependent(field, toMany);
-      return toMany;
-    } else {
+    if (!this.isNew() && existingToMany === undefined)
       console.warn('expected dependent resource to be in cache');
-      const temporaryCollection = new relatedTable.ToOneCollection(
-        collectionOptions
-      );
-      return temporaryCollection
-        .fetch({ limit: 0 })
-        .then(
-          () =>
-            new relatedTable.DependentCollection(
-              collectionOptions,
-              temporaryCollection.tables
-            )
-        )
-        .then((toMany) => {
-          _this.storeDependent(field, toMany);
-        });
-    }
+
+    const collection =
+      existingToMany !== undefined
+        ? existingToMany
+        : this.isNew()
+        ? new relatedTable.DependentCollection(collectionOptions, [])
+        : await new relatedTable.ToOneCollection(collectionOptions)
+            .fetch({ limit: 0 })
+            .then(
+              (collection) =>
+                new relatedTable.DependentCollection(
+                  collectionOptions,
+                  collection.models
+                )
+            );
+
+    return collection.fetch({ limit: 0 }).then((collection) => {
+      self.storeDependent(field, collection);
+      return collection;
+    });
   },
   async getIndependentToMany(
     field: Relationship
