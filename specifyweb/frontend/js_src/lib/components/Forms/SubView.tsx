@@ -7,6 +7,7 @@ import { commonText } from '../../localization/common';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { attachmentRelatedTables } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -265,7 +266,16 @@ export function SubView({
             }
           />
         </ReadOnlyContext.Provider>
-      ) : undefined}
+      ) : isAttachmentMisconfigured ? undefined : (
+        <DataEntry.SubForm>
+          <DataEntry.SubFormHeader>
+            <DataEntry.SubFormTitle>
+              {relationship.label}
+            </DataEntry.SubFormTitle>
+          </DataEntry.SubFormHeader>
+          {commonText.loading()}
+        </DataEntry.SubForm>
+      )}
     </SubViewContext.Provider>
   );
 }
