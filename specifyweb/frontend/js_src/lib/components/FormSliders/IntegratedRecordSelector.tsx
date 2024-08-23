@@ -207,6 +207,7 @@ export function IntegratedRecordSelector({
                       'create'
                     ) && typeof handleAdd === 'function' ? (
                       <DataEntry.Add
+                        aria-pressed={state.type === 'AddResourceState'}
                         disabled={
                           isReadOnly ||
                           (isToOne && collection.models.length > 0)
