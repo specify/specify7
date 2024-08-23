@@ -45,12 +45,14 @@ json = dict(
                                         'name': 'Species',
                                         'author': 'Species Author',
                                     },
+                                    treeId = 3
                                 ),
                                 'Subspecies': dict(
                                     treeNodeCols = {
                                         'name': 'Subspecies',
                                         'author': 'Subspecies Author',
                                     },
+                                    treeId = 3
                                 ),
                             }
                         )}

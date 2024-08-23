@@ -43,7 +43,8 @@ class TreeRank:
         base_treedef_id: Optional[int],
     ) -> int:
         filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
-        tree_model = getattr(models, tree.lower().title() + 'treedefitem')
+        # tree_model = getattr(models, tree.lower().title() + 'treedefitem')
+        tree_model = get_tree_model(tree)
         treedefitems = tree_model.objects.filter(**filter_kwargs)
 
         if not treedefitems.exists():
@@ -75,7 +76,8 @@ class TreeRank:
         return treedefitems
 
     def check_rank(self) -> bool:
-        tree_model = getattr(models, self.tree.lower().title() + 'treedefitem')
+        # tree_model = getattr(models, self.tree.lower().title() + 'treedefitem')
+        tree_model = get_tree_model(self.tree)
         rank = tree_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id)
         return rank.exists() and rank.count() == 1
 
@@ -90,6 +92,14 @@ class TreeRank:
             "taxon", "storage", "geography", "geologictimeperiod", "lithostrat" # TODO: Replace with constants
         }, "Tree is required"
         return TreeRankRecord(self.rank_name, self.treedef_id)
+
+def get_tree_model(tree: str):
+    return getattr(models, tree.lower().title() + 'treedefitem')
+
+# def is_rank_identifiable(rank: str, tree: str, treedef_id: int) -> bool:
+#     tree_model = get_tree_model(tree)
+#     results = tree_model.objects.filter(name=rank, treedef_id=treedef_id)
+#     return results.exists() and results.count() == 1
 
 class TreeRankRecord(NamedTuple):
     rank_name: str
@@ -112,8 +122,6 @@ class TreeRankRecord(NamedTuple):
 
 class TreeRecord(NamedTuple):
     name: str
-    # ranks: Dict[str, Dict[str, ColumnOptions]]
-    # ranks: Dict[Union[str, Tuple[str, int]], Dict[str, ColumnOptions]]
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
     base_treedef_id: Optional[int] = None
 
@@ -125,21 +133,21 @@ class TreeRecord(NamedTuple):
         return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
 
     def to_json(self) -> Dict:
-        result = {
-            "ranks": {
-                rank.rank_name if isinstance(rank, TreeRankRecord) else rank: (
-                    cols["name"].to_json()
-                    if len(cols) == 1
-                    else dict(
-                        treeNodeCols={
-                            k: v.to_json() if hasattr(v, "to_json") else v
-                            for k, v in cols.items()
-                        }
-                    )
-                )
-                for rank, cols in self.ranks.items()
-            },
-        }
+        # result: Dict[str, Union[str, int, Dict[str, Any]]] = {"ranks": {}}
+        result = {"ranks": {}} # type: ignore
+        
+        for rank, cols in self.ranks.items():
+            rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
+            treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
+            
+            if len(cols) == 1:
+                result["ranks"][rank_key] = treeNodeCols["name"]
+            else:
+                rank_data = {"treeNodeCols": treeNodeCols}
+                if isinstance(rank, TreeRankRecord):
+                    rank_data["treeId"] = rank.treedef_id # type: ignore
+                result["ranks"][rank_key] = rank_data
+        
         return {'treeRecord': result}
 
     def unparse(self) -> Dict:

@@ -3,12 +3,10 @@ from typing import Dict, Any, Optional, Union, Tuple
 import logging
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
-from specifyweb.specify.load_datamodel import DoesNotExistError
-from specifyweb.specify.models import Taxontreedefitem, Taxontreedef
 
 from .upload_table import DeferredScopeUploadTable, UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
-from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord, get_tree_model
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 from .scoping import DEFERRED_SCOPING
@@ -37,7 +35,7 @@ schema: Dict = {
                 },
             ]
         },
-        "taxonTreeId": {
+        "treeId": {
             "oneOf": [
                 { "type": "integer" },
                 { "type": "null" }
@@ -100,7 +98,7 @@ schema: Dict = {
                                 'type': 'object',
                                 'properties': {
                                     'treeNodeCols': { '$ref': '#/definitions/treeNodeCols' },
-                                    'taxonTreeId': { '$ref': '#definitions/taxonTreeId'}
+                                    'treeId': { '$ref': '#definitions/treeId'}
                                 },
                                 'required': [ 'treeNodeCols' ],
                                 'additionalProperties': False
@@ -150,7 +148,7 @@ schema: Dict = {
             ],
         },
 
-        'taxonTreeId': {
+        'treeId': {
             "oneOf": [
                 { "type": "integer" },
                 { "type": "null" }
@@ -235,8 +233,8 @@ this column will never be considered for matching purposes, only for uploading.'
 def parse_plan_with_basetable(collection, to_parse: Dict) -> Tuple[Table, Uploadable]:
     base_table = datamodel.get_table_strict(to_parse['baseTableName'])
     extra = {}
-    if 'taxonTreeId' in to_parse.keys():
-        extra['treedefid'] = to_parse['taxonTreeId']
+    if 'treeId' in to_parse.keys():
+        extra['treedefid'] = to_parse['treeId']
     return base_table, parse_uploadable(collection, base_table, to_parse['uploadable'], extra)
 
 def parse_plan(collection, to_parse: Dict) -> Uploadable:
@@ -244,7 +242,7 @@ def parse_plan(collection, to_parse: Dict) -> Uploadable:
 
 def parse_uploadable(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['uploadTable'])
+        return parse_upload_table(collection, table, to_parse['uploadTable'], extra)
 
     if 'oneToOneTable' in to_parse:
         return OneToOneTable(*parse_upload_table(collection, table, to_parse['oneToOneTable']))
@@ -263,7 +261,7 @@ def parse_uploadable(collection, table: Table, to_parse: Dict, extra: Dict = {})
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
+def parse_upload_table(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> UploadTable:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -288,7 +286,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
                     for key, to_one in to_parse['toOne'].items()
             },
             toMany={
-                key: [parse_to_many_record(default_collection, rel_table(key), record) for record in to_manys]
+                key: [parse_to_many_record(default_collection, rel_table(key), records) for record in to_manys]
                 for key, to_manys in to_parse['toMany'].items()
             } 
         )
@@ -305,7 +303,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
                 for key, to_one in to_parse['toOne'].items()
         },
         toMany={
-            key: [parse_to_many_record(collection, rel_table(key), record) for record in to_manys]
+            key: [parse_to_many_record(collection, rel_table(key), record, extra) for record in to_manys]
             for key, to_manys in to_parse['toMany'].items()
         }
     )
@@ -313,6 +311,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]] = {}
     for rank, name_or_cols in to_parse['ranks'].items():
+        treedefid = None
         if isinstance(name_or_cols, str):
             rank_name = name_or_cols
             parsed_cols = {'name': parse_column_options(name_or_cols)}
@@ -320,20 +319,29 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
             tree_node_cols = {k: parse_column_options(v) for k, v in name_or_cols['treeNodeCols'].items()}
             rank_name = name_or_cols['treeNodeCols']['name']
             parsed_cols = tree_node_cols
+            if 'treeId' in name_or_cols:
+                treedefid = name_or_cols['treeId']
 
-        treedefid = get_treedef_id(rank_name, False, base_treedefid)
-        tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
+        # if treedefid is None:
+        #     treedefid = get_treedef_id(rank_name, table.name, False, base_treedefid)
+        tree_rank_record = TreeRank(rank_name, table.name, treedefid, base_treedefid).tree_rank_record()
         ranks[tree_rank_record] = parsed_cols
+        if not isinstance(name_or_cols, str): # TODO: Make better
+            to_parse['ranks'][rank]['treeId'] = tree_rank_record.treedef_id
+
+        if base_treedefid is None:
+            base_treedefid = tree_rank_record.treedef_id
 
     for rank, cols in ranks.items():
         assert 'name' in cols, to_parse
 
-    if base_treedefid is None:
-        for tree_rank_record, cols in ranks.items(): # type: ignore
-            treedefid = get_treedef_id(cols['name'].column, False, base_treedefid)
-            if treedefid is not None:
-                base_treedefid = treedefid 
-                break
+    # if base_treedefid is None:
+    #     for tree_rank_record, cols in ranks.items(): # type: ignore
+    #         # treedefid = get_treedef_id(cols['name'].column, table.name, False, base_treedefid)
+    #         treedefid = 
+    #         if treedefid is not None:
+    #             base_treedefid = treedefid
+    #             break
 
     return TreeRecord(
         name=table.django_name,
@@ -341,47 +349,100 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         base_treedef_id=base_treedefid
     )
 
-def find_treedef(
-    rank_name: str, treedef_id: Optional[int] = None, is_adjusting: bool = False
-) -> Optional["Taxontreedef"]:
-    filter_kwargs = {'name': rank_name}
-    if treedef_id is not None:
-        filter_kwargs['treedef_id'] = treedef_id # type: ignore
-    ranks = Taxontreedefitem.objects.filter(**filter_kwargs)
-    if ranks.count() == 0:
-        return None
-    elif ranks.count() > 1 and is_adjusting and treedef_id is not None:
-        raise ValueError(f"Multiple treedefitems with name {rank_name} and treedef_id {treedef_id}")
+# def find_treedef(rank_name: str, tree: str, treedef_id: Optional[int] = None, is_adjusting: bool = False):
+#     tree_model = get_tree_model(tree)
+#     filter_kwargs = {'name': rank_name}
+#     if treedef_id is not None:
+#         filter_kwargs['treedef_id'] = treedef_id # type: ignore
+#     ranks = tree_model.objects.filter(**filter_kwargs)
+#     if ranks.count() == 0:
+#         return None
+#     elif ranks.count() > 1 and is_adjusting and treedef_id is not None:
+#         raise ValueError(f"Multiple treedefitems with name {rank_name} and treedef_id {treedef_id}")
+
+#     first_rank = ranks.first()
+#     if first_rank is None:
+#         return None
+
+#     return first_rank.treedef
+
+# def get_treedef_id_old(
+#     rank_name: str, tree: str, is_adjusting: bool, base_treedef_id: Optional[int] = None
+# ) -> Optional[int]:
+#     for treedef_id in [base_treedef_id, None]:
+#         treedef = find_treedef(rank_name, tree, treedef_id, is_adjusting)
+#         if treedef:
+#             return treedef.id
+
+#     if is_adjusting:
+#         raise ValueError(f"Could not find treedefitem with name {rank_name}")
+#     return None
+
+# def get_treedef_id(
+#     rank_name: str, tree: str, is_adjusting: bool, base_treedef_id: Optional[int] = None
+# ) -> Optional[int]:
+#     treedef = find_treedef(rank_name, tree, base_treedef_id, False)
     
-    first_rank = ranks.first()
-    if first_rank is None:
-        return None
+#     if treedef is None:
+#         treedef = find_treedef(rank_name, tree, None, is_adjusting)
+
+#     if is_adjusting:
+#         raise ValueError(f"Could not find treedefitem with name {rank_name}")
+#     return None
+
+# def adjust_upload_plan(plan: Dict, collection) -> Dict:
+#     if (
+#         "uploadable" not in plan
+#         or "treeRecord" not in plan["uploadable"]
+#         or "ranks" not in plan["uploadable"]["treeRecord"]
+#     ):
+#         return plan
+
+#     base_table = datamodel.get_table_strict(plan['baseTableName'])
+#     uploadable = parse_uploadable(collection, base_table, plan['uploadable'])
+#     tree_table_name = plan['uploadable']['uploadTable']['toMany']
     
-    return first_rank.treedef
+#     # determinations = plan['uploadable']['uploadTable']['toMany']['determinations']
+#     # for determination in determinations:
+#     tree = plan['uploadable']['uploadTable']['toMany']['determinations'][0]['toOne'].keys()[0]
+    
+#     base_treedef_id = plan.get('treeId', None)
+#     tree = 'Taxon' # tree = plan['uploadable']
+#     for rank, name_or_cols in plan['uploadable']['treeRecord']['ranks'].items():
+#         if isinstance(name_or_cols, dict):
+#             rank_name = name_or_cols['treeNodeCols']['name']
+#             if 'treedefid' not in name_or_cols:
+#                 # name_or_cols['treeId'] = get_treedef_id(rank_name, tree, True, base_treedef_id)
+#                 name_or_cols['treeId'] = TreeRank(rank_name, tree, None, base_treedef_id).treedef_id
 
-def get_treedef_id(rank_name: str, is_adjusting: bool, base_treedef_id: Optional[int] = None) -> Optional[int]:
-    for treedef_id in [base_treedef_id, None]:
-        treedef = find_treedef(rank_name, treedef_id, is_adjusting)
-        if treedef:
-            return treedef.id
+#     return plan
 
-    if is_adjusting:
-        raise ValueError(f"Could not find treedefitem with name {rank_name}")
-    return None
+def adjust_upload_plan(plan: Dict, collection):
+    base_table = datamodel.get_table_strict(plan['baseTableName'])
+    extra = {}
+    if 'treeId' in plan.keys():
+        extra['treedefid'] = plan['treeId']
+    
+    if 'treeRecord' in plan:
+        treedefid = None
+        if 'treedefid' in extra.keys():
+            treedefid = int(extra['treedefid'])
 
-def adjust_upload_plan(plan: Dict) -> Dict:
-    if plan['baseTableName'] == 'taxon':
-        base_treedef_id = plan.get('taxonTreeId', None)
-        for rank, name_or_cols in plan['uploadable']['treeRecord']['ranks'].items():
-            if isinstance(name_or_cols, dict):
-                rank_name = name_or_cols['treeNodeCols']['name']
-                if 'treedefid' not in name_or_cols:
-                    # name_or_cols['treedefid'] = str(get_treedef_id(rank_name, True, base_treedef_id))
-                    name_or_cols['taxonTreeId'] = get_treedef_id(rank_name, True, base_treedef_id)
-                    
+    for rank, name_or_cols in plan['ranks'].items():
+        treedefid = None
+        if not isinstance(name_or_cols, str):
+            tree_node_cols = {k: parse_column_options(v) for k, v in name_or_cols['treeNodeCols'].items()}
+            rank_name = name_or_cols['treeNodeCols']['name']
+            parsed_cols = tree_node_cols
+            if 'treeId' in name_or_cols:
+                treedefid = name_or_cols['treeId']
+                # tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
+                # plan['ranks'][rank]['treeId'] = tree_rank_record.treedef_id
+
     return plan
+    
 
-def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:
+def parse_to_many_record(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> ToManyRecord:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -391,7 +452,7 @@ def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyReco
         wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
-            key: parse_uploadable(collection, rel_table(key), to_one)
+            key: parse_uploadable(collection, rel_table(key), to_one, extra)
             for key, to_one in to_parse['toOne'].items()
         },
     )
