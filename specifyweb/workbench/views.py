@@ -483,7 +483,6 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                     
                     parsed_plan = upload_plan_schema.parse_plan(request.specify_collection, plan)
                     new_cols = parsed_plan.get_cols() - set(ds.columns)
-                    # plan = upload_plan_schema.adjust_upload_plan(plan, request.specify_collection)
                     if new_cols:
                         ncols = len(ds.columns)
                         ds.columns += list(new_cols)

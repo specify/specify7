@@ -2,6 +2,7 @@ from ..upload_table import UploadTable, ScopedUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord
 from ..upload_plan_schema import parse_column_options
+# from specifyweb.specify import models as spmodels
 
 json = dict(
     baseTableName = 'Collectionobject',

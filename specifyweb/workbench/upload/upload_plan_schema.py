@@ -323,8 +323,9 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
         ranks[tree_rank_record] = parsed_cols
 
-        if not isinstance(name_or_cols, str):
-            to_parse['ranks'][rank]['treeId'] = tree_rank_record.treedef_id
+        # Update the schema with the treeId
+        # if not isinstance(name_or_cols, str):
+        #     to_parse['ranks'][rank]['treeId'] = tree_rank_record.treedef_id
 
         if base_treedefid is None:
             base_treedefid = tree_rank_record.treedef_id
