@@ -24,7 +24,10 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import { CollectionObject, CollectionObjectType } from '../DataModel/types';
+import type {
+  CollectionObject,
+  CollectionObjectType,
+} from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';

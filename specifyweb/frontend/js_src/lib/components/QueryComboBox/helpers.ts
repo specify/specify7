@@ -73,7 +73,7 @@ export function getQueryComboBoxConditions({
   treeData,
   subViewRelationship,
   relatedTable,
-  treeDefinition
+  treeDefinition,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -143,14 +143,18 @@ export function getQueryComboBoxConditions({
     }
   }
 
-  if (resource.specifyTable === tables.Determination && fieldName === 'fullName' && treeDefinition !== undefined) {
+  if (
+    resource.specifyTable === tables.Determination &&
+    fieldName === 'fullName' &&
+    treeDefinition !== undefined
+  ) {
     fields.push(
       QueryFieldSpec.fromPath(tables.Taxon.name, ['definition', 'id'])
         .toSpQueryField()
         .set('isDisplay', false)
         .set('startValue', strictIdFromUrl(treeDefinition).toString())
         .set('operStart', queryFieldFilters.equal.id)
-    )
+    );
   }
 
   if (
