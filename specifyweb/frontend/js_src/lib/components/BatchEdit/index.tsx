@@ -34,6 +34,7 @@ import {
   relationshipIsToMany,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 export function BatchEditFromQuery({
   query,
@@ -155,14 +156,16 @@ function findAllMissing(
   queryFieldSpecs: RA<QueryFieldSpec>
 ): QueryError['missingRanks'] {
   const treeFieldSpecs = group(
+    filterArray(
     queryFieldSpecs
-      .filter(
+      .map(
         (fieldSpec) =>
           isTreeTable(fieldSpec.table.name) &&
-          fieldSpec.treeRank !== anyTreeRank
+          fieldSpec.treeRank !== anyTreeRank && fieldSpec.treeRank !== undefined ? 
+          [fieldSpec.table, {rank: fieldSpec.treeRank, field: fieldSpec.getField()}] : undefined
       )
-      .map((spec) => [spec.table, spec.treeRank])
-  );
+  ));
+
   return Object.fromEntries(
     treeFieldSpecs.map(([treeTable, treeRanks]) => [
       treeTable.name,
@@ -171,11 +174,13 @@ function findAllMissing(
   );
 }
 
+// TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
+const requiredFields = ['name'];
+
 function findMissingRanks(
   treeTable: SpecifyTable,
-  treeRanks: RA<string | undefined>
+  treeRanks: RA<{rank: string, field?: Relationship | LiteralField} | undefined>
 ): RA<string> {
-  if (treeRanks.every((rank) => rank === undefined)) return [];
 
   const allTreeDefItems = strictGetTreeDefinitionItems(
     treeTable.name as 'Geography',
@@ -185,23 +190,22 @@ function findMissingRanks(
   // Duplicates don't affect any logic here
   const currentTreeRanks = filterArray(
     treeRanks.map((treeRank) =>
-      f.maybe(treeRank, (name) => getTreeDefFromName(name, allTreeDefItems))
+      f.maybe(treeRank, ({rank, field}) => ({specifyRank: getTreeDefFromName(rank, allTreeDefItems), field}))
     )
   );
 
   const currentRanksSorted = Array.from(currentTreeRanks).sort(
-    sortFunction(({ rankId }) => rankId, true)
+    sortFunction(({ specifyRank: {rankId} }) => rankId)
   );
 
   const highestRank = currentRanksSorted[0];
 
   const ranksBelow = allTreeDefItems.filter(
     ({ rankId, name }) =>
-      rankId > highestRank.rankId &&
-      !currentTreeRanks.find((rank) => rank.name === name)
-  );
+      rankId >= highestRank.specifyRank.rankId &&
+      !currentTreeRanks.some((rank)=> rank.specifyRank.name === name && rank.field !== undefined && requiredFields.includes(rank.field.name)))
 
-  return ranksBelow.map((rank) => rank.name);
+  return ranksBelow.map((rank) => `${rank.name} ${defined(strictGetTable(treeTable.name).getField('name')).label}`);
 }
 
 function ErrorsDialog({

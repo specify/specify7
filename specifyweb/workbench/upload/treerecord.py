@@ -651,7 +651,7 @@ class BoundTreeRecord(NamedTuple):
         references = {}
 
         previous_parent_id = None
-        for tdi in self.treedefitems:
+        for tdi in self.treedefitems[::-1]:
             if tdi.name not in self.batch_edit_pack:
                 continue
             columns = [pr.column for pr in self.parsedFields[tdi.name]]
@@ -666,7 +666,7 @@ class BoundTreeRecord(NamedTuple):
                     and previous_parent_id != reference.pk
                 ):
                     raise BusinessRuleException(
-                        "Tree structure changed, please re-run the query"
+                        f"Tree structure changed, please re-run the query. Expected: {previous_parent_id}, got {reference}"
                     )
             except (ContetRef, BusinessRuleException) as e:
                 raise BusinessRuleException(str(e), {}, info)
