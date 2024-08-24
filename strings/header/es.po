@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-24 04:09+0000\n"
+"PO-Revision-Date: 2024-08-24 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/header/"
 "es/>\n"
@@ -117,7 +117,7 @@ msgstr "Crear nuevo informe"
 #: components/Toolbar/TreeRepair.tsx:171
 #, fuzzy
 msgid "repairTree"
-msgstr "Se ha borrado la caché. Por favor recarga la página."
+msgstr "Se borró la memoria caché. Vuelva a cargar la página."
 
 #. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:166
