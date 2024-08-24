@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-24 04:09+0000\n"
+"PO-Revision-Date: 2024-08-24 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
@@ -120,7 +120,7 @@ msgstr "Réparer l'arbre"
 #: components/Toolbar/TreeRepair.tsx:166
 #, fuzzy
 msgid "treeRepairComplete"
-msgstr "Outil de mise à jour de localité"
+msgstr "Outil de mise à jour de la localité"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
