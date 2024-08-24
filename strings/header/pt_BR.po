@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-24 04:09+0000\n"
+"PO-Revision-Date: 2024-08-24 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/header/pt_BR/>\n"
@@ -88,7 +88,7 @@ msgstr ""
 #: components/ExportFeed/Dwca.tsx:132
 #, fuzzy
 msgid "dwcaExportStartedDescription"
-msgstr ""
+msgstr "Ajudar a localizar especificar 7"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:104
@@ -101,7 +101,7 @@ msgstr ""
 #: components/QueryBuilder/Edit.tsx:211
 #, fuzzy
 msgid "labelName"
-msgstr ""
+msgstr "Ferramentas Administrativas"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:211
@@ -159,7 +159,7 @@ msgstr ""
 #: components/ExportFeed/Editor.tsx:324
 #, fuzzy
 msgid "chooseMetadataResource"
-msgstr ""
+msgstr "Localização incompleta"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
