@@ -137,7 +137,7 @@ export function DataSetMeta({
             <Button.Danger
               onClick={() => {
                 loading(
-                  ping(`${datasetUrl}${dataset.id}/`, {
+                  ping(`${datasetUrl.fetchUrl}${dataset.id}/`, {
                     method: 'DELETE',
                     errorMode: 'dismissible',
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],

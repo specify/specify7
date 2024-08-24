@@ -618,6 +618,7 @@ class BoundTreeRecord(NamedTuple):
     def _get_inserter(self):
         def _inserter(model, attrs):
             obj = model(**attrs)
+            # TODO: Refactor after merge with production, directly check if table is tree or not.
             if model.specify_model.get_field("nodenumber"):
                 obj.save(skip_tree_extras=True)
             else:
@@ -636,7 +637,14 @@ class BoundTreeRecord(NamedTuple):
 
     def _get_reference(self) -> Optional[Dict[str, Any]]:
 
-        FIELDS_TO_SKIP = ["nodenumber", "highestchildnodenumber", "parent_id"]
+        FIELDS_TO_SKIP = [
+            "nodenumber",
+            "highestchildnodenumber",
+            "parent_id",
+            # TODO: Test fullname. Depends on use-cases I guess.
+            # Skipping them currently because we won't be able to match across branches, without disabling all database fields lookup
+            "fullname",
+        ]
 
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null,
         # the "deferForNull" is redundant. We, do, however need to look at deferForMatch, and we are done.

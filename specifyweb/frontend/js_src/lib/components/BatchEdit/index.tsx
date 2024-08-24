@@ -175,7 +175,7 @@ function findAllMissing(
 }
 
 // TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
-const requiredFields = ['name'];
+const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
 
 function findMissingRanks(
   treeTable: SpecifyTable,
@@ -200,13 +200,10 @@ function findMissingRanks(
 
   const highestRank = currentRanksSorted[0];
 
-  const ranksBelow = allTreeDefItems.filter(
+  return allTreeDefItems.flatMap(
     ({ rankId, name }) =>
-      rankId >= highestRank.specifyRank.rankId &&
-      !currentTreeRanks.some((rank)=> rank.specifyRank.name === name && rank.field !== undefined && requiredFields.includes(rank.field.name)))
-
-  return ranksBelow.map((rank) => `${rank.name} ${defined(strictGetTable(treeTable.name).getField('name')).label}`);
-}
+      rankId < highestRank.specifyRank.rankId ? [] : filterArray(requiredTreeFields.map((requiredField)=>!currentTreeRanks.some((rank)=>rank.specifyRank.name === name && rank.field !== undefined && requiredField === rank.field.name) ? `${name} ${defined(strictGetTable(treeTable.name).getField(requiredField)).label}` : undefined)));
+  }
 
 function ErrorsDialog({
   errors,
