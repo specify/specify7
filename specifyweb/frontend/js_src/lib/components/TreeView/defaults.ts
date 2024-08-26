@@ -1,22 +1,3 @@
-/* Tree Defaults Order
-botany
-entomology
-herpetology
-ichthyology
-invertebratepaleontology
-invertebratezoology
-mammalogy
-ornithology
-paleobotany
-vacplant
-vertebratepaleontology
-*/
-
-/*
-* TODO: Figure out issue with errors (it's working fine even w/ the errors)
-* Also thing where order matters--haven't had issues with this before
-*/
-
 import { SerializedResource } from "../DataModel/helperTypes";
 import { TaxonTreeDef, TaxonTreeDefItem } from "../DataModel/types";
 import { DeepPartial, RA } from "../../utils/types";

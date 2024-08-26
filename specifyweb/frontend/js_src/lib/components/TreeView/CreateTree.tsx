@@ -11,7 +11,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { DeepPartial } from '../../utils/types';
+import { DeepPartial, localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -22,7 +22,7 @@ import { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { defaultTreeDefs } from './TreeDefaults';
+import { defaultTreeDefs } from './defaults';
 
 export function CreateTree<SCHEMA extends AnyTree>({
   tableName,
