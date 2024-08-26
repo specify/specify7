@@ -42,12 +42,14 @@ class TreeRank:
         treedef_id: Optional[int],
         base_treedef_id: Optional[int],
     ) -> int:
-        filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
         tree_model = get_tree_model(tree)
-        treedefitems = tree_model.objects.filter(**filter_kwargs)
 
-        if not treedefitems.exists():
-            raise ValueError(f"No treedefitems found for rank {rank_name}")
+        filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
+        treedefitems = tree_model.objects.filter(**filter_kwargs)
+        
+        if not treedefitems.exists() and treedef_id is not None:
+            filter_kwargs = self._build_filter_kwargs(rank_name)
+            treedefitems = tree_model.objects.filter(**filter_kwargs)
 
         if treedefitems.count() > 1:
             treedefitems = self._filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
@@ -58,7 +60,7 @@ class TreeRank:
 
         return first_item.treedef_id
 
-    def _build_filter_kwargs(self, rank_name: str, treedef_id: Optional[int]) -> Dict[str, Any]:
+    def _build_filter_kwargs(self, rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
         filter_kwargs = {'name': rank_name}
         if treedef_id is not None:
             filter_kwargs['treedef_id'] = treedef_id # type: ignore
@@ -105,7 +107,7 @@ class TreeRankRecord(NamedTuple):
         }
 
     def to_key(self) -> Tuple[str, int]:
-        return (self.rank_name, self.treedef_id)
+        return (self.rank_name, self.treedef_id) # Check this line in unit test
 
     def check_rank(self, tree: str) -> bool:
         return TreeRank(self.rank_name, tree, self.treedef_id).check_rank()
@@ -130,7 +132,7 @@ class TreeRecord(NamedTuple):
         result = {"ranks": {}} # type: ignore
         
         for rank, cols in self.ranks.items():
-            rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
+            rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank # Check this line in unit test
             treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
             
             if len(cols) == 1:
