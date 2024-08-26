@@ -46,14 +46,12 @@ json = dict(
                                         'name': 'Species',
                                         'author': 'Species Author',
                                     },
-                                    treeId = 142 # TODO: Set this dynamically
                                 ),
                                 'Subspecies': dict(
                                     treeNodeCols = {
                                         'name': 'Subspecies',
                                         'author': 'Subspecies Author',
                                     },
-                                    treeId = 142 # TODO: Set this dynamically
                                 ),
                             }
                         )}
