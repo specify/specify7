@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-25 21:09+0000\n"
+"PO-Revision-Date: 2024-08-26 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/query/pt_BR/>\n"
@@ -183,7 +183,7 @@ msgstr ""
 #: components/QueryBuilder/Wrapped.tsx:465
 #, fuzzy
 msgid "newButtonDescription"
-msgstr ""
+msgstr "Configurar tabelas de consulta visíveis"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:55
@@ -221,7 +221,7 @@ msgstr ""
 #: components/QueryBuilder/Components.tsx:122
 #, fuzzy
 msgid "saveAs"
-msgstr ""
+msgstr "Não é possível exportar para KML"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:352
@@ -237,7 +237,7 @@ msgstr ""
 #: components/Toolbar/ListEdit.tsx:111
 #, fuzzy
 msgid "moveUp"
-msgstr ""
+msgstr "Escolha o formatador"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:212
@@ -312,7 +312,7 @@ msgstr ""
 #: components/QueryBuilder/FieldFilter.tsx:440
 #, fuzzy
 msgid "equal"
-msgstr ""
+msgstr "Resultados da consulta"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:449
@@ -366,7 +366,7 @@ msgstr ""
 #: components/QueryBuilder/FieldFilter.tsx:501
 #, fuzzy
 msgid "between"
-msgstr ""
+msgstr "Árvore Dessinonimizar"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:510
