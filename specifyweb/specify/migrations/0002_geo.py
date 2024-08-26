@@ -157,7 +157,8 @@ def set_discipline_for_taxon_treedefs():
     for cot in collection_object_types:
         treedef_to_discipline[cot.taxontreedef_id] = cot.collection.discipline
     
-    Taxontreedef.objects.filter(id__in=treedef_to_discipline.keys()).update(discipline=F('collection__discipline'))
+    for treedef_id, discipline in treedef_to_discipline.items():
+        Taxontreedef.objects.filter(id=treedef_id).update(discipline=discipline)
 
 
 def revert_discipline_for_taxon_treedefs():
