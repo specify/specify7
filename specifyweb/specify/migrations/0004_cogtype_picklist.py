@@ -1,7 +1,7 @@
 from django.db import migrations
 
 PICKLIST_NAME = 'CollectionObjectGroupType'
-FIELD_NAME = 'Cogtype'
+COGTYPE_FIELD_NAME = 'cogType'
 PICKLIST_TEXT = 'Collection Object Group Type'
 
 def create_cogtype_picklist(apps):
@@ -27,33 +27,41 @@ def revert_cogtype_picklist(apps):
 
     Picklist.objects.filter(name=PICKLIST_NAME).delete()
 
-
+# Updates COG -> cogtype to use the type 1 picklist created above
 def update_cogtype_splocalecontaineritem(apps):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    # Update a Splocalecontaineritem record for each CollectionObjectGroup Splocalecontainer
-    # NOTE: Each discipline has its own CollectionObjectGroup Splocalecontainer
-    for container in Splocalecontainer.objects.filter(name='collectionobjectgroup', schematype=0):
-        Splocalecontaineritem.objects.filter(container=container, name='cogtype').update(
-            name=FIELD_NAME,
-            picklistname=PICKLIST_NAME,
-            type='ManyToOne',
-            container=container,
-            isrequired=True
-        )
+    Splocalecontaineritem.objects.filter(container__name='collectionobjectgroup', container__schematype=0, name=COGTYPE_FIELD_NAME).update(
+        picklistname=PICKLIST_NAME,
+        type='ManyToOne',
+        isrequired=True
+    )
 
+def revert_cogtype_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    Splocalecontaineritem.objects.filter(container__name='collectionobjectgroup', container__schematype=0, name=COGTYPE_FIELD_NAME).update(
+        picklistname=None,
+        type=None,
+        isrequired=None
+    )
+
+# Updates cogtype -> type to use the Default COGType picklist (Drill Core, Discrete, Consolidated)
 def update_cogtype_type_splocalecontaineritem(apps):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    # Update the type in Splocalecontaineritem record for each CollectionObjectGroupType Splocalecontainer
-    # NOTE: Each discipline has its own CollectionObjectGroupType Splocalecontainer
-    for container in Splocalecontainer.objects.filter(name='collectionobjectgrouptype', schematype=0):
-        Splocalecontaineritem.objects.filter(container=container, name='type').update(
-            picklistname='Default Collection Object Group Types',
-            isrequired=True
-        )
+    Splocalecontaineritem.objects.filter(container__name='collectionobjectgrouptype', container__schematype=0, name='type').update(
+        picklistname='Default Collection Object Group Types',
+        isrequired=True
+    )
+
+def revert_cogtype_type_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    Splocalecontaineritem.objects.filter(container__name='collectionobjectgrouptype', container__schematype=0, name='type').update(
+        picklistname=None,
+        isrequired=None
+    )
 
 
 class Migration(migrations.Migration):
@@ -65,10 +73,12 @@ class Migration(migrations.Migration):
     def apply_migration(apps, schema_editor):
         create_cogtype_picklist(apps)
         update_cogtype_splocalecontaineritem(apps)
-        update_cogtype_type_splocalecontaineritem
+        update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
         revert_cogtype_picklist(apps)
+        revert_cogtype_splocalecontaineritem(apps)
+        revert_cogtype_type_splocalecontaineritem(apps)
 
     operations = [
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
