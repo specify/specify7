@@ -123,7 +123,6 @@ def create_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist = Picklist.objects.create(
             name='Default Collection Object Group Types',
-            tablename='Collectionobjectgrouptype',
             issystem=False,
             type=0,
             readonly=False,
@@ -140,7 +139,6 @@ def revert_default_collection_object_types():
     for collection in Collection.objects.all():
         cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
-            tablename='Collectionobjectgrouptype',
             collection=collection
         )
         if cog_type_picklist_qs.exists():
