@@ -150,15 +150,6 @@ def revert_default_collection_object_types():
             cog_type_picklist.delete()
 
 def set_discipline_for_taxon_treedefs():
-    for treedef in Taxontreedef.objects.all():
-        if treedef.discipline:
-            continue
-        cot = Collectionobjecttype.objects.filter(taxontreedef=treedef).first()
-        if cot:
-            treedef.discipline = cot.collection.discipline
-            treedef.save()
-
-def set_discipline_for_taxon_treedefs():
     taxon_treedefs_without_discipline = Taxontreedef.objects.filter(discipline__isnull=True)
     collection_object_types = Collectionobjecttype.objects.filter(taxontreedef__in=taxon_treedefs_without_discipline)
     
