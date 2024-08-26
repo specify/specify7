@@ -71,7 +71,7 @@ export function TableUniquenessRules(): JSX.Element {
         (relationship) =>
           (['many-to-one', 'one-to-one'] as RA<RelationshipType>).includes(
             relationship.type
-          ) && !relationship.isVirtual
+          ) && !relationship.isVirtual && relationship.name !== 'collectionObjectType'
       ),
     [table]
   );
