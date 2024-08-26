@@ -158,9 +158,7 @@ def set_discipline_for_taxon_treedefs():
             treedef.save()
 
 def revert_discipline_for_taxon_treedefs():
-    for treedef in Taxontreedef.objects.all():
-        treedef.discipline = None
-        treedef.save()
+    Taxontreedef.objects.update(discipline=None)
 
 class Migration(migrations.Migration):
 
