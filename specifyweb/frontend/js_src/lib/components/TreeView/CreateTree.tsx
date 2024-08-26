@@ -67,7 +67,7 @@ export function CreateTree<SCHEMA extends AnyTree>({
             {defaultTreeDefs.map((resource, index) => (
               <li key={index}>
                 <Button.LikeLink onClick={(): void => handleClick(resource)}>
-                  {resource.name}
+                  {localized(resource.name)}
                 </Button.LikeLink>
               </li>
             ))}
