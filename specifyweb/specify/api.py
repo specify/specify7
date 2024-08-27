@@ -669,8 +669,10 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
                 assert not is_dependent, "expected object for dependent field %s in %s: %s" % (field_name, obj, rel_data)
                 fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
                 rel_data = cached_objs[fk_id]
+                if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
+                    ids.append(rel_data["id"])
+                    continue
 
-            #FIXME: only update related objects when they change
             rel_data[field.field.name] = obj
 
             rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj if is_dependent else None)
