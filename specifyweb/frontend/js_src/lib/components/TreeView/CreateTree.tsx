@@ -11,14 +11,19 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { DeepPartial, localized } from '../../utils/types';
+import type { DeepPartial } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import type { AnySchema, AnyTree , SerializedResource} from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type {
+  AnySchema,
+  AnyTree,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
-import { TaxonTreeDef } from '../DataModel/types';
+import type { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -29,11 +34,14 @@ export function CreateTree<SCHEMA extends AnyTree>({
 }: {
   readonly tableName: SCHEMA['tableName'];
 }): JSX.Element {
-
   const [isActive, setIsActive] = React.useState(0);
-  const [selectedResource, setSelectedResource] = React.useState<SpecifyResource<AnySchema> | undefined>(undefined);
+  const [selectedResource, setSelectedResource] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
 
-  const handleClick = (resource: DeepPartial<SerializedResource<TaxonTreeDef>>) => {
+  const handleClick = (
+    resource: DeepPartial<SerializedResource<TaxonTreeDef>>
+  ) => {
     const dsResource = deserializeResource(resource);
     setSelectedResource(dsResource);
     setIsActive(2);
@@ -54,11 +62,9 @@ export function CreateTree<SCHEMA extends AnyTree>({
       {isActive === 1 ? (
         <Dialog
           buttons={
-            <>
-              <Button.DialogClose component={Button.BorderedGray}>
-                {commonText.cancel()}
-              </Button.DialogClose>
-            </>
+            <Button.DialogClose component={Button.BorderedGray}>
+              {commonText.cancel()}
+            </Button.DialogClose>
           }
           header={treeText.addTree()}
           onClose={() => setIsActive(0)}
@@ -75,15 +81,16 @@ export function CreateTree<SCHEMA extends AnyTree>({
         </Dialog>
       ) : null}
       {isActive === 2 && selectedResource !== undefined ? (
-          <ResourceView 
+        <ResourceView
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           resource={selectedResource}
-          onClose={() => setIsActive(0)}
-          onSaved={(): void => globalThis.location.reload()}
           onAdd={undefined}
-          onDeleted={undefined}/>
+          onClose={() => setIsActive(0)}
+          onDeleted={undefined}
+          onSaved={(): void => globalThis.location.reload()}
+        />
       ) : null}
     </>
   );
