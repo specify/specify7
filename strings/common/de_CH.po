@@ -229,7 +229,7 @@ msgstr "Erstellen"
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
-#: components/SchemaConfig/TableUniquenessRules.tsx:139
+#: components/SchemaConfig/TableUniquenessRules.tsx:141
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
 #: components/SearchDialog/index.tsx:297
 #: components/Security/Role.tsx:198
@@ -247,7 +247,7 @@ msgstr "Erstellen"
 #: components/Statistics/StatsPageEditing.tsx:42
 #: components/Toolbar/Language.tsx:76
 #: components/Toolbar/MasterKey.tsx:97
-#: components/Toolbar/QueryTablesEdit.tsx:80
+#: components/Toolbar/QueryTablesEdit.tsx:84
 #: components/Toolbar/QueryTablesWrapper.tsx:155
 #: components/Toolbar/TreeRepair.tsx:91
 #: components/TreeView/Actions.tsx:402
@@ -302,7 +302,7 @@ msgstr "Alles löschen"
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:313
 #: components/SchemaConfig/Components.tsx:42
-#: components/SchemaConfig/TableUniquenessRules.tsx:141
+#: components/SchemaConfig/TableUniquenessRules.tsx:143
 #: components/Security/MissingAgentsDialog.tsx:94
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:72
@@ -879,7 +879,7 @@ msgstr "Alle zuklappen"
 
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
-#: components/Toolbar/QueryTablesEdit.tsx:77
+#: components/Toolbar/QueryTablesEdit.tsx:81
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 msgid "reset"
 msgstr "Zurücksetzen"
