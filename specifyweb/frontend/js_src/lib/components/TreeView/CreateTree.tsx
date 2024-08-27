@@ -31,7 +31,7 @@ export function CreateTree<SCHEMA extends AnyTree>({
 }): JSX.Element {
 
   const [isActive, setIsActive] = React.useState(0);
-  const [selectedResource, setSelectedResource] = React.useState<SpecifyResource<AnySchema> | null>(null);
+  const [selectedResource, setSelectedResource] = React.useState<SpecifyResource<AnySchema> | undefined>(undefined);
 
   const handleClick = (resource: DeepPartial<SerializedResource<TaxonTreeDef>>) => {
     const dsResource = deserializeResource(resource);
@@ -74,14 +74,14 @@ export function CreateTree<SCHEMA extends AnyTree>({
           </Ul>
         </Dialog>
       ) : null}
-      {isActive === 2 && selectedResource ? (
+      {isActive === 2 && selectedResource !== undefined ? (
           <ResourceView 
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           resource={selectedResource}
           onClose={() => setIsActive(0)}
-          onSaved={undefined}
+          onSaved={(): void => globalThis.location.reload()}
           onAdd={undefined}
           onDeleted={undefined}/>
       ) : null}

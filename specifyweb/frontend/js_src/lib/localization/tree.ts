@@ -540,9 +540,6 @@ export const treeText = createDictionary({
   addTree: {
     'en-us': 'Add Tree',
   },
-  newTree: {
-    'en-us': 'New Tree Definition',
-  },
   treePicker: {
     'en-us': 'Tree Picker',
   },
