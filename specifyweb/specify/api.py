@@ -672,16 +672,8 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
 
             #FIXME: only update related objects when they change
             rel_data[field.field.name] = obj
-            if 'id' in rel_data:
-                # Update an existing related object.
-                rel_obj = update_obj(collection, agent,
-                                     rel_model, rel_data['id'],
-                                     rel_data['version'], rel_data,
-                                     parent_obj=obj if is_dependent else None)
 
-            else:
-                # Create a new related object.
-                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj if is_dependent else None)
+            rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj if is_dependent else None)
 
             if not is_dependent and not (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'):
                 getattr(obj, field_name).add(rel_obj)
@@ -698,6 +690,15 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
             to_remove.delete()
         else: 
             getattr(obj, field_name).remove(*list(to_remove))
+
+def update_or_create_resource(collection, agent, model, data, parent_obj): 
+    if 'id' in data: 
+        return update_obj(collection, agent, 
+                          model, data['id'], 
+                          data['version'], data, 
+                          parent_obj=parent_obj)
+    else: 
+        return create_obj(collection, agent, model, data, parent_obj=parent_obj)
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:

@@ -7,7 +7,6 @@ import { Http } from '../../utils/ajax/definitions';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { isRelationshipCollection } from './collectionApi';
@@ -112,7 +111,7 @@ export const ResourceBase = Backbone.Model.extend({
   _save: null, // Stores reference to the ajax deferred while the resource is being saved
 
   /**
-   * Returns true if the resource is being fetched and saved from Backbone
+   * Returns true if the resource is being fetched or saved from Backbone
    * More specifically, returns true while this resource holds a reference
    * to Backbone's save() and fetch() in _save and _fetch
    */
@@ -811,9 +810,9 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch({ limit: 0 }).then((collection) => {
-      this.storeIndependent(field, collection);
-      return collection;
+    return collection.fetch({ limit: 0 }).then((fetchedCollection) => {
+      this.storeIndependent(field, fetchedCollection);
+      return fetchedCollection;
     });
   },
   async save({
@@ -872,14 +871,15 @@ export const ResourceBase = Backbone.Model.extend({
   },
   toJSON() {
     const self = this;
-    const json = Backbone.Model.prototype.toJSON.apply(self, arguments);
+    const options = arguments;
+    const json = Backbone.Model.prototype.toJSON.apply(self, options);
 
     _.each(self.dependentResources, (related, fieldName) => {
       const field = self.specifyTable.getField(fieldName);
       if (field.type === 'zero-to-one') {
-        json[fieldName] = related ? [related.toJSON()] : [];
+        json[fieldName] = related ? [related.toJSON(options)] : [];
       } else {
-        json[fieldName] = related ? related.toJSON() : null;
+        json[fieldName] = related ? related.toJSON(options) : null;
       }
     });
 
@@ -887,7 +887,7 @@ export const ResourceBase = Backbone.Model.extend({
       ([fieldName, related]) => {
         if (related) {
           json[fieldName] = isRelationshipCollection(related)
-            ? related.toApiJSON()
+            ? related.toApiJSON(options)
             : related.isNew() || related.needsSaved
             ? related.toJSON(options)
             : related.url();

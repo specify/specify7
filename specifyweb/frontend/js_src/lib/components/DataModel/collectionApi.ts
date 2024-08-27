@@ -128,7 +128,7 @@ export const IndependentCollection = Base.extend({
     return records;
   },
   async fetch(options) {
-    if (this.related.isNew()) {
+    if (this.related.isNew() || this.related.isBeingInitialized()) {
       return this;
     }
 
@@ -144,11 +144,11 @@ export const IndependentCollection = Base.extend({
       domainfilter: this.domainfilter,
       limit: options.limit,
     };
-
+    const self = this;
     this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
     return this._fetch.then(() => {
-      this._fetch = null;
-      return this;
+      self._fetch = null;
+      return self;
     });
   },
   isComplete() {
