@@ -17,7 +17,13 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
+
+class QueryConstruct(
+    namedtuple(
+        "QueryConstruct",
+        "collection objectformatter query join_cache tree_rank_count internal_filters",
+    )
+):
 
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
@@ -27,7 +33,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['internal_filters'] = []
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank, tree_field):
+    def handle_tree_field(self, node, table, tree_rank, tree_field, tree_def_id=None):
         query = self
         if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
             f"No Collection found in Query for {table}",
@@ -42,19 +48,18 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             logger.debug("using join cache for %r tree ranks.", table)
             ancestors, treedefs = query.join_cache[(table, 'TreeRanks')]
         else:
-            
-            treedefs = get_treedefs(query.collection, table.name)
+
+            treedefs = get_treedefs(query.collection, table.name, tree_def_id)
 
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.
             max_depth = max(depth for _, depth in treedefs)
-            
+
             ancestors = [node]
             for _ in range(max_depth-1):
                 ancestor = orm.aliased(node)
                 query = query.outerjoin(ancestor, ancestors[-1].ParentID == getattr(ancestor, ancestor._id))
                 ancestors.append(ancestor)
-        
 
             logger.debug("adding to join cache for %r tree ranks.", table)
             query = query._replace(join_cache=query.join_cache.copy())
@@ -63,10 +68,21 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank).values_list('id', flat=True)))
-            for treedef_id, _ in treedefs
-            ] if tup[1] is not None]
+        treedefs_with_ranks: List[Tuple[int, int]] = [
+            tup
+            for tup in [
+                (
+                    treedef_id,
+                    _safe_filter(
+                        item_model.objects.filter(
+                            treedef_id=treedef_id, name=tree_rank
+                        ).values_list("id", flat=True)
+                    ),
+                )
+                for treedef_id, _ in treedefs
+            ]
+            if tup[1] is not None
+        ]
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
@@ -76,16 +92,23 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         def _predicates_for_node(_node):
             return [
-                # TEST: consider taking the treedef_id comparison just to the first node, if it speeds things up (matching for higher is redundant..)
-                (sql.and_(getattr(_node, treedef_column)==treedef_id, getattr(_node, treedefitem_column)==treedefitem_id), getattr(_node, column_name))
+                # TEST: consider taking the treedef_id comparison just to the first node,
+                # if it speeds things up (matching for higher is redundant..)
+                (
+                    sql.and_(
+                        getattr(_node, treedef_column) == treedef_id,
+                        getattr(_node, treedefitem_column) == treedefitem_id,
+                    ),
+                    getattr(_node, column_name),
+                )
                 for (treedef_id, treedefitem_id) in treedefs_with_ranks
             ]
-        
+
         cases_per_ancestor = [
             _predicates_for_node(ancestor)
             for ancestor in ancestors
-            ]
-        
+        ]
+
         column = sql.case([case for per_ancestor in cases_per_ancestor for case in per_ancestor])
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
@@ -134,7 +157,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
             table, model = next_table, aliased
         return query, model, table, field
-
 
     # To make things "simpler", it doesn't apply any filters, but returns a single predicate
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
