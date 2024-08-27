@@ -66,7 +66,12 @@ def make_stringid(fs, table_list):
     return table_list, fs.table.name.lower(), field_name
 
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field treedef_id")):
+class QueryFieldSpec(
+    namedtuple(
+        "QueryFieldSpec",
+        "root_table root_sql_table join_path table date_part tree_rank tree_field treedef_id",
+    )
+):
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -264,11 +269,19 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 query, orm_field = query.objectformatter.objformat(query, orm_model, formatter, cycle_detector)
             else:
                 query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
-                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter, cycle_detector)
+                orm_field = query.objectformatter.aggregate(
+                    query,
+                    self.get_field(),
+                    orm_model,
+                    aggregator or formatter,
+                    cycle_detector,
+                )
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
             if self.tree_rank is not None:
-                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field, self.treedef_id)
+                query, orm_field = query.handle_tree_field(
+                    orm_model, table, self.tree_rank, self.tree_field, self.treedef_id
+                )
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
 
