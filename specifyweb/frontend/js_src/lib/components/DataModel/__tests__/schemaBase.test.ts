@@ -25,5 +25,5 @@ test('domain data is fetched and parsed correctly', async () =>
     paleoContextChildTable: 'collectionobject',
     referenceSymbol: '#',
     treeRankSymbol: '$',
-    treeDefinitionSymbol: '%'
+    treeDefinitionSymbol: '%',
   }));

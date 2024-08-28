@@ -5,9 +5,9 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
+import type { SplitMappingPath } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
-  SplitMappingPath,
   valueIsTreeDefinition,
   valueIsTreeRank,
 } from './mappingHelpers';
@@ -38,9 +38,11 @@ const toTreeRecordRanks = (
 ): IR<ColumnDefinition> =>
   Object.fromEntries(
     rankMappedFields.map(({ mappingPath, headerName, columnOptions }) => [
-      // Use the last element of the mapping path to get the field name
-      // e.g: mappingPath when a tree is specified: ['$Kingdom', 'name'] vs when no tree is specified: ['name']
-      mappingPath[mappingPath.length - 1].toLowerCase(),
+      /*
+       * Use the last element of the mapping path to get the field name
+       * e.g: mappingPath when a tree is specified: ['$Kingdom', 'name'] vs when no tree is specified: ['name']
+       */
+      mappingPath.at(-1).toLowerCase(),
       toColumnOptions(headerName, columnOptions),
     ])
   );
@@ -60,12 +62,12 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
           : undefined;
 
         const treeId =
-          treeName !== undefined
-            ? treeDefinitions.find(
-                ({ definition }) => definition.name === treeName
-              )?.definition.id
-            : treeDefinitions.find(({ ranks }) =>
+          treeName === undefined
+            ? treeDefinitions.find(({ ranks }) =>
                 ranks.find((r) => r.name === rankName)
+              )?.definition.id
+            : treeDefinitions.find(
+                ({ definition }) => definition.name === treeName
               )?.definition.id;
 
         return [
