@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:47+0000\n"
+"PO-Revision-Date: 2024-08-28 17:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -405,7 +405,7 @@ msgstr "Comienza con (sin distinguir entre mayúsculas y minúsculas)"
 #, fuzzy
 msgid "startsWithDescription"
 msgstr ""
-"[X0X][X5X][X24X]+[X31X]Haga clic en [X41X] un enlace que normalmente se abre "
+"[X0X][X5X][X24X]+[X31X]Haga clic[X41X] en un enlace que normalmente se abre "
 "en una nueva pestaña para abrirlo en la pestaña actual."
 
 #. Used in: Components > Preferences > User Definitions
@@ -419,7 +419,7 @@ msgstr "Comienza con (distingue entre mayúsculas y minúsculas)"
 #, fuzzy
 msgid "startsWithCaseSensitiveDescription"
 msgstr ""
-"[X0X][X5X][X24X]+[X31X]Haga clic en [X41X] un enlace que normalmente se abre "
+"[X0X][X5X][X24X]+[X31X]Haga clic[X41X] en un enlace que normalmente se abre "
 "en una nueva pestaña para abrirlo en la pestaña actual."
 
 #. Used in: Components > Preferences > User Definitions
@@ -718,13 +718,13 @@ msgstr "Dirección del movimiento cuando se presiona la tecla <key>Enter</key>"
 #: components/Preferences/UserDefinitions.tsx:1740
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "color sinónimo"
+msgstr "Sinónimo color"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1765
 #, fuzzy
 msgid "filterPickLists"
-msgstr "no usar"
+msgstr "No utilizar"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1548
@@ -841,7 +841,7 @@ msgstr "Inercia de la sartén"
 #: components/Preferences/UserDefinitions.tsx:1960
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Resaltar subcadena coincidente"
+msgstr "Resaltar la subcadena coincidente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1967
@@ -1007,7 +1007,9 @@ msgstr "Altura máxima"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Determina títulos de campos, notas de uso y títulos de tablas."
+msgstr ""
+"Determina los títulos de los campos, las notas de uso y los títulos de las "
+"tablas."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1147,7 +1149,7 @@ msgstr "Crear automáticamente registros {agentVariantTable:string}"
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Al fusionar agentes, cree automáticamente registros "
+"Al fusionar agentes, se crean automáticamente registros "
 "{agentVariantTable:string} basados en las variaciones de nombre/apellido."
 
 #. Used in: Components > App Resources > Types
@@ -1172,7 +1174,7 @@ msgstr "Recordar las posiciones de las ventanas de diálogo"
 #: components/Preferences/UserDefinitions.tsx:1304
 #, fuzzy
 msgid "autoPlayMedia"
-msgstr "Reproducir automáticamente medios"
+msgstr "Reproducir automáticamente los medios"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:225
