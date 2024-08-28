@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:53+0000\n"
+"PO-Revision-Date: 2024-08-28 16:54+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -186,7 +186,7 @@ msgstr "Guardar registro primero"
 #: components/Preferences/UserDefinitions.tsx:1117
 #, fuzzy
 msgid "firstRecord"
-msgstr "Editar historial"
+msgstr "Historial de edición"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:96
@@ -570,7 +570,7 @@ msgstr "Crear un nuevo registro en blanco"
 #: components/FormMeta/AutoNumbering.tsx:92
 #, fuzzy
 msgid "autoNumbering"
-msgstr "Metaformulario"
+msgstr "Formulario Meta"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:138
@@ -747,7 +747,7 @@ msgstr "Recurso eliminado"
 #: components/Forms/ResourceView.tsx:216
 #, fuzzy
 msgid "resourceDeletedDescription"
-msgstr "El valor debe ser un número."
+msgstr "El artículo fue eliminado exitosamente."
 
 #. Used in: Components > Forms > Date Range
 #: components/Forms/DateRange.tsx:53
