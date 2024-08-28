@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:46+0000\n"
+"PO-Revision-Date: 2024-08-28 16:57+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -47,7 +47,7 @@ msgstr "Preferências de usuário padrão"
 #: components/Preferences/UserDefinitions.tsx:1681
 #, fuzzy
 msgid "general"
-msgstr ""
+msgstr "Imagem personalizada"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:82
@@ -234,7 +234,7 @@ msgstr "Fundo de campo desabilitado (tema escuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr ""
+msgstr "Largura de coluna de grade de subvisualização flexível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -708,7 +708,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1740
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr ""
+msgstr "Sinônimo de cor"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1765
@@ -786,7 +786,7 @@ msgstr "Mostrar filtros de consulta ao executar um relatório de um formulário"
 #: components/Preferences/UserDefinitions.tsx:1045
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr ""
+msgstr "Direção do movimento quando a tecla [X27X]Tab[X35X] é pressionada"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:753
@@ -828,7 +828,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1960
 #, fuzzy
 msgid "mouseDrags"
-msgstr ""
+msgstr "Destacar substring correspondente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1967
@@ -852,7 +852,7 @@ msgstr "Largura de coluna de grade de subvisualização flexível"
 #: components/Preferences/UserDefinitions.tsx:469
 #, fuzzy
 msgid "closeOnEsc"
-msgstr ""
+msgstr "Ícone e nome da tabela"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:476
@@ -931,7 +931,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr ""
+msgstr "Use o seletor de mês acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
@@ -992,7 +992,7 @@ msgstr "Altura máxima"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr ""
+msgstr "Determina legendas de campo, notas de uso e legendas de tabela."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1066,7 +1066,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:688
 #, fuzzy
 msgid "dontUse"
-msgstr ""
+msgstr "Zoom da roda de rolagem"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:569
@@ -1137,7 +1137,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr ""
+msgstr "Personalização"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
