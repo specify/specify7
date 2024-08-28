@@ -38,7 +38,6 @@ const toTreeRecordRanks = (
     ])
   );
 
-// TODO: need to update this to include tree def identifier
 const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
   ranks: Object.fromEntries(
     indexMappings(lines).map(([fullRankName, rankMappedFields]) => [
@@ -138,8 +137,7 @@ const toUploadable = (
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RR<keyof Tables, boolean>,
-  taxonTreeId: number | undefined
+  mustMatchPreferences: RR<keyof Tables, boolean>
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -150,7 +148,6 @@ export const uploadPlanBuilder = (
       .map(([tableName]) => tableName),
     true
   ),
-  taxonTreeId,
 });
 
 const indexMappings = (

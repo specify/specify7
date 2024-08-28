@@ -24,15 +24,10 @@ import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type {
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { TreeInformation } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { Layout } from './Header';
 import {
@@ -144,11 +139,6 @@ export function Mapper(props: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
-  readonly taxonType?: string;
-  readonly treeDefinitions:
-    | readonly SerializedResource<FilterTablesByEndsWith<'TreeDef'>>[]
-    | undefined;
-  readonly handleTreeSelection: (treeName: string) => void;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -457,13 +447,9 @@ export function Mapper(props: {
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
               spec: navigatorSpecs.wbPlanView,
-              taxonType: props.taxonType,
-              treeDefinitions: props.treeDefinitions,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
-              if (rest.index === 0 && rest.newTableName === 'Taxon')
-                props.handleTreeSelection(rest.newValue);
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
               else if (!isReadOnly)
@@ -549,7 +535,6 @@ export function Mapper(props: {
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
               spec: navigatorSpecs.wbPlanView,
-              taxonType: props.taxonType,
             }),
           });
 

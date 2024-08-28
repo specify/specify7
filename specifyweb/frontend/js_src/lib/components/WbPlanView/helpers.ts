@@ -42,13 +42,11 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
-  taxonTreeId,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
-  readonly taxonTreeId?: number | undefined;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -68,8 +66,7 @@ export async function savePlan({
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
-    taxonTreeId
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;

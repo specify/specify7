@@ -1584,7 +1584,4 @@ export const wbText = createDictionary({
     'fr-fr': '{node:string} (dans {parent:string})',
     'uk-ua': '{node:string} (у {parent:string})',
   },
-  selectTree: {
-    'en-us': 'Select Tree Type',
-  },
 } as const);

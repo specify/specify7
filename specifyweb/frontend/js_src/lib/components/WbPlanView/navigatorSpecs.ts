@@ -14,6 +14,7 @@ export type NavigatorSpec = {
   // Whether no restrictions mode is enabled
   readonly isNoRestrictions: () => boolean;
   readonly includeToManyReferenceNumbers: boolean;
+  readonly includeAnyTreeDefinition: boolean;
   readonly includeSpecificTreeRanks: boolean;
   readonly includeAnyTreeRank: boolean;
   readonly includeFormattedAggregated: boolean;
@@ -41,6 +42,7 @@ const wbPlanView: NavigatorSpec = {
     userPreferences.get('workBench', 'wbPlanView', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: true,
   includeSpecificTreeRanks: true,
+  includeAnyTreeDefinition: false,
   includeAnyTreeRank: false,
   includeFormattedAggregated: false,
   includeRootFormattedAggregated: false,
@@ -81,6 +83,7 @@ const queryBuilder: NavigatorSpec = {
   isNoRestrictions: () =>
     userPreferences.get('queryBuilder', 'general', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: false,
+  includeAnyTreeDefinition: true,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: true,
   includeFormattedAggregated: true,
@@ -111,6 +114,7 @@ const formatterEditor: NavigatorSpec = {
   includeReadOnly: true,
   isNoRestrictions: () => true,
   includeToManyReferenceNumbers: false,
+  includeAnyTreeDefinition: false,
   includeSpecificTreeRanks: false,
   includeAnyTreeRank: false,
   includeFormattedAggregated: true,
@@ -133,6 +137,7 @@ const permissive: NavigatorSpec = {
   includeReadOnly: true,
   isNoRestrictions: () => true,
   includeToManyReferenceNumbers: true,
+  includeAnyTreeDefinition: true,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: true,
   includeFormattedAggregated: true,
