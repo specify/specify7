@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-18 15:09+0000\n"
+"PO-Revision-Date: 2024-08-28 16:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -41,7 +41,7 @@ msgstr "La valeur doit être unique à {fieldName:string}"
 #: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "Rien n'a été trouvé"
+msgstr "Rien trouvé"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
@@ -274,7 +274,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Enregistrer des informations"
+msgstr "Informations sur le dossier"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -471,7 +471,9 @@ msgstr "Continuer sans enregistrer ?"
 #: components/FormSliders/RecordSelectorFromIds.tsx:281
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Nombre de reports groupés"
+msgstr ""
+"Vous souhaiterez peut-être sauvegarder cet enregistrement avant de continuer "
+"votre navigation."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:226
