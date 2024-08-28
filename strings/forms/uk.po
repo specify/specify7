@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-18 15:09+0000\n"
+"PO-Revision-Date: 2024-08-28 16:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -263,7 +263,7 @@ msgstr "Зберегти конфлікт"
 msgid "saveConflictDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
-"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
+"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Forms > Save
@@ -552,7 +552,7 @@ msgstr "Показати підрахунок масового переносу"
 #: components/Forms/Save.tsx:242
 #, fuzzy
 msgid "bulkCarryForwardCount"
-msgstr "Показати підрахунок масового переносу"
+msgstr "Підрахунок масового переносу"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:257
