@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-18 15:09+0000\n"
+"PO-Revision-Date: 2024-08-28 16:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -429,7 +429,7 @@ msgstr ""
 #: components/FormSliders/RecordSelectorFromIds.tsx:226
 #, fuzzy
 msgid "creatingNewRecord"
-msgstr "El formulario no se puede guardar debido al siguiente error:"
+msgstr "Creando nuevo registro"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:364
@@ -441,7 +441,7 @@ msgstr "Crear un nuevo conjunto de registros"
 #: components/PickLists/definitions.ts:145
 #, fuzzy
 msgid "forward"
-msgstr "Metaformulario"
+msgstr "Adelante"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:144
