@@ -3,9 +3,14 @@ import { group, removeKey, split, toLowerCase } from '../../utils/utils';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { isTreeTable } from '../InitialContext/treeRanks';
+import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import type { SplitMappingPath } from './mappingHelpers';
+import {
+  getNameFromTreeDefinitionName,
+  SplitMappingPath,
+  valueIsTreeDefinition,
+  valueIsTreeRank,
+} from './mappingHelpers';
 import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 import type {
   ColumnDefinition,
@@ -33,21 +38,47 @@ const toTreeRecordRanks = (
 ): IR<ColumnDefinition> =>
   Object.fromEntries(
     rankMappedFields.map(({ mappingPath, headerName, columnOptions }) => [
-      mappingPath[0].toLowerCase(),
+      // Use the last element of the mapping path to get the field name
+      // e.g: mappingPath when a tree is specified: ['$Kingdom', 'name'] vs when no tree is specified: ['name']
+      mappingPath[mappingPath.length - 1].toLowerCase(),
       toColumnOptions(headerName, columnOptions),
     ])
   );
 
-const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
-  ranks: Object.fromEntries(
-    indexMappings(lines).map(([fullRankName, rankMappedFields]) => [
-      getNameFromTreeRankName(fullRankName),
-      {
-        treeNodeCols: toTreeRecordRanks(rankMappedFields),
-      },
-    ])
-  ),
-});
+const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
+  const treeDefinitions = getTreeDefinitions('Taxon', 'all');
+
+  return {
+    ranks: Object.fromEntries(
+      indexMappings(lines).map(([fullName, rankMappedFields]) => {
+        const rankName = valueIsTreeRank(fullName)
+          ? getNameFromTreeRankName(fullName)
+          : getNameFromTreeRankName(rankMappedFields[0].mappingPath[0]);
+
+        const treeName = valueIsTreeDefinition(fullName)
+          ? getNameFromTreeDefinitionName(fullName)
+          : undefined;
+
+        const treeId =
+          treeName !== undefined
+            ? treeDefinitions.find(
+                ({ definition }) => definition.name === treeName
+              )?.definition.id
+            : treeDefinitions.find(({ ranks }) =>
+                ranks.find((r) => r.name === rankName)
+              )?.definition.id;
+
+        return [
+          rankName,
+          {
+            treeNodeCols: toTreeRecordRanks(rankMappedFields),
+            treeId,
+          },
+        ];
+      })
+    ),
+  };
+};
 
 function toUploadTable(
   table: SpecifyTable,
