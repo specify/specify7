@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:46+0000\n"
+"PO-Revision-Date: 2024-08-28 16:57+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -235,7 +235,7 @@ msgstr "Отключен фон поля (тёмная тема)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Гибкая ширина столбца сетки подпредставления"
+msgstr "Гибкая ширина столбца сетки подвидов"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -367,7 +367,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:746
 #, fuzzy
 msgid "updatePageTitleFormDescription"
-msgstr "Обновлять ли заголовок страницы для соответствия текущей записи."
+msgstr "Следует ли обновить заголовок страницы для соответствия текущей записи."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1054
@@ -567,7 +567,7 @@ msgstr ""
 #: components/Preferences/index.tsx:245
 #, fuzzy
 msgid "adminsOnlyPreference"
-msgstr "У вас нет разрешения на изменение этой опции."
+msgstr "У вас нет разрешения на изменение этой опции"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1536
@@ -707,7 +707,7 @@ msgstr "Направление движения при нажатии клави
 #: components/Preferences/UserDefinitions.tsx:1740
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Цвет синонима."
+msgstr "Синоним цвет"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1765
@@ -929,7 +929,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Используйте доступный инструмент выбора месяца"
+msgstr "Используйте доступный выбор месяца"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
@@ -1063,7 +1063,7 @@ msgstr "Использовать"
 #: components/Preferences/UserDefinitions.tsx:688
 #, fuzzy
 msgid "dontUse"
-msgstr "Масштабирование колеса прокрутки"
+msgstr "Колесо прокрутки масштабирует"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:569
@@ -1136,7 +1136,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr "Кастомизация"
+msgstr "Настройка"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
