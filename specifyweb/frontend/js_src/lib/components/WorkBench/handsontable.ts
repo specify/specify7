@@ -85,7 +85,7 @@ function getIdentifyNullRecords(hot: Handsontable, mappings: WbMapping | undefin
       return {readOnly: false};
     }
     const batchEditPack: BatchEditPack | undefined = JSON.parse(batchEditRaw)[BATCH_EDIT_KEY];
-    return { readOnly: isBatchEditNullRecord(batchEditPack, mappings.baseTable, mappings.lines[mappingCol].mappingPath)};
+    return { readOnly: isBatchEditNullRecord(batchEditPack, mappings.lines[mappingCol].mappingPath)};
     }
   return makeNullRecordsReadOnly
 }

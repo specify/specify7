@@ -51,10 +51,10 @@ class Func:
 
     @staticmethod
     def remove_keys(source: Dict[I, O], callback: Callable[[O], bool]) -> Dict[I, O]:
-        return {key: value for key, value in source.items() if callback(value)}
+        return {key: value for key, value in source.items() if callback(key, value)}
 
     @staticmethod
-    def is_not_empty(val):
+    def is_not_empty(key, val):
         return val
 
     @staticmethod

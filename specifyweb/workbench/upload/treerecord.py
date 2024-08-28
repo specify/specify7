@@ -12,6 +12,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.workbench.upload.clone import clone_record
 from specifyweb.workbench.upload.predicates import (
+    SPECIAL_TREE_FIELDS_TO_SKIP,
     ContetRef,
     DjangoPredicates,
     SkippablePredicate,
@@ -222,7 +223,10 @@ class BoundTreeRecord(NamedTuple):
         return False
 
     def get_django_predicates(
-        self, should_defer_match: bool, to_one_override: Dict[str, UploadResult] = {}
+        self,
+        should_defer_match: bool,
+        to_one_override: Dict[str, UploadResult] = {},
+        consider_dependents=False,
     ) -> DjangoPredicates:
         # Everything is so complicated around here. In an initial implementation, I naively returned SkippablePredicates,
         # but that'll potentially cause null records to be actually processed. (although, there doesn't seem to be a realizable user mapping to do it)
@@ -237,7 +241,7 @@ class BoundTreeRecord(NamedTuple):
     def can_save(self) -> bool:
         return False
 
-    def delete_row(self, info, parent_obj=None) -> UploadResult:
+    def delete_row(self, parent_obj=None) -> UploadResult:
         raise NotImplementedError()
 
     def match_row(self) -> UploadResult:
@@ -637,15 +641,6 @@ class BoundTreeRecord(NamedTuple):
 
     def _get_reference(self) -> Optional[Dict[str, Any]]:
 
-        FIELDS_TO_SKIP = [
-            "nodenumber",
-            "highestchildnodenumber",
-            "parent_id",
-            # TODO: Test fullname. Depends on use-cases I guess.
-            # Skipping them currently because we won't be able to match across branches, without disabling all database fields lookup
-            "fullname",
-        ]
-
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null,
         # the "deferForNull" is redundant. We, do, however need to look at deferForMatch, and we are done.
 
@@ -686,7 +681,7 @@ class BoundTreeRecord(NamedTuple):
                 else {
                     "ref": reference,
                     "attrs": resolve_reference_attributes(
-                        FIELDS_TO_SKIP, model, reference
+                        SPECIAL_TREE_FIELDS_TO_SKIP, model, reference
                     ),
                 }
             )

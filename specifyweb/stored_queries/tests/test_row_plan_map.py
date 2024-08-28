@@ -115,6 +115,7 @@ class TestRowPlanMaps(TestCase):
         visible_fields = [field for field in query_fields if field.display]
         row_plan = RowPlanMap.get_row_plan(visible_fields)
         plan, fields = row_plan.index_plan()
+        print(plan)
         correct_plan = RowPlanMap(
             batch_edit_pack=BatchEditPack(
                 id=BatchEditFieldPack(field=None, idx=2, value=None),
@@ -203,14 +204,14 @@ class TestRowPlanMaps(TestCase):
                                             ],
                                             to_one={},
                                             to_many={},
-                                            is_naive=False,
+                                            is_naive=True,
                                         )
                                     },
                                     to_many={},
                                     is_naive=False,
                                 ),
                             },
-                            is_naive=True,
+                            is_naive=False,
                         )
                     },
                     to_many={},
@@ -231,3 +232,94 @@ class TestRowPlanMaps(TestCase):
             is_naive=True,
         )
         self.assertEqual(plan, correct_plan)
+
+    def test_first_hop_always_naive(self):
+        fields = [
+            {
+                "tablelist": "10,1-collectionObjects",
+                "stringid": "10,1-collectionObjects.collectionobject.catalogNumber",
+                "fieldname": "catalogNumber",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 2,
+                "isdisplay": True,
+                "operstart": 1,
+                "startvalue": "707070",
+                "isnot": False,
+            }
+        ]
+        query_fields = fields_from_json(fields)
+        row_plan = RowPlanMap.get_row_plan(query_fields)
+        plan, fields = row_plan.index_plan()
+        self.assertTrue(plan.to_many["collectionobjects"].is_naive)
+
+    def test_first_hop_order_naive(self):
+        filter_fields = [
+            {
+                "tablelist": "10,30-collectors",
+                "stringid": "10,30-collectors.collector.isPrimary",
+                "fieldname": "isPrimary",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 1,
+                "isdisplay": True,
+                "operstart": 6,
+                "startvalue": "",
+                "isnot": False,
+            },
+        ]
+        query_fields = fields_from_json(filter_fields)
+        row_plan = RowPlanMap.get_row_plan(query_fields)
+        plan, fields = row_plan.index_plan()
+        self.assertFalse(plan.to_many["collectors"].is_naive)
+
+        no_filter_fields = [{**filter_fields[0], "operstart": 8}]
+        query_fields = fields_from_json(no_filter_fields)
+        row_plan = RowPlanMap.get_row_plan(query_fields)
+        plan, fields = row_plan.index_plan()
+        self.assertTrue(plan.to_many["collectors"].is_naive)
+
+    def test_distant_to_many_naive(self):
+        filter_fields = [
+            {
+                "tablelist": "1,5-cataloger,8-addresses",
+                "stringid": "1,5-cataloger,8-addresses.address.address",
+                "fieldname": "address",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 4,
+                "isdisplay": True,
+                "operstart": 1,
+                "startvalue": "test",
+                "isnot": False,
+            }
+        ]
+        query_fields = fields_from_json(filter_fields)
+        row_plan = RowPlanMap.get_row_plan(query_fields)
+        plan, fields = row_plan.index_plan()
+        self.assertFalse(plan.to_one["cataloger"].to_many["addresses"].is_naive)
+
+    def test_tree_is_not_naive(self):
+        filter_fields = [
+            {
+                "tablelist": "1,9-determinations,4,4-acceptedChildren",
+                "stringid": "1,9-determinations,4,4-acceptedChildren.taxon.author",
+                "fieldname": "author",
+                "isrelfld": False,
+                "sorttype": 0,
+                "position": 0,
+                "isdisplay": True,
+                "operstart": 8,
+                "startvalue": "",
+                "isnot": False,
+            }
+        ]
+        query_fields = fields_from_json(filter_fields)
+        row_plan = RowPlanMap.get_row_plan(query_fields)
+        plan, fields = row_plan.index_plan()
+        self.assertFalse(
+            plan.to_many["determinations"]
+            .to_one["taxon"]
+            .to_many["acceptedchildren"]
+            .is_naive
+        )

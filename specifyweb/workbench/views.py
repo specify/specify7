@@ -702,6 +702,7 @@ def rows(request, ds) -> http.HttpResponse:
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
 def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
     "Initiates an upload or validation of dataset <ds_id>."
+    from .upload.upload import do_upload_dataset
 
     do_permission = BatchEditDataSet.commit if ds.isupdate else DataSetPT.upload
 
@@ -723,16 +724,25 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             return http.HttpResponse("dataset has already been uploaded.", status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.upload.apply_async(
-            [
-                request.specify_collection.id,
-                request.specify_user_agent.id,
-                ds.id,
-                no_commit,
-                allow_partial,
-            ],
-            task_id=taskid,
+        # async_result = tasks.upload.apply_async(
+        #     [
+        #         request.specify_collection.id,
+        #         request.specify_user_agent.id,
+        #         ds.id,
+        #         no_commit,
+        #         allow_partial,
+        #     ],
+        #     task_id=taskid,
+        # )
+        do_upload_dataset(
+            request.specify_collection,
+            request.specify_user_agent.id,
+            ds,
+            no_commit,
+            allow_partial,
+            None,
         )
+        async_result = "ss"
         ds.uploaderstatus = {
             "operation": "validating" if no_commit else "uploading",
             "taskid": taskid,

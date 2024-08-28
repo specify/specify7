@@ -2,7 +2,6 @@ import json
 from unittest.mock import patch
 
 from specifyweb.stored_queries.batch_edit import (
-    BatchEditFieldPack,
     BatchEditPack,
     BatchEditProps,
     RowPlanMap,
@@ -43,10 +42,13 @@ def props_builder(self, session_maker):
 
     return _builder
 
+
 def fake_obj_formatter(*args, **kwargs):
     return (SIMPLE_DEF, None, None)
 
-OBJ_FORMATTER_PATH = 'specifyweb.context.app_resource.get_app_resource'
+
+OBJ_FORMATTER_PATH = "specifyweb.context.app_resource.get_app_resource"
+
 
 # NOTES: Yes, it is more convenient to hard code ids (instead of defining variables.).
 # But, using variables can make bugs apparent
@@ -89,7 +91,6 @@ class QueryConstructionTests(SQLAlchemySetup):
         plan, fields = row_plan.index_plan()
 
         self.assertEqual(plan, row_plan_map)
-
 
     @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_basic_run(self):
@@ -159,12 +160,12 @@ class QueryConstructionTests(SQLAlchemySetup):
         )
 
         correct_rows = [
-            ['num-0', None, 'LastName', '', 'Test1', 'LastName', None],
-            ['num-1', None, 'LastName', '', 'Test1', 'LastName', None],
-            ['num-2', 99, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None],
-            ['num-3', None, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None],
-            ['num-4', 229, 'LastNameAsTest', '', 'Test2', 'LastNameAsTest', None]
-            ]
+            ["num-0", None, "LastName", "", "Test1", "LastName", None],
+            ["num-1", None, "LastName", "", "Test1", "LastName", None],
+            ["num-2", 99, "LastNameAsTest", "", "Test2", "LastNameAsTest", None],
+            ["num-3", None, "LastNameAsTest", "", "Test2", "LastNameAsTest", None],
+            ["num-4", 229, "LastNameAsTest", "", "Test2", "LastNameAsTest", None],
+        ]
 
         self.assertEqual(correct_rows, rows)
 
@@ -1471,8 +1472,8 @@ class QueryConstructionTests(SQLAlchemySetup):
             ],
         )
 
-        self.assertEqual(packs, correct_packs)  
-    
+        self.assertEqual(packs, correct_packs)
+
     @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_to_one_does_not_stall_if_not_to_many(self):
         base_table = "collectionobject"

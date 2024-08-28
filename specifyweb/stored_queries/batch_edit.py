@@ -5,9 +5,21 @@
 # However, using 1.11 makes things slower in other files.
 
 from functools import reduce
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, TypedDict
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Tuple,
+    TypedDict,
+    Union,
+    Literal,
+)
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
@@ -29,7 +41,7 @@ from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
-
+from decimal import Decimal
 
 MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 
@@ -38,6 +50,36 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 #   - does generation of upload plan in the backend bc upload plan is not known (we don't know count of to-many).
 #       - seemed complicated to merge upload plan from the frontend
 #   - need to place id markers at correct level, so need to follow upload plan anyways.
+
+# TODO: Play-around with localizing
+NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
+
+
+SHARED_READONLY_FIELDS = [
+    "timestampcreated",
+    "timestampmodified",
+    "version",
+    "modifiedbyagent",
+    "createdbyagent",
+    "nodenumber",
+    "highestchildnodenumber",
+    "rankid",
+    "fullname",
+]
+
+
+def get_readonly_fields(table: Table):
+    fields = [*SHARED_READONLY_FIELDS, table.idFieldName.lower()]
+    relationships = []
+    if table.name.lower() == "determination":
+        relationships = ["preferredtaxon"]
+    return fields, relationships
+
+
+def parse(value: Optional[Any]) -> Any:
+    if isinstance(value, Decimal):
+        return float(value)
+    return value
 
 
 def _get_nested_order(field_spec: QueryFieldSpec):
@@ -201,48 +243,31 @@ class RowPlanMap(NamedTuple):
     is_naive: bool = True
 
     @staticmethod
-    def _merge(force_naive=False):
-        def _merge(
-            current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
-        ) -> Dict[str, "RowPlanMap"]:
-            key, other_plan = other
-            return {
-                **current,
-                # merge if other is also found in ours
-                key: (
-                    other_plan
-                    if key not in current
-                    else current[key].merge(other_plan, force_naive)
-                ),
-            }
-
-        return _merge
+    def _merge(
+        current: Dict[str, "RowPlanMap"], other: Tuple[str, "RowPlanMap"]
+    ) -> Dict[str, "RowPlanMap"]:
+        key, other_plan = other
+        return {
+            **current,
+            # merge if other is also found in ours
+            key: (other_plan if key not in current else current[key].merge(other_plan)),
+        }
 
     # takes two row plans, combines them together. Adjusts is_naive.
-    def merge(
-        self: "RowPlanMap", other: "RowPlanMap", force_naive=False
-    ) -> "RowPlanMap":
+    def merge(self: "RowPlanMap", other: "RowPlanMap") -> "RowPlanMap":
         new_columns = [*self.columns, *other.columns]
         batch_edit_pack = other.batch_edit_pack.merge(self.batch_edit_pack)
         is_self_naive = self.is_naive and other.is_naive
         # BUG: Handle this more gracefully for to-ones.
-        to_one = reduce(RowPlanMap._merge(), other.to_one.items(), self.to_one)
-        adjusted_to_one = {
-            key: value._replace(is_naive=True) for (key, value) in to_one.items()
-        }
-        to_many = reduce(
-            RowPlanMap._merge(force_naive), other.to_many.items(), self.to_many
-        )
-        adjusted_naive = (
-            is_self_naive
-            and not (any(not _to_one.is_naive for _to_one in to_one.values()))
-        ) or (force_naive and (batch_edit_pack.order.field is None))
+        # That is, we'll currently incorrectly disallow making new ones. Fine for now.
+        to_one = reduce(RowPlanMap._merge, other.to_one.items(), self.to_one)
+        to_many = reduce(RowPlanMap._merge, other.to_many.items(), self.to_many)
         return RowPlanMap(
             batch_edit_pack,
             new_columns,
-            adjusted_to_one,
+            to_one,
             to_many,
-            is_naive=adjusted_naive,
+            is_naive=is_self_naive,
         )
 
     @staticmethod
@@ -354,21 +379,42 @@ class RowPlanMap(NamedTuple):
             node.name.lower() if not isinstance(node, TreeRankQuery) else node.name
         )
 
-        rest_plan = {
-            rel_name: RowPlanMap._recur_row_plan(
-                [*running_path, node],
-                rest,
-                datamodel.get_table_strict(node.relatedModelName),
-                original_field,
-            )
-        }
+        remaining_map = RowPlanMap._recur_row_plan(
+            [*running_path, node],
+            rest,
+            datamodel.get_table_strict(node.relatedModelName),
+            original_field,
+        )
 
         boiler = RowPlanMap(columns=[], batch_edit_pack=batch_edit_pack)
-        return (
-            boiler._replace(to_one=rest_plan)
-            if rel_type == "to_one"
-            else boiler._replace(to_many=rest_plan)
-        )
+
+        def _augment_is_naive(rel_type: Union[Literal["to_one"], Literal["to_many"]]):
+
+            rest_plan = {rel_name: remaining_map}
+            if rel_type == "to_one":
+                # Propagate is_naive up
+                return boiler._replace(
+                    is_naive=remaining_map.is_naive, to_one=rest_plan
+                )
+
+            # bc the user eperience guys want to be able to make new dets/preps one hop away
+            # but, we can't allow it for ordernumber when filtering. pretty annoying.
+            # and definitely not naive for any tree, well, technically it is possible, but for user's sake.
+            is_naive = not is_tree_table(next_table) and (
+                (
+                    len(running_path) == 0
+                    and (remaining_map.batch_edit_pack.order.field is None)
+                )
+                or remaining_map.is_naive
+            )
+            return boiler._replace(
+                to_many={
+                    # to force-naiveness
+                    rel_name: remaining_map._replace(is_naive=is_naive)
+                }
+            )
+
+        return _augment_is_naive(rel_type)
 
     # generates multiple row plan maps, and merges them into one
     # this doesn't index the row plan, bc that is complicated.
@@ -386,24 +432,24 @@ class RowPlanMap(NamedTuple):
             for field in fields
         ]
 
-        raw_plan = reduce(
-            lambda current, other: current.merge(other, True),
+        plan = reduce(
+            lambda current, other: current.merge(other),
             iter,
             RowPlanMap(batch_edit_pack=EMPTY_PACK),
         )
-        return raw_plan.skim_plan()
+        return plan
 
-    def skim_plan(self: "RowPlanMap", parent_is_naive=True) -> "RowPlanMap":
-        is_current_naive = parent_is_naive and self.is_naive
-        to_one = {
-            key: value.skim_plan(is_current_naive)
-            for (key, value) in self.to_one.items()
-        }
-        to_many = {
-            key: value.skim_plan(is_current_naive)
-            for (key, value) in self.to_many.items()
-        }
-        return self._replace(to_one=to_one, to_many=to_many, is_naive=is_current_naive)
+    # def skim_plan(self: "RowPlanMap", parent_is_naive=True) -> "RowPlanMap":
+    #     is_current_naive = parent_is_naive and self.is_naive
+    #     to_one = {
+    #         key: value.skim_plan(is_current_naive)
+    #         for (key, value) in self.to_one.items()
+    #     }
+    #     to_many = {
+    #         key: value.skim_plan(is_current_naive)
+    #         for (key, value) in self.to_many.items()
+    #     }
+    #     return self._replace(to_one=to_one, to_many=to_many, is_naive=is_current_naive)
 
     @staticmethod
     def _bind_null(value: "RowPlanCanonical") -> List["RowPlanCanonical"]:
@@ -413,7 +459,7 @@ class RowPlanMap(NamedTuple):
 
     def bind(self, row: Tuple[Any]) -> "RowPlanCanonical":
         columns = [
-            column._replace(value=row[column.idx], field=None)
+            column._replace(value=parse(row[column.idx]), field=None)
             for column in self.columns
             # Careful: this can be 0, so not doing "if not column.idx"
             if column.idx is not None
@@ -428,16 +474,19 @@ class RowPlanMap(NamedTuple):
 
     # gets a null record to fill-out empty space
     # doesn't support nested-to-many's yet - complicated
-    def nullify(self, ignore_naive=False) -> "RowPlanCanonical":
+    def nullify(self, parent_is_phantom=False) -> "RowPlanCanonical":
         # since is_naive is set,
-        is_null = (not self.is_naive) and not ignore_naive
-        columns = [pack._replace(value=None) for pack in self.columns]
+        is_phantom = parent_is_phantom or not self.is_naive
+        columns = [
+            pack._replace(value=NULL_RECORD_DESCRIPTION if is_phantom else None)
+            for pack in self.columns
+        ]
         to_ones = {
-            key: value.nullify(not is_null) for (key, value) in self.to_one.items()
+            key: value.nullify(is_phantom) for (key, value) in self.to_one.items()
         }
         batch_edit_pack = self.batch_edit_pack._replace(
             id=self.batch_edit_pack.id._replace(
-                value=(NULL_RECORD if is_null else None)
+                value=(NULL_RECORD if is_phantom else None)
             )
         )
         return RowPlanCanonical(batch_edit_pack, columns, to_ones)
@@ -740,8 +789,8 @@ class RowPlanCanonical(NamedTuple):
                     "to_one": Func.remove_keys(to_ones[1], Func.is_not_empty),
                     "to_many": Func.remove_keys(
                         to_many[1],
-                        lambda records: any(
-                            Func.is_not_empty(record) for record in records
+                        lambda key, records: any(
+                            Func.is_not_empty(key, record) for record in records
                         ),
                     ),
                 },
@@ -769,7 +818,7 @@ class RowPlanCanonical(NamedTuple):
             for canonical in self.to_one.values()
         )
 
-        def _lookup_in_fields(_id: Optional[int]):
+        def _lookup_in_fields(_id: Optional[int], readonly_fields: List[str]):
             assert _id is not None, "invalid lookup used!"
             field = query_fields[
                 _id - 1
@@ -783,17 +832,12 @@ class RowPlanCanonical(NamedTuple):
             if _count > 1:
                 localized_label += f" #{_count}"
             fieldspec = field.fieldspec
-            # Couple of special fields are not editable. TODO: See if more needs to be added here.
-            # 1. Partial dates
-            # 2. Formatted/Aggregated
-            # three. Fullname in trees
+
             is_null = (
                 fieldspec.needs_formatted()
                 or intermediary_to_tree
                 or (fieldspec.is_temporal() and fieldspec.date_part != "Full Date")
-                # TODO: Refactor after merge with production
-                or fieldspec.get_field().name.lower()
-                in ["fullname", "nodenumber", "highestchildnodenumber"]
+                or fieldspec.get_field().name.lower() in readonly_fields
             )
             id_in_original_fields = get_column_id(string_id)
             return (
@@ -802,8 +846,9 @@ class RowPlanCanonical(NamedTuple):
                 localized_label,
             )
 
+        readonly_fields, readonly_rels = get_readonly_fields(base_table)
         key_and_fields_and_headers = [
-            _lookup_in_fields(column.idx) for column in self.columns
+            _lookup_in_fields(column.idx, readonly_fields) for column in self.columns
         ]
 
         wb_cols = {
@@ -853,6 +898,9 @@ class RowPlanCanonical(NamedTuple):
         ]
         all_headers = [*raw_headers, *to_one_headers, *to_many_headers]
 
+        def _relationship_is_editable(name, value):
+            return Func.is_not_empty(name, value) and name not in readonly_rels
+
         if intermediary_to_tree:
             assert len(to_many_upload_tables) == 0, "Found to-many for tree!"
             upload_plan: Uploadable = TreeRecord(
@@ -869,8 +917,11 @@ class RowPlanCanonical(NamedTuple):
                 wbcols=wb_cols,
                 static={},
                 # FEAT: Remove this restriction to allow adding brand new data anywhere
-                toOne=Func.remove_keys(to_one_upload_tables, Func.is_not_empty),
-                toMany=Func.remove_keys(to_many_upload_tables, Func.is_not_empty),
+                # that's about the best we can do, to make relationships readonly. we can't really omit them during headers finding, because they are "still" there
+                toOne=Func.remove_keys(to_one_upload_tables, _relationship_is_editable),
+                toMany=Func.remove_keys(
+                    to_many_upload_tables, _relationship_is_editable
+                ),
             )
 
         return all_headers, upload_plan

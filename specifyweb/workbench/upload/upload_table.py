@@ -5,7 +5,6 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
-from specifyweb.specify.api import delete_obj
 from specifyweb.specify.func import Func
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.workbench.upload.clone import clone_record
@@ -371,7 +370,10 @@ class BoundUploadTable(NamedTuple):
         return defer_preference.should_defer_fields("match")
 
     def get_django_predicates(
-        self, should_defer_match: bool, to_one_override: Dict[str, UploadResult] = {}
+        self,
+        should_defer_match: bool,
+        to_one_override: Dict[str, UploadResult] = {},
+        consider_dependents=False,
     ) -> DjangoPredicates:
 
         model = self.django_model
@@ -408,7 +410,8 @@ class BoundUploadTable(NamedTuple):
                 if key in to_one_override
                 # For simplicity in typing, to-ones are also considered as a list
                 else value.get_django_predicates(
-                    should_defer_match=should_defer_match
+                    should_defer_match=should_defer_match,
+                    consider_dependents=consider_dependents,
                 ).reduce_for_to_one()
             )
             for key, value in self.toOne.items()
@@ -417,7 +420,8 @@ class BoundUploadTable(NamedTuple):
         to_many = {
             key: [
                 value.get_django_predicates(
-                    should_defer_match=should_defer_match
+                    should_defer_match=should_defer_match,
+                    consider_dependents=consider_dependents,
                 ).reduce_for_to_many(value)
                 for value in values
             ]
@@ -429,6 +433,29 @@ class BoundUploadTable(NamedTuple):
         )
 
         if combined_filters.is_reducible():
+            # This is a very hot path, being called for every object on a row. We'd need to be very minimal in what we consider when considering dependents.
+            # So, we:
+            # 1. ^ all other attrs are null (otherwise, we won't delete this obj anyways, don't need to waste time looking at deps)
+            # 2. only look at unmapped dependents, otherwise, it is redundant again.
+            # 3. just make sure it is present
+            if consider_dependents and record_ref is not None:
+                current_rels = [*self.toOne.keys(), *self.toMany.keys()]
+                for field in record_ref._meta.get_fields():
+                    if field in current_rels or not (
+                        field.is_relation
+                        and self._relationship_is_dependent(field.name)
+                    ):
+                        continue
+                    if field.many_to_one or field.one_to_one:
+                        attname: str = field.attname  # type: ignore
+                        hit = getattr(record_ref, attname) != None
+                    else:
+                        hit = getattr(record_ref, field.name).exists()
+                    if hit:
+                        # returning this makes this agnostic to implementation above, it really shouldn't be used for matching or anything
+                        return DjangoPredicates(
+                            filters={field.name: [SkippablePredicate()]}
+                        )
             return DjangoPredicates()
 
         combined_filters = combined_filters._replace(
@@ -542,6 +569,7 @@ class BoundUploadTable(NamedTuple):
             filter_predicate = self.get_django_predicates(
                 should_defer_match=self._should_defer_match,
                 to_one_override=to_one_results,
+                consider_dependents=isinstance(self, BoundUpdateTable),
             )
         except ContetRef as e:
             # Not sure if there is a better way for this. Consider moving this to binding.
@@ -759,7 +787,14 @@ class BoundUploadTable(NamedTuple):
                 )
         return added_picklist_items
 
-    def delete_row(self, info, parent_obj=None) -> UploadResult:
+    def delete_row(self, parent_obj=None) -> UploadResult:
+
+        info = ReportInfo(
+            tableName=self.name,
+            columns=[pr.column for pr in self.parsedFields],
+            treeInfo=None,
+        )
+
         if self.current_id is None:
             return UploadResult(NullRecord(info), {}, {})
         # By the time we are here, we know if we can't have a not null to-one or to-many mapping.
@@ -768,17 +803,39 @@ class BoundUploadTable(NamedTuple):
         reference_record = self._get_reference(
             should_cache=False  # Need to evict the last copy, in case someone tries accessing it, we'll then get a stale record
         )
+
+        assert reference_record is not None
+
         result: Optional[Union[Deleted, FailedBusinessRule]] = None
+
+        to_many_deleted: Dict[str, List[UploadResult]] = {
+            key: [record.delete_row() for record in records]
+            for (key, records) in self.toMany.items()
+            if self._relationship_is_dependent(key)
+        }
+        if any(
+            isinstance(result.record_result, Deleted)
+            for (results_per_key) in to_many_deleted.values()
+            for result in results_per_key
+        ):
+            return UploadResult(PropagatedFailure(), {}, to_many_deleted)
+
         with transaction.atomic():
             try:
-                delete_obj(
-                    reference_record, parent_obj=parent_obj, deleter=self.auditor.delete
-                )
+                # we don't care about deleting dependents, because if we get here, we either don't have any dependents OR we mapped all of them
+                self.auditor.delete(reference_record, parent_obj)
+                reference_record.delete()
                 result = Deleted(self.current_id, info)
             except (BusinessRuleException, IntegrityError) as e:
                 result = FailedBusinessRule(str(e), {}, info)
+
+        to_one_deleted: Dict[str, UploadResult] = {
+            key: value.delete_row()
+            for (key, value) in self.toOne.items()
+            if self._relationship_is_dependent(key)
+        }
         assert result is not None
-        return UploadResult(result, {}, {})
+        return UploadResult(result, to_one_deleted, to_many_deleted)
 
     def _relationship_is_dependent(self, field_name) -> bool:
         django_model = self.django_model
@@ -1017,7 +1074,7 @@ class BoundUpdateTable(BoundUploadTable):
     ) -> Tuple[Dict[str, UploadResult], Dict[str, List[UploadResult]]]:
 
         to_one_deleted = {
-            key: uploadable.delete_row(to_one_results[key].record_result.info)  # type: ignore
+            key: uploadable.delete_row()  # type: ignore
             for (key, uploadable) in self.toOne.items()
             if self._relationship_is_dependent(key)
             and isinstance(to_one_results[key].record_result, NullRecord)
@@ -1026,7 +1083,7 @@ class BoundUpdateTable(BoundUploadTable):
         to_many_deleted = {
             key: [
                 (
-                    uploadable.delete_row(result.record_result.info)
+                    uploadable.delete_row()
                     if isinstance(result.record_result, NullRecord)
                     else result
                 )
