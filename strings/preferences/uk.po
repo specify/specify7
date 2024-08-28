@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:46+0000\n"
+"PO-Revision-Date: 2024-08-28 17:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -131,7 +131,7 @@ msgstr "Контраст"
 #: components/Preferences/UserDefinitions.tsx:183
 #, fuzzy
 msgid "increase"
-msgstr "Збільшити"
+msgstr "Збільшення"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:140
@@ -170,8 +170,9 @@ msgstr "Сімейство шрифтів"
 msgid "fontFamilyDescription"
 msgstr ""
 "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо "
-"його немає в списку. Також підтримується розділений комами список шрифтів, "
-"у якому використовуватиметься другий шрифт, якщо перший недоступний тощо."
+"його немає в списку. Також підтримується список шрифтів, розділених комами, "
+"у якому використовуватиметься кожен наступний шрифт, якщо попередній "
+"недоступний."
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:197
@@ -233,7 +234,7 @@ msgstr "Вимкнений фон поля (темна тема)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Гнучка ширина стовпця сітки вкладеного перегляду"
+msgstr "Гнучка ширина стовпця сітки підперегляду"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -383,7 +384,7 @@ msgstr "Алгоритм пошуку"
 #: components/Preferences/UserDefinitions.tsx:1077
 #, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)"
+msgstr "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1016
@@ -472,7 +473,7 @@ msgstr "Показати значок у заголовку"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Інтерфейс масштабу"
+msgstr "Інтерфейс масштабування"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -703,7 +704,7 @@ msgstr "Напрямок руху, коли натиснуто клавішу <k
 #: components/Preferences/UserDefinitions.tsx:1740
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Синонім кольору."
+msgstr "Синонім кольору"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1765
@@ -792,7 +793,7 @@ msgstr "Включіть назву таблиці в заголовок сто�
 #: components/Preferences/UserDefinitions.tsx:760
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Перейти до першого поля"
+msgstr "Сфокусувати перше поле"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1932
@@ -926,13 +927,13 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Використовуйте доступний засіб вибору місяця."
+msgstr "Використовуйте доступний засіб вибору місяця"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr "Зробіть діалогові вікна форми сірими фоном"
+msgstr "Зробіть діалогові вікна форми сірими"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1337
@@ -986,7 +987,7 @@ msgstr "Максимальна висота"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць"
+msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1126,7 +1127,7 @@ msgstr "Автоматично створювати записи {agentVariantTa
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Під час об’єднання агентів автоматично створювати записи "
+"Під час об’єднання агентів автоматично створюйте записи "
 "{agentVariantTable:string} на основі варіацій імені/прізвища."
 
 #. Used in: Components > App Resources > Types
@@ -1139,7 +1140,7 @@ msgstr "Налаштування"
 #: components/Preferences/UserDefinitions.tsx:490
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr "Запам'ятайте розміри діалогових вікон"
+msgstr "Пам'ятайте про розміри діалогових вікон"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
