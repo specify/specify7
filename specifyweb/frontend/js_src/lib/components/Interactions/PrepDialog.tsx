@@ -69,7 +69,10 @@ export function PrepDialog({
     [key: string]: number | null;
   }>(
     React.useCallback(() => {
-      return preparations.reduce((acc, preparation) => {
+      return preparations.reduce<R<number | null>>((acc, preparation) => {
+        acc[preparation.preparationId] = null;
+        return acc;
+      }, {});
         acc[preparation.preparationId] = null;
         return acc;
       }, {} as { [key: string]: number | null });
