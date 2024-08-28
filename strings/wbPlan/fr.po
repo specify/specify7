@@ -200,7 +200,7 @@ msgstr "La validation a trouvé des mappages manquants :"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Il manque à ce mappage de données un ou plusieurs champs de données requis "
+"Ce mappage de données manque d'un ou de plusieurs champs de données requis "
 "pour le téléchargement par votre configuration Spécifier. Ajoutez les "
 "mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
 "inachevé."
