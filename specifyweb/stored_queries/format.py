@@ -263,7 +263,7 @@ class ObjectFormatter(object):
         formatter_name = aggregator_formatter_name
         if not self.hasFormatterDef(specify_model, aggregator_formatter_name):
             formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', ',')
+        separator = aggregatorNode.attrib.get('separator', '; ')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
         limit = aggregatorNode.attrib.get('count', '')
         limit = None if limit == '' or int(limit) == 0 else limit

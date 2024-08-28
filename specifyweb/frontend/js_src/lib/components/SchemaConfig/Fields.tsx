@@ -66,7 +66,15 @@ export function SchemaConfigFields({
 
         {relationships.length > 0 && (
           <optgroup label={schemaText.relationships()}>
-            <SchemaConfigFieldsList fields={relationships} />
+            <SchemaConfigFieldsList
+              fields={
+                table.name === 'CollectionObject'
+                  ? relationships.filter(
+                      ({ name }) => name !== 'collectionObjectType'
+                    )
+                  : relationships
+              }
+            />
           </optgroup>
         )}
       </Select>
