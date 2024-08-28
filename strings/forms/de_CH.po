@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-18 15:09+0000\n"
+"PO-Revision-Date: 2024-08-28 16:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -265,7 +265,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Informationen aufnehmen"
+msgstr "Datensatzinformationen"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -747,7 +747,7 @@ msgstr "Anzahl der Massenüberträge"
 #: components/DataEntryTables/Edit.tsx:129
 #, fuzzy
 msgid "configureDataEntryTables"
-msgstr "Dateneingabetabellen konfigurieren"
+msgstr "Konfigurieren von Dateneingabetabellen"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:130
