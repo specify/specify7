@@ -37,7 +37,6 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
-  readonly tableTreeDefName?: string;
 };
 
 type MappingLineBaseProps = {

@@ -40,7 +40,6 @@ import {
   valueIsToManyIndex,
   valueIsTreeDefinition,
   valueIsTreeMeta,
-  valueIsTreeRank,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
@@ -93,10 +92,12 @@ type NavigationCallbacks = {
  * fields from multiple relationships at once)
  */
 function navigator({
+  spec,
   callbacks,
   recursivePayload,
   baseTableName,
 }: {
+  readonly spec: NavigatorSpec;
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks;
   // Used internally to make navigator call itself multiple times
@@ -136,12 +137,14 @@ function navigator({
   else if (childrenAreRanks) {
     const definitions = getTreeDefinitions(table.name, 'all');
 
-    if (definitions.length > 1)
+    if (definitions.length > 1 && spec.useSpecificTreeInterface)
       callbacks.handleTreeDefinitions(callbackPayload);
     else
       callbacks.handleTreeRanks({
         ...callbackPayload,
-        definitionName: definitions[0].definition.name ?? anyTreeRank,
+        definitionName: spec.useSpecificTreeInterface
+          ? definitions[0].definition.name ?? anyTreeRank
+          : anyTreeRank,
       });
   } else if (valueIsTreeDefinition(parentPartName))
     callbacks.handleTreeRanks({
@@ -165,6 +168,7 @@ function navigator({
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
+      spec,
       callbacks,
       recursivePayload: {
         table: nextTable,
@@ -399,7 +403,6 @@ export function getMappingLineData({
                             isRelationship: true,
                             isDefault: name === defaultValue,
                             tableName: table.name,
-                            tableTreeDefName: name,
                           },
                         ] as const)
                       : undefined
@@ -442,7 +445,7 @@ export function getMappingLineData({
                         definitionName === name ||
                         definitionName === anyTreeRank
                     )
-                    .flatMap(({ definition, ranks }) =>
+                    .flatMap(({ ranks }) =>
                       // Exclude the root rank for each tree
                       ranks.slice(1).map(({ name, title }) =>
                         name === defaultValue || generateFieldData === 'all'
@@ -453,7 +456,6 @@ export function getMappingLineData({
                                 isRelationship: true,
                                 isDefault: name === defaultValue,
                                 tableName: table.name,
-                                tableTreeDefName: definition.name,
                               },
                             ] as const)
                           : undefined
@@ -665,6 +667,7 @@ export function getMappingLineData({
   };
 
   navigator({
+    spec,
     callbacks,
     baseTableName,
   });
