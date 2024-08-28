@@ -36,6 +36,11 @@ import {
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
 
+const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec)=> generateMappingPathPreview(
+  queryFieldSpec.baseTable.name,
+  queryFieldSpec.toMappingPath()
+);
+
 export function BatchEditFromQuery({
   query,
   fields,
@@ -67,6 +72,7 @@ export function BatchEditFromQuery({
     });
   const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
+
   return (
     <>
       <Button.Small
@@ -81,16 +87,13 @@ export function BatchEditFromQuery({
                 )
               );
               const missingRanks = findAllMissing(queryFieldSpecs);
-              const invalidFields = filterArray(
-                queryFieldSpecs.map(containsFaultyNestedToMany)
-              );
-
+              const invalidFields = queryFieldSpecs.filter((fieldSpec)=>filters.some((filter)=>filter(fieldSpec)));
               const hasErrors =
                 Object.values(missingRanks).some((ranks) => ranks.length > 0) ||
                 invalidFields.length > 0;
 
               if (hasErrors) {
-                setErrors({ missingRanks, invalidFields });
+                setErrors({ missingRanks, invalidFields: invalidFields.map(queryFieldSpecHeader) });
                 return;
               }
 
@@ -127,20 +130,19 @@ type QueryError = {
 
 function containsFaultyNestedToMany(
   queryFieldSpec: QueryFieldSpec
-): string | undefined {
+): boolean {
   const joinPath = queryFieldSpec.joinPath;
-  if (joinPath.length <= 1) return undefined;
+  if (joinPath.length <= 1) return false;
   const nestedToManyCount = joinPath.filter(
     (relationship) =>
       relationship.isRelationship && relationshipIsToMany(relationship)
   );
-  return nestedToManyCount.length > 1
-    ? generateMappingPathPreview(
-        queryFieldSpec.baseTable.name,
-        queryFieldSpec.toMappingPath()
-      )
-    : undefined;
+  return nestedToManyCount.length > 1;
 }
+
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec)=>queryFieldSpec.joinPath.some((field)=>field.table.isSystem);
+
+const filters = [containsFaultyNestedToMany, containsSystemTables];
 
 const getTreeDefFromName = (
   rankName: string,
