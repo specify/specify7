@@ -192,7 +192,7 @@ export function PrepDialog({
                 return newSelected;
               });
             } else {
-              const count = parseInt(newCount, 10);
+              const count = newCount;
               setBulkValue(count);
               setSelected((prev) => {
                 const newSelected = { ...prev };
