@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-27 15:09+0000\n"
+"PO-Revision-Date: 2024-08-29 16:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -184,7 +184,7 @@ msgstr "muchos a muchos"
 #: components/SchemaViewer/schemaToTsv.tsx:28
 #, fuzzy
 msgid "fieldLength"
-msgstr "Sin mesa"
+msgstr "Longitud"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:74
@@ -390,7 +390,7 @@ msgstr "Exportar duplicados"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
 #, fuzzy
 msgid "numberOfDuplicates"
-msgstr "Recuento de campos"
+msgstr "Número de duplicados"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
