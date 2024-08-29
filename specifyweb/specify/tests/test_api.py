@@ -647,7 +647,7 @@ class InlineApiTests(ApiTests):
         self.assertEqual(self.collectionobjects[0].accession, acc2)
         self.assertEqual(self.collectionobjects[1].accession, acc2)
     
-    def inline_error_handling(self): 
+    def test_inline_error_handling(self): 
         collection_object_data = {
             'id': self.collectionobjects[0].id,
             'catalognumber': self.collectionobjects[0].catalognumber,
