@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-29 07:09+0000\n"
+"PO-Revision-Date: 2024-08-29 16:49+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
@@ -500,7 +500,7 @@ msgstr "Inclure les symboles DMS"
 #: components/WorkBench/Results.tsx:42
 #, fuzzy
 msgid "uploadResults"
-msgstr "Télécharger le forfait"
+msgstr "Plan de téléchargement"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:43
