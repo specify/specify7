@@ -1493,16 +1493,16 @@ export const wbText = createDictionary({
     'uk-ua': '{node:string} (у {parent:string})',
   },
   updatedCells: {
-    'en-us': "Updated Cells"
+    'en-us': 'Updated Cells',
   },
   deletedCells: {
-    'en-us': "Deleted Cells"
+    'en-us': 'Deleted Cells',
   },
   affectedResults: {
-    'en-us': "Records affected"
+    'en-us': 'Records affected',
   },
   potentialAffectedResults: {
-    'en-us': "Potential records affected"
+    'en-us': 'Potential records affected',
   },
   wbAffectedDescription: {
     'en-us': 'Number of new records affected in each table:',
@@ -1511,18 +1511,18 @@ export const wbText = createDictionary({
     'en-us': 'Number of new records that would be affected in each table:',
   },
   recordsCreated: {
-    'en-us': "Records created"
+    'en-us': 'Records created',
   },
   recordsUpdated: {
-    'en-us': "Records updated"
+    'en-us': 'Records updated',
   },
   recordsDeleted: {
-    'en-us': "Records deleted (not including dependents)"
+    'en-us': 'Records deleted (not including dependents)',
   },
   recordsMatchedAndChanged: {
-    'en-us': "Records matched, different from current related"
+    'en-us': 'Records matched, different from current related',
   },
   matchAndChanged: {
-    'en-us': "Matched and changed cells"
-  }
+    'en-us': 'Matched and changed cells',
+  },
 } as const);

@@ -34,6 +34,7 @@ import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
@@ -45,7 +46,6 @@ import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -111,7 +111,7 @@ export function WbView({
     modifiedCells: 0,
     updatedCells: 0,
     deletedCells: 0,
-    matchedAndChangedCells: 0
+    matchedAndChangedCells: 0,
   });
 
   const workbench = React.useMemo<Workbench>(() => {
@@ -242,8 +242,8 @@ export function WbView({
               <WbUploaded
                 datasetId={dataset.id}
                 datasetName={dataset.name}
-                isUploaded={isUploaded}
                 isUpdate={dataset.isupdate}
+                isUploaded={isUploaded}
                 recordCounts={workbench.validation.uploadResults.recordCounts}
                 onClose={closeResults}
               />
@@ -252,10 +252,10 @@ export function WbView({
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent
-          isUpdate={dataset.isupdate}
           cellCounts={cellCounts}
           cells={workbench.cells}
           debounceRate={throttleRate}
+          isUpdate={dataset.isupdate}
           isUploaded={isUploaded}
           searchRef={searchRef}
           utils={workbench.utils}

@@ -10,7 +10,9 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
@@ -22,8 +24,6 @@ import { WbRollback } from './WbRollback';
 import { WbSave } from './WbSave';
 import { WbUpload } from './WbUpload';
 import { WbValidate } from './WbValidate';
-import { WbVariantLocalization } from '../Toolbar/WbsDialog';
-import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export function WbActions({
   dataset,
@@ -66,11 +66,14 @@ export function WbActions({
       onOpenStatus: openStatus,
       workbench,
     });
-  
+
   const variant = resolveVariantFromDataset(dataset);
   const viewerLocalization: WbVariantLocalization = variant.localization.viewer;
 
-  const message = mode === undefined ? undefined : getMessage(cellCounts, mode, viewerLocalization);
+  const message =
+    mode === undefined
+      ? undefined
+      : getMessage(cellCounts, mode, viewerLocalization);
 
   const isMapped = mappings !== undefined;
 
@@ -121,8 +124,8 @@ export function WbActions({
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
-            viewerLocalization={viewerLocalization}
             triggerStatusComponent={triggerStatusComponent}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -228,8 +231,7 @@ export function WbActions({
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
             ? wbText.rollbackCanceledDescription()
-            : viewerLocalization.doCancelledDescription
-            }
+            : viewerLocalization.doCancelledDescription}
         </Dialog>
       )}
     </>
@@ -341,7 +343,9 @@ function getMessage(
                 {viewerLocalization.doErrorsDescription}
                 <br />
                 <br />
-                {wbText.uploadErrorsSecondDescription({type: viewerLocalization.do})}
+                {wbText.uploadErrorsSecondDescription({
+                  type: viewerLocalization.do,
+                })}
               </>
             ),
           },

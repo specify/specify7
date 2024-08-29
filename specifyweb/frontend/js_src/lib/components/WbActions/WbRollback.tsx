@@ -6,16 +6,16 @@ import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbStatus } from '../WorkBench/WbView';
-import { WbVariantLocalization } from '../Toolbar/WbsDialog';
 
 export function WbRollback({
   datasetId,
   triggerStatusComponent,
-  viewerLocalization
+  viewerLocalization,
 }: {
   readonly datasetId: number;
-  readonly viewerLocalization: WbVariantLocalization,
+  readonly viewerLocalization: WbVariantLocalization;
   readonly triggerStatusComponent: (mode: WbStatus) => void;
 }): JSX.Element {
   const [confirmRollback, handleOpen, handleClose] = useBooleanState();
@@ -34,9 +34,9 @@ export function WbRollback({
       {confirmRollback && (
         <RollbackConfirmation
           datasetId={datasetId}
+          viewerLocalization={viewerLocalization}
           onClose={handleClose}
           onRollback={handleRollback}
-          viewerLocalization={viewerLocalization}
         />
       )}
     </>

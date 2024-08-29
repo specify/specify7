@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -19,16 +20,15 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
-import { RecordCountPriority, RecordCounts } from './WbValidation';
-import { LocalizedString } from 'typesafe-i18n';
-
+import type { RecordCounts } from './WbValidation';
+import { RecordCountPriority } from './WbValidation';
 
 const localizationMap: Record<keyof RecordCounts, LocalizedString> = {
-  'Uploaded': wbText.recordsCreated(),
-  'Deleted': wbText.recordsDeleted(),
-  'MatchedAndChanged': wbText.recordsMatchedAndChanged(),
-  'Updated': wbText.recordsUpdated()
-}
+  Uploaded: wbText.recordsCreated(),
+  Deleted: wbText.recordsDeleted(),
+  MatchedAndChanged: wbText.recordsMatchedAndChanged(),
+  Updated: wbText.recordsUpdated(),
+};
 
 export function WbUploaded({
   recordCounts,
@@ -42,31 +42,41 @@ export function WbUploaded({
   readonly datasetId: number;
   readonly datasetName: string;
   readonly isUploaded: boolean;
-  readonly isUpdate: boolean
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <ErrorBoundary dismissible>
       <div className="flex h-full w-60 flex-col gap-4">
         <div>
-          <H2>{isUploaded ? wbText.affectedResults() : wbText.potentialAffectedResults()}</H2>
+          <H2>
+            {isUploaded
+              ? wbText.affectedResults()
+              : wbText.potentialAffectedResults()}
+          </H2>
           <p>
             {isUploaded
               ? wbText.wbAffectedDescription()
-              : wbText.wbAffectedPotentialDescription()
-              }
+              : wbText.wbAffectedPotentialDescription()}
           </p>
         </div>
         <Ul className="flex flex-1 flex-col gap-2">
-          {Object.entries(recordCounts).sort(sortFunction(([value])=>RecordCountPriority.indexOf(value))).map(
-            ([resultType, recordsPerType], id)=><ResultsPerType resultType={resultType} recordsPerType={recordsPerType} key={id}/>)}
+          {Object.entries(recordCounts)
+            .sort(sortFunction(([value]) => RecordCountPriority.indexOf(value)))
+            .map(([resultType, recordsPerType], id) => (
+              <ResultsPerType
+                key={id}
+                recordsPerType={recordsPerType}
+                resultType={resultType}
+              />
+            ))}
         </Ul>
         <div className="flex flex-wrap gap-2">
           {isUploaded && (
             <CreateRecordSetButton
               datasetId={datasetId}
-              isUpdate={isUpdate}
               datasetName={datasetName}
+              isUpdate={isUpdate}
               small
               onClose={f.void}
             />
@@ -80,22 +90,29 @@ export function WbUploaded({
   );
 }
 
-function ResultsPerType({resultType, recordsPerType}:{readonly resultType: keyof RecordCounts; readonly recordsPerType: ValueOf<RecordCounts>}): JSX.Element {
-  return <>
+function ResultsPerType({
+  resultType,
+  recordsPerType,
+}: {
+  readonly resultType: keyof RecordCounts;
+  readonly recordsPerType: ValueOf<RecordCounts>;
+}): JSX.Element {
+  return (
+    <>
       <H3>{localizationMap[resultType]}</H3>
-      {Object.entries(recordsPerType ?? {}).sort(
-        sortFunction(([_tableName, recordCount]) => recordCount, false)
-      )
-      .map(([tableName, recordCount], index) =>
-        typeof recordCount === 'number' ? (
-          <TableResults
-            key={index}
-            recordCount={recordCount}
-            tableName={tableName}
-          />
-        ) : null
-      )}
-  </>
+      {Object.entries(recordsPerType ?? {})
+        .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
+        .map(([tableName, recordCount], index) =>
+          typeof recordCount === 'number' ? (
+            <TableResults
+              key={index}
+              recordCount={recordCount}
+              tableName={tableName}
+            />
+          ) : null
+        )}
+    </>
+  );
 }
 
 export function TableRecordCounts({

@@ -81,7 +81,7 @@ export function WbDataSetMeta(
   return (
     <DataSetMeta
       {...props}
-      datasetVariant='workbench'
+      datasetVariant="workbench"
       deleteDescription={wbText.deleteDataSetDescription()}
       permissionResource="/workbench/dataset"
       onChange={({ needsSaved, name, remarks }) =>

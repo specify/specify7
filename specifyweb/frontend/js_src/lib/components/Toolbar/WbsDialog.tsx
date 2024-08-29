@@ -26,12 +26,12 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
+import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
-import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
-import { formatUrl } from '../Router/queryString';
 import { datasetVariants } from '../WbUtils/datasetVariants';
+import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(
@@ -49,7 +49,7 @@ export const createEmptyDataSet = async <
   datasetVariant: keyof typeof datasetVariants,
   name: LocalizedString,
   props?: Partial<DATASET>
-): Promise<DATASET> => 
+): Promise<DATASET> =>
   ajax<DATASET>(datasetVariants[datasetVariant].fetchUrl, {
     method: 'POST',
     body: {
@@ -129,136 +129,153 @@ function TableHeader({
   );
 }
 
+type WB_VARIANT = keyof Omit<typeof datasetVariants, 'bulkAttachment'>;
 
-type WB_VARIANT = keyof Omit<typeof datasetVariants, "bulkAttachment">;
-
-export type WbVariantLocalization = typeof datasetVariants.workbench.localization.viewer;
+export type WbVariantLocalization =
+  typeof datasetVariants.workbench.localization.viewer;
 
 export function GenericDataSetsDialog({
   onClose: handleClose,
   onDataSetSelect: handleDataSetSelect,
-  wbVariant
+  wbVariant,
 }: {
   readonly wbVariant: WB_VARIANT;
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
 }): JSX.Element | null {
-  const {fetchUrl, sortConfig: sortConfigSpec, canEdit, localization, route, metaRoute, canImport} = datasetVariants[wbVariant];
+  const {
+    fetchUrl,
+    sortConfig: sortConfigSpec,
+    canEdit,
+    localization,
+    route,
+    metaRoute,
+    canImport,
+  } = datasetVariants[wbVariant];
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
-      async () => ajax<RA<DatasetBriefPlan>>(formatUrl(fetchUrl, {}), { headers: { Accept: 'application/json' } }).then(({data})=>data),
+      async () =>
+        ajax<RA<DatasetBriefPlan>>(formatUrl(fetchUrl, {}), {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
       [wbVariant]
     ),
     true
   );
-  const [sortConfig, handleSort, applySortConfig] = useSortConfig(sortConfigSpec.key, sortConfigSpec.field, false);
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    sortConfigSpec.key,
+    sortConfigSpec.field,
+    false
+  );
 
-  const datasets = Array.isArray(unsortedDatasets) ? applySortConfig(
-    unsortedDatasets, ({ name, timestampcreated, uploadresult }) =>
-    sortConfig.sortField === 'name'
-      ? name
-      : sortConfig.sortField === 'dateCreated'
-      ? timestampcreated
-      : uploadresult?.timestamp ?? '') : undefined;
-    
+  const datasets = Array.isArray(unsortedDatasets)
+    ? applySortConfig(
+        unsortedDatasets,
+        ({ name, timestampcreated, uploadresult }) =>
+          sortConfig.sortField === 'name'
+            ? name
+            : sortConfig.sortField === 'dateCreated'
+            ? timestampcreated
+            : uploadresult?.timestamp ?? ''
+      )
+    : undefined;
+
   const navigate = useNavigate();
   const loading = React.useContext(LoadingContext);
 
-  return Array.isArray(datasets) ? <Dialog
-  buttons={
-    <>
-      <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-      {canImport() && (
+  return Array.isArray(datasets) ? (
+    <Dialog
+      buttons={
         <>
-          <Link.Info href="/specify/workbench/import/">
-            {wbText.importFile()}
-          </Link.Info>
-          <Button.Info
-            onClick={(): void =>
-              loading(
-                createWorkbenchDataSet().then(({ id }) =>
-                  navigate(`/specify/workbench/plan/${id}/`)
-                )
-              )
-            }
-          >
-            {wbText.createNew()}
-          </Button.Info>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          {canImport() && (
+            <>
+              <Link.Info href="/specify/workbench/import/">
+                {wbText.importFile()}
+              </Link.Info>
+              <Button.Info
+                onClick={(): void =>
+                  loading(
+                    createWorkbenchDataSet().then(({ id }) =>
+                      navigate(`/specify/workbench/plan/${id}/`)
+                    )
+                  )
+                }
+              >
+                {wbText.createNew()}
+              </Button.Info>
+            </>
+          )}
         </>
+      }
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      dimensionsKey="DataSetsDialog"
+      header={localization.datasetsDialog.header(datasets.length)}
+      icon={icons.table}
+      onClose={handleClose}
+    >
+      {datasets.length === 0 ? (
+        <p>{localization.datasetsDialog.empty()}</p>
+      ) : (
+        <nav>
+          <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
+            <TableHeader sortConfig={sortConfig} onSort={handleSort} />
+            <tbody>
+              {datasets.map((dataset, index) => (
+                <tr key={index}>
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
+                    <Link.Default
+                      className="font-bold"
+                      href={route(dataset.id)}
+                      onClick={
+                        handleDataSetSelect
+                          ? (event): void => {
+                              event.preventDefault();
+                              handleDataSetSelect(dataset.id);
+                            }
+                          : undefined
+                      }
+                    >
+                      <TableIcon
+                        label
+                        name={dataset.uploadplan?.baseTableName ?? 'Workbench'}
+                      />
+                      {dataset.name}
+                    </Link.Default>
+                  </td>
+                  <td>
+                    <DateElement date={dataset.timestampcreated} />
+                  </td>
+                  <td>
+                    <DateElement
+                      date={
+                        dataset.uploadresult?.success === true
+                          ? dataset.uploadresult?.timestamp
+                          : undefined
+                      }
+                    />
+                  </td>
+                  <td>
+                    {canEdit() && (
+                      <Link.Icon
+                        aria-label={commonText.edit()}
+                        className={className.dataEntryEdit}
+                        href={metaRoute(dataset.id)}
+                        icon="pencil"
+                        title={commonText.edit()}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </nav>
       )}
-    </>
-  }
-  className={{
-    container: dialogClassNames.wideContainer,
-  }}
-  dimensionsKey="DataSetsDialog"
-  header={localization.datasetsDialog.header(datasets.length)}
-  icon={icons.table}
-  onClose={handleClose}
->
-  {datasets.length === 0 ? (
-    <p>
-      {localization.datasetsDialog.empty()}
-    </p>
-  ) : (
-    <nav>
-      <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
-        <TableHeader sortConfig={sortConfig} onSort={handleSort} />
-        <tbody>
-          {datasets.map((dataset, index) => (
-            <tr key={index}>
-              <td className="min-w-[theme(spacing.40)] overflow-x-auto">
-                <Link.Default
-                  className="font-bold"
-                  href={route(dataset.id)}
-                  onClick={
-                    handleDataSetSelect
-                      ? (event): void => {
-                          event.preventDefault();
-                          handleDataSetSelect(dataset.id);
-                        }
-                      : undefined
-                  }
-                >
-                  <TableIcon
-                    label
-                    name={dataset.uploadplan?.baseTableName ?? 'Workbench'}
-                  />
-                  {dataset.name}
-                </Link.Default>
-              </td>
-              <td>
-                <DateElement date={dataset.timestampcreated} />
-              </td>
-              <td>
-                <DateElement
-                  date={
-                    dataset.uploadresult?.success === true
-                      ? dataset.uploadresult?.timestamp
-                      : undefined
-                  }
-                />
-              </td>
-              <td>
-                {canEdit() && (
-                  <Link.Icon
-                    aria-label={commonText.edit()}
-                    className={className.dataEntryEdit}
-                    href={metaRoute(dataset.id)}
-                    icon="pencil"
-                    title={commonText.edit()}
-                  />
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </nav>
-  )}
-</Dialog>
- : null;
-
+    </Dialog>
+  ) : null;
 }
 
 export function DataSetsOverlay(): JSX.Element {

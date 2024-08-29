@@ -5,10 +5,10 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import type { WbStatus } from '../WorkBench/WbView';
-import { WbVariantLocalization } from '../Toolbar/WbsDialog';
 
 export function WbUpload({
   hasUnsavedChanges,
@@ -16,14 +16,14 @@ export function WbUpload({
   openNoUploadPlan,
   startUpload,
   cellCounts,
-  viewerLocalization
+  viewerLocalization,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping | undefined;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
   readonly cellCounts: WbCellCounts;
-  readonly viewerLocalization: WbVariantLocalization
+  readonly viewerLocalization: WbVariantLocalization;
 }): JSX.Element {
   const [showUpload, openUpload, closeUpload] = useBooleanState();
 

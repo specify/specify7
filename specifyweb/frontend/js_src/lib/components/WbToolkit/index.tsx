@@ -10,6 +10,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
@@ -17,7 +18,6 @@ import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
-import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export function WbToolkit({
   dataset,
@@ -59,15 +59,14 @@ export function WbToolkit({
     mappings === undefined ? false : mappings.localityColumns.length > 0;
 
   const variant = resolveVariantFromDataset(dataset);
-  
+
   return (
     <div
       aria-label={commonText.tools()}
       className="flex flex-wrap gap-x-1 gap-y-2"
       role="toolbar"
     >
-      {variant.canTransfer() &&
-      hasTablePermission('SpecifyUser', 'read') ? (
+      {variant.canTransfer() && hasTablePermission('SpecifyUser', 'read') ? (
         <ErrorBoundary dismissible>
           <WbChangeOwner
             dataset={dataset}
