@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-29 07:09+0000\n"
+"PO-Revision-Date: 2024-08-29 16:47+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/pt_BR/>\n"
@@ -320,7 +320,7 @@ msgstr ""
 #: components/WorkBench/WbView.tsx:105
 #, fuzzy
 msgid "wbUnloadProtect"
-msgstr ""
+msgstr "Espaço"
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:281
@@ -424,7 +424,7 @@ msgstr ""
 #: components/WbActions/index.tsx:213
 #, fuzzy
 msgid "validationCanceled"
-msgstr ""
+msgstr "Validação Cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:221
@@ -451,7 +451,7 @@ msgstr ""
 #: components/WbActions/index.tsx:216
 #, fuzzy
 msgid "uploadCanceled"
-msgstr ""
+msgstr "Validação do conjunto de dados cancelada."
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Upload.tsx:110
@@ -557,7 +557,7 @@ msgstr ""
 #: components/WorkBench/Results.tsx:42
 #, fuzzy
 msgid "uploadResults"
-msgstr ""
+msgstr "Pesquisa ao vivo"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:43
@@ -599,7 +599,7 @@ msgstr ""
 #: components/WorkBench/AdvancedSearch.tsx:131
 #, fuzzy
 msgid "columnFirst"
-msgstr ""
+msgstr "Revertendo"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
@@ -623,7 +623,7 @@ msgstr ""
 #: components/WorkBench/AdvancedSearch.tsx:151
 #, fuzzy
 msgid "matchCase"
-msgstr ""
+msgstr "Carimbo de data e hora carregado"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:158
@@ -641,7 +641,7 @@ msgstr "Pesquisa ao vivo"
 #: components/WorkBench/AdvancedSearch.tsx:170
 #, fuzzy
 msgid "replaceOptions"
-msgstr ""
+msgstr "Opções de substituição"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
@@ -932,7 +932,7 @@ msgstr ""
 #: components/WorkBench/Status.tsx:106
 #, fuzzy
 msgid "wbStatusPendingDescription"
-msgstr ""
+msgstr "Resultados potenciais de upload"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:109
@@ -955,7 +955,7 @@ msgstr ""
 #: components/WorkBench/Status.tsx:133
 #, fuzzy
 msgid "wbStatusError"
-msgstr ""
+msgstr "Células de erro"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:118
@@ -973,4 +973,4 @@ msgstr "Envio do WB de \"{dataSet:string}\""
 #: components/WorkBench/Disambiguation.tsx:100
 #, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr ""
+msgstr "Conjunto de dados excluído com sucesso."
