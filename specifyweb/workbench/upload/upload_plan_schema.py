@@ -320,7 +320,7 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]] = {}
     for rank, name_or_cols in to_parse['ranks'].items():
         rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
-        tree_rank_record = TreeRank(rank, table.name, treedefid, base_treedefid).tree_rank_record()
+        tree_rank_record = TreeRank.create(rank, table.name, treedefid, base_treedefid).tree_rank_record()
         ranks[tree_rank_record] = parsed_cols
 
         # Update the schema with the treeId

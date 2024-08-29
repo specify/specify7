@@ -10,6 +10,7 @@ from typing_extensions import TypedDict
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import SPECIFY_TREES
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
@@ -19,62 +20,61 @@ from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
 
 logger = logging.getLogger(__name__)
 
-class TreeRank:
+class TreeRank(NamedTuple):
     rank_name: str
     treedef_id: int
     tree: str
 
-    def __init__(
-        self,
+    @staticmethod
+    def create(
         rank_name: str,
         tree: str,
         treedef_id: Optional[int] = None,
         base_treedef_id: Optional[int] = None,
-    ):
-        self.rank_name = rank_name
-        self.treedef_id = self._get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
-        self.tree = tree.lower()
-
-    def _get_treedef_id(
-        self,
-        rank_name: str,
-        tree: str,
-        treedef_id: Optional[int],
-        base_treedef_id: Optional[int],
-    ) -> int:
+    ) -> 'TreeRank':
         tree_model = get_tree_model(tree)
+        tree_lower = tree.lower()
 
-        filter_kwargs = self._build_filter_kwargs(rank_name, treedef_id)
-        treedefitems = tree_model.objects.filter(**filter_kwargs)
-        
-        if not treedefitems.exists() and treedef_id is not None:
-            filter_kwargs = self._build_filter_kwargs(rank_name)
+        def _build_filter_kwargs(rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
+            filter_kwargs = {'name': rank_name}
+            if treedef_id is not None:
+                filter_kwargs['treedef_id'] = treedef_id # type: ignore
+            return filter_kwargs
+
+        def _filter_by_base_treedef_id(treedefitems, rank_name: str, base_treedef_id: Optional[int]):
+            if base_treedef_id is None:
+                raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
+            treedefitems = treedefitems.filter(treedef_id=base_treedef_id)
+            if not treedefitems.exists():
+                raise ValueError(f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+            if treedefitems.count() > 1:
+                raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
+            return treedefitems
+
+        def _get_treedef_id(
+            rank_name: str,
+            tree: str,
+            treedef_id: Optional[int],
+            base_treedef_id: Optional[int],
+        ) -> int:
+            filter_kwargs = _build_filter_kwargs(rank_name, treedef_id)
             treedefitems = tree_model.objects.filter(**filter_kwargs)
+            
+            if not treedefitems.exists() and treedef_id is not None:
+                filter_kwargs = _build_filter_kwargs(rank_name)
+                treedefitems = tree_model.objects.filter(**filter_kwargs)
 
-        if treedefitems.count() > 1:
-            treedefitems = self._filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
+            if treedefitems.count() > 1:
+                treedefitems = _filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
 
-        first_item = treedefitems.first()
-        if first_item is None:
-            raise ValueError(f"No treedefitems found for rank {rank_name}")
+            first_item = treedefitems.first()
+            if first_item is None:
+                raise ValueError(f"No treedefitems found for rank {rank_name}")
 
-        return first_item.treedef_id
+            return first_item.treedef_id
 
-    def _build_filter_kwargs(self, rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
-        filter_kwargs = {'name': rank_name}
-        if treedef_id is not None:
-            filter_kwargs['treedef_id'] = treedef_id # type: ignore
-        return filter_kwargs
-
-    def _filter_by_base_treedef_id(self, treedefitems, rank_name: str, base_treedef_id: Optional[int]):
-        if base_treedef_id is None:
-            raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
-        treedefitems = treedefitems.filter(treedef_id=base_treedef_id)
-        if not treedefitems.exists():
-            raise ValueError(f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
-        if treedefitems.count() > 1:
-            raise ValueError(f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}")
-        return treedefitems
+        treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
+        return TreeRank(rank_name, treedef_id, tree_lower)
 
     def check_rank(self) -> bool:
         tree_model = get_tree_model(self.tree)
@@ -88,9 +88,7 @@ class TreeRank:
     def tree_rank_record(self) -> 'TreeRankRecord':
         assert self.rank_name is not None, "Rank name is required"
         assert self.treedef_id is not None, "Treedef ID is required"
-        assert self.tree is not None and self.tree.lower() in {
-            "taxon", "storage", "geography", "geologictimeperiod", "lithostrat" # TODO: Replace with constants
-        }, "Tree is required"
+        assert self.tree is not None and self.tree.lower() in SPECIFY_TREES, "Tree is required"
         return TreeRankRecord(self.rank_name, self.treedef_id)
 
 def get_tree_model(tree: str):
@@ -107,13 +105,13 @@ class TreeRankRecord(NamedTuple):
         }
 
     def to_key(self) -> Tuple[str, int]:
-        return (self.rank_name, self.treedef_id) # Check this line in unit test
+        return (self.rank_name, self.treedef_id)
 
     def check_rank(self, tree: str) -> bool:
-        return TreeRank(self.rank_name, tree, self.treedef_id).check_rank()
+        return TreeRank.create(self.rank_name, tree, self.treedef_id).check_rank()
     
     def validate_rank(self, tree) -> None:
-        TreeRank(self.rank_name, tree, self.treedef_id).validate_rank()
+        TreeRank.create(self.rank_name, tree, self.treedef_id).validate_rank()
 
 class TreeRecord(NamedTuple):
     name: str
@@ -128,11 +126,10 @@ class TreeRecord(NamedTuple):
         return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
 
     def to_json(self) -> Dict:
-        # result: Dict[str, Union[str, int, Dict[str, Any]]] = {"ranks": {}}
         result = {"ranks": {}} # type: ignore
         
         for rank, cols in self.ranks.items():
-            rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank # Check this line in unit test
+            rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
             treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
             
             if len(cols) == 1:
@@ -167,7 +164,7 @@ class ScopedTreeRecord(NamedTuple):
         parseFails: List[WorkBenchParseFailure] = []
         for tree_rank_record, cols in self.ranks.items():
             nameColumn = cols['name']
-            presults, pfails = parse_many(collection, self.name, cols, row) # TODO: fix
+            presults, pfails = parse_many(collection, self.name, cols, row)
             parsedFields[tree_rank_record.rank_name] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
