@@ -78,8 +78,14 @@ def get_readonly_fields(table: Table):
     return fields, relationships
 
 
-def parse(value: Optional[Any]) -> Any:
-    if isinstance(value, Decimal):
+FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
+
+
+def parse(value: Optional[Any], query_field: QueryField) -> Any:
+    field = query_field.fieldspec.get_field()
+    if field is None or value is None:
+        return value
+    if field.type in FLOAT_FIELDS:
         return float(value)
     return value
 
@@ -459,16 +465,22 @@ class RowPlanMap(NamedTuple):
             return []
         return [value]
 
-    def bind(self, row: Tuple[Any]) -> "RowPlanCanonical":
+    def bind(
+        self, row: Tuple[Any], query_fields: List[QueryField]
+    ) -> "RowPlanCanonical":
         columns = [
-            column._replace(value=parse(row[column.idx]), field=None)
+            column._replace(
+                value=parse(row[column.idx], query_fields[column.idx]), field=None
+            )
             for column in self.columns
             # Careful: this can be 0, so not doing "if not column.idx"
             if column.idx is not None
         ]
-        to_ones = {key: value.bind(row) for (key, value) in self.to_one.items()}
+        to_ones = {
+            key: value.bind(row, query_fields) for (key, value) in self.to_one.items()
+        }
         to_many = {
-            key: RowPlanMap._bind_null(value.bind(row))
+            key: RowPlanMap._bind_null(value.bind(row, query_fields))
             for (key, value) in self.to_many.items()
         }
         pack = self.batch_edit_pack.bind(row)
@@ -545,17 +557,17 @@ class RowPlanCanonical(NamedTuple):
 
     # FUTURE: already handles nested to-many.
     def merge(
-        self, row: Tuple[Any], indexed_plan: RowPlanMap
+        self, row: Tuple[Any], indexed_plan: RowPlanMap, query_fields: List[QueryField]
     ) -> Tuple[bool, "RowPlanCanonical"]:
         # nothing to compare against. useful for recursion + handing default null as default value for reduce
         if self.batch_edit_pack.id.value is None:
-            return False, indexed_plan.bind(row)
+            return False, indexed_plan.bind(row, query_fields)
 
         # trying to defer actual bind to later
         batch_fields = indexed_plan.batch_edit_pack.bind(row)
         if batch_fields.id.value != self.batch_edit_pack.id.value:
             # if the id itself is different, we are on a different record. just bind and return
-            return True, indexed_plan.bind(row)
+            return True, indexed_plan.bind(row, query_fields)
 
         # now, ids are the same. no reason to bind other's to one.
         # however, still need to handle to-manys inside to-ones (this will happen when a row gets duplicated due to to-many)
@@ -568,7 +580,7 @@ class RowPlanCanonical(NamedTuple):
             new_stalled, result = (
                 (True, value)
                 if is_stalled
-                else value.merge(row, indexed_plan.to_one[key])
+                else value.merge(row, indexed_plan.to_one[key], query_fields)
             )
             return (is_stalled or new_stalled, {**previous_chain, key: result})
 
@@ -593,7 +605,8 @@ class RowPlanCanonical(NamedTuple):
                     (True, values)
                     if is_stalled
                     else RowPlanCanonical._maybe_extend(
-                        values, values[-1].merge(row, indexed_plan.to_many[key])
+                        values,
+                        values[-1].merge(row, indexed_plan.to_many[key], query_fields),
                     )
                 )
             return (
@@ -1039,7 +1052,7 @@ def run_batch_edit_query(props: BatchEditProps):
     previous_id = None
     previous_row = RowPlanCanonical(EMPTY_PACK)
     for row in rows["results"]:
-        _, new_row = previous_row.merge(row, indexed)
+        _, new_row = previous_row.merge(row, indexed, query_with_hidden)
         to_many_planner = new_row.update_to_manys(to_many_planner)
         if previous_id != new_row.batch_edit_pack.id.value:
             visited_rows.append(previous_row)

@@ -38,6 +38,7 @@ from .upload_result import (
     ParseFailures,
 )
 from .uploadable import (
+    BatchEditSelf,
     Extra,
     ScopedUploadable,
     Row,
@@ -425,8 +426,12 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
 def changed_tree(tree: str, result: UploadResult) -> bool:
     return (
         (
-            result.record_result.__class__
-            in [Uploaded, Updated, Deleted, MatchedAndChanged]
+            (
+                isinstance(result.record_result, Uploaded)
+                or isinstance(result.record_result, Updated)
+                or isinstance(result.record_result, Deleted)
+                or isinstance(result.record_result, MatchedAndChanged)
+            )
             and result.record_result.info.tableName.lower() == tree
         )
         or any(changed_tree(tree, toOne) for toOne in result.toOne.values())
@@ -437,7 +442,7 @@ def changed_tree(tree: str, result: UploadResult) -> bool:
 
 
 def adjust_pack(
-    pack: Optional[Dict[str, Any]],
+    pack: Optional[BatchEditJson],
     upload_result: UploadResult,
     commit_uploader: Callable[[RecordResult], None],
 ):
@@ -446,12 +451,16 @@ def adjust_pack(
     if pack is None:
         return None
     current_result = upload_result.record_result
-    self = pack["self"]
-    self = {
-        **self,
-        "version": None,
-        "id": None if isinstance(current_result, Deleted) else self["id"],
-    }
+    self: BatchEditSelf = pack["self"]
+    self_pack = (
+        None
+        if isinstance(current_result, Deleted)
+        else {
+            "ordernumber": self["ordernumber"],
+            "version": None,
+            "id": self["id"],
+        }
+    )
     to_ones = Func.maybe(
         pack.get("to_one"),
         lambda to_one: {
@@ -462,7 +471,7 @@ def adjust_pack(
             )
             for key, value in to_one.items()
         },
-    )  # type: ignore
+    )
     to_many = Func.maybe(
         pack.get("to_many"),
         lambda to_many: {
@@ -477,7 +486,7 @@ def adjust_pack(
             for (key, records) in to_many.items()
         },
     )  # type: ignore
-    return {"self": self, "to_one": to_ones, "to_many": to_many}
+    return {"self": self_pack, "to_one": to_ones, "to_many": to_many}
 
 
 def rollback_batch_edit(
