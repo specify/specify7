@@ -73,6 +73,8 @@ def get_readonly_fields(table: Table):
     relationships = []
     if table.name.lower() == "determination":
         relationships = ["preferredtaxon"]
+    elif is_tree_table(table):
+        relationships = ["definitionitem"]
     return fields, relationships
 
 

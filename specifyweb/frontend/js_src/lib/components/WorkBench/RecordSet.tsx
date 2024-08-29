@@ -14,15 +14,18 @@ import {
 } from '../Permissions/PermissionDenied';
 import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
+import { batchEditText } from '../../localization/batchEdit';
 
 export function CreateRecordSetButton({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClosed,
   small,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean
   readonly onClose: () => void;
   readonly small: boolean;
 }): JSX.Element {
@@ -40,6 +43,7 @@ export function CreateRecordSetButton({
           <CreateRecordSetDialog
             datasetId={datasetId}
             datasetName={datasetName}
+            isUpdate={isUpdate}
             onClose={(): void => {
               handleClose();
               handleClosed();
@@ -54,16 +58,18 @@ export function CreateRecordSetButton({
 function CreateRecordSetDialog({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClose,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean
   readonly onClose: () => void;
 }): JSX.Element {
   const recordSet = React.useMemo(
     () =>
       new tables.RecordSet.Resource({
-        name: wbText.recordSetName({ dataSet: datasetName }),
+        name: isUpdate ? batchEditText.batchEditRecordSetName({dataSet: datasetName}) : wbText.recordSetName({ dataSet: datasetName }),
       }),
     [datasetId]
   );

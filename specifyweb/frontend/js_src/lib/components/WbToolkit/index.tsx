@@ -17,7 +17,7 @@ import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
-import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export function WbToolkit({
   dataset,

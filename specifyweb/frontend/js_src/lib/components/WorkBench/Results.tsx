@@ -35,12 +35,14 @@ export function WbUploaded({
   datasetId,
   datasetName,
   isUploaded,
+  isUpdate,
   onClose: handleClose,
 }: {
   readonly recordCounts: RecordCounts;
   readonly datasetId: number;
   readonly datasetName: string;
   readonly isUploaded: boolean;
+  readonly isUpdate: boolean
   readonly onClose: () => void;
 }): JSX.Element {
   return (
@@ -63,6 +65,7 @@ export function WbUploaded({
           {isUploaded && (
             <CreateRecordSetButton
               datasetId={datasetId}
+              isUpdate={isUpdate}
               datasetName={datasetName}
               small
               onClose={f.void}

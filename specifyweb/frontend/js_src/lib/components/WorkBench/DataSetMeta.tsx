@@ -29,7 +29,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { datasetVariants } from '../Toolbar/WbsDialog';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,

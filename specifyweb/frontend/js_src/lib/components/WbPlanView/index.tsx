@@ -18,7 +18,7 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

@@ -383,7 +383,7 @@ export const wbText = createDictionary({
     `,
   },
   startUpload: {
-    'en-us': 'Begin Data Set {type:string}?',
+    'en-us': 'Begin Data Set Upload?',
   },
   startUploadDescription: {
     'en-us':
@@ -638,7 +638,7 @@ export const wbText = createDictionary({
     'de-ch': 'Bei der Validierung wurden Fehler im Datensatz gefunden.',
   },
   uploadSuccessful: {
-    'en-us': '{type:string} Completed with No Errors',
+    'en-us': 'Upload Completed with No Errors',
   },
   uploadSuccessfulDescription: {
     'en-us': `
@@ -667,10 +667,10 @@ export const wbText = createDictionary({
     `,
   },
   uploadErrors: {
-    'en-us': '{type:string} Failed due to Error Cells',
+    'en-us': 'Upload Failed due to Error Cells',
   },
   uploadErrorsDescription: {
-    'en-us': 'The {type:string} failed due to one or more cell value errors.',
+    'en-us': 'The Upload failed due to one or more cell value errors.',
   },
   uploadErrorsSecondDescription: {
     'en-us': `
@@ -743,10 +743,10 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatz-Rollback abgebrochen.',
   },
   uploadCanceled: {
-    'en-us': '{type:string} Cancelled',
+    'en-us': 'Upload Cancelled',
   },
   uploadCanceledDescription: {
-    'en-us': 'Data Set {type:string} cancelled.',
+    'en-us': 'Data Set Upload cancelled.',
   },
   coordinateConverter: {
     'en-us': 'Geocoordinate Format',
@@ -1319,7 +1319,7 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatz-Rollbackstatus',
   },
   wbStatusUpload: {
-    'en-us': 'Data Set {type:string} Status',
+    'en-us': 'Data Set Upload Status',
     'ru-ru': 'Состояние загрузки набора данных',
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",

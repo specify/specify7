@@ -45,7 +45,7 @@ import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { resolveVariantFromDataset } from '../Toolbar/WbsDialog';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -243,6 +243,7 @@ export function WbView({
                 datasetId={dataset.id}
                 datasetName={dataset.name}
                 isUploaded={isUploaded}
+                isUpdate={dataset.isupdate}
                 recordCounts={workbench.validation.uploadResults.recordCounts}
                 onClose={closeResults}
               />

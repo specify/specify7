@@ -53,7 +53,7 @@ import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 import { BatchEditFromQuery } from '../BatchEdit';
-import { datasetVariants } from '../Toolbar/WbsDialog';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

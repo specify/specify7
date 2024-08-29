@@ -74,7 +74,7 @@ class Tree(models.Model):
             save()
 
         try:
-            model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
+            model.objects.get(Q(id=self.id) & (Q(parent__rankid__lt=F('rankid'))|Q(parent__isnull=True)))
         except model.DoesNotExist:
             raise TreeBusinessRuleException(
                 "Tree node's parent has rank greater than itself",

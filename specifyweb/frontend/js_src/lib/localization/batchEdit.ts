@@ -56,4 +56,28 @@ export const batchEditText = createDictionary({
   committing: {
     'en-us': 'Committing',
   },
+  beStatusCommit: {
+    'en-us': 'Data Set Commit Status'
+  },
+  startCommit: {
+    'en-us': 'Begin Data Set Commit?'
+  },
+  commitErrors: {
+    'en-us': "Commit Failed due to Error Cells"
+  },
+  commitErrorsDescription: {
+    'en-us': 'The Commit failed due to one or more cell value errors.',
+  },
+  commitCancelled: {
+    'en-us': "Commit Cancelled"
+  },
+  commitCancelledDescription: {
+    'en-us': 'Commit Cancelled Description'
+  },
+  commitSuccessful: {
+    'en-us': "Commit Completed with No Errors"
+  },
+  batchEditRecordSetName: {
+    'en-us': 'BE commit of "{dataSet:string}"'
+  }
 } as const);

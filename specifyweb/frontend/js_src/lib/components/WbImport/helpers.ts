@@ -13,7 +13,7 @@ import { tables } from '../DataModel/tables';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { datasetVariants } from '../Toolbar/WbsDialog';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 
 /**
  * REFACTOR: add this ESLint rule:

@@ -7,15 +7,15 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbStatus } from '../WorkBench/WbView';
-import { WbVariantUiSpec } from '../Toolbar/WbsDialog';
+import { WbVariantLocalization } from '../Toolbar/WbsDialog';
 
 export function WbRollback({
   datasetId,
   triggerStatusComponent,
-  uiSpec
+  viewerLocalization
 }: {
   readonly datasetId: number;
-  readonly uiSpec: WbVariantUiSpec,
+  readonly viewerLocalization: WbVariantLocalization,
   readonly triggerStatusComponent: (mode: WbStatus) => void;
 }): JSX.Element {
   const [confirmRollback, handleOpen, handleClose] = useBooleanState();
@@ -29,14 +29,14 @@ export function WbRollback({
         aria-pressed={confirmRollback}
         onClick={handleOpen}
       >
-        {uiSpec.undo}
+        {viewerLocalization.undo}
       </Button.Small>
       {confirmRollback && (
         <RollbackConfirmation
           datasetId={datasetId}
           onClose={handleClose}
           onRollback={handleRollback}
-          uiSpec={uiSpec}
+          viewerLocalization={viewerLocalization}
         />
       )}
     </>
@@ -45,12 +45,12 @@ export function WbRollback({
 
 function RollbackConfirmation({
   datasetId,
-  uiSpec,
+  viewerLocalization,
   onClose: handleClose,
   onRollback: handleRollback,
 }: {
   readonly datasetId: number;
-  readonly uiSpec: WbVariantUiSpec;
+  readonly viewerLocalization: WbVariantLocalization;
   readonly onClose: () => void;
   readonly onRollback: () => void;
 }): JSX.Element {
@@ -71,17 +71,17 @@ function RollbackConfirmation({
               )
             }
           >
-            {uiSpec.undo}
+            {viewerLocalization.undo}
           </Button.Danger>
         </>
       }
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={uiSpec.undoConfirm}
+      header={viewerLocalization.undoConfirm}
       onClose={handleClose}
     >
-      {uiSpec.undoStartDescription}
+      {viewerLocalization.undoStartDescription}
     </Dialog>
   );
 }

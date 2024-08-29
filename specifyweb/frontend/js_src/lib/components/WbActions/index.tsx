@@ -22,7 +22,8 @@ import { WbRollback } from './WbRollback';
 import { WbSave } from './WbSave';
 import { WbUpload } from './WbUpload';
 import { WbValidate } from './WbValidate';
-import { resolveVariantFromDataset, WbVariantUiSpec } from '../Toolbar/WbsDialog';
+import { WbVariantLocalization } from '../Toolbar/WbsDialog';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 export function WbActions({
   dataset,
@@ -67,9 +68,9 @@ export function WbActions({
     });
   
   const variant = resolveVariantFromDataset(dataset);
-  const uiSpec = variant.uiSpec.viewer;
+  const viewerLocalization: WbVariantLocalization = variant.localization.viewer;
 
-  const message = mode === undefined ? undefined : getMessage(cellCounts, mode, uiSpec);
+  const message = mode === undefined ? undefined : getMessage(cellCounts, mode, viewerLocalization);
 
   const isMapped = mappings !== undefined;
 
@@ -120,7 +121,7 @@ export function WbActions({
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
-            uiSpec={uiSpec}
+            viewerLocalization={viewerLocalization}
             triggerStatusComponent={triggerStatusComponent}
           />
         </ErrorBoundary>
@@ -133,7 +134,7 @@ export function WbActions({
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
             startUpload={startUpload}
-            uiSpec={uiSpec}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -194,6 +195,7 @@ export function WbActions({
                 <CreateRecordSetButton
                   datasetId={dataset.id}
                   datasetName={dataset.name}
+                  isUpdate={dataset.isupdate}
                   small={false}
                   onClose={() => {
                     refreshInitiatorAborted.current = false;
@@ -218,7 +220,7 @@ export function WbActions({
               ? wbText.validationCanceled()
               : mode === 'unupload'
               ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled({type: uiSpec.do})
+              : viewerLocalization.doCancelled
           }
           onClose={closeAbortedMessage}
         >
@@ -226,7 +228,7 @@ export function WbActions({
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
             ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription({type: uiSpec.do})
+            : viewerLocalization.doCancelledDescription
             }
         </Dialog>
       )}
@@ -296,7 +298,7 @@ function useWbActions({
 function getMessage(
   cellCounts: WbCellCounts,
   mode: WbStatus,
-  uiSpec: WbVariantUiSpec
+  viewerLocalization: WbVariantLocalization
 ): {
   readonly header: LocalizedString;
   readonly message: JSX.Element | LocalizedString;
@@ -329,23 +331,23 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: wbText.uploadSuccessful({type: uiSpec.do}),
-            message: uiSpec.doSuccessfulDescription,
+            header: viewerLocalization.do,
+            message: viewerLocalization.doSuccessfulDescription,
           }
         : {
-            header: wbText.uploadErrors({type: uiSpec.do}),
+            header: viewerLocalization.doErrors,
             message: (
               <>
-                {wbText.uploadErrorsDescription({type: uiSpec.do})}
+                {viewerLocalization.doErrorsDescription}
                 <br />
                 <br />
-                {wbText.uploadErrorsSecondDescription({type: uiSpec.do})}
+                {wbText.uploadErrorsSecondDescription({type: viewerLocalization.do})}
               </>
             ),
           },
     unupload: {
       header: wbText.dataSetRollback(),
-      message: uiSpec.undoFinishedDescription,
+      message: viewerLocalization.undoFinishedDescription,
     },
   };
 
