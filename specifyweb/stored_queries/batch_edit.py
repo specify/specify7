@@ -470,7 +470,9 @@ class RowPlanMap(NamedTuple):
     ) -> "RowPlanCanonical":
         columns = [
             column._replace(
-                value=parse(row[column.idx], query_fields[column.idx]), field=None
+                # accounting for stupid id below
+                value=parse(row[column.idx], query_fields[column.idx - 1]),
+                field=None,
             )
             for column in self.columns
             # Careful: this can be 0, so not doing "if not column.idx"
