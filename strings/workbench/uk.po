@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-29 07:09+0000\n"
+"PO-Revision-Date: 2024-08-29 16:47+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
@@ -115,7 +115,7 @@ msgstr "Перевірка даних: увімкнено"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Зауважте, перевірка в реальному часі є експериментальною функцією і не "
+"Зауважте, що перевірка в реальному часі є експериментальною функцією і не "
 "замінює звичайну перевірку."
 
 #. Used in: Components > Wb Toolkit > Change Owner
