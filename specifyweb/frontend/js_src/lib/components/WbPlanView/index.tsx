@@ -16,9 +16,9 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { NotFoundView } from '../Router/NotFoundView';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -35,13 +35,21 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     }, [id]),
     true
   );
-  return dataSet === false ? <NotFoundView/> : dataSet === undefined ? null : <WbPlanViewSafe dataSet={dataSet}/>
+  return dataSet === false ? (
+    <NotFoundView />
+  ) : dataSet === undefined ? null : (
+    <WbPlanViewSafe dataSet={dataSet} />
+  );
 }
 
 /**
  * Entrypoint React component for the workbench mapper
  */
-function WbPlanViewSafe({dataSet}:{readonly dataSet: Dataset}): JSX.Element | null {
+function WbPlanViewSafe({
+  dataSet,
+}: {
+  readonly dataSet: Dataset;
+}): JSX.Element | null {
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   useMenuItem(dataSet.isupdate ? 'batchEdit' : 'workBench');
   useErrorContext('dataSet', dataSet);
@@ -56,6 +64,12 @@ function WbPlanViewSafe({dataSet}:{readonly dataSet: Dataset}): JSX.Element | nu
   return treeRanksLoaded && typeof dataSet === 'object' ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <WbPlanView
+        readonlySpec={
+          dataSet.isupdate
+            ? { mustMatch: false, columnOptions: false }
+            : undefined
+        }
+        uploadPlan={dataSet.uploadplan}
         dataset={dataSet}
         // Reorder headers if needed
         headers={
@@ -65,8 +79,6 @@ function WbPlanViewSafe({dataSet}:{readonly dataSet: Dataset}): JSX.Element | nu
                 (physicalCol) => dataSet.columns[physicalCol]
               )
         }
-        uploadPlan={dataSet.uploadplan}
-        readonlySpec={dataSet.isupdate ? {mustMatch: false, columnOptions: false}: undefined}
       />
     </ReadOnlyContext.Provider>
   ) : null;

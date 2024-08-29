@@ -18,8 +18,8 @@ import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
-import { RemainingLoadingTime } from './RemainingLoadingTime';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
 const REFRESH_RATE = 2 * SECOND;
@@ -34,7 +34,8 @@ export function WbStatus({
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
-  const viewerLocalization = resolveVariantFromDataset(dataset).localization.viewer;
+  const viewerLocalization =
+    resolveVariantFromDataset(dataset).localization.viewer;
 
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(

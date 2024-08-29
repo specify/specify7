@@ -1,17 +1,17 @@
-import { batchEditText } from "../../localization/batchEdit";
-import { commonText } from "../../localization/common";
-import { wbPlanText } from "../../localization/wbPlan";
-import { wbText } from "../../localization/workbench";
-import { f } from "../../utils/functools";
-import { hasPermission } from "../Permissions/helpers";
-import { userPreferences } from "../Preferences/userPreferences";
-import type { Dataset } from "../WbPlanView/Wrapped";
+import { batchEditText } from '../../localization/batchEdit';
+import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
+import { hasPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 const baseWbVariant = {
   fetchUrl: '/api/workbench/dataset/',
   sortConfig: {
     key: 'listOfDataSets',
-    field: 'name'
+    field: 'name',
   },
   canImport: () => hasPermission('/workbench/dataset', 'create'),
   canEdit: () => hasPermission('/workbench/dataset', 'update'),
@@ -25,8 +25,17 @@ const baseWbVariant = {
   canValidate: () => hasPermission('/workbench/dataset', 'validate'),
   localization: {
     datasetsDialog: {
-      header: (count: number) => commonText.countLine({ resource: wbText.dataSets({ variant: wbText.workBench() }), count }),
-      empty: () => `${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create') ? wbText.createDataSetInstructions() : ''}`,
+      header: (count: number) =>
+        commonText.countLine({
+          resource: wbText.dataSets({ variant: wbText.workBench() }),
+          count,
+        }),
+      empty: () =>
+        `${wbText.wbsDialogEmpty()} ${
+          hasPermission('/workbench/dataset', 'create')
+            ? wbText.createDataSetInstructions()
+            : ''
+        }`,
     },
     viewer: {
       do: wbText.upload(),
@@ -43,15 +52,15 @@ const baseWbVariant = {
       undoFinishedDescription: wbText.dataSetRollbackDescription(),
       doing: wbText.uploading(),
       doStatus: wbText.wbStatusUpload(),
-      doSuccessful: wbText.uploadSuccessful()
-    }
-  }
+      doSuccessful: wbText.uploadSuccessful(),
+    },
+  },
 } as const;
 
 // Defines a shared interface to access dataset variants
 export const datasetVariants = {
-  'workbench': baseWbVariant,
-  'workbenchChoosePlan': {
+  workbench: baseWbVariant,
+  workbenchChoosePlan: {
     ...baseWbVariant,
     fetchUrl: '/api/workbench/dataset/?with_plan',
     sortConfig: baseWbVariant.sortConfig,
@@ -62,29 +71,49 @@ export const datasetVariants = {
         header: () => wbPlanText.copyPlan(),
         empty: () => wbPlanText.noPlansToCopyFrom(),
       },
-    }
+    },
   },
-  'batchEdit': {
+  batchEdit: {
     ...baseWbVariant,
     fetchUrl: '/api/workbench/dataset/?isupdate=1',
     sortConfig: {
       key: 'listOfBatchEditDataSets',
-      field: 'name'
+      field: 'name',
     },
     // Cannot import via the header
     canImport: () => false,
-    header: (count: number) => commonText.countLine({ resource: wbText.dataSets({ variant: batchEditText.batchEdit() }), count }),
-    onEmpty: () => `${wbText.wbsDialogEmpty()} ${hasPermission('/batch_edit/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
+    header: (count: number) =>
+      commonText.countLine({
+        resource: wbText.dataSets({ variant: batchEditText.batchEdit() }),
+        count,
+      }),
+    onEmpty: () =>
+      `${wbText.wbsDialogEmpty()} ${
+        hasPermission('/batch_edit/dataset', 'create')
+          ? batchEditText.createUpdateDataSetInstructions()
+          : ''
+      }`,
     canEdit: () => hasPermission('/batch_edit/dataset', 'update'),
     canCreate: () => hasPermission('/batch_edit/dataset', 'create'),
     canTransfer: () => hasPermission('/batch_edit/dataset', 'transfer'),
     canDo: () => hasPermission('/batch_edit/dataset', 'commit'),
-    canUndo: () => (userPreferences.get('batchEdit', 'editor', 'showRollback') && hasPermission('/batch_edit/dataset', 'rollback')),
+    canUndo: () =>
+      userPreferences.get('batchEdit', 'editor', 'showRollback') &&
+      hasPermission('/batch_edit/dataset', 'rollback'),
     canValidate: () => hasPermission('/batch_edit/dataset', 'validate'),
     localization: {
       datasetsDialog: {
-        header: (count: number) => commonText.countLine({ resource: wbText.dataSets({ variant: batchEditText.batchEdit() }), count }),
-        empty: () => `${wbText.wbsDialogEmpty()} ${hasPermission('/batch_edit/dataset', 'create') ? batchEditText.createUpdateDataSetInstructions() : ''}`,
+        header: (count: number) =>
+          commonText.countLine({
+            resource: wbText.dataSets({ variant: batchEditText.batchEdit() }),
+            count,
+          }),
+        empty: () =>
+          `${wbText.wbsDialogEmpty()} ${
+            hasPermission('/batch_edit/dataset', 'create')
+              ? batchEditText.createUpdateDataSetInstructions()
+              : ''
+          }`,
       },
       viewer: {
         do: batchEditText.commit(),
@@ -102,14 +131,14 @@ export const datasetVariants = {
         doing: batchEditText.committing(),
         doStatus: batchEditText.beStatusCommit(),
         doSuccessful: batchEditText.commitSuccessful(),
-      }
-    }
+      },
+    },
   },
-  'bulkAttachment': {
+  bulkAttachment: {
     fetchUrl: '/attachment_gw/dataset/',
     sortConfig: {
       key: 'attachmentDatasets',
-      field: 'name'
+      field: 'name',
     },
     canImport: () => hasPermission('/attachment_import/dataset', 'create'),
     header: f.never,
@@ -118,7 +147,8 @@ export const datasetVariants = {
     route: (id: number) => `/specify/attachments/import/${id}`,
     // Actually, in retrorespect, this would be a nice feature
     metaRoute: f.never,
-  }
+  },
 } as const;
 
-export const resolveVariantFromDataset = (dataset: Dataset) => datasetVariants[dataset.isupdate ? 'batchEdit' : 'workbench'];
+export const resolveVariantFromDataset = (dataset: Dataset) =>
+  datasetVariants[dataset.isupdate ? 'batchEdit' : 'workbench'];

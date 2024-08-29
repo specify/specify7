@@ -15,6 +15,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { GeographyTreeDefItem, SpQuery, Tables } from '../DataModel/types';
@@ -34,12 +35,12 @@ import {
   relationshipIsToMany,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
 
-const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec)=> generateMappingPathPreview(
-  queryFieldSpec.baseTable.name,
-  queryFieldSpec.toMappingPath()
-);
+const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
+  generateMappingPathPreview(
+    queryFieldSpec.baseTable.name,
+    queryFieldSpec.toMappingPath()
+  );
 
 export function BatchEditFromQuery({
   query,
@@ -87,13 +88,18 @@ export function BatchEditFromQuery({
                 )
               );
               const missingRanks = findAllMissing(queryFieldSpecs);
-              const invalidFields = queryFieldSpecs.filter((fieldSpec)=>filters.some((filter)=>filter(fieldSpec)));
+              const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
+                filters.some((filter) => filter(fieldSpec))
+              );
               const hasErrors =
                 Object.values(missingRanks).some((ranks) => ranks.length > 0) ||
                 invalidFields.length > 0;
 
               if (hasErrors) {
-                setErrors({ missingRanks, invalidFields: invalidFields.map(queryFieldSpecHeader) });
+                setErrors({
+                  missingRanks,
+                  invalidFields: invalidFields.map(queryFieldSpecHeader),
+                });
                 return;
               }
 
@@ -128,9 +134,7 @@ type QueryError = {
   readonly invalidFields: RA<string>;
 };
 
-function containsFaultyNestedToMany(
-  queryFieldSpec: QueryFieldSpec
-): boolean {
+function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   const joinPath = queryFieldSpec.joinPath;
   if (joinPath.length <= 1) return false;
   const nestedToManyCount = joinPath.filter(
@@ -140,7 +144,8 @@ function containsFaultyNestedToMany(
   return nestedToManyCount.length > 1;
 }
 
-const containsSystemTables = (queryFieldSpec: QueryFieldSpec)=>queryFieldSpec.joinPath.some((field)=>field.table.isSystem);
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
+  queryFieldSpec.joinPath.some((field) => field.table.isSystem);
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
@@ -159,14 +164,18 @@ function findAllMissing(
 ): QueryError['missingRanks'] {
   const treeFieldSpecs = group(
     filterArray(
-    queryFieldSpecs
-      .map(
-        (fieldSpec) =>
-          isTreeTable(fieldSpec.table.name) &&
-          fieldSpec.treeRank !== anyTreeRank && fieldSpec.treeRank !== undefined ? 
-          [fieldSpec.table, {rank: fieldSpec.treeRank, field: fieldSpec.getField()}] : undefined
+      queryFieldSpecs.map((fieldSpec) =>
+        isTreeTable(fieldSpec.table.name) &&
+        fieldSpec.treeRank !== anyTreeRank &&
+        fieldSpec.treeRank !== undefined
+          ? [
+              fieldSpec.table,
+              { rank: fieldSpec.treeRank, field: fieldSpec.getField() },
+            ]
+          : undefined
       )
-  ));
+    )
+  );
 
   return Object.fromEntries(
     treeFieldSpecs.map(([treeTable, treeRanks]) => [
@@ -181,9 +190,11 @@ const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
 
 function findMissingRanks(
   treeTable: SpecifyTable,
-  treeRanks: RA<{rank: string, field?: Relationship | LiteralField} | undefined>
+  treeRanks: RA<
+    | { readonly rank: string; readonly field?: LiteralField | Relationship }
+    | undefined
+  >
 ): RA<string> {
-
   const allTreeDefItems = strictGetTreeDefinitionItems(
     treeTable.name as 'Geography',
     false
@@ -192,20 +203,40 @@ function findMissingRanks(
   // Duplicates don't affect any logic here
   const currentTreeRanks = filterArray(
     treeRanks.map((treeRank) =>
-      f.maybe(treeRank, ({rank, field}) => ({specifyRank: getTreeDefFromName(rank, allTreeDefItems), field}))
+      f.maybe(treeRank, ({ rank, field }) => ({
+        specifyRank: getTreeDefFromName(rank, allTreeDefItems),
+        field,
+      }))
     )
   );
 
   const currentRanksSorted = Array.from(currentTreeRanks).sort(
-    sortFunction(({ specifyRank: {rankId} }) => rankId)
+    sortFunction(({ specifyRank: { rankId } }) => rankId)
   );
 
   const highestRank = currentRanksSorted[0];
 
-  return allTreeDefItems.flatMap(
-    ({ rankId, name }) =>
-      rankId < highestRank.specifyRank.rankId ? [] : filterArray(requiredTreeFields.map((requiredField)=>!currentTreeRanks.some((rank)=>rank.specifyRank.name === name && rank.field !== undefined && requiredField === rank.field.name) ? `${name} ${defined(strictGetTable(treeTable.name).getField(requiredField)).label}` : undefined)));
-  }
+  return allTreeDefItems.flatMap(({ rankId, name }) =>
+    rankId < highestRank.specifyRank.rankId
+      ? []
+      : filterArray(
+          requiredTreeFields.map((requiredField) =>
+            currentTreeRanks.some(
+              (rank) =>
+                rank.specifyRank.name === name &&
+                rank.field !== undefined &&
+                requiredField === rank.field.name
+            )
+              ? undefined
+              : `${name} ${
+                  defined(
+                    strictGetTable(treeTable.name).getField(requiredField)
+                  ).label
+                }`
+          )
+        )
+  );
+}
 
 function ErrorsDialog({
   errors,
