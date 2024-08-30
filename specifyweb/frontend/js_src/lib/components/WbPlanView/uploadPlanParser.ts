@@ -76,7 +76,9 @@ const parseTree = (
         : rankData.treeNodeCols,
       [
         ...mappingPath,
-        ...(typeof rankData === 'object' && typeof rankData.treeId === 'number'
+        ...(typeof rankData === 'object' &&
+        typeof rankData.treeId === 'number' &&
+        getTreeDefinitions('Taxon', 'all').length > 1
           ? [resolveTreeId(rankData.treeId)]
           : []),
         formatTreeRank(rankName),
