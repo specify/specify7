@@ -73,14 +73,18 @@ export function BatchEditFromQuery({
     });
   const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
-  
-  const queryFieldSpecs = React.useMemo(()=>filterArray(
-    fields.map((field) =>
-      field.isDisplay
-        ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
-        : undefined
-    )
-  ), [fields]);
+
+  const queryFieldSpecs = React.useMemo(
+    () =>
+      filterArray(
+        fields.map((field) =>
+          field.isDisplay
+            ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
+            : undefined
+        )
+      ),
+    [fields]
+  );
 
   return (
     <>
