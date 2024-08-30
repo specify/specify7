@@ -42,7 +42,7 @@ const toTreeRecordRanks = (
        * Use the last element of the mapping path to get the field name
        * e.g: mappingPath when a tree is specified: ['$Kingdom', 'name'] vs when no tree is specified: ['name']
        */
-      mappingPath.at(-1).toLowerCase(),
+      mappingPath.at(-1)?.toLowerCase(),
       toColumnOptions(headerName, columnOptions),
     ])
   );
