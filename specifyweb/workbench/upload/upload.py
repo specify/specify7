@@ -225,13 +225,14 @@ def create_recordset(ds: Spdataset, name: str):
         specifyuser=ds.specifyuser,
         type=0,
     )
+
     models.Recordsetitem.objects.bulk_create(
         [
             models.Recordsetitem(order=i, recordid=record_id, recordset=rs)
             for i, r in enumerate(map(UploadResult.from_json, results))
             if (
                 isinstance(r.record_result, Uploaded)
-                or isinstance(r.record_result, Updated)
+                or (ds.isupdate and r.contains_success())
             )
             and (record_id := r.get_id()) is not None
             and record_id != "Failure"

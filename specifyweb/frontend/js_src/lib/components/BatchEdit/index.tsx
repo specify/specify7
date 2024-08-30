@@ -73,20 +73,22 @@ export function BatchEditFromQuery({
     });
   const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
+  
+  const queryFieldSpecs = React.useMemo(()=>filterArray(
+    fields.map((field) =>
+      field.isDisplay
+        ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
+        : undefined
+    )
+  ), [fields]);
 
   return (
     <>
       <Button.Small
+        disabled={queryFieldSpecs.some(containsSystemTables)}
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
-              const queryFieldSpecs = filterArray(
-                fields.map((field) =>
-                  field.isDisplay
-                    ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
-                    : undefined
-                )
-              );
               const missingRanks = findAllMissing(queryFieldSpecs);
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))

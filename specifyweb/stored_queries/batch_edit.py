@@ -59,13 +59,13 @@ SHARED_READONLY_FIELDS = [
     "timestampcreated",
     "timestampmodified",
     "version",
-    "modifiedbyagent",
-    "createdbyagent",
     "nodenumber",
     "highestchildnodenumber",
     "rankid",
     "fullname",
 ]
+
+SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
 
 
 def get_readonly_fields(table: Table):
@@ -75,7 +75,8 @@ def get_readonly_fields(table: Table):
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
         relationships = ["definitionitem"]
-    return fields, relationships
+
+    return fields, [*SHARED_READONLY_RELATIONSHIPS, *relationships]
 
 
 FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
@@ -470,7 +471,7 @@ class RowPlanMap(NamedTuple):
     ) -> "RowPlanCanonical":
         columns = [
             column._replace(
-                # accounting for stupid id below
+                # accounting for id below
                 value=parse(row[column.idx], query_fields[column.idx - 1]),
                 field=None,
             )
