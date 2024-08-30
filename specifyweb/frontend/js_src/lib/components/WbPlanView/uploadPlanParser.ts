@@ -6,7 +6,8 @@ import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { MappingPath } from './Mapper';
-import { formatTreeDefinition, SplitMappingPath } from './mappingHelpers';
+import type { SplitMappingPath } from './mappingHelpers';
+import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
