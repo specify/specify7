@@ -322,7 +322,7 @@ class UploadResult(NamedTuple):
     ) -> bool:
         return (
             any(isinstance(self.record_result, _success) for _success in success)
-            or any(result.contains_success() for result in self.toOne.values)
+            or any(result.contains_success() for result in self.toOne.values())
             or any(
                 result.contains_success()
                 for results in self.toMany.values()
