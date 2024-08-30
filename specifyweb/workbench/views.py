@@ -660,7 +660,7 @@ def rows(request, ds) -> http.HttpResponse:
             )
 
         rows = regularize_rows(
-            len(ds.columns), json.load(request), skip_empty=(not ds.isupdate)
+            len(ds.columns), json.load(request), skip_empty=(ds.isupdate != True)
         )
 
         ds.data = rows
@@ -993,7 +993,7 @@ def validate_row(request, ds_id: str) -> http.HttpResponse:
     bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
     row = json.loads(request.body)
     ncols = len(ds.columns)
-    rows = regularize_rows(ncols, [row], skip_empty=(not ds.isupdate))
+    rows = regularize_rows(ncols, [row], skip_empty=(ds.isupdate != True))
     if not rows:
         return http.JsonResponse(None, safe=False)
     row = rows[0]
