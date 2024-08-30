@@ -1551,7 +1551,6 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='age', column='Age', indexed=False, unique=False, required=False, type='java.lang.String', length=50), # TODO: Set as virtual field
         ],
         indexes=[
             Index(name='FieldNumberIDX', column_names=['FieldNumber']),
@@ -1601,7 +1600,10 @@ datamodel = Datamodel(tables=[
 
         ],
         view='CollectionObject',
-        searchDialog='CollectionObjectSearch'
+        searchDialog='CollectionObjectSearch',
+        virtual_fields=[
+            Field(name='age', column='Age', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.CollectionObjectAttachment',
@@ -8401,7 +8403,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='AgeAttachment', column='AgeAttachmentID'),
+            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='AbsoluteAgeAttachment', column='AbsoluteAgeAttachmentID'),
             Relationship(name='collectionobject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID')
         ],
         fieldAliases=[
@@ -8444,7 +8446,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='agename', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameID'),
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='AgeAttachment', column='AgeAttachmentID'),
+            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='RelativeAgeAttachment', column='RelativeAgeAttachmentID'),
             Relationship(name='collectionobject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID')
         ],
         fieldAliases=[
@@ -8473,7 +8475,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='absoluteage', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
             Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID'),
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='CollectionMember', column='CollectionMemberID'),
+            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -8503,7 +8505,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='relativeage', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
             Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID'),
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='CollectionMember', column='CollectionMemberID'),
+            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -8534,7 +8536,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='CollectionMember', column='CollectionMemberID'),
+            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
             Relationship(name='absoluteage', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
             Relationship(name='referencework', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
@@ -8567,7 +8569,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='CollectionMember', column='CollectionMemberID'),
+            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
             Relationship(name='relativeage', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
             Relationship(name='referencework', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),

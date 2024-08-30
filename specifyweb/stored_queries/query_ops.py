@@ -27,10 +27,26 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         'op_trueornull',        # 13
         'op_falseornull',       # 14
         'op_startswith',        # 15
-        ]
+        'op_age_range',         # 16
+        'op_age_period',        # 17
+        'op_age_range_strict',  # 18
+        'op_age_period_strict', # 19
+    ]
+
+    PREPROSESSED_OPERATIONS = [
+        'op_age_range,'
+        'op_age_period',
+        'op_age_range_strict',
+        'op_age_period_strict',
+    ]
+
+    PREPROSESSED_OPERATION_NUMS = {16, 17, 18, 19}
 
     def by_op_num(self, op_num):
         return getattr(self, self.OPERATIONS[op_num])
+    
+    def is_preprocessed(self, op_num):
+        return op_num in self.PREPROSESSED_OPERATION_NUMS
 
     def format(self, value):
         if self.uiformatter is not None:
@@ -104,3 +120,11 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
             return field.op('REGEXP')("^0*" + value)
         else:
             return field.like(value + "%")
+
+    # TODO: Add new operations for age range and period
+    def op_age_range(self, field, value, query):
+        values = [self.format(v.strip()) for v in value.split(',')[:2]]
+        return field.between(*values)
+        # TODO: Maybe call query_co_in_time_range here, or maybe outside of this function maybe in apply_filter.
+        # Need to either add a join a filter statement to the query,
+        # or do a subquery, or run query to get the data and add to the query with filter statement (in [1,2,3]).

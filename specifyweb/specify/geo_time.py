@@ -1,7 +1,6 @@
 from itertools import chain
 from typing import List
 from django.db.models import Q, F
-from numpy import absolute
 from sqlalchemy.sql import or_, and_
 from sqlalchemy.orm import aliased
 
@@ -11,7 +10,11 @@ from specifyweb.stored_queries import models as sq_models
 # TODO: Integrate into the query builder
 
 # Paths from CollectionObject to AbsoluteAge or GeologicTimePeriod:
-# - CollectionObject
+# - collectionobject->paleocontext->chronostrat
+# - collectionobject->collectionevent->paleocontext->chronostrat
+# - collectionobject->collectionevent->loc->paleocontext->chronostrat
+# - collectionobject->relativeage->chronostrat
+# - collectionobject->absoluteage
 
 def assert_valid_time_range(start_time: float, end_time: float):
     assert start_time <= end_time, "Start time must be less than or equal to end time."
@@ -111,18 +114,30 @@ def search_co_ids_in_time_period(time_period_name: str, require_full_overlap: bo
     time_period = Geologictimeperiod.objects.filter(name=time_period_name).first()
     return search_co_ids_in_time_range(time_period.start_time, time_period.end_time)
 
-def query_co_in_time_range(session, start_time: float, end_time: float, require_full_overlap: bool = False):
+def query_co_in_time_range(
+    qb_query,
+    start_time: float,
+    end_time: float,
+    session=None,
+    require_full_overlap: bool = False,
+):
     """
-    Create SQL Alchemy query to search for collections that overlap with the given time range.
+    Edit the incoming Query Builder SQL Alchemy query to search for collections that overlap with the given time range.
 
-    :param query: The sqlalchemy query to filter.
+    # :param session: The SQL Alchemy session.
+    :param qb_query: The Query Builder's sqlalchemy query to filter.
     :param start_time: The start time of the range.
     :param end_time: The end time of the range.
+    :param session: The SQL Alchemy session.
     :param require_full_overlap: If True, only collections that fully overlap with the range are returned, otheerwise partial overlap is used.
     :return: A list of collection object IDs.
     """
 
     assert_valid_time_range(start_time, end_time)
+
+    # Assert that the base table of the query is CollectionObject
+    assert sq_models.CollectionObject in [entity.entity_zero for entity in qb_query._entities], \
+        "The base table of the query must be CollectionObject."
 
     # Define filters
     absolute_start_filter = AbsoluteAge.absoluteage >= (start_time - AbsoluteAge.ageuncertainty)
@@ -145,53 +160,62 @@ def query_co_in_time_range(session, start_time: float, end_time: float, require_
 
     # Combine all filters into a single query
     # TODO: Fix and make more efficient
-    combined_filter = or_(
-        sq_models.CollectionObject.absoluteages.any(absolute_overlap_filter),
-        sq_models.CollectionObject.relativeages.any(relative_age_alias.agename.in_(
-            session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
-        )),
-        sq_models.CollectionObject.collectingevent.has(
-            collecting_event_alias.paleocontext.has(
-                or_(
+    if session is None:
+        session = sq_models.session_context()
+    with session as qb_session:
+        combined_filter = or_(
+            sq_models.CollectionObject.absoluteages.any(absolute_overlap_filter),
+            sq_models.CollectionObject.relativeages.any(relative_age_alias.agename.in_(
+                qb_session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+            )),
+            sq_models.CollectionObject.collectingevent.has(
+                collecting_event_alias.paleocontext.has(
+                    or_(
+                        paleocontext_alias.chronosstrat.in_(
+                            qb_session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                        ),
+                        paleocontext_alias.chronosstratend.in_(
+                            qb_session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                        )
+                    )
+                )
+            ),
+            sq_models.CollectionObject.collectingevent.has(
+                collecting_event_alias.locality.has(
                     paleocontext_alias.chronosstrat.in_(
-                        session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
-                    ),
+                        qb_session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                    )
+                )
+            ),
+            sq_models.CollectionObject.collectingevent.has(
+                collecting_event_alias.locality.has(
                     paleocontext_alias.chronosstratend.in_(
-                        session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                        qb_session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
                     )
                 )
             )
-        ),
-        sq_models.CollectionObject.collectingevent.has(
-            collecting_event_alias.locality.has(
-                paleocontext_alias.chronosstrat.in_(
-                    session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
-                )
-            )
-        ),
-        sq_models.CollectionObject.collectingevent.has(
-            collecting_event_alias.locality.has(
-                paleocontext_alias.chronosstratend.in_(
-                    session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
-                )
-            )
         )
-    )
 
     # Execute query
-    return session.query(sq_models.CollectionObject).filter(combined_filter).distinct().all()
+    # return qb_session.query(sq_models.CollectionObject).filter(combined_filter).distinct().all()
+    # return qb_query.filter(combined_filter).distinct().all()
 
-def query_co_in_time_margin(session, time: float, uncertanty: float, require_full_overlap: bool = False):
+    # Add age filter statement to the query
+    return qb_query.filter(combined_filter).distinct()
+
+def query_co_in_time_margin(qb_query, time: float, uncertanty: float, session=None, require_full_overlap: bool = False):
     start_time = time - uncertanty
     end_time = time + uncertanty
     return query_co_in_time_range(session, start_time, end_time, require_full_overlap)
 
-def query_co_in_time_period(session, time_period_name: str, require_full_overlap: bool = False):
+def query_co_in_time_period(qb_query, time_period_name: str, session=None, require_full_overlap: bool = False):
     """
     Create SQL Alchemy query to search for collections that overlap with the given time period.
     
     :param session: The SQL Alchemy session.
+    :param qb_query: The Query Builder's sqlalchemy query to filter.
     :param time_period_name: The name of the time period.
+    :param session: The SQL Alchemy session.
     :param require_full_overlap: If True, only collections that fully overlap with the range are returned, otheerwise partial overlap is used.
     :return: A list of collection object IDs.
     """
