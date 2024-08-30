@@ -3,9 +3,10 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { MappingPath } from './Mapper';
-import type { SplitMappingPath } from './mappingHelpers';
+import { formatTreeDefinition, SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
@@ -34,7 +35,10 @@ type UploadTableVariety =
   | { readonly uploadTable: UploadTable };
 
 export type TreeRecord = {
-  readonly ranks: IR<string | { readonly treeNodeCols: IR<ColumnDefinition> }>;
+  readonly ranks: IR<
+    | string
+    | { readonly treeNodeCols: IR<ColumnDefinition>; readonly treeId?: number }
+  >;
 };
 
 type TreeRecordVariety =
@@ -70,9 +74,20 @@ const parseTree = (
             name: rankData,
           }
         : rankData.treeNodeCols,
-      [...mappingPath, formatTreeRank(rankName)]
+      [
+        ...mappingPath,
+        ...(typeof rankData === 'object' && typeof rankData.treeId === 'number'
+          ? [resolveTreeId(rankData.treeId)]
+          : []),
+        formatTreeRank(rankName),
+      ]
     )
   );
+
+const resolveTreeId = (id: number): string => {
+  const treeDefinition = getTreeDefinitions('Taxon', id);
+  return formatTreeDefinition(treeDefinition[0].definition.name);
+};
 
 function parseTreeTypes(
   table: SpecifyTable,
