@@ -30,7 +30,7 @@ import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { SearchDialog, useSearchDialog } from '../SearchDialog';
+import { useSearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';

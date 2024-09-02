@@ -109,8 +109,8 @@ export function useSaveBlockers(
   ];
 }
 
-export function setSaveBlockers<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>,
+export function setSaveBlockers(
+  resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
   errors: Parameters<GetOrSet<RA<string>>[typeof SET]>[0],
   blockerKey: string

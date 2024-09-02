@@ -87,16 +87,12 @@ function eventHandlerForToMany(_related, field) {
 
 // Always returns a resource
 const maybeMakeResource = <
-  TABLE extends SpecifyTable<AnySchema>,
+  TABLE extends SpecifyTable,
   TABLE_SCHEMA extends Tables[TABLE['name']]
 >(
   value:
-    | SpecifyResource<TABLE_SCHEMA>
-    | Partial<
-        | SerializedResource<TABLE_SCHEMA>
-        | SerializedRecord<TABLE_SCHEMA>
-        | { readonly id?: number }
-      >,
+    | Partial<SerializedRecord<TABLE_SCHEMA> | SerializedResource<TABLE_SCHEMA>>
+    | SpecifyResource<TABLE_SCHEMA>,
   relatedTable: TABLE
 ): SpecifyResource<TABLE_SCHEMA> =>
   value instanceof ResourceBase
