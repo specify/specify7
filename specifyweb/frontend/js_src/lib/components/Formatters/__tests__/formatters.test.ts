@@ -120,7 +120,7 @@ const taxonCitation = {
   referenceWork: getResourceApiUrl('ReferenceWork', referenceWorkId),
 };
 overrideAjax(
-  '/api/specify/taxoncitation/?domainfilter=false&referencework=1&offset=0',
+  '/api/specify/taxoncitation/?referencework=1&domainfilter=false&limit=0',
   {
     meta: {
       total_count: 1,

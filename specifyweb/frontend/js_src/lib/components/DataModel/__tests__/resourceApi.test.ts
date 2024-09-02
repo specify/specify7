@@ -147,7 +147,7 @@ const accessionsResponse = [
 ];
 
 overrideAjax(
-  '/api/specify/accession/?domainfilter=false&addressofrecord=42&offset=0',
+  '/api/specify/accession/?addressofrecord=42&domainfilter=false&limit=0',
   {
     meta: { total_count: 2 },
     objects: accessionsResponse,
