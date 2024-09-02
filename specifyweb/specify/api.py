@@ -601,18 +601,8 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
             rel_model = field.related_model
-            if 'id' in val:
-                # The related object is an existing resource with an id.
-                # This should never happen for dependent resources.
-                rel_obj = update_obj(collection, agent,
-                                     rel_model, val['id'],
-                                     val['version'], val,
-                                     parent_obj=obj if dependent else None)
-            else:
-                # The related object is to be created.
-                rel_obj = create_obj(collection, agent,
-                                     rel_model, val,
-                                     parent_obj=obj if dependent else None)
+
+            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None)
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
@@ -677,8 +667,6 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
 
             rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj if is_dependent else None)
 
-            if not is_dependent and not (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'):
-                getattr(obj, field_name).add(rel_obj)
             ids.append(rel_obj.id) # Record the id as one to keep.
 
         # Delete related objects not in the ids list.
@@ -691,6 +679,8 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
         
             to_remove.delete()
         else: 
+            for rel_obj in to_remove: 
+                check_table_permissions(collection, agent, to_remove[0], 'update')
             getattr(obj, field_name).remove(*list(to_remove))
 
 def update_or_create_resource(collection, agent, model, data, parent_obj): 
