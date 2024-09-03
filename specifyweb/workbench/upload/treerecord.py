@@ -490,6 +490,8 @@ class BoundTreeRecord(NamedTuple):
 
     def _do_insert(self, model, **kwargs):
         obj = model(**kwargs)
+        if hasattr(obj, 'fullname') and obj.fullname is None:
+            obj.fullname = obj.name
         obj.save(skip_tree_extras=True)
         return obj
 
