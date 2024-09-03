@@ -70,8 +70,9 @@ export function SubView({
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
   const fetchCollection = React.useCallback(
+    // If false is returned, then the Subview should not be rendered
     async function fetchCollection(): Promise<
-      Collection<AnySchema> | undefined
+      Collection<AnySchema> | false | undefined
     > {
       if (
         relationshipIsToMany(relationship) &&
@@ -120,7 +121,7 @@ export function SubView({
                 `reverse relationship does not exist`
             )
           );
-          return undefined;
+          return false;
         }
         const collection = (
           relationship.isDependent()
@@ -156,7 +157,7 @@ export function SubView({
   );
 
   const [collection, setCollection] = React.useState<
-    Collection<AnySchema> | undefined
+    Collection<AnySchema> | false | undefined
   >(undefined);
   const versionRef = React.useRef<number>(0);
   React.useEffect(
@@ -226,7 +227,8 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {parentContext.includes(relationship) ? undefined : (
+      {parentContext.includes(relationship) ||
+      collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray

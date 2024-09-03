@@ -369,6 +369,14 @@ const subViewSpec = (
             console.error('SubView can only be used to display a relationship');
             return undefined;
           }
+          if (field !== undefined && field.getReverse() === undefined) {
+            console.error(
+              `No reverse relationship exists${
+                relationshipIsToMany(field) ? '' : '. Use a querycbx instead'
+              }`
+            );
+            return undefined;
+          }
           if (field?.type === 'many-to-many') {
             // ResourceApi does not support .rget() on a many-to-many
             console.warn('Many-to-many relationships are not supported');
