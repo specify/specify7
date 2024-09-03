@@ -158,7 +158,7 @@ class ScopedTreeRecord(NamedTuple):
 
     def get_treedefs(self) -> Set:
         return set([self.treedef])
-    
+
     def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         def fetch_tree_node_model(name: str):
             return getattr(models, name.lower().title())
@@ -182,8 +182,14 @@ class ScopedTreeRecord(NamedTuple):
             else:
                 first_rank = next(iter(self.ranks.keys()))
                 target_rank_treedef_id = first_rank.treedef_id
-                target_rank_treedef = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-                treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id))
+                target_rank_treedef = tree_node_model.objects.filter(
+                    definition_id=target_rank_treedef_id, parent=None
+                ).first()
+                treedefitems = list(
+                    tree_rank_model.objects.filter(
+                        treedef_id=target_rank_treedef_id
+                    ).order_by("rankid")
+                )
                 root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
                 return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
 
@@ -210,18 +216,28 @@ class ScopedTreeRecord(NamedTuple):
 
         target_rank_name = ranks_in_row_not_null.pop()
         target_rank_treedef_id = ranks[target_rank_name]
-        treedefitem_query = tree_rank_model.objects.filter(name=target_rank_name, treedef_id=target_rank_treedef_id)
+        treedefitem_query = tree_rank_model.objects.filter(
+            name=target_rank_name, treedef_id=target_rank_treedef_id
+        ).order_by("rankid")
 
         if not treedefitem_query.exists() or treedefitem_query.count() != 1:
             return handle_invalid_rank(target_rank_name)
 
-        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id))
+        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
         target_rank_treedef = treedefitem_query.first().treedef
 
         return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(
+        self,
+        collection,
+        row: Row,
+        uploadingAgentId: Optional[int],
+        auditor: Auditor,
+        cache: Optional[Dict] = None,
+        row_index: Optional[int] = None,
+    ) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
 
@@ -256,6 +272,7 @@ class ScopedTreeRecord(NamedTuple):
             auditor=auditor,
             cache=cache,
         )
+
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(self, collection) -> "ScopedMustMatchTreeRecord":
