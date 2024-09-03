@@ -179,19 +179,18 @@ class ScopedTreeRecord(NamedTuple):
         def handle_no_ranks_in_row():
             if self.treedef is not None:
                 return self, None
-            else:
-                first_rank = next(iter(self.ranks.keys()))
-                target_rank_treedef_id = first_rank.treedef_id
-                target_rank_treedef = tree_node_model.objects.filter(
-                    definition_id=target_rank_treedef_id, parent=None
-                ).first()
-                treedefitems = list(
-                    tree_rank_model.objects.filter(
-                        treedef_id=target_rank_treedef_id
-                    ).order_by("rankid")
-                )
-                root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-                return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
+            first_rank = next(iter(self.ranks.keys()))
+            target_rank_treedef_id = first_rank.treedef_id
+            target_rank_treedef = tree_node_model.objects.filter(
+                definition_id=target_rank_treedef_id, parent=None
+            ).first()
+            treedefitems = list(
+                tree_rank_model.objects.filter(
+                    treedef_id=target_rank_treedef_id
+                ).order_by("rankid")
+            )
+            root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
+            return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
 
         def handle_multiple_ranks_in_row(ranks_in_row_not_null):
             return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_in_row_not_null)[0])
