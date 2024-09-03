@@ -47,7 +47,9 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
-          readOnly: ([-1, undefined].includes(physicalColToMappingCol(physicalCol)))
+          readOnly: [-1, undefined].includes(
+            physicalColToMappingCol(physicalCol)
+          ),
         })
       ),
     [dataset.columns.length]
@@ -127,7 +129,7 @@ export function useHotProps({
     enterBeginsEditing,
     hiddenRows,
     hiddenColumns,
-    minSpareRows:adjustedMinRows,
+    minSpareRows: adjustedMinRows,
     tabMoves,
     comments,
   };

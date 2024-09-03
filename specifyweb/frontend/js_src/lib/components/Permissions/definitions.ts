@@ -85,7 +85,7 @@ export const operationPolicies = {
     'validate',
     'transfer',
     'create_recordset',
-  ]
+  ],
 } as const;
 
 /**

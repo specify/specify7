@@ -92,7 +92,7 @@ export abstract class FieldBase {
    * Overrides are used to overwrite the default data model settings and the
    * schema config settings. Overrides mostly affect Query Builder and the
    * WorkBench mapper. They are used to force-hide unsupported fields and
-   * legacy fields. 
+   * legacy fields.
    */
   public readonly overrides: {
     // eslint-disable-next-line functional/prefer-readonly-type

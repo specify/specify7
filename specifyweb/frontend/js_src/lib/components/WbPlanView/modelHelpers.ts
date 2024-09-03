@@ -146,5 +146,9 @@ export const isCircularRelationship = (
   (relationship.relatedTable === parentRelationship.table &&
     relationship.otherSideName === parentRelationship.name);
 
-export const isNestedToMany = (parentRelationship: Relationship, relationship: Relationship) => relationshipIsToMany(relationship) &&
-relationshipIsToMany(parentRelationship)
+export const isNestedToMany = (
+  parentRelationship: Relationship,
+  relationship: Relationship
+) =>
+  relationshipIsToMany(relationship) &&
+  relationshipIsToMany(parentRelationship);

@@ -250,9 +250,13 @@ describe('getCarryOverPreference', () => {
   });
 });
 
-test('checkUniqueFields', ()=>{
-  Object.values(tables).map((table)=>expect(getUniqueFields(table, false)).toEqual(uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]))
-})
+test('checkUniqueFields', () => {
+  Object.values(tables).map((table) =>
+    expect(getUniqueFields(table, false)).toEqual(
+      uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]
+    )
+  );
+});
 
 test('getFieldsToNotClone', () => {
   userPreferences.set('form', 'preferences', 'carryForward', {

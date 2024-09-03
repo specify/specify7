@@ -1,16 +1,17 @@
 import type Handsontable from 'handsontable';
 import type { Plugins } from 'handsontable/plugins';
+import type { CellProperties } from 'handsontable/settings';
 
 import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import type { BatchEditPack } from './batchEditHelpers';
+import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
+import { getPhysicalColToMappingCol } from './hotHelpers';
 import type { WbMapping } from './mapping';
 import type { WbPickLists } from './pickLists';
-import { getPhysicalColToMappingCol } from './hotHelpers';
-import { BATCH_EDIT_KEY, BatchEditPack, isBatchEditNullRecord } from './batchEditHelpers';
-import { CellProperties } from 'handsontable/settings';
 
 export function configureHandsontable(
   hot: Handsontable,
@@ -33,23 +34,37 @@ export function identifyDefaultValues(
   });
 }
 
-type GetProperty = (physicalRow: number, physicalCol: number, _property: string | number) => Partial<CellProperties>;
+type GetProperty = (
+  physicalRow: number,
+  physicalCol: number,
+  _property: number | string
+) => Partial<CellProperties>;
 
-function curryCells(hot: Handsontable,
+function curryCells(
+  hot: Handsontable,
   mappings: WbMapping | undefined,
   dataset: Dataset,
-  pickLists: WbPickLists) : void {
-    const identifyPickLists = getPickListsIdentifier(pickLists);
-    const identifyNullRecords = getIdentifyNullRecords(hot, mappings, dataset);
-    hot.updateSettings({cells: (physicalRow, physicalColumn, property)=>{
-      const pickListsResults = identifyPickLists?.(physicalRow, physicalColumn, property) ?? {};
-      const nullRecordsResults = identifyNullRecords?.(physicalRow, physicalColumn, property) ?? {};
-      return {...pickListsResults, ...nullRecordsResults}
-    }})
-  }
+  pickLists: WbPickLists
+): void {
+  const identifyPickLists = getPickListsIdentifier(pickLists);
+  const identifyNullRecords = getIdentifyNullRecords(hot, mappings, dataset);
+  hot.updateSettings({
+    cells: (physicalRow, physicalColumn, property) => {
+      const pickListsResults =
+        identifyPickLists?.(physicalRow, physicalColumn, property) ?? {};
+      const nullRecordsResults =
+        identifyNullRecords?.(physicalRow, physicalColumn, property) ?? {};
+      return { ...pickListsResults, ...nullRecordsResults };
+    },
+  });
+}
 
-function getPickListsIdentifier(pickLists: WbPickLists): undefined | GetProperty {
-  const callback: GetProperty = (_physicalRow, physicalCol, _property) => physicalCol in pickLists ? ({
+function getPickListsIdentifier(
+  pickLists: WbPickLists
+): GetProperty | undefined {
+  const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
+    physicalCol in pickLists
+      ? {
           type: 'autocomplete',
           source: writable(pickLists[physicalCol].items),
           strict: pickLists[physicalCol].readOnly,
@@ -62,32 +77,51 @@ function getPickListsIdentifier(pickLists: WbPickLists): undefined | GetProperty
             'case-sensitive',
           sortByRelevance: false,
           trimDropdown: false,
-        })
-      : ({ type: 'text' });
-  return callback
+        }
+      : { type: 'text' };
+  return callback;
 }
 
-function getIdentifyNullRecords(hot: Handsontable, mappings: WbMapping | undefined, dataset: Dataset) : GetProperty | undefined {
-  if (dataset.isupdate !== true || mappings === undefined) return undefined;
-  const makeNullRecordsReadOnly: GetProperty = (physicalRow, physicalCol, _property) => {
-    const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
+function getIdentifyNullRecords(
+  hot: Handsontable,
+  mappings: WbMapping | undefined,
+  dataset: Dataset
+): GetProperty | undefined {
+  if (!dataset.isupdate || mappings === undefined) return undefined;
+  const makeNullRecordsReadOnly: GetProperty = (
+    physicalRow,
+    physicalCol,
+    _property
+  ) => {
+    const physicalColToMappingCol = getPhysicalColToMappingCol(
+      mappings,
+      dataset
+    );
     const mappingCol = physicalColToMappingCol(physicalCol);
-    if (mappingCol === -1 || mappingCol === undefined){
+    if (mappingCol === -1 || mappingCol === undefined) {
       // Definitely don't need to anything, not even mapped
-      return {readOnly: true};
+      return { readOnly: true };
     }
 
-    const batchEditRaw: string | undefined = hot.getDataAtRow(hot.toVisualRow(physicalRow)).at(-1) ?? undefined;
-    if ((batchEditRaw === undefined) || (
-      // will happen for new rows + rows auto-added at the bottom.
+    const batchEditRaw: string | undefined =
+      hot.getDataAtRow(hot.toVisualRow(physicalRow)).at(-1) ?? undefined;
+    if (
+      batchEditRaw === undefined ||
+      // Will happen for new rows + rows auto-added at the bottom.
       batchEditRaw.trim() === ''
-    )){
-      return {readOnly: false};
+    ) {
+      return { readOnly: false };
     }
-    const batchEditPack: BatchEditPack | undefined = JSON.parse(batchEditRaw)[BATCH_EDIT_KEY];
-    return { readOnly: isBatchEditNullRecord(batchEditPack, mappings.lines[mappingCol].mappingPath)};
-    }
-  return makeNullRecordsReadOnly
+    const batchEditPack: BatchEditPack | undefined =
+      JSON.parse(batchEditRaw)[BATCH_EDIT_KEY];
+    return {
+      readOnly: isBatchEditNullRecord(
+        batchEditPack,
+        mappings.lines[mappingCol].mappingPath
+      ),
+    };
+  };
+  return makeNullRecordsReadOnly;
 }
 
 function setSort(hot: Handsontable, dataset: Dataset): void {

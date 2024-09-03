@@ -20,7 +20,11 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
-import { getPhysicalColToMappingCol, getSelectedRegions, setHotData } from './hotHelpers';
+import {
+  getPhysicalColToMappingCol,
+  getSelectedRegions,
+  setHotData,
+} from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
@@ -75,9 +79,9 @@ function WbSpreadsheetComponent({
                     const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
                     const createdRecords =
-                      validation.uploadResults.interestingRecords[physicalRow]?.[
-                        physicalCol
-                      ];
+                      validation.uploadResults.interestingRecords[
+                        physicalRow
+                      ]?.[physicalCol];
 
                     if (
                       visualRow === undefined ||

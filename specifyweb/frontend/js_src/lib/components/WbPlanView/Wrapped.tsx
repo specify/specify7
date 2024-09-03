@@ -77,7 +77,7 @@ export type Dataset = DatasetBase &
     readonly rows: RA<RA<string>>;
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
-    readonly isupdate: boolean
+    readonly isupdate: boolean;
   };
 
 /**
@@ -87,13 +87,13 @@ export function WbPlanView({
   dataset,
   uploadPlan,
   headers,
-  readonlySpec
+  readonlySpec,
 }: {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
   readonly dataset: Dataset;
-  readonly readonlySpec?: ReadonlySpec
-  }): JSX.Element {
+  readonly readonlySpec?: ReadonlySpec;
+}): JSX.Element {
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
@@ -159,6 +159,7 @@ export function WbPlanView({
       dataset={dataset}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
+      readonlySpec={readonlySpec}
       onChangeBaseTable={(): void =>
         setState({
           type: 'SelectBaseTable',
@@ -172,7 +173,6 @@ export function WbPlanView({
           mustMatchPreferences,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
-      readonlySpec={readonlySpec}
     />
   );
 }

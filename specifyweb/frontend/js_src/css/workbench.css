@@ -38,11 +38,16 @@
 }
 
 /* CONTENT styles */
-.wbs-form.wb-show-upload-results .wb-no-match-cell
-.wbs-form.wb-show-upload-results .wb-updated-cell
-.wbs-form.wb-show-upload-results .wb-deleted-cell
-.wbs-form.wb-show-upload-results .wb-matched-and-changed-cell
-.wbs-form.wb-focus-coordinates .wb-coordinate-cell {
+.wbs-form.wb-show-upload-results
+  .wb-no-match-cell
+  .wbs-form.wb-show-upload-results
+  .wb-updated-cell
+  .wbs-form.wb-show-upload-results
+  .wb-deleted-cell
+  .wbs-form.wb-show-upload-results
+  .wb-matched-and-changed-cell
+  .wbs-form.wb-focus-coordinates
+  .wb-coordinate-cell {
   @apply text-black dark:text-white;
 }
 

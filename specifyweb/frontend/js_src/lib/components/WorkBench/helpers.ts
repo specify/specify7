@@ -23,4 +23,4 @@ export const downloadDataSet = async (
         else reject(error);
       }
     )
-  )
+  );

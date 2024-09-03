@@ -40,7 +40,11 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import { getMaxToManyIndex, isCircularRelationship, isNestedToMany } from './modelHelpers';
+import {
+  getMaxToManyIndex,
+  isCircularRelationship,
+  isNestedToMany,
+} from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
 
 type NavigationCallbackPayload = {
@@ -475,7 +479,8 @@ export function getMappingLineData({
               isIncluded &&=
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
-                  (spec.allowNestedToMany || !isNestedToMany(parentRelationship, field)));
+                  (spec.allowNestedToMany ||
+                    !isNestedToMany(parentRelationship, field)));
 
               isIncluded &&=
                 !canDoAction ||
@@ -488,8 +493,10 @@ export function getMappingLineData({
                     ));
 
               isIncluded &&=
-                (spec.includeRelationshipsFromTree && mappingPath[internalState.position - 1] ===
-                  formatTreeRank(anyTreeRank)) || !isTreeTable(table.name);
+                (spec.includeRelationshipsFromTree &&
+                  mappingPath[internalState.position - 1] ===
+                    formatTreeRank(anyTreeRank)) ||
+                !isTreeTable(table.name);
 
               isIncluded &&=
                 spec.includeToManyToTree ||
@@ -497,9 +504,10 @@ export function getMappingLineData({
                  * Hide -to-many relationships to a tree table as they are
                  * not supported by the WorkBench
                  */
-                !(relationshipIsToMany(field) &&
-                isTreeTable(field.relatedTable.name));
-            
+                !(
+                  relationshipIsToMany(field) &&
+                  isTreeTable(field.relatedTable.name)
+                );
             }
 
             return isIncluded;

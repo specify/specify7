@@ -28,15 +28,24 @@ type Records = WritableArray<
       >
     >
   >
->
+>;
 
-// just to make things manageable
-type RecordCountsKey = keyof Pick<UploadResult['UploadResult']['record_result'], 'Deleted'|'MatchedAndChanged'|'Updated'|'Uploaded'>;
+// Just to make things manageable
+type RecordCountsKey = keyof Pick<
+  UploadResult['UploadResult']['record_result'],
+  'Deleted' | 'MatchedAndChanged' | 'Updated' | 'Uploaded'
+>;
 
-export type RecordCounts = Partial<Record<RecordCountsKey, Partial<Record<Lowercase<keyof Tables>, number>>>>;
+export type RecordCounts = Partial<
+  Record<RecordCountsKey, Partial<Record<Lowercase<keyof Tables>, number>>>
+>;
 
-export const RecordCountPriority: RA<RecordCountsKey> = ['Updated', 'Uploaded', 'MatchedAndChanged', 'Deleted'];
-
+export const RecordCountPriority: RA<RecordCountsKey> = [
+  'Updated',
+  'Uploaded',
+  'MatchedAndChanged',
+  'Deleted',
+];
 
 type UploadResults = {
   readonly ambiguousMatches: WritableArray<
@@ -51,7 +60,6 @@ type UploadResults = {
   // Updated + MatchedAndChanged + New
   readonly interestingRecords: Records;
 };
-
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
@@ -68,7 +76,7 @@ export class WbValidation {
   public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},
-    interestingRecords: []
+    interestingRecords: [],
   };
 
   public constructor(private readonly workbench: Workbench) {
@@ -99,8 +107,15 @@ export class WbValidation {
           (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
-        const toRemove: RA<keyof WbCellCounts> = ['newCells', 'updatedCells', 'deletedCells', 'matchedAndChangedCells'];
-        toRemove.forEach((key)=>this.workbench.utils?.toggleCellTypes(key, 'remove'));
+        const toRemove: RA<keyof WbCellCounts> = [
+          'newCells',
+          'updatedCells',
+          'deletedCells',
+          'matchedAndChangedCells',
+        ];
+        toRemove.forEach((key) =>
+          this.workbench.utils?.toggleCellTypes(key, 'remove')
+        );
         break;
       }
       case 'off': {
@@ -271,7 +286,11 @@ export class WbValidation {
     );
 
     // Ignore these statuses
-    if ((['NullRecord', 'PropagatedFailure', 'Matched', 'NoChange']).includes(uploadStatus)) {
+    if (
+      ['NullRecord', 'PropagatedFailure', 'Matched', 'NoChange'].includes(
+        uploadStatus
+      )
+    ) {
     } else if (uploadStatus === 'ParseFailures')
       recordResult.ParseFailures.failures.forEach((line) => {
         const [issueMessage, payload, column] =
@@ -321,18 +340,30 @@ export class WbValidation {
         recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
-    } 
+    }
     // TODO: Discuss if MatchedAndChanged needs to shown. or whatever.
-    else if (uploadStatus === 'Uploaded' || uploadStatus === 'Updated' || uploadStatus === 'MatchedAndChanged' || uploadStatus === 'Deleted') {
+    else if (
+      uploadStatus === 'Uploaded' ||
+      uploadStatus === 'Updated' ||
+      uploadStatus === 'MatchedAndChanged' ||
+      uploadStatus === 'Deleted'
+    ) {
       // All these meta ones are interesting
-      const metaKey = uploadStatus === 'Uploaded' ? 'isNew' : uploadStatus === 'Updated' ? 'isUpdated' : uploadStatus === 'MatchedAndChanged' ? 'isMatchedAndChanged' : 'isDeleted';
+      const metaKey =
+        uploadStatus === 'Uploaded'
+          ? 'isNew'
+          : uploadStatus === 'Updated'
+          ? 'isUpdated'
+          : uploadStatus === 'MatchedAndChanged'
+          ? 'isMatchedAndChanged'
+          : 'isDeleted';
       setMetaCallback(
         metaKey,
         true,
         recordResult[uploadStatus].info.columns,
         undefined
       );
-      
+
       const tableName = toLowerCase(recordResult[uploadStatus].info.tableName);
       this.uploadResults.recordCounts[uploadStatus] ??= {};
       this.uploadResults.recordCounts[uploadStatus]![tableName]! ??= 0;
@@ -351,7 +382,9 @@ export class WbValidation {
           tableName,
           recordResult[uploadStatus].id,
           recordResult[uploadStatus].info?.treeInfo
-            ? `${recordResult[uploadStatus].info.treeInfo!.name} (${recordResult[uploadStatus].info.treeInfo!.rank})`
+            ? `${recordResult[uploadStatus].info.treeInfo!.name} (${
+                recordResult[uploadStatus].info.treeInfo!.rank
+              })`
             : '',
         ]);
       });

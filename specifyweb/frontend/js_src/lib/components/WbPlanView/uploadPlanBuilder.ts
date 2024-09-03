@@ -92,11 +92,11 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             indexMappings(lines).map(([_index, lines]) =>
-                toUploadTable(
-                  table.strictGetRelationship(fieldName).relatedTable,
-                  lines,
-                  mustMatchPreferences
-                )
+              toUploadTable(
+                table.strictGetRelationship(fieldName).relatedTable,
+                lines,
+                mustMatchPreferences
+              )
             ),
           ] as const
       )

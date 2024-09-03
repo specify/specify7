@@ -14,9 +14,9 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
-import { WbMeta } from './CellMeta';
 
 export function useHotHooks({
   workbench,
@@ -57,12 +57,25 @@ export function useHotHooks({
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
       const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
-      const cellMetaToUpdate: RA<keyof WbMeta> = ['isModified', 'isNew', 'isSearchResult', 'isUpdated', 'isMatchedAndChanged', 'isDeleted'];
-      cellMetaToUpdate.forEach((metaType)=>{
-        if(workbench.cells.getCellMetaFromArray(metaArray, metaType)){
-          workbench.cells.runMetaUpdateEffects(td, metaType, true, visualRow, visualCol)
+      const cellMetaToUpdate: RA<keyof WbMeta> = [
+        'isModified',
+        'isNew',
+        'isSearchResult',
+        'isUpdated',
+        'isMatchedAndChanged',
+        'isDeleted',
+      ];
+      cellMetaToUpdate.forEach((metaType) => {
+        if (workbench.cells.getCellMetaFromArray(metaArray, metaType)) {
+          workbench.cells.runMetaUpdateEffects(
+            td,
+            metaType,
+            true,
+            visualRow,
+            visualCol
+          );
         }
-      })
+      });
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
