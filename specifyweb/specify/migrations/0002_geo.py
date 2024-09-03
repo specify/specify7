@@ -150,19 +150,14 @@ def revert_default_collection_object_types():
             cog_type_picklist.delete()
 
 def set_discipline_for_taxon_treedefs():
-    taxon_treedefs_without_discipline = Taxontreedef.objects.filter(discipline__isnull=True)
-    collection_object_types = Collectionobjecttype.objects.filter(taxontreedef__in=taxon_treedefs_without_discipline)
-    
-    treedef_to_discipline = {}
+    collection_object_types = Collectionobjecttype.objects.filter(
+        taxontreedef__discipline__isnull=True
+    ).annotate(
+        discipline=F('collection__discipline')
+    )
+
     for cot in collection_object_types:
-        treedef_to_discipline[cot.taxontreedef_id] = cot.collection.discipline
-    
-    for treedef_id, discipline in treedef_to_discipline.items():
-        Taxontreedef.objects.filter(id=treedef_id).update(discipline=discipline)
-
-
-def revert_discipline_for_taxon_treedefs():
-    Taxontreedef.objects.update(discipline=None)
+        Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
 
 class Migration(migrations.Migration):
 
@@ -180,7 +175,6 @@ class Migration(migrations.Migration):
         set_discipline_for_taxon_treedefs()
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_discipline_for_taxon_treedefs()
         revert_default_collection_object_types()
         revert_table_schema_config_with_defaults()
         revert_default_discipline_for_tree_defs()
