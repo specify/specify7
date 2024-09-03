@@ -32,7 +32,7 @@ class TreeRank(NamedTuple):
         treedef_id: Optional[int] = None,
         base_treedef_id: Optional[int] = None,
     ) -> 'TreeRank':
-        tree_model = get_tree_model(tree)
+        tree_model = get_treedefitem_model(tree)
         tree_lower = tree.lower()
 
         def _build_filter_kwargs(rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
@@ -77,7 +77,7 @@ class TreeRank(NamedTuple):
         return TreeRank(rank_name, treedef_id, tree_lower)
 
     def check_rank(self) -> bool:
-        tree_model = get_tree_model(self.tree)
+        tree_model = get_treedefitem_model(self.tree)
         rank = tree_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id)
         return rank.exists() and rank.count() == 1
 
@@ -91,7 +91,7 @@ class TreeRank(NamedTuple):
         assert self.tree is not None and self.tree.lower() in SPECIFY_TREES, "Tree is required"
         return TreeRankRecord(self.rank_name, self.treedef_id)
 
-def get_tree_model(tree: str):
+def get_treedefitem_model(tree: str):
     return getattr(models, tree.lower().title() + 'treedefitem')
 
 class TreeRankRecord(NamedTuple):
@@ -158,10 +158,54 @@ class ScopedTreeRecord(NamedTuple):
 
     def get_treedefs(self) -> Set:
         return set([self.treedef])
+    
+    def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
+        tree_rank_model = get_treedefitem_model(self.name)
+        tree_node_model = getattr(models, self.name.lower().title())
+
+        # Create a mapping of rank names to their treedef IDs
+        ranks = {rank.rank_name: rank.treedef_id for rank in self.ranks.keys()}
+        rank_names = set(ranks.keys())
+
+        # Find non-null rank columns in the row
+        ranks_in_row_not_null = {
+            col
+            for col, value in row.items()
+            if value is not None and value != "" and col in rank_names
+        }
+
+        # Handle cases with multiple or no ranks in the row
+        if len(ranks_in_row_not_null) > 1:
+            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_in_row_not_null)[0])
+        if not ranks_in_row_not_null:
+            return self, WorkBenchParseFailure('noRanksInRow', {}, '')
+
+        # Get the target rank name and its treedef ID
+        target_rank_name = ranks_in_row_not_null.pop()
+        target_rank_treedef_id = ranks[target_rank_name]
+
+        # Query for the target rank treedef item
+        treedefitem_query = tree_rank_model.objects.filter(name=target_rank_name, treedef_id=target_rank_treedef_id)
+
+        if not treedefitem_query.exists() or treedefitem_query.count() != 1:
+            return self, WorkBenchParseFailure('invalidRank', {'rank': target_rank_name}, target_rank_name)
+
+        # Fetch the required data
+        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id))
+        root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
+        target_rank_treedef = treedefitem_query.first().treedef
+
+        # Return the updated ScopedTreeRecord
+        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
+
+        rescoped_tree_record, parse_fail = self.rescope_tree_from_row(row)
+        if parse_fail:
+            parseFails.append(parse_fail)
+
         for tree_rank_record, cols in self.ranks.items():
             nameColumn = cols['name']
             presults, pfails = parse_many(collection, self.name, cols, row)
@@ -180,9 +224,9 @@ class ScopedTreeRecord(NamedTuple):
 
         return BoundTreeRecord(
             name=self.name,
-            treedef=self.treedef,
-            treedefitems=self.treedefitems,
-            root=self.root,
+            treedef=rescoped_tree_record.treedef,
+            treedefitems=rescoped_tree_record.treedefitems,
+            root=rescoped_tree_record.root,
             disambiguation=self.disambiguation,
             parsedFields=parsedFields,
             uploadingAgentId=uploadingAgentId,

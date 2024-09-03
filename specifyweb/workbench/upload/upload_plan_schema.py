@@ -6,7 +6,7 @@ from specifyweb.specify.datamodel import datamodel, Table, Relationship
 
 from .upload_table import DeferredScopeUploadTable, UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
-from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord, get_tree_model
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 from .scoping import DEFERRED_SCOPING
