@@ -163,6 +163,10 @@ class ScopedTreeRecord(NamedTuple):
         tree_rank_model = get_treedefitem_model(self.name)
         tree_node_model = getattr(models, self.name.lower().title())
 
+        # Do nothing if there is only one tree involved
+        if len(set([tr.treedef_id for tr in self.ranks.keys()])) == 1:
+            return self, None
+
         # Create a mapping of rank names to their treedef IDs
         ranks = {rank.rank_name: rank.treedef_id for rank in self.ranks.keys()}
         rank_names = set(ranks.keys())
