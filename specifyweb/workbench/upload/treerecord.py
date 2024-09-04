@@ -75,8 +75,8 @@ class TreeRank(NamedTuple):
             return first_item.treedef_id
 
         if re.match(r'.*~>\d+$', rank_name):
-            rank_name, treedef_id = re.split(r'~>', rank_name)
-            treedef_id = int(treedef_id)
+            rank_name, treedef_id_str = re.split(r'~>', rank_name)
+            treedef_id = int(treedef_id_str)
         else:
             treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
         
