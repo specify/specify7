@@ -45,7 +45,6 @@ export const HIDDEN_GEO_TABLES = new Set([
   'CollectionObjectType',
   'CollectionObjectGroup',
   'CollectionObjectGroupJoin',
-  'CollectionObjectGroupType',
 ]);
 export function TablesListEdit({
   isNoRestrictionMode,
