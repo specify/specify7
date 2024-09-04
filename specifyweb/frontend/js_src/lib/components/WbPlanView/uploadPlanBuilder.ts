@@ -5,7 +5,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import type { SplitMappingPath } from './mappingHelpers';
+import { formatTreeRankWithTreeId, SplitMappingPath } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
   valueIsTreeDefinition,
@@ -71,7 +71,9 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
               )?.definition.id;
 
         return [
-          rankName,
+          treeId === undefined
+            ? rankName
+            : formatTreeRankWithTreeId(rankName, treeId),
           {
             treeNodeCols: toTreeRecordRanks(rankMappedFields),
             treeId,

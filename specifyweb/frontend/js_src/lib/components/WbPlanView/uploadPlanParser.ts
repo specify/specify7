@@ -6,7 +6,7 @@ import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { MappingPath } from './Mapper';
-import type { SplitMappingPath } from './mappingHelpers';
+import { getRankNameWithoutTreeId, SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 
@@ -82,7 +82,7 @@ const parseTree = (
         getTreeDefinitions('Taxon', 'all').length > 1
           ? [resolveTreeId(rankData.treeId)]
           : []),
-        formatTreeRank(rankName),
+        formatTreeRank(getRankNameWithoutTreeId(rankName)),
       ]
     )
   );
