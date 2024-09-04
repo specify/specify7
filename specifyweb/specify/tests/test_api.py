@@ -665,8 +665,8 @@ class InlineApiTests(ApiTests):
         )
 
         other_collection_object_data = {
-            'id': self.collectionobjects[0].id,
-            'catalognumber': self.collectionobjects[0].catalognumber,
+            'id': self.collectionobjects[1].id,
+            'catalognumber': self.collectionobjects[1].catalognumber,
             'collection': api.uri_for_model('Collection', self.collection.id),
             'determinations': [
                 api.uri_for_model('determination', new_determination.id)
@@ -675,8 +675,8 @@ class InlineApiTests(ApiTests):
 
         with self.assertRaises(AssertionError):
             api.update_obj(self.collection, self.agent, 
-                           'Collectionobject', self.collectionobjects[0].id,
-                            self.collectionobjects[0].version, other_collection_object_data)
+                           'Collectionobject', self.collectionobjects[1].id,
+                            self.collectionobjects[1].version, other_collection_object_data)
 
     
     # version control on inlined resources should be tested
