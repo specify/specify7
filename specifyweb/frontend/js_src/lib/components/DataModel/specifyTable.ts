@@ -88,6 +88,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
   readonly models: RA<SpecifyResource<SCHEMA>>;
+  readonly length: number;
   readonly table: {
     readonly specifyTable: SpecifyTable<SCHEMA>;
   };
