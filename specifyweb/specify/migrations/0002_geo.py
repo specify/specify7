@@ -3,6 +3,7 @@
 from django.db import migrations, models
 from django.db.models import F
 import django.utils.timezone
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -69,12 +70,19 @@ def create_default_collection_types():
         # Update CollectionObjects' collectionobjecttype for the discipline
         Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
-        collection.save()
-        # try:
-        #     collection.save()
-        # except BusinessRuleException as e:
-        #     # TODO: Resolve th business rule exception so that the collection can be saved and not null
-        #     continue
+        try:
+            collection.save()
+        except BusinessRuleException as e:
+            if str(e) == 'Collection must have unique code in discipline':
+                codes = Collection.objects.filter(code=collection.code).values_list('code', flat=True)
+                i = 1
+                # May want to do something besides numbering, but users can edit if after the migrqation if they want.
+                while True:
+                    collection.code = f'{collection.code}-{i}'
+                    if collection.code not in codes:
+                        break
+                collection.save()
+            continue
 
 def revert_default_collection_types():
     # Reverse handeled by table deletion.
