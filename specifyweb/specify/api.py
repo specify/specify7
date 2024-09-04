@@ -29,6 +29,7 @@ from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
+from .datamodel import datamodel
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
@@ -680,7 +681,12 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
             to_remove.delete()
         else: 
             for rel_obj in to_remove: 
-                check_table_permissions(collection, agent, to_remove[0], 'update')
+                check_table_permissions(collection, agent, rel_obj, 'update')
+                related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field_name))
+                if related_field is not None: 
+                    # REFACTOR: use fld_change_info
+                    field_change_info: FieldChangeInfo = {"field_name": related_field.name, "old_value": obj.id, "new_value": None}
+                    auditlog.update(rel_obj, agent, None, [field_change_info])
             getattr(obj, field_name).remove(*list(to_remove))
 
 def update_or_create_resource(collection, agent, model, data, parent_obj): 
