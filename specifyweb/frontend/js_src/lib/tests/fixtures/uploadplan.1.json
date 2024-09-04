@@ -275,7 +275,7 @@
                 "taxon": {
                   "mustMatchTreeRecord": {
                     "ranks": {
-                      "Class": {
+                      "Class~>1": {
                         "treeNodeCols": {
                           "name": {
                             "matchBehavior": "ignoreAlways",
@@ -286,32 +286,32 @@
                         },
                         "treeId": 1
                       },
-                      "Family": {
+                      "Family~>1": {
                         "treeNodeCols": {
                           "name": "Family"
                         },
                         "treeId": 1
                       },
-                      "Genus": {
+                      "Genus~>1": {
                         "treeNodeCols": {
                           "name": "Genus"
                         },
                         "treeId": 1
                       },
-                      "Subgenus": {
+                      "Subgenus~>1": {
                         "treeNodeCols": {
                           "name": "Subgenus"
                         },
                         "treeId": 1
                       },
-                      "Species": {
+                      "Species~>1": {
                         "treeNodeCols": {
                           "name": "Species",
                           "author": "Species Author"
                         },
                         "treeId": 1
                       },
-                      "Subspecies": {
+                      "Subspecies~>1": {
                         "treeNodeCols": {
                           "name": "Subspecies",
                           "author": "Subspecies Author"
