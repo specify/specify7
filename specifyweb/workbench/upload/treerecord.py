@@ -3,6 +3,7 @@ For uploading tree records.
 """
 
 import logging
+import re
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 
 from django.db import transaction, IntegrityError
@@ -73,7 +74,12 @@ class TreeRank(NamedTuple):
 
             return first_item.treedef_id
 
-        treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
+        if re.match(r'.*~>\d+$', rank_name):
+            rank_name, treedef_id = re.split(r'~>', rank_name)
+            treedef_id = int(treedef_id)
+        else:
+            treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
+        
         return TreeRank(rank_name, treedef_id, tree_lower)
 
     def check_rank(self) -> bool:
