@@ -22,6 +22,11 @@ from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
 
 logger = logging.getLogger(__name__)
 
+class RankColumn(NamedTuple):
+    treedef_id: int
+    treedefitem_name: str
+    tree_node_attribute: str
+    upload_value: str
 class TreeRank(NamedTuple):
     rank_name: str
     treedef_id: int
@@ -261,14 +266,11 @@ class ScopedTreeRecord(NamedTuple):
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
         target_rank_treedef = treedefitem_query.first().treedef
 
-        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
-
-    RankColumn = namedtuple('RankColumn', ['treedef_id', 'treedefitem_name', 'tree_node_attribute', 'upload_value'])
+        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None  
     
-    def _get_not_null_ranks_columns_in_row(self, row: Row) -> List["RankColumn"]:
+    def _get_not_null_ranks_columns_in_row(self, row: Row) -> List[RankColumn]:
         # Get rank columns that are not null in the row
-        RankColumn = self.__class__.RankColumn
-        ranks_columns_in_row_not_null: List["RankColumn"] = []
+        ranks_columns_in_row_not_null = []
         for row_key, row_value in row.items():
             if not row_value:
                 continue
@@ -287,7 +289,7 @@ class ScopedTreeRecord(NamedTuple):
                         break
         return ranks_columns_in_row_not_null
     
-    def _filter_target_rank_columns(self, ranks_columns_in_row_not_null, target_rank_treedef_id) -> List["RankColumn"]:
+    def _filter_target_rank_columns(self, ranks_columns_in_row_not_null, target_rank_treedef_id) -> List[RankColumn]:
         # Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
         return list(
             filter(
@@ -311,7 +313,7 @@ class ScopedTreeRecord(NamedTuple):
             return self, None
 
         # Get rank columns that are not null in the row
-        ranks_columns_in_row_not_null = self._get_not_null_ranks_columns_in_row(row)
+        ranks_columns_in_row_not_null: List[RankColumn] = self._get_not_null_ranks_columns_in_row(row)
 
         # Determine the target treedef based on the columns that are not null
         targeted_treedefids = set([rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null])
