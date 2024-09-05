@@ -174,100 +174,9 @@ class ScopedTreeRecord(NamedTuple):
 
     def get_treedefs(self) -> Set:
         # return set([self.treedef]) # old way
-
         tree_def_model = get_treedef_model(self.name)
         treedefids = set([tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()])
-        # return set([tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()])
-        # return tree_rank_model.objects.filter(treedef_id__in=treedefids)
         return set(tree_def_model.objects.filter(id__in=treedefids))
-
-    # Remove this old version of the funciton
-    def rescope_tree_from_row_old(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
-        def fetch_tree_node_model(name: str):
-            return getattr(models, name.lower().title())
-
-        def fetch_treedefitem_model(name: str):
-            return get_treedefitem_model(name)
-
-        def get_ranks_mapping(ranks):
-            return {rank.rank_name: rank.treedef_id for rank in ranks.keys()}
-
-        def find_non_null_ranks_in_row(row, rank_names):
-            return {
-                col
-                for col, value in row.items()
-                if value is not None and value != "" and col in rank_names
-            }
-
-        def handle_no_ranks_in_row():
-            if self.treedef is not None:
-                return self, None
-            first_rank = next(iter(self.ranks.keys()))
-            target_rank_treedef_id = first_rank.treedef_id
-            target_rank_treedef = tree_node_model.objects.filter(
-                definition_id=target_rank_treedef_id, parent=None
-            ).first()
-            treedefitems = list(
-                tree_rank_model.objects.filter(
-                    treedef_id=target_rank_treedef_id
-                ).order_by("rankid")
-            )
-            root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-            return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
-
-        def handle_multiple_ranks_in_row(ranks_in_row_not_null):
-            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_in_row_not_null)[0])
-
-        def handle_invalid_rank(target_rank_name):
-            return self, WorkBenchParseFailure('invalidRank', {'rank': target_rank_name}, target_rank_name)
-
-        # def handle_extended_rank_name(rank_col_name):
-        #     extracted_rank_name = None
-        #     if ' - ' in rank_col_name:
-        #         extracted_rank_name, treedef_name = rank_col_name.split(' - ')
-        #     elif '~>' in rank_col_name:
-        #         extracted_rank_name, treedef_name = rank_col_name.split('~>')
-        #     if extracted_rank_name in set([rank.rank_name for rank in self.ranks]):
-        #         return extracted_rank_name
-        #     return rank_col_name
-
-        # def modify_row_for_extended_rank_names(row):
-        #     row_modified = {}
-        #     for col_name in row.keys():
-        #         col_name = handle_extended_rank_name(col_name)
-        #         row_modified[col_name] = row[col_name]
-        #     return row_modified
-
-        tree_rank_model = fetch_treedefitem_model(self.name)
-        tree_node_model = fetch_tree_node_model(self.name)
-
-        if len(set(tr.treedef_id for tr in self.ranks.keys())) == 1:
-            return self, None
-
-        # mod_row = modify_row_for_extended_rank_names(row)
-        ranks = get_ranks_mapping(self.ranks)
-        rank_names = set(ranks.keys())
-        ranks_in_row_not_null = find_non_null_ranks_in_row(row, rank_names)
-
-        if len(ranks_in_row_not_null) > 1:
-            return handle_multiple_ranks_in_row(ranks_in_row_not_null)
-        if not ranks_in_row_not_null:
-            return handle_no_ranks_in_row()
-
-        target_rank_name = ranks_in_row_not_null.pop()
-        target_rank_treedef_id = ranks[target_rank_name]
-        treedefitem_query = tree_rank_model.objects.filter(
-            name=target_rank_name, treedef_id=target_rank_treedef_id
-        ).order_by("rankid")
-
-        if not treedefitem_query.exists() or treedefitem_query.count() != 1:
-            return handle_invalid_rank(target_rank_name)
-
-        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
-        root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-        target_rank_treedef = treedefitem_query.first().treedef
-
-        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None  
     
     def _get_not_null_ranks_columns_in_row(self, row: Row) -> List[TreeRankCell]:
         # Get rank columns that are not null in the row
@@ -347,7 +256,7 @@ class ScopedTreeRecord(NamedTuple):
         cache: Optional[Dict] = None,
         row_index: Optional[int] = None,
     ) -> Union["BoundTreeRecord", ParseFailures]:
-        parsedFields: Dict[str, List[ParseResult]] = {}
+        parsedFields: Dict[TreeRankRecord, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
 
         rescoped_tree_record, parse_fail = self.rescope_tree_from_row(row)
@@ -357,7 +266,7 @@ class ScopedTreeRecord(NamedTuple):
         for tree_rank_record, cols in self.ranks.items():
             nameColumn = cols['name']
             presults, pfails = parse_many(collection, self.name, cols, row)
-            parsedFields[tree_rank_record.rank_name] = presults
+            parsedFields[tree_rank_record] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters.get('name', None) is None:
@@ -409,7 +318,7 @@ class BoundTreeRecord(NamedTuple):
     treedef: Any
     treedefitems: List
     root: Optional[Any]
-    parsedFields: Dict[str, List[ParseResult]]
+    parsedFields: Dict[TreeRankRecord, List[ParseResult]]
     uploadingAgentId: Optional[int]
     auditor: Auditor
     cache: Optional[Dict]
@@ -452,10 +361,25 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(match_result, {}, {})
 
     def _to_match(self) -> List[TreeDefItemWithParseResults]:
+        def has_non_null_values(parse_results):
+            return any(
+                value is not None
+                for result in parse_results
+                for value in result.filter_on.values()
+            )
+
+        def get_parse_results(tdi):
+            tree_rank_record = TreeRankRecord(tdi.name, tdi.treedef_id)
+            return self.parsedFields.get(tree_rank_record, [])
+
+        def is_valid_tdi(tdi):
+            tree_rank_names = {trr.rank_name for trr in self.parsedFields.keys()}
+            return tdi.name in tree_rank_names and has_non_null_values(get_parse_results(tdi))
+
         return [
-            TreeDefItemWithParseResults(tdi, self.parsedFields[tdi.name])
+            TreeDefItemWithParseResults(tdi, get_parse_results(tdi))
             for tdi in self.treedefitems
-            if tdi.name in self.parsedFields and any(v is not None for r in self.parsedFields[tdi.name] for v in r.filter_on.values())
+            if is_valid_tdi(tdi)
         ]
 
     def _match(self, tdiwprs: List[TreeDefItemWithParseResults]) -> Tuple[List[TreeDefItemWithParseResults], MatchResult]:
