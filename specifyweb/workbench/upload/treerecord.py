@@ -2,6 +2,7 @@
 For uploading tree records.
 """
 
+from collections import namedtuple
 import logging
 import re
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
@@ -76,7 +77,7 @@ class TreeRank(NamedTuple):
 
         if re.match(r'.*~>\d+$', rank_name):
             rank_name, treedef_id_str = re.split(r'~>', rank_name)
-            treedef_id = int(treedef_id_str)
+            treedef_id = _get_treedef_id(rank_name, tree, int(treedef_id_str), base_treedef_id)
         else:
             treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
         
@@ -99,6 +100,9 @@ class TreeRank(NamedTuple):
 
 def get_treedefitem_model(tree: str):
     return getattr(models, tree.lower().title() + 'treedefitem')
+
+def get_treedef_model(tree: str):
+    return getattr(models, tree.lower().title() + 'treedef')
 
 class TreeRankRecord(NamedTuple):
     rank_name: str
@@ -163,9 +167,16 @@ class ScopedTreeRecord(NamedTuple):
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
     def get_treedefs(self) -> Set:
-        return set([self.treedef])
+        # return set([self.treedef]) # old way
 
-    def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
+        tree_def_model = get_treedef_model(self.name)
+        treedefids = set([tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()])
+        # return set([tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()])
+        # return tree_rank_model.objects.filter(treedef_id__in=treedefids)
+        return set(tree_def_model.objects.filter(id__in=treedefids))
+
+    # Remove this old version of the funciton
+    def rescope_tree_from_row_old(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         def fetch_tree_node_model(name: str):
             return getattr(models, name.lower().title())
 
@@ -204,12 +215,30 @@ class ScopedTreeRecord(NamedTuple):
         def handle_invalid_rank(target_rank_name):
             return self, WorkBenchParseFailure('invalidRank', {'rank': target_rank_name}, target_rank_name)
 
+        # def handle_extended_rank_name(rank_col_name):
+        #     extracted_rank_name = None
+        #     if ' - ' in rank_col_name:
+        #         extracted_rank_name, treedef_name = rank_col_name.split(' - ')
+        #     elif '~>' in rank_col_name:
+        #         extracted_rank_name, treedef_name = rank_col_name.split('~>')
+        #     if extracted_rank_name in set([rank.rank_name for rank in self.ranks]):
+        #         return extracted_rank_name
+        #     return rank_col_name
+
+        # def modify_row_for_extended_rank_names(row):
+        #     row_modified = {}
+        #     for col_name in row.keys():
+        #         col_name = handle_extended_rank_name(col_name)
+        #         row_modified[col_name] = row[col_name]
+        #     return row_modified
+
         tree_rank_model = fetch_treedefitem_model(self.name)
         tree_node_model = fetch_tree_node_model(self.name)
 
         if len(set(tr.treedef_id for tr in self.ranks.keys())) == 1:
             return self, None
 
+        # mod_row = modify_row_for_extended_rank_names(row)
         ranks = get_ranks_mapping(self.ranks)
         rank_names = set(ranks.keys())
         ranks_in_row_not_null = find_non_null_ranks_in_row(row, rank_names)
@@ -232,6 +261,78 @@ class ScopedTreeRecord(NamedTuple):
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
         target_rank_treedef = treedefitem_query.first().treedef
 
+        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
+
+    RankColumn = namedtuple('RankColumn', ['treedef_id', 'treedefitem_name', 'tree_node_attribute', 'upload_value'])
+    
+    def _get_not_null_ranks_columns_in_row(self, row: Row) -> List["RankColumn"]:
+        # Get rank columns that are not null in the row
+        RankColumn = self.__class__.RankColumn
+        ranks_columns_in_row_not_null: List["RankColumn"] = []
+        for row_key, row_value in row.items():
+            if not row_value:
+                continue
+            for tree_rank_record, cols in self.ranks.items():
+                for col_name, col_opts in cols.items():
+                    formatted_column = f'{col_opts.column} - {col_name}' if col_name != 'name' else col_opts.column
+                    if formatted_column == row_key:
+                        ranks_columns_in_row_not_null.append(
+                            RankColumn(
+                                tree_rank_record.treedef_id,  # treedefid
+                                tree_rank_record.rank_name,  # treedefitem_name
+                                col_name,  # tree_node_attribute
+                                row_value,  # upload_value
+                            )
+                        )
+                        break
+        return ranks_columns_in_row_not_null
+    
+    def _filter_target_rank_columns(self, ranks_columns_in_row_not_null, target_rank_treedef_id) -> List["RankColumn"]:
+        # Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
+        return list(
+            filter(
+                lambda rank_column: rank_column.treedef_id == target_rank_treedef_id,
+                ranks_columns_in_row_not_null,
+            )
+        )
+    
+    def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
+        # Starting out with a row with tree data.
+        # The row can have multiple tree ranks, and each rank can be associated with multiple columns, like name, authoer, etc.
+        # First need to match each rank column to a treedefitem.
+        # Second need to narrow down to the target rank based on which values in the row are not null.
+        # Lastly, need to return a new ScopedTreeRecord with the correct treedef, treedefitems, and root for this row.
+
+        tree_def_model = get_treedef_model(self.name)
+        tree_rank_model = get_treedefitem_model(self.name)
+        tree_node_model = getattr(models, self.name.lower().title())
+
+        if len(set(tr.treedef_id for tr in self.ranks.keys())) == 1:
+            return self, None
+
+        # Get rank columns that are not null in the row
+        ranks_columns_in_row_not_null = self._get_not_null_ranks_columns_in_row(row)
+
+        # Determine the target treedef based on the columns that are not null
+        targeted_treedefids = set([rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null])
+        if targeted_treedefids is None or len(targeted_treedefids) == 0:
+            # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
+            return self, None
+        elif len(targeted_treedefids) > 1:
+            # return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_in_row_not_null)[0])
+            logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
+        
+        target_rank_treedef_id = targeted_treedefids.pop()
+        target_rank_treedef = tree_def_model.objects.get(id=target_rank_treedef_id)
+
+        # Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
+        # ranks_columns = self._filter_target_rank_columns(ranks_columns_in_row_not_null, target_rank_treedef_id)
+
+        # Based on the target treedef, get the treedefitems and root for the tree    
+        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
+        root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
+
+        # Return a new ScopedTreeRecord with the correct treedefitem and treedef
         return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
 
     def bind(
