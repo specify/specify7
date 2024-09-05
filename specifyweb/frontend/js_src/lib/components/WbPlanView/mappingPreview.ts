@@ -83,7 +83,8 @@ const mappingPathSubset = <T extends string | undefined>(
  */
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
+  duplicateRanks: Set<string>
 ): string {
   if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
@@ -173,6 +174,10 @@ export function generateMappingPathPreview(
       ? [isAnyRank ? parentTableName : tableOrRankName]
       : tableNameFormatted),
     fieldNameFormatted,
+    ...(valueIsTreeRank(databaseTableOrRankName) &&
+    duplicateRanks.has(databaseTableOrRankName)
+      ? [parentTableName]
+      : []),
     toManyIndexFormatted,
   ])
     .filter(Boolean)
