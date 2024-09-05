@@ -5,7 +5,8 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import { formatTreeRankWithTreeId, SplitMappingPath } from './mappingHelpers';
+import type { SplitMappingPath } from './mappingHelpers';
+import { formatTreeRankWithTreeId } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
   valueIsTreeDefinition,
@@ -53,9 +54,11 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
   return {
     ranks: Object.fromEntries(
       indexMappings(lines).flatMap(([fullName, rankMappedFields]) => {
-        // For collections with only 1 tree, rankMappedFields already has the correct format for generating an upload plan
-        // When there are multiple trees in the mapper, rankMappedFields is actually a mapping path of trees mapped to ranks
-        // which means we need to get the index mappings of it again to get the actual rankMappedFields
+        /*
+         * For collections with only 1 tree, rankMappedFields already has the correct format for generating an upload plan
+         * When there are multiple trees in the mapper, rankMappedFields is actually a mapping path of trees mapped to ranks
+         * which means we need to get the index mappings of it again to get the actual rankMappedFields
+         */
         const rankMappings: RA<readonly [string, RA<SplitMappingPath>]> =
           valueIsTreeRank(fullName)
             ? [[fullName, rankMappedFields]]
