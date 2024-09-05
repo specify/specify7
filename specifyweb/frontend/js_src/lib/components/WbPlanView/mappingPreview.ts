@@ -84,7 +84,7 @@ const mappingPathSubset = <T extends string | undefined>(
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath,
-  duplicateRanks?: Set<string>
+  duplicateRanks?: ReadonlySet<string>
 ): string {
   if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
