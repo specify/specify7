@@ -52,33 +52,42 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
 
   return {
     ranks: Object.fromEntries(
-      indexMappings(lines).map(([fullName, rankMappedFields]) => {
-        const rankName = valueIsTreeRank(fullName)
-          ? getNameFromTreeRankName(fullName)
-          : getNameFromTreeRankName(rankMappedFields[0].mappingPath[0]);
+      indexMappings(lines).flatMap(([fullName, rankMappedFields]) => {
+        // For collections with only 1 tree, rankMappedFields already has the correct format for generating an upload plan
+        // When there are multiple trees in the mapper, rankMappedFields is actually a mapping path of trees mapped to ranks
+        // which means we need to get the index mappings of it again to get the actual rankMappedFields
+        const rankMappings: RA<readonly [string, RA<SplitMappingPath>]> =
+          valueIsTreeRank(fullName)
+            ? [[fullName, rankMappedFields]]
+            : indexMappings(rankMappedFields);
 
         const treeName = valueIsTreeDefinition(fullName)
           ? getNameFromTreeDefinitionName(fullName)
           : undefined;
 
-        const treeId =
-          treeName === undefined
-            ? treeDefinitions.find(({ ranks }) =>
-                ranks.find((r) => r.name === rankName)
-              )?.definition.id
-            : treeDefinitions.find(
-                ({ definition }) => definition.name === treeName
-              )?.definition.id;
+        return rankMappings.map(([fullName, mappedFields]) => {
+          const rankName = getNameFromTreeRankName(fullName);
 
-        return [
-          treeId === undefined
-            ? rankName
-            : formatTreeRankWithTreeId(rankName, treeId),
-          {
-            treeNodeCols: toTreeRecordRanks(rankMappedFields),
-            treeId,
-          },
-        ];
+          // Resolve treeId using treeName or using rankName as fallback
+          const treeId =
+            treeName === undefined
+              ? treeDefinitions.find(({ ranks }) =>
+                  ranks.find((r) => r.name === rankName)
+                )?.definition.id
+              : treeDefinitions.find(
+                  ({ definition }) => definition.name === treeName
+                )?.definition.id;
+
+          return [
+            treeId === undefined
+              ? rankName
+              : formatTreeRankWithTreeId(rankName, treeId),
+            {
+              treeNodeCols: toTreeRecordRanks(mappedFields),
+              treeId,
+            },
+          ];
+        });
       })
     ),
   };
