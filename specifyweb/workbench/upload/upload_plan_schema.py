@@ -312,7 +312,6 @@ def parse_upload_table(collection, table: Table, to_parse: Dict, extra: Dict = {
 def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
     """Parse tree record from the given data"""
 
-    # Parse rank details
     def parse_rank(name_or_cols):
         if isinstance(name_or_cols, str):
             return name_or_cols, {'name': parse_column_options(name_or_cols)}, None
@@ -321,7 +320,6 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         treedefid = name_or_cols.get('treeId')
         return rank_name, tree_node_cols, treedefid
 
-    # Create tree rank record
     def create_tree_rank_record(rank, table_name, treedefid, base_treedefid):
         return TreeRank.create(rank, table_name, treedefid, base_treedefid).tree_rank_record()
 
@@ -339,7 +337,7 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
                 acc[1] = treedefid
             return acc
 
-        ranks, base_treedefid = reduce(aggregate_ranks, to_parse['ranks'].items(), ({}, base_treedefid))
+        ranks, base_treedefid = reduce(aggregate_ranks, to_parse['ranks'].items(), [{}, base_treedefid])
         return ranks, base_treedefid
 
     # Validate ranks by checking if 'name' is present in each rank

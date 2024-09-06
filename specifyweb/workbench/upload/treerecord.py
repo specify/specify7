@@ -40,9 +40,12 @@ class TreeRank(NamedTuple):
         treedef_id: Optional[int] = None,
         base_treedef_id: Optional[int] = None,
     ) -> 'TreeRank':
+        """
+        Create a TreeRank instance with the given rank name, tree, and optional treedef IDs.
+        """
         tree_model = get_treedefitem_model(tree)
 
-        def _build_filter_kwargs(rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
+        def build_filter_kwargs(rank_name: str, treedef_id: Optional[int] = None) -> Dict[str, Any]:
             """
             Build filter keyword arguments for querying treedef items.
             """
@@ -61,7 +64,7 @@ class TreeRank(NamedTuple):
             filter_kwargs = add_treedef_id_if_present(filter_kwargs, treedef_id)
             return filter_kwargs
 
-        def _filter_by_base_treedef_id(treedefitems, rank_name: str, base_treedef_id: Optional[int]):
+        def filter_by_base_treedef_id(treedefitems, rank_name: str, base_treedef_id: Optional[int]):
             """
             Filter treedefitems by base_treedef_id and ensure only one item is found.
             """
@@ -92,7 +95,7 @@ class TreeRank(NamedTuple):
             validate_filtered_items(filtered_items)
             return filtered_items
 
-        def _get_treedef_id(
+        def get_treedef_id(
             rank_name: str,
             tree: str,
             treedef_id: Optional[int],
@@ -116,16 +119,16 @@ class TreeRank(NamedTuple):
             # Handle cases where multiple items are found
             def handle_multiple_items(treedefitems):
                 if treedefitems.count() > 1:
-                    return _filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
+                    return filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
                 return treedefitems
 
             # Build filter keyword arguments and fetch treedefitems
-            filter_kwargs = _build_filter_kwargs(rank_name, treedef_id)
+            filter_kwargs = build_filter_kwargs(rank_name, treedef_id)
             treedefitems = fetch_treedefitems(filter_kwargs)
 
             # Handle cases where no items are found
             if not treedefitems.exists() and treedef_id is not None:
-                filter_kwargs = _build_filter_kwargs(rank_name)
+                filter_kwargs = build_filter_kwargs(rank_name)
                 treedefitems = fetch_treedefitems(filter_kwargs)
 
             treedefitems = handle_multiple_items(treedefitems)
@@ -133,11 +136,20 @@ class TreeRank(NamedTuple):
 
             return first_item.treedef_id
 
-        # Get the treedef_id using the helper function
-        final_treedef_id = _get_treedef_id(rank_name, tree, treedef_id, base_treedef_id)
+        def extract_treedef_id(rank_name: str) -> Tuple[Union[str, Any], Optional[int]]:
+            """
+            Extract treedef_id from rank_name if it exists in the format 'rank_name~>treedef_id'.
+            """
+            match = re.match(r'(.*)~>(\d+)$', rank_name)
+            if match:
+                rank_name, treedef_id_str = match.groups()
+                return rank_name, int(treedef_id_str)
+            return rank_name, None
 
-        # Return an instance of TreeRank
-        return TreeRank(rank_name=rank_name, treedef_id=final_treedef_id, tree=tree)
+        rank_name, extracted_treedef_id = extract_treedef_id(rank_name)
+        target_treedef_id = get_treedef_id(rank_name, tree, extracted_treedef_id or treedef_id, base_treedef_id)
+
+        return TreeRank(rank_name, target_treedef_id, tree.lower())
 
     def check_rank(self) -> bool:
         """
@@ -300,7 +312,10 @@ class ScopedTreeRecord(NamedTuple):
         ]
     
     def _filter_target_rank_columns(self, ranks_columns_in_row_not_null, target_rank_treedef_id) -> List[TreeRankCell]:
-        # Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
+        """
+        Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
+        """
+        
         return list(
             filter(
                 lambda rank_column: rank_column.treedef_id == target_rank_treedef_id,
@@ -332,7 +347,7 @@ class ScopedTreeRecord(NamedTuple):
                 return self, None
             elif len(targeted_treedefids) > 1:
                 logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
-                return self, WorkBenchParseFailure('multipleRanksInRow', {}, ranks_columns[0])
+                return self, WorkBenchParseFailure('multipleRanksInRow', {}, ranks_columns[0].treedefitem_name)
             return None
 
         # Retrieve the target rank treedef
