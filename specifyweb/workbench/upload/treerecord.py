@@ -243,9 +243,6 @@ class ScopedTreeRecord(NamedTuple):
         # Based on the target treedef, get the treedefitems and root for the tree    
         treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-        if root is None:
-            logger.warning(f"No root found for treedef {target_rank_treedef_id}")
-            return self, WorkBenchParseFailure('noRoot', {}, None)
 
         # Return a new ScopedTreeRecord with the correct treedefitem and treedef
         return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
