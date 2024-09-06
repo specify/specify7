@@ -232,7 +232,7 @@ class ScopedTreeRecord(NamedTuple):
             return self, None
         elif len(targeted_treedefids) > 1:
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
-            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_columns_in_row_not_null)[0])
+            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_columns_in_row_not_null)[0].treedefitem_name)
         
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = tree_def_model.objects.get(id=target_rank_treedef_id)
