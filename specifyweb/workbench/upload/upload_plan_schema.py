@@ -1,3 +1,4 @@
+from functools import reduce
 from os import name
 from typing import Dict, Any, Optional, Union, Tuple
 import logging
@@ -309,6 +310,9 @@ def parse_upload_table(collection, table: Table, to_parse: Dict, extra: Dict = {
     )
 
 def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
+    """Parse tree record from the given data"""
+
+    # Parse rank details
     def parse_rank(name_or_cols):
         if isinstance(name_or_cols, str):
             return name_or_cols, {'name': parse_column_options(name_or_cols)}, None
@@ -317,21 +321,34 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         treedefid = name_or_cols.get('treeId')
         return rank_name, tree_node_cols, treedefid
 
-    ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]] = {}
-    for rank, name_or_cols in to_parse['ranks'].items():
-        rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
-        tree_rank_record = TreeRank.create(rank, table.name, treedefid, base_treedefid).tree_rank_record()
-        ranks[tree_rank_record] = parsed_cols
+    # Create tree rank record
+    def create_tree_rank_record(rank, table_name, treedefid, base_treedefid):
+        return TreeRank.create(rank, table_name, treedefid, base_treedefid).tree_rank_record()
 
-        # Update the schema with the treeId
-        # if not isinstance(name_or_cols, str):
-        #     to_parse['ranks'][rank]['treeId'] = tree_rank_record.treedef_id
+    def parse_ranks(to_parse, table_name, base_treedefid):
+        def parse_single_rank(rank, name_or_cols, base_treedefid):
+            rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
+            tree_rank_record = create_tree_rank_record(rank, table_name, treedefid, base_treedefid)
+            return tree_rank_record, parsed_cols, tree_rank_record.treedef_id
 
-        if base_treedefid is None:
-            base_treedefid = tree_rank_record.treedef_id
+        def aggregate_ranks(acc, item):
+            rank, name_or_cols = item
+            tree_rank_record, parsed_cols, treedefid = parse_single_rank(rank, name_or_cols, acc[1])
+            acc[0][tree_rank_record] = parsed_cols
+            if acc[1] is None:
+                acc[1] = treedefid
+            return acc
 
-    for rank, cols in ranks.items():
-        assert 'name' in cols, to_parse
+        ranks, base_treedefid = reduce(aggregate_ranks, to_parse['ranks'].items(), ({}, base_treedefid))
+        return ranks, base_treedefid
+
+    # Validate ranks by checking if 'name' is present in each rank
+    def validate_ranks(ranks, to_parse):
+        for rank, cols in ranks.items():
+            assert 'name' in cols, to_parse
+
+    ranks, base_treedefid = parse_ranks(to_parse, table.name, base_treedefid)
+    validate_ranks(ranks, to_parse)
 
     return TreeRecord(
         name=table.django_name,
