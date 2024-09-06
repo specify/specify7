@@ -9,7 +9,6 @@ import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { Tables } from '../DataModel/types';
 import type { MappingLine } from './Mapper';
-import { valueIsTreeRank } from './mappingHelpers';
 import { generateMappingPathPreview } from './mappingPreview';
 
 export function uniquifyHeaders(
@@ -35,22 +34,13 @@ export function renameNewlyCreatedHeaders(
   headers: RA<string>,
   lines: RA<MappingLine>
 ): RA<MappingLine> {
-  const duplicateRanks = new Set(
-    lines
-      .flatMap(({ mappingPath }) => mappingPath)
-      .filter(
-        (rank, index, ranks) =>
-          valueIsTreeRank(rank) && ranks.indexOf(rank) !== index
-      )
-  );
-
   const generatedHeaderPreviews = Object.fromEntries(
     lines
       .map((line, index) => ({ line, index }))
       .filter(({ line }) => !headers.includes(line.headerName))
       .map(({ line, index }) => [
         index,
-        generateMappingPathPreview(baseTableName, line.mappingPath, duplicateRanks),
+        generateMappingPathPreview(baseTableName, line.mappingPath),
       ])
   );
 
