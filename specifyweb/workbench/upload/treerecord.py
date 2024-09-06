@@ -231,8 +231,8 @@ class ScopedTreeRecord(NamedTuple):
             # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
             return self, None
         elif len(targeted_treedefids) > 1:
-            # return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_in_row_not_null)[0])
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
+            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_columns_in_row_not_null)[0])
         
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = tree_def_model.objects.get(id=target_rank_treedef_id)
@@ -243,6 +243,9 @@ class ScopedTreeRecord(NamedTuple):
         # Based on the target treedef, get the treedefitems and root for the tree    
         treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
+        if root is None:
+            logger.warning(f"No root found for treedef {target_rank_treedef_id}")
+            return self, WorkBenchParseFailure('noRoot', {}, None)
 
         # Return a new ScopedTreeRecord with the correct treedefitem and treedef
         return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
