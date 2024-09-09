@@ -50,7 +50,6 @@ type MappedBusinessRuleDefs = {
 };
 
 const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
-const DETERMINATION_TAXON_KEY = 'determination-taxon';
 
 const hasNoCurrentDetermination = (collection: Collection<Determination>) =>
   collection.models.length > 0 &&
@@ -185,14 +184,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               const taxonTreeDefinition = fetchedTaxon.definition;
               const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
 
-              return taxonTreeDefinition === COTypeTreeDefinition
-                ? void setSaveBlockers(
-                    currentDetermination as SpecifyResource<AnySchema>,
-                    currentDetermination.specifyTable.field.taxon,
-                    [],
-                    DETERMINATION_TAXON_KEY
-                  )
-                : resource.set('determinations', []);
+              if (taxonTreeDefinition !== COTypeTreeDefinition)
+                resource.set('determinations', []);
             })
             .catch((error) => {
               console.error('Error fetching resources:', error);
