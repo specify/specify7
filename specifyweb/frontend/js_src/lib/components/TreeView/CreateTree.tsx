@@ -1,12 +1,3 @@
-/*
- *WIP File to separate out functions for adding trees.
- *Contains stuff for dialogs, etc.
- *
- *TODO:
- *- Add localizations for the tree default names
- *- Add page reload upon save
- *- Remove comments
- */
 import React from 'react';
 
 import { commonText } from '../../localization/common';

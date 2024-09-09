@@ -543,4 +543,40 @@ export const treeText = createDictionary({
   treePicker: {
     'en-us': 'Tree Picker',
   },
+  botany: {
+    'en-us': 'Botany',
+  },
+  entomology: {
+    'en-us': 'Entomology',
+  },
+  herpetology: {
+    'en-us': 'Herpetology',
+  },
+  ichthyology: {
+    'en-us': 'Ichthyology',
+  },
+  invertpaleo: {
+    'en-us': 'Invertebrate Paleontology',
+  },
+  invertzoo: {
+    'en-us': 'Invertebrate Zoology',
+  },
+  mammalogy: {
+    'en-us': 'Mammalogy',
+  },
+  ornithology: {
+    'en-us': 'Ornithology',
+  },
+  paleobot: {
+    'en-us': 'Paleobotany',
+  },
+  vascplant: {
+    'en-us': 'Vascular Plants',
+  },
+  vertpaleo: {
+    'en-us': 'Vertebrate Paleontology',
+  },
+  defaultRemarks: {
+    'en-us': 'A default taxon tree',
+  },
 } as const);
