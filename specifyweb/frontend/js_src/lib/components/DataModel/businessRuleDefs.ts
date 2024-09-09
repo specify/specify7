@@ -1,4 +1,3 @@
-import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
