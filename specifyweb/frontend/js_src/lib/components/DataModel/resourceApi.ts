@@ -806,7 +806,7 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch({ limit: 0 }).then((fetchedCollection) => {
+    return collection.fetch().then((fetchedCollection) => {
       this.storeIndependent(field, fetchedCollection);
       return fetchedCollection;
     });

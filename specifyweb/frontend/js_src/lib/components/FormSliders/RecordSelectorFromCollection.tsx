@@ -5,6 +5,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import {
   DependentCollection,
+  isRelationshipCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -96,7 +97,9 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     table: collection.table.specifyTable,
     field: relationship,
     records,
-    relatedResource: isLazy ? undefined : collection.related,
+    relatedResource: isRelationshipCollection(collection)
+      ? collection.related
+      : undefined,
     totalCount: collection._totalCount ?? records.length,
     onAdd: (rawResources): void => {
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;

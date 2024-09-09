@@ -6,7 +6,7 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    Callable
+    Callable, TypedDict
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
@@ -17,7 +17,7 @@ from django import forms
 from django.db import transaction
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
+                         Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -630,19 +630,28 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
-        is_dependent = is_dependent_field(obj, field_name)
+        dependent = is_dependent_field(obj, field_name)
 
-        if not isinstance(val, list): 
-            if is_dependent: 
-                raise AssertionError("didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val))
-            else: 
-                # The field contains something other than nested data. 
-                # Probably the URI of the collection
-                continue
-        
+        if isinstance(val, list): 
+            assert dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'), \
+                "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
+        elif hasattr(val, "items"): 
+            assert not dependent, "got inline dictionary data for dependent field %s in %s: %r" % (field_name, obj, val)
+        else: 
+            # The field contains something other than nested data. 
+            # Probably the URI of the collection
+            continue
+
+        if dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'): 
+            _handle_dependent_to_many(collection, agent, obj, field, val)
+        else: 
+            _handle_independent_to_many(collection, agent, obj, field, val)
+
+        return
+    
         rel_model = field.related_model
         ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
-        
+
         ids_to_fetch = []
         cached_objs = dict()
         fk_model = None
@@ -688,6 +697,74 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
                     field_change_info: FieldChangeInfo = {"field_name": related_field.name, "old_value": obj.id, "new_value": None}
                     auditlog.update(rel_obj, agent, None, [field_change_info])
             getattr(obj, field_name).remove(*list(to_remove))
+
+def _handle_dependent_to_many(collection, agent, obj, field, value):
+    if not isinstance(value, list): 
+        assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
+        
+        rel_model = field.related_model
+        ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+
+        for rel_data in value:
+            rel_data[field.field.name] = obj
+
+            rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
+
+            ids.append(rel_obj.id) # Record the id as one to keep.
+
+        # Delete related objects not in the ids list.
+        # TODO: Check versions for optimistic locking.
+        to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
+        for rel_obj in to_remove:
+            check_table_permissions(collection, agent, rel_obj, "delete")
+            auditlog.remove(rel_obj, agent, obj)
+        
+        to_remove.delete()
+
+class IndependentInline(TypedDict): 
+    update: List[Union[str, Dict[str, Any]]]
+    remove: List[str]
+
+def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline): 
+    logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
+    
+    rel_model = field.related_model
+
+    to_update = value.get('update', [])
+    to_remove = value.get('remove', [])
+
+    ids_to_fetch = []
+    cached_objs = dict()
+    fk_model = None
+
+    # Fetch the related records which are provided as strings
+    for rel_data in [*to_update, *to_remove]: 
+        if not isinstance(rel_data, str): continue
+        fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+        ids_to_fetch.append(fk_id)
+
+    if fk_model is not None: 
+        cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
+    
+    for rel_data in to_update: 
+        if isinstance(rel_data, str): 
+            fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+            rel_data = cached_objs[fk_id]
+            if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
+                continue
+        
+        rel_data[field.field.name] = obj
+        update_or_create_resource(collection, agent, rel_model, rel_data, None)
+    
+    if len(to_remove) > 0:
+        check_table_permissions(collection, agent, rel_model, 'update')
+        related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field.name))
+        assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
+        for rel_obj in to_remove: 
+            fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
+            rel_data = cached_objs[fk_id]
+            rel_data[related_field.name] = None
+            update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj): 
     if 'id' in data: 

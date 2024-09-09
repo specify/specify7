@@ -1,5 +1,5 @@
 import React from 'react';
-import { State } from 'typesafe-reducer';
+import type { State } from 'typesafe-reducer';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -75,7 +75,12 @@ export function IntegratedRecordSelector({
   const [state, setState] = React.useState<
     | State<
         'AddResourceState',
-        { readonly resource: SpecifyResource<AnySchema> }
+        {
+          readonly resource: SpecifyResource<AnySchema>;
+          readonly handleAdd: (
+            resources: RA<SpecifyResource<AnySchema>>
+          ) => void;
+        }
       >
     | State<'MainState'>
   >({ type: 'MainState' });
@@ -231,6 +236,7 @@ export function IntegratedRecordSelector({
                             setState({
                               type: 'AddResourceState',
                               resource,
+                              handleAdd,
                             });
                         }}
                       />
@@ -315,7 +321,7 @@ export function IntegratedRecordSelector({
                 onClose={(): void => setState({ type: 'MainState' })}
                 onDeleted={undefined}
                 onSaved={(): void => {
-                  handleAdd([state.resource]);
+                  state.handleAdd([state.resource]);
                   setState({ type: 'MainState' });
                 }}
               />

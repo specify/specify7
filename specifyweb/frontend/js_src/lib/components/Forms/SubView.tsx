@@ -263,7 +263,11 @@ export function SubView({
           )}
           {typeof collection === 'object' && isOpen ? (
             <ReadOnlyContext.Provider
-              value={isReadOnly || isAttachmentMisconfigured}
+              value={
+                isReadOnly ||
+                relationship.isVirtual ||
+                isAttachmentMisconfigured
+              }
             >
               <IntegratedRecordSelector
                 collection={collection}
