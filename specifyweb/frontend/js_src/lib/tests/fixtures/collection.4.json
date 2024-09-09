@@ -3,6 +3,7 @@
  "code": null,
  "collectionname": "Main",
  "collectiontype": null,
+ "collectionobjecttype": "/api/specify/collectionobjecttype/1/",
  "contentcontacts": "/api/specify/agent/?collcontentcontact=4",
  "createdbyagent": "/api/specify/agent/1/",
  "dbcontentversion": null,
