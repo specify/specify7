@@ -219,57 +219,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
 
-            const related = determination.collection?.related;
-            if (
-              related !== undefined &&
-              related.specifyTable.name === 'CollectionObject'
-            ) {
-              const collectionObject =
-                related as SpecifyResource<CollectionObject>;
-              void f
-                .all({
-                  defaultType:
-                    collectionObject.get('collectionObjectType') === undefined
-                      ? collectionObject
-                          .rgetPromise('collection')
-                          .then(async (collection) =>
-                            collection.rgetPromise('collectionObjectType')
-                          )
-                          .then((coType) => coType ?? undefined)
-                      : undefined,
-                  coType: collectionObject.rgetPromise(
-                    'collectionObjectType',
-                    true
-                  ),
-                })
-                .then(({ defaultType, coType }) => {
-                  const resolvedCoType = coType ?? defaultType;
-                  /*
-                   * Have to set save blockers directly here to get this working.
-                   * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
-                   * does not get captured by business rules.
-                   */
-                  if (
-                    resolvedCoType?.get('taxonTreeDef') ===
-                    (taxon?.get('definition') ?? '')
-                  ) {
-                    setSaveBlockers(
-                      determination as SpecifyResource<AnySchema>,
-                      determination.specifyTable.field.taxon,
-                      [],
-                      DETERMINATION_TAXON_KEY
-                    );
-                  } else {
-                    setSaveBlockers(
-                      determination as SpecifyResource<AnySchema>,
-                      determination.specifyTable.field.taxon,
-                      [formsText.invalidTree()],
-                      DETERMINATION_TAXON_KEY
-                    );
-                  }
-                });
-            }
-
             return taxon === null
               ? {
                   isValid: true,
