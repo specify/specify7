@@ -75,6 +75,9 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Є проблеми з входом:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
   },
+  catalogNumberAlreadyUsed: {
+    'en-us': 'Catalog numbers already used:',
+  },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',

@@ -450,6 +450,14 @@ export function InteractionDialog({
                     )}
                   </>
                 )}
+                {state.type === 'UsedCatalogNumberState' && (
+                  <>
+                    {interactionsText.catalogNumberAlreadyUsed()}
+                    {state.unavailable.map((error, index) => (
+                      <p key={index}>{error}</p>
+                    ))}
+                  </>
+                )}
               </div>
             </details>
           </Dialog>
