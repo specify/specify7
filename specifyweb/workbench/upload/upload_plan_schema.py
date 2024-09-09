@@ -35,12 +35,6 @@ schema: Dict = {
                   'additionalProperties': False
                 },
             ]
-        },
-        "treeId": {
-            "oneOf": [
-                { "type": "integer" },
-                { "type": "null" }
-            ]
         }
     },
     'required': [ 'baseTableName', 'uploadable' ],
@@ -233,17 +227,14 @@ this column will never be considered for matching purposes, only for uploading.'
 
 def parse_plan_with_basetable(collection, to_parse: Dict) -> Tuple[Table, Uploadable]:
     base_table = datamodel.get_table_strict(to_parse['baseTableName'])
-    extra = {}
-    if 'treeId' in to_parse.keys():
-        extra['treedefid'] = to_parse['treeId']
-    return base_table, parse_uploadable(collection, base_table, to_parse['uploadable'], extra)
+    return base_table, parse_uploadable(collection, base_table, to_parse['uploadable'])
 
 def parse_plan(collection, to_parse: Dict) -> Uploadable:
     return parse_plan_with_basetable(collection, to_parse)[1]
 
-def parse_uploadable(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> Uploadable:
+def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['uploadTable'], extra)
+        return parse_upload_table(collection, table, to_parse['uploadTable'])
 
     if 'oneToOneTable' in to_parse:
         return OneToOneTable(*parse_upload_table(collection, table, to_parse['oneToOneTable']))
@@ -255,14 +246,11 @@ def parse_uploadable(collection, table: Table, to_parse: Dict, extra: Dict = {})
         return MustMatchTreeRecord(*parse_tree_record(collection, table, to_parse['mustMatchTreeRecord']))
 
     if 'treeRecord' in to_parse:
-        treedefid = None
-        if 'treedefid' in extra.keys():
-            treedefid = int(extra['treedefid'])
-        return parse_tree_record(collection, table, to_parse['treeRecord'], treedefid)
+        return parse_tree_record(collection, table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> UploadTable:
+def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -304,12 +292,12 @@ def parse_upload_table(collection, table: Table, to_parse: Dict, extra: Dict = {
                 for key, to_one in to_parse['toOne'].items()
         },
         toMany={
-            key: [parse_to_many_record(collection, rel_table(key), record, extra) for record in to_manys]
+            key: [parse_to_many_record(collection, rel_table(key), record) for record in to_manys]
             for key, to_manys in to_parse['toMany'].items()
         }
     )
 
-def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: Optional[int] = None) -> TreeRecord:
+def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
     """Parse tree record from the given data"""
 
     def parse_rank(name_or_cols):
@@ -320,41 +308,38 @@ def parse_tree_record(collection, table: Table, to_parse: Dict, base_treedefid: 
         treedefid = name_or_cols.get('treeId')
         return rank_name, tree_node_cols, treedefid
 
-    def create_tree_rank_record(rank, table_name, treedefid, base_treedefid):
-        return TreeRank.create(rank, table_name, treedefid, base_treedefid).tree_rank_record()
+    def create_tree_rank_record(rank, table_name, treedefid):
+        return TreeRank.create(rank, table_name, treedefid).tree_rank_record()
 
-    def parse_ranks(to_parse, table_name, base_treedefid):
-        def parse_single_rank(rank, name_or_cols, base_treedefid):
+    def parse_ranks(to_parse, table_name):
+        def parse_single_rank(rank, name_or_cols):
             rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
-            tree_rank_record = create_tree_rank_record(rank, table_name, treedefid, base_treedefid)
-            return tree_rank_record, parsed_cols, tree_rank_record.treedef_id
+            tree_rank_record = create_tree_rank_record(rank, table_name, treedefid)
+            return tree_rank_record, parsed_cols
 
         def aggregate_ranks(acc, item):
             rank, name_or_cols = item
-            tree_rank_record, parsed_cols, treedefid = parse_single_rank(rank, name_or_cols, acc[1])
-            acc[0][tree_rank_record] = parsed_cols
-            if acc[1] is None:
-                acc[1] = treedefid
+            tree_rank_record, parsed_cols = parse_single_rank(rank, name_or_cols)
+            acc[tree_rank_record] = parsed_cols
             return acc
 
-        ranks, base_treedefid = reduce(aggregate_ranks, to_parse['ranks'].items(), [{}, base_treedefid])
-        return ranks, base_treedefid
+        ranks = reduce(aggregate_ranks, to_parse['ranks'].items(), {})
+        return ranks
 
     # Validate ranks by checking if 'name' is present in each rank
     def validate_ranks(ranks, to_parse):
         for rank, cols in ranks.items():
             assert 'name' in cols, to_parse
 
-    ranks, base_treedefid = parse_ranks(to_parse, table.name, base_treedefid)
+    ranks = parse_ranks(to_parse, table.name)
     validate_ranks(ranks, to_parse)
 
     return TreeRecord(
         name=table.django_name,
-        ranks=ranks,
-        base_treedef_id=base_treedefid
+        ranks=ranks
     )
 
-def parse_to_many_record(collection, table: Table, to_parse: Dict, extra: Dict = {}) -> ToManyRecord:
+def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -364,7 +349,7 @@ def parse_to_many_record(collection, table: Table, to_parse: Dict, extra: Dict =
         wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
-            key: parse_uploadable(collection, rel_table(key), to_one, extra)
+            key: parse_uploadable(collection, rel_table(key), to_one)
             for key, to_one in to_parse['toOne'].items()
         },
     )

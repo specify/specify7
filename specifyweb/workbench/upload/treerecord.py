@@ -38,7 +38,6 @@ class TreeRank(NamedTuple):
         rank_name: str,
         tree: str,
         treedef_id: Optional[int] = None,
-        base_treedef_id: Optional[int] = None,
     ) -> 'TreeRank':
         """
         Create a TreeRank instance with the given rank name, tree, and optional treedef IDs.
@@ -64,34 +63,34 @@ class TreeRank(NamedTuple):
             filter_kwargs = add_treedef_id_if_present(filter_kwargs, treedef_id)
             return filter_kwargs
 
-        def filter_by_base_treedef_id(treedefitems, rank_name: str, base_treedef_id: Optional[int]):
+        def filter_by_treedef_id(treedefitems, rank_name: str):
             """
-            Filter treedefitems by base_treedef_id and ensure only one item is found.
+            Filter treedefitems by treedef_id and ensure only one item is found.
             """
 
-            # Check if base treedef ID is present
-            def check_base_treedef_id(base_treedef_id):
-                if base_treedef_id is None:
+            # Check if treedef ID is present
+            def check_treedef_id(treedef_id):
+                if treedef_id is None:
                     raise ValueError(f"Multiple treedefitems found for rank {rank_name}")
 
-            # Filter treedefitems by base treedef ID
-            def filter_items_by_treedef_id(treedefitems, base_treedef_id):
-                return treedefitems.filter(treedef_id=base_treedef_id)
+            # Filter treedefitems by treedef ID
+            def filter_items_by_treedef_id(treedefitems, treedef_id):
+                return treedefitems.filter(treedef_id=treedef_id)
 
             # Validate filtered items
             def validate_filtered_items(treedefitems):
                 if not treedefitems.exists():
                     raise ValueError(
-                        f"No treedefitems found for rank {rank_name} and base treedef {base_treedef_id}"
+                        f"No treedefitems found for rank {rank_name} and treedef {treedef_id}"
                     )
                 if treedefitems.count() > 1:
                     raise ValueError(
-                        f"Multiple treedefitems found for rank {rank_name} and base treedef {base_treedef_id}"
+                        f"Multiple treedefitems found for rank {rank_name} and treedef {treedef_id}"
                     )
 
             # Check base treedef ID and filter treedefitems, then validate    
-            check_base_treedef_id(base_treedef_id)
-            filtered_items = filter_items_by_treedef_id(treedefitems, base_treedef_id)
+            check_treedef_id(treedef_id)
+            filtered_items = filter_items_by_treedef_id(treedefitems, treedef_id)
             validate_filtered_items(filtered_items)
             return filtered_items
 
@@ -99,7 +98,6 @@ class TreeRank(NamedTuple):
             rank_name: str,
             tree: str,
             treedef_id: Optional[int],
-            base_treedef_id: Optional[int],
         ) -> int:
             """
             Get the treedef ID for the given rank name and tree.
@@ -119,7 +117,7 @@ class TreeRank(NamedTuple):
             # Handle cases where multiple items are found
             def handle_multiple_items(treedefitems):
                 if treedefitems.count() > 1:
-                    return filter_by_base_treedef_id(treedefitems, rank_name, base_treedef_id)
+                    return filter_by_treedef_id(treedefitems, rank_name, treedef_id)
                 return treedefitems
 
             # Build filter keyword arguments and fetch treedefitems
@@ -148,7 +146,7 @@ class TreeRank(NamedTuple):
             return rank_name, None
 
         rank_name, extracted_treedef_id = extract_treedef_id(rank_name)
-        target_treedef_id = get_treedef_id(rank_name, tree, extracted_treedef_id or treedef_id, base_treedef_id)
+        target_treedef_id = get_treedef_id(rank_name, tree, extracted_treedef_id or treedef_id)
 
         return TreeRank(rank_name, target_treedef_id, tree.lower())
 
@@ -223,7 +221,6 @@ class TreeRankRecord(NamedTuple):
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
-    base_treedef_id: Optional[int] = None
 
     def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping

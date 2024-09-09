@@ -188,8 +188,6 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     treedef = None
     if table.name == 'Taxon':
-        if tr.base_treedef_id is not None:
-            treedef = models.Taxontreedef.objects.filter(id=tr.base_treedef_id).first()
         if treedef is None:
             treedef = collection.discipline.taxontreedef
 
@@ -222,7 +220,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {}
     for r, cols in tr.ranks.items():
         if isinstance(r, str):
-            r = TreeRank.create(r, table.name, treedef.id if treedef else None, tr.base_treedef_id).tree_rank_record()
+            r = TreeRank.create(r, table.name, treedef.id if treedef else None).tree_rank_record()
         scoped_ranks[r] = {}
         for f, colopts in cols.items():
             scoped_ranks[r][f] = extend_columnoptions(colopts, collection, table.name, f)
