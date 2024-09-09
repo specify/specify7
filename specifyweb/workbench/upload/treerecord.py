@@ -315,7 +315,7 @@ class ScopedTreeRecord(NamedTuple):
         """
         Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
         """
-        
+
         return list(
             filter(
                 lambda rank_column: rank_column.treedef_id == target_rank_treedef_id,
@@ -392,6 +392,15 @@ class ScopedTreeRecord(NamedTuple):
         if result:
             return result
 
+        # Determine the target treedef based on the columns that are not null
+        targeted_treedefids = set([rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null])
+        if targeted_treedefids is None or len(targeted_treedefids) == 0:
+            # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
+            return self, None
+        elif len(targeted_treedefids) > 1:
+            logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
+            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_columns_in_row_not_null)[0].treedefitem_name)
+        
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
 
