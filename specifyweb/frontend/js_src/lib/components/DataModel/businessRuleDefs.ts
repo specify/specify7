@@ -20,6 +20,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  Collection as CollectionTable,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -161,12 +162,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       if (collectionObject.get('collectionObjectType') === undefined)
         collectionObject
           .rgetPromise('collection')
-          .then((collection) =>
-            collectionObject.set(
-              'collectionObjectType',
-              collection.get('collectionObjectType')
-            )
-          );
+          .then((collection: SpecifyResource<CollectionTable> | undefined) => {
+            if (collection !== undefined)
+              collectionObject.set(
+                'collectionObjectType',
+                collection.get('collectionObjectType')
+              );
+          });
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
