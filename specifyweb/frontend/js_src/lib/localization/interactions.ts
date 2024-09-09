@@ -118,6 +118,9 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Продолжить без подготовки',
     'uk-ua': 'Продовжуйте без підготовки',
   },
+  continueWithoutCollectionObject: {
+    'en-us': 'Continue without collection object',
+  },
   addUnassociated: {
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',

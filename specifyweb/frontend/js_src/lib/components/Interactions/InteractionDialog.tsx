@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { useValidation } from '../../hooks/useValidation';
@@ -32,10 +33,12 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
+  Accession,
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
@@ -50,7 +53,10 @@ import type {
   PreparationData,
   PreparationRow,
 } from './helpers';
-import { interactionsWithPrepTables } from './helpers';
+import {
+  getCatNumberAvailableForAccession,
+  interactionsWithPrepTables,
+} from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
@@ -65,7 +71,9 @@ export function InteractionDialog({
   interactionResource,
 }: {
   readonly onClose: () => void;
-  readonly actionTable: SpecifyTable<InteractionWithPreps>;
+  readonly actionTable:
+    | SpecifyTable<Accession>
+    | SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<AnyInteractionPreparation>;
   readonly interactionResource?: SpecifyResource<AnySchema>;
@@ -98,6 +106,7 @@ export function InteractionDialog({
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
     | State<'MainState'>
+    | State<'UsedCatalogNumberState', { readonly unavailable: RA<string> }>
   >({ type: 'MainState' });
 
   const { validationRef, inputRef, setValidation } =
@@ -224,12 +233,49 @@ export function InteractionDialog({
     return parsed;
   }
 
+  const navigate = useNavigate();
+
   const addInteractionResource = (): void => {
     itemCollection?.add(
       (interactionResource as SpecifyResource<
         DisposalPreparation | GiftPreparation | LoanPreparation
       >) ?? new itemCollection.table.specifyTable.Resource()
     );
+  };
+
+  const [unavailableCatNumbers, setUnavailableCatNumbers] =
+    React.useState<RA<string>>();
+  const [availableCatNumbers, setAvailableCatNumbers] =
+    React.useState<RA<string>>();
+  const hanleAvailableCatNumber = (): void => {
+    const catalogNumbers = handleParse();
+    if (catalogNumbers === undefined) return undefined;
+
+    loading(
+      (catalogNumbers.length === 0
+        ? Promise.resolve([])
+        : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
+      ).then((data) =>
+        // Compare available data
+        setUnavailableCatNumbers(data)
+      )
+    );
+    if (unavailableCatNumbers !== undefined && unavailableCatNumbers.length > 0)
+      setState({
+        type: 'UsedCatalogNumberState',
+        unavailable: unavailableCatNumbers,
+      });
+    else {
+      const interaction = new actionTable.Resource();
+      // Set cat num on accession
+      navigate(getResourceViewUrl(actionTable.name, undefined), {
+        state: {
+          type: 'RecordSet',
+          resource: serializeResource(interaction),
+        },
+      });
+      handleClose();
+    }
   };
 
   return state.type === 'LoanReturnDoneState' ? (
@@ -245,7 +291,8 @@ export function InteractionDialog({
         tablePreparation: tables.Preparation.label,
       })}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' ? (
+  ) : state.type === 'PreparationSelectState' &&
+    actionTable.name !== 'Accession' ? (
     state.entries.length > 0 ? (
       <PrepDialog
         // BUG: make this readOnly if don't have necessary permissions
@@ -306,7 +353,9 @@ export function InteractionDialog({
                   </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
-                    {interactionsText.withoutPreparations()}
+                    {actionTable.name === 'Accession'
+                      ? interactionsText.continueWithoutCollectionObject()
+                      : interactionsText.withoutPreparations()}
                   </Link.Secondary>
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
@@ -356,10 +405,17 @@ export function InteractionDialog({
                 <div>
                   <Button.Info
                     disabled={catalogNumbers.length === 0}
-                    onClick={(): void => handleProceed(undefined)}
+                    onClick={(): void => {
+                      if (actionTable.name === 'Accession') {
+                        hanleAvailableCatNumber();
+                      } else {
+                        handleProceed(undefined);
+                      }
+                    }}
                   >
                     {state.type === 'MissingState' ||
-                    state.type === 'InvalidState'
+                    state.type === 'InvalidState' ||
+                    state.type === 'UsedCatalogNumberState'
                       ? commonText.update()
                       : commonText.next()}
                   </Button.Info>

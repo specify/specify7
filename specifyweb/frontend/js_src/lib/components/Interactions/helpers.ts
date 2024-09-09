@@ -3,6 +3,7 @@ import { formData } from '../../utils/ajax/helpers';
 import type { RA, RestrictedTuple } from '../../utils/types';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { Tables } from '../DataModel/types';
+import type { CatalogNumberNumeric } from '../FieldFormatters';
 
 export const interactionPrepTables: RestrictedTuple<
   AnyInteractionPreparation['tableName']
@@ -71,6 +72,20 @@ export const getPrepsAvailableForLoanCoIds = async (
     body: formData({
       id_fld: idField,
       co_ids: collectionObjectIds,
+    }),
+  }).then(({ data }) => data);
+
+export const getCatNumberAvailableForAccession = async (
+  idField: string,
+  collectionObjectCatNumber: RA<string>
+) =>
+  // Returns availble cat number
+  ajax<RA<CatalogNumberNumeric>>('/interactions/catNumber_available/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: formData({
+      id_fld: idField,
+      co_catNum: collectionObjectCatNumber,
     }),
   }).then(({ data }) => data);
 
