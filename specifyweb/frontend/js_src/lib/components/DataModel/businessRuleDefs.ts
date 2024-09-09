@@ -162,8 +162,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       if (collectionObject.get('collectionObjectType') === undefined)
         collectionObject
           .rgetPromise('collection')
-          .then((collection: SpecifyResource<CollectionTable> | undefined) => {
-            if (collection !== undefined)
+          .then((collection: SpecifyResource<CollectionTable> | null) => {
+            if (collection !== null)
               collectionObject.set(
                 'collectionObjectType',
                 collection.get('collectionObjectType')
