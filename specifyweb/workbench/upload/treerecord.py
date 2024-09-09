@@ -140,10 +140,11 @@ class TreeRank(NamedTuple):
             """
             Extract treedef_id from rank_name if it exists in the format 'rank_name~>treedef_id'.
             """
-            match = re.match(r'(.*)~>(\d+)$', rank_name)
-            if match:
-                rank_name, treedef_id_str = match.groups()
-                return rank_name, int(treedef_id_str)
+            parts = rank_name.rsplit('~>', 1)
+            if len(parts) == 2 and parts[1].isdigit():
+                rank_name = parts[0]
+                tree_def_id = int(parts[1])
+                return rank_name, tree_def_id
             return rank_name, None
 
         rank_name, extracted_treedef_id = extract_treedef_id(rank_name)
@@ -311,18 +312,6 @@ class ScopedTreeRecord(NamedTuple):
             for cell in process_row_item(row_key, row_value)
         ]
     
-    def _filter_target_rank_columns(self, ranks_columns_in_row_not_null, target_rank_treedef_id) -> List[TreeRankCell]:
-        """
-        Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
-        """
-
-        return list(
-            filter(
-                lambda rank_column: rank_column.treedef_id == target_rank_treedef_id,
-                ranks_columns_in_row_not_null,
-            )
-        )
-    
     def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         """Rescope tree from row data."""
 
@@ -403,9 +392,6 @@ class ScopedTreeRecord(NamedTuple):
         
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
-
-        # Filter ranks_columns_in_row_not_null to only include columns that are part of the target treedef
-        # ranks_columns = self._filter_target_rank_columns(ranks_columns_in_row_not_null, target_rank_treedef_id)
 
         # Based on the target treedef, get the treedefitems and root for the tree    
         treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
