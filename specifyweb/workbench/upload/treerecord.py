@@ -379,8 +379,8 @@ class ScopedTreeRecord(NamedTuple):
             return result
 
         # Determine the target treedef based on the columns that are not null
-        targeted_treedefids = set([rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null])
-        if targeted_treedefids is None or len(targeted_treedefids) == 0:
+        targeted_treedefids = {rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null}
+        if not targeted_treedefids:
             # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
             return self, None
         elif len(targeted_treedefids) > 1:
