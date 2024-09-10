@@ -217,13 +217,19 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
-    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {}
-    for r, cols in tr.ranks.items():
-        if isinstance(r, str):
-            r = TreeRank.create(r, table.name, treedef.id if treedef else None).tree_rank_record()
-        scoped_ranks[r] = {}
-        for f, colopts in cols.items():
-            scoped_ranks[r][f] = extend_columnoptions(colopts, collection, table.name, f)
+    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+        (
+            TreeRank.create(
+                r, table.name, treedef.id if treedef else None
+            ).tree_rank_record()
+            if isinstance(r, str)
+            else r
+        ): {
+            f: extend_columnoptions(colopts, collection, table.name, f)
+            for f, colopts in cols.items()
+        }
+        for r, cols in tr.ranks.items()
+    }
 
     return ScopedTreeRecord(
         name=tr.name,
