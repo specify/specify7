@@ -1,0 +1,87 @@
+<database>
+
+  <table classname="edu.ku.brc.specify.datamodel.Preparation" table="preparation" tableid="63" lazy="true" >
+    <field column="Prepared Date" name="preparedDate" type="calendar_date"/>
+    <!--
+    <field column="Prepared First Name By" name="preparedFirstNameBy" type="java.lang.String"/>
+    <field column="Prepared Last Name By" name="preparedLastNameBy" type="java.lang.String"/>
+    <field column="Prepared Middle Initials By" name="preparedMiddleBy" type="java.lang.String" />
+    <field column="Prepared Title By" name="preparedTitleBy" type="java.lang.String" />
+    -->
+    <field column="Prep Type" name="prepType" type="text"/>
+    <field column="Prep Count1" name="count" type="java.lang.Integer"/>
+    <field column="Storage Location" name="storageLocation" type="java.lang.String"/>
+    <field column="Prep Sample Number" name="sampleNumber" type="java.lang.String"/>
+    <field column="Prep Status" name="prepStatus" type="java.lang.String"/>
+    <field column="Prep YesNo1" name="prepYesNo1" type="boolean" />
+    <field column="Prep YesNo2" name="prepYesNo2" type="boolean" />
+    <field column="Prep YesNo3" name="prepYesNo3" type="boolean" />
+    <field column="Prep Text1" name="prepText1" type="java.lang.String"/>
+    <field column="Prep Text2" name="prepText2" type="java.lang.String" />
+    <field column="Prep Text3" name="prepText3" type="java.lang.String"/>
+    <field column="Prep Text4" name="prepText4" type="java.lang.String" />
+    <field column="Prep Text5" name="prepText5" type="java.lang.String" />
+    <field column="Prep Integer1" name="prepInteger1" type="java.lang.Integer"/>
+    <field column="Prep Integer2" name="prepInteger2" type="java.lang.Integer"/>
+    <field column="Prep Number1" name="prepNumber1" type="java.lang.Double"/>
+    <field column="Prep Number2" name="prepNumber2" type="java.lang.Double"/>
+    <field column="Prep Description" name="prepDescription" type="java.lang.String" />
+    <field column="Prep Remarks" name="prepRemarks" type="text"/>
+    
+    <field column="Building1" name="building1" type="java.lang.String"/>
+    <field column="Collection1" name="collection1" type="java.lang.String" />
+    <field column="Room1" name="room1" type="java.lang.String" />
+    <field column="Aisle1" name="aisle1" type="java.lang.String" />
+    <field column="Cabinet1" name="cabinet1" type="java.lang.String" />
+    <field column="Shelf1" name="shelf1" type="java.lang.String" />
+    <field column="Box1" name="box1" type="java.lang.String" />
+    <field column="Rack1" name="rack1" type="java.lang.String"/>
+    <field column="Vial1" name="vial1" type="java.lang.String"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.PreparationAttribute" table="preparationattribute" tableid="91" lazy="true" query="false">
+    <field column="Remarks (Preparation Attribute)" name="preparationAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Number 1 (Preparation Attribute)" name="preparationAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (Preparation Attribute)" name="preparationAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (Preparation Attribute)" name="preparationAttributeNumber3" type="java.lang.Integer" length="10"/>
+    <field column="Number 4 (Preparation Attribute)" name="preparationAttributeNumber4" type="java.lang.Integer" length="10"/>
+    <field column="Number 5 (Preparation Attribute)" name="preparationAttributeNumber5" type="java.lang.Integer" length="10"/>
+    <field column="Number 6 (Preparation Attribute)" name="preparationAttributeNumber6" type="java.lang.Integer" length="10"/>
+    <field column="Number 7 (Preparation Attribute)" name="preparationAttributeNumber7" type="java.lang.Integer" length="10"/>
+    <field column="Number 8 (Preparation Attribute)" name="preparationAttributeNumber8" type="java.lang.Integer" length="10"/>
+    <field column="Number 9 (Preparation Attribute)" name="preparationAttributeNumber9" type="java.lang.Short" length="5"/>
+    <field column="Text 1 (Preparation Attribute)" name="preparationAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (Preparation Attribute)" name="preparationAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (Preparation Attribute)" name="preparationAttributeText3" type="java.lang.String" length="50"/>
+    <field column="Text 4 (Preparation Attribute)" name="preparationAttributeText4" type="java.lang.String" length="50"/>
+    <field column="Text 5 (Preparation Attribute)" name="preparationAttributeText5" type="java.lang.String" length="50"/>
+    <field column="Text 6 (Preparation Attribute)" name="preparationAttributeText6" type="java.lang.String" length="50"/>
+    <field column="Text 7 (Preparation Attribute)" name="preparationAttributeText7" type="java.lang.String" length="50"/>
+    <field column="Text 8 (Preparation Attribute)" name="preparationAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (Preparation Attribute)" name="preparationAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (Preparation Attribute)" name="preparationAttributeText10" type="java.lang.String" length="300"/>
+    <field column="Text 11 (Preparation Attribute)" name="preparationAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (Preparation Attribute)" name="preparationAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (Preparation Attribute)" name="preparationAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (Preparation Attribute)" name="preparationAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (Preparation Attribute)" name="preparationAttributeText15" type="java.lang.String" length="50"/>
+    <field column="Text 16 (Preparation Attribute)" name="preparationAttributeText16" type="java.lang.String" length="50"/>
+    <field column="Text 17 (Preparation Attribute)" name="preparationAttributeText17" type="java.lang.String" length="50"/>
+    <field column="Text 18 (Preparation Attribute)" name="preparationAttributeText18" type="java.lang.String" length="50"/>
+    <field column="Text 19 (Preparation Attribute)" name="preparationAttributeText19" type="java.lang.String" length="50"/>
+    <field column="Text 20 (Preparation Attribute)" name="preparationAttributeText20" type="java.lang.String" length="50"/>
+    <field column="Text 21 (Preparation Attribute)" name="preparationAttributeText21" type="java.lang.String" length="50"/>
+    <field column="Text 22 (Preparation Attribute)" name="preparationAttributeText22" type="java.lang.String" length="10"/>
+    <field column="Text 23 (Preparation Attribute)" name="preparationAttributeText23" type="java.lang.String" length="50"/>
+    <field column="Text 24 (Preparation Attribute)" name="preparationAttributeText24" type="java.lang.String" length="50"/>
+    <field column="Text 25 (Preparation Attribute)" name="preparationAttributeText25" type="java.lang.String" length="50"/>
+    <field column="Text 26 (Preparation Attribute)" name="preparationAttributeText26" type="java.lang.String" length="50"/>
+    <field column="YesNo 1 (Preparation Attribute)" name="preparationAttributeYesNo1" type="java.lang.Short" length="5"/>
+    <field column="YesNo 2 (Preparation Attribute)" name="preparationAttributeYesNo2" type="java.lang.Short" length="5"/>
+    <field column="YesNo 3 (Preparation Attribute)" name="preparationAttributeYesNo3" type="java.lang.Short" length="5"/>
+    <field column="YesNo 4 (Preparation Attribute)" name="preparationAttributeYesNo4" type="java.lang.Short" length="5"/>
+    <field column="Attribute Date (Preparation Attribute)" name="attrDate" type="calendar_date" />
+  </table>
+  
+</database>
+    

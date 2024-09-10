@@ -1,0 +1,77 @@
+<evals>
+       <!-- <eval name="top_taxa" desc="By Taxonomy">
+          <![CDATA[SELECT * FROM (SELECT tn, COUNT(tx) AS namecnt, tx FROM (SELECT dt.TaxonId, taxon.TaxonID AS tx, taxon.FullName AS tn FROM taxon,determination AS dt WHERE dt.TaxonId = taxon.TaxonID AND dt.CollectionMemberID = COLMEMID) AS newTable GROUP BY tx ORDER BY namecnt DESC) T4 WHERE namecnt > 10]]>
+       </eval>-->
+       <!--  "COLMEMID", "DSPLNID", "DIVID", "TAXTREEDEFID", "GEOTREEDEFID", "LITHOTREEDEFID", "GTPTREEDEFID" -->
+       
+       <eval name="MissingCatNum" desc="%d - Number of Collection Objects with no Catalog Number" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM collectionobject WHERE CatalogNumber IS NULL AND CollectionID = COLMEMID]]>
+       </eval>
+       <eval name="Duplicate Agents" desc="%d - Number duplicate agents." fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM (SELECT NM, CNT FROM (SELECT NM, COUNT(NM) CNT FROM (SELECT LOWER(CONCAT(IFNULL(LastName, ''), ' ', IFNULL(FirstName, ''),  ' ', IFNULL(MiddleInitial, ''))) NM FROM agent WHERE DivisionID = DIVID AND SpecifyUserID IS NULL) T0 GROUP BY NM) T1 WHERE CNT > 1 ORDER BY CNT DESC, NM ASC) T2]]>
+       </eval>
+       <eval name="TooManyContinents" desc="%d - Number of Continents and Oceans. There should be no more than 12." fmt="true" cond=">" val="12">
+          <![CDATA[SELECT COUNT(*) FROM geography WHERE RankID = 100 AND GeographyTreeDefID = GEOTREEDEFID]]>
+       </eval>
+       <eval name="DuplicateContinents" desc="%d - Number of duplicate continents or oceans." fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM (SELECT * FROM (select COUNT(GeographyCode) CNT FROM geography WHERE RankID = 100 AND GeographyTreeDefID = GEOTREEDEFID GROUP BY GeographyCode) T1 WHERE CNT > 1) T2;]]>
+       </eval>
+       <eval name="CountryParentedWrong" desc="%d - Number of Countries not parented to a Continent" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM geography g1 INNER JOIN geography g2 ON g1.ParentID = g2.GeographyID WHERE g1.RankID = 200 AND g2.RankID <> 100 AND g1.GeographyTreeDefID = GEOTREEDEFID]]>
+       </eval>
+       <eval name="StatesParentedWrong" desc="%d - Number of States not parented to a Country" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM geography g1 INNER JOIN geography g2 ON g1.ParentID = g2.GeographyID WHERE g1.RankID = 300 AND g2.RankID <> 200 AND g1.GeographyTreeDefID = GEOTREEDEFID]]>
+       </eval>
+       <!-- <eval name="CountryParentedWrong" desc="%d - Number Counties not parented to a State" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM geography g1 INNER JOIN geography g2 ON g1.ParentID = g2.GeographyID WHERE g1.RankID = 400 AND g2.RankID <> 300 AND g1.GeographyTreeDefID = GEOTREEDEFID]]>
+       </eval>  -->
+       <eval name="GeographyISO" desc="%d - Percentage of Continent and Country records missing ISO Codes"  fmt="true" cond=">" val="98" stop="true">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) SM FROM geography WHERE RankID > 0 AND RankID < 300 AND GeographyTreeDefID = GEOTREEDEFID) T1, (SELECT COUNT(*) CN FROM geography WHERE RankID > 0 AND RankID < 300 AND GeographyCode IS NULL AND GeographyTreeDefID = GEOTREEDEFID) T2]]>
+       </eval>
+       <eval name="SpeciesParentedWrong" desc="%d - Species not parented to a Genus" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM taxon t1 INNER JOIN taxon t2 ON t1.ParentID = t2.TaxonID WHERE t1.RankID = 220 AND t2.RankID < 180 AND t1.TaxonTreeDefID = TAXTREEDEFID]]>
+       </eval>
+       <eval name="NoParent" desc="%d - Taxon record is missing a parent." fmt="true" cond=">" val="0" stop="true">
+          <![CDATA[SELECT COUNT(*) FROM taxon WHERE RankID > 0 AND ParentID IS NULL AND TaxonTreeDefID = TAXTREEDEFID]]>
+       </eval>
+       <eval name="GeneraParentedWrong" desc="%d - Genera not parented to a Family" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM taxon t1 INNER JOIN taxon t2 ON t1.ParentID = t2.TaxonID WHERE t1.RankID = 180 AND t2.RankID < 140 AND t1.TaxonTreeDefID = TAXTREEDEFID]]>
+       </eval>
+       <eval name="DuplicateFamilyNames" desc="%d - Number of duplicate Family names." fmt="true" cond=">" val="0" stop="false">
+          <![CDATA[SELECT COUNT(*) FROM (SELECT COUNT(FullName) CNT FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND RankID = 140 GROUP BY FullName) T1 WHERE CNT > 1]]>
+       </eval> 
+       <eval name="Missing Taxon" desc="%d - Number of Collection Objects without a Taxonomic determintaion" fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(*) FROM collectionobject co LEFT JOIN determination d ON co.CollectionObjectID = d.CollectionObjectID LEFT JOIN taxon t ON d.TaxonID = t.TaxonID WHERE co.CollectionID = TAXTREEDEFID AND t.TaxonID IS NULL]]>
+       </eval> 
+       <eval name="LocalityMissingLatLon" desc="%d - Percentage of Locality records that are missing their Latitude and Longitude." fmt="true" cond=">" val="0">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM locality WHERE (Latitude1 IS NULL OR Longitude1 IS NULL) AND DisciplineID = DSPLNID) T1, (SELECT COUNT(*) SM FROM locality WHERE DisciplineID = DSPLNID) T2]]>
+       </eval> 
+       <eval name="CEMissingLocality" desc="%d - Percentage of Collecting Event records missing a Locality." fmt="true" cond=">" val="0">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM collectingevent ce LEFT JOIN locality l ON ce.LocalityID = l.LocalityID WHERE ce.DisciplineID = DSPLNID AND l.LocalityID IS NULL) T1, (SELECT COUNT(*) SM FROM collectingevent WHERE DisciplineID = DSPLNID) T2]]>
+       </eval> 
+       <eval name="DuplicateLocality" desc="%d - Number of duplicate Locality records." fmt="true" cond=">" val="0">
+          <![CDATA[SELECT COUNT(CNT) FROM (SELECT * FROM (SELECT COUNT(l.LocalityName) CNT FROM locality l WHERE DisciplineID = DSPLNID GROUP BY l.LocalityName) T1 WHERE CNT > 1) T2]]>
+       </eval> 
+       <eval name="LocalityMissingLatLon" desc="%d - Percent of Locality records that are missing a Geography." fmt="true" cond=">" val="5">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM locality WHERE GeographyID IS NULL AND DisciplineID = DSPLNID) T1, (SELECT COUNT(*) SM FROM locality WHERE DisciplineID = DSPLNID) T2]]>
+       </eval> 
+       <eval name="PaleoCO" desc="%d - Percentage Collection Objects with no Paleo Context Information." fmt="true" cond=">" val="0" paleotype="co">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM collectionobject co LEFT JOIN paleocontext p ON co.PaleoContextID = p.PaleoContextID WHERE p.LithoStratID IS NULL AND p.ChronosStratID IS NULL AND p.BioStratID IS NULL AND co.CollectionID = COLMEMID) T1, (SELECT COUNT(*) SM FROM collectionobject co LEFT JOIN paleocontext p ON co.PaleoContextID = p.PaleoContextID WHERE co.CollectionID = COLMEMID) T2]]>
+       </eval>
+       <eval name="PaleoCE" desc="%d - Percentage Collection Objects with no Paleo Context Information." fmt="true" cond=">" val="0"  paleotype="ce">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM paleocontext pc INNER JOIN collectingevent ce ON pc.PaleoContextID = ce.PaleoContextID INNER JOIN geologictimeperiod g ON pc.LithoStratID = g.GeologicTimePeriodID INNER JOIN collectionobject co ON pc.PaleoContextID = co.PaleoContextID WHERE pc.LithoStratID IS NULL AND pc.ChronosStratID IS NULL AND pc.BioStratID IS NULL AND co.CollectionID = COLMEMID) T1, (SELECT COUNT(*) SM FROM collectionobject co LEFT JOIN paleocontext p ON co.PaleoContextID = p.PaleoContextID WHERE co.CollectionID = COLMEMID) T2]]>
+       </eval>
+       <eval name="PaleoLoc" desc="%d - Percentage Collection Objects with no Paleo Context Information." fmt="true" cond=">" val="0"  paleotype="loc">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(*) CN FROM collectionobject co INNER JOIN collectingevent ce ON co.CollectingEventID = ce.CollectingEventID INNER JOIN locality lc ON ce.LocalityID = lc.LocalityID INNER JOIN paleocontext pc ON lc.PaleoContextID = pc.PaleoContextID INNER JOIN geologictimeperiod g ON pc.LithoStratID = g.GeologicTimePeriodID WHERE pc.LithoStratID IS NULL AND pc.ChronosStratID IS NULL AND pc.BioStratID IS NULL AND co.CollectionID = COLMEMID) T1, (SELECT COUNT(*) SM FROM collectionobject co LEFT JOIN paleocontext p ON co.PaleoContextID = p.PaleoContextID WHERE co.CollectionID = COLMEMID) T2]]>
+       </eval>
+       <eval name="Missing PaleoInformation" desc="%d - Percentage of Paleo Context records that have no information." fmt="true" cond=">" val="0" isPaleo="true">
+          <![CDATA[SELECT (CN / SM * 100.0) FROM (SELECT COUNT(PaleoContextID) CN FROM paleocontext WHERE ChronosStratID IS NULL AND LithoStratID IS NULL AND BioStratID IS NULL) T1, (SELECT COUNT(*) SM FROM paleocontext) T2]]>
+       </eval> 
+       <eval name="Missing InstGUID" desc="The Institution GUID field must have a value." fmt="false" cond=">" val="1" stop="true" display="false">
+          <![CDATA[SELECT COUNT(*) FROM institution WHERE GUID IS NULL]]>
+       </eval> 
+       <!-- Example on how to return a boolean 
+       <eval name="Paleo" desc="Missing Paleo Information" cond="true">
+          <![CDATA[select IF(CNT > 0, true, false) from (SELECT COUNT(*) CNT FROM paleocontext p WHERE p.LithoStratID IS NULL AND p.ChronosStratID IS NULL AND p.BioStratID IS NULL) T1]]>
+       </eval>  -->
+</evals>

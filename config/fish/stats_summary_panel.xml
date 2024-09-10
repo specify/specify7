@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel resource="stats">
+  <row>
+      <box title="HOLDINGS">
+        <item title="SPECIMENS">
+            <sql>
+                <tables><id>1</id></tables>            
+                <statement row="1" col="1">
+                  <![CDATA[SELECT count(*) FROM collectionobject WHERE CollectionMemberID = COLMEMID]]>
+                </statement>
+            </sql>
+        </item>
+        <item title="PREPS">
+        	<sql>
+        		<tables><id>63</id></tables>
+        		<statement><![CDATA[SELECT count(*) FROM preparation WHERE CollectionMemberID=COLMEMID]]></statement>
+        	</sql>
+        </item>
+        <item title="TYP_SPEC">
+            <sql>
+                <tables><id>1</id><id>9</id></tables>            
+                <statement row="1" col="1">
+                  <![CDATA[SELECT count(DeterminationID) FROM determination WHERE CollectionMemberID = COLMEMID AND TypeStatusName is not null]]>
+                </statement>
+            </sql>
+        </item>
+        <item title="UNQ_FAM" useprogress="true">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement row="1" col="1">
+                    <![CDATA[SELECT count(*) FROM (SELECT DISTINCT tx.TaxonID FROM (SELECT DISTINCT tax.TaxonID,tax.nodenumber FROM (SELECT TaxonID FROM determination WHERE CollectionMemberID = COLMEMID AND determination.IsCurrent = true) as Families1,taxon as tax WHERE tax.isaccepted <> 0 and tax.TaxonID = Families1.TaxonID) as Families2, taxon as tx WHERE tx.rankid = 140 and Families2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber) as Familes3]]>
+                </statement>
+            </sql>
+        </item>
+        <item title="UNQ_GEN" useprogress="true">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement row="1" col="1">
+                  <![CDATA[SELECT count(DISTINCT tx.TaxonID) FROM (SELECT DISTINCT tax.TaxonID,tax.nodenumber FROM (SELECT TaxonID FROM determination WHERE CollectionMemberID = COLMEMID AND determination.IsCurrent <> 0) as Genera1,taxon as tax WHERE tax.isaccepted <> 0 and tax.TaxonID = Genera1.TaxonID) as Genera2, taxon as tx WHERE tx.rankid = 180 and Genera2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber]]>
+                </statement>
+            </sql>
+        </item>
+        <item title="UNQ_SPEC" useprogress="true">
+            <sql>
+                <tables><id>4</id></tables>  
+                <statement>          
+                  <![CDATA[SELECT count(DISTINCT tx.TaxonID) FROM (SELECT DISTINCT tax.TaxonID,tax.nodenumber FROM (SELECT TaxonID FROM determination WHERE CollectionMemberID = COLMEMID AND determination.IsCurrent <> 0) as Genera1,taxon as tax WHERE tax.isaccepted <> 0 and tax.TaxonID = Genera1.TaxonID) as Genera2, taxon as tx WHERE tx.rankid = 220 and Genera2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber]]>
+                </statement>
+            </sql>
+        </item>
+      </box>
+        <box title="DAT_ENT">
+            <item title="CAT_LAST_7DAYS">
+                <sql type="custom" name="CatalogedLast7Days"/>
+                <link>CatalogedLast7DaysDetail</link>
+            </item>
+            <item title="CAT_LAST_30DAYS">
+                <sql type="custom" name="CatalogedLast30Days"/>
+                <link>CatalogedLastMonth</link>
+            </item>
+            <item title="CAT_LAST_YR">
+                <sql type="custom" name="CatalogedLastYear"/>
+                <link>CatalogedLastYear</link>
+            </item>
+        </box>
+  </row>
+  <row>
+      <box title="PREP_BY_TYPE_LOTS" desccol="1" valcol="2" desctitle="PREP" valtitle="LOTS_TOTAL" noresults="NO_PREP" cols="2">
+      	<sql>
+            <tables><id>63</id></tables>            
+            <statement><![CDATA[SELECT pt.Name, trim(cast(concat(count(PreparationID), ' / ',  sum(countAmt)) as char(50))) FROM preparation p INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID  WHERE CollectionMemberID = COLMEMID group by pt.Name]]></statement>
+        </sql>
+      </box>
+      <box title="LOANS">
+        <item title="ITMS_LOAN">
+            <sql>
+                <tables><id>52</id><id>54</id></tables>            
+                <statement><![CDATA[SELECT count(LoanPreparationID) AS ItemsOnLoanCount FROM loanpreparation as lpo inner join loan on loan.loanid = lpo.loanid WHERE loan.DisciplineID = DSPLNID AND (IsClosed = false or IsClosed is null)]]></statement>
+            </sql>
+        </item>
+        <item title="OVRDUE_LOANS">
+            <sql type="custom" name="OverdueLoans"/>
+            <link>OverdueLoansList</link>
+        </item>
+        <item title="OPEN_LOANS">
+            <sql>
+                <tables><id>52</id></tables>            
+                <statement><![CDATA[SELECT count(LoanID) as OpenLoanCount FROM loan WHERE loan.DisciplineID = DSPLNID AND (IsClosed = false or IsClosed is null)]]></statement>
+            </sql>
+            <link>OpenLoans</link>
+        </item>
+      </box>
+  </row>
+  <row>
+      <box title="LOC_GEO">
+        <item title="LOCS">
+            <sql>
+                <tables><id>2</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM locality INNER JOIN discipline ON locality.DisciplineID = discipline.DisciplineID WHERE discipline.DisciplineID = DSPLNID]]></statement>
+            </sql>
+        </item>
+        <item title="GEO_ENT">
+            <sql>
+                <tables><id>3</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM geography WHERE GeographyTreeDefID = GEOTREEDEFID]]></statement>
+            </sql>
+        </item>
+        <item title="COUNTRIES" useprogress="true">
+            <sql>
+                <tables><id>2</id><id>3</id></tables>            
+                <statement><![CDATA[SELECT count(Name) FROM (SELECT DISTINCT Name FROM (SELECT g.GeographyID,g.nodenumber FROM locality as l inner join geography as g on l.GeographyID = g.GeographyID) as GEO, geography as g WHERE g.rankid = 200 and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2]]></statement>
+            </sql>
+        </item>
+        <item title="NUMBER_GEOREF">
+            <sql>
+                <tables><id>2</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM locality INNER JOIN discipline ON locality.DisciplineID = discipline.DisciplineID WHERE discipline.DisciplineID = DSPLNID and not latitude1 is null]]></statement>
+            </sql>
+        </item>
+        <item title="PRCNT_GEOREF">
+            <sql>
+                <tables><id>2</id></tables>            
+                <statement><![CDATA[SELECT CASE WHEN (SELECT count(*) FROM locality INNER JOIN discipline ON locality.DisciplineID = discipline.DisciplineID WHERE discipline.DisciplineID = DSPLNID) = 0 THEN 0 ELSE ((count(localityid) * 1.0) / ((SELECT count(*) FROM locality) * 1.0)) * 100.0 END AS PercentGeoReferencedLocalities FROM locality WHERE not latitude1 is null]]></statement>
+                <format>%3.0f</format>
+            </sql>
+        </item>
+    </box>
+    <box title="TAX_TREE">
+        <item title="CLASSES">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND rankid = 60]]></statement>
+            </sql>
+        </item>
+        <item title="ORDERS">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND rankid = 100]]></statement>
+            </sql>
+        </item>
+        <item title="FAMS">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND rankid = 140]]></statement>
+            </sql>
+        </item>
+        <item title="GENERA">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND rankid = 180]]></statement>
+            </sql>
+        </item>
+        <item title="SPECIES">
+            <sql>
+                <tables><id>4</id></tables>            
+                <statement><![CDATA[SELECT count(*) FROM taxon WHERE TaxonTreeDefID = TAXTREEDEFID AND rankid = 220]]></statement>
+            </sql>
+        </item>
+    </box>
+  </row>
+  <row>
+      <box title="TYP_SPEC_CNT" desccol="1" valcol="2" desctitle="TAXON" valtitle="COUNT" noresults="NO_TYP_SPEC">
+        <sql>
+            <tables><id>9</id></tables>            
+            <statement><![CDATA[SELECT TypeStatusName, count(DeterminationID) AS DeterminationCount FROM determination WHERE CollectionMemberID = COLMEMID AND TypeStatusName is not null group by TypeStatusName]]></statement>
+        </sql>
+      </box>
+  </row>
+</panel>
+
+<!--
+    This is the Total Number of Countries Used by all the Localities
+    SELECT count(Name) FROM (SELECT DISTINCT Name FROM (SELECT g.GeographyID,g.nodenumber FROM locality as l inner join geography as g on l.GeographyID = g.GeographyID) as GEO, geography as g WHERE g.rankid = 200 and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2
+    
+    
+-->

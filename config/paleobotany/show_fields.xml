@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+
+    <table name="Accession">
+        <field name="timestampModified" show="true"/>
+    </table>
+    
+    <table name="CollectionObject">
+        <field name="timestampModified" show="true"/>
+    </table>
+    
+    <table name="Deaccession">
+        <field name="timestampModified" show="true"/>
+    </table>
+    
+    <table name="PaleoContext" show="true">
+        <field name="text1"/>
+    </table>
+</tables>

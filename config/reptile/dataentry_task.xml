@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<views>
+	<std>
+	    <view sidebar="true"  title="Collection Object"  view="CollectionObject"   iconname="CollectionObject"   tooltip=""/>    
+	    <view sidebar="false"  title="Collecting Event"   view="CollectingEvent"    iconname="CollectingEvent"    tooltip=""/>    
+	    <view sidebar="true"  title="Taxon"              view="Taxon"              iconname="Taxon"              tooltip=""/> 
+	    <view sidebar="true"  title="Agent"              view="Agent"              iconname="Agent"              tooltip=""/>    
+	    <view sidebar="true"  title="Geography"          view="Geography"          iconname="Geography"          tooltip=""/> 
+		<view sidebar="true"  title="Locality"           view="Locality"           iconname="Locality"           tooltip=""/> 
+	</std>
+	
+	<misc>
+        <!-- <view sidebar="true"  title="Deaccession"        viewset="Common"       view="Deaccession"        iconname="Deaccession"        tooltip=""/> --> 
+	    <view sidebar="true"  title="Storage"            view="Storage"            iconname="Storage"           tooltip=""/>
+	</misc>
+</views>

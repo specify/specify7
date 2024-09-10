@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<boxes>
+  <box name="Statistics" title="STS_CHART">
+
+      <!-- Accession Manager Stats -->
+      <item name="AccessionByDivision" title="Accession By Division" type="Bar Chart" icon="Bar Chart"/>
+
+  </box>
+</boxes>

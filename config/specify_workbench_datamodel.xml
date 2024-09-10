@@ -1,0 +1,1624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+  <table classname="edu.ku.brc.specify.datamodel.Accession" table="accession" tableid="7" lazy="true">
+    <field column="Status" name="status" type="java.lang.String" length="32"/>
+    <field column="Type" name="type" type="java.lang.String" length="32"/>
+    <field column="Number" name="number" type="java.lang.String" length="60"/>
+    <field column="Verbatim Date" name="verbatimDate" type="java.lang.String" length="50"/>
+    <field column="Date Accessioned" name="dateAccessioned" type="calendar_date"/>
+    <field column="Date Received" name="dateReceived" type="calendar_date"/>
+    <field column="Accession Text 1" name="accessionText1" type="text" length="300"/>
+    <field column="Accession Text 2" name="accessionText2" type="text" length="300"/>
+    <field column="Accession Text 3" name="accessionText3" type="text" length="300"/>
+    <field column="Accession Number 1" name="accessionNumber1" type="java.lang.Float"/>
+    <field column="Accession Number 2" name="accessionNumber2" type="java.lang.Float"/>
+    <field column="Remarks (Accession)" name="accessionRemarks" type="text" length="4096"/>
+    <field column="YesNo 1 (Accession)" name="accessionYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Accession)" name="accessionYesNo2" type="boolean"/>
+    <field column="Auth. Agent First Name 1" name="authAgentFirstName1" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Last Name 1" name="authAgentLastName1" type="java.lang.String" length="120"/>
+    <field column="Auth. Agent Middle Initials 1" name="authAgentMiddle1" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Title 1" name="authAgentTitle1" type="java.lang.String" length="50"/>
+    <field column="Auth. Role 1" name="authRole1" type="java.lang.String" length="50" />
+    <field column="Auth. Agent First Name 2" name="authAgentFirstName2" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Last Name 2" name="authAgentLastName2" type="java.lang.String" length="120"/>
+    <field column="Auth. Agent Middle Initials 2" name="authAgentMiddle2" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Title 2" name="authAgentTitle2" type="java.lang.String" length="50"/>
+    <field column="Auth. Role 2" name="authRole2" type="java.lang.String" length="50" />
+    <field column="Auth. Agent First Name 3" name="authAgentFirstName3" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Last Name 3" name="authAgentLastName3" type="java.lang.String" length="120"/>
+    <field column="Auth. Agent Middle Initials 3" name="authAgentMiddle3" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Title 3" name="authAgentTitle3" type="java.lang.String" length="50"/>
+    <field column="Auth. Role 3" name="authRole3" type="java.lang.String" length="50" />
+    <field column="Auth. Agent First Name 4" name="authAgentFirstName4" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Last Name 4" name="authAgentLastName4" type="java.lang.String" length="120"/>
+    <field column="Auth. Role 4" name="authRole4" type="java.lang.String" length="50" />
+    <field column="Auth. Agent Middle Initials 4" name="authAgentMiddle4" type="java.lang.String" length="50"/>
+    <field column="Auth. Agent Title 4" name="authAgentTitle4" type="java.lang.String" length="50"/>
+    <field column="Permit Number 1" name="Permit1" type="java.lang.String" length="64"/>
+    <field column="Permit Number 2" name="Permit2" type="java.lang.String" length="64"/>
+    <field column="Permit Number 3" name="Permit3" type="java.lang.String" length="64"/>
+    <field column="Permit Number 4" name="Permit4" type="java.lang.String" length="64"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.Agent" table="agent" tableid="5" lazy="true" >
+    <field column="Agent Type" name="agentType" type="java.lang.Integer" />
+    <field column="Abbreviation" name="abbreviation" type="java.lang.String" length="50"/>
+    <field column="Date Of Birth" name="dateOfBirth" type="calendar_date" />
+    <field column="Date Of Death" name="dateOfDeath" type="calendar_date" />
+    <field column="Email" name="email" type="java.lang.String" length="50" />
+    <field column="First Name" name="firstName" type="java.lang.String" length="50"/>
+    <field column="Initials" name="initials" type="java.lang.String" length="8" />
+    <field column="Interests" name="interests" type="java.lang.String" length="255" />
+    <field column="URL" name="url" type="java.lang.String" />
+    <field column="Suffix" name="suffix" type="java.lang.String" />
+    <field column="Job Title" name="jobTitle" type="java.lang.String" length="50" />
+    <field column="Last Name"  name="lastName" type="java.lang.String" length="120"/>
+    <field column="Middle Initials" name="middleInitial" type="java.lang.String" length="50"/>
+    <field column="Remarks" name="remarks" type="java.lang.String" length="500" />
+    <field column="Title"  name="title" type="java.lang.String" length="50"/>
+    <field column="Address 1" name="address1" type="java.lang.String" length="255"/>
+    <field column="Address2 1" name="address21" type="java.lang.String" length="255"/>
+    <field column="City 1" name="city1" type="java.lang.String" length="64"/>
+    <field column="State 1" name="state1" type="java.lang.String" length="64"/>
+    <field column="Country 1" name="country1" type="java.lang.String" length="64"/>
+    <field column="PostalCode 1" name="postalCode1" type="java.lang.String" length="32"/>
+    <field column="Phone1 1" name="phone11" type="java.lang.String" length="20"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.CollectingEvent" table="collectingevent" tableid="10" lazy="true" >
+    <field column="Station Field Number" name="stationFieldNumber" type="java.lang.String" length="50"/>
+    <field column="Method" name="method" type="java.lang.String" length="50"/>
+    <field column="Verbatim Date" name="verbatimDate" type="java.lang.String" length="50"/>
+    <field column="Start Date" name="startDate" type="calendar_date"/>
+    <field column="Start Date Precision" name="startDatePrecision" type="java.lang.Short"/>
+    <field column="Start Date Verbatim" name="startDateVerbatim" type="java.lang.String" length="50"/>
+    <field column="End Date" name="endDate" type="calendar_date"/>
+    <field column="End Date Precision" name="endDatePrecision" type="java.lang.Short"/>
+    <field column="End Date Verbatim" name="endDateVerbatim" type="java.lang.String" length="50"/>
+    <field column="Start Time" name="startTime" type="java.lang.Short"/>
+    <field column="End Time" name="endTime" type="java.lang.Short"/>
+    <field column="Text 1" name="text1" type="text" />
+    <field column="Text 2" name="text2" type="text" />
+    <field column="Integer 1" name="integer1" type="java.lang.Integer" length="10"/>
+    <field column="Integer 2" name="integer2" type="java.lang.Integer" length="10"/>
+    <field column="Verbatim Locality" name="verbatimLocality" type="text" length="2048"/>
+    <field column="Remarks (Collecting Event)" name="collectingEventRemarks" type="text" length="4096"/>
+    <field column="Collector First Name 1" name="collectorFirstName1" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 1"  name="collectorLastName1" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 1" name="collectorMiddle1" type="java.lang.String" length="50"/>
+    <field column="Collector Title 1"  name="collectorTitle1" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 2" name="collectorFirstName2" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 2"  name="collectorLastName2" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 2" name="collectorMiddle2" type="java.lang.String" length="50"/>
+    <field column="Collector Title 2"  name="collectorTitle2" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 3" name="collectorFirstName3" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 3"  name="collectorLastName3" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 3" name="collectorMiddle3" type="java.lang.String" length="50"/>
+    <field column="Collector Title 3"  name="collectorTitle3" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 4" name="collectorFirstName4" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 4"  name="collectorLastName4" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 4" name="collectorMiddle4" type="java.lang.String" length="50"/>
+    <field column="Collector Title 4"  name="collectorTitle4" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 5" name="collectorFirstName5" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 5"  name="collectorLastName5" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 5" name="collectorMiddle5" type="java.lang.String" length="50"/>
+    <field column="Collector Title 5"  name="collectorTitle5" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 6" name="collectorFirstName6" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 6"  name="collectorLastName6" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 6" name="collectorMiddle6" type="java.lang.String" length="50"/>
+    <field column="Collector Title 6"  name="collectorTitle6" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 7" name="collectorFirstName7" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 7"  name="collectorLastName7" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 7" name="collectorMiddle7" type="java.lang.String" length="50"/>
+    <field column="Collector Title 7"  name="collectorTitle7" type="java.lang.String" length="50"/>
+    <field column="Collector First Name 8" name="collectorFirstName8" type="java.lang.String" length="50"/>
+    <field column="Collector Last Name 8"  name="collectorLastName8" type="java.lang.String" length="120"/>
+    <field column="Collector Middle Initials 8" name="collectorMiddle8" type="java.lang.String" length="50"/>
+    <field column="Collector Title 8"  name="collectorTitle8" type="java.lang.String" length="50"/>
+    <field column="Permit 1" name="cePermit1" type="java.lang.String" length="64"/>
+    <field column="Permit 2" name="cePermit2" type="java.lang.String" length="64"/>
+    <field column="Permit 3" name="cePermit3" type="java.lang.String" length="64"/>
+    <field column="Permit 4" name="cePermit4" type="java.lang.String" length="64"/>
+    <field column="Permit 5" name="cePermit5" type="java.lang.String" length="64"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectingEventAttribute" table="collectingeventattribute" tableid="92" lazy="true" query="false">
+    <field column="Remarks (CollectingEvent Attribute)" name="collectingEventAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Number 1 (CollectingEvent Attribute)" name="collectingEventAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (CollectingEvent Attribute)" name="collectingEventAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (CollectingEvent Attribute)" name="collectingEventAttributeNumber3" type="java.lang.Float" length="24"/>
+    <field column="Number 4 (CollectingEvent Attribute)" name="collectingEventAttributeNumber4" type="java.lang.Float" length="24"/>
+    <field column="Number 5 (CollectingEvent Attribute)" name="collectingEventAttributeNumber5" type="java.lang.Float" length="24"/>
+    <field column="Number 6 (CollectingEvent Attribute)" name="collectingEventAttributeNumber6" type="java.lang.Float" length="24"/>
+    <field column="Number 7 (CollectingEvent Attribute)" name="collectingEventAttributeNumber7" type="java.lang.Float" length="24"/>
+    <field column="Number 8 (CollectingEvent Attribute)" name="collectingEventAttributeNumber8" type="java.lang.Float" length="24"/>
+    <field column="Number 9 (CollectingEvent Attribute)" name="collectingEventAttributeNumber9" type="java.lang.Float" length="24"/>
+    <field column="Number 10 (CollectingEvent Attribute)" name="collectingEventAttributeNumber10" type="java.lang.Float" length="24"/>
+    <field column="Number 11 (CollectingEvent Attribute)" name="collectingEventAttributeNumber11" type="java.lang.Float" length="24"/>
+    <field column="Number 12 (CollectingEvent Attribute)" name="collectingEventAttributeNumber12" type="java.lang.Float" length="24"/>
+    <field column="Number 13 (CollectingEvent Attribute)" name="collectingEventAttributeNumber13" type="java.lang.Float" length="24"/>
+
+    <field column="Text 1 (CollectingEvent Attribute)" name="collectingEventAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (CollectingEvent Attribute)" name="collectingEventAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (CollectingEvent Attribute)" name="collectingEventAttributeText3" type="java.lang.String" length="300"/>
+    <field column="Text 4 (CollectingEvent Attribute)" name="collectingEventAttributeText4" type="java.lang.String" length="100"/>
+    <field column="Text 5 (CollectingEvent Attribute)" name="collectingEventAttributeText5" type="java.lang.String" length="100"/>
+    <field column="Text 6 (CollectingEvent Attribute)" name="collectingEventAttributeText6" type="java.lang.String" length="50"/>
+    <field column="Text 7 (CollectingEvent Attribute)" name="collectingEventAttributeText7" type="java.lang.String" length="50"/>
+    <field column="Text 8 (CollectingEvent Attribute)" name="collectingEventAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (CollectingEvent Attribute)" name="collectingEventAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (CollectingEvent Attribute)" name="collectingEventAttributeText10" type="java.lang.String" length="50"/>
+    <field column="Text 11 (CollectingEvent Attribute)" name="collectingEventAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (CollectingEvent Attribute)" name="collectingEventAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (CollectingEvent Attribute)" name="collectingEventAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (CollectingEvent Attribute)" name="collectingEventAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (CollectingEvent Attribute)" name="collectingEventAttributeText15" type="java.lang.String" length="50"/>
+    <field column="Text 16 (CollectingEvent Attribute)" name="collectingEventAttributeText16" type="java.lang.String" length="50"/>
+    <field column="Text 17 (CollectingEvent Attribute)" name="collectingEventAttributeText17" type="java.lang.String" length="50"/>
+
+    <field column="YesNo 1 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo1" type="boolean"/>
+    <field column="YesNo 2 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo2" type="boolean"/>
+    <field column="YesNo 3 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo3" type="boolean"/>
+    <field column="YesNo 4 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo4" type="boolean"/>
+    <field column="YesNo 5 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo5" type="boolean"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectingTrip" table="collectingtrip" tableid="87" lazy="true" >
+    <field column="Name" name="collectingTripName" type="java.lang.String" length="64"/>
+    <field column="Sponsor" name="sponsor" type="java.lang.String" length="64"/>
+    <field column="Start Date" name="startDate" type="calendar_date"/>
+    <field column="Start Date Verbatim" name="startDateVerbatim" type="java.lang.String" length="50"/>
+    <field column="End Date" name="endDate" type="calendar_date"/>
+    <field column="End Date Verbatim" name="endDateVerbatim" type="java.lang.String" length="50"/>
+    <field column="Start Time" name="startTime" type="java.lang.Short"/>
+    <field column="End Time" name="endTime" type="java.lang.Short"/>
+    <field column="Remarks (Collecting Trip)" name="collectingTripRemarks" type="java.lang.String" length="4096"/>
+    <field column="Text1 (Collecting Trip)" name="collectingTripText1" type="java.lang.String" length="4096"/>
+    <field column="Text2 (Collecting Trip)" name="collectingTripText2" type="java.lang.String" length="4096"/>
+    <field column="Number 1 (Collecting Trip)" name="collectingTripNumber1" type="java.lang.Float" length="24"/>
+      <field column="Permit 1" name="ctPermit1" type="java.lang.String" length="64"/>
+      <field column="Permit 2" name="ctPermit2" type="java.lang.String" length="64"/>
+      <field column="Permit 3" name="ctPermit3" type="java.lang.String" length="64"/>
+      <field column="Permit 4" name="ctPermit4" type="java.lang.String" length="64"/>
+      <field column="Permit 5" name="ctPermit5" type="java.lang.String" length="64"/>
+  </table>
+
+    <table classname="edu.ku.brc.specify.datamodel.CollectingTripAttribute" table="collectingtripattribute" tableid="157" lazy="true" query="false">
+        <field column="Remarks (CollectingTrip Attribute)" name="collectingTripAttributeRemarks" type="java.lang.String" length="4096"/>    <field column="Integer 1 (CollectingTrip Attribute)" name="collectingTripAttributeInteger1" type="java.lang.Integer" />
+        <field column="Integer 1 (CollectingTrip Attribute)" name="collectingTrip AttributeInteger1" type="java.lang.Integer" />
+        <field column="Integer 2 (CollectingTrip Attribute)" name="collectingTripAttributeInteger2" type="java.lang.Integer" />
+        <field column="Integer 3 (CollectingTrip Attribute)" name="collectingTripAttributeInteger3" type="java.lang.Integer" />
+        <field column="Integer 4 (CollectingTrip Attribute)" name="collectingTripAttributeInteger4" type="java.lang.Integer" />
+        <field column="Integer 5 (CollectingTrip Attribute)" name="collectingTripAttributeInteger5" type="java.lang.Integer" />
+        <field column="Integer 6 (CollectingTrip Attribute)" name="collectingTripAttributeInteger6" type="java.lang.Integer" />
+        <field column="Integer 7 (CollectingTrip Attribute)" name="collectingTripAttributeInteger7" type="java.lang.Integer" />
+        <field column="Integer 8 (CollectingTrip Attribute)" name="collectingTripAttributeInteger8" type="java.lang.Integer" />
+        <field column="Integer 9 (CollectingTrip Attribute)" name="collectingTripAttributeInteger9" type="java.lang.Integer" />
+        <field column="Integer 10 (CollectingTrip Attribute)" name="collectingTripAttributeInteger10" type="java.lang.Integer" />
+
+        <field column="Number 1 (CollectingTrip Attribute)" name="collectingTripAttributeNumber1" type="java.lang.Float" length="24"/>
+        <field column="Number 2 (CollectingTrip Attribute)" name="collectingTripAttributeNumber2" type="java.lang.Float" length="24"/>
+        <field column="Number 3 (CollectingTrip Attribute)" name="collectingTripAttributeNumber3" type="java.lang.Float" length="24"/>
+        <field column="Number 4 (CollectingTrip Attribute)" name="collectingTripAttributeNumber4" type="java.lang.Float" length="24"/>
+        <field column="Number 5 (CollectingTrip Attribute)" name="collectingTripAttributeNumber5" type="java.lang.Float" length="24"/>
+        <field column="Number 6 (CollectingTrip Attribute)" name="collectingTripAttributeNumber6" type="java.lang.Float" length="24"/>
+        <field column="Number 7 (CollectingTrip Attribute)" name="collectingTripAttributeNumber7" type="java.lang.Float" length="24"/>
+        <field column="Number 8 (CollectingTrip Attribute)" name="collectingTripAttributeNumber8" type="java.lang.Float" length="24"/>
+        <field column="Number 9 (CollectingTrip Attribute)" name="collectingTripAttributeNumber9" type="java.lang.Float" length="24"/>
+        <field column="Number 10 (CollectingTrip Attribute)" name="collectingTripAttributeNumber10" type="java.lang.Float" length="24"/>
+        <field column="Number 11 (CollectingTrip Attribute)" name="collectingTripAttributeNumber11" type="java.lang.Float" length="24"/>
+        <field column="Number 12 (CollectingTrip Attribute)" name="collectingTripAttributeNumber12" type="java.lang.Float" length="24"/>
+        <field column="Number 13 (CollectingTrip Attribute)" name="collectingTripAttributeNumber13" type="java.lang.Float" length="24"/>
+
+        <field column="Text 1 (CollectingTrip Attribute)" name="collectingTripAttributeText1" type="java.lang.String" length="300"/>
+        <field column="Text 2 (CollectingTrip Attribute)" name="collectingTripAttributeText2" type="java.lang.String" length="300"/>
+        <field column="Text 3 (CollectingTrip Attribute)" name="collectingTripAttributeText3" type="java.lang.String" length="300"/>
+        <field column="Text 4 (CollectingTrip Attribute)" name="collectingTripAttributeText4" type="java.lang.String" length="100"/>
+        <field column="Text 5 (CollectingTrip Attribute)" name="collectingTripAttributeText5" type="java.lang.String" length="100"/>
+        <field column="Text 6 (CollectingTrip Attribute)" name="collectingTripAttributeText6" type="java.lang.String" length="50"/>
+        <field column="Text 7 (CollectingTrip Attribute)" name="collectingTripAttributeText7" type="java.lang.String" length="50"/>
+        <field column="Text 8 (CollectingTrip Attribute)" name="collectingTripAttributeText8" type="java.lang.String" length="50"/>
+        <field column="Text 9 (CollectingTrip Attribute)" name="collectingTripAttributeText9" type="java.lang.String" length="50"/>
+        <field column="Text 10 (CollectingTrip Attribute)" name="collectingTripAttributeText10" type="java.lang.String" length="50"/>
+        <field column="Text 11 (CollectingTrip Attribute)" name="collectingTripAttributeText11" type="java.lang.String" length="50"/>
+        <field column="Text 12 (CollectingTrip Attribute)" name="collectingTripAttributeText12" type="java.lang.String" length="50"/>
+        <field column="Text 13 (CollectingTrip Attribute)" name="collectingTripAttributeText13" type="java.lang.String" length="50"/>
+        <field column="Text 14 (CollectingTrip Attribute)" name="collectingTripAttributeText14" type="java.lang.String" length="50"/>
+        <field column="Text 15 (CollectingTrip Attribute)" name="collectingTripAttributeText15" type="java.lang.String" length="50"/>
+        <field column="Text 16 (CollectingTrip Attribute)" name="collectingTripAttributeText16" type="java.lang.String" length="50"/>
+        <field column="Text 17 (CollectingTrip Attribute)" name="collectingTripAttributeText17" type="java.lang.String" length="50"/>
+
+        <field column="YesNo 1 (CollectingTrip Attribute)" name="collectingTripAttributeYesNo1" type="boolean"/>
+        <field column="YesNo 2 (CollectingTrip Attribute)" name="collectingTripAttributeYesNo2" type="boolean"/>
+        <field column="YesNo 3 (CollectingTrip Attribute)" name="collectingTripAttributeYesNo3" type="boolean"/>
+        <field column="YesNo 4 (CollectingTrip Attribute)" name="collectingTripAttributeYesNo4" type="boolean"/>
+        <field column="YesNo 5 (CollectingTrip Attribute)" name="collectingTripAttributeYesNo5" type="boolean"/>
+    </table>
+
+    <table classname="edu.ku.brc.specify.datamodel.CollectionObject" table="collectionobject" tableid="1" lazy="true">
+    <display objtitle="Collection Object" view="CollectionObject" dataobjformatter="CollectionObject"/>
+    <field column="Cataloged Date" name="catalogedDate" type="calendar_date"/>
+    <field column="Cataloged Date Verbatim" name="catalogedDateVerbatim" type="java.lang.String" length="32"/>
+    <field column="Catalog Number" name="catalogNumber" type="java.lang.String" length="32"/>
+    <field column="Alternate Catalog Number" name="altCatalogNumber" type="java.lang.String" length="32"/>
+    <field column="Condition" name="objectCondition" type="java.lang.String" length="64"/> 
+    <field column="Field Number" name="fieldNumber" type="java.lang.String" length="50"/>
+    <field column="Name" name="name" type="java.lang.String" length="64"/>
+    <field column="Description" name="description" type="java.lang.String" length="255"/>
+    <field column="Count" name="countAmt" type="java.lang.Integer" length="10"/>
+    <field column="OCR" name="OCR" type="text" length="4096"/>
+    <field column="Remarks (CollectionObject)" name="collectionObjectRemarks" type="text" length="4096"/>
+    <field column="Modifier" name="modifier" type="java.lang.String" length="50"/>
+    <field column="GUID" name="guid" type="java.lang.String" length="128"/>
+    <field column="Citation Title 1 (CollectionObject)" name="collectionObjectCitation1" type="java.lang.String" length="255"/>
+    <field column="Citation Is Figured 1" name="isCoFigured1" type="java.lang.Boolean"/>
+    <field column="Citation Remarks 1" name="citationCORemarks1" type="text" length="4096"/>
+    <field column="Citation Title 2 (CollectionObject)" name="collectionObjectCitation2" type="java.lang.String" length="255"/>
+    <field column="Citation Is Figured 2" name="isCoFigured2" type="java.lang.Boolean"/>
+    <field column="Citation Remarks 2" name="citationCORemarks2" type="text" length="4096"/>
+    <field column="Text 1 (CollectionObject)" name="collectionObjectText1" type="text" length="300"/>
+    <field column="Text 2 (CollectionObject)" name="collectionObjectText2" type="text" length="300"/>
+    <field column="Text 3 (CollectionObject)" name="collectionObjectText3" type="text"/>
+    <field column="Integer 1" name="integer1" type="java.lang.Integer" length="10"/>
+    <field column="Integer 2" name="integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number 1 (CollectionObject)" name="collectionObjectNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (CollectionObject)" name="collectionObjectNumber2" type="java.lang.Float" length="24"/>
+    <field column="YesNo 1 (CollectionObject)" name="collectionObjectYesNo1" type="boolean"/>
+    <field column="YesNo 2 (CollectionObject)" name="collectionObjectYesNo2" type="boolean"/>
+    <field column="YesNo 3 (CollectionObject)" name="collectionObjectYesNo3" type="boolean"/>
+    <field column="YesNo 4 (CollectionObject)" name="collectionObjectYesNo4" type="boolean"/>
+    <field column="YesNo 5 (CollectionObject)" name="collectionObjectYesNo5" type="boolean"/>
+    <field column="YesNo 6 (CollectionObject)" name="collectionObjectYesNo6" type="boolean"/>
+    <field column="Cataloger First Name" name="catalogerFirstName" type="java.lang.String" length="50"/>
+    <field column="Cataloger Last Name" name="catalogerLastName" type="java.lang.String" length="120"/>
+    <field column="Cataloger Middle Initials" name="catalogerMiddle" type="java.lang.String" length="50"/>
+    <field column="Cataloger Title" name="catalogerTitle" type="java.lang.String" length="50"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" table="collectionobjectattribute" tableid="93" lazy="true" query="false">
+    <field column="Remarks (Col. Obj. Attribute)" name="colObjAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Integer 1 (Col. Obj. Attribute)" name="colObjAttributeInteger1" type="java.lang.Integer" />
+    <field column="Integer 2 (Col. Obj. Attribute)" name="colObjAttributeInteger2" type="java.lang.Integer" />
+    <field column="Integer 3 (Col. Obj. Attribute)" name="colObjAttributeInteger3" type="java.lang.Integer" />
+    <field column="Integer 4 (Col. Obj. Attribute)" name="colObjAttributeInteger4" type="java.lang.Integer" />
+    <field column="Integer 5 (Col. Obj. Attribute)" name="colObjAttributeInteger5" type="java.lang.Integer" />
+    <field column="Integer 6 (Col. Obj. Attribute)" name="colObjAttributeInteger6" type="java.lang.Integer" />
+    <field column="Integer 7 (Col. Obj. Attribute)" name="colObjAttributeInteger7" type="java.lang.Integer" />
+    <field column="Integer 8 (Col. Obj. Attribute)" name="colObjAttributeInteger8" type="java.lang.Integer" />
+    <field column="Integer 9 (Col. Obj. Attribute)" name="colObjAttributeInteger9" type="java.lang.Integer" />
+    <field column="Integer 10 (Col. Obj. Attribute)" name="colObjAttributeInteger10" type="java.lang.Integer" />
+    <field column="Number 1 (Col. Obj. Attribute)" name="colObjAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (Col. Obj. Attribute)" name="colObjAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (Col. Obj. Attribute)" name="colObjAttributeNumber3" type="java.lang.Float" length="24"/>
+    <field column="Number 4 (Col. Obj. Attribute)" name="colObjAttributeNumber4" type="java.lang.Float" length="24"/>
+    <field column="Number 5 (Col. Obj. Attribute)" name="colObjAttributeNumber5" type="java.lang.Float" length="24"/>
+    <field column="Number 6 (Col. Obj. Attribute)" name="colObjAttributeNumber6" type="java.lang.Float" length="24"/>
+    <field column="Number 7 (Col. Obj. Attribute)" name="colObjAttributeNumber7" type="java.lang.Float" length="24"/>
+    <field column="Number 8 (Col. Obj. Attribute)" name="colObjAttributeNumber8" type="java.lang.Integer" />
+    <field column="Number 9 (Col. Obj. Attribute)" name="colObjAttributeNumber9" type="java.lang.Float" length="24"/>
+    <field column="Number 10 (Col. Obj. Attribute)" name="colObjAttributeNumber10" type="java.lang.Float" length="24"/>
+    <field column="Number 11 (Col. Obj. Attribute)" name="colObjAttributeNumber11" type="java.lang.Float" length="24"/>
+    <field column="Number 12 (Col. Obj. Attribute)" name="colObjAttributeNumber12" type="java.lang.Float" length="24"/>
+    <field column="Number 13 (Col. Obj. Attribute)" name="colObjAttributeNumber13" type="java.lang.Float" length="24"/>
+    <field column="Number 14 (Col. Obj. Attribute)" name="colObjAttributeNumber14" type="java.lang.Float" length="24"/>
+    <field column="Number 15 (Col. Obj. Attribute)" name="colObjAttributeNumber15" type="java.lang.Float" length="24"/>
+    <field column="Number 16 (Col. Obj. Attribute)" name="colObjAttributeNumber16" type="java.lang.Float" length="24"/>
+    <field column="Number 17 (Col. Obj. Attribute)" name="colObjAttributeNumber17" type="java.lang.Float" length="24"/>
+    <field column="Number 18 (Col. Obj. Attribute)" name="colObjAttributeNumber18" type="java.lang.Float" length="24"/>
+    <field column="Number 19 (Col. Obj. Attribute)" name="colObjAttributeNumber19" type="java.lang.Float" length="24"/>
+    <field column="Number 20 (Col. Obj. Attribute)" name="colObjAttributeNumber20" type="java.lang.Float" length="24"/>
+    <field column="Number 21 (Col. Obj. Attribute)" name="colObjAttributeNumber21" type="java.lang.Float" length="24"/>
+    <field column="Number 22 (Col. Obj. Attribute)" name="colObjAttributeNumber22" type="java.lang.Float" length="24"/>
+    <field column="Number 23 (Col. Obj. Attribute)" name="colObjAttributeNumber23" type="java.lang.Float" length="24"/>
+    <field column="Number 24 (Col. Obj. Attribute)" name="colObjAttributeNumber24" type="java.lang.Float" length="24"/>
+    <field column="Number 25 (Col. Obj. Attribute)" name="colObjAttributeNumber25" type="java.lang.Float" length="24"/>
+    <field column="Number 26 (Col. Obj. Attribute)" name="colObjAttributeNumber26" type="java.lang.Float" length="24"/>
+    <field column="Number 27 (Col. Obj. Attribute)" name="colObjAttributeNumber27" type="java.lang.Float" length="24"/>
+    <field column="Number 28 (Col. Obj. Attribute)" name="colObjAttributeNumber28" type="java.lang.Float" length="24"/>
+    <field column="Number 29 (Col. Obj. Attribute)" name="colObjAttributeNumber29" type="java.lang.Float" length="24"/>
+    <field column="Number 30 (Col. Obj. Attribute)" name="colObjAttributeNumber30" type="java.lang.Integer" />
+    <field column="Number 31 (Col. Obj. Attribute)" name="colObjAttributeNumber31" type="java.lang.Float" length="24"/>
+    <field column="Number 32 (Col. Obj. Attribute)" name="colObjAttributeNumber32" type="java.lang.Float" length="24"/>
+    <field column="Number 33 (Col. Obj. Attribute)" name="colObjAttributeNumber33" type="java.lang.Float" length="24"/>
+    <field column="Number 34 (Col. Obj. Attribute)" name="colObjAttributeNumber34" type="java.lang.Float"/>
+    <field column="Number 35 (Col. Obj. Attribute)" name="colObjAttributeNumber35" type="java.lang.Float"/>
+    <field column="Number 36 (Col. Obj. Attribute)" name="colObjAttributeNumber36" type="java.lang.Float"/>
+    <field column="Number 37 (Col. Obj. Attribute)" name="colObjAttributeNumber37" type="java.lang.Float"/>
+    <field column="Number 38 (Col. Obj. Attribute)" name="colObjAttributeNumber38" type="java.lang.Float"/>
+    <field column="Number 39 (Col. Obj. Attribute)" name="colObjAttributeNumber39" type="java.lang.Float"/>
+    <field column="Number 40 (Col. Obj. Attribute)" name="colObjAttributeNumber40" type="java.lang.Float"/>
+    <field column="Number 41 (Col. Obj. Attribute)" name="colObjAttributeNumber41" type="java.lang.Float"/>
+    <field column="Number 42 (Col. Obj. Attribute)" name="colObjAttributeNumber42" type="java.lang.Float"/>
+    <field column="Top Distance" name="topDistance" type="java.lang.Float"/>
+    <field column="Bottom Distance" name="bottomDistance" type="java.lang.Float"/>
+    <field column="Distance Units" name="distanceUnits" type="java.lang.String"/>
+    <field column="Direction" name="direction" type="java.lang.String"/>
+    <field column="Position State" name="positionState" type="java.lang.String"/>
+    <field column="Text 1 (Col. Obj. Attribute)" name="colObjAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (Col. Obj. Attribute)" name="colObjAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (Col. Obj. Attribute)" name="colObjAttributeText3" type="java.lang.String" length="300"/>
+    <field column="Text 4 (Col. Obj. Attribute)" name="colObjAttributeText4" type="java.lang.String" length="50"/>
+    <field column="Text 5 (Col. Obj. Attribute)" name="colObjAttributeText5" type="java.lang.String" length="50"/>
+    <field column="Text 6 (Col. Obj. Attribute)" name="colObjAttributeText6" type="java.lang.String" length="100"/>
+    <field column="Text 7 (Col. Obj. Attribute)" name="colObjAttributeText7" type="java.lang.String" length="100"/>
+    <field column="Text 8 (Col. Obj. Attribute)" name="colObjAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (Col. Obj. Attribute)" name="colObjAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (Col. Obj. Attribute)" name="colObjAttributeText10" type="java.lang.String" length="50"/>
+    <field column="Text 11 (Col. Obj. Attribute)" name="colObjAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (Col. Obj. Attribute)" name="colObjAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (Col. Obj. Attribute)" name="colObjAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (Col. Obj. Attribute)" name="colObjAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (Col. Obj. Attribute)" name="colObjAttributeText15" type="java.lang.String" length="64"/>
+    <field column="Text 16 (Col. Obj. Attribute)" name="colObjAttributeText16" type="java.lang.String" length="500"/>
+    <field column="Text 17 (Col. Obj. Attribute)" name="colObjAttributeText17" type="java.lang.String" length="500"/>
+    <field column="Text 18 (Col. Obj. Attribute)" name="colObjAttributeText18" type="java.lang.String" length="500"/>
+    <field column="YesNo 1 (Col. Obj. Attribute)" name="colObjAttributeYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Col. Obj. Attribute)" name="colObjAttributeYesNo2" type="boolean"/>
+    <field column="YesNo 3 (Col. Obj. Attribute)" name="colObjAttributeYesNo3" type="boolean"/>
+    <field column="YesNo 4 (Col. Obj. Attribute)" name="colObjAttributeYesNo4" type="boolean"/>
+    <field column="YesNo 5 (Col. Obj. Attribute)" name="colObjAttributeYesNo5" type="boolean"/>
+    <field column="YesNo 6 (Col. Obj. Attribute)" name="colObjAttributeYesNo6" type="boolean"/>
+    <field column="YesNo 7 (Col. Obj. Attribute)" name="colObjAttributeYesNo7" type="boolean"/>
+  </table>
+
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectionObjectProperty" table="collectionobjectproperty" tableid="153" lazy="true" >
+
+    <field column="Date 1 1" name="date11" type="calendar_date"/>
+    <field column="Agent 1 Lastname 1" name="agent1LastName1" type="java.lang.String"/>
+    <field column="Agent 1 Firstname 1" name="agent1FirstName1" type="java.lang.String"/>
+    <field column="Agent 1 Middle 1" name="agent1Middle1" type="java.lang.String"/>
+    <field column="Integer 1 1" name="integer11" type="java.lang.Integer"/>
+    <field column="Number 1 1" name="number11" type="java.lang.Double"/>
+    <field column="Text 1 1" name="text11" type="java.lang.String"/>
+    <field column="YesNo 1 1" name="yesno11" type="boolean"/>
+
+
+    <field column="Date 1 2" name="date12" type="calendar_date"/>
+    <field column="Agent 1 Lastname 2" name="agent1LastName2" type="java.lang.String"/>
+    <field column="Agent 1 Firstname 2" name="agent1FirstName2" type="java.lang.String"/>
+    <field column="Agent 1 Middle 2" name="agent1Middle2" type="java.lang.String"/>
+    <field column="Integer 1 2" name="integer12" type="java.lang.Integer"/>
+    <field column="Number 1 2" name="number12" type="java.lang.Double"/>
+    <field column="Text 1 2" name="text12" type="java.lang.String"/>
+    <field column="YesNo 1 2" name="yesno12" type="boolean"/>
+
+
+    <field column="Date 1 3" name="date13" type="calendar_date"/>
+    <field column="Agent 1 Lastname 3" name="agent1LastName3" type="java.lang.String"/>
+    <field column="Agent 1 Firstname 3" name="agent1FirstName3" type="java.lang.String"/>
+    <field column="Agent 1 Middle 3" name="agent1Middle3" type="java.lang.String"/>
+    <field column="Integer 1 3" name="integer13" type="java.lang.Integer"/>
+    <field column="Number 1 3" name="number13" type="java.lang.Double"/>
+    <field column="Text 1 3" name="text13" type="java.lang.String"/>
+    <field column="YesNo 1 3" name="yesno13" type="boolean"/>
+
+
+    <field column="Date 1 4" name="date14" type="calendar_date"/>
+    <field column="Agent 1 Lastname 4" name="agent1LastName4" type="java.lang.String"/>
+    <field column="Agent 1 Firstname 4" name="agent1FirstName4" type="java.lang.String"/>
+    <field column="Agent 1 Middle 4" name="agent1Middle4" type="java.lang.String"/>
+    <field column="Integer 1 4" name="integer14" type="java.lang.Integer"/>
+    <field column="Number 1 4" name="number14" type="java.lang.Double"/>
+    <field column="Text 1 4" name="text14" type="java.lang.String"/>
+    <field column="YesNo 1 4" name="yesno14" type="boolean"/>
+
+
+    <field column="Date 1 5" name="date15" type="calendar_date"/>
+    <field column="Agent 1 Lastname 5" name="agent1LastName5" type="java.lang.String"/>
+    <field column="Agent 1 Firstname 5" name="agent1FirstName5" type="java.lang.String"/>
+    <field column="Agent 1 Middle 5" name="agent1Middle5" type="java.lang.String"/>
+    <field column="Integer 1 5" name="integer15" type="java.lang.Integer"/>
+    <field column="Number 1 5" name="number15" type="java.lang.Double"/>
+    <field column="Text 1 5" name="text15" type="java.lang.String"/>
+    <field column="YesNo 1 5" name="yesno15" type="boolean"/>
+  </table>
+
+  <!--uncomment this section and to upload container info.
+  The container relationship with collectionobject is not supported
+  Adding agent or other related data will require editing specify_workbench_upload_def.xml
+  Contact specifysoftware@ku.edu for more info.
+  <table classname="edu.ku.brc.specify.datamodel.Container" table="container" tableid="31" lazy="true">
+    <field column="Name" name="name" type="java.lang.String" length="64"/>
+  </table>  
+  -->
+  
+  <table classname="edu.ku.brc.specify.datamodel.DNASequence" table="dnasequence" tableid="121" >
+      <field column="AmbiguousResidues 1" name="ambiguousResidues1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="BOLDBarcodeID 1" name="boldBarcodeId1" type="java.lang.String" length="32" indexName="BOLDBarcodeIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="BOLDLastUpdateDate 1" name="boldLastUpdateDate1" type="java.util.Calendar" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="BOLDSampleID 1" name="boldSampleId1" type="java.lang.String" length="32" indexName="BOLDSampleIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="BOLDTranslationMatrix 1" name="boldTranslationMatrix1" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompA 1" name="compA1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompC 1" name="compC1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompG 1" name="compG1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="compT 1" name="compT1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="ExtractionDate 1" name="extractionDate1" type="calendar_date"/>
+      <field column="Extractor Lastname 1" name="extractorLastName1" type="java.lang.String"/>
+      <field column="Extractor Firstname 1" name="extractorFirstName1" type="java.lang.String"/>
+      <field column="Extractor Middlename 1" name="extractorMiddleName1" type="java.lang.String"/>
+      <field column="SequenceDate 1" name="sequenceDate1" type="calendar_date"/>
+      <field column="GenBankAccessionNumber 1" name="genbankAccessionNumber1" type="java.lang.String" length="32" indexName="GenBankAccIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="GeneSequence 1" name="geneSequence1" type="text" length="2048" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="MoleculeType 1" name="moleculeType1" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number1 1" name="number11" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number2 1" name="number21" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number3 1" name="number31" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Remarks 1" name="remarks1" type="text" length="4096" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="TargetMarker 1" name="targetMarker1" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text1 1" name="text11" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text2 1" name="text21" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text3 1" name="text31" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="TotalResidues 1" name="totalResidues1" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo1 1" name="yesNo11" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo2 1" name="yesNo21" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo3 1" name="yesNo31" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+
+      <field column="AmbiguousResidues 2" name="ambiguousResidues2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="BOLDBarcodeID 2" name="boldBarcodeId2" type="java.lang.String" length="32" indexName="BOLDBarcodeIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="BOLDLastUpdateDate 2" name="boldLastUpdateDate2" type="java.util.Calendar" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="BOLDSampleID 2" name="boldSampleId2" type="java.lang.String" length="32" indexName="BOLDSampleIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="BOLDTranslationMatrix 2" name="boldTranslationMatrix2" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompA 2" name="compA2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompC 2" name="compC2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="CompG 2" name="compG2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="compT 2" name="compT2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="ExtractionDate 2" name="extractionDate2" type="calendar_date"/>
+      <field column="Extractor Lastname 2" name="extractorLastName2" type="java.lang.String"/>
+      <field column="Extractor Firstname 2" name="extractorFirstName2" type="java.lang.String"/>
+      <field column="Extractor Middlename 2" name="extractorMiddleName2" type="java.lang.String"/>
+      <field column="GenBankAccessionNumber 2" name="genbankAccessionNumber2" type="java.lang.String" length="32" indexName="GenBankAccIDX" updatable="true" required="false" unique="false" indexed="true" partialDate="false"/>
+      <field column="GeneSequence 2" name="geneSequence2" type="text" length="2048" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="MoleculeType 2" name="moleculeType2" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number1 2" name="number12" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number2 2" name="number22" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number3 2" name="number32" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Remarks 2" name="remarks2" type="text" length="4096" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SequenceDate 2" name="sequenceDate2" type="calendar_date"/>
+      <field column="TargetMarker 2" name="targetMarker2" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text1 2" name="text12" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text2 2" name="text22" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text3 2" name="text32" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="TotalResidues 2" name="totalResidues2" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo1 2" name="yesNo12" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo2 2" name="yesNo22" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo3 2" name="yesNo32" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+
+  </table>
+ 
+  <table classname="edu.ku.brc.specify.datamodel.DNASequencingRun" table="dnasequencingrun" tableid="88" searchable="true" abbrv="dnar">
+      <field column="Number1" name="number1" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number2" name="number2" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Number3" name="number3" type="java.lang.Float" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Ordinal" name="ordinal" type="java.lang.Integer" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="PCRCocktailPrimer" name="pcrCocktailPrimer" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="PCRForwardPrimerCode" name="pcrForwardPrimerCode" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="PCRPrimerName" name="pcrPrimerName" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="PCRPrimerSequence5_3" name="pcrPrimerSequence5_3" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="PCRReversePrimerCode" name="pcrReversePrimerCode" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="ReadDirection" name="readDirection" type="java.lang.String" length="16" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Remarks" name="remarks" type="text" length="4096" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="RunDate" name="runDate" type="java.util.Calendar" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="ScoreFileName" name="scoreFileName" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SequenceCocktailPrimer" name="sequenceCocktailPrimer" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SequencePrimerCode" name="sequencePrimerCode" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SequencePrimerName" name="sequencePrimerName" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SequencePrimerSequence5_3" name="sequencePrimerSequence5_3" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text1" name="text1" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text2" name="text2" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="Text3" name="text3" type="java.lang.String" length="64" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="TraceFileName" name="traceFileName" type="java.lang.String" length="32" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo1" name="yesNo1" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo2" name="yesNo2" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="YesNo3" name="yesNo3" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+  </table>
+
+  
+  <table classname="edu.ku.brc.specify.datamodel.Determination" table="determination" tableid="9" lazy="true">
+    <field column="Determined Date 1"       	name="determinedDate1" type="calendar_date"/>
+    <field column="Determiner Last Name 1"  	name="determinerLastName1" type="java.lang.String" length="120"/>
+    <field column="Determiner First Name 1" 	name="determinerFirstName1" type="java.lang.String" length="50"/>
+    <field column="Determiner Middle Initials 1"  	name="determinerMiddle1" type="java.lang.String" length="50"/>
+    <field column="Determiner Title 1" 	name="determinerTitle1" type="java.lang.String" length="50"/>
+    <field column="Determination Remarks 1" name="remarks1" type="text" length="4096"/>
+    <field column="Text1 1" name="text11" type="text" length="300"/>
+    <field column="Text2 1" name="text21" type="text" length="300"/>
+    <field column="Number1 1" name="number11" type="java.lang.Float" length="24"/>
+    <field column="Number2 1" name="number21" type="java.lang.Float" length="24"/>
+    <field column="Confidence 1" name="confidence1" type="text" length="50"/>
+    <field column="Method 1" name="method1" type="text" length="50"/>
+    <field column="Qualifier 1" name="qualifier1" type="text" length="16"/>
+    <field column="Subsp Qualifier 1" name="subspQualifier1" type="text" length="16"/>
+    <field column="Var Qualifier 1" name="varQualifier1" type="text" length="16"/>
+    <field column="Feature or Basis 1" name="featureOrBasis1" type="text" length="50"/>
+    <field column="Type Status Name 1"          name="typeStatusName1" type="java.lang.String" length="50"/>
+    <field column="Is Current (Yes/No) 1"       name="isCurrent1" type="boolean"/>
+    <field column="Phylum 1"                 	name="phylum1" type="java.lang.String" length="64"/>
+    <field column="Subphylum 1"                 name="subphylum1" type="java.lang.String" length="64"/>
+    <field column="Superclass 1"                name="superclass1" type="java.lang.String" length="64"/>
+    <field column="Class 1"                 	name="class1" type="java.lang.String" length="64"/>
+    <field column="Subclass 1"                 	name="subclass1" type="java.lang.String" length="64"/>
+    <field column="Infraclass 1"                name="infraclass1" type="java.lang.String" length="64"/>
+    <field column="Superorder 1"                name="superorder1" type="java.lang.String" length="64"/>
+    <field column="Order 1"                 	name="order1" type="java.lang.String" length="64"/>
+    <field column="Suborder 1"                 	name="suborder1" type="java.lang.String" length="64"/>
+    <field column="Infraorder 1"                name="infraorder1" type="java.lang.String" length="64"/>
+    <field column="Superfamily 1"               name="superfamily1" type="java.lang.String" length="64"/>
+    <field column="Family 1"                 	name="family1" type="java.lang.String" length="64"/>
+    <field column="Subfamily 1"                 name="subfamily1" type="java.lang.String" length="64"/>
+    <field column="Tribe 1"                 	name="tribe1" type="java.lang.String" length="64"/>
+    <field column="Subtribe 1"                 	name="subtribe1" type="java.lang.String" length="64"/>
+    <field column="Genus 1"                 	name="genus1" type="java.lang.String" length="64"/>
+    <field column="Subgenus 1"                 	name="subgenus1" type="java.lang.String" length="64"/>
+    <field column="Species 1"               	name="species1" type="java.lang.String" length="64"/>
+    <field column="Subspecies 1"            	name="subspecies1" type="java.lang.String" length="64"/>
+    <field column="Variety 1"               	name="variety1" type="java.lang.String" length="64"/>
+    <field column="Subvariety 1"               	name="subvariety1" type="java.lang.String" length="64"/>
+    <field column="Forma 1"               		name="forma1" type="java.lang.String" length="64"/>
+    <field column="SubForma 1"               	name="subforma1" type="java.lang.String" length="64"/>
+    <field column="Phylum Author 1" 			name="phylumAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subphylum Author 1" 			name="subphylumAuthor1" type="java.lang.String" length="128"/>
+    <field column="Superclass Author 1" 		name="superclassAuthor1" type="java.lang.String" length="128"/>
+    <field column="Class Author 1" 			    name="classAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subclass Author 1" 			name="subclassAuthor1" type="java.lang.String" length="128"/>
+    <field column="Infraclass Author 1" 		name="infraclassAuthor1" type="java.lang.String" length="128"/>
+    <field column="Superorder Author 1" 		name="superorderAuthor1" type="java.lang.String" length="128"/>
+    <field column="Order Author 1" 			    name="orderAuthor1" type="java.lang.String" length="128"/>
+    <field column="Suborder Author 1" 			name="suborderAuthor1" type="java.lang.String" length="128"/>
+    <field column="Infraorder Author 1" 		name="infraorderAuthor1" type="java.lang.String" length="128"/>
+    <field column="Superfamily Author 1" 		name="superfamilyAuthor1" type="java.lang.String" length="128"/>
+    <field column="Family Author 1" 			name="familyAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subfamily Author 1" 			name="subfamilyAuthor1" type="java.lang.String" length="128"/>
+    <field column="Tribe Author 1" 			    name="tribeAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subtribe Author 1" 			name="subtribeAuthor1" type="java.lang.String" length="128"/>
+    <field column="Genus Author 1" 			    name="genusAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subgenus Author 1" 			name="subgenusAuthor1" type="java.lang.String" length="128"/>
+    <field column="Species Author 1" 			name="speciesAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subspecies Author 1" 		name="subspeciesAuthor1" type="java.lang.String" length="128"/>
+    <field column="Variety Author 1" 			name="varietyAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subvariety Author 1" 		name="subvarietyAuthor1" type="java.lang.String" length="128"/>
+    <field column="Forma Author 1" 			    name="formaAuthor1" type="java.lang.String" length="128"/>
+    <field column="Subforma Author 1" 			name="subformaAuthor1" type="java.lang.String" length="128"/>
+    
+    <field column="Determined Date 2"       	name="determinedDate2" type="calendar_date"/>
+    <field column="Determiner Last Name 2"  	name="determinerLastName2" type="java.lang.String" length="120"/>
+    <field column="Determiner First Name 2" 	name="determinerFirstName2" type="java.lang.String" length="50"/>
+    <field column="Determiner Middle Initials 2"  	name="determinerMiddle2" type="java.lang.String" length="50"/>
+    <field column="Determiner Title 2" 	name="determinerTitle2" type="java.lang.String" length="50"/>
+    <field column="Determination Remarks 2" name="remarks2" type="text" length="4096" />
+    <field column="Text1 2" name="text12" type="text" length="300"/>
+    <field column="Text2 2" name="text22" type="text" length="300"/>
+    <field column="Number1 2" name="number12" type="java.lang.Float" length="24"/>
+    <field column="Number2 2" name="number22" type="java.lang.Float" length="24"/>
+    <field column="Confidence 2" name="confidence2" type="text" length="50"/>
+    <field column="Method 2" name="method2" type="text" length="50"/>
+    <field column="Qualifier 2" name="qualifier2" type="text" length="16" />
+    <field column="Subsp Qualifier 2" name="subspQualifier2" type="text" length="16" />
+    <field column="Var Qualifier 2" name="varQualifier2" type="text" length="16" />
+    <field column="Feature or Basis 2" name="featureOrBasis2" type="text" length="50" />
+    <field column="TypeStatusName 2"            name="typeStatusName2" type="java.lang.String" length="50"/> 
+    <field column="Is Current (Yes/No) 2"       name="isCurrent2" type="boolean"/>
+    <field column="Phylum 2"                 	name="phylum2" type="java.lang.String" length="64"/>
+    <field column="Subphylum 2"                 name="subphylum2" type="java.lang.String" length="64"/>
+    <field column="Superclass 2"                name="superclass2" type="java.lang.String" length="64"/>
+    <field column="Class 2"                 	name="class2" type="java.lang.String" length="64"/>
+    <field column="Subclass 2"                 	name="subclass2" type="java.lang.String" length="64"/>
+    <field column="Infraclass 2"                name="infraclass2" type="java.lang.String" length="64"/>
+    <field column="Superorder 2"                name="superorder2" type="java.lang.String" length="64"/>
+    <field column="Order 2"                 	name="order2" type="java.lang.String" length="64"/>
+    <field column="Suborder 2"                 	name="suborder2" type="java.lang.String" length="64"/>
+    <field column="Infraorder 2"                name="infraorder2" type="java.lang.String" length="64"/>
+    <field column="Superfamily 2"               name="superfamily2" type="java.lang.String" length="64"/>
+    <field column="Family 2"                 	name="family2" type="java.lang.String" length="64"/>
+    <field column="Subfamily 2"                 name="subfamily2" type="java.lang.String" length="64"/>
+    <field column="Tribe 2"                 	name="tribe2" type="java.lang.String" length="64"/>
+    <field column="Subtribe 2"                 	name="subtribe2" type="java.lang.String" length="64"/>
+    <field column="Genus 2"                 	name="genus2" type="java.lang.String" length="64"/>
+    <field column="Subgenus 2"                 	name="subgenus2" type="java.lang.String" length="64"/>
+    <field column="Species 2"               	name="species2" type="java.lang.String" length="64"/>
+    <field column="Subspecies 2"            	name="subspecies2" type="java.lang.String" length="64"/>
+    <field column="Variety 2"               	name="variety2" type="java.lang.String" length="64"/>
+    <field column="Subvariety 2"               	name="subvariety2" type="java.lang.String" length="64"/>
+    <field column="Forma 2"               		name="forma2" type="java.lang.String" length="64"/>
+    <field column="SubForma 2"               	name="subforma2" type="java.lang.String" length="64"/>
+    <field column="Phylum Author 2" 			name="phylumAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subphylum Author 2" 			name="subphylumAuthor2" type="java.lang.String" length="128"/>
+    <field column="Superclass Author 2" 		name="superclassAuthor2" type="java.lang.String" length="128"/>
+    <field column="Class Author 2" 			    name="classAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subclass Author 2" 			name="subclassAuthor2" type="java.lang.String" length="128"/>
+    <field column="Infraclass Author 2" 		name="infraclassAuthor2" type="java.lang.String" length="128"/>
+    <field column="Superorder Author 2" 		name="superorderAuthor2" type="java.lang.String" length="128"/>
+    <field column="Order Author 2" 			    name="orderAuthor2" type="java.lang.String" length="128"/>
+    <field column="Suborder Author 2" 			name="suborderAuthor2" type="java.lang.String" length="128"/>
+    <field column="Infraorder Author 2" 		name="infraorderAuthor2" type="java.lang.String" length="128"/>
+    <field column="Superfamily Author 2" 		name="superfamilyAuthor2" type="java.lang.String" length="128"/>
+    <field column="Family Author 2" 			name="familyAuthor2" type="java.lang.String" length="128"/>    
+    <field column="Subfamily Author 2" 			name="subfamilyAuthor2" type="java.lang.String" length="128"/>
+    <field column="Tribe Author 2" 			    name="tribeAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subtribe Author 2" 			name="subtribeAuthor2" type="java.lang.String" length="128"/>    
+    <field column="Genus Author 2" 			    name="genusAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subgenus Author 2" 			name="subgenusAuthor2" type="java.lang.String" length="128"/>
+    <field column="Species Author 2" 			name="speciesAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subspecies Author 2" 		name="subspeciesAuthor2" type="java.lang.String" length="128"/>
+    <field column="Variety Author 2" 			name="varietyAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subvariety Author 2" 		name="subvarietyAuthor2" type="java.lang.String" length="128"/>
+    <field column="Forma Author 2" 			    name="formaAuthor2" type="java.lang.String" length="128"/>
+    <field column="Subforma Author 2" 			name="subformaAuthor2" type="java.lang.String" length="128"/>
+
+    <field column="Determined Date 3"       	name="determinedDate3" type="calendar_date"/>
+    <field column="Determiner Last Name 3"  	name="determinerLastName3" type="java.lang.String" length="120"/>
+    <field column="Determiner First Name 3" 	name="determinerFirstName3" type="java.lang.String" length="50"/>
+    <field column="Determiner Middle Initials 3"  	name="determinerMiddle3" type="java.lang.String" length="50"/>
+    <field column="Determiner Title 3" 	name="determinerTitle3" type="java.lang.String" length="50"/>
+    <field column="Determination Remarks 3" name="remarks3" type="text" length="4096" />
+    <field column="Text1 3" name="text13" type="text" length="300"/>
+    <field column="Text2 3" name="text23" type="text" length="300"/>
+    <field column="Number1 3" name="number13" type="java.lang.Float" length="24"/>
+    <field column="Number2 3" name="number23" type="java.lang.Float" length="24"/>
+    <field column="Confidence 3" name="confidence3" type="text" length="50"/>
+    <field column="Method 3" name="method3" type="text" length="50"/>
+    <field column="Qualifier 3" name="qualifier3" type="text" length="16" />
+    <field column="Subsp Qualifier 3" name="subspQualifier3" type="text" length="16" />
+    <field column="Var Qualifier 3" name="varQualifier3" type="text" length="16" />
+    <field column="Feature or Basis 3" name="featureOrBasis3" type="text" length="50" />
+    <field column="Type Status Name 3"          name="typeStatusName3" type="java.lang.String" length="50"/>
+    <field column="Is Current (Yes/No) 3"       name="isCurrent3" type="boolean"/>
+    <field column="Phylum 3"                 	name="phylum3" type="java.lang.String" length="64"/>
+    <field column="Subphylum 3"                 name="subphylum3" type="java.lang.String" length="64"/>
+    <field column="Superclass 3"                name="superclass3" type="java.lang.String" length="64"/>
+    <field column="Class 3"                 	name="class3" type="java.lang.String" length="64"/>
+    <field column="Subclass 3"                 	name="subclass3" type="java.lang.String" length="64"/>
+    <field column="Infraclass 3"                name="infraclass3" type="java.lang.String" length="64"/>
+    <field column="Superorder 3"                name="superorder3" type="java.lang.String" length="64"/>
+    <field column="Order 3"                 	name="order3" type="java.lang.String" length="64"/>
+    <field column="Suborder 3"                 	name="suborder3" type="java.lang.String" length="64"/>
+    <field column="Infraorder 3"                name="infraorder3" type="java.lang.String" length="64"/>
+    <field column="Superfamily 3"               name="superfamily3" type="java.lang.String" length="64"/>
+    <field column="Family 3"                 	name="family3" type="java.lang.String" length="64"/>
+    <field column="Subfamily 3"                 name="subfamily3" type="java.lang.String" length="64"/>
+    <field column="Tribe 3"                 	name="tribe3" type="java.lang.String" length="64"/>
+    <field column="Subtribe 3"                 	name="subtribe3" type="java.lang.String" length="64"/>
+    <field column="Genus 3"                 	name="genus3" type="java.lang.String" length="64"/>
+    <field column="Subgenus 3"                 	name="subgenus3" type="java.lang.String" length="64"/>
+    <field column="Species 3"               	name="species3" type="java.lang.String" length="64"/>
+    <field column="Subspecies 3"            	name="subspecies3" type="java.lang.String" length="64"/>
+    <field column="Variety 3"               	name="variety3" type="java.lang.String" length="64"/>
+    <field column="Subvariety 3"               	name="subvariety3" type="java.lang.String" length="64"/>
+    <field column="Forma 3"               		name="forma3" type="java.lang.String" length="64"/>
+    <field column="SubForma 3"               	name="subforma3" type="java.lang.String" length="64"/>
+    <field column="Phylum Author 3" 			name="phylumAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subphylum Author 3" 			name="subphylumAuthor3" type="java.lang.String" length="128"/>
+    <field column="Superclass Author 3" 		name="superclassAuthor3" type="java.lang.String" length="128"/>
+    <field column="Class Author 3" 			    name="classAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subclass Author 3" 			name="subclassAuthor3" type="java.lang.String" length="128"/>
+    <field column="Infraclass Author 3" 		name="infraclassAuthor3" type="java.lang.String" length="128"/>
+    <field column="Superorder Author 3" 		name="superorderAuthor3" type="java.lang.String" length="128"/>
+    <field column="Order Author 3" 			    name="orderAuthor3" type="java.lang.String" length="128"/>
+    <field column="Suborder Author 3" 			name="suborderAuthor3" type="java.lang.String" length="128"/>
+    <field column="Infraorder Author 3" 		name="infraorderAuthor3" type="java.lang.String" length="128"/>
+    <field column="Superfamily Author 3" 		name="superfamilyAuthor3" type="java.lang.String" length="128"/>
+    <field column="Family Author 3" 			name="familyAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subfamily Author 3" 			name="subfamilyAuthor3" type="java.lang.String" length="128"/>
+    <field column="Tribe Author 3" 			    name="tribeAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subtribe Author 3" 			name="subtribeAuthor3" type="java.lang.String" length="128"/>
+    <field column="Genus Author 3" 			    name="genusAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subgenus Author 3" 			name="subgenusAuthor3" type="java.lang.String" length="128"/>
+    <field column="Species Author 3" 			name="speciesAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subspecies Author 3" 		name="subspeciesAuthor3" type="java.lang.String" length="128"/>
+    <field column="Variety Author 3" 			name="varietyAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subvariety Author 3" 		name="subvarietyAuthor3" type="java.lang.String" length="128"/>
+    <field column="Forma Author 3" 			    name="formaAuthor3" type="java.lang.String" length="128"/>
+    <field column="Subforma Author 3" 			name="subformaAuthor3" type="java.lang.String" length="128"/>
+
+
+
+  </table>
+  
+   <table classname="edu.ku.brc.specify.datamodel.FieldNotebook" table="fieldnotebook" tableid="83" >
+    <field column="Description" name="description" type="text" length="2048" />
+    <field column="EndDate" name="endDate" type="java.util.Calendar" />
+    <field column="Storage" name="location" type="java.lang.String" length="64" />
+    <field column="Name" name="name" type="java.lang.String" length="32" />
+    <field column="StartDate" name="startDate" type="java.util.Calendar" />
+    <field column="Owner First Name" name="ownerFirstName" type="java.lang.String" length="50"/>
+    <field column="Owner Last Name" name="ownerLastName" type="java.lang.String" length="120"/>
+    <field column="Owner Middle Initials" name="ownerMiddle" type="java.lang.String" length="50"/>
+    <field column="Owner Title" name="ownerTitle" type="java.lang.String" length="50"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.FieldNotebookPage" table="fieldnotebookpage" tableid="85" >
+      <field column="Description" name="description" type="java.lang.String" length="128" />
+      <field column="PageNumber" name="pageNumber" type="java.lang.String" length="16" />
+      <field column="ScanDate" name="scanDate" type="java.util.Calendar" />
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.FieldNotebookPageSet" table="fieldnotebookpageset" tableid="84" >
+      <field column="Description" name="description" type="java.lang.String" length="128" />
+      <field column="EndDate" name="endDate" type="java.util.Calendar" />
+      <field column="Method" name="method" type="java.lang.String" length="64" />
+      <field column="OrderNumber" name="orderNumber" type="java.lang.Short" />
+      <field column="StartDate" name="startDate" type="java.util.Calendar" />
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.GeoCoordDetail" table="geocoorddetail" tableid="123" searchable="true" abbrv="gcd">
+    <field column="GeoRefAccuracy" name="geoRefAccuracy" type="java.lang.Double"/>
+    <field column="GeoRefAccuracyUnits" name="geoRefAccuracyUnits" type="java.lang.String" length="20"/>
+    <field column="Georeference Date" name="geoRefDetDate" type="java.util.Calendar" />
+    <field column="GeoRefDetRef" name="geoRefDetRef" type="java.lang.String" length="100"/>
+    <field column="GeoRefVerificationStatus" name="geoRefVerificationStatus" type="java.lang.String" length="50"/>
+    <field column="Basket Case" name="MaxUncertaintyEstValue" type="java.math.BigDecimal"/>
+    <field column="Max Uncertainty Unit" name="MaxUncertaintyEstUnit" type="java.lang.String" length="8" />
+    <field column="NoGeoRefBecause" name="noGeoRefBecause" type="java.lang.String" length="100"/>
+    <field column="Original Coord System" name="originalCoordSystem" type="java.lang.String" length="32"/>
+    <field column="Protocol" name="protocol" type="java.lang.String" length="64"/>
+    <field column="Source" name="source" type="java.lang.String" length="64"/>
+    <field column="NamedPlaceExtent" name="namedPlaceExtent" type="java.math.BigDecimal"/>
+    <field column="Validation" name="validation" type="java.lang.String" length="64"/>
+    <field column="Text 1" name="text1" type="text" length="500"/>
+    <field column="Text 2" name="text2" type="text" length="500"/>
+    <field column="Text 3" name="text3" type="text" length="500"/>
+    <field column="UncertaintyPolygon" name="uncertaintyPolygon" type="text"/>
+    <field column="ErrorPolygon" name="errorPolygon" type="text"/>
+    <field column="Georeferenced By Last Name" name="geoRefByLast" type="java.lang.String" length="120"/> 
+    <field column="Georeferenced By First Name" name="geoRefByFirst" type="java.lang.String" length="50"/> 
+    <field column="Georeferenced By Middle Initials" name="geoRefByMiddle" type="java.lang.String" length="50"/> 
+    <field column="Georeferenced By Title" name="geoRefByTitle" type="java.lang.String" length="50"/>
+    <field column="Compiled Date" name="geoRefCompiledDate" type="java.util.Calendar" />
+    <field column="Compiled By By Last Name" name="compiledByLast" type="java.lang.String" length="120"/>
+    <field column="Compiled By First Name" name="compiledByFirst" type="java.lang.String" length="50"/>
+    <field column="Compiled By Middle Initials" name="compiledByMiddle" type="java.lang.String" length="50"/>
+    <field column="Compiled By Title" name="compiledByTitle" type="java.lang.String" length="50"/>
+    <field column="Georeference Remarks" name="geoRefRemarks" type="java.lang.String" length="255"/>
+  </table>
+
+  
+  <table classname="edu.ku.brc.specify.datamodel.Geography" table="geography" tableid="3" lazy="true">
+    <field column="Continent" name="continent" type="java.lang.String" length="64"/>
+    <field column="Country" name="country" type="java.lang.String" length="64"/>
+    <field column="State" name="state" type="java.lang.String" length="64"/>
+    <field column="County" name="county" type="java.lang.String" length="64"/>
+  </table>
+
+  
+  <!-- table classname="edu.ku.brc.specify.datamodel.GeologicTimePeriod" table="geologictimeperiod" tableid="46" lazy="true">
+    <display objtitle="Geologic Time Period"/>
+    <field column="Name" name="name" type="java.lang.String" length="64"/>
+    <field column="Full Name" name="fullName" type="java.lang.String" length="255"/>
+    <field column="Standard" name="standard" type="java.lang.String" length="64"/>
+    <field column="Start" name="start" type="java.lang.Float" length="24"/>
+    <field column="Age Start Uncertainty" name="ageStartUncertainty" type="java.lang.Float" length="24"/>
+    <field column="End" name="end" type="java.lang.Float" length="24"/>
+    <field column="Age End Uncertainty" name="ageEndUncertainty" type="java.lang.Float" length="24"/>
+    <field column="Remarks (Geologic Time Period)" name="geologicTimePeriodRemarks" type="java.lang.String" length="4096"/>
+  </table-->
+
+  <table classname="edu.ku.brc.specify.datamodel.GeologicTimePeriod" table="geologictimeperiod" tableid="46" lazy="true">
+    <display objtitle="Geologic Time Period"/>
+    <field column="Erathem/Era" name="erathem/era" type="java.lang.String" length="64"/>
+    <field column="System/Period" name="system/period" type="java.lang.String" length="64"/>
+    <field column="Series/Epoch" name="series/epoch" type="java.lang.String" length="64"/>
+    <field column="Stage/Age" name="stage/age" type="java.lang.String" length="64"/>
+  </table>
+
+
+  <table classname="edu.ku.brc.specify.datamodel.Journal" table="journal" tableid="51" lazy="true">
+    <field column="Journal Name" name="journalName" type="java.lang.String" length="255"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.LithoStrat" table="lithostrat" tableid="100" lazy="true">
+    <field column="SuperGroup" name="superGroup" type="java.lang.String" length="64"/>
+    <field column="LithoGroup" name="lithoGroup" type="java.lang.String" length="64"/>
+    <field column="Formation" name="formation" type="java.lang.String" length="64"/>
+    <field column="Member" name="member" type="java.lang.String" length="64"/>
+    <field column="Bed" name="bed" type="java.lang.String" length="64"/>
+  </table>
+  
+	<!--<table classname="edu.ku.brc.specify.datamodel.Loan" table="loan" tableid="52" lazy="true" >
+      	<field column="LoanDate" name="loanDate" type="java.util.Calendar" />
+      	<field column="LoanNumber" name="loanNumber" type="java.lang.String" length="50" />
+  	</table>
+  	
+	<table classname="edu.ku.brc.specify.datamodel.LoanPreparation" table="loanpreparation" tableid="54" lazy="true" >
+      	<field column="Quantity" name="quantity" type="java.lang.Integer" length="10" />
+      	<field column="IsResolved" name="isResolved" type="java.lang.Boolean" />
+  	</table>-->
+  
+  <table classname="edu.ku.brc.specify.datamodel.Locality" table="locality" tableid="2" lazy="true" >
+    <display objtitle="Locality" view="Locality" dataobjformatter="Locality" searchdlg="LocalitySearch" newobjdlg="LocalityDisplay"/>
+   	<field column="Locality Name" name="localityName" type="java.lang.String" length="255"/>
+    <field column="Named Place" name="namedPlace" type="java.lang.String" length="255"/>
+    <field column="Short Name" name="shortName" type="java.lang.String"  length="32" />
+    <field column="Relation To Named Place" name="relationToNamedPlace" type="java.lang.String" length="120"/>
+    <field column="Minimum Elevation" name="minElevation" type="java.lang.Double"/>
+    <field column="Maximum Elevation" name="maxElevation" type="java.lang.Double"/>
+    <field column="Original Elevation Unit" name="originalElevationUnit" type="java.lang.String" length="50"/>
+    <field column="Elevation Method" name="elevationMethod" type="java.lang.String" length="50"/>
+    <field column="Elevation Accuracy" name="elevationAccuracy" type="java.lang.Double"/>
+    <field column="Verbatim Elevation" name="verbatimElevation" type="java.lang.String" length="50"/>
+
+    <field column="Latitude 1" name="latitude1" type="java.math.BigDecimal"/>
+    <field column="Longitude 1" name="longitude1" type="java.math.BigDecimal"/>
+    <field column="Latitude 2" name="latitude2" type="java.math.BigDecimal"/>
+    <field column="Longitude 2" name="longitude2" type="java.math.BigDecimal"/>
+   	<field column="Lat Long Type" name="latLongType" type="java.lang.String" length="50"/>
+    <field column="Lat Long Method" name="latLongMethod" type="java.lang.String" length="50"/>
+    <field column="Lat Long Accuracy" name="latLongAccuracy" type="java.lang.Double"/>
+    <field column="Datum" name="datum" type="java.lang.String" length="50"/>
+    <field column="Verbatim Latitude" name="verbatimLatitude" type="java.lang.String" length="50"/>
+    <field column="Verbatim Longitude" name="verbatimLongitude" type="java.lang.String" length="50"/>
+
+    <field column="Remarks (Locality)" name="localityRemarks" type="text" length="4096"/>
+
+    <field column="Base Meridian" name="baseMeridian" type="java.lang.String" length="50"/>
+   	<field column="Drainage" name="drainage" type="java.lang.String" length="64"/>
+    <field column="Island" name="island" type="java.lang.String" length="64"/>
+    <field column="Island Group" name="islandGroup" type="java.lang.String" length="64"/>
+   	<field column="National Park Name" name="nationalParkName" type="java.lang.String" length="64"/>
+   	<field column="Paleo Latitude" name="paleoLat" type="java.lang.String"/>
+   	<field column="Paleo Longitude" name="paleoLng" type="java.lang.String"/>
+    <field column="Range" name="rangeDesc" type="java.lang.String" length="50"/>
+    <field column="Range Direction" name="rangeDirection" type="java.lang.String" length="50"/>
+    <field column="Section" name="section" type="java.lang.String" length="50"/>
+    <field column="Section Part" name="sectionPart" type="java.lang.String" length="50"/>
+    <field column="Township" name="township" type="java.lang.String" length="50"/>
+    <field column="Township Direction" name="townshipDirection" type="java.lang.String" length="50"/>
+    <field column="UtmDatum" name="utmDatum" type="java.lang.String" length="255"/>
+    <field column="UtmEasting" name="utmEasting" type="java.math.BigDecimal"/>
+    <field column="UtmNorthing" name="utmNorthing" type="java.math.BigDecimal"/>
+    <field column="UtmFalseEasting" name="utmFalseEasting" type="java.lang.Integer"/>
+    <field column="UtmFalseNorthing" name="utmFalseNorthing" type="java.lang.Integer"/>
+    <field column="UtmOrigLatitude" name="utmOrigLatitude" type="java.math.BigDecimal"/>
+    <field column="UtmOrigLongitude" name="utmOrigLongitude" type="java.math.BigDecimal"/>
+    <field column="UtmScale" name="utmScale" type="java.math.BigDecimal" />
+    <field column="UtmZone" name="utmZone" type="java.lang.Short" />
+    <field column="Water Body" name="waterBody" type="java.lang.String" length="64"/>
+    <field column="Number 1 (Locality)" name="localityNumber1" type="java.lang.Double"/>
+    <field column="Number 2 (Locality)" name="localityNumber2" type="java.lang.Double"/>
+    <field column="Text 1 (Locality)" name="localityText1" type="text" length="500"/>
+    <field column="Text 2 (Locality)" name="localityText2" type="text" length="500"/>
+    <field column="Text 3 (Locality)" name="localityText3" type="text" length="500"/>
+    <field column="Text 4 (Locality)" name="localityText4" type="text" length="500"/>
+    <field column="Text 5 (Locality)" name="localityText5" type="text" length="500"/>
+    <field column="Text 1 (Locality Detail)" name="localityDetailText1" type="text" length="300"/>
+    <field column="Text 2 (Locality Detail)" name="localityDetailText2" type="text" length="300"/>
+    <field column="YesNo 1 (Locality)" name="localityYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Locality)" name="localityYesNo2" type="boolean"/>
+     
+    
+    <field column="Citation Title (Locality) 1" name="localityCitation1" type="java.lang.String" length="255"/>
+    <field column="Citation Title (Locality) 2" name="localityCitation2" type="java.lang.String" length="255"/>
+    <field column="Citation Title (Locality) 3" name="localityCitation3" type="java.lang.String" length="255"/>
+    <field column="Citation Title (Locality) 4" name="localityCitation4" type="java.lang.String" length="255"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.MaterialSample" table="materialsample" tableid="151" lazy="true" >
+  	<field column="GGBN Sample Designation" name="GGBN_sampleDesignation" type="java.lang.String" />
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.OtherIdentifier" table="otheridentifier" tableid="61" searchable="true" abbrv="oi">
+    <field column="Other Identifier 1" name="otherIdentifier1" type="java.lang.String" length="64"/>
+    <field column="Other Identifier Institution 1" name="otherIdentifierInstitution1" type="java.lang.String" length="64"/>
+    <field column="Other Identifier 2" name="otherIdentifier2" type="java.lang.String" length="64"/>
+    <field column="Other Identifier Institution 2" name="otherIdentifierInstitution2" type="java.lang.String" length="64"/>
+    <field column="Other Identifier 3" name="otherIdentifier3" type="java.lang.String" length="64"/>
+    <field column="Other Identifier Institution 3" name="otherIdentifierInstitution3" type="java.lang.String" length="64"/>
+    <field column="Other Identifier 4" name="otherIdentifier4" type="java.lang.String" length="64"/>
+    <field column="Other Identifier Institution 4" name="otherIdentifierInstitution4" type="java.lang.String" length="64"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.PaleoContext" table="paleocontext" tableid="32" searchable="true" abbrv="pc">
+      <field column="Paleo Context Name" name="paleoContextName" type="java.lang.String" />
+      <field column="Remarks" name="remarks" type="java.lang.String" />
+      <field column="Text 1" name="text1" type="java.lang.String" />
+      <field column="Text 2" name="text2" type="java.lang.String" />
+      <field column="Text 3" name="text3" type="java.lang.String" />
+      <field column="Text 4" name="text4" type="java.lang.String" />
+      <field column="Text 5" name="text5" type="java.lang.String" />
+      <field column="Number 1" name="number1" type="java.lang.Double" />
+      <field column="Number 2" name="number2" type="java.lang.Double" />
+      <field column="Number 3" name="number3" type="java.lang.Double" />
+      <field column="Number 4" name="number4" type="java.lang.Double" />
+      <field column="Number 5" name="number5" type="java.lang.Double" />
+      <field column="YesNo 1" name="yesNo1" type="boolean"/>
+      <field column="YesNo 2" name="yesNo2" type="boolean"/>
+      <field column="YesNo 3" name="yesNo3" type="boolean"/>
+      <field column="YesNo 4" name="yesNo4" type="boolean"/>
+      <field column="YesNo 5" name="yesNo5" type="boolean"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.Preparation" table="preparation" tableid="63" lazy="true" >
+    <field column="Prepared Date 1" name="preparedDate1" type="calendar_date"/>
+    <field column="Prepared First Name By 1" name="preparedFirstNameBy1" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 1" name="preparedLastNameBy1" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 1" name="preparedMiddleBy1" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 1" name="preparedTitleBy1" type="java.lang.String" length="50"/>
+    <field column="Prep Type 1" name="prepType1" type="text" length="64"/>
+    <field column="Count 1" name="count1" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 1" name="storageLocation1" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 1" name="prepYesNo1" type="boolean" />
+    <field column="Prep Text1 1" name="prep1Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 1" name="prep1Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 1" name="prep1Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 1" name="prep1Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 1" name="prep1Number1" type="java.lang.Double"/>
+    <field column="Number2 1" name="prep1Number2" type="java.lang.Double"/>
+    <field column="Prep Description 1" name="prepDescription1" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 1" name="prepRemarks1" type="text" length="4096"/>
+    
+    <!--no storage tree or preparationattributes for now-->
+    <field column="Building 1" name="building1" type="java.lang.String" length="64"/>
+    <field column="Collection 1" name="collection1" type="java.lang.String" length="64"/>
+    <field column="Room 1" name="room1" type="java.lang.String" length="64"/>
+    <field column="Aisle 1" name="aisle1" type="java.lang.String" length="64"/>
+    <field column="Cabinet 1" name="cabinet1" type="java.lang.String" length="64"/>
+    <field column="Shelf 1" name="shelf1" type="java.lang.String" length="64"/>
+    <field column="Box 1" name="box1" type="java.lang.String" length="64"/>
+    <field column="Rack 1" name="rack1" type="java.lang.String" length="64"/>
+    <field column="Vial 1" name="vial1" type="java.lang.String" length="64"/>
+    
+    <!--
+    <field column="Prep Attr 1 Text1" name="prepAttr1Text1" type="java.lang.String" length="300"/>
+    <field column="Prep Attr 1 Text2" name="prepAttr1Text2" type="java.lang.String" length="300"/>
+    -->
+    
+    <field column="Prepared Date 2" name="preparedDate2" type="calendar_date"/>
+    <field column="Prepared First Name By 2" name="preparedFirstNameBy2" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 2" name="preparedLastNameBy2" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 2" name="preparedMiddleBy2" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 2" name="preparedTitleBy2" type="java.lang.String" length="50"/>
+    <field column="Prep Type 2" name="prepType2" type="text" length="64"/>
+    <field column="Count 2" name="count2" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 2" name="storageLocation2" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 2" name="prepYesNo2" type="boolean" />
+    <field column="Prep Text1 2" name="prep2Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 2" name="prep2Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 2" name="prep2Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 2" name="prep2Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 2" name="prep2Number1" type="java.lang.Double"/>
+    <field column="Number2 2" name="prep2Number2" type="java.lang.Double"/>
+    <field column="Prep Description 2" name="prepDescription2" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 2" name="prepRemarks2" type="text" length="4096"/>
+    <field column="Building 2" name="building2" type="java.lang.String" length="64"/>
+    <field column="Collection 2" name="collection2" type="java.lang.String" length="64"/>
+    <field column="Room 2" name="room2" type="java.lang.String" length="64"/>
+    <field column="Aisle 2" name="aisle2" type="java.lang.String" length="64"/>
+    <field column="Cabinet 2" name="cabinet2" type="java.lang.String" length="64"/>
+    <field column="Shelf 2" name="shelf2" type="java.lang.String" length="64"/>
+    <field column="Box 2" name="box2" type="java.lang.String" length="64"/>
+    <field column="Rack 2" name="rack2" type="java.lang.String" length="64"/>
+    <field column="Vial 2" name="vial2" type="java.lang.String" length="64"/>
+    
+    <!--
+    <field column="Prep Attr 2 Text1" name="prepAttr2Text1" type="java.lang.String" length="300"/>
+    <field column="Prep Attr 2 Text2" name="prepAttr2Text2" type="java.lang.String" length="300"/>
+    -->
+    
+    <field column="Prepared Date 3" name="preparedDate3" type="calendar_date"/>
+    <field column="Prepared First Name By 3" name="preparedFirstNameBy3" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 3" name="preparedLastNameBy3" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 3" name="preparedMiddleBy3" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 3" name="preparedTitleBy3" type="java.lang.String" length="50"/>
+    <field column="Prep Type 3" name="prepType3" type="text" length="64"/>
+    <field column="Count 3" name="count3" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 3" name="storageLocation3" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 3" name="prepYesNo3" type="boolean" />
+    <field column="Prep Text1 3" name="prep3Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 3" name="prep3Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 3" name="prep3Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 3" name="prep3Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 3" name="prep3Number1" type="java.lang.Double"/>
+    <field column="Number2 3" name="prep3Number2" type="java.lang.Double"/>
+    <field column="Prep Description 3" name="prepDescription3" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 3" name="prepRemarks3" type="text" length="4096"/>
+    <field column="Building 3" name="building3" type="java.lang.String" length="64"/>
+    <field column="Collection 3" name="collection3" type="java.lang.String" length="64"/>
+    <field column="Room 3" name="room3" type="java.lang.String" length="64"/>
+    <field column="Aisle 3" name="aisle3" type="java.lang.String" length="64"/>
+    <field column="Cabinet 3" name="cabinet3" type="java.lang.String" length="64"/>
+    <field column="Shelf 3" name="shelf3" type="java.lang.String" length="64"/>
+    <field column="Box 3" name="box3" type="java.lang.String" length="64"/>
+    <field column="Rack 3" name="rack3" type="java.lang.String" length="64"/>
+    <field column="Vial 3" name="vial3" type="java.lang.String" length="64"/>
+    
+    <field column="Prepared Date 4" name="preparedDate4" type="calendar_date"/>
+    <field column="Prepared First Name By 4" name="preparedFirstNameBy4" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 4" name="preparedLastNameBy4" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 4" name="preparedMiddleBy4" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 4" name="preparedTitleBy4" type="java.lang.String" length="50"/>
+    <field column="Prep Type 4" name="prepType4" type="text" length="64"/>
+    <field column="Count 4" name="count4" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 4" name="storageLocation4" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 4" name="prepYesNo4" type="boolean" />
+    <field column="Prep Text1 4" name="prep4Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 4" name="prep4Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 4" name="prep4Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 4" name="prep4Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 4" name="prep4Number1" type="java.lang.Double"/>
+    <field column="Number2 4" name="prep4Number2" type="java.lang.Double"/>
+    <field column="Prep Description 4" name="prepDescription4" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 4" name="prepRemarks4" type="text" length="4096"/>
+    <field column="Building 4" name="building4" type="java.lang.String" length="64"/>
+    <field column="Collection 4" name="collection4" type="java.lang.String" length="64"/>
+    <field column="Room 4" name="room4" type="java.lang.String" length="64"/>
+    <field column="Aisle 4" name="aisle4" type="java.lang.String" length="64"/>
+    <field column="Cabinet 4" name="cabinet4" type="java.lang.String" length="64"/>
+    <field column="Shelf 4" name="shelf4" type="java.lang.String" length="64"/>
+    <field column="Box 4" name="box4" type="java.lang.String" length="64"/>
+    <field column="Rack 4" name="rack4" type="java.lang.String" length="64"/>
+    <field column="Vial 4" name="vial4" type="java.lang.String" length="64"/>
+    
+    <field column="Prepared Date 5" name="preparedDate5" type="calendar_date"/>
+    <field column="Prepared First Name By 5" name="preparedFirstNameBy5" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 5" name="preparedLastNameBy5" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 5" name="preparedMiddleBy5" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 5" name="preparedTitleBy5" type="java.lang.String" length="50"/>
+    <field column="Prep Type 5" name="prepType5" type="text" length="64"/>
+    <field column="Count 5" name="count5" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 5" name="storageLocation5" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 5" name="prepYesNo5" type="boolean" />
+    <field column="Prep Text1 5" name="prep5Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 5" name="prep5Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 5" name="prep5Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 5" name="prep5Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 5" name="prep5Number1" type="java.lang.Double"/>
+    <field column="Number2 5" name="prep5Number2" type="java.lang.Double"/>
+    <field column="Prep Description 5" name="prepDescription5" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 5" name="prepRemarks5" type="text" length="4096"/>
+    <field column="Building 5" name="building5" type="java.lang.String" length="64"/>
+    <field column="Collection 5" name="collection5" type="java.lang.String" length="64"/>
+    <field column="Room 5" name="room5" type="java.lang.String" length="64"/>
+    <field column="Aisle 5" name="aisle5" type="java.lang.String" length="64"/>
+    <field column="Cabinet 5" name="cabinet5" type="java.lang.String" length="64"/>
+    <field column="Shelf 5" name="shelf5" type="java.lang.String" length="64"/>
+    <field column="Box 5" name="box5" type="java.lang.String" length="64"/>
+    <field column="Rack 5" name="rack5" type="java.lang.String" length="64"/>
+    <field column="Vial 5" name="vial5" type="java.lang.String" length="64"/>
+    
+    <field column="Prepared Date 6" name="preparedDate6" type="calendar_date"/>
+    <field column="Prepared First Name By 6" name="preparedFirstNameBy6" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 6" name="preparedLastNameBy6" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 6" name="preparedMiddleBy6" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 6" name="preparedTitleBy6" type="java.lang.String" length="50"/>
+    <field column="Prep Type 6" name="prepType6" type="text" length="64"/>
+    <field column="Count 6" name="count6" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 6" name="storageLocation6" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 6" name="prepYesNo6" type="boolean" />
+    <field column="Prep Text1 6" name="prep6Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 6" name="prep6Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 6" name="prep6Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 6" name="prep6Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 6" name="prep6Number1" type="java.lang.Double"/>
+    <field column="Number2 6" name="prep6Number2" type="java.lang.Double"/>
+    <field column="Prep Description 6" name="prepDescription6" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 6" name="prepRemarks6" type="text" length="4096"/>
+    <field column="Building 6" name="building6" type="java.lang.String" length="64"/>
+    <field column="Collection 6" name="collection6" type="java.lang.String" length="64"/>
+    <field column="Room 6" name="room6" type="java.lang.String" length="64"/>
+    <field column="Aisle 6" name="aisle6" type="java.lang.String" length="64"/>
+    <field column="Cabinet 6" name="cabinet6" type="java.lang.String" length="64"/>
+    <field column="Shelf 6" name="shelf6" type="java.lang.String" length="64"/>
+    <field column="Box 6" name="box6" type="java.lang.String" length="64"/>
+    <field column="Rack 6" name="rack6" type="java.lang.String" length="64"/>
+    <field column="Vial 6" name="vial6" type="java.lang.String" length="64"/>
+    
+    <field column="Prepared Date 7" name="preparedDate7" type="calendar_date"/>
+    <field column="Prepared First Name By 7" name="preparedFirstNameBy7" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 7" name="preparedLastNameBy7" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 7" name="preparedMiddleBy7" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 7" name="preparedTitleBy7" type="java.lang.String" length="50"/>
+    <field column="Prep Type 7" name="prepType7" type="text" length="64"/>
+    <field column="Count 7" name="count7" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 7" name="storageLocation7" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 7" name="prepYesNo7" type="boolean" />
+    <field column="Prep Text1 7" name="prep7Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 7" name="prep7Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 7" name="prep7Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 7" name="prep7Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 7" name="prep7Number1" type="java.lang.Double"/>
+    <field column="Number2 7" name="prep7Number2" type="java.lang.Double"/>
+    <field column="Prep Description 7" name="prepDescription7" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 7" name="prepRemarks7" type="text" length="4096"/>
+    <field column="Building 7" name="building7" type="java.lang.String" length="64"/>
+    <field column="Collection 7" name="collection7" type="java.lang.String" length="64"/>
+    <field column="Room 7" name="room7" type="java.lang.String" length="64"/>
+    <field column="Aisle 7" name="aisle7" type="java.lang.String" length="64"/>
+    <field column="Cabinet 7" name="cabinet7" type="java.lang.String" length="64"/>
+    <field column="Shelf 7" name="shelf7" type="java.lang.String" length="64"/>
+    <field column="Box 7" name="box7" type="java.lang.String" length="64"/>
+    <field column="Rack 7" name="rack7" type="java.lang.String" length="64"/>
+    <field column="Vial 7" name="vial7" type="java.lang.String" length="64"/>
+    
+    <field column="Prepared Date 8" name="preparedDate8" type="calendar_date"/>
+    <field column="Prepared First Name By 8" name="preparedFirstNameBy8" type="java.lang.String" length="50"/>
+    <field column="Prepared Last Name By 8" name="preparedLastNameBy8" type="java.lang.String" length="120"/>
+    <field column="Prepared Middle Initials By 8" name="preparedMiddleBy8" type="java.lang.String" length="50"/>
+    <field column="Prepared Title By 8" name="preparedTitleBy8" type="java.lang.String" length="50"/>
+    <field column="Prep Type 8" name="prepType8" type="text" length="64"/>
+    <field column="Count 8" name="count8" type="java.lang.Integer" length="10"/>
+    <field column="Storage Location 8" name="storageLocation8" type="java.lang.String" length="50"/>
+    <field column="Prep YesNo 8" name="prepYesNo8" type="boolean" />
+    <field column="Prep Text1 8" name="prep8Text1" type="java.lang.String" length="500"/>
+    <field column="Prep Text2 8" name="prep8Text2" type="java.lang.String" length="500"/>
+    <field column="Prep Integer1 8" name="prep8Integer1" type="java.lang.Integer" length="10"/>
+    <field column="Prep Integer2 8" name="prep8Integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number1 8" name="prep8Number1" type="java.lang.Double"/>
+    <field column="Number2 8" name="prep8Number2" type="java.lang.Double"/>
+    <field column="Prep Description 8" name="prepDescription8" type="java.lang.String" length="255"/>
+    <field column="Prep Remarks 8" name="prepRemarks8" type="text" length="4096"/>
+    <field column="Building 8" name="building8" type="java.lang.String" length="64"/>
+    <field column="Collection 8" name="collection8" type="java.lang.String" length="64"/>
+    <field column="Room 8" name="room8" type="java.lang.String" length="64"/>
+    <field column="Aisle 8" name="aisle8" type="java.lang.String" length="64"/>
+    <field column="Cabinet 8" name="cabinet8" type="java.lang.String" length="64"/>
+    <field column="Shelf 8" name="shelf8" type="java.lang.String" length="64"/>
+    <field column="Box 8" name="box8" type="java.lang.String" length="64"/>
+    <field column="Rack 8" name="rack8" type="java.lang.String" length="64"/>
+    <field column="Vial 8" name="vial8" type="java.lang.String" length="64"/>
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.PreparationAttribute" table="preparationattribute" tableid="91" lazy="true" query="false">
+    <field column="Remarks (Preparation Attribute)" name="preparationAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Number 1 (Preparation Attribute)" name="preparationAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (Preparation Attribute)" name="preparationAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (Preparation Attribute)" name="preparationAttributeNumber3" type="java.lang.Integer" length="10"/>
+    <field column="Number 4 (Preparation Attribute)" name="preparationAttributeNumber4" type="java.lang.Integer" length="10"/>
+    <field column="Number 5 (Preparation Attribute)" name="preparationAttributeNumber5" type="java.lang.Integer" length="10"/>
+    <field column="Number 6 (Preparation Attribute)" name="preparationAttributeNumber6" type="java.lang.Integer" length="10"/>
+    <field column="Number 7 (Preparation Attribute)" name="preparationAttributeNumber7" type="java.lang.Integer" length="10"/>
+    <field column="Number 8 (Preparation Attribute)" name="preparationAttributeNumber8" type="java.lang.Integer" length="10"/>
+    <field column="Number 9 (Preparation Attribute)" name="preparationAttributeNumber9" type="java.lang.Short" length="5"/>
+    <field column="Text 1 (Preparation Attribute)" name="preparationAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (Preparation Attribute)" name="preparationAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (Preparation Attribute)" name="preparationAttributeText3" type="java.lang.String" length="50"/>
+    <field column="Text 4 (Preparation Attribute)" name="preparationAttributeText4" type="java.lang.String" length="50"/>
+    <field column="Text 5 (Preparation Attribute)" name="preparationAttributeText5" type="java.lang.String" length="50"/>
+    <field column="Text 6 (Preparation Attribute)" name="preparationAttributeText6" type="java.lang.String" length="50"/>
+    <field column="Text 7 (Preparation Attribute)" name="preparationAttributeText7" type="java.lang.String" length="50"/>
+    <field column="Text 8 (Preparation Attribute)" name="preparationAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (Preparation Attribute)" name="preparationAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (Preparation Attribute)" name="preparationAttributeText10" type="java.lang.String" length="300"/>
+    <field column="Text 11 (Preparation Attribute)" name="preparationAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (Preparation Attribute)" name="preparationAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (Preparation Attribute)" name="preparationAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (Preparation Attribute)" name="preparationAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (Preparation Attribute)" name="preparationAttributeText15" type="java.lang.String" length="50"/>
+    <field column="Text 16 (Preparation Attribute)" name="preparationAttributeText16" type="java.lang.String" length="50"/>
+    <field column="Text 17 (Preparation Attribute)" name="preparationAttributeText17" type="java.lang.String" length="50"/>
+    <field column="Text 18 (Preparation Attribute)" name="preparationAttributeText18" type="java.lang.String" length="50"/>
+    <field column="Text 19 (Preparation Attribute)" name="preparationAttributeText19" type="java.lang.String" length="50"/>
+    <field column="Text 20 (Preparation Attribute)" name="preparationAttributeText20" type="java.lang.String" length="50"/>
+    <field column="Text 21 (Preparation Attribute)" name="preparationAttributeText21" type="java.lang.String" length="50"/>
+    <field column="Text 22 (Preparation Attribute)" name="preparationAttributeText22" type="java.lang.String" length="10"/>
+    <field column="Text 23 (Preparation Attribute)" name="preparationAttributeText23" type="java.lang.String" length="50"/>
+    <field column="Text 24 (Preparation Attribute)" name="preparationAttributeText24" type="java.lang.String" length="50"/>
+    <field column="Text 25 (Preparation Attribute)" name="preparationAttributeText25" type="java.lang.String" length="50"/>
+    <field column="Text 26 (Preparation Attribute)" name="preparationAttributeText26" type="java.lang.String" length="50"/>
+    <field column="YesNo 1 (Preparation Attribute)" name="preparationAttributeYesNo1" type="java.lang.Short" length="5"/>
+    <field column="YesNo 2 (Preparation Attribute)" name="preparationAttributeYesNo2" type="java.lang.Short" length="5"/>
+    <field column="YesNo 3 (Preparation Attribute)" name="preparationAttributeYesNo3" type="java.lang.Short" length="5"/>
+    <field column="YesNo 4 (Preparation Attribute)" name="preparationAttributeYesNo4" type="java.lang.Short" length="5"/>
+  </table>
+
+    <table classname="edu.ku.brc.specify.datamodel.ReferenceWork" table="referencework" tableid="69" lazy="true" >
+    <field column="Reference Work Type" name="referenceWorkType" type="byte" length="24"/>
+    <field column="Title" name="title" type="java.lang.String" length="255"/>
+    <field column="Publisher" name="publisher" type="java.lang.String" length="50"/>
+    <field column="Place Of Publication" name="placeOfPublication" type="java.lang.String" length="50"/>
+    <field column="Work Date" name="workDate" type="java.lang.String" length="25"/>
+    <field column="Volume" name="volume" type="java.lang.String" length="25"/>
+    <field column="Pages" name="pages" type="java.lang.String" length="50"/>
+    <field column="URL" name="url" type="text" length="1024"/>
+    <field column="Library Number" name="libraryNumber" type="java.lang.String" length="50"/>
+    <field column="Author First Name 1" name="authorFirstName1" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 1"  name="authorLastName1" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 1" name="authorMiddle1" type="java.lang.String" length="50"/>
+    <field column="Author Title 1"  name="authorTitle1" type="java.lang.String" length="50"/>
+    <field column="Author First Name 2" name="authorFirstName2" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 2"  name="authorLastName2" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 2" name="authorMiddle2" type="java.lang.String" length="50"/>
+    <field column="Author Title 2"  name="authorTitle2" type="java.lang.String" length="50"/>
+    <field column="Author First Name 3" name="authorFirstName3" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 3"  name="authorLastName3" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 3" name="authorMiddle3" type="java.lang.String" length="50"/>
+    <field column="Author Title 3"  name="authorTitle3" type="java.lang.String" length="50"/>
+    <field column="Author First Name 4" name="authorFirstName4" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 4"  name="authorLastName4" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 4" name="authorMiddle4" type="java.lang.String" length="50"/>
+    <field column="Author Title 4"  name="authorTitle4" type="java.lang.String" length="50"/>
+    <field column="Author First Name 5" name="authorFirstName5" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 5"  name="authorLastName5" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 5" name="authorMiddle5" type="java.lang.String" length="50"/>
+    <field column="Author Title 5"  name="authorTitle5" type="java.lang.String" length="50"/>
+    <field column="Author First Name 6" name="authorFirstName6" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 6"  name="authorLastName6" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 6" name="authorMiddle6" type="java.lang.String" length="50"/>
+    <field column="Author Title 6"  name="authorTitle6" type="java.lang.String" length="50"/>
+    <field column="Author First Name 7" name="authorFirstName7" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 7"  name="authorLastName7" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 7" name="authorMiddle7" type="java.lang.String" length="50"/>
+    <field column="Author Title 7"  name="authorTitle7" type="java.lang.String" length="50"/>
+    <field column="Author First Name 8" name="authorFirstName8" type="java.lang.String" length="50"/>
+    <field column="Author Last Name 8"  name="authorLastName8" type="java.lang.String" length="120"/>
+    <field column="Author Middle Initials 8" name="authorMiddle8" type="java.lang.String" length="50"/>
+    <field column="Author Title 8"  name="authorTitle8" type="java.lang.String" length="50"/>
+    <field column="Remarks (ReferenceWork)" name="referenceWorkRemarks" type="text" length="4096"/>
+    <field column="Text 1 (ReferenceWork)" name="referenceWorkText1" type="text" length="300"/>
+    <field column="Text 2 (ReferenceWork)" name="referenceWorkText2" type="text" length="300"/>
+    <field column="Number 1 (ReferenceWork)" name="referenceWorkNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (ReferenceWork)" name="referenceWorkNumber2" type="java.lang.Float" length="24"/>
+    <field column="Is Published" name="isPublished" type="boolean"/>
+    <field column="YesNo 1 (ReferenceWork)" name="referenceWorkYesNo1" type="boolean"/>
+    <field column="YesNo 2 (ReferenceWork)" name="referenceWorkYesNo2" type="boolean"/>
+  </table>
+  <!--
+  <table classname="edu.ku.brc.specify.datamodel.RepositoryAgreement" table="repositoryagreement" tableid="70" lazy="true" >
+    <field column="Number" name="number" type="java.lang.String" length="60"/>
+    <field column="Status" name="status" type="java.lang.String" length="32"/>
+    <field column="Start Date" name="startDate" type="calendar_date"/>
+    <field column="End Date" name="endDate" type="calendar_date"/>
+    <field column="Date Received" name="dateReceived" type="calendar_date"/>
+    <field column="Text 1 (Repository Agreement)" name="repositoryAgreementText1" type="text" length="255"/>
+    <field column="Text 2 (Repository Agreement)" name="repositoryAgreementText2" type="text" length="255"/>
+    <field column="Text 3 (Repository Agreement)" name="repositoryAgreementText3" type="text" length="255"/>
+    <field column="Number 1 (Repository Agreement)" name="repositoryAgreementNumber1" type="java.lang.Float"/>
+    <field column="Number 2 (Repository Agreement)" name="repositoryAgreementNumber2" type="java.lang.Float"/>
+    <field column="Remarks (Repository Agreement)" name="repositoryAgreementRemarks" type="text" length="255"/>
+    <field column="YesNo 1 (Repository Agreement)" name="repositoryAgreementYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Repository Agreement)" name="repositoryAgreementYesNo2" type="boolean"/>
+  </table>
+  -->
+
+  <!--
+  <table classname="edu.ku.brc.specify.datamodel.Storage" table="storage" tableid="58">
+    <field column="Case or Cabinet" name="caseOrCabinet" type="java.lang.String" length="64"/>
+    <field column="Shelf" name="shelf" type="java.lang.String" length="64"/>
+    <field column="Tray" name="tray" type="java.lang.String" length="64"/>
+    <field column="Tray Position" name="trayPosition" type="java.lang.String" length="64"/>
+  </table>
+  -->
+  
+  <!--
+  <table classname="edu.ku.brc.specify.datamodel.Stratigraphy" table="stratigraphy" tableid="73" >
+    <field column="Super Group" name="superGroup" type="java.lang.String" length="50"/>
+    <field column="Litho Group" name="lithoGroup" type="java.lang.String" length="50"/>
+    <field column="Formation" name="formation" type="java.lang.String" length="50"/>
+    <field column="Member" name="member" type="java.lang.String" length="50"/>
+    <field column="Bed" name="bed" type="java.lang.String" length="50"/>
+    <field column="Remarks (Stratigraphy)" name="stratigraphyRemarks" type="text" length="255"/>
+    <field column="Text 1 (Stratigraphy)" name="stratigraphyText1" type="text" length="255"/>
+    <field column="Text 2 (Stratigraphy)" name="stratigraphyText2" type="text" length="255"/>
+    <field column="Number 1 (Stratigraphy)" name="stratigraphyNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (Stratigraphy)" name="stratigraphyNumber2" type="java.lang.Float" length="24"/>
+    <field column="YesNo 1 (Stratigraphy)" name="stratigraphyYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Stratigraphy)" name="stratigraphyYesNo2" type="boolean"/>
+  </table>
+  -->
+  
+  <table classname="edu.ku.brc.specify.datamodel.Taxon" table="taxon" tableid="4">
+    <field column="Kingdom" name="kingdom" type="java.lang.String" length="64"/>
+    <field column="Kingdom Author" name="kingdomAuthor" type="java.lang.String" length="128"/>
+    <field column="Kingdom Common Name" name="kingdomCommonName" type="java.lang.String" length="128"/>
+    <field column="Kingdom Source" name="kingdomSource" type="java.lang.String" length="64"/>
+    <field column="Kingdom GUID" name="kingdomGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subkingdom" name="subkingdom" type="java.lang.String" length="64"/>
+    <field column="Subkingdom Author" name="subkingdomAuthor" type="java.lang.String" length="128"/>
+    <field column="Subkingdom Common Name" name="subkingdomCommonName" type="java.lang.String" length="128"/>
+    <field column="Subkingdom Source" name="subkingdomSource" type="java.lang.String" length="64"/>
+    <field column="Subkingdom GUID" name="subkingdomGUID" type="java.lang.String" length="128"/>
+
+    <field column="Division" name="division" type="java.lang.String" length="64"/>
+    <field column="Division Author" name="divisionAuthor" type="java.lang.String" length="128"/>
+    <field column="Division Common Name" name="divisionCommonName" type="java.lang.String" length="128"/>
+    <field column="Division Source" name="divisionSource" type="java.lang.String" length="64"/>
+    <field column="Division GUID" name="divisionGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subdivision" name="subdivision" type="java.lang.String" length="64"/>
+    <field column="Subdivision Author" name="subdivisionAuthor" type="java.lang.String" length="128"/>
+    <field column="Subdivision Common Name" name="subdivisionCommonName" type="java.lang.String" length="128"/>
+    <field column="Subdivision Source" name="subdivisionSource" type="java.lang.String" length="64"/>
+    <field column="Subdivision GUID" name="subdivisionGUID" type="java.lang.String" length="128"/>
+
+    <field column="Phylum" name="phylum" type="java.lang.String" length="64"/>
+    <field column="Phylum Author" name="phylumAuthor" type="java.lang.String" length="128"/>
+    <field column="Phylum Common Name" name="phylumCommonName" type="java.lang.String" length="128"/>
+    <field column="Phylum Source" name="phylumSource" type="java.lang.String" length="64"/>
+    <field column="Phylum GUID" name="phylumGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subphylum" name="subphylum" type="java.lang.String" length="64"/>
+    <field column="Subphylum Author" name="subphylumAuthor" type="java.lang.String" length="128"/>
+    <field column="Subphylum Common Name" name="subphylumCommonName" type="java.lang.String" length="128"/>
+    <field column="Subphylum Source" name="subphylumSource" type="java.lang.String" length="64"/>
+    <field column="Subphylum GUID" name="subphylumGUID" type="java.lang.String" length="128"/>
+
+    <field column="Superclass" name="superclass" type="java.lang.String" length="64"/>
+    <field column="Superclass Author" name="superclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Superclass CommonName" name="superclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Superclass Source" name="superclassSource" type="java.lang.String" length="64"/>
+    <field column="Superclass GUID" name="superclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Class" name="class" type="java.lang.String" length="64"/>
+    <field column="Class Author" name="classAuthor" type="java.lang.String" length="128"/>
+    <field column="Class CommonName" name="classCommonName" type="java.lang.String" length="128"/>
+    <field column="Class Source" name="classSource" type="java.lang.String" length="64"/>
+    <field column="Class GUID" name="classGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subclass" name="subclass" type="java.lang.String" length="64"/>
+    <field column="Subclass Author" name="subclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Subclass CommonName" name="subclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Subclass Source" name="subclassSource" type="java.lang.String" length="64"/>
+    <field column="Subclass GUID" name="subclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Infraclass" name="infraclass" type="java.lang.String" length="64"/>
+    <field column="Infraclass Author" name="infraclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Infraclass CommonName" name="infraclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Infraclass Source" name="infraclassSource" type="java.lang.String" length="64"/>
+    <field column="Infraclass GUID" name="infraclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Superorder" name="superorder" type="java.lang.String" length="64"/>
+    <field column="Superorder Author" name="superorderAuthor" type="java.lang.String" length="128"/>
+    <field column="Superorder CommonName" name="superorderCommonName" type="java.lang.String" length="128"/>
+    <field column="Superorder Source" name="superorderSource" type="java.lang.String" length="64"/>
+    <field column="Superorder GUID" name="superorderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Order" name="order" type="java.lang.String" length="64"/>
+    <field column="Order Author" name="orderAuthor" type="java.lang.String" length="128"/>
+    <field column="Order CommonName" name="orderCommonName" type="java.lang.String" length="128"/>
+    <field column="Order Source" name="orderSource" type="java.lang.String" length="64"/>
+    <field column="Order GUID" name="orderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Suborder" name="suborder" type="java.lang.String" length="64"/>
+    <field column="Suborder Author" name="suborderAuthor" type="java.lang.String" length="128"/>
+    <field column="Suborder CommonName" name="suborderCommonName" type="java.lang.String" length="128"/>
+    <field column="Suborder Source" name="suborderSource" type="java.lang.String" length="64"/>
+    <field column="Suborder GUID" name="suborderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Infraorder" name="infraorder" type="java.lang.String" length="64"/>
+    <field column="Infraorder Author" name="infraorderAuthor" type="java.lang.String" length="128"/>
+    <field column="Infraorder CommonName" name="infraorderCommonName" type="java.lang.String" length="128"/>
+    <field column="Infraorder Source" name="infraorderSource" type="java.lang.String" length="64"/>
+    <field column="Infraorder GUID" name="infraorderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Parvorder" name="parvorder" type="java.lang.String" length="64"/>
+    <field column="Parvorder Author" name="parvorderAuthor" type="java.lang.String" length="128"/>
+    <field column="Parvorder CommonName" name="parvorderCommonName" type="java.lang.String" length="128"/>
+    <field column="Parvorder Source" name="parvorderSource" type="java.lang.String" length="64"/>
+    <field column="Parvorder GUID" name="parvorderGUID" type="java.lang.String" length="128"/>
+	
+    <field column="Superfamily" name="superfamily" type="java.lang.String" length="64"/>
+    <field column="Superfamily Author" name="superfamilyAuthor" type="java.lang.String" length="128"/>
+    <field column="Superfamily CommonName" name="superfamilyCommonName" type="java.lang.String" length="128"/>
+    <field column="Superfamily Source" name="superfamilySource" type="java.lang.String" length="64"/>
+    <field column="Superfamily GUID" name="superfamilyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Family" name="family" type="java.lang.String" length="64"/>
+    <field column="Family Author" name="familyAuthor" type="java.lang.String" length="128"/>
+    <field column="Family CommonName" name="familyCommonName" type="java.lang.String" length="128"/>
+    <field column="Family Source" name="familySource" type="java.lang.String" length="64"/>
+    <field column="Family GUID" name="familyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subfamily" name="subfamily" type="java.lang.String" length="64"/>
+    <field column="Subfamily Author" name="subfamilyAuthor" type="java.lang.String" length="128"/>
+    <field column="Subfamily CommonName" name="subfamilyCommonName" type="java.lang.String" length="128"/>
+    <field column="Subfamily Source" name="subfamilySource" type="java.lang.String" length="64"/>
+    <field column="Subfamily GUID" name="subfamilyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Tribe" name="tribe" type="java.lang.String" length="64"/>
+    <field column="Tribe Author" name="tribeAuthor" type="java.lang.String" length="128"/>
+    <field column="Tribe CommonName" name="tribeCommonName" type="java.lang.String" length="128"/>
+    <field column="Tribe Source" name="tribeSource" type="java.lang.String" length="64"/>
+    <field column="Tribe GUID" name="tribeGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subtribe" name="subtribe" type="java.lang.String" length="64"/>
+    <field column="Subtribe Author" name="subtribeAuthor" type="java.lang.String" length="128"/>
+    <field column="Subtribe CommonName" name="subtribeCommonName" type="java.lang.String" length="128"/>
+    <field column="Subtribe Source" name="subtribeSource" type="java.lang.String" length="64"/>
+    <field column="Subtribe GUID" name="subtribeGUID" type="java.lang.String" length="128"/>
+    <!--
+    <field column="Genus" name="genus" type="java.lang.String" length="64"/>
+    <field column="Subgenus" name="subgenus" type="java.lang.String" length="64"/>
+    <field column="Section" name="section" type="java.lang.String" length="64"/>
+    <field column="Subsection" name="subsection" type="java.lang.String" length="64"/>
+    <field column="Species" name="species" type="java.lang.String" length="64"/>
+    <field column="Subspecies" name="subspecies" type="java.lang.String" length="64"/>
+    <field column="Variety" name="variety" type="java.lang.String" length="64"/>
+    <field column="Subvariety" name="subvariety" type="java.lang.String" length="64"/>
+    <field column="Forma" name="forma" type="java.lang.String" length="64"/>
+    <field column="Subforma" name="subforma" type="java.lang.String" length="64"/>
+    -->
+  </table>
+  <table classname="edu.ku.brc.specify.datamodel.Taxon" table="taxononly" tableid="4000">
+  
+    <!-- for OU PBOT...
+      <field column="Domain" name="domain" type="java.lang.String" length="64"/>
+     <field column="Infrakingdom" name="infrakingdom" type="java.lang.String" length="64"/>
+      <field column="Superphylum" name="superphylum" type="java.lang.String" length="64"/>
+     <field column="Infradivision" name="infradivision" type="java.lang.String" length="64"/>
+      <field column="Cohort" name="cohort" type="java.lang.String" length="64"/-->
+    <!-- ...for OU PBOT -->
+    
+    <field column="Kingdom" name="kingdom" type="java.lang.String" length="64"/>
+    <field column="Kingdom Author" name="kingdomAuthor" type="java.lang.String" length="128"/>
+    <field column="Kingdom Common Name" name="kingdomCommonName" type="java.lang.String" length="128"/>
+    <field column="Kingdom Source" name="kingdomSource" type="java.lang.String" length="64"/>
+    <field column="Kingdom GUID" name="kingdomGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subkingdom" name="subkingdom" type="java.lang.String" length="64"/>
+    <field column="Subkingdom Author" name="subkingdomAuthor" type="java.lang.String" length="128"/>
+    <field column="Subkingdom Common Name" name="subkingdomCommonName" type="java.lang.String" length="128"/>
+    <field column="Subkingdom Source" name="subkingdomSource" type="java.lang.String" length="64"/>
+    <field column="Subkingdom GUID" name="subkingdomGUID" type="java.lang.String" length="128"/>
+
+    <field column="Division" name="division" type="java.lang.String" length="64"/>
+    <field column="Division Author" name="divisionAuthor" type="java.lang.String" length="128"/>
+    <field column="Division Common Name" name="divisionCommonName" type="java.lang.String" length="128"/>
+    <field column="Division Source" name="divisionSource" type="java.lang.String" length="64"/>
+    <field column="Division GUID" name="divisionGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subdivision" name="subdivision" type="java.lang.String" length="64"/>
+    <field column="Subdivision Author" name="subdivisionAuthor" type="java.lang.String" length="128"/>
+    <field column="Subdivision Common Name" name="subdivisionCommonName" type="java.lang.String" length="128"/>
+    <field column="Subdivision Source" name="subdivisionSource" type="java.lang.String" length="64"/>
+    <field column="Subdivision GUID" name="subdivisionGUID" type="java.lang.String" length="128"/>
+
+    <field column="Phylum" name="phylum" type="java.lang.String" length="64"/>
+    <field column="Phylum Author" name="phylumAuthor" type="java.lang.String" length="128"/>
+    <field column="Phylum Common Name" name="phylumCommonName" type="java.lang.String" length="128"/>
+    <field column="Phylum Source" name="phylumSource" type="java.lang.String" length="64"/>
+    <field column="Phylum GUID" name="phylumGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subphylum" name="subphylum" type="java.lang.String" length="64"/>
+    <field column="Subphylum Author" name="subphylumAuthor" type="java.lang.String" length="128"/>
+    <field column="Subphylum Common Name" name="subphylumCommonName" type="java.lang.String" length="128"/>
+    <field column="Subphylum Source" name="subphylumSource" type="java.lang.String" length="64"/>
+    <field column="Subphylum GUID" name="subphylumGUID" type="java.lang.String" length="128"/>
+
+    <field column="Superclass" name="superclass" type="java.lang.String" length="64"/>
+    <field column="Superclass Author" name="superclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Superclass CommonName" name="superclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Superclass Source" name="superclassSource" type="java.lang.String" length="64"/>
+    <field column="Superclass GUID" name="superclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Class" name="class" type="java.lang.String" length="64"/>
+    <field column="Class Author" name="classAuthor" type="java.lang.String" length="128"/>
+    <field column="Class CommonName" name="classCommonName" type="java.lang.String" length="128"/>
+    <field column="Class Source" name="classSource" type="java.lang.String" length="64"/>
+    <field column="Class GUID" name="classGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subclass" name="subclass" type="java.lang.String" length="64"/>
+    <field column="Subclass Author" name="subclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Subclass CommonName" name="subclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Subclass Source" name="subclassSource" type="java.lang.String" length="64"/>
+    <field column="Subclass GUID" name="subclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Infraclass" name="infraclass" type="java.lang.String" length="64"/>
+    <field column="Infraclass Author" name="infraclassAuthor" type="java.lang.String" length="128"/>
+    <field column="Infraclass CommonName" name="infraclassCommonName" type="java.lang.String" length="128"/>
+    <field column="Infraclass Source" name="infraclassSource" type="java.lang.String" length="64"/>
+    <field column="Infraclass GUID" name="infraclassGUID" type="java.lang.String" length="128"/>
+
+    <field column="Superorder" name="superorder" type="java.lang.String" length="64"/>
+    <field column="Superorder Author" name="superorderAuthor" type="java.lang.String" length="128"/>
+    <field column="Superorder CommonName" name="superorderCommonName" type="java.lang.String" length="128"/>
+    <field column="Superorder Source" name="superorderSource" type="java.lang.String" length="64"/>
+    <field column="Superorder GUID" name="superorderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Order" name="order" type="java.lang.String" length="64"/>
+    <field column="Order Author" name="orderAuthor" type="java.lang.String" length="128"/>
+    <field column="Order CommonName" name="orderCommonName" type="java.lang.String" length="128"/>
+    <field column="Order Source" name="orderSource" type="java.lang.String" length="64"/>
+    <field column="Order GUID" name="orderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Suborder" name="suborder" type="java.lang.String" length="64"/>
+    <field column="Suborder Author" name="suborderAuthor" type="java.lang.String" length="128"/>
+    <field column="Suborder CommonName" name="suborderCommonName" type="java.lang.String" length="128"/>
+    <field column="Suborder Source" name="suborderSource" type="java.lang.String" length="64"/>
+    <field column="Suborder GUID" name="suborderGUID" type="java.lang.String" length="128"/>
+
+    <field column="Infraorder" name="infraorder" type="java.lang.String" length="64"/>
+    <field column="Infraorder Author" name="infraorderAuthor" type="java.lang.String" length="128"/>
+    <field column="Infraorder CommonName" name="infraorderCommonName" type="java.lang.String" length="128"/>
+    <field column="Infraorder Source" name="infraorderSource" type="java.lang.String" length="64"/>
+    <field column="Infraorder GUID" name="infraorderGUID" type="java.lang.String" length="128"/>
+
+	<!-- for ATBI conversion -->
+    <!-- field column="Series" name="series" type="java.lang.String" length="64"/>
+    <field column="Series Author" name="seriesAuthor" type="java.lang.String" length="128"/>
+    <field column="Series CommonName" name="seriesCommonName" type="java.lang.String" length="128"/>
+    <field column="Series Source" name="seriesSource" type="java.lang.String" length="64"/>
+    <field column="Series GUID" name="seriesGUID" type="java.lang.String" length="128"/ -->
+    <!-- for ATBI conversion -->
+    
+    <field column="Superfamily" name="superfamily" type="java.lang.String" length="64"/>
+    <field column="Superfamily Author" name="superfamilyAuthor" type="java.lang.String" length="128"/>
+    <field column="Superfamily CommonName" name="superfamilyCommonName" type="java.lang.String" length="128"/>
+    <field column="Superfamily Source" name="superfamilySource" type="java.lang.String" length="64"/>
+    <field column="Superfamily GUID" name="superfamilyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Family" name="family" type="java.lang.String" length="64"/>
+    <field column="Family Author" name="familyAuthor" type="java.lang.String" length="128"/>
+    <field column="Family CommonName" name="familyCommonName" type="java.lang.String" length="128"/>
+    <field column="Family Source" name="familySource" type="java.lang.String" length="64"/>
+    <field column="Family GUID" name="familyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Subfamily" name="subfamily" type="java.lang.String" length="64"/>
+    <field column="Subfamily Author" name="subfamilyAuthor" type="java.lang.String" length="128"/>
+    <field column="Subfamily CommonName" name="subfamilyCommonName" type="java.lang.String" length="128"/>
+    <field column="Subfamily Source" name="subfamilySource" type="java.lang.String" length="64"/>
+    <field column="Subfamily GUID" name="subfamilyGUID" type="java.lang.String" length="128"/>
+
+    <field column="Tribe" name="tribe" type="java.lang.String" length="64"/>
+    <field column="Tribe Author" name="tribeAuthor" type="java.lang.String" length="128"/>
+    <field column="Tribe CommonName" name="tribeCommonName" type="java.lang.String" length="128"/>
+    <field column="Tribe Source" name="tribeSource" type="java.lang.String" length="64"/>
+    <field column="Tribe GUID" name="tribeGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subtribe" name="subtribe" type="java.lang.String" length="64"/>
+    <field column="Subtribe Author" name="subtribeAuthor" type="java.lang.String" length="128"/>
+    <field column="Subtribe CommonName" name="subtribeCommonName" type="java.lang.String" length="128"/>
+    <field column="Subtribe Source" name="subtribeSource" type="java.lang.String" length="64"/>
+    <field column="Subtribe GUID" name="subtribeGUID" type="java.lang.String" length="128"/>
+
+    <field column="Genus" name="genus" type="java.lang.String" length="64"/>
+    <field column="Genus Author" name="genusAuthor" type="java.lang.String" length="128"/>
+    <field column="Genus CommonName" name="genusCommonName" type="java.lang.String" length="128"/>
+    <field column="Genus Source" name="genusSource" type="java.lang.String" length="64"/>
+    <field column="Genus GUID" name="genusGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subgenus" name="subgenus" type="java.lang.String" length="64"/>
+    <field column="Subgenus Author" name="subgenusAuthor" type="java.lang.String" length="128"/>
+    <field column="Subgenus CommonName" name="subgenusCommonName" type="java.lang.String" length="128"/>
+    <field column="Subgenus Source" name="subgenusSource" type="java.lang.String" length="64"/>
+    <field column="Subgenus GUID" name="subgenusGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Section" name="section" type="java.lang.String" length="64"/>
+    <field column="Section Author" name="sectionAuthor" type="java.lang.String" length="128"/>
+    <field column="Section CommonName" name="sectionCommonName" type="java.lang.String" length="128"/>
+    <field column="Section Source" name="sectionSource" type="java.lang.String" length="64"/>
+    <field column="Section GUID" name="sectionGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subsection" name="subsection" type="java.lang.String" length="64"/>
+    <field column="Subsection Author" name="subsectionAuthor" type="java.lang.String" length="128"/>
+    <field column="Subsection CommonName" name="subsectionCommonName" type="java.lang.String" length="128"/>
+    <field column="Subsection Source" name="subsectionSource" type="java.lang.String" length="64"/>
+    <field column="Subsection GUID" name="subsectionGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Species" name="species" type="java.lang.String" length="64"/>
+    <field column="Species Author" name="speciesAuthor" type="java.lang.String" length="128"/>
+    <field column="Species CommonName" name="speciesCommonName" type="java.lang.String" length="128"/>
+    <field column="Species Source" name="speciesSource" type="java.lang.String" length="64"/>
+    <field column="Species GUID" name="speciesGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subspecies" name="subspecies" type="java.lang.String" length="64"/>
+    <field column="Subspecies Author" name="subspeciesAuthor" type="java.lang.String" length="128"/>
+    <field column="Subspecies CommonName" name="subspeciesCommonName" type="java.lang.String" length="128"/>
+    <field column="Subspecies Source" name="subspeciesSource" type="java.lang.String" length="64"/>
+    <field column="Subspecies GUID" name="subspeciesGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Variety" name="variety" type="java.lang.String" length="64"/>
+    <field column="Variety Author" name="varietyAuthor" type="java.lang.String" length="128"/>
+    <field column="Variety CommonName" name="varietyCommonName" type="java.lang.String" length="128"/>
+    <field column="Variety Source" name="varietySource" type="java.lang.String" length="64"/>
+    <field column="Variety GUID" name="varietyGUID" type="java.lang.String" length="128"/>
+   
+    <field column="Subvariety" name="subvariety" type="java.lang.String" length="64"/>
+    <field column="Subvariety Author" name="subvarietyAuthor" type="java.lang.String" length="128"/>
+    <field column="Subvariety CommonName" name="subvarietyCommonName" type="java.lang.String" length="128"/>
+    <field column="Subvariety Source" name="subvarietySource" type="java.lang.String" length="64"/>
+    <field column="Subvariety GUID" name="subvarietyGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Forma" name="forma" type="java.lang.String" length="64"/>
+    <field column="Forma Author" name="formaAuthor" type="java.lang.String" length="128"/>
+    <field column="Forma CommonName" name="formaCommonName" type="java.lang.String" length="128"/>
+    <field column="Forma Source" name="formaSource" type="java.lang.String" length="64"/>
+    <field column="Forma GUID" name="formaGUID" type="java.lang.String" length="128"/>
+    
+    <field column="Subforma" name="subforma" type="java.lang.String" length="64"/>
+    <field column="Subforma Author" name="subformaAuthor" type="java.lang.String" length="128"/>
+    <field column="Subforma CommonName" name="subformaCommonName" type="java.lang.String" length="128"/>
+    <field column="Subforma Source" name="subformaSource" type="java.lang.String" length="64"/>
+    <field column="Subforma GUID" name="subformaGUID" type="java.lang.String" length="128"/>
+  </table>
+  
+</database>

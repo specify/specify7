@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+  <table classname="edu.ku.brc.specify.datamodel.Agent" table="agent" tableid="5" lazy="true" >
+    <field column="Agent Type" name="agentType" type="java.lang.Integer" />
+    <field column="Abbreviation" name="abbreviation" type="java.lang.String" length="50"/>
+    <field column="Date Of Birth" name="dateOfBirth" type="calendar_date" />
+    <field column="Date Of Death" name="dateOfDeath" type="calendar_date" />
+    <field column="Email" name="email" type="java.lang.String" length="50" />
+    <field column="First Name" name="firstName" type="java.lang.String" length="50"/>
+    <field column="Initials" name="initials" type="java.lang.String" length="8" />
+    <field column="Interests" name="interests" type="java.lang.String" length="255" />
+    <field column="URL" name="url" type="java.lang.String" />
+    <field column="Suffix" name="suffix" type="java.lang.String" />
+    <field column="Job Title" name="jobTitle" type="java.lang.String" length="50" />
+    <field column="Last Name"  name="lastName" type="java.lang.String" length="120"/>
+    <field column="Middle Initials" name="middleInitial" type="java.lang.String" length="50"/>
+    <field column="Remarks" name="remarks" type="java.lang.String" length="500" />
+    <field column="Title"  name="title" type="java.lang.String" length="50"/>
+    <!-- it would really be nice to handle addresses...
+    <field column="Address 1" name="address1" type="java.lang.String" length="255"/>
+    <field column="Address2 1" name="address21" type="java.lang.String" length="255"/>
+    <field column="City 1" name="city1" type="java.lang.String" length="64"/>
+    <field column="State 1" name="state1" type="java.lang.String" length="64"/>
+    <field column="Country 1" name="country1" type="java.lang.String" length="64"/>
+    <field column="PostalCode 1" name="postalCode1" type="java.lang.String" length="32"/>
+    <field column="Phone1 1" name="phone11" type="java.lang.String" length="20"/>
+    -->
+  </table>
+</database>
+  

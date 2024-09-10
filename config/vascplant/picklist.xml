@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list>
+  <picklist name="CollectingMethod" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="cut" value="cut"/>
+    </items>
+  </picklist>
+  <picklist name="CollObjPrepMeth" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Sheet" value="sheet"/>
+    </items>
+  </picklist>
+  <picklist name="TypeStatus" issystem="true" type="0" readonly="true" sizelimit="6">
+    <items>
+      <picklistitem title="No Data" value="No Data"/>
+      <picklistitem title="Cotype" value="Cotype"/>
+      <picklistitem title="Holotype" value="Holotype"/>
+      <picklistitem title="Paratype" value="Paratype"/>
+      <picklistitem title="Syntype" value="Syntype"/>
+      <picklistitem title="Type" value="Type"/>
+    </items>
+  </picklist>
+  <picklist name="Phenology" issystem="true" type="0" readonly="true" sizelimit="6">
+    <items>
+      <picklistitem title="No Data" value="No Data"/>
+      <picklistitem title="flowering" value="flowering"/>
+      <picklistitem title="flowering and fruiting" value="flowering and fruiting"/>
+      <picklistitem title="fruiting" value="fruiting"/>
+      <picklistitem title="mature" value="mature"/>
+      <picklistitem title="seed" value="seed"/>
+      <picklistitem title="seedling" value="seedling"/>
+      <picklistitem title="senescent" value="senescent"/>
+    </items>
+  </picklist>
+</list>

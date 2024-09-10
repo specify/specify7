@@ -1,0 +1,40 @@
+<MatchConfigurations>
+          <MatchConfiguration>
+              <name>Duplicates Matcher</name>
+              <remarks>Looks for duplicate plant specimens.</remarks>
+              <serverUrl>http://sgr.nhm.ku.edu:8983/solr/botany</serverUrl>
+              <nRows>10</nRows>
+              <boostInterestingTerms>true</boostInterestingTerms>
+              <similarityFields>collectors,collector_number,date_collected,date_split,scientific_name,location</similarityFields>
+              <queryFields></queryFields>
+              <filterQuery></filterQuery>
+          </MatchConfiguration><MatchConfiguration>
+              <name>Localities Matcher</name>
+              <remarks>Looks for similar localities.</remarks>
+              <serverUrl>http://sgr.nhm.ku.edu:8983/solr/botany</serverUrl>
+              <nRows>10</nRows>
+              <boostInterestingTerms>true</boostInterestingTerms>
+              <similarityFields>location</similarityFields>
+              <queryFields></queryFields>
+              <filterQuery></filterQuery>
+          </MatchConfiguration><MatchConfiguration>
+              <name>Taxon Matcher</name>
+              <remarks>Looks for similar taxon names.</remarks>
+              <serverUrl>http://sgr.nhm.ku.edu:8983/solr/botany</serverUrl>
+              <nRows>10</nRows>
+              <boostInterestingTerms>true</boostInterestingTerms>
+              <similarityFields>scientific_name</similarityFields>
+              <queryFields></queryFields>
+              <filterQuery></filterQuery>
+          </MatchConfiguration><MatchConfiguration>
+              <name>Coll. Event Matcher</name>
+              <remarks>Looks for similar collecting events by examining collector
+names, localities and dates.</remarks>
+              <serverUrl>http://sgr.nhm.ku.edu:8983/solr/botany</serverUrl>
+              <nRows>10</nRows>
+              <boostInterestingTerms>true</boostInterestingTerms>
+              <similarityFields>collectors,location,date_collected,date_split</similarityFields>
+              <queryFields></queryFields>
+              <filterQuery></filterQuery>
+          </MatchConfiguration>
+      </MatchConfigurations>

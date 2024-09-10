@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+    <plugin name="SGR" class="edu.ku.brc.specify.plugins.sgr.SGRPluginImpl" icon="SGR" tooltip="" pref=""/>
+    <plugin name="IMGPROC" class="edu.ku.brc.specify.plugins.imgproc.ImageWorkFlowPanel" icon="barcode20" tooltip="" pref="ENABLE_IWF"/>
+</plugins>

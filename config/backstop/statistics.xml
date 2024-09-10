@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<statistics resource="stats">
+
+    <stat name="Top Five Species" display="Pie Chart">
+      <chartinfo>
+        <title>TOP5</title>
+        <xaxis>SPECIES</xaxis>
+        <yaxis>NUMSPECIES</yaxis>
+        <tooltip>TOP5_TT</tooltip>
+      </chartinfo>
+      <sql type="text">
+	      <tables>
+	        <id>4</id>
+	      </tables>
+          <![CDATA[SELECT tn,count(tx) AS namecnt FROM (SELECT DT.TaxonId, taxon.TaxonID AS tx, taxon.FullName AS tn FROM taxon,determination AS DT WHERE DT.CollectionMemberID = COLMEMID AND DT.TaxonId = taxon.TaxonID) AS newTable GROUP BY tx ORDER BY namecnt DESC]]>
+      </sql>
+      <slice>
+        <desc row="1" col="1"/>
+        <value row="1" col="2"/>
+      </slice>
+      <slice>
+        <desc row="2" col="1"/>
+        <value row="2" col="2"/>
+      </slice>
+      <slice>
+        <desc row="3" col="1"/>
+        <value row="3" col="2"/>
+      </slice>
+      <slice>
+        <desc row="4" col="1"/>
+        <value row="4" col="2"/>
+      </slice>
+      <slice>
+        <desc row="5" col="1"/>
+        <value row="5" col="2"/>
+      </slice>
+    </stat>
+
+    <stat name="Top 5 Species" display="Bar Chart">
+      <chartinfo>
+        <title>TOP5</title>
+        <tooltip>TOP5_CHRT_TT</tooltip>
+      </chartinfo>
+      <sql type="text">
+	      <tables>
+	        <id>4</id>
+	      </tables>
+          <![CDATA[SELECT tn,count(tx) AS namecnt FROM (SELECT DT.TaxonId, taxon.TaxonID AS tx, taxon.Name AS tn FROM taxon,determination AS DT WHERE DT.CollectionMemeberID = COLMEMID AND DT.TaxonId = taxon.TaxonID) AS newTable GROUP BY tx ORDER BY namecnt DESC]]>
+      </sql>
+      <bar>
+        <desc row="1" col="1"/>
+        <value row="1" col="2"/>
+      </bar>
+      <bar>
+        <desc row="2" col="1"/>
+        <value row="2" col="2"/>
+      </bar>
+      <bar>
+        <desc row="3" col="1"/>
+        <value row="3" col="2"/>
+      </bar>
+      <bar>
+        <desc row="4" col="1"/>
+        <value row="4" col="2"/>
+      </bar>
+      <bar>
+        <desc row="5" col="1"/>
+        <value row="5" col="2"/>
+      </bar>
+    </stat>
+
+    <stat name="ItemsCatalogedLast10Years" display="Bar Chart">
+       <chartinfo>
+         <title>ITEMS_LAST10YR</title>
+         <xaxis>YRS</xaxis>
+         <yaxis>NUMSPECIES</yaxis>
+        <tooltip>ITEMS_LAST10YR_TT</tooltip>
+       </chartinfo>
+       <sql type="custom" name="CatalogedByYearCustomQuery"/>
+    </stat>
+
+    <stat name="Temporial Periods" display="Bar Chart">
+       <chartinfo>
+         <title>TMP_PERIODS</title>
+         <xaxis>YRS</xaxis>
+         <yaxis>NUMSPECIES</yaxis>
+         <tooltip>TMP_PERIODS_TT</tooltip>
+       </chartinfo>
+      <sql type="custom" name="CatByPrev10YearsCustomQuery"/>
+    </stat>
+
+    <stat name="PercentageGrowLast5Years" display="Bar Chart">
+       <chartinfo>
+         <title>PRCNT_GRWTH_5YR</title>
+         <xaxis>YRS</xaxis>
+         <yaxis>PRCT</yaxis>
+         <tooltip>PRCNT_GRWTH_5YR_TT</tooltip>
+       </chartinfo>
+      <sql type="custom" name="PercentageGrowthCustomQuery"/>
+    </stat>
+
+    <stat name="Specimens by Country" display="Bar Chart">
+      <chartinfo>
+        <title>TOP7_SPEC_CNTY</title>
+         <tooltip>TOP7_SPEC_CNTY_TT</tooltip>
+      </chartinfo>
+      <sql type="text">
+	      <tables>
+	        <id>1</id>
+	        <id>3</id>
+	        <id>10</id>
+	      </tables>
+          <![CDATA[select case when g1.rankid = 200 then g1.name when g2.rankid = 200 then g2.name when g3.rankid = 200 then g3.name when g4.rankid = 200 then g4.name when g5.rankid = 200 then g5.name else null end Country, count(distinct collectionobjectid) SpecimenCount from collectionobject co left join collectingevent ce on ce.collectingeventid = co.collectingeventid left join locality l on l.localityid = ce.localityid left join geography g1 on g1.geographyid = l.geographyid left join geography g2 on g2.geographyid = g1.parentid left join geography g3 on g3.geographyid = g2.parentid left join geography g4 on g4.geographyid = g3.parentid left join geography g5 on g5.geographyid = g4.parentid where co.CollectionMemberID = COLMEMID group by 1 order by 2 desc]]>
+      </sql>
+      <bar>
+        <desc row="1" col="1"/>
+        <value row="1" col="2"/>
+      </bar>
+      <bar>
+        <desc row="2" col="1"/>
+        <value row="2" col="2"/>
+      </bar>
+      <bar>
+        <desc row="3" col="1"/>
+        <value row="3" col="2"/>
+      </bar>
+      <bar>
+        <desc row="4" col="1"/>
+        <value row="4" col="2"/>
+      </bar>
+      <bar>
+        <desc row="5" col="1"/>
+        <value row="5" col="2"/>
+      </bar>
+      <bar>
+        <desc row="6" col="1"/>
+        <value row="6" col="2"/>
+      </bar>
+      <bar>
+        <desc row="7" col="1"/>
+        <value row="7" col="2"/>
+      </bar>
+    </stat>
+
+    <stat name="Specimens by Continent" display="Bar Chart">
+      <chartinfo>
+        <title>TOP10_SPEC_CNT</title>
+        <tooltip>TOP10_SPEC_CNT_TT</tooltip>
+      </chartinfo>
+      <sql type="text">
+	      <tables>
+	        <id>1</id>
+	        <id>3</id>
+	        <id>10</id>
+	      </tables>
+          <![CDATA[SELECT g.Name AS Country, (select count(CollectionObjectID) from collectionobject co inner join collectingevent ce on ce.CollectingEventID = co.CollectingEventID inner join locality l on l.Localityid = ce.Localityid inner join geography g2 on g2.GeographyID = l.GeographyID where g2.NodeNumber between g.NodeNumber and g.HighestChildNodeNumber and co.CollectionMemberID = COLMEMID) AS SpecimenCount FROM geography g where g.rankid = 100 ORDER BY SpecimenCount DESC]]>
+      </sql>
+      <bar>
+        <desc row="1" col="1"/>
+        <value row="1" col="2"/>
+      </bar>
+      <bar>
+        <desc row="2" col="1"/>
+        <value row="2" col="2"/>
+      </bar>
+      <bar>
+        <desc row="3" col="1"/>
+        <value row="3" col="2"/>
+      </bar>
+      <bar>
+        <desc row="4" col="1"/>
+        <value row="4" col="2"/>
+      </bar>
+      <bar>
+        <desc row="5" col="1"/>
+        <value row="5" col="2"/>
+      </bar>
+      <bar>
+        <desc row="6" col="1"/>
+        <value row="6" col="2"/>
+      </bar>
+      <bar>
+        <desc row="7" col="1"/>
+        <value row="7" col="2"/>
+      </bar>
+     <bar>
+        <desc row="8" col="1"/>
+        <value row="8" col="2"/>
+      </bar>
+     <bar>
+        <desc row="9" col="1"/>
+        <value row="9" col="2"/>
+      </bar>
+     <bar>
+        <desc row="10" col="1"/>
+        <value row="10" col="2"/>
+      </bar>
+    </stat>
+
+    <stat name="ListOnLoan" display="Table">
+      <tables>
+        <id>5</id>
+        <id>52</id>
+      </tables>
+      <title>ITMS_LOAN</title>
+      <tooltip>ITMS_LOAN_TT</tooltip>
+      <sql type="text">
+          <![CDATA[SELECT DISTINCT loan.LoanNumber AS LoanNumber, loan.LoanDate, loan.CurrentDueDate, agent.FirstName, agent.LastName,loan.OriginalDueDate, lp.Quantity, lp.DescriptionOfMaterial, address.Address, address.City, address.State, address.Country FROM loan INNER JOIN loanpreparation lp ON loan.LoanID =  lp.LoanID INNER JOIN loanagent ON loan.LoanID = loanagent.LoanID INNER JOIN agent ON loanagent.AgentID = agent.AgentID INNER JOIN address ON agent.AgentID = address.AgentID WHERE loan.loanid in (SELECT loanid FROM loan WHERE (IsClosed = false or IsClosed is NULL)) GROUP BY LoanNumber]]>
+      </sql>
+    </stat>
+
+    <stat name="OverdueLoansList" display="Table">
+      <title>OVRDUE_LOANS</title>
+      <tooltip>OVRDUE_LOANS_TT</tooltip>
+      <sql type="text">
+	      <tables>
+	        <id>5</id>
+	        <id>52</id>
+	      </tables>      
+          <![CDATA[SELECT DISTINCT loan.LoanNumber AS LoanNumber, loan.LoanDate, loan.CurrentDueDate, agent.FirstName, agent.LastName, loan.loanid, loan.OriginalDueDate, lp.Quantity, lp.DescriptionOfMaterial, address.Address, address.City, address.State, address.Country FROM loan INNER JOIN loanpreparation lp ON loan.LoanID =  lp.LoanID INNER JOIN loanagent ON loan.LoanID = loanagent.LoanID INNER JOIN agent ON loanagent.AgentID = agent.AgentID INNER JOIN address ON agent.AgentID = address.AgentID WHERE loan.loanid in (SELECT loanid FROM loan WHERE (NOT  (currentduedate is NULL)) and (IsClosed = false or IsClosed is NULL) and datediff(CURDATE(), currentduedate) > 0)  GROUP BY LoanNumber]]>
+      </sql>
+    </stat>
+
+    <stat name="CatalogedLast7DaysDetail" display="Table">
+      <title>CAT_LAST_7DAYS</title>
+      <tooltip>CAT_LAST_7DAYS_TT</tooltip>
+      <sql type="text">
+	      <tables>
+	        <id>1</id>
+	      </tables>      
+          <![CDATA[SELECT co.CatalogNumber,taxon.Name,co.TimestampCreated FROM collectionobject co INNER JOIN determination d ON co.CollectionObjectID = d.CollectionObjectID INNER JOIN taxon ON d.TaxonID = taxon.TaxonID WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= co.TimestampCreated]]>
+      </sql>
+    </stat>
+
+    <stat name="CatalogedLastMonth" display="Table">
+      <title>CAT_LAST_MON</title>
+      <tooltip>CAT_LAST_MON_TT</tooltip>
+      <sql type="text">
+	      <tables>
+	        <id>1</id>
+	      </tables>      
+          <![CDATA[SELECT co.CatalogNumber,taxon.Name,co.TimestampCreated FROM collectionobject co INNER JOIN determination d ON co.CollectionObjectID = d.CollectionObjectID INNER JOIN taxon ON d.TaxonID = taxon.TaxonID WHERE DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= co.TimestampCreated]]>
+      </sql>
+    </stat>
+
+    <stat name="CatalogedLastYear" display="Table">
+      <title>CAT_LAST_YR</title>
+      <tooltip>CAT_LAST_YR_TT</tooltip>
+      <sql type="text">
+	      <tables>
+	        <id>1</id>
+	      </tables>      
+          <![CDATA[SELECT co.CatalogNumber,taxon.Name,co.TimestampCreated FROM collectionobject co INNER JOIN determination d ON co.CollectionObjectID = d.CollectionObjectID INNER JOIN taxon ON d.TaxonID = taxon.TaxonID WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= co.TimestampCreated]]>
+      </sql>
+    </stat>
+
+    <stat name="OverdueLookup" display="Table">
+      <title>LOAN_OVERDUE</title>
+      <tooltip>LOAN_OVERDUE_TT</tooltip>
+      <sql type="text">
+	      <tables>
+	        <id>5</id>
+	        <id>8</id>
+	        <id>52</id>
+	        <id>53</id>
+	      </tables>      
+          <![CDATA[SELECT DISTINCT loan.LoanNumber AS LoanNumber, loan.LoanDate, loan.CurrentDueDate, agent.FirstName, agent.LastName,loan.OriginalDueDate, lp.Quantity, lp.DescriptionOfMaterial, address.Address, address.City, address.State, address.Country FROM loan INNER JOIN loanpreparation lp ON loan.LoanID =  lp.LoanID INNER JOIN loanagent ON loan.LoanID = loanagent.LoanID INNER JOIN agent ON loanagent.AgentID = agent.AgentID INNER JOIN address ON agent.AgentID = address.AgentID WHERE loan.loanid = %s]]>
+      </sql>
+    </stat>
+
+    <!-- ********************* -->
+    <!--  Accession Statistics -->
+    <!-- ********************* -->
+      <stat name="AccessionByDivision" display="Bar Chart">
+          <chartinfo>
+              <title>TOP5_ACC_DIV</title>
+              <tooltip>TOP5_ACC_DIV_TT</tooltip>
+          </chartinfo>
+          <sql type="text">
+		      <tables>
+		        <id>7</id>
+		      </tables>      
+              <![CDATA[SELECT Text1, count(AccessionId) AS DivCount FROM accession WHERE Text1 is NOT NULL GROUP BY Text1 ORDER BY DivCount desc]]>
+          </sql>
+          <bar>
+              <desc row="1" col="1"/>
+              <value row="1" col="2"/>
+          </bar>
+          <bar>
+              <desc row="2" col="1"/>
+              <value row="2" col="2"/>
+          </bar>
+          <bar>
+              <desc row="3" col="1"/>
+              <value row="3" col="2"/>
+          </bar>
+          <bar>
+              <desc row="4" col="1"/>
+              <value row="4" col="2"/>
+          </bar>
+          <bar>
+              <desc row="5" col="1"/>
+              <value row="5" col="2"/>
+          </bar>
+      </stat>
+
+
+      <stat name="Accession" display="Form" viewset="Common" view="Accession" mode="view">
+	      <title>PERMIT_EXP_YR</title>
+          <tooltip>PERMIT_EXP_YR_TT</tooltip>
+          <sql type="text">
+		      <tables>
+		        <id>7</id>
+		      </tables>
+              <![CDATA[SELECT * FROM accession WHERE accession.AccessionID = %s]]>
+          </sql>
+      </stat>
+
+      <stat name="CITESPermitsExpireThisYear" display="Form" viewset="Common" view="PermitForAccessions" mode="view">
+	      <title>CITES_EXP_TR</title>
+          <tooltip>CITES_EXP_TR_TT</tooltip>
+          <sql type="text">
+		      <tables>
+		        <id>6</id>
+		      </tables>
+              <![CDATA[SELECT permit.PermitID, permit.PermitNumber,permit.IssuedDate,permit.StartDate,
+permit.EndDate,permit.RenewalDate,permit.Type FROM permit WHERE permit.PermitID = %s]]>
+          </sql>
+      </stat>
+
+      <stat name="NonCITESPermitsExpireThisYear" display="Form" viewset="Common" view="PermitForAccessions" mode="view">
+          <view mode="display">Permit</view>
+          <title>NONCITES_EXP_TR</title>
+          <tooltip>NONCITES_EXP_TR_TT</tooltip>
+          <sql type="text">
+		      <tables>
+		        <id>6</id>
+		      </tables>
+              <![CDATA[SELECT permit.PermitID, permit.PermitNumber,permit.IssuedDate,permit.StartDate,
+permit.EndDate,permit.RenewalDate,permit.Type FROM permit WHERE permit.PermitID = %s]]>
+          </sql>
+      </stat>
+
+
+      <!-- ********************* -->
+      <!--  Web Statistics -->
+      <!-- ********************* -->
+
+<!--
+      <stat name="Web Stats Visitors" display="Bar Chart">
+          <chartinfo>
+              <title>Web Stats Visitors</title>
+              <xaxis>Months</xaxis>
+              <yaxis>Number of Visitors</yaxis>
+          </chartinfo>
+          <sql type="custom" name="WebStatsVisitorsCustomQuery"/>
+      </stat>
+
+      <stat name="Web Stats Top 5 Taxon" display="Bar Chart">
+          <chartinfo>
+              <title>Web Stats Top 5 Taxon</title>
+              <xaxis>Species</xaxis>
+              <yaxis>Number of Hits</yaxis>
+          </chartinfo>
+          <sql type="custom" name="WebStatsTaxonCustomQuery"/>
+      </stat>
+  -->
+
+  </statistics>

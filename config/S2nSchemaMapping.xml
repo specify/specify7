@@ -1,0 +1,264 @@
+<spexportschemamappings>
+<query  name="BaitDefault" contextName="CollectionObject" contextTableId="1" isFavorite="false" named="true" ordinal="32767" appversion="6.8.00" smushed="false" searchSynonymy="false" selectDistinct="false" countOnly="false" formatAuditRecIds="false">
+<fields><field  position="26" fieldName="Country" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,3.geography.Country" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,3" contextTableIdent="3" columnAlias="Country" formatName="" />
+<field  position="30" fieldName="preparations" isNot="false" isDisplay="true" isPrompt="false" isRelFld="true" alwaysFilter="false" stringId="1,63-preparations.preparation.preparations" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,63-preparations" contextTableIdent="63" columnAlias="Preparations" formatName="" />
+<field  position="27" fieldName="State" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,3.geography.State" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,3" contextTableIdent="3" columnAlias="State" formatName="" />
+<field  position="18" fieldName="isCurrent" isNot="false" isDisplay="false" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations.determination.isCurrent" operStart="6" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations" contextTableIdent="9" columnAlias="isCurrent" formatName="" />
+<field  position="31" fieldName="collectors" isNot="false" isDisplay="true" isPrompt="false" isRelFld="true" alwaysFilter="false" stringId="1,10,30-collectors.collector.collectors" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,30-collectors" contextTableIdent="30" columnAlias="Collectors" formatName="" />
+<field  position="12" fieldName="Order" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Order" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Order" formatName="" />
+<field  position="7" fieldName="guid" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1.collectionobject.guid" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1" contextTableIdent="1" columnAlias="guid" formatName="" />
+<field  position="11" fieldName="Class" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Class" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Class" formatName="" />
+<field  position="32" fieldName="stationFieldNumber" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10.collectingevent.stationFieldNumber" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10" contextTableIdent="10" columnAlias="stationFieldNumber" formatName="" />
+<field  position="6" fieldName="description" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23.collection.description" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23" contextTableIdent="23" columnAlias="description" formatName="" />
+<field  position="13" fieldName="Family" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Family" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Family" formatName="" />
+<field  position="14" fieldName="Genus" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Genus" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Genus" formatName="" />
+<field  position="24" fieldName="longitude1" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2.locality.longitude1" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2" contextTableIdent="2" columnAlias="longitude1" formatName="" />
+<field  position="15" fieldName="Species" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Species" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Species" formatName="" />
+<field  position="22" fieldName="datum" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2.locality.datum" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2" contextTableIdent="2" columnAlias="datum" formatName="" />
+<field  position="25" fieldName="Continent" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,3.geography.Continent" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,3" contextTableIdent="3" columnAlias="Continent" formatName="" />
+<field  position="17" fieldName="Species Author" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4.taxon.Species Author" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4" contextTableIdent="4" columnAlias="Species Author" formatName="" />
+<field  position="19" fieldName="typeStatusName" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations.determination.typeStatusName" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations" contextTableIdent="9" columnAlias="typeStatusName" formatName="" />
+<field  position="21" fieldName="localityName" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2.locality.localityName" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2" contextTableIdent="2" columnAlias="localityName" formatName="" />
+<field  position="4" fieldName="code" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23.collection.code" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23" contextTableIdent="23" columnAlias="Collection/code" formatName="" />
+<field  position="8" fieldName="catalogNumber" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1.collectionobject.catalogNumber" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1" contextTableIdent="1" columnAlias="catalogNumber" formatName="" />
+<field  position="10" fieldName="Phylum" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Phylum" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Phylum" formatName="" />
+<field  position="28" fieldName="County" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,3.geography.County" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,3" contextTableIdent="3" columnAlias="County" formatName="" />
+<field  position="0" fieldName="code" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23,26,96,94.institution.code" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23,26,96,94" contextTableIdent="94" columnAlias="Institution/code" formatName="" />
+<field  position="29" fieldName="timestampModified" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1.collectionobject.timestampModified" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1" contextTableIdent="1" columnAlias="timestampModified" formatName="" />
+<field  position="9" fieldName="Kingdom" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.Kingdom" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Kingdom" formatName="" />
+<field  position="23" fieldName="latitude1" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2.locality.latitude1" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2" contextTableIdent="2" columnAlias="latitude1" formatName="" />
+<field  position="34" fieldName="waterBody" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,124-localityDetails.localitydetail.waterBody" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,124-localityDetails" contextTableIdent="124" columnAlias="waterBody" formatName="" />
+<field  position="5" fieldName="collectionType" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23.collection.collectionType" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23" contextTableIdent="23" columnAlias="collectionType" formatName="" />
+<field  position="20" fieldName="startDate" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10.collectingevent.startDate" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10" contextTableIdent="10" columnAlias="startDate" formatName="" />
+<field  position="16" fieldName="fullName" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,9-determinations,4-preferredTaxon.taxon.fullName" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,9-determinations,4-preferredTaxon" contextTableIdent="4" columnAlias="Preferred Taxon/fullName" formatName="" />
+<field  position="1" fieldName="altName" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23,26,96,94.institution.altName" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23,26,96,94" contextTableIdent="94" columnAlias="altName" formatName="" />
+<field  position="3" fieldName="termsOfUse" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23,26,96,94.institution.termsOfUse" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23,26,96,94" contextTableIdent="94" columnAlias="termsOfUse" formatName="" />
+<field  position="2" fieldName="copyright" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,23,26,96,94.institution.copyright" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,23,26,96,94" contextTableIdent="94" columnAlias="copyright" formatName="" />
+<field  position="33" fieldName="fullName" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10,2,3.geography.fullName" operStart="11" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10,2,3" contextTableIdent="3" columnAlias="Geography/fullName" formatName="" />
+    <field  position="35" fieldName="startDate" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10.collectingevent.startDateNumericMonth" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10" contextTableIdent="10" columnAlias="startDate (Month)" formatName="" />
+    <field  position="36" fieldName="startDate" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10.collectingevent.startDateNumericDay" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10" contextTableIdent="10" columnAlias="startDate (Day)" formatName="" />
+    <field  position="37" fieldName="startDate" isNot="false" isDisplay="true" isPrompt="true" isRelFld="false" alwaysFilter="false" stringId="1,10.collectingevent.startDateNumericYear" operStart="1" operEnd="" startValue="" endValue="" sortType="0" tableList="1,10" contextTableIdent="10" columnAlias="startDate (Year)" formatName="" />
+</fields>
+<spexportschemamapping  mappingName="BaitDefault" description="">
+<spexportschemas>
+<spexportschema  schemaName="Darwin Core" schemaVersion="terms" description="http://rs.tdwg.org/dwc/terms/">
+<spexportschemaitems>
+<spexportschemaitem  fieldName="rightsHolder" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="latestEonOrHighestEonothem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="earliestEonOrLowestEonothem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="individualCount" dataType="xs:positiveInteger" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="kingdom" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="relationshipEstablishedDate" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="higherGeographyID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="associatedOccurrences" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="parentNameUsage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="scientificNameAuthorship" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferencedBy" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimEventDate" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="scientificNameID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="individualID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="higherGeography" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="day" dataType="xs:gDay" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimElevation" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="year" dataType="xs:gYear" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferencedDate" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="nomenclaturalStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferenceProtocol" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="typeStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="specificEpithet" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="member" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementType" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="disposition" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="resourceRelationshipID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="ownerInstitutionCode" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identificationQualifier" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="occurrenceStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identifiedBy" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="order" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="namePublishedInYear" dataType="xs:gYear" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="stateProvince" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="phylum" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identificationVerificationStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="acceptedNameUsage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="footprintWKT" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="minimumDepthInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="geodeticDatum" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="earliestEraOrLowestErathem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="month" dataType="xs:gMonth" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimSRS" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="resourceID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="parentNameUsageID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="locationRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="eventDate" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="startDayOfYear" dataType="dwc:dayOfYearDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="taxonConceptID" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="geologicalContextID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferenceSources" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="nomenclaturalCode" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="decimalLatitude" dataType="dwc:decimalLatitudeDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementDeterminedDate" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="minimumElevationInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferenceRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="references" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimDepth" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="georeferenceVerificationStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="eventID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimLongitude" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="acceptedNameUsageID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="eventRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="county" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="locationAccordingTo" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="occurrenceID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="samplingProtocol" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="associatedSequences" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="preparations" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="bibliographicCitatio" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimCoordinates" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="nameAccordingToID" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="namePublishedIn" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="taxonRank" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="higherClassification" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="earliestPeriodOrLowestSystem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="island" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="vernacularName" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="otherCatalogNumbers" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="bed" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="country" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="family" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="coordinateUncertaintyInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="lithostratigraphicTerms" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="class" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="relationshipRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="sex" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="maximumElevationInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="footprintSpatialFit" dataType="dwc:spatialFitDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="taxonRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="latestPeriodOrHighestSystem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="dynamicProperties" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="lowestBiostratigraphicZone" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="basisOfRecord" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="relationshipAccordingTo" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="continent" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="dataGeneralizations" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="relatedResourceID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="maximumDistanceAboveSurfaceInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="eventTime" dataType="xs:time" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="latestEraOrHighestErathem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="dateIdentified" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="associatedMedia" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="endDayOfYear" dataType="dwc:dayOfYearDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="collectionCode" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="reproductiveCondition" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementValue" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="informationWithheld" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="footprintSRS" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="latestEpochOrHighestSeries" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="coordinatePrecision" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="institutionCode" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="collectionID" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="language" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="countryCode" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="waterbody" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="scientificName" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="originalNameUsage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="rights" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="associatedTaxa" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="recordedBy" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="taxonomicStatus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="samplingEffort" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identificationRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="datasetID" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementUnit" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementAccuracy" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="fieldNumber" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="establishmentMeans" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="genus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="subgenus" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimCoordinateSystem" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="formation" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="maximumDepthInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="accessRights" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="highestBiostratigraphicZone" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="locality" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="fieldNotes" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identificationID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="relationshipOfResource" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="behavior" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="taxonID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimLatitude" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="earliestAgeOrLowestStage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="earliestEpochOrLowestSeries" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="associatedReferences" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="institutionID" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="lifeStage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="type" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementMethod" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="identificationReferences" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="pointRadiusSpatialFit" dataType="dwc:spatialFitDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="occurrenceRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="datasetName" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="infraspecificEpithet" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="originalNameUsageID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="modified" dataType="dwc:dateTimeISO" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="nameAccordingTo" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="municipality" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementRemarks" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="locationID" dataType="dwc:nonEmptyString" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimTaxonRank" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="measurementDeterminedBy" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="habitat" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="islandGroup" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="minimumDistanceAboveSurfaceInMeters" dataType="xs:double" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="group" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="latestAgeOrHighestStage" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="catalogNumber" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="verbatimLocality" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="decimalLongitude" dataType="dwc:decimalLongitudeDataType" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="previousIdentifications" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="recordNumber" dataType="xs:string" formatter="">  </spexportschemaitem>
+<spexportschemaitem  fieldName="namePublishedInID" dataType="xs:string" formatter="">  </spexportschemaitem>
+</spexportschemaitems>
+</spexportschema></spexportschemas>
+<spexportschemaitemmappings>
+<spexportschemaitemmapping  queryField="1,10,2.locality.datum" exportSchema="Darwin Core" exportSchemaItem="geodeticDatum" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23,26,96,94.institution.copyright" exportSchema="Darwin Core" exportSchemaItem="rights" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10.collectingevent.stationFieldNumber" exportSchema="Darwin Core" exportSchemaItem="fieldNumber" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,30-collectors.collector.collectors" exportSchema="Darwin Core" exportSchemaItem="recordedBy" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,124-localityDetails.localitydetail.waterBody" exportSchema="Darwin Core" exportSchemaItem="waterbody" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23.collection.code" exportSchema="Darwin Core" exportSchemaItem="collectionCode" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,3.geography.State" exportSchema="Darwin Core" exportSchemaItem="stateProvince" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23.collection.description" exportSchema="Darwin Core" exportSchemaItem="datasetName" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23.collection.collectionType" exportSchema="Darwin Core" exportSchemaItem="basisOfRecord" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2.locality.longitude1" exportSchema="Darwin Core" exportSchemaItem="decimalLongitude" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23,26,96,94.institution.termsOfUse" exportSchema="Darwin Core" exportSchemaItem="accessRights" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,63-preparations.preparation.preparations" exportSchema="Darwin Core" exportSchemaItem="preparations" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Order" exportSchema="Darwin Core" exportSchemaItem="order" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1.collectionobject.guid" exportSchema="Darwin Core" exportSchemaItem="occurrenceID" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,3.geography.County" exportSchema="Darwin Core" exportSchemaItem="county" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1.collectionobject.catalogNumber" exportSchema="Darwin Core" exportSchemaItem="catalogNumber" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2.locality.localityName" exportSchema="Darwin Core" exportSchemaItem="locality" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Class" exportSchema="Darwin Core" exportSchemaItem="class" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Phylum" exportSchema="Darwin Core" exportSchemaItem="phylum" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.fullName" exportSchema="Darwin Core" exportSchemaItem="scientificName" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations.determination.isCurrent" exportSchema="" exportSchemaItem="" exportedFieldName="isCurrent" remarks="" />
+<spexportschemaitemmapping  queryField="1.collectionobject.timestampModified" exportSchema="Darwin Core" exportSchemaItem="modified" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Kingdom" exportSchema="Darwin Core" exportSchemaItem="kingdom" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4.taxon.Species Author" exportSchema="Darwin Core" exportSchemaItem="scientificNameAuthorship" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,3.geography.Continent" exportSchema="Darwin Core" exportSchemaItem="continent" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations.determination.typeStatusName" exportSchema="Darwin Core" exportSchemaItem="typeStatus" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,3.geography.Country" exportSchema="Darwin Core" exportSchemaItem="country" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23,26,96,94.institution.code" exportSchema="Darwin Core" exportSchemaItem="institutionCode" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Species" exportSchema="Darwin Core" exportSchemaItem="specificEpithet" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2.locality.latitude1" exportSchema="Darwin Core" exportSchemaItem="decimalLatitude" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,23,26,96,94.institution.altName" exportSchema="Darwin Core" exportSchemaItem="institutionID" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10,2,3.geography.fullName" exportSchema="Darwin Core" exportSchemaItem="higherGeography" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Family" exportSchema="Darwin Core" exportSchemaItem="family" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,10.collectingevent.startDate" exportSchema="Darwin Core" exportSchemaItem="eventDate" exportedFieldName="" remarks="" />
+<spexportschemaitemmapping  queryField="1,9-determinations,4-preferredTaxon.taxon.Genus" exportSchema="Darwin Core" exportSchemaItem="genus" exportedFieldName="" remarks="" />
+    <spexportschemaitemmapping  queryField="1,10.collectingevent.startDateNumericMonth" exportSchema="Darwin Core" exportSchemaItem="month" exportedFieldName="" remarks="" />
+    <spexportschemaitemmapping  queryField="1,10.collectingevent.startDateNumericDay" exportSchema="Darwin Core" exportSchemaItem="day" exportedFieldName="" remarks="" />
+    <spexportschemaitemmapping  queryField="1,10.collectingevent.startDateNumericYear" exportSchema="Darwin Core" exportSchemaItem="year" exportedFieldName="" remarks="" />
+</spexportschemaitemmappings>
+</spexportschemamapping></query>
+</spexportschemamappings>

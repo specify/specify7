@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<boxes>
+  <box name="Statistics" title="STS_CHART">
+      <!-- Collection Manager Stats -->
+      <item name="Top Five Species" title="TOP5" type="Pie Chart" icon="Pie Chart"/>
+      <item name="ItemsCatalogedLast10Years" title="LAST10" type="Bar Chart" icon="Bar Chart"/>
+      <item name="Specimens by Country" title="BYCTR" type="Bar Chart" icon="Bar Chart"/>
+  </box>
+</boxes>

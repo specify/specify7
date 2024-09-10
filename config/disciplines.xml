@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<disciplines>
+    <!-- Types
+        0 - Collection
+        1 - Tissues
+        2 - Accessions 
+        3 - Anthropology 
+        4 - Minerals 
+    -->
+    
+    <discipline name="fish"         title="Ichthyology"  abbrev="FISH" isembedce="false" type="0"/>
+    <discipline name="herpetology"  title="Herpetology"  abbrev="HRP"  isembedce="true" type="0"/>
+    <discipline name="paleobotany"  title="Paleobotany"  abbrev="PLB"  folder="invertpaleo" isembedce="true" type="0"/>
+    <discipline name="invertpaleo"  title="Invertebrate Paleontology"  abbrev="IVTP" isembedce="true" type="0"/>
+    <discipline name="vertpaleo"    title="Vertebrate Paleontology"    abbrev="VRTP" isembedce="true" type="0"/>
+    <discipline name="bird"         title="Ornithology"  abbrev="ORN"  isembedce="true" type="0"/>
+    <discipline name="mammal"       title="Mammalogy"    abbrev="MAM"  isembedce="true" type="0"/>
+    <discipline name="insect"       title="Entomology"   abbrev="ENTO" isembedce="true" type="0"/>
+    <discipline name="botany"       title="Botany"       abbrev="BNTY" isembedce="true" type="0"/>
+    <discipline name="invertebrate" title="Invertebrate Zoology" abbrev="IVTZ" isembedce="true" type="0"/>
+    <!--  <discipline name="vascplant"    title="Vascular Plants"     abbrev="VP" folder="botany" isembedce="true"    type="0"/>  -->
+    <discipline name="minerals"     title="Mineralogy"   abbrev="MIN"  isembedce="true" type="4"/>
+    <!--  <discipline name="fungi"        title="Mycology"     abbrev="MYCO"  folder="botany" isembedce="true" type="0"/> -->
+    <discipline name="anthropology" title="Anthropology" abbrev="ANTH" isembedce="true" type="3"/>
+    
+    <!-- 
+    
+    <discipline name="tissue"       title="Tissue"       abbrev="" isembedce="true" type="1"/>
+    <discipline name="accessions"   title="Accessions"   abbrev="" isembedce="true" type="2"/>
+    <discipline name="animal"       title="Animal"     abbrev="" isembedce="true" type="0"/>
+    -->
+    
+</disciplines>

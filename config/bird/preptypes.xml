@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vector>
+    <preptype name="Egg" isloanable="true"/>
+    <preptype name="Feather" isloanable="true"/>
+    <preptype name="Misc" isloanable="true"/>
+    <preptype name="Mounted" isloanable="true"/>
+    <preptype name="Nest" isloanable="true"/>
+    <preptype name="Skel" isloanable="true"/>
+    <preptype name="Skin" isloanable="true"/>
+</vector>

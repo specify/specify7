@@ -1,0 +1,57 @@
+<list>
+  <picklist name="BiologicalSex" issystem="true" type="0" readonly="true" sizelimit="4">
+    <items>
+      <picklistitem title="Unknown" value="Unknown"/>
+      <picklistitem title="Both" value="Both"/>
+      <picklistitem title="Female" value="Female"/>
+      <picklistitem title="Male" value="Male"/>
+    </items>
+  </picklist>
+  <picklist name="BiologicalStage" issystem="true" type="0" readonly="true" sizelimit="10">
+    <items>
+      <picklistitem title="egg" value="egg"/>
+      <picklistitem title="juvenile" value="juvenile"/>
+      <picklistitem title="nymph" value="nymph"/>
+      <picklistitem title="immature" value="immature"/>
+      <picklistitem title="embryo" value="embryo"/>
+      <picklistitem title="seed" value="seed"/>
+      <picklistitem title="hatchling" value="hatchling"/>
+      <picklistitem title="adult" value="adult"/>
+      <picklistitem title="larva" value="larva"/>
+      <picklistitem title="pupa" value="pupa"/>
+    </items>
+  </picklist>
+  <picklist name="CollectingMethod" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="trap" value="trap"/>
+      <picklistitem title="boat electro-shocker" value="boat electro-shocker"/>
+      <picklistitem title="seine" value="seine"/>
+      <picklistitem title="&lt;no data&gt;" value="&lt;no data&gt;"/>
+      <picklistitem title="hook &amp; line" value="hook &amp; line"/>
+    </items>
+  </picklist>
+  <picklist name="CollObjPrepMeth" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="EtOH" value="EtOH"/>
+      <picklistitem title="C&amp;S" value="C&amp;S"/>
+      <picklistitem title="x-ray" value="x-ray"/>
+      <picklistitem title="image" value="image"/>
+      <picklistitem title="skeleton" value="skeleton"/>
+    </items>
+  </picklist>
+<picklist name="Typestatus" issystem="true" type="0" readonly="true" sizelimit="11">
+    <items>
+      <picklistitem title="No Data" value="No Data"/>
+      <picklistitem title="Cotype" value="Cotype"/>
+      <picklistitem title="Holotype" value="Holotype"/>
+      <picklistitem title="Lectotype" value="Lectotype"/>
+      <picklistitem title="Neotype" value="Neotype"/>
+      <picklistitem title="Paralectotype" value="Paralectotype"/>
+      <picklistitem title="Paratopotype" value="Paratopotype"/>
+      <picklistitem title="Paratype" value="Paratype"/>
+      <picklistitem title="Syntype" value="Syntype"/>
+      <picklistitem title="Topotype" value="Topotype"/>
+      <picklistitem title="Type" value="Type"/>
+    </items>
+  </picklist>
+</list>

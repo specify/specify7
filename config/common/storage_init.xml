@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tree>
+	<treedef>
+		<level name="Site"       enforced="true"  infullname="false" rank="0">
+              <locale lang="pt" country="" var="" text="Sítio"/>
+        </level>
+		<level name="Building"   enforced="false"  infullname="false" rank="100">
+              <locale lang="pt" country="" var="" text="Edifício"/>
+        </level>
+        <level name="Collection" enforced="false" infullname="false" rank="150">
+              <locale lang="pt" country="" var="" text="Coleção"/>
+        </level>
+		<level name="Room"       enforced="false" infullname="false" rank="200"> 
+              <locale lang="pt" country="" var="" text="Sala"/>
+        </level>
+        <level name="Aisle"      enforced="false" infullname="false" rank="250">
+              <locale lang="pt" country="" var="" text="Corredor"/>
+        </level>
+        <level name="Cabinet"    enforced="false" infullname="false" rank="300">
+              <locale lang="pt" country="" var="" text="Armário"/>
+        </level>
+        <level name="Shelf"      enforced="false" infullname="false" rank="350">
+              <locale lang="pt" country="" var="" text="Estante"/>
+        </level>
+        <level name="Box"        enforced="false" infullname="false" rank="400">
+              <locale lang="pt" country="" var="" text="Caixa"/>
+        </level>
+        <level name="Rack"       enforced="false" infullname="Rack" rank="450">
+              <locale lang="pt" country="" var="" text="Prateleira"/>
+        </level>
+        <level name="Vial"       enforced="false" infullname="false" rank="500">
+              <locale lang="pt" country="" var="" text="Frasco"/>
+        </level>
+    </treedef>
+	<nodes/>
+</tree>

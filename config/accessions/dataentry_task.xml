@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<views>
+    <view name="Accession" title="Accession" viewset="Accession Views" view="Accession" iconname="Accession" tooltip="Create a New Accession"/>    
+    <view name="Agent" title="Agent" viewset="Accession Views" view="Agent" iconname="Agent" tooltip="Create a New Agent"/>    
+    <view name="Permit" title="Permit" viewset="Accession Views" view="Permit" iconname="Permit" tooltip="Create a New Permit"/>    
+</views>

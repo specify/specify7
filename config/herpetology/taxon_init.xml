@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tree>
+
+	<treedef>
+        <level name="Life" enforced="true" infullname="false" rank="0">
+              <locale lang="pt" country="" var="" text="Vida"/>
+        </level>
+        <level name="Kingdom" enforced="true" infullname="false" rank="10">
+              <locale lang="pt" country="" var="" text="Reino"/>
+        </level>
+        <level name="Phylum" enforced="true" infullname="false" rank="30">
+              <locale lang="pt" country="" var="" text="Filo"/>
+        </level>
+        <level name="Subphylum" enforced="false" infullname="false" rank="40">
+              <locale lang="pt" country="" var="" text="Subfilo"/>
+        </level>
+        <level name="Class" enforced="true" infullname="false" rank="60">
+              <locale lang="pt" country="" var="" text="Classe"/>
+        </level>
+        <level name="Subclass" enforced="false" infullname="false" rank="70">
+              <locale lang="pt" country="" var="" text="Subclasse"/>
+        </level>
+        <level name="Superorder" enforced="false" infullname="false" rank="90">
+              <locale lang="pt" country="" var="" text="Superordem"/>
+        </level>
+        <level name="Order" enforced="true" infullname="false" rank="100">
+              <locale lang="pt" country="" var="" text="Ordem"/>
+        </level>
+        <level name="Family" enforced="true" infullname="false" rank="140">
+              <locale lang="pt" country="" var="" text="Família"/>
+        </level>
+        <level name="Subfamily" enforced="false" infullname="false" rank="150">
+              <locale lang="pt" country="" var="" text="Subfamília"/>
+        </level>
+        <level name="Genus"  enforced="true" infullname="true" rank="180">
+              <locale lang="pt" country="" var="" text="Género"/>
+        </level>
+        <level name="Species" enforced="true" infullname="true" rank="220">
+              <locale lang="pt" country="" var="" text="Espécie"/>
+        </level>
+        <level name="Subspecies" enforced="false" infullname="true" rank="230">
+              <locale lang="pt" country="" var="" text="Subespécie"/>
+        </level>  
+    </treedef>
+	
+	<nodes/>
+</tree>

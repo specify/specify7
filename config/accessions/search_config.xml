@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<searches>
+    <!-- ************************************** -->
+    <!--     These are for Express Search       -->
+    <!-- ************************************** -->
+    <express>
+        <table id="1" tableid="5" indexed="true" name="Agent" title="Agent" priority="1" color="30, 144, 255">
+            <outofdate>
+                <table name="agent" title="Agent"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select ColFieldsDef from agent]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">AgentID</col>
+                    <col pos="2">FirstName</col>
+                    <col pos="3">LastName</col>
+                </cols>
+            </index>
+            <detailView icon="Agent">
+                <sql>
+                    <![CDATA[select FirstName,LastName,AgentID from agent where AgentID in (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="FirstName" text="First Name"/>
+                    <caption col="LastName" text="Last Name"/>
+                    <caption col="AgentID" text="AgentID" visible="false"/>
+                </captions>
+                <recordset tabletype="5" col="3"/>
+            </detailView>
+        </table>
+    
+        <table id="2" tableid="6" indexed="true" name="Permit" title="Permits" priority="1" color="30, 144, 255">
+            <outofdate>
+                <table name="permit" title="Permits"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select  ColFieldsDef from permit]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">PermitID</col>
+                    <col pos="2">PermitNumber</col>
+                    <col pos="3">Type</col>
+                    <col pos="4">IssuedDate</col>
+                    <col pos="5">StartDate</col>
+                </cols>
+            </index>
+            <detailView icon="Permit">
+                <sql>
+                    <![CDATA[select PermitNumber,Type,IssuedDate,StartDate,PermitID from permit where PermitID in (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="PermitNumber" text="Permit Number"/>
+                    <caption col="Type" text="Type"/>
+                    <caption col="IssuedDate" text="Issued Date"/>
+                    <caption col="StartDate" text="StartDate"/>
+                    <caption col="PermitID" text="PermitID" visible="false"/>
+                </captions>
+                <recordset tabletype="6" col="5"/>
+            </detailView>
+        </table>
+    
+        <table id="3" tableid="7" indexed="true" name="Accession" title="Accession" priority="1" color="30, 144, 255">
+            <outofdate>
+                <table name="accession" title="Accessions"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select ColFieldsDef from accession]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">AccessionID</col>
+                    <col pos="2">Number</col>
+                    <col pos="3" key="Accessioned">DateAccessioned</col>
+                    <col pos="4">Status</col>
+                    <col pos="5">Type</col>
+                    <col pos="6">Text1</col>
+                </cols>
+            </index>
+            <detailView icon="Accession">
+                <sql>
+                    <![CDATA[select AccessionID,Number,DateAccessioned,Status,Type,Text1 from accession where AccessionID in (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="AccessionID" text="AccessionID" visible="false"/>
+                    <caption col="Number" text="Number"/>
+                    <caption col="DateAccessioned" text="Date Accessioned"/>
+                    <caption col="Status" text="Status"/>
+                    <caption col="Type" text="Type"/>
+                    <caption col="Text1" text="Division"/>
+                </captions>
+                <recordset tabletype="7" col="1"/>
+            </detailView>
+        </table>
+    
+        <table id="4" tableid="8" indexed="true" name="Address" title="Address" priority="1" color="30, 144, 255">
+            <outofdate>
+                <table name="address" title="Address"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select ColFieldsDef from address;]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">AddressID</col>
+                    <col pos="2" key="address">Address</col>
+                    <col pos="3" key="address">Address2</col>
+                    <col pos="4" key="city">City</col>
+                    <col pos="5" key="state">State</col>
+                    <col pos="6" key="country">Country</col>
+                    <col pos="7" key="postalcode">PostalCode</col>
+                </cols>
+            </index>
+            <detailView icon="Address">
+                <sql>
+                    <![CDATA[select address,city,state,AddressID from address where AddressID in (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="address" text="Address"/>
+                    <caption col="city" text="City"/>
+                    <caption col="state" text="State"/>
+                    <caption col="AddressID" text="ID" visible="false"/>
+                </captions>
+                <recordset tabletype="6" col="4"/>
+            </detailView>
+        </table>
+    
+        <table id="5" tableid="52" indexed="true" name="Loan" title="Loans" priority="1" color="30, 144, 255">
+            <outofdate>
+                <table name="loan" title="Loans"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select ColFieldsDef from loan;]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">LoanID</col>
+                    <col pos="2">LoanNumber</col>
+                    <col pos="3">LoanDate</col>
+                    <col pos="4">CurrentDueDate</col>
+                    <col pos="5">OriginalDueDate</col>
+                    <col pos="6">DateClosed</col>
+                    <col pos="7">Category</col>
+                </cols>
+            </index>
+            <detailView icon="">
+                <sql>
+                    <![CDATA[select LoanID,LoanNumber,LoanDate,CurrentDueDate,OriginalDueDate,DateClosed,Category FROM loan where (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="LoanID" text="ID"  visible="false"/>
+                    <caption col="LoanNumber" text="Number"/>
+                    <caption col="LoanDate" text="Loan Date"/>
+                    <caption col="CurrentDueDate" text="Current Due Date"/>
+                    <caption col="OriginalDueDate" text="Original Due Date"/>
+                    <caption col="DateClosed" text="Date Closed"/>
+                    <caption col="Category" text="Category"/>
+                </captions>
+                <recordset tabletype="52" col="1"/>
+            </detailView>
+        </table>
+      
+        <table id="6" tableid="10000" indexed="true" usehitscache="true" name="Forms" title="Forms" priority="2" color="95, 158, 160">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="Form">
+                <sql/>
+                <captions>
+                    <caption col="form" text="Form Name"/>
+                    <caption col="type" text="Type" visible="false"/>
+                    <caption col="field" text="Label Name"/>
+                    <caption col="desc" text="Where Used"/>
+                </captions>
+                <recordset tabletype="10000" col="2"/>
+            </detailView>
+        </table>
+        
+        <table id="7" tableid="20000" indexed="true" usehitscache="true" name="Labels" title="Labels" priority="3" color="189, 183, 107">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="Form">
+                <sql/>
+                <captions>
+                    <caption col="file" text="File Name"/>
+                    <caption col="labelName" text="Label Name"/>
+                    <caption col="type" text="Type"/>
+                    <caption col="label" text="Label"/>
+                </captions>
+                <recordset tabletype="20000" col="2"/>
+            </detailView>
+        </table>
+        
+        <table id="11" tableid="7" indexed="false" name="Accession to Agent" title="Accession to Agent" priority="1" color="30, 144, 144">
+            <outofdate>
+                <table name="agent" title="Agent"/>
+                <table name="accession" title="Accession"/>
+            </outofdate>
+            <index>
+                <sql>
+                    <![CDATA[select ColFieldsDef From accession 
+Inner Join accessionagent ON accessionagent.AccessionID = accession.AccessionID 
+Inner Join agent ON agent.AgentID = accessionagent.AgentID 
+]]>
+                </sql>
+                <cols>
+                    <col pos="1" id="true">accession.AccessionID</col>
+                    <col pos="2">Number</col>
+                    <col pos="3">Type</col>
+                    <col pos="4">Status</col>
+                    <col pos="5">DateAccessioned</col>
+                    <col pos="6">DateReceived</col>
+                    <col pos="7">FirstName</col>
+                    <col pos="8">LastName</col>
+                    <join pos="9" tableid="12">accessionagent.AccessionID</join>
+                    <join pos="10" tableid="5">agent.AgentID</join>
+                </cols>
+            </index>
+            <detailView icon="Accession">
+                <sql>
+                    <![CDATA[Select 
+accession.AccessionID, 
+Number,  
+Type, 
+Status, 
+DateAccessioned, 
+DateReceived, 
+FirstName, 
+LastName 
+From accession 
+Inner Join accessionagent ON accessionagent.AccessionID = accession.AccessionID 
+Inner Join agent ON agent.AgentID = accessionagent.AgentID 
+where accession.AccessionID in (%s) Order By accession.Number Asc]]>
+                </sql>
+                <captions>
+                    <caption col="accession.AccessionID" text="AccessionID" visible="false"/>
+                    <caption col="Number" text="Number"/>
+                    <caption col="Type" text="Type"/>
+                    <caption col="Status" text="Status"/>
+                    <caption col="DateAccessioned" text="Date Accessioned"/>
+                    <caption col="DateReceived" text="Date Received"/>
+                    <caption col="FirstName" text="First Name"/>
+                    <caption col="LastName" text="Last Name"/>
+                </captions>
+                <recordset tabletype="7" col="1"/>
+            </detailView>
+        </table>
+
+    </express>
+    
+    <!-- ************************************************* -->
+    <!--  These are for Other Non-Express Search Searches  -->
+    <!-- ************************************************* -->
+    <generic>
+        <table id="8" tableid="5" name="AgentSearch" title="Agent Search" priority="1" color="30, 144, 255">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="">
+                <sql>
+                    <![CDATA[select * from (select agent.AgentID,
+agent.FirstName,  agent.LastName, agent.Email, address.Address, address.City,
+address.State, address.PostalCode, address.Country From agent  Left Join address ON agent.AgentID = address.AgentID) as newTable where (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="AgentID" text="AgentID"  visible="false"/>
+                    <caption col="FirstName" text="First Name"/>
+                    <caption col="LastName" text="Last Name"/>
+                    <caption col="EMail" text="EMail"/>
+                    <caption col="Address" text="Address"/>
+                    <caption col="City" text="City"/>
+                    <caption col="State" text="State"/>
+                    <caption col="Postalcode" text="Zip"/>
+                    <caption col="Country" text="Country"/>
+                </captions>
+                <recordset tabletype="5" col="1"/>
+            </detailView>
+        </table>
+        
+        <table id="9" tableid="6" name="PermitSearch" title="Permit" priority="1" color="30, 144, 255">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="">
+                <sql>
+                    <![CDATA[Select * from (select permit.PermitID, permit.PermitNumber,agent.LastName,permit.IssuedDate,permit.StartDate,
+permit.EndDate,permit.RenewalDate,permit.Type From permit left Join agent ON permit.IssuedByID = agent.AgentID) as newTable where (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="PermitID" text="PermitID"  visible="false"/>
+                    <caption col="PermitNumber" text="Permit Number"/>
+                    <caption col="LastName" text="Issuer LastName"/>
+                    <caption col="IssuedDate" text="Issued Date"/>
+                    <caption col="StartDate" text="Start Date"/>
+                    <caption col="EndDate" text="End Date"/>
+                    <caption col="RenewalDate" text="Renewal Date"/>
+                    <caption col="Type" text="Type"/>
+                </captions>
+                <recordset tabletype="6" col="1"/>
+            </detailView>
+        </table>
+        
+        <table id="10" tableid="7" name="AccessionSearch" title="Accessions" priority="1" color="30, 144, 255">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="">
+                <sql>
+                    <![CDATA[select accession.AccessionID, accession.Number, accession.Status, accession.Type, accession.Text1, 
+accession.DateAccessioned, accession.DateReceived From accession where (%s)]]>
+                </sql>
+                <captions>
+                    <caption col="AccessionID" text="AccessionID"  visible="false"/>
+                    <caption col="Number" text="Number"/>
+                    <caption col="Status" text="Status"/>
+                    <caption col="Type" text="Type"/>
+                    <caption col="Text1" text="Division"/>
+                    <caption col="DateAccessioned" text="Date Accessioned"/>
+                    <caption col="DateReceived" text="Date Received"/>
+                </captions>
+                <recordset tabletype="6" col="1"/>
+            </detailView>
+        </table>        
+        
+        <table id="11" tableid="31" name="ContainerOwnerSearch" title="Container Owner" priority="1" color="30, 144, 255">
+            <outofdate/>
+            <index>
+                <sql/>
+                <cols/>
+            </index>
+            <detailView icon="">
+                <sql>
+                    <![CDATA[SELECT cn.ContainerID, co.CollectionObjectID FROM container cn LEFT JOIN collectionobject co ON cn.ContainerID = co.ContainerOwenerID WHERE (%s) AND co.CollectionObjectID IS NULL]]>
+                </sql>
+                <captions>
+                    <caption col="ContainerID" text="ContainerID"  visible="false"/>
+                    <caption col="Name" text="Name"/>
+                </captions>
+                <recordset tabletype="6" col="1"/>
+            </detailView>
+        </table>        
+        
+    </generic>        
+</searches>

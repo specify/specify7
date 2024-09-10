@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="LichensLabel" language="java" pageWidth="324" pageHeight="252" columnWidth="288" leftMargin="18" rightMargin="18" topMargin="18" bottomMargin="18">
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.DataSource" value="Hyla SQL"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
+	<property name="com.jasperassistant.designer.Units" value="Inches"/>
+	<property name="com.jasperassistant.designer.Grid" value="true"/>
+	<parameter name="itemnum" class="java.lang.Object">
+		<parameterDescription><![CDATA[Please the Catalog Number]]></parameterDescription>
+	</parameter>
+	<queryString><![CDATA[Select collectionobject.FieldNumber as fieldNum, collectionobjectcatalog.CatalogNumber as cat_no, collectionobjectcatalog.Name as name, taxonname.TaxonName as species, agent.LastName as catalogedBy, locality.LocalityName as locality, locality.Latitude1 as latitude, locality.Longitude1 as longitude, collectionobjectcatalog.TimestampCreated as date From determination Inner Join collectionobjectcatalog ON collectionobjectcatalog.CollectionObjectCatalogID = determination.BiologicalObjectID AND (collectionobjectcatalog.CatalogNumber $P!{itemnum}) LEFT JOIN taxonname ON determination.TaxonNameID = taxonname.TaxonNameID LEFT JOIN agent ON determination.DeterminerID = agent.AgentID Inner Join collectionobject ON collectionobjectcatalog.CollectionObjectCatalogID = collectionobject.CollectionObjectID Inner Join collectingevent ON collectionobject.CollectingEventID = collectingevent.CollectingEventID LEFT JOIN locality ON collectingevent.LocalityID = locality.LocalityID;]]></queryString>
+	<field name="cat_no" class="java.lang.String">
+	</field>
+	<field name="catalogedBy" class="java.lang.String">
+	</field>
+	<field name="date" class="java.util.Date">
+	</field>
+	<field name="fieldNum" class="java.lang.String">
+	</field>
+	<field name="latitude" class="java.lang.Float">
+	</field>
+	<field name="locality" class="java.lang.String">
+	</field>
+	<field name="longitude" class="java.lang.Float">
+	</field>
+	<field name="name" class="java.lang.String">
+	</field>
+	<field name="species" class="java.lang.String">
+	</field>
+	<detail>
+		<band height="216">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="288" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LICHENS OF KANSAS, USA]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="0" y="18" width="78" height="10"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="188" width="288" height="27"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Division of Plants
+Address Line #3, Lawrence KS USA]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="30" width="259" height="15"/>
+				<textElement isStyledText="true"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["<style isItalic=\"true\">"+$F{species}+ "</style> "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="51" width="288" height="14"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{locality}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="173" width="191" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{catalogedBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="193" y="173" width="93" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("dd MMMM yyyy")).format($F{date})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

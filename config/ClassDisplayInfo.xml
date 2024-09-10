@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classes>
+	
+    <class name="Author" linkfield="orderNumber" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>habitatAttributes</field>
+		</skip>
+		<order>
+			<field>orderNumber</field>
+		</order>
+	</class>
+	
+	<class name="Taxon" linkfield="name" indexfield="fullName">
+	    <title field="fullName"/>
+		<skip>
+			<field>highestChildNodeNumber</field>
+			<field>definition</field>
+			<field>nodeNumber</field>
+			<field>unitInd1</field>
+			<field>unitName1</field>
+			<field>unitInd2</field>
+			<field>unitName2</field>
+			<field>unitInd3</field>
+			<field>unitName3</field>
+			<field>unitInd4</field>
+			<field>unitName4</field>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupNumber</field>
+			<field>determinations</field>
+            <field search="true">rankId</field>
+            <field search="true">fullName</field>
+		</skip>
+		<order>
+			<field>definitionItem</field>
+			<field>name</field>
+			<field>commonName</field>
+			<field>taxonomicSerialNumber</field>
+			<field>environmentalProtectionStatus</field>
+			<field>author</field>
+			<field>source</field>
+			<field>guid</field>
+			<field>remarks</field>
+		</order>
+		<additional>
+			<field type="set" label="Collection Objects" labellevel="determinations" singlecell="true">determinations.collectionObject</field>
+		</additional>
+	</class>
+	
+    <class name="Geography" linkfield="name" indexfield="name">
+        <title field="fullName"/>
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field search="true">fullName</field>
+		</skip>
+	</class>
+	
+    <class name="Storage" linkfield="name" indexfield="fullName">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+		</skip>
+	</class>
+	
+    <class name="CollectionObject" linkfield="catalogNumber" indexfield="catalogNumber">
+        <title getter="edu.ku.brc.specify.web.ColObjTitleGetter"/>
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>collectionObjectAttrs</field>
+			<field>collectionObjectAttribute</field>
+			<field>modifier</field>
+			<field>attrs</field>
+			<field>yesNo1</field>
+			<field>yesNo2</field>
+			<field>yesNo3</field>
+			<field>yesNo4</field>
+			<field>yesNo5</field>
+			<field>yesNo6</field>
+		</skip>
+		<order>
+			<field display="false">catalogNumber</field>
+			<field>fieldNumber</field>
+			<field>catalogedDate</field>
+			<field>catalogedDateVerbatim</field>
+			<field>name</field>
+			<field>description</field>
+			<field>guid</field>
+			<field>remarks</field>
+		</order>
+		<stats>
+			<stat url="SpecifyExplorer?id=ChartCO">Cataloged By Decade</stat>
+	    </stats>
+	</class>
+		
+    <class name="Locality" linkfield="namedPlace" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>attrs</field>
+		</skip>
+		<order>
+			<field>namedPlace</field>
+			<field>relationToNamedPlace</field>
+			<field>localityName</field>
+			<field>baseMeridian</field>
+			<field>range</field>
+			<field>rangeDirection</field>
+			<field>township</field>
+			<field>townshipDirection</field>
+			<field>section</field>
+			<field>sectionPart</field>
+			<field>verbatimElevation</field>
+			<field>originalElevationUnit</field>
+			<field>minElevation</field>
+			<field>maxElevation</field>
+			<field>elevationMethod</field>
+			<field>elevationAccuracy</field>
+			<field>originalLatLongUnit</field>
+			<field>latLongType</field>
+			<field>latitude1</field>
+			<field>longitude1</field>
+			<field>latitude2</field>
+			<field>longitude2</field>
+			<field>latLongMethod</field>
+			<field>latLongAccuracy</field>
+			<field>guid</field>
+			<field>remarks</field>
+		</order>
+	</class>
+	
+    <class name="Agent" linkfield="lastName" indexfield="lastName" useindentity="true">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>lastName</field>
+			<field>firstName</field>
+			<field>name</field>
+			<field>address</field>
+			<field>name</field>
+			<field>guid</field>
+			<field>remarks</field>
+			<field>addresses</field>
+			<field>accessionAgents</field>
+			<field>collectors</field>
+		</order>
+	</class>
+	
+    <class name="Address" linkfield="address" indexfield="city">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>address</field>
+			<field>address2</field>
+			<field>city</field>
+			<field>state</field>
+			<field>country</field>
+			<field>postalcode</field>isPrimary
+			<field>isPrimary</field>
+			<field>phone1</field>
+			<field>fax</field>
+		</order>
+	</class>
+	
+    <class name="CollectingEvent" linkfield="startDate" indexfield="startDate">
+        <title field="startDate"/>
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>habitatAttributes</field>
+			<field search="true">startDate</field>
+		</skip>
+		<order>
+			<field>startDate</field>
+		</order>
+		<stats>
+			<stat url="SpecifyExplorer?id=ChartCE">Collecting Events By Decade</stat>stat>
+	    </stats>
+	</class>
+	
+    <class name="Determination" linkfield="status" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>status</field>
+			<field>determinedDate</field>
+			<field>determiner</field>
+		</order>
+	</class>
+	
+    <class name="Preparation" linkfield="prepType" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>preparationAttributes</field>
+			<field>attrs</field>
+		</skip>
+		<order>
+			<field>prepType</field>
+			<field>countAmt</field>
+			<field>preparedDate</field>
+			<field>preparedByAgent</field>
+		</order>
+	</class>
+	
+    <class name="Collector" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field>orderNumber</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="Shipment" linkfield="shipmentNumber" indexfield="shipmentNumber">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>shipmentDate</field>
+			<field>shipmentNumber</field>
+			<field>shipmentMethod</field>
+			<field>numberOfPackages</field>
+			<field>numberOfPackages</field>
+			<field>insuredForAmount</field>
+		</order>
+	</class>
+	
+    <class name="TaxonCitation" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="ReferenceWork" linkfield="title" indexfield="title">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>title</field>
+			<field>publisher</field>
+			<field>placeOfPublication</field>
+		</order>
+	</class>
+	
+    <class name="Journal" linkfield="journalName" indexfield="journalName">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>journalName</field>
+			<field>journalAbbreviation</field>
+			<field>remarks</field>
+		</order>
+	</class>
+	
+    <class name="Loan" linkfield="loanNumber" indexfield="loanNumber">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+			<field>loanNumber</field>
+			<field>loanDate</field>
+			<field>currentDueDate</field>
+			<field>originalDueDate</field>
+			<field>dateClosed</field>
+		</order>
+		 
+	    <additional>
+			<field type="set" label="Loaned Preparations" labellevel="loanPreparations" >loanPreparations.preparation</field>
+		</additional>
+	
+	</class>
+	
+    <class name="LoanAgent" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="LoanPreparation" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="LoanReturnPreparation" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="Accession" linkfield="accessionNumber" indexfield="accessionNumber">
+        <title field="accessionNumber"/>
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+			<field search="true">accessionNumber</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+    <class name="AccessionAgent" linkfield="" indexfield="">
+    	<skip>
+			<field>visibility</field>
+			<field>visibilitySetBy</field>
+			<field>groupPermittedToView</field>
+		</skip>
+		<order>
+		</order>
+	</class>
+	
+	
+	
+</classes>

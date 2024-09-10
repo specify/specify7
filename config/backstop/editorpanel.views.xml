@@ -1,0 +1,1095 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewset name="Editor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <views>
+        <view name="label"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="label" viewdef="label" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+       <view name="separator"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="separator" viewdef="separator" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+       <view name="subview"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="subview" viewdef="subview" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+       <view name="command"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="command" viewdef="command" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+       </view>
+        
+       <view name="panel"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="panel" viewdef="panel" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="statusbar"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="statusbar" viewdef="statusbar" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="iconview"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="ViewDefProps" viewdef="ViewDefProps" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="baseFormCell"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="baseFormCell" viewdef="baseFormCell" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="baseFormCellField"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="baseFormCellField" viewdef="baseFormCellField" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+        
+        <!-- ***************************** Fields ****************************** -->
+  
+        <view name="text"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="text" viewdef="text" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="formattedtext"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="formattedtext" viewdef="formattedtext" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <!-- 
+        <view name="label"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="label" viewdef="label" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+        -->
+   
+        <view name="dsptextfield"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="dsptextfield" viewdef="dsptextfield" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="textfieldinfo"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="textfieldinfo" viewdef="textfieldinfo" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="image"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="image" viewdef="image" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="url"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="url" viewdef="url" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="combobox"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="combobox" viewdef="combobox" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="checkbox"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="checkbox" viewdef="checkbox" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="spinner"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="spinner" viewdef="spinner" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="password"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="password" viewdef="password" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="dsptextarea"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="dsptextarea" viewdef="dsptextarea" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="textarea"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="textarea" viewdef="textarea" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="browse"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="browse" viewdef="browse" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="querycbx"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="querycbx" viewdef="querycbx" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="list"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="list" viewdef="list" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="colorchooser"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="colorchooser" viewdef="colorchooser" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="button"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="button" viewdef="button" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+
+        <view name="progress"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="progress" viewdef="progress" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="plugin"
+              class="java.util.Hashtable"
+              resourcelabels="false">
+            <desc><![CDATA[The label form.]]></desc>
+            <altviews>
+                <altview name="plugin" viewdef="plugin" mode="edit"  validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+        <view name="AltViewProps"
+            class="edu.ku.brc.specify.datamodel.AltView"
+            resourcelabels="false">
+            <desc><![CDATA[]]></desc>
+            <altviews>
+                <altview name="AltView Edit" viewdef="AltViewProps" mode="edit" validated="true"  default="true"/>
+            </altviews>
+        </view>
+        
+        <view name="ViewDefProps"
+            class="edu.ku.brc.specify.datamodel.ViewDef"
+            resourcelabels="false">
+            <desc><![CDATA[]]></desc>
+            <altviews>
+                <altview name="ViewDef Edit" viewdef="ViewDefProps" mode="edit" validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+       <view name="ViewProps"
+            class="edu.ku.brc.specify.datamodel.View"
+            resourcelabels="false">
+            <desc><![CDATA[]]></desc>
+            <altviews>
+                <altview name="View Edit" viewdef="ViewProps" mode="edit" validated="true"  default="true"/>
+            </altviews>
+        </view>
+  
+    </views>
+
+    <!-- #############################################################################################
+         View Defs
+         ############################################################################################# -->
+         <!-- separator, field, label, statictext, subview, command, panel, statusbar, iconview -->
+         
+    <viewdefs>
+        <viewdef
+            type="form"
+            name="label"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+                <row>
+                    <cell type="label" labelfor="2" label="Label"/>
+                    <cell type="field" uitype="text" id="2" name="label" isrequired="true"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3" label="Label For"/>
+                    <cell type="field" uitype="combobox" id="3" name="labelForCBX" isrequired="false"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="4" label="Image"/>
+                    <cell type="field" uitype="combobox" id="4" name="imageNameCBX" isrequired="false"/>
+                </row>
+                 <row>
+                    <cell type="label" labelfor="5" label="Is Record Obj"/>
+                    <cell type="field" uitype="checkbox" id="5" name="isRecordObj" isrequired="false"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="separator"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+                <row>
+                    <cell type="label" labelfor="2" label="Label"/>
+                    <cell type="field" uitype="text" id="2" name="label" isrequired="true"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3" label="Collapse Component"/>
+                    <cell type="field" uitype="combobox" id="3" name="collapseCBX" isrequired="false"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="subview"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+                <row>
+                    <cell type="label" labelfor="2" label="View"/>
+                    <cell type="field" uitype="combobox" id="2" name="viewCBX" isrequired="true"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3" label="View Def"/>
+                    <cell type="field" uitype="combobox" id="3" name="viewDefCBX" isrequired="false"/>
+                </row>
+                 <row>
+                    <cell type="label" labelfor="4" label="Is Single Obj"/>
+                    <cell type="field" uitype="checkbox" id="4" name="singleValueFromSet" isrequired="true"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="command"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+                <row>
+                    <cell type="label" labelfor="2" label="Label"/>
+                    <cell type="field" uitype="text" id="2" name="label" isrequired="true"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="4" label="Command Type"/>
+                    <cell type="field" uitype="text" id="4" name="commandType" isrequired="true"/>
+                </row>
+                 <row>
+                    <cell type="label" labelfor="5" label="Action"/>
+                    <cell type="field" uitype="text" id="5" name="action" isrequired="true"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="panel"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="statusbar"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="" colspan="3"/>
+                </row> 
+            </rows>
+        </viewdef>
+        
+        <!-- ************************** Field Controls **************************** -->
+        
+        <!-- text, formattedtext, label, dsptextfield, textfieldinfo, image, url, combobox, checkbox, spinner,
+                       password, dsptextarea, textarea, browse, querycbx, list, colorchooser, button, progress, plugin,
+                       textpl -->
+  
+        <viewdef
+            type="form"
+            name="text"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="formattedtext"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <!-- 
+        <viewdef
+            type="form"
+            name="label"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+         -->
+         
+        <viewdef
+            type="form"
+            name="dsptextfield"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="textfieldinfo"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="image"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="url"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="combobox"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+                <row>
+                    <cell type="label" labelfor="2" label="Pick List"/>
+                    <cell type="field" uitype="combobox" id="2" name="picklistcbx" isrequired="false"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3" label="Quick List"/>
+                    <cell type="field" uitype="textarea" id="3" name="list" isrequired="false" colspan="3" cols="40" rows="5"/>
+                </row>
+            </rows>
+            
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="checkbox"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="spinner"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="password"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="dsptextarea"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="textarea"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="browse"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="querycbx"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="list"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="colorchooser"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="button"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="progress"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="plugin"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The label form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                	<cell type="subview" viewname="baseFormCell" id="1" name="this" colspan="5"/>
+                </row>                
+                <row>
+                	<cell type="subview" viewname="baseFormCellField" id="4" name="this" colspan="5"/>
+                </row>                
+            </rows>
+        </viewdef>
+  
+        <viewdef
+            type="form"
+            name="baseFormCell"
+            class="edu.ku.brc.ui.forms.persist.FormCell"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The base attributes form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,p:g,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="0" label="Type"/>
+                    <cell type="field" uitype="dsptextfield" id="0" name="type" isrequired="true" colspan="3"/>
+                </row>
+                <!-- <row>
+                    <cell type="label" labelfor="1" label="Id"/>
+                    <cell type="field" id="1" name="id" isrequired="true" cols="5" colspan="3"/>
+                </row>    -->
+                <row>
+                    <cell type="label" labelfor="2" label="Name"/>
+                    <cell type="field" uitype="combobox" id="2" name="namecbx" isrequired="true" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="4" label="Row Span"/>
+                    <cell type="field" uitype="combobox" id="4" name="rowspancbx" isrequired="false"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="5" label="Column Span"/>
+                    <cell type="field" uitype="combobox" id="5" name="colspancbx" isrequired="false"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="6" label="Ignore Set Get"/>
+                    <cell type="field" uitype="checkbox" id="6" name="ignoreSetGet" isrequired="false"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="7" label="Change Listener Only"/>
+                    <cell type="field" uitype="checkbox" id="7" name="changeListenerOnly" isrequired="false"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef
+            type="form"
+            name="baseFormCellField"
+            class="edu.ku.brc.ui.forms.persist.FormCellField"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+            <desc><![CDATA[The base attributes form.]]></desc>
+            <enableRules/>
+
+            <columnDef>140px,2px,p,2px,p:g,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1" label="Is Required"/>
+                    <cell type="field" uitype="checkbox" id="1" name="isRequired" isrequired="false"/>
+                </row>
+               <row>
+                    <cell type="label" labelfor="2" label="Is Read Only"/>
+                    <cell type="field" uitype="checkbox" id="2" name="isReadOnly" isrequired="false"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        		
+		<viewdef
+            type="form"
+            name="AltViewProps"
+            class="edu.ku.brc.specify.datamodel.AltView"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+
+            <desc><![CDATA[Alt View Props]]></desc>
+
+            <columnDef>p,2px,p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2px"/>
+    		<rows>
+    		    <row>
+    		        <cell type="label" label="Alternative View Properties" icon="Form" colspan="3" initialize="align=center"/>
+    		    </row>
+                <row>
+                    <cell type="label" labelfor="1" label="Name"/>
+                    <cell type="field" id="1" name="name" uitype="text" cols="20"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2" label="Label"/>
+                    <cell type="field" id="2" name="label" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2" label="Title"/>
+                    <cell type="field" id="2" name="title" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="6" label="Is Validated"/>
+                    <cell type="field" id="6" name="validated" uitype="checkbox"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="7" label="Is Default"/>
+                    <cell type="field" id="7" name="isDefault" uitype="checkbox"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="8" label="Default Mode"/>
+                    <cell type="field" id="8" name="defaultMode" uitype="combobox" />
+                </row>
+			</rows>
+		</viewdef>
+		
+		<viewdef
+            type="form"
+            name="ViewDefProps"
+            class="edu.ku.brc.specify.datamodel.ViewDef"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+
+            <desc><![CDATA[View Def Props]]></desc>
+
+            <columnDef>p,2px,max(80px;p),p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2px"/>
+    		<rows>
+    		    <row>
+    		        <cell type="label" label="View Def Properties" icon="Form" colspan="4" initialize="align=center"/>
+    		    </row>
+                <row>
+                    <cell type="label" labelfor="3" label="Type"/>
+                    <cell type="field" id="3" name="type" uitype="dsptextfield"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1" label="Name"/>
+                    <cell type="field" id="1" name="name" uitype="text" cols="20" colspan="2"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2" label="Description"/>
+                    <cell type="field" id="2" name="desc" uitype="text" colspan="2"/>
+                </row>
+                <!--  <row>
+                    <cell type="label" labelfor="4" label="Data Class"/>
+                    <cell type="field" id="4" name="className" uitype="text" colspan="2"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="5" label="Getter Name"/>
+                    <cell type="field" id="5" name="dataGettableName" uitype="text"  colspan="2"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="6" label="Setter Name"/>
+                    <cell type="field" id="6" name="dataSettableName" uitype="text" colspan="2"/>
+                </row>  -->
+                <row>
+                    <cell type="label" labelfor="7" label="Column Def"/>
+                    <cell type="field" uitype="plugin" id="7" name="this" initialize="name=DefItemEditorPlugin;type=columnDef" colspan="2"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="8" label="Row Def"/>
+                    <cell type="field" uitype="plugin" id="8" name="this" initialize="name=DefItemEditorPlugin;type=rowDef" colspan="2"/>
+                </row>
+                <!--
+                <row>
+                    <cell type="label" labelfor="7" label="Is Absolute Layout"/>
+                    <cell type="field" id="7" name="isAbsoluteLayout" uitype="checkbox" colspan="2"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="8" label="Width"/>
+                    <cell type="field" id="8" name="width" uitype="spinner"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="9" label="Height"/>
+                    <cell type="field" id="9" name="height" uitype="spinner"/>
+                </row>
+                  -->
+			</rows>
+		</viewdef>
+		
+        <viewdef
+            type="form"
+            name="ViewProps"
+            class="edu.ku.brc.specify.datamodel.ViewDef"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+
+            <desc><![CDATA[View Props]]></desc>
+
+            <columnDef>p,2px,max(80px;p),p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2px"/>
+    		<rows>
+		   </rows>
+		</viewdef>
+        
+    </viewdefs>
+</viewset>        

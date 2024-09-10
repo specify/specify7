@@ -1,0 +1,219 @@
+<list>
+  <picklist name="Division" issystem="true" type="1" tablename="division" formatter="Division" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>
+  <!-- <picklist name="DeterminationStatus" issystem="true" type="1" tablename="determinationstatus" formatter="DeterminationStatus" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>-->
+  <picklist name="Department" issystem="true" type="2" tablename="accession" fieldname="text1" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>
+  <picklist name="PrepType" issystem="true" type="1" tablename="preptype" formatter="PrepType" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>
+  <picklist name="Discipline" issystem="true" type="1" tablename="discipline" formatter="Discipline" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>
+  <picklist name="PermitType" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Департамент дикой природы США" value="udw"/>
+      <picklistitem title="Областной" value="state"/>
+      <picklistitem title="Международный" value="int"/>
+      <picklistitem title="Федеральный" value="fed"/>
+      <picklistitem title="нет данных" value="no data"/>
+    </items>
+  </picklist>
+  <picklist name="LoanAgentRole" issystem="true" type="0" readonly="true" sizelimit="12">
+    <items>
+      <picklistitem title="Заемщик" value="borrower"/>
+      <picklistitem title="Благодетель" value="benefactor"/>
+      <picklistitem title="Участник" value="contributor"/>
+      <picklistitem title="Даритель" value="donor"/>
+      <picklistitem title="Гость" value="guest"/>
+      <picklistitem title="Другой" value="other"/>
+      <picklistitem title="Составителей" value="preparer"/>
+      <picklistitem title="Приемник" value="receiver"/>
+      <picklistitem title="Спонсор" value="sponsor"/>
+      <picklistitem title="Персонал" value="staff"/>
+      <picklistitem title="Ученик" value="student"/>
+    </items>
+  </picklist>
+  <picklist name="BorrowRole" issystem="true" type="0" readonly="true" sizelimit="12">
+    <items>
+      <picklistitem title="Заемщик" value="borrower"/>
+      <picklistitem title="Благодетель" value="benefactor"/>
+      <picklistitem title="Участник" value="contributor"/>
+      <picklistitem title="Даритель" value="donor"/>
+      <picklistitem title="Гость" value="guest"/>
+      <picklistitem title="Другой" value="other"/>
+      <picklistitem title="Составителей" value="preparer"/>
+      <picklistitem title="Приемник" value="receiver"/>
+      <picklistitem title="Спонсор" value="sponsor"/>
+      <picklistitem title="Персонал" value="staff"/>
+      <picklistitem title="Ученик" value="student"/>
+    </items>
+  </picklist>
+  <picklist name="AccessionStatus" issystem="true" type="0" readonly="true" sizelimit="3">
+    <items>
+      <picklistitem title="Нет данных" value="nodata"/>
+      <picklistitem title="В процессе" value="inprocess"/>
+      <picklistitem title="Закончен" value="complete"/>
+    </items>
+  </picklist>
+  <picklist name="ShipmentMethod" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="DHL" value="dhl"/>
+      <picklistitem title="FedEx" value="fedex"/>
+      <picklistitem title="Ручной" value="hand"/>
+      <picklistitem title="UPS" value="ups"/>
+      <picklistitem title="USPS" value="usps"/>
+    </items>
+  </picklist>
+  <picklist name="AccessionType" issystem="true" type="0" readonly="true" sizelimit="2">
+    <items>
+      <picklistitem title="Подарок" value="gift"/>
+      <picklistitem title="Коллекция" value="cln"/>
+      <picklistitem title="Полевые работы" value="field_work"/>
+    </items>
+  </picklist>
+  <picklist name="AgentVariant" issystem="true" type="0" readonly="true" sizelimit="-1">
+    <items>
+      <picklistitem title="Вариант" value="0"/>
+      <picklistitem title="Общеупотребительный" value="1"/>
+      <picklistitem title="Автор" value="2"/>
+      <picklistitem title="Автор Аббревиат." value="3"/>
+      <picklistitem title="Название ярлыка" value="4"/>
+    </items>
+  </picklist>
+  <picklist name="AccessionRole" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Коллекционер" value="collector"/>
+      <picklistitem title="Персонал" value="staff"/>
+      <picklistitem title="Даритель" value="donor"/>
+      <picklistitem title="Рецензент" value="reviewer"/>
+      <picklistitem title="Приемник" value="receiver"/>
+    </items>
+  </picklist>
+  <picklist name="ContainerType" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Ничего" value="0"/>
+      <picklistitem title="Папка" value="1"/>
+      <picklistitem title="Лист" value="2"/>
+      <picklistitem title="Образец" value="3"/>
+    </items>
+  </picklist>
+ <!-- <picklist name="DeaccessionRole" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Коллекционер" value="collector"/>
+      <picklistitem title="Персонал" value="staff"/>
+      <picklistitem title="Даритель" value="donor"/>
+      <picklistitem title="Рецензент" value="reviewer"/>
+      <picklistitem title="Приемник" value="receiver"/>
+    </items>
+  </picklist>
+    <picklist name="DeaccessionType" issystem="true" type="0" readonly="true" sizelimit="5">
+        <items>
+            <picklistitem title="Подарок" value="gift"/>
+            <picklistitem title="Устранение" value="disposal"/>
+            <picklistitem title="Потерянный" value="lost"/>
+            <picklistitem title="Другой" value="other"/>
+        </items>
+    </picklist> -->
+  <picklist name="ReferenceWorkType" issystem="true" type="0" readonly="true" sizelimit="6" tablename="referencework" fieldname="referenceWorkType">
+    <items>
+      <picklistitem title="Книга" value="0"/>
+      <picklistitem title="Электронные СМИ" value="1"/>
+      <picklistitem title="Бумага" value="2"/>
+      <picklistitem title="Технический отчет" value="3"/>
+      <picklistitem title="Тезис" value="4"/>
+      <picklistitem title="Раздел в книге" value="5"/>
+    </items>
+  </picklist>
+  <picklist name="TaxonLabelFormatter" issystem="true" type="0" readonly="false" sizelimit="500">
+    <items>
+      <picklistitem title="%G %S" value="%G %S"/>
+      <picklistitem title="%G %S (%A1 ex. %A2)" value="%G %S (%A1 ex. %A2)"/>
+    </items>
+  </picklist>
+  <picklist name="AgentTitles" issystem="true" type="0" readonly="true" sizelimit="6">
+    <items>
+      <picklistitem title="Ассистент директор" value="asstdir"/>
+      <picklistitem title="Куратор" value="curator"/>
+      <picklistitem title="Мистер" value="mr"/>
+      <picklistitem title="Миссис" value="mrs"/>
+      <picklistitem title="Миз" value="ms"/>
+      <picklistitem title="Доктор" value="dr"/>
+    </items>
+   </picklist>
+   <picklist name="NameUsages" issystem="true" type="0" readonly="true" sizelimit="100">
+    <items>
+      <picklistitem title="был положен на стол кем" value="shelved by"/>
+      <picklistitem title="Флора Канзаса" value="flora of kansas"/>
+    </items>
+   </picklist>
+    <picklist name="TreatmentType" issystem="true" type="0" readonly="true" sizelimit="10">
+      <items>
+        <picklistitem title="Комната с насекомыми" value="bugroom"/>
+        <picklistitem title="CO2" value="co2"/>
+      </items>
+    </picklist>
+    <picklist name="TypeOfAddr" issystem="true" type="0" readonly="true" tablename="address" sizelimit="2">
+	  	<items>
+	  		<picklistitem title="Дом" value="home"/>
+	  		<picklistitem title="Работа" value="work"/>
+	  	</items>
+    </picklist>
+    <picklist name="TypeStatus" issystem="true" type="0" readonly="true" sizelimit="-1" sort="2">
+      <items>
+	      <picklistitem title="Никто" value="|null|"/>
+	      <picklistitem title="Allolectotype" value="allolectotype"/>
+	      <picklistitem title="Alloneotype" value="alloneotype"/>
+	      <picklistitem title="Allotype" value="allotype"/>
+	      <picklistitem title="Котип" value="cotype"/>
+	      <picklistitem title="Epitype" value="epitype"/>
+	      <picklistitem title="Ex Epitype" value="exepitype"/>
+	      <picklistitem title="Бывший голотип" value="exholotype"/>
+	      <picklistitem title="Бывший изотип" value="exisotype"/>
+	      <picklistitem title="Бывший лектотип" value="exlectotype"/>
+	      <picklistitem title="Бывший неотип" value="exneotype"/>
+	      <picklistitem title="Бывший паратип" value="exparatype"/>
+	      <picklistitem title="Ex Syntype" value="exsyntype"/>
+	      <picklistitem title="Бывший тип" value="extype"/>
+	      <picklistitem title="Hapantotype" value="hapantotype"/>
+	      <picklistitem title="Голотип" value="holotype"/>
+	      <picklistitem title="Iconotype" value="iconotype"/>
+	      <picklistitem title="Isolectotype" value="isolectotype"/>
+	      <picklistitem title="Isoneotype" value="isoneotype"/>
+	      <picklistitem title="Isosyntype" value="isosyntype"/>
+	      <picklistitem title="Изотип" value="isotype"/>
+	      <picklistitem title="Лектотип" value="lectotype"/>
+	      <picklistitem title="Неотип" value="neotype"/>
+	      <picklistitem title="Paralectotype" value="paralectotype"/>
+	      <picklistitem title="Paraneotype" value="paraneotype"/>
+	      <picklistitem title="Паратип" value="paratype"/>
+	      <picklistitem title="Plastoholotype" value="plastoholotype"/>
+	      <picklistitem title="Plastoisotype" value="plastoisotype"/>
+	      <picklistitem title="Plastolectotype" value="plastolectotype"/>
+	      <picklistitem title="Plastoneotype" value="plastoneotype"/>
+	      <picklistitem title="Plastoparatype" value="plastoparatype"/>
+	      <picklistitem title="Plastosyntype" value="plastosyntype"/>
+	      <picklistitem title="Plastotype" value="plastotype"/>
+	      <picklistitem title="Вторичный тип" value="decondaryyype"/>
+	      <picklistitem title="Дополнительный тип" value="supplementaryyype"/>
+	      <picklistitem title="Syntype" value="syntype"/>
+	      <picklistitem title="Topotype" value="topotype"/>
+	      <picklistitem title="Тип" value="type"/>
+      </items>
+    </picklist>
+      <picklist name="NumberingScheme" issystem="true" type="1" tablename="autonumberingscheme" formatter="AutoNumberingScheme" readonly="true" sizelimit="-1">
+    <items/>
+  </picklist>
+  <picklist name="MaterialSample" type="0" tablename="none" readonly="true" sizelimit="50" issystem="false" sort="1" timestampCreated="2017-08-30 12:22:23.0" timestampModified="2017-08-30 12:22:23.0" version="1">
+    <items>
+      <picklistitem title="Экстракт" value="Extract" ordinal="0" timestampCreated="2017-08-30 12:22:23.0" timestampModified="2017-08-30 12:22:23.0" version="0"/>
+    </items>
+  </picklist>
+  <picklist name="MoleculeType" type="0" tablename="none" readonly="false" sizelimit="20" issystem="false" sort="1" timestampCreated="2017-08-30 12:22:46.0" timestampModified="2017-08-30 12:22:46.0" version="1">
+    <items/>
+  </picklist>
+</list>

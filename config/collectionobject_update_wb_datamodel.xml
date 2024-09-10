@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+
+  <table classname="edu.ku.brc.specify.datamodel.Accession" table="accession" tableid="7" lazy="true">
+    <field column="Status" name="status" type="java.lang.String" />
+    <field column="Type" name="type" type="java.lang.String" />
+    <field column="Number" name="number" type="java.lang.String" />
+    <field column="Verbatim Date" name="verbatimDate" type="java.lang.String" />
+    <field column="Date Accessioned" name="dateAccessioned" type="calendar_date"/>
+    <field column="Date Received" name="dateReceived" type="calendar_date"/>
+    <field column="Date Acknowledged" name="dateAcknowledged" type="calendar_date"/>
+    <field column="Accession Text 1" name="accessionText1" type="text" />
+    <field column="Accession Text 2" name="accessionText2" type="text" />
+    <field column="Accession Text 3" name="accessionText3" type="text" />
+    <field column="Accession Number 1" name="accessionNumber1" type="java.lang.Float"/>
+    <field column="Accession Number 2" name="accessionNumber2" type="java.lang.Float"/>
+    <field column="Remarks (Accession)" name="accessionRemarks" type="text" />
+    <field column="YesNo 1 (Accession)" name="accessionYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Accession)" name="accessionYesNo2" type="boolean"/>
+    <field column="Accession Condition" name="accessionCondition" type="java.lang.String" />
+    <field column="Accession Integer 1" name="integer1" type="java.lang.Integer"/>
+    <field column="Accession Integer 2" name="integer2" type="java.lang.Integer" />
+    <field column="Accession Integer 3" name="integer3" type="java.lang.Integer" />
+    <field column="Accession Integer 3" name="integer3" type="java.lang.Integer" />
+    <field column="Accession Total Value" name="totalValue" type="java.math.BigDecimal" />
+  </table>
+  
+  <table classname="edu.ku.brc.specify.datamodel.CollectingEvent" table="collectingevent" tableid="10" lazy="true" >
+    <field column="Station Field Number" name="stationFieldNumber" type="java.lang.String" />
+    <field column="Station Field Number Modifier 1" name="stationFieldNumberModifier1" type="java.lang.String" />
+    <field column="Station Field Number Modifier 2" name="stationFieldNumberModifier2" type="java.lang.String" />
+    <field column="Station Field Number Modifier 3" name="stationFieldNumberModifier3" type="java.lang.String" />
+    <field column="Method" name="method" type="java.lang.String" />
+    <field column="Verbatim Date" name="verbatimDate" type="java.lang.String" />
+    <field column="Start Date" name="startDate" type="calendar_date"/>
+    <field column="Start Date Verbatim" name="startDateVerbatim" type="java.lang.String" />
+    <field column="End Date" name="endDate" type="calendar_date"/>
+    <field column="End Date Verbatim" name="endDateVerbatim" type="java.lang.String" />
+    <field column="Start Time" name="startTime" type="java.lang.Short"/>
+    <field column="End Time" name="endTime" type="java.lang.Short"/>
+    <field column="Text 1" name="text1" type="text" />
+    <field column="Text 2" name="text2" type="text" />
+    <field column="Text 3" name="text3" type="text" />
+    <field column="Text 4" name="text4" type="text" />
+    <field column="Text 5" name="text5" type="text" />
+    <field column="Collecting Event Integer 1" name="integer1" type="java.lang.Integer" />
+    <field column="Collecting Event Integer 2" name="integer2" type="java.lang.Integer" />
+    <field column="Verbatim Locality" name="verbatimLocality" type="text" />
+    <field column="Remarks (Collecting Event)" name="collectingEventRemarks" type="text"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectingEventAttribute" table="collectingeventattribute" tableid="92" lazy="true" query="false">
+    <field column="Remarks (CollectingEvent Attribute)" name="collectingEventAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Number 1 (CollectingEvent Attribute)" name="collectingEventAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (CollectingEvent Attribute)" name="collectingEventAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (CollectingEvent Attribute)" name="collectingEventAttributeNumber3" type="java.lang.Float" length="24"/>
+    <field column="Number 4 (CollectingEvent Attribute)" name="collectingEventAttributeNumber4" type="java.lang.Float" length="24"/>
+    <field column="Number 5 (CollectingEvent Attribute)" name="collectingEventAttributeNumber5" type="java.lang.Float" length="24"/>
+    <field column="Number 6 (CollectingEvent Attribute)" name="collectingEventAttributeNumber6" type="java.lang.Float" length="24"/>
+    <field column="Number 7 (CollectingEvent Attribute)" name="collectingEventAttributeNumber7" type="java.lang.Float" length="24"/>
+    <field column="Number 8 (CollectingEvent Attribute)" name="collectingEventAttributeNumber8" type="java.lang.Float" length="24"/>
+    <field column="Number 9 (CollectingEvent Attribute)" name="collectingEventAttributeNumber9" type="java.lang.Float" length="24"/>
+    <field column="Number 10 (CollectingEvent Attribute)" name="collectingEventAttributeNumber10" type="java.lang.Float" length="24"/>
+    <field column="Number 11 (CollectingEvent Attribute)" name="collectingEventAttributeNumber11" type="java.lang.Float" length="24"/>
+    <field column="Number 12 (CollectingEvent Attribute)" name="collectingEventAttributeNumber12" type="java.lang.Float" length="24"/>
+    <field column="Number 13 (CollectingEvent Attribute)" name="collectingEventAttributeNumber13" type="java.lang.Float" length="24"/>
+    <field column="Integer 1 (CollectingEvent Attribute)" name="collectingEventAttributeInteger1" type="java.lang.Integer"/>
+    <field column="Integer 2 (CollectingEvent Attribute)" name="collectingEventAttributeInteger2" type="java.lang.Integer"/>
+    <field column="Integer 3 (CollectingEvent Attribute)" name="collectingEventAttributeInteger3" type="java.lang.Integer"/>
+    <field column="Integer 4 (CollectingEvent Attribute)" name="collectingEventAttributeInteger4" type="java.lang.Integer"/>
+    <field column="Integer 5 (CollectingEvent Attribute)" name="collectingEventAttributeInteger5" type="java.lang.Integer"/>
+    <field column="Integer 6 (CollectingEvent Attribute)" name="collectingEventAttributeInteger6" type="java.lang.Integer"/>
+    <field column="Integer 7 (CollectingEvent Attribute)" name="collectingEventAttributeInteger7" type="java.lang.Integer"/>
+    <field column="Integer 8 (CollectingEvent Attribute)" name="collectingEventAttributeInteger8" type="java.lang.Integer"/>
+    <field column="Integer 9 (CollectingEvent Attribute)" name="collectingEventAttributeInteger9" type="java.lang.Integer"/>
+    <field column="Integer 10 (CollectingEvent Attribute)" name="collectingEventAttributeInteger10" type="java.lang.Integer"/>
+
+    <field column="Text 1 (CollectingEvent Attribute)" name="collectingEventAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (CollectingEvent Attribute)" name="collectingEventAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (CollectingEvent Attribute)" name="collectingEventAttributeText3" type="java.lang.String" length="300"/>
+    <field column="Text 4 (CollectingEvent Attribute)" name="collectingEventAttributeText4" type="java.lang.String" length="100"/>
+    <field column="Text 5 (CollectingEvent Attribute)" name="collectingEventAttributeText5" type="java.lang.String" length="100"/>
+    <field column="Text 6 (CollectingEvent Attribute)" name="collectingEventAttributeText6" type="java.lang.String" length="50"/>
+    <field column="Text 7 (CollectingEvent Attribute)" name="collectingEventAttributeText7" type="java.lang.String" length="50"/>
+    <field column="Text 8 (CollectingEvent Attribute)" name="collectingEventAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (CollectingEvent Attribute)" name="collectingEventAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (CollectingEvent Attribute)" name="collectingEventAttributeText10" type="java.lang.String" length="50"/>
+    <field column="Text 11 (CollectingEvent Attribute)" name="collectingEventAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (CollectingEvent Attribute)" name="collectingEventAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (CollectingEvent Attribute)" name="collectingEventAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (CollectingEvent Attribute)" name="collectingEventAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (CollectingEvent Attribute)" name="collectingEventAttributeText15" type="java.lang.String" length="50"/>
+    <field column="Text 16 (CollectingEvent Attribute)" name="collectingEventAttributeText16" type="java.lang.String" length="50"/>
+    <field column="Text 17 (CollectingEvent Attribute)" name="collectingEventAttributeText17" type="java.lang.String" length="50"/>
+
+    <field column="YesNo 1 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo1" type="boolean"/>
+    <field column="YesNo 2 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo2" type="boolean"/>
+    <field column="YesNo 3 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo3" type="boolean"/>
+    <field column="YesNo 4 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo4" type="boolean"/>
+    <field column="YesNo 5 (CollectingEvent Attribute)" name="collectingEventAttributeYesNo5" type="boolean"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectingTrip" table="collectingtrip" tableid="87" lazy="true" >
+    <field column="Name" name="collectingTripName" type="java.lang.String" />
+    <field column="Cruise" name="cruise" type="java.lang.String"/>
+    <field column="Vessel" name="vessel" type="java.lang.String"/>
+    <field column="Sponsor" name="sponsor" type="java.lang.String"/>
+    <field column="Start Date" name="startDate" type="calendar_date"/>
+    <field column="Start Date Verbatim" name="startDateVerbatim" type="java.lang.String" />
+    <field column="End Date" name="endDate" type="calendar_date"/>
+    <field column="End Date Verbatim" name="endDateVerbatim" type="java.lang.String" />
+    <field column="Start Time" name="startTime" type="java.lang.Short"/>
+    <field column="End Time" name="endTime" type="java.lang.Short"/>
+    <field column="Remarks (Collecting Trip)" name="collectingTripRemarks" type="java.lang.String" />
+    <field column="Text1 (Collecting Trip)" name="collectingTripText1" type="java.lang.String" />
+    <field column="Text2 (Collecting Trip)" name="collectingTripText2" type="java.lang.String" />
+    <field column="Text3 (Collecting Trip)" name="collectingTripText3" type="java.lang.String" />
+    <field column="Text4 (Collecting Trip)" name="collectingTripText4" type="java.lang.String" />
+    <field column="Number 1 (Collecting Trip)" name="collectingTripNumber1" type="java.lang.Float" />
+    <field column="Number 2 (Collecting Trip)" name="collectingTripNumber2" type="java.lang.Float" />
+    <field column="YesNo 1 (Collecting Trip)" name="collectingTripYesNo1" type="boolean" />
+    <field column="YesNo 2 (Collecting Trip)" name="collectingTripYesNo2" type="boolean" />
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectionObject" table="collectionobject" tableid="1" lazy="true">
+    <display objtitle="Collection Object" view="CollectionObject" dataobjformatter="CollectionObject"/>
+    <field column="Cataloged Date" name="catalogedDate" type="calendar_date"/>
+    <field column="Cataloged Date Verbatim" name="catalogedDateVerbatim" type="java.lang.String"/>
+    <field column="Catalog Number" name="catalogNumber" type="java.lang.String" />
+    <field column="Alternate Catalog Number" name="altCatalogNumber" type="java.lang.String" />
+    <field column="Project Number" name="projectNumber" type="java.lang.String" />
+    <field column="Availability" name="availability" type="java.lang.String" />
+    <field column="Inventory Date" name="inventoryDate" type="calendar_date"/>
+    <field column="Notifications" name="notifications" type="java.lang.String" />
+    <field column="Restrictions" name="restrictions" type="java.lang.String" />
+
+    <field column="Condition" name="objectCondition" type="java.lang.String" />
+    <field column="Field Number" name="fieldNumber" type="java.lang.String" />
+    <field column="Name" name="name" type="java.lang.String" length="64"/>
+    <field column="Description" name="description" type="java.lang.String" length="255"/>
+    <field column="Count" name="countAmt" type="java.lang.Integer" length="10"/>
+    <field column="OCR" name="OCR" type="text" length="4096"/>
+    <field column="Remarks (CollectionObject)" name="collectionObjectRemarks" type="text" length="4096"/>
+    <field column="Modifier" name="modifier" type="java.lang.String" length="50"/>
+    <field column="GUID" name="guid" type="java.lang.String" length="128"/>
+    <field column="Text 1 (CollectionObject)" name="collectionObjectText1" type="text" length="300"/>
+    <field column="Text 2 (CollectionObject)" name="collectionObjectText2" type="text" length="300"/>
+    <field column="Text 3 (CollectionObject)" name="collectionObjectText3" type="text"/>
+    <field column="Integer 1" name="integer1" type="java.lang.Integer" length="10"/>
+    <field column="Integer 2" name="integer2" type="java.lang.Integer" length="10"/>
+    <field column="Number 1 (CollectionObject)" name="collectionObjectNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (CollectionObject)" name="collectionObjectNumber2" type="java.lang.Float" length="24"/>
+    <field column="YesNo 1 (CollectionObject)" name="collectionObjectYesNo1" type="boolean"/>
+    <field column="YesNo 2 (CollectionObject)" name="collectionObjectYesNo2" type="boolean"/>
+    <field column="YesNo 3 (CollectionObject)" name="collectionObjectYesNo3" type="boolean"/>
+    <field column="YesNo 4 (CollectionObject)" name="collectionObjectYesNo4" type="boolean"/>
+    <field column="YesNo 5 (CollectionObject)" name="collectionObjectYesNo5" type="boolean"/>
+    <field column="YesNo 6 (CollectionObject)" name="collectionObjectYesNo6" type="boolean"/>
+    <!--
+    <field column="Cataloger First Name" name="catalogerFirstName" type="java.lang.String" length="50"/>
+    <field column="Cataloger Last Name" name="catalogerLastName" type="java.lang.String" length="120"/>
+    <field column="Cataloger Middle Initials" name="catalogerMiddle" type="java.lang.String" length="50"/>
+    <field column="Cataloger Title" name="catalogerTitle" type="java.lang.String" length="50"/>
+    <field column="Inventoried by First Name" name="inventorizedByFirstName" type="java.lang.String" length="50"/>
+    <field column="Inventoried by Last Name" name="inventorizedByLastName" type="java.lang.String" length="120"/>
+    <field column="Inventoried by Middle Initials" name="inventorizedByMiddle" type="java.lang.String" length="50"/>
+    <field column="Inventoried by Title" name="inventorizedByTitle" type="java.lang.String" length="50"/>
+    -->
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" table="collectionobjectattribute" tableid="93" lazy="true" query="false">
+    <field column="Remarks (Col. Obj. Attribute)" name="colObjAttributeRemarks" type="java.lang.String" length="4096"/>
+    <field column="Integer 1 (Col. Obj. Attribute)" name="colObjAttributeInteger1" type="java.lang.Integer" />
+    <field column="Integer 2 (Col. Obj. Attribute)" name="colObjAttributeInteger2" type="java.lang.Integer" />
+    <field column="Integer 3 (Col. Obj. Attribute)" name="colObjAttributeInteger3" type="java.lang.Integer" />
+    <field column="Integer 4 (Col. Obj. Attribute)" name="colObjAttributeInteger4" type="java.lang.Integer" />
+    <field column="Integer 5 (Col. Obj. Attribute)" name="colObjAttributeInteger5" type="java.lang.Integer" />
+    <field column="Integer 6 (Col. Obj. Attribute)" name="colObjAttributeInteger6" type="java.lang.Integer" />
+    <field column="Integer 7 (Col. Obj. Attribute)" name="colObjAttributeInteger7" type="java.lang.Integer" />
+    <field column="Integer 8 (Col. Obj. Attribute)" name="colObjAttributeInteger8" type="java.lang.Integer" />
+    <field column="Integer 9 (Col. Obj. Attribute)" name="colObjAttributeInteger9" type="java.lang.Integer" />
+    <field column="Integer 10 (Col. Obj. Attribute)" name="colObjAttributeInteger10" type="java.lang.Integer" />
+    <field column="Number 1 (Col. Obj. Attribute)" name="colObjAttributeNumber1" type="java.lang.Float" length="24"/>
+    <field column="Number 2 (Col. Obj. Attribute)" name="colObjAttributeNumber2" type="java.lang.Float" length="24"/>
+    <field column="Number 3 (Col. Obj. Attribute)" name="colObjAttributeNumber3" type="java.lang.Float" length="24"/>
+    <field column="Number 4 (Col. Obj. Attribute)" name="colObjAttributeNumber4" type="java.lang.Float" length="24"/>
+    <field column="Number 5 (Col. Obj. Attribute)" name="colObjAttributeNumber5" type="java.lang.Float" length="24"/>
+    <field column="Number 6 (Col. Obj. Attribute)" name="colObjAttributeNumber6" type="java.lang.Float" length="24"/>
+    <field column="Number 7 (Col. Obj. Attribute)" name="colObjAttributeNumber7" type="java.lang.Float" length="24"/>
+    <field column="Number 8 (Col. Obj. Attribute)" name="colObjAttributeNumber8" type="java.lang.Integer" />
+    <field column="Number 9 (Col. Obj. Attribute)" name="colObjAttributeNumber9" type="java.lang.Float" length="24"/>
+    <field column="Number 10 (Col. Obj. Attribute)" name="colObjAttributeNumber10" type="java.lang.Float" length="24"/>
+    <field column="Number 11 (Col. Obj. Attribute)" name="colObjAttributeNumber11" type="java.lang.Float" length="24"/>
+    <field column="Number 12 (Col. Obj. Attribute)" name="colObjAttributeNumber12" type="java.lang.Float" length="24"/>
+    <field column="Number 13 (Col. Obj. Attribute)" name="colObjAttributeNumber13" type="java.lang.Float" length="24"/>
+    <field column="Number 14 (Col. Obj. Attribute)" name="colObjAttributeNumber14" type="java.lang.Float" length="24"/>
+    <field column="Number 15 (Col. Obj. Attribute)" name="colObjAttributeNumber15" type="java.lang.Float" length="24"/>
+    <field column="Number 16 (Col. Obj. Attribute)" name="colObjAttributeNumber16" type="java.lang.Float" length="24"/>
+    <field column="Number 17 (Col. Obj. Attribute)" name="colObjAttributeNumber17" type="java.lang.Float" length="24"/>
+    <field column="Number 18 (Col. Obj. Attribute)" name="colObjAttributeNumber18" type="java.lang.Float" length="24"/>
+    <field column="Number 19 (Col. Obj. Attribute)" name="colObjAttributeNumber19" type="java.lang.Float" length="24"/>
+    <field column="Number 20 (Col. Obj. Attribute)" name="colObjAttributeNumber20" type="java.lang.Float" length="24"/>
+    <field column="Number 21 (Col. Obj. Attribute)" name="colObjAttributeNumber21" type="java.lang.Float" length="24"/>
+    <field column="Number 22 (Col. Obj. Attribute)" name="colObjAttributeNumber22" type="java.lang.Float" length="24"/>
+    <field column="Number 23 (Col. Obj. Attribute)" name="colObjAttributeNumber23" type="java.lang.Float" length="24"/>
+    <field column="Number 24 (Col. Obj. Attribute)" name="colObjAttributeNumber24" type="java.lang.Float" length="24"/>
+    <field column="Number 25 (Col. Obj. Attribute)" name="colObjAttributeNumber25" type="java.lang.Float" length="24"/>
+    <field column="Number 26 (Col. Obj. Attribute)" name="colObjAttributeNumber26" type="java.lang.Float" length="24"/>
+    <field column="Number 27 (Col. Obj. Attribute)" name="colObjAttributeNumber27" type="java.lang.Float" length="24"/>
+    <field column="Number 28 (Col. Obj. Attribute)" name="colObjAttributeNumber28" type="java.lang.Float" length="24"/>
+    <field column="Number 29 (Col. Obj. Attribute)" name="colObjAttributeNumber29" type="java.lang.Float" length="24"/>
+    <field column="Number 30 (Col. Obj. Attribute)" name="colObjAttributeNumber30" type="java.lang.Integer" length="5"/>
+    <field column="Number 31 (Col. Obj. Attribute)" name="colObjAttributeNumber31" type="java.lang.Float" length="24"/>
+    <field column="Number 32 (Col. Obj. Attribute)" name="colObjAttributeNumber32" type="java.lang.Float" length="24"/>
+    <field column="Number 33 (Col. Obj. Attribute)" name="colObjAttributeNumber33" type="java.lang.Float" length="24"/>
+    <field column="Number 34 (Col. Obj. Attribute)" name="colObjAttributeNumber34" type="java.lang.Float"/>
+    <field column="Number 35 (Col. Obj. Attribute)" name="colObjAttributeNumber35" type="java.lang.Float"/>
+    <field column="Number 36 (Col. Obj. Attribute)" name="colObjAttributeNumber36" type="java.lang.Float"/>
+    <field column="Number 37 (Col. Obj. Attribute)" name="colObjAttributeNumber37" type="java.lang.Float"/>
+    <field column="Number 38 (Col. Obj. Attribute)" name="colObjAttributeNumber38" type="java.lang.Float"/>
+    <field column="Number 39 (Col. Obj. Attribute)" name="colObjAttributeNumber39" type="java.lang.Float"/>
+    <field column="Number 40 (Col. Obj. Attribute)" name="colObjAttributeNumber40" type="java.lang.Float"/>
+    <field column="Number 41 (Col. Obj. Attribute)" name="colObjAttributeNumber41" type="java.lang.Float"/>
+    <field column="Number 42 (Col. Obj. Attribute)" name="colObjAttributeNumber42" type="java.lang.Float"/>
+    <field column="Top Distance" name="topDistance" type="java.lang.Float"/>
+    <field column="Bottom Distance" name="bottomDistance" type="java.lang.Float"/>
+    <field column="Distance Units" name="distanceUnits" type="java.lang.String"/>
+    <field column="Direction" name="direction" type="java.lang.String"/>
+    <field column="Position State" name="positionState" type="java.lang.String"/>
+    <field column="Text 1 (Col. Obj. Attribute)" name="colObjAttributeText1" type="java.lang.String" length="300"/>
+    <field column="Text 2 (Col. Obj. Attribute)" name="colObjAttributeText2" type="java.lang.String" length="300"/>
+    <field column="Text 3 (Col. Obj. Attribute)" name="colObjAttributeText3" type="java.lang.String" length="300"/>
+    <field column="Text 4 (Col. Obj. Attribute)" name="colObjAttributeText4" type="java.lang.String" length="50"/>
+    <field column="Text 5 (Col. Obj. Attribute)" name="colObjAttributeText5" type="java.lang.String" length="50"/>
+    <field column="Text 6 (Col. Obj. Attribute)" name="colObjAttributeText6" type="java.lang.String" length="100"/>
+    <field column="Text 7 (Col. Obj. Attribute)" name="colObjAttributeText7" type="java.lang.String" length="100"/>
+    <field column="Text 8 (Col. Obj. Attribute)" name="colObjAttributeText8" type="java.lang.String" length="50"/>
+    <field column="Text 9 (Col. Obj. Attribute)" name="colObjAttributeText9" type="java.lang.String" length="50"/>
+    <field column="Text 10 (Col. Obj. Attribute)" name="colObjAttributeText10" type="java.lang.String" length="50"/>
+    <field column="Text 11 (Col. Obj. Attribute)" name="colObjAttributeText11" type="java.lang.String" length="50"/>
+    <field column="Text 12 (Col. Obj. Attribute)" name="colObjAttributeText12" type="java.lang.String" length="50"/>
+    <field column="Text 13 (Col. Obj. Attribute)" name="colObjAttributeText13" type="java.lang.String" length="50"/>
+    <field column="Text 14 (Col. Obj. Attribute)" name="colObjAttributeText14" type="java.lang.String" length="50"/>
+    <field column="Text 15 (Col. Obj. Attribute)" name="colObjAttributeText15" type="java.lang.String" length="64"/>
+    <field column="Text 16 (Col. Obj. Attribute)" name="colObjAttributeText16" type="java.lang.String" length="500"/>
+    <field column="Text 17 (Col. Obj. Attribute)" name="colObjAttributeText17" type="java.lang.String" length="500"/>
+    <field column="Text 18 (Col. Obj. Attribute)" name="colObjAttributeText18" type="java.lang.String" length="500"/>
+    <field column="Text 19 (Col. Obj. Attribute)" name="colObjAttributeText19" type="java.lang.String" />
+    <field column="Text 20 (Col. Obj. Attribute)" name="colObjAttributeText20" type="java.lang.String" />
+    <field column="Text 21 (Col. Obj. Attribute)" name="colObjAttributeText21" type="java.lang.String" />
+    <field column="Text 22 (Col. Obj. Attribute)" name="colObjAttributeText22" type="java.lang.String" />
+    <field column="Text 23 (Col. Obj. Attribute)" name="colObjAttributeText23" type="java.lang.String" />
+    <field column="Text 24 (Col. Obj. Attribute)" name="colObjAttributeText24" type="java.lang.String" />
+    <field column="Text 25 (Col. Obj. Attribute)" name="colObjAttributeText25" type="java.lang.String" />
+    <field column="Text 26 (Col. Obj. Attribute)" name="colObjAttributeText26" type="java.lang.String" />
+    <field column="Text 27 (Col. Obj. Attribute)" name="colObjAttributeText27" type="java.lang.String" />
+    <field column="Text 28 (Col. Obj. Attribute)" name="colObjAttributeText28" type="java.lang.String" />
+    <field column="Text 29 (Col. Obj. Attribute)" name="colObjAttributeText29" type="java.lang.String" />
+    <field column="Text 30 (Col. Obj. Attribute)" name="colObjAttributeText30" type="java.lang.String" />
+    <field column="YesNo 1 (Col. Obj. Attribute)" name="colObjAttributeYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Col. Obj. Attribute)" name="colObjAttributeYesNo2" type="boolean"/>
+    <field column="YesNo 3 (Col. Obj. Attribute)" name="colObjAttributeYesNo3" type="boolean"/>
+    <field column="YesNo 4 (Col. Obj. Attribute)" name="colObjAttributeYesNo4" type="boolean"/>
+    <field column="YesNo 5 (Col. Obj. Attribute)" name="colObjAttributeYesNo5" type="boolean"/>
+    <field column="YesNo 6 (Col. Obj. Attribute)" name="colObjAttributeYesNo6" type="boolean"/>
+    <field column="YesNo 7 (Col. Obj. Attribute)" name="colObjAttributeYesNo7" type="boolean"/>
+    <field column="YesNo 8 (Col. Obj. Attribute)" name="colObjAttributeYesNo8" type="boolean"/>
+    <field column="YesNo 9 (Col. Obj. Attribute)" name="colObjAttributeYesNo9" type="boolean"/>
+    <field column="YesNo 10 (Col. Obj. Attribute)" name="colObjAttributeYesNo10" type="boolean"/>
+    <field column="YesNo 11 (Col. Obj. Attribute)" name="colObjAttributeYesNo11" type="boolean"/>
+    <field column="YesNo 12 (Col. Obj. Attribute)" name="colObjAttributeYesNo12" type="boolean"/>
+    <field column="YesNo 13 (Col. Obj. Attribute)" name="colObjAttributeYesNo13" type="boolean"/>
+    <field column="YesNo 14 (Col. Obj. Attribute)" name="colObjAttributeYesNo14" type="boolean"/>
+    <field column="YesNo 15 (Col. Obj. Attribute)" name="colObjAttributeYesNo15" type="boolean"/>
+    <field column="YesNo 16 (Col. Obj. Attribute)" name="colObjAttributeYesNo16" type="boolean"/>
+    <field column="YesNo 17 (Col. Obj. Attribute)" name="colObjAttributeYesNo17" type="boolean"/>
+    <field column="YesNo 18 (Col. Obj. Attribute)" name="colObjAttributeYesNo18" type="boolean"/>
+    <field column="YesNo 19 (Col. Obj. Attribute)" name="colObjAttributeYesNo19" type="boolean"/>
+    <field column="YesNo 20 (Col. Obj. Attribute)" name="colObjAttributeYesNo20" type="boolean"/>
+    <field column="Integer 1 (Col. Obj. Attribute)" name="colObjAttributeInteger1" type="java.lang.Integer"/>
+    <field column="Integer 2 (Col. Obj. Attribute)" name="colObjAttributeInteger2" type="java.lang.Integer"/>
+    <field column="Integer 3 (Col. Obj. Attribute)" name="colObjAttributeInteger3" type="java.lang.Integer"/>
+    <field column="Integer 4 (Col. Obj. Attribute)" name="colObjAttributeInteger4" type="java.lang.Integer"/>
+    <field column="Integer 5 (Col. Obj. Attribute)" name="colObjAttributeInteger5" type="java.lang.Integer"/>
+    <field column="Integer 6 (Col. Obj. Attribute)" name="colObjAttributeInteger6" type="java.lang.Integer"/>
+    <field column="Integer 7 (Col. Obj. Attribute)" name="colObjAttributeInteger7" type="java.lang.Integer"/>
+    <field column="Integer 8 (Col. Obj. Attribute)" name="colObjAttributeInteger8" type="java.lang.Integer"/>
+    <field column="Integer 9 (Col. Obj. Attribute)" name="colObjAttributeInteger9" type="java.lang.Integer"/>
+    <field column="Integer 10 (Col. Obj. Attribute)" name="colObjAttributeInteger10" type="java.lang.Integer"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.GeoCoordDetail" table="geocoorddetail" tableid="123" searchable="true" abbrv="gcd">
+    <field column="GeoRefAccuracy" name="geoRefAccuracy" type="java.lang.Double"/>
+    <field column="GeoRefAccuracyUnits" name="geoRefAccuracyUnits" type="java.lang.String" length="20"/>
+    <field column="Georeference Date" name="geoRefDetDate" type="java.util.Calendar" />
+    <field column="GeoRefDetRef" name="geoRefDetRef" type="java.lang.String" length="100"/>
+    <field column="GeoRefVerificationStatus" name="geoRefVerificationStatus" type="java.lang.String" length="50"/>
+    <field column="Max Uncertainty" name="MaxUncertaintyEstValue" type="java.math.BigDecimal"/>
+    <field column="Max Uncertainty Unit" name="MaxUncertaintyEstUnit" type="java.lang.String" length="8" />
+    <field column="NoGeoRefBecause" name="noGeoRefBecause" type="java.lang.String" length="100"/>
+    <field column="Original Coord System" name="originalCoordSystem" type="java.lang.String" length="32"/>
+    <field column="Protocol" name="protocol" type="java.lang.String" length="64"/>
+    <field column="Source" name="source" type="java.lang.String" length="64"/>
+    <field column="NamedPlaceExtent" name="namedPlaceExtent" type="java.math.BigDecimal"/>
+    <field column="Validation" name="validation" type="java.lang.String" length="64"/>
+    <field column="Text 1" name="text1" type="text" length="500"/>
+    <field column="Text 2" name="text2" type="text" length="500"/>
+    <field column="Text 3" name="text3" type="text" length="500"/>
+    <field column="UncertaintyPolygon" name="uncertaintyPolygon" type="text"/>
+    <field column="ErrorPolygon" name="errorPolygon" type="text"/>
+    <field column="Compiled Date" name="geoRefCompiledDate" type="java.util.Calendar" />
+    <!--
+    <field column="Georeferenced By Last Name" name="geoRefByLast" type="java.lang.String" length="120"/>
+    <field column="Georeferenced By First Name" name="geoRefByFirst" type="java.lang.String" length="50"/>
+    <field column="Georeferenced By Middle Initials" name="geoRefByMiddle" type="java.lang.String" length="50"/>
+    <field column="Georeferenced By Title" name="geoRefByTitle" type="java.lang.String" length="50"/>
+    <field column="Compiled By By Last Name" name="compiledByLast" type="java.lang.String" length="120"/>
+    <field column="Compiled By First Name" name="compiledByFirst" type="java.lang.String" length="50"/>
+    <field column="Compiled By Middle Initials" name="compiledByMiddle" type="java.lang.String" length="50"/>
+    <field column="Compiled By Title" name="compiledByTitle" type="java.lang.String" length="50"/>
+    -->
+    <field column="Georeference Remarks" name="geoRefRemarks" type="java.lang.String" length="255"/>
+  </table>
+
+  <!--table classname="edu.ku.brc.specify.datamodel.GeologicTimePeriod" table="geologictimeperiod" tableid="46" lazy="true">
+    <display objtitle="Geologic Time Period"/>
+    <field column="Erathem/Era" name="erathem/era" type="java.lang.String" length="64"/>
+    <field column="System/Period" name="system/period" type="java.lang.String" length="64"/>
+    <field column="Series/Epoch" name="series/epoch" type="java.lang.String" length="64"/>
+    <field column="Stage/Age" name="stage/age" type="java.lang.String" length="64"/>
+  </table-->
+  
+  <!--table classname="edu.ku.brc.specify.datamodel.LithoStrat" table="lithostrat" tableid="100" lazy="true">
+    <field column="SuperGroup" name="superGroup" type="java.lang.String" length="64"/>
+    <field column="LithoGroup" name="lithoGroup" type="java.lang.String" length="64"/>
+    <field column="Formation" name="formation" type="java.lang.String" length="64"/>
+    <field column="Member" name="member" type="java.lang.String" length="64"/>
+    <field column="Bed" name="bed" type="java.lang.String" length="64"/>
+  </table-->
+
+  <table classname="edu.ku.brc.specify.datamodel.Locality" table="locality" tableid="2" lazy="true" >
+    <display objtitle="Locality" view="Locality" dataobjformatter="Locality" searchdlg="LocalitySearch" newobjdlg="LocalityDisplay"/>
+    <field column="Locality Name" name="localityName" type="java.lang.String" length="255"/>
+    <field column="Named Place" name="namedPlace" type="java.lang.String" length="255"/>
+    <field column="Short Name" name="shortName" type="java.lang.String"  length="32" />
+    <field column="Relation To Named Place" name="relationToNamedPlace" type="java.lang.String" length="120"/>
+    <field column="Minimum Elevation" name="minElevation" type="java.lang.Double"/>
+    <field column="Maximum Elevation" name="maxElevation" type="java.lang.Double"/>
+    <field column="Original Elevation Unit" name="originalElevationUnit" type="java.lang.String" length="50"/>
+    <field column="Elevation Method" name="elevationMethod" type="java.lang.String" length="50"/>
+    <field column="Elevation Accuracy" name="elevationAccuracy" type="java.lang.Double"/>
+    <field column="Verbatim Elevation" name="verbatimElevation" type="java.lang.String" length="50"/>
+
+    <field column="Latitude 1" name="latitude1" type="java.math.BigDecimal"/>
+    <field column="Longitude 1" name="longitude1" type="java.math.BigDecimal"/>
+    <field column="Latitude 2" name="latitude2" type="java.math.BigDecimal"/>
+    <field column="Longitude 2" name="longitude2" type="java.math.BigDecimal"/>
+    <field column="Lat Long Type" name="latLongType" type="java.lang.String" length="50"/>
+    <field column="Lat Long Method" name="latLongMethod" type="java.lang.String" length="50"/>
+    <field column="Lat Long Accuracy" name="latLongAccuracy" type="java.lang.Double"/>
+    <field column="Datum" name="datum" type="java.lang.String" length="50"/>
+    <field column="Verbatim Latitude" name="verbatimLatitude" type="java.lang.String" length="50"/>
+    <field column="Verbatim Longitude" name="verbatimLongitude" type="java.lang.String" length="50"/>
+
+    <field column="Remarks (Locality)" name="localityRemarks" type="text" length="4096"/>
+
+    <field column="Base Meridian" name="baseMeridian" type="java.lang.String" length="50"/>
+    <field column="Drainage" name="drainage" type="java.lang.String" length="64"/>
+    <field column="End Depth" name="endDepth" type="java.lang.Double"/>
+    <field column="End Depth Unit" name="endDepthUnit" type="java.lang.String"/>
+    <field column="End Depth Verbatim" name="endDepthVerbatim" type="java.lang.String"/>
+    <field column="Start Depth" name="startDepth" type="java.lang.Double"/>
+    <field column="Start Depth Unit" name="startDepthUnit" type="java.lang.String"/>
+    <field column="Start Depth Verbatim" name="startDepthVerbatim" type="java.lang.String"/>
+    <field column="HUC Code" name="hucCode" type="java.lang.String"/>
+    <field column="MgrsZone" name="mgrsZone" type="java.lang.String"/>
+
+    <field column="Island" name="island" type="java.lang.String" length="64"/>
+    <field column="Island Group" name="islandGroup" type="java.lang.String" length="64"/>
+    <field column="National Park Name" name="nationalParkName" type="java.lang.String" length="64"/>
+    <field column="Paleo Latitude" name="paleoLat" type="java.lang.String"/>
+    <field column="Paleo Longitude" name="paleoLng" type="java.lang.String"/>
+    <field column="Range" name="rangeDesc" type="java.lang.String" length="50"/>
+    <field column="Range Direction" name="rangeDirection" type="java.lang.String" length="50"/>
+    <field column="Section" name="section" type="java.lang.String" length="50"/>
+    <field column="Section Part" name="sectionPart" type="java.lang.String" length="50"/>
+    <field column="Township" name="township" type="java.lang.String" length="50"/>
+    <field column="Township Direction" name="townshipDirection" type="java.lang.String" length="50"/>
+    <field column="UtmDatum" name="utmDatum" type="java.lang.String" length="255"/>
+    <field column="UtmEasting" name="utmEasting" type="java.math.BigDecimal"/>
+    <field column="UtmNorthing" name="utmNorthing" type="java.math.BigDecimal"/>
+    <field column="UtmFalseEasting" name="utmFalseEasting" type="java.lang.Integer"/>
+    <field column="UtmFalseNorthing" name="utmFalseNorthing" type="java.lang.Integer"/>
+    <field column="UtmOrigLatitude" name="utmOrigLatitude" type="java.math.BigDecimal"/>
+    <field column="UtmOrigLongitude" name="utmOrigLongitude" type="java.math.BigDecimal"/>
+    <field column="UtmScale" name="utmScale" type="java.math.BigDecimal" />
+    <field column="UtmZone" name="utmZone" type="java.lang.Short" />
+    <field column="Water Body" name="waterBody" type="java.lang.String" length="64"/>
+    <field column="Number 1 (Locality Detail)" name="localityNumber1" type="java.lang.Double"/>
+    <field column="Number 2 (Locality Detail)" name="localityNumber2" type="java.lang.Double"/>
+    <field column="Number 1 (Locality Detail)" name="localityDetailNumber1" type="java.lang.Double"/>
+    <field column="Number 2 (Locality Detail)" name="localityDetailNumber2" type="java.lang.Double"/>
+    <field column="Number 3 (Locality Detail)" name="localityDetailNumber3" type="java.lang.Float"/>
+    <field column="Number 4 (Locality Detail)" name="localityDetailNumber4" type="java.lang.Float"/>
+    <field column="Number 5 (Locality Detail)" name="localityDetailNumber5" type="java.lang.Float"/>
+    <field column="Text 1 (Locality)" name="localityText1" type="text" length="500"/>
+    <field column="Text 2 (Locality)" name="localityText2" type="text" length="500"/>
+    <field column="Text 3 (Locality)" name="localityText3" type="text" length="500"/>
+    <field column="Text 4 (Locality)" name="localityText4" type="text" length="500"/>
+    <field column="Text 5 (Locality)" name="localityText5" type="text" length="500"/>
+    <field column="Text 1 (Locality Detail)" name="localityDetailText1" type="text" length="300"/>
+    <field column="Text 2 (Locality Detail)" name="localityDetailText2" type="text" length="300"/>
+    <field column="Text 3 (Locality Detail)" name="localityDetailText3" type="text" length="300"/>
+    <field column="Text 4 (Locality Detail)" name="localityDetailText4" type="text" length="300"/>
+    <field column="Text 5 (Locality Detail)" name="localityDetailText5" type="text" length="300"/>
+    <field column="YesNo 1 (Locality)" name="localityYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Locality)" name="localityYesNo2" type="boolean"/>
+    <field column="YesNo 3 (Locality)" name="localityYesNo3" type="boolean"/>
+    <field column="YesNo 4 (Locality)" name="localityYesNo4" type="boolean"/>
+    <field column="YesNo 5 (Locality)" name="localityYesNo5" type="boolean"/>
+    <field column="YesNo 1 (Locality Detail)" name="localityDetailYesNo1" type="boolean"/>
+    <field column="YesNo 2 (Locality Detail)" name="localityDetailYesNo2" type="boolean"/>
+    <field column="YesNo 3 (Locality Detail)" name="localityDetailYesNo3" type="boolean"/>
+    <field column="YesNo 4 (Locality Detail)" name="localityDetailYesNo4" type="boolean"/>
+    <field column="YesNo 5 (Locality Detail)" name="localityDetailYesNo5" type="boolean"/>
+  </table>
+
+  <table classname="edu.ku.brc.specify.datamodel.Geography" table="geography" tableid="3" lazy="true">
+    <field column="Continent" name="continent" type="java.lang.String" length="64"/>
+    <field column="Country" name="country" type="java.lang.String" length="64"/>
+    <field column="State" name="state" type="java.lang.String" length="64"/>
+    <field column="County" name="county" type="java.lang.String" length="64"/>
+  </table>
+
+  <!--table classname="edu.ku.brc.specify.datamodel.PaleoContext" table="paleocontext" tableid="32" searchable="true" abbrv="pc">
+    <field column="Paleo Context Name" name="paleoContextName" type="java.lang.String" />
+    <field column="Remarks" name="remarks" type="java.lang.String" />
+    <field column="Text 1" name="text1" type="java.lang.String" />
+    <field column="Text 2" name="text2" type="java.lang.String" />
+    <field column="Text 3" name="text3" type="java.lang.String" />
+    <field column="Text 4" name="text4" type="java.lang.String" />
+    <field column="Text 5" name="text5" type="java.lang.String" />
+    <field column="Number 1" name="number1" type="java.lang.Double" />
+    <field column="Number 2" name="number2" type="java.lang.Double" />
+    <field column="Number 3" name="number3" type="java.lang.Double" />
+    <field column="Number 4" name="number4" type="java.lang.Double" />
+    <field column="Number 5" name="number5" type="java.lang.Double" />
+    <field column="YesNo 1" name="yesNo1" type="boolean"/>
+    <field column="YesNo 2" name="yesNo2" type="boolean"/>
+    <field column="YesNo 3" name="yesNo3" type="boolean"/>
+    <field column="YesNo 4" name="yesNo4" type="boolean"/>
+    <field column="YesNo 5" name="yesNo5" type="boolean"/>
+  </table-->
+
+</database>

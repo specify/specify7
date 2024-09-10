@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="LoanInvoice_subreport1"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="782"
+		 pageHeight="555"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 scriptletClass="edu.ku.brc.specify.config.Scriptlet"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="itemnum" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT e8.CatalogNumber, e8.FieldNumber, e8.TaxonFullName, e8.Count, e8.Name, e8.Quantity, geography.FullName, e8.QuantityReturned, e8.QuantityResolved, e8.LoanNumber, e8.LoanID,
+e8.StartDate, e8.LocalityName, e8.Lat1Text, e8.Long1Text 
+FROM ( 
+SELECT e7.*, locality.LocalityName, locality.Lat1Text, locality.Long1Text, locality.GeographyID 
+FROM (SELECT e6.*, collectingevent.StartDate, collectingevent.LocalityID 
+FROM (SELECT e5.*, loan.LoanNumber 
+FROM (SELECT e4.*, loanpreparation.LoanID, loanpreparation.Quantity, loanpreparation.QuantityReturned, loanpreparation.QuantityResolved  
+FROM (SELECT e3.*, preptype.Name 
+FROM (SELECT e2.*, preparation.PreparationID, preparation.CountAmt as Count,  preparation.PrepTypeID 
+FROM (SELECT e1.*, taxon.FullName AS TaxonFullName 
+FROM (SELECT e0.*, determination.PreferredTaxonID
+FROM (SELECT co.CatalogNumber, co.FieldNumber, co.CollectionObjectID, co.CollectingEventID FROM loan l 
+      INNER JOIN loanpreparation lp ON l.LoanID = lp.LoanID 
+      INNER JOIN preparation p ON lp.PreparationID = p.PreparationID 
+      INNER JOIN collectionobject co ON p.CollectionObjectID = co.CollectionObjectID WHERE l.LoanID $P!{itemnum}) e0 
+LEFT JOIN determination 
+ON e0.CollectionObjectID = determination.CollectionObjectID 
+WHERE (determination.IsCurrent or determination.determinationid is null)) e1 
+LEFT JOIN taxon 
+ON e1.PreferredTaxonID = taxon.TaxonID) e2 
+INNER JOIN preparation 
+ON e2.CollectionObjectID = preparation.CollectionObjectID) e3 
+INNER JOIN preptype 
+ON e3.PrepTypeID = preptype.PrepTypeID) e4 
+INNER JOIN loanpreparation 
+ON e4.PreparationID = loanpreparation.PreparationID) e5 
+INNER JOIN loan 
+ON e5.LoanID = loan.LoanID) e6 
+LEFT JOIN collectingevent 
+ON e6.CollectingEventID = collectingevent.CollectingEventID) e7 
+LEFT JOIN locality 
+ON e7.LocalityID = locality.LocalityID) e8 
+LEFT JOIN geography 
+ON e8.GeographyID = geography.GeographyID 
+where LoanID $P!{itemnum} order by CatalogNumber]]></queryString>
+
+	<field name="CatalogNumber" class="java.lang.String"/>
+	<field name="FieldNumber" class="java.lang.String"/>
+	<field name="TaxonFullName" class="java.lang.String"/>
+	<field name="Count" class="java.lang.Integer"/>
+	<field name="Name" class="java.lang.String"/>
+	<field name="Quantity" class="java.lang.Integer"/>
+	<field name="FullName" class="java.lang.String"/>
+	<field name="QuantityReturned" class="java.lang.Integer"/>
+	<field name="QuantityResolved" class="java.lang.Integer"/>
+	<field name="LoanNumber" class="java.lang.String"/>
+	<field name="LoanID" class="java.lang.Long"/>
+	<field name="StartDate" class="java.sql.Date"/>
+	<field name="LocalityName" class="java.lang.String"/>
+	<field name="Lat1Text" class="java.lang.String"/>
+	<field name="Long1Text" class="java.lang.String"/>
+
+	<variable name="lotCount" class="java.lang.Integer" resetType="Report" incrementType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[new Integer($V{lotCount}.intValue() + 1)]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+	</variable>
+	<variable name="specimenCount" class="java.lang.Integer" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[new java.lang.Integer(  $V{specimenCount}.intValue() + ($F{Quantity}.intValue()) )]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+	</variable>
+	<variable name="prepCount" class="java.lang.Integer" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[new Integer ( $F{Count}.intValue() - $F{QuantityReturned}.intValue() - $F{QuantityResolved}.intValue() )]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="28"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="9"
+						y="4"
+						width="64"
+						height="21"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[KU #]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="3"
+						width="197"
+						height="23"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TAXON & LOCALITY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="446"
+						y="2"
+						width="113"
+						height="24"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SPECIMEN COUNT]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="63"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="8"
+						y="7"
+						width="78"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[((edu.ku.brc.specify.config.Scriptlet)$P{REPORT_SCRIPTLET}).formatCatNo($F{CatalogNumber})]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="401"
+						y="8"
+						width="188"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{Quantity} + " " + $F{Name} +  " of " + ((edu.ku.brc.specify.config.Scriptlet)$P{REPORT_SCRIPTLET}).calcLoanQuantity($F{Count}, $F{QuantityReturned}, $F{QuantityResolved}) + " " + $F{Name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="120"
+						y="15"
+						width="195"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-BoldOblique" size="11" isBold="true" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TaxonFullName}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="30"
+						width="554"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[((edu.ku.brc.specify.config.Scriptlet)$P{REPORT_SCRIPTLET}).buildLocalityString($F{FullName}, $F{LocalityName}, $F{Lat1Text}, $F{Long1Text})]]></textFieldExpression>
+				</textField>
+                <staticText>
+                    <reportElement x="85" y="42" width="35" height="15"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Field No:]]></text>
+                </staticText>				
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement x="122" y="42" width="100" height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FieldNumber}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="304"
+						y="42"
+						width="100"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{StartDate}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="276"
+						y="42"
+						width="28"
+						height="15"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Date: ]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

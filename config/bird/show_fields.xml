@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+    <table name="Accession">
+        <field name="timestampModified"/>
+    </table>
+    <table name="CollectionObject">
+        <field name="timestampModified"/>
+    </table>
+	<table name="CollectionObjectAttribute">
+		<field name="text1"/>
+		<field name="text2"/>
+		<field name="text3"/>
+		<field name="text6"/>
+		<field name="timestampModified"/>
+	</table>
+	<table name="Deaccession">
+		<field name="timestampModified"/>
+	</table>
+</tables>

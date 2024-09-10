@@ -1,0 +1,38 @@
+<list>
+  <picklist name="BiologicalSex" issystem="true" type="0" readonly="true" sizelimit="4">
+    <items>
+      <picklistitem title="Unknown" value="Unknown"/>
+      <picklistitem title="Both" value="Both"/>
+      <picklistitem title="Female" value="Female"/>
+      <picklistitem title="Male" value="Male"/>
+    </items>
+  </picklist>
+  <picklist name="BiologicalStage" issystem="true" type="0" readonly="true" sizelimit="10">
+    <items>
+      <picklistitem title="egg" value="egg"/>
+      <picklistitem title="juvenile" value="juvenile"/>
+      <picklistitem title="nymph" value="nymph"/>
+      <picklistitem title="immature" value="immature"/>
+      <picklistitem title="embryo" value="embryo"/>
+      <picklistitem title="seed" value="seed"/>
+      <picklistitem title="hatchling" value="hatchling"/>
+      <picklistitem title="adult" value="adult"/>
+      <picklistitem title="larva" value="larva"/>
+      <picklistitem title="pupa" value="pupa"/>
+    </items>
+  </picklist>
+  <picklist name="CollectingMethod" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="Dug" value="dug"/>
+    </items>
+  </picklist>
+  <picklist name="CollObjPrepMeth" issystem="true" type="0" readonly="true" sizelimit="5">
+    <items>
+      <picklistitem title="EtOH" value="EtOH"/>
+      <picklistitem title="C&amp;S" value="C&amp;S"/>
+      <picklistitem title="x-ray" value="x-ray"/>
+      <picklistitem title="image" value="image"/>
+      <picklistitem title="skeleton" value="skeleton"/>
+    </items>
+  </picklist>
+</list>

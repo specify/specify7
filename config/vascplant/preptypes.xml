@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vector>
+      <preptype name="Dried" isloanable="true"/>
+      <preptype name="Boxed" isloanable="true"/>
+      <preptype name="Fluid" isloanable="true"/>
+	  <preptype name="Sheet" isloanable="true"/>
+</vector>

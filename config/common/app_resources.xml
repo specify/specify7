@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+      <file level="3" mimetype="text/xml" name="WebLinks" description="Web Link Formats" file="weblinks.xml"/>
+      <file level="3" mimetype="text/xml" name="InteractionsTaskInit" description="Interactions Sidebar Setup" file="interactionstask.xml"/>
+      
+    <!-- removing sample gift reports...
+    <file level="3" mimetype="jrxml/report" name="GiftInvoice.jrxml" description="Gift Invoice" file="GiftInvoice.jrxml" 
+        metadata="tableid=131;reqrs=true;type=Labels;action=PrintLabel;reporttype=Invoice;subreports=GiftInvoice_subreport1.jrxml"/>
+        
+    <file level="3" mimetype="jrxml/subreport" name="GiftInvoice_subreport1.jrxml" description="GiftInvoice SubReport" 
+        file="GiftInvoice_subreport1.jrxml" metadata=""/>
+    -->
+    
+</files>

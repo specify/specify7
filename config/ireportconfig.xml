@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iReportProperties>
+	<iReportProperty name="DefaultReportViewer"><![CDATA[32]]></iReportProperty>
+	<iReportProperty name="UseAutoRegiesterFields"><![CDATA[true]]></iReportProperty>
+	<iReportProperty name="Country"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="DefaultUnit"><![CDATA[cm]]></iReportProperty>
+	<iReportProperty name="BackupPolicy"><![CDATA[2]]></iReportProperty>
+	<iReportProperty name="ViewBorderForTextElements"><![CDATA[true]]></iReportProperty>
+	<iReportProperty name="ExternalPDFViewer"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="RecentFilesLength"><![CDATA[10]]></iReportProperty>
+	<iReportProperty name="DefaultCompilationDirectory"><![CDATA[.]]></iReportProperty>
+	<iReportProperty name="GridSize"><![CDATA[10]]></iReportProperty>
+	<iReportProperty name="showGrid"><![CDATA[false]]></iReportProperty>
+	<iReportProperty name="toolbarTextVisible"><![CDATA[true]]></iReportProperty>
+	<iReportProperty name="snapToGrid"><![CDATA[false]]></iReportProperty>
+	<iReportProperty name="ViewRules"><![CDATA[true]]></iReportProperty>
+	<iReportProperty name="ExternalCSVViewer"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="usingMultiLineExpressions"><![CDATA[false]]></iReportProperty>
+	<iReportProperty name="DefaultBackupDirectory"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="CurrentDirectory"><![CDATA[/Users/rod/workspace/Specify6s]]></iReportProperty>
+	<iReportProperty name="SaveBeforeCompiling"><![CDATA[true]]></iReportProperty>
+	<iReportProperty name="ViewBorderColor"><![CDATA[-6710887]]></iReportProperty>
+	<iReportProperty name="Language"><![CDATA[en]]></iReportProperty>
+	<iReportProperty name="Compatibility"><![CDATA[999999]]></iReportProperty>
+	<iReportProperty name="ExternalHTMLViewer"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="DefaultTemplate"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="ExternalEditor"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="ExternalXLSViewer"><![CDATA[]]></iReportProperty>
+	<iReportProperty name="DefaultConnection"><![CDATA[CO Fish]]></iReportProperty>
+	<iReportProperty name="LookAndFeel"><![CDATA[Aqua]]></iReportProperty>
+	<iReportProperty name="toolbarFormattingVisible"><![CDATA[true]]></iReportProperty>
+</iReportProperties>
