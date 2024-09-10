@@ -247,6 +247,7 @@ export function InteractionDialog({
     React.useState<RA<string>>();
   const [availableCatNumbers, setAvailableCatNumbers] =
     React.useState<RA<string>>();
+
   const hanleAvailableCatNumber = (): void => {
     const catalogNumbers = handleParse();
     if (catalogNumbers === undefined) return undefined;
@@ -256,8 +257,11 @@ export function InteractionDialog({
         ? Promise.resolve([])
         : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
       ).then((data) =>
-        // Compare available data
-        setUnavailableCatNumbers(data)
+        /*
+         * Compare available data
+         * Data returns available ids
+         */
+        setAvailableCatNumbers(data)
       )
     );
     if (unavailableCatNumbers !== undefined && unavailableCatNumbers.length > 0)
@@ -267,7 +271,17 @@ export function InteractionDialog({
       });
     else {
       const interaction = new actionTable.Resource();
-      // Set cat num on accession
+      /*
+       * Set COs on accession using availableCOs
+       * Const COs = map over availableCOS new table.Resource({id});
+       * collection.add(COs);
+       * need this ? ([resource]): void =>
+       *                void parentResource.set(
+       *                  relationship.name,
+       *                  resource as never
+       *                )
+       * see handleResourceSelected in RecordSelector.tsx
+       */
       navigate(getResourceViewUrl(actionTable.name, undefined), {
         state: {
           type: 'RecordSet',
@@ -351,7 +365,8 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Secondary>
-                ) : interactionsWithPrepTables.includes(actionTable.name) ? (
+                ) : interactionsWithPrepTables.includes(actionTable.name) ||
+                  actionTable.name === 'Accession' ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
                     {actionTable.name === 'Accession'
                       ? interactionsText.continueWithoutCollectionObject()

@@ -2,7 +2,7 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import type { RA, RestrictedTuple } from '../../utils/types';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
-import type { Tables } from '../DataModel/types';
+import type { CollectionObject, Tables } from '../DataModel/types';
 import type { CatalogNumberNumeric } from '../FieldFormatters';
 
 export const interactionPrepTables: RestrictedTuple<
@@ -79,8 +79,8 @@ export const getCatNumberAvailableForAccession = async (
   idField: string,
   collectionObjectCatNumber: RA<string>
 ) =>
-  // Returns availble cat number
-  ajax<RA<CatalogNumberNumeric>>('/interactions/catNumber_available/', {
+  // Returns available CO ids
+  ajax<RA<number>>('/interactions/catNumber_available/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
     body: formData({
