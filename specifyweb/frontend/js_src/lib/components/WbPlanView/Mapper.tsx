@@ -272,6 +272,16 @@ export function Mapper(props: {
       });
   }
 
+  function clearUnmappedLines(): void {
+    const filteredLines = state.lines.filter(
+      (line) => line.mappingPath[0] !== emptyMapping
+    );
+    dispatch({
+      type: 'UpdateLinesAction',
+      lines: filteredLines,
+    });
+  }
+
   const handleClose = (): void =>
     dispatch({
       type: 'CloseSelectElementAction',
@@ -667,6 +677,7 @@ export function Mapper(props: {
                   );
               }
         }
+        onClear={clearUnmappedLines}
         onToggleHiddenFields={(): void =>
           dispatch({ type: 'ToggleHiddenFieldsAction' })
         }
