@@ -221,7 +221,5 @@ export const RANK_KEY_DELIMITER = '~>';
  * Opposite of uploadPlanParser.ts > getRankNameWithoutTreeId()
  * See: https://github.com/specify/specify7/pull/5091#issuecomment-2328037741
  */
-const formatTreeRankWithTreeId = (
-  rankName: string,
-  treeId: number
-): string => `${rankName}${RANK_KEY_DELIMITER}${treeId}`;
+const formatTreeRankWithTreeId = (rankName: string, treeId: number): string =>
+  `${rankName}${RANK_KEY_DELIMITER}${treeId}`;

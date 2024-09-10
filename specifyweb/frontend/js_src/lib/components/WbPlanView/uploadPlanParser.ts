@@ -6,7 +6,7 @@ import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { MappingPath } from './Mapper';
-import { SplitMappingPath } from './mappingHelpers';
+import type { SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
