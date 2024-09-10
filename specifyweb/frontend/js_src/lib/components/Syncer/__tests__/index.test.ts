@@ -94,8 +94,8 @@ test('Editing Data Object Formatter', () => {
         </switch>
       </format>
       <aggregators>
-        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.Agent' default='true' separator='' ending='' format='AccessionAgent'/>
-        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.AccessionAgent' default='true' separator='' ending='' format='AccessionAgent'/>
+        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.Agent' default='true' separator='; ' ending='' format='AccessionAgent'/>
+        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.AccessionAgent' default='true' separator='; ' ending='' format='AccessionAgent'/>
       </aggregators>
     </formatters>"
   `);
