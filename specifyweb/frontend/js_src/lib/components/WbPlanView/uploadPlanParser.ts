@@ -6,9 +6,10 @@ import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { MappingPath } from './Mapper';
-import { getRankNameWithoutTreeId, SplitMappingPath } from './mappingHelpers';
+import { SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
+import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
@@ -212,3 +213,11 @@ export function parseUploadPlan(uploadPlan: UploadPlan): {
     ),
   };
 }
+
+/**
+ * Returns the tree rank name after stripping its tree id: (e.x Kingdom~>1 => Kingdom)
+ * NOTE: Does not consider whether rankName is formatted with $ or not.
+ * Opposite of uploadPlanBuilder.ts > formatTreeRankWithTreeId()
+ */
+const getRankNameWithoutTreeId = (rankName: string): string =>
+  rankName.split(RANK_KEY_DELIMITER)[0];

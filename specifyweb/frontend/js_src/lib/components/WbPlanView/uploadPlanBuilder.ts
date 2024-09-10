@@ -6,7 +6,6 @@ import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
-import { formatTreeRankWithTreeId } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
   valueIsTreeDefinition,
@@ -212,3 +211,17 @@ const indexMappings = (
         ] as const
     )
   );
+
+// Delimiter used for rank name keys i.e: <rankname>~><treeId>
+export const RANK_KEY_DELIMITER = '~>';
+
+/**
+ * Returns a formatted tree rank name along with its tree id: (e.x Kingdom => Kingdom~>1)
+ * Used for generating unique key names in the upload plan when there are multiple trees with the same rank name.
+ * Opposite of uploadPlanParser.ts > getRankNameWithoutTreeId()
+ * See: https://github.com/specify/specify7/pull/5091#issuecomment-2328037741
+ */
+const formatTreeRankWithTreeId = (
+  rankName: string,
+  treeId: number
+): string => `${rankName}${RANK_KEY_DELIMITER}${treeId}`;

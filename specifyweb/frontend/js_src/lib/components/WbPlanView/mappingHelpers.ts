@@ -111,28 +111,6 @@ export const formatTreeDefinition = (definitionName: string): string =>
 export const formatTreeRank = (rankName: string): string =>
   `${schema.treeRankSymbol}${rankName}`;
 
-// Delimiter used for rank name keys i.e: <rankname>~><treeId>
-const RANK_KEY_DELIMITER = '~>';
-
-/**
- * Returns a formatted tree rank name along with its tree id: (e.x $Kingdom => $Kingdom~>1)
- * Used for generating unique key names when there are multiple trees with the same rank name.
- * Opposite of getRankNameWithoutTreeId
- * See: https://github.com/specify/specify7/pull/5091#issuecomment-2328037741
- */
-export const formatTreeRankWithTreeId = (
-  rankName: string,
-  treeId: number
-): string => `${rankName}${RANK_KEY_DELIMITER}${treeId}`;
-
-/**
- * Returns the tree rank name after stripping its tree id: (e.x Kingdom~>1 => Kingdom)
- * NOTE: Does not consider whether rankName is formatted with $ or not.
- * Opposite of formatTreeRankWithTreeId
- */
-export const getRankNameWithoutTreeId = (rankName: string): string =>
-  rankName.split(RANK_KEY_DELIMITER)[0];
-
 // Match fields names like startDate_fullDate, but not _formatted
 export const valueIsPartialField = (value: string): boolean =>
   value.includes(schema.fieldPartSeparator) &&
