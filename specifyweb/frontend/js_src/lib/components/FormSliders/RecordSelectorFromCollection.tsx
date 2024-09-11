@@ -5,6 +5,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import {
   DependentCollection,
+  IndependentCollection,
   isRelationshipCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
@@ -80,6 +81,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
      *   don't need to fetch all records in between)
      */
     if (
+      !isToOne &&
       isLazy &&
       collection.related?.isNew() !== true &&
       !collection.isComplete() &&
@@ -89,7 +91,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .fetch()
         .then(() => setRecords(getRecords))
         .catch(raise);
-  }, [collection, isLazy, getRecords, index, records.length]);
+  }, [collection, isLazy, getRecords, index, records.length, isToOne]);
 
   const state = useRecordSelector({
     ...rest,
