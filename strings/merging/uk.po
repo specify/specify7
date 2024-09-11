@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-03 16:45+0000\n"
+"PO-Revision-Date: 2024-09-11 22:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/merging/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"merging/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,105 +12,105 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.8-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1616
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1616
 #, fuzzy
 msgid "recordMerging"
 msgstr "Об'єднання записів"
 
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:89
 #: components/Merging/index.tsx:93
 #: components/Merging/index.tsx:405
 #: components/Merging/index.tsx:418
 #: components/Router/OverlayRoutes.tsx:222
-#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
 msgstr "Об’єднати записи"
 
-#: components/Merging/CompareSubView.tsx:225
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:225
 #, fuzzy
 msgid "mergedRecord"
 msgstr "Об’єднаний запис"
 
-#: components/Merging/index.tsx:451
 #. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:451
 #, fuzzy
 msgid "showConflictingFieldsOnly"
 msgstr "Показувати лише конфліктуючі поля"
 
-#: components/Merging/Header.tsx:190
 #. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:190
 #, fuzzy
 msgid "newMergedRecord"
 msgstr "Новий об'єднаний запис"
 
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
-#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
 msgid "duplicateRecord"
 msgstr "Попередній перегляд {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:111
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:111
 #, fuzzy
 msgid "nRecords"
 msgstr "{count:number|formatted} записи"
 
-#: components/Merging/CompareSubView.tsx:425
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:425
 #, fuzzy
 msgid "subViewControls"
 msgstr "Елементи керування вкладеним переглядом"
 
-#: components/Merging/CompareSubView.tsx:211
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:211
 #, fuzzy
 msgid "mergeFields"
-msgstr "Об'єднати {field:string}"
+msgstr "Об’єднати {field:string}"
 
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:267
 #: components/Preferences/UserDefinitions.tsx:1622
-#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"
 msgstr "Автоматичне заповнення"
 
-#: components/Merging/Header.tsx:88
 #. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:88
 #, fuzzy
 msgid "dismissFromMerging"
 msgstr "Відхилити від об’єднання"
 
-#: components/Merging/definitions.ts:23
 #. Used in: Components > Merging > Definitions
+#: components/Merging/definitions.ts:23
 #, fuzzy
 msgid "agentContainsGroupDescription"
 msgstr "Об’єднаний запис"
 
-#: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:30
 #, fuzzy
 msgid "recordNotBeMergedReason"
 msgstr "Наступні записи не можна об’єднати. Причина:"
 
-#: components/Merging/InvalidMergeRecords.tsx:93
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:93
 #, fuzzy
 msgid "someCannotBeMerged"
 msgstr "Щось пішло не так під час процесу об’єднання."
 
-#: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:88
 #, fuzzy
 msgid "mergeOthers"
 msgstr "Об’єднати інші"
 
-#: components/Merging/index.tsx:408
 #. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:408
 #, fuzzy
 msgid "warningMergeText"
 msgstr ""
@@ -119,64 +119,64 @@ msgstr ""
 "недоступності певних функцій для користувачів Specify. Будь ласка, врахуйте "
 "вплив на їхній досвід. Це об’єднання не можна скасувати"
 
+#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
-#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergeFailed"
 msgstr "Не вдалося злити"
 
-#: components/Merging/Status.tsx:26
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:26
 #, fuzzy
 msgid "mergeSucceeded"
 msgstr "Злиття виконано"
 
-#: components/Merging/Status.tsx:23
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:23
 #, fuzzy
 msgid "merging"
 msgstr "Злиття"
 
-#: components/Notifications/NotificationRenderers.tsx:150
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:150
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Процес об’єднання розпочато."
 
-#: components/Notifications/NotificationRenderers.tsx:205
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:205
 #, fuzzy
 msgid "mergingHasSucceeded"
-msgstr "Процес об’єднання завершився успішно."
+msgstr "Процес об’єднання пройшов успішно."
 
-#: components/Notifications/NotificationRenderers.tsx:167
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:167
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Помилка процесу об’єднання."
 
-#: components/Notifications/NotificationRenderers.tsx:185
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:185
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Процес об’єднання скасовано."
 
-#: components/Notifications/NotificationRenderers.tsx:170
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:170
 #, fuzzy
 msgid "retryMerge"
 msgstr "Повторити об’єднання."
 
-#: components/Merging/Status.tsx:144
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:144
 #, fuzzy
 msgid "mergingWentWrong"
 msgstr "Щось пішло не так під час процесу об’єднання."
 
+#. Used in: Components > Merging > Usages
 #: components/Merging/Usages.tsx:22
 #: components/Merging/Usages.tsx:78
-#. Used in: Components > Merging > Usages
 #, fuzzy
 msgid "linkedRecords"
 msgstr "Пов'язані записи"
