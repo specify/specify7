@@ -393,16 +393,16 @@ class ScopedTreeRecord(NamedTuple):
 
         tree_def_model, tree_rank_model, tree_node_model = get_models(self.name)
 
+        unique_treedef_ids = {tr.treedef_id for tr in self.ranks.keys()}
+        if len(unique_treedef_ids) == 1:
+            return self, None
+
         ranks_columns_in_row_not_null = get_not_null_ranks_columns(row)
         targeted_treedefids = get_targeted_treedefids(ranks_columns_in_row_not_null)
 
         result = handle_multiple_or_no_treedefs(targeted_treedefids, ranks_columns_in_row_not_null)
         if result:
             return result
-
-        unique_treedef_ids = {tr.treedef_id for tr in self.ranks.keys()}
-        if len(unique_treedef_ids) == 1:
-            return self, None
 
         # Determine the target treedef based on the columns that are not null
         targeted_treedefids = {rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null}
