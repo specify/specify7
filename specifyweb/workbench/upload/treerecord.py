@@ -135,12 +135,12 @@ class TreeRank(NamedTuple):
 
         def extract_treedef_id(rank_name: str) -> Tuple[Union[str, Any], Optional[int]]:
             """
-            Extract treedef_id from rank_name if it exists in the format 'rank_name~>treedef_id'.
+            Extract treedef_id from rank_name if it exists in the format 'treedef_id~>rank_name'.
             """
-            parts = rank_name.rsplit('~>', 1)
-            if len(parts) == 2 and parts[1].isdigit():
-                rank_name = parts[0]
-                tree_def_id = int(parts[1])
+            parts = rank_name.split('~>', 1)
+            if len(parts) == 2 and parts[0].isdigit():
+                tree_def_id = int(parts[0])
+                rank_name = parts[1]
                 return rank_name, tree_def_id
             return rank_name, None
 
@@ -329,7 +329,7 @@ class ScopedTreeRecord(NamedTuple):
         # Handle cases where there are multiple or no treedefs
         def handle_multiple_or_no_treedefs(
             targeted_treedefids: Set[int], ranks_columns: List[TreeRankCell]
-        ) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
+        ) -> Optional[Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]]:
             if not targeted_treedefids:
                 return self, None
             elif len(targeted_treedefids) > 1:
