@@ -4,6 +4,8 @@ For uploading tree records.
 
 from itertools import groupby
 import logging
+from math import e
+from os import error
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 
 from django.db import transaction, IntegrityError
@@ -26,6 +28,7 @@ class TreeRankCell(NamedTuple):
     treedefitem_name: str
     tree_node_attribute: str
     upload_value: str
+    column_fullname: str = ""
 
 class TreeRank(NamedTuple):
     rank_name: str
@@ -287,12 +290,13 @@ class ScopedTreeRecord(NamedTuple):
             return formatted_column == row_key
 
         # Create a TreeRankCell instance
-        def create_tree_rank_cell(tree_rank_record: Any, col_name: str, row_value: Any) -> TreeRankCell:
+        def create_tree_rank_cell(tree_rank_record: Any, col_name: str, row_value: Any, row_key: Any) -> TreeRankCell:
             return TreeRankCell(
                 tree_rank_record.treedef_id,  # treedefid
                 tree_rank_record.rank_name,  # treedefitem_name
                 col_name,  # tree_node_attribute
                 row_value,  # upload_value
+                row_key # column_fullname
             )
 
         # Process the row item
@@ -300,7 +304,7 @@ class ScopedTreeRecord(NamedTuple):
             if not is_not_null(row_value):
                 return []
             return [
-                create_tree_rank_cell(tree_rank_record, col_name, row_value)
+                create_tree_rank_cell(tree_rank_record, col_name, row_value, row_key)
                 for tree_rank_record, cols in self.ranks.items()
                 for col_name, col_opts in cols.items()
                 if match_column(row_key, format_column(col_name, col_opts))
@@ -338,7 +342,8 @@ class ScopedTreeRecord(NamedTuple):
                 return self, None
             elif len(targeted_treedefids) > 1:
                 logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
-                return self, WorkBenchParseFailure('multipleRanksInRow', {}, ranks_columns[0].treedefitem_name)
+                error_col_name = ranks_columns[0].column_fullname
+                return self, WorkBenchParseFailure('multipleRanksInRow', {}, error_col_name)
 
             # Group ranks_columns by treedef_id using itertools.groupby
             ranks_columns.sort(key=lambda x: x.treedef_id)  # groupby requires sorted input
@@ -353,11 +358,8 @@ class ScopedTreeRecord(NamedTuple):
                     if len(columns) > 1
                 )
                 logger.warning(f"Multiple ranks found for treedef_id {treedef_id}")
-                return self, WorkBenchParseFailure(
-                    "multipleRanksForTreedef",
-                    {},
-                    grouped_by_treedef_id[treedef_id][0].treedefitem_name,
-                )
+                error_col_name = grouped_by_treedef_id[treedef_id][0].column_fullname
+                return self, WorkBenchParseFailure("multipleRanksForTreedef", {}, error_col_name)
 
             return None
 
@@ -411,7 +413,8 @@ class ScopedTreeRecord(NamedTuple):
             return self, None
         elif len(targeted_treedefids) > 1:
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
-            return self, WorkBenchParseFailure('multipleRanksInRow', {}, list(ranks_columns_in_row_not_null)[0].treedefitem_name)
+            error_col_name = list(ranks_columns_in_row_not_null)[0].column_fullname
+            return self, WorkBenchParseFailure("multipleRanksInRow", {}, error_col_name)
 
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
