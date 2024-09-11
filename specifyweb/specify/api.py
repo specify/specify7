@@ -651,24 +651,24 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     if not isinstance(value, list): 
         assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
         
-        rel_model = field.related_model
-        ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+    rel_model = field.related_model
+    ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
 
-        for rel_data in value:
-            rel_data[field.field.name] = obj
+    for rel_data in value:
+        rel_data[field.field.name] = obj
 
-            rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
 
-            ids.append(rel_obj.id) # Record the id as one to keep.
+        ids.append(rel_obj.id) # Record the id as one to keep.
 
-        # Delete related objects not in the ids list.
-        # TODO: Check versions for optimistic locking.
-        to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
-        for rel_obj in to_remove:
-            check_table_permissions(collection, agent, rel_obj, "delete")
-            auditlog.remove(rel_obj, agent, obj)
-        
-        to_remove.delete()
+    # Delete related objects not in the ids list.
+    # TODO: Check versions for optimistic locking.
+    to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
+    for rel_obj in to_remove:
+        check_table_permissions(collection, agent, rel_obj, "delete")
+        auditlog.remove(rel_obj, agent, obj)
+    
+    to_remove.delete()
 
 class IndependentInline(TypedDict): 
     update: List[Union[str, Dict[str, Any]]]
@@ -686,15 +686,17 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     cached_objs = dict()
     fk_model = None
 
+    to_fetch = [*to_update, *to_remove]
+
     # Fetch the related records which are provided as strings
-    for rel_data in [*to_update, *to_remove]: 
+    for rel_data in to_fetch: 
         if not isinstance(rel_data, str): continue
         fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
         ids_to_fetch.append(fk_id)
 
     if fk_model is not None: 
         cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
-    
+
     for rel_data in to_update: 
         if isinstance(rel_data, str): 
             fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
@@ -706,12 +708,13 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
         update_or_create_resource(collection, agent, rel_model, rel_data, None)
     
     if len(to_remove) > 0:
-        check_table_permissions(collection, agent, rel_model, 'update')
+        assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
         related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field.name))
         assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
         for rel_obj in to_remove: 
             fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
             rel_data = cached_objs[fk_id]
+            assert rel_data[related_field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {rel_obj}"
             rel_data[related_field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
