@@ -46,29 +46,29 @@ msgstr "Сопоставлений"
 msgid "matchBehavior"
 msgstr "Поведение при совпадении:"
 
-#: components/WbPlanView/LineComponents.tsx:173
+#: components/WbPlanView/LineComponents.tsx:172
 #. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
 msgstr "Сопоставление столбцов"
 
 #: components/WbPlanView/CustomSelectElement.tsx:888
-#: components/WbPlanView/LineComponents.tsx:211
+#: components/WbPlanView/LineComponents.tsx:210
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
 msgstr "Предлагаемые сопоставления:"
 
-#: components/WbPlanView/LineComponents.tsx:212
+#: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Line Components
 msgid "requiredFields"
 msgstr "Обязательные поля"
 
-#: components/WbPlanView/LineComponents.tsx:213
+#: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
 msgid "optionalFields"
 msgstr "Необязательные поля"
 
 #: components/QueryBuilder/Import.tsx:155
-#: components/WbPlanView/LineComponents.tsx:214
+#: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 msgid "hiddenFields"
 msgstr "Скрытые поля"
@@ -247,8 +247,8 @@ msgstr ""
 "существующие сопоставления. AutoMapper попытается сопоставить столбцы в "
 "новые поля базовой таблицы."
 
-#: components/WbPlanView/LineComponents.tsx:153
-#: components/WbPlanView/LineComponents.tsx:156
+#: components/WbPlanView/LineComponents.tsx:152
+#: components/WbPlanView/LineComponents.tsx:155
 #. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
 msgstr "Очистить сопоставление"

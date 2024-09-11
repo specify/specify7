@@ -65,33 +65,33 @@ msgstr "Нанесено на карту"
 msgid "matchBehavior"
 msgstr "Поведінка відповідності:"
 
-#: components/WbPlanView/LineComponents.tsx:173
+#: components/WbPlanView/LineComponents.tsx:172
 #. Used in: Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "columnMapping"
 msgstr "Відображення стовпців"
 
 #: components/WbPlanView/CustomSelectElement.tsx:888
-#: components/WbPlanView/LineComponents.tsx:211
+#: components/WbPlanView/LineComponents.tsx:210
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "suggestedMappings"
 msgstr "Пропоновані зіставлення:"
 
-#: components/WbPlanView/LineComponents.tsx:212
+#: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "requiredFields"
 msgstr "обов'язкові поля"
 
-#: components/WbPlanView/LineComponents.tsx:213
+#: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "optionalFields"
 msgstr "Необов'язкові поля"
 
 #: components/QueryBuilder/Import.tsx:155
-#: components/WbPlanView/LineComponents.tsx:214
+#: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "hiddenFields"
@@ -303,8 +303,8 @@ msgstr ""
 "видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими "
 "полями базової таблиці."
 
-#: components/WbPlanView/LineComponents.tsx:153
-#: components/WbPlanView/LineComponents.tsx:156
+#: components/WbPlanView/LineComponents.tsx:152
+#: components/WbPlanView/LineComponents.tsx:155
 #. Used in: Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "clearMapping"

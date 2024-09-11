@@ -346,7 +346,7 @@ msgstr ""
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:145
-#: components/WbPlanView/navigator.ts:306
+#: components/WbPlanView/navigator.ts:334
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
@@ -621,7 +621,7 @@ msgid "update"
 msgstr ""
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:553
+#: components/WbPlanView/navigator.ts:634
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "fullDate"
@@ -862,7 +862,7 @@ msgstr ""
 
 #: components/DataModel/specifyTable.ts:262
 #: components/ExportFeed/Editor.tsx:194
-#: components/WbPlanView/navigator.ts:444
+#: components/WbPlanView/navigator.ts:525
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "id"
