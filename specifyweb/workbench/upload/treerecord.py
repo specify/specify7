@@ -96,7 +96,8 @@ class TreeRank(NamedTuple):
         def get_treedef_id(
             rank_name: str,
             tree: str,
-            treedef_id: Optional[int],
+            treedef_name: Optional[str] = None,
+            treedef_id: Optional[int] = None
         ) -> int:
             """
             Get the treedef ID for the given rank name and tree.
@@ -119,6 +120,9 @@ class TreeRank(NamedTuple):
                     return filter_by_treedef_id(treedefitems, rank_name, treedef_id)
                 return treedefitems
 
+            if treedef_id is None and treedef_name is not None:
+                treedef_id = get_treedef_model(tree).objects.get(name=treedef_name)
+
             # Build filter keyword arguments and fetch treedefitems
             filter_kwargs = build_filter_kwargs(rank_name, treedef_id)
             treedefitems = fetch_treedefitems(filter_kwargs)
@@ -133,19 +137,19 @@ class TreeRank(NamedTuple):
 
             return first_item.treedef_id
 
-        def extract_treedef_id(rank_name: str) -> Tuple[Union[str, Any], Optional[int]]:
+        def extract_treedef_name(rank_name: str) -> Tuple[str, Optional[str]]:
             """
-            Extract treedef_id from rank_name if it exists in the format 'treedef_id~>rank_name'.
+            Extract treedef_name from rank_name if it exists in the format 'treedef_name~>rank_name'.
             """
             parts = rank_name.split('~>', 1)
-            if len(parts) == 2 and parts[0].isdigit():
-                tree_def_id = int(parts[0])
+            if len(parts) == 2:
+                treedef_name = parts[0]
                 rank_name = parts[1]
-                return rank_name, tree_def_id
+                return rank_name, treedef_name
             return rank_name, None
 
-        rank_name, extracted_treedef_id = extract_treedef_id(rank_name)
-        target_treedef_id = get_treedef_id(rank_name, tree, extracted_treedef_id or treedef_id)
+        rank_name, extracted_treedef_name = extract_treedef_name(rank_name)
+        target_treedef_id = get_treedef_id(rank_name, tree, extracted_treedef_name, treedef_id)
 
         return TreeRank(rank_name, target_treedef_id, tree.lower())
 
