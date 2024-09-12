@@ -98,6 +98,8 @@ export const LazyCollection = Base.extend({
   constructor(options = {}) {
     this.table = this.model;
     Base.call(this, null, options);
+    this._neverFetched = true;
+    this._totalCount = undefined;
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&
@@ -107,7 +109,7 @@ export const LazyCollection = Base.extend({
     return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
   },
   isComplete() {
-    return this.length === this._totalCount;
+    return this._neverFetched && this.length === this._totalCount;
   },
   parse(resp) {
     let objects;
@@ -172,6 +174,8 @@ export const IndependentCollection = LazyCollection.extend({
       Boolean(options.domainfilter) &&
       this.model?.specifyTable.getScopingRelationship() !== undefined;
 
+    this._totalCount = records.length;
+
     this.removed = new Set<string>();
     this.updated = {};
   },
@@ -232,9 +236,7 @@ export const IndependentCollection = LazyCollection.extend({
 
     this._totalCount -= (this.removed as Set<string>).size;
 
-    return records.filter(
-      ({ resource_uri }) => !(this.removed as Set<string>).has(resource_uri)
-    );
+    return records;
   },
   async fetch(options) {
     if (this.related.isBeingInitialized()) {
