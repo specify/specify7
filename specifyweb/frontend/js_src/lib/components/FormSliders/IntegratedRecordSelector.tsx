@@ -185,6 +185,7 @@ export function IntegratedRecordSelector({
                       <DataEntry.Add
                         disabled={
                           isReadOnly ||
+                          (relationship.relatedTable.name === ('TaxonTreeDefItem')) ||
                           (isToOne && collection.models.length > 0)
                         }
                         onClick={(): void => {
