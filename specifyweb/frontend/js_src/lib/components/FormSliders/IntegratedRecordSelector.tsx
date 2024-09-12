@@ -111,6 +111,9 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
+  const isTaxonTreeDefItemTable = 
+    collection.table.specifyTable.name.includes('TaxonTreeDefItem');
+
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
@@ -185,7 +188,7 @@ export function IntegratedRecordSelector({
                       <DataEntry.Add
                         disabled={
                           isReadOnly ||
-                          (relationship.relatedTable.name === ('TaxonTreeDefItem')) ||
+                          isTaxonTreeDefItemTable ||
                           (isToOne && collection.models.length > 0)
                         }
                         onClick={(): void => {
@@ -253,7 +256,8 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(resources): void => {
+                onAdd={isTaxonTreeDefItemTable ? undefined :
+                  (resources): void => { 
                   if (!isInteraction) collection.add(resources);
                   handleAdd?.(resources);
                 }}
