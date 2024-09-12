@@ -663,6 +663,7 @@ export function Mapper(props: {
       </Ul>
 
       <MappingsControlPanel
+        columnsNotSaved={props.dataset.columns.length === 0}
         showHiddenFields={state.showHiddenFields}
         onAddNewHeader={
           isReadOnly

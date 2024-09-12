@@ -93,8 +93,8 @@ export const commonText = createDictionary({
     'uk-ua': 'Очистити все',
     'de-ch': 'Alles löschen',
   },
-  clearUnmapped: {
-    'en-us': 'Clear unmapped',
+  deleteUnmapped: {
+    'en-us': 'Delete unmapped columns',
   },
   save: {
     'en-us': 'Save',

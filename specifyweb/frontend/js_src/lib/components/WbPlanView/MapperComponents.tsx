@@ -33,11 +33,13 @@ export function MappingsControlPanel({
   onToggleHiddenFields: handleToggleHiddenFields,
   onAddNewHeader: handleAddNewHeader,
   onClear: handleClear,
+  columnsNotSaved,
 }: {
   readonly showHiddenFields: boolean;
   readonly onToggleHiddenFields?: () => void;
   readonly onAddNewHeader?: (newHeaderName: string) => void;
   readonly onClear: () => void;
+  readonly columnsNotSaved: boolean;
 }): JSX.Element {
   const newHeaderIdRef = React.useRef(1);
 
@@ -55,9 +57,11 @@ export function MappingsControlPanel({
           {wbPlanText.addNewColumn()}
         </Button.Small>
       )}
-      <Button.Small onClick={handleClear}>
-        {commonText.clearUnmapped()}
-      </Button.Small>
+      {columnsNotSaved && (
+        <Button.Small onClick={handleClear}>
+          {commonText.deleteUnmapped()}
+        </Button.Small>
+      )}
       <Label.Inline>
         <Input.Checkbox
           checked={showHiddenFields}
