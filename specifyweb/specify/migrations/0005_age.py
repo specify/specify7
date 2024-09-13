@@ -40,12 +40,6 @@ class Migration(migrations.Migration):
                 'ordering': (),
             },
         ),
-        migrations.AddField(
-            model_name='discipline',
-            name='tectonictreedef',
-            field=models.ForeignKey(db_column='TectonicTreeDefID', default=None, null=True, on_delete=protect_with_blockers, related_name='disciplines', to='specify.tectonictreedef'),
-            preserve_default=False,
-        ),
         migrations.CreateModel(
             name='Tectonictreedefitem', 
             fields=[
