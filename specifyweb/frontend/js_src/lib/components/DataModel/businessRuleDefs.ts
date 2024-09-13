@@ -214,7 +214,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             const cojos = cog.getDependentResource('cojo');
             // Set first CO in COG to primary
             cojos?.models
-              .filter((cojo) => cojo.get('childco'))[0]
+              .find((cojo) => cojo.get('childco'))
               .set('isprimary', true);
           }
         });
@@ -224,8 +224,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
   CollectionObjectGroupJoin: {
     fieldChecks: {
-      // Only a single CO in a COG can be set as primary.
-      // When checking a CO as primary, other COs in that COG will get unchecked.
+      /*
+       * Only a single CO in a COG can be set as primary.
+       * When checking a CO as primary, other COs in that COG will get unchecked.
+       */
       isprimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
         if (cojo.get('isprimary') && cojo.collection !== undefined) {
           cojo.collection.models
@@ -237,8 +239,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             });
         }
       },
-      // Only a single CO in a COG can be set as substrate.
-      // When checking a CO as substrate, other COs in that COG will get unchecked.
+      /*
+       * Only a single CO in a COG can be set as substrate.
+       * When checking a CO as substrate, other COs in that COG will get unchecked.
+       */
       issubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
         if (cojo.get('issubstrate') && cojo.collection !== undefined) {
           cojo.collection.models

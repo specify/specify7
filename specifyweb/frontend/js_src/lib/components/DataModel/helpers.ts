@@ -221,5 +221,5 @@ export async function fetchDistantRelated(
 export const cogTypes = {
   DISCRETE: 'Discrete',
   CONSOLIDATED: 'Consolidated',
-  DRILL_CORE: 'Drill Core'
-}
+  DRILL_CORE: 'Drill Core',
+};
