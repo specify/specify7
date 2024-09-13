@@ -104,6 +104,12 @@ class Migration(migrations.Migration):
                 'ordering': (),
             },
         ),
+        migrations.AddField(
+            model_name='paleocontext',
+            name='tectonicunit',
+            field=models.ForeignKey(db_column='TectonicUnitID', default=None, null=True, on_delete=protect_with_blockers, related_name='paleocontexts', to='specify.tectonicunit'),
+            preserve_default=False,
+        ),
         migrations.CreateModel(
             name='Absoluteage', 
             fields=[
