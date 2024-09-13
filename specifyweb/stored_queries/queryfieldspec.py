@@ -208,6 +208,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 value = value
 
             op = QueryOps(uiformatter).by_op_num(op_num)
+            
             f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
