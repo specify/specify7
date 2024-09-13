@@ -60,6 +60,7 @@ def make_stringid(fs, table_list):
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
 
+
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
@@ -208,7 +209,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 value = value
 
             op = QueryOps(uiformatter).by_op_num(op_num)
-            
+
             f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
