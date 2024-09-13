@@ -125,7 +125,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Tectonicunit',
+            name='TectonicUnit',
             fields=[
                 ('id', models.AutoField(db_column='TectonicID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -158,7 +158,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Relativeagecitation',
+            name='RelativeAgeCitation',
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeCitationID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
