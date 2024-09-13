@@ -190,12 +190,12 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('ordinal', models.IntegerField(blank=True, db_column='Integer1', default=0)),
-                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('ordinal', models.IntegerField(blank=True, db_column='Integer1')),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', default=0)),
                 # relationships
+                ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='RelativeAgeAttachment', to='specify.collection')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='RelativeAgeAttachment', to='specify.collection')),
                 ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=protect_with_blockers, related_name='RelativeAgeAttachment', to='specify.attachment')),
                 ('relativeage', models.ForeignKey(db_column='RelativeAgeID', on_delete=protect_with_blockers, related_name='RelativeAgeAttachment', to='specify.relativeage'))
             ],
@@ -211,12 +211,12 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('ordinal', models.IntegerField(blank=True, db_column='Integer1', default=0)),
-                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('ordinal', models.IntegerField(blank=True, db_column='Integer1')),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', default=0)),
                 # relationships
+                ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.collection')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.collection')),
                 ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.attachment')),
                 ('absoluteage', models.ForeignKey(db_column='AbsoluteAgeID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.absoluteage'))
             ],
