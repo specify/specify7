@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='TectonicTreeDef', 
+            name='Tectonictreedef', 
             fields=[
                 ('id', models.AutoField(db_column='TectonicTreeDefID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
             preserve_default=False,
         ),
         migrations.CreateModel(
-            name='TectonicTreeDefItem', 
+            name='Tectonictreedefitem', 
             fields=[
                 ('id', models.AutoField(db_column='TectonicTreeDefItemID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='TectonicUnit', 
+            name='Tectonicunit', 
             fields=[
                 ('id', models.AutoField(db_column='TectonicID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='AbsoluteAge', 
+            name='Absoluteage', 
             fields=[
                 ('id', models.AutoField(db_column='AbsoluteAgeID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -136,7 +136,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RelativeAge', 
+            name='Relativeage', 
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeID ', primary_key=True, serialize=False)),
                 ('agent1', models.ForeignKey(db_column='Agent1', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RelativeAgeAttachment', 
+            name='Relativeageattachment', 
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeAttachmentID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -191,7 +191,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='AbsoluteAgeAttachment', 
+            name='Absoluteageattachment', 
             fields=[
                 ('id', models.AutoField(db_column='AbsoluteAgeAttachmentID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -203,10 +203,54 @@ class Migration(migrations.Migration):
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.collection')),
                 ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.attachment')),
-                ('absoluteage', models.ForeignKey(db_column='AbsoluteAgeID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.absoluteveage'))
+                ('absoluteage', models.ForeignKey(db_column='AbsoluteAgeID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.absoluteage'))
             ],
             options={
                 'db_table': 'absoluteageattachment',
+                'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Relativeagecitation', 
+            fields=[
+                ('id', models.AutoField(db_column='RelativeAgeCitationID ', primary_key=True, serialize=False)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('isfigured', models.BooleanField(blank=True, db_column='IsFigured', null=True)),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', default=0, max_length=255)),
+                ('pagenumber', models.CharField(blank=True, db_column='PageNumber', default=0, max_length=255)),
+                ('platenumber', models.CharField(blank=True, db_column='PlateNumber', default=0, max_length=255)),
+                ('relativeage', models.ForeignKey(db_column='RelativeAgeID', on_delete=protect_with_blockers, related_name='RelativeAgeCitation', to='specify.relativeage')),
+                ('referencework', models.ForeignKey(db_column='ReferenceWorkID', on_delete=protect_with_blockers, related_name='RelativeAgeCitation', to='specify.referencework')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+            ],
+            options={
+                'db_table': 'relativeagecitation',
+                'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Absoluteagecitation', 
+            fields=[
+                ('id', models.AutoField(db_column='AbsoluteAgeCitationID ', primary_key=True, serialize=False)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('isfigured', models.BooleanField(blank=True, db_column='IsFigured', null=True)),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', default=0, max_length=255)),
+                ('pagenumber', models.CharField(blank=True, db_column='PageNumber', default=0, max_length=255)),
+                ('platenumber', models.CharField(blank=True, db_column='PlateNumber', default=0, max_length=255)),
+                ('absoluteage', models.ForeignKey(db_column='AbsoluteAgeID', on_delete=protect_with_blockers, related_name='AbsoluteAgeCitation', to='specify.absoluteage')),
+                ('referencework', models.ForeignKey(db_column='ReferenceWorkID', on_delete=protect_with_blockers, related_name='AbsoluteAgeCitation', to='specify.referencework')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+            ],
+            options={
+                'db_table': 'absoluteagecitation',
                 'ordering': (),
             },
         ),
