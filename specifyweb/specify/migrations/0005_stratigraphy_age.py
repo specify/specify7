@@ -183,16 +183,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RelativeAgeAttachment',
             fields=[
-                ('id', models.AutoField(db_column='relativeageattachmentid', primary_key=True, serialize=False)),
-                ('ordinal', models.IntegerField(blank=True, db_column='Ordinal', null=True)),
-                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('id', models.AutoField(db_column='RelativeAgeAttachmentID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='relativeageattachments', to='specify.attachment')),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('ordinal', models.IntegerField(blank=True, db_column='Ordinal', null=True)),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
                 ('collectionmember', models.ForeignKey(db_column='CollectionMemberID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='relativegeattachments', to='specify.collection')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='relativeageattachments', to='specify.attachment')),
                 ('relativeage', models.ForeignKey(db_column='RelativeAgeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='relativeageattachments', to='specify.relativeage')),
             ],
             options={
