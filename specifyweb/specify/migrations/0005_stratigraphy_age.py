@@ -79,16 +79,20 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
-                ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
-                ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='TectonicTreeDef', to='specify.discipline'))
             ],
             options={
                 'db_table': 'tectonictreedef',
                 'ordering': (),
             },
+        ),
+        migrations.AddField(
+            model_name='discipline',
+            name='tectonictreedef',
+            field=models.ForeignKey(db_column='TectonicTreeDefID', default=None, null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='disciplines', to='specify.tectonictreedef'),
+            preserve_default=False,
         ),
         migrations.CreateModel(
             name='TectonicTreeDefItem',
