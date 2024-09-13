@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AbsoluteAge',
             fields=[
-                ('id', models.AutoField(db_column='absoluteageid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='AbsoluteAgeID', primary_key=True, serialize=False)),
                 ('absoluteage', models.DecimalField(blank=True, db_column='AbsoluteAge', decimal_places=10, max_digits=22, null=True)),
                 ('ageuncertainty', models.DecimalField(blank=True, db_column='AgeUncertainty', decimal_places=10, max_digits=22, null=True)),
                 ('controlledvocab', models.TextField(blank=True, db_column='ControlledVocab', null=True)),
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RelativeAge',
             fields=[
-                ('id', models.AutoField(db_column='relativeageid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='RelativeAgeID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('agetype', models.CharField(blank=True, db_column='AgeType', max_length=64, null=True)),
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TectonicTreeDef',
             fields=[
-                ('id', models.AutoField(db_column='tectonictreedefid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='TectonicTreeDefID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TectonicTreeDefItem',
             fields=[
-                ('id', models.AutoField(db_column='tectonictreedefitemid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='TectonicTreeDefItemID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
@@ -127,7 +127,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TectonicUnit',
             fields=[
-                ('id', models.AutoField(db_column='TectonicID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='TectonicUnitID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
@@ -251,7 +251,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AbsoluteAgeAttachment',
             fields=[
-                ('id', models.AutoField(db_column='absoluteageattachmentid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='AbsoluteAgeAttachmentID', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
