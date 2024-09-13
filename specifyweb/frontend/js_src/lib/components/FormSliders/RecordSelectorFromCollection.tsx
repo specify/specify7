@@ -5,7 +5,6 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import {
   DependentCollection,
-  IndependentCollection,
   isRelationshipCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
