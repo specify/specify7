@@ -2,6 +2,7 @@ import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
+import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -20,6 +21,8 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroup,
+  CollectionObjectGroupJoin,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -198,6 +201,54 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               console.error('Error fetching resources:', error);
             });
         return undefined;
+      },
+    },
+  },
+
+  CollectionObjectGroup: {
+    fieldChecks: {
+      cogtype: (cog: SpecifyResource<CollectionObjectGroup>) => {
+        // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
+        cog.rgetPromise('cogtype').then((cogtype) => {
+          if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
+            const cojos = cog.getDependentResource('cojo');
+            // Set first CO in COG to primary
+            cojos?.models
+              .filter((cojo) => cojo.get('childco'))[0]
+              .set('isprimary', true);
+          }
+        });
+      },
+    },
+  },
+
+  CollectionObjectGroupJoin: {
+    fieldChecks: {
+      // Only a single CO in a COG can be set as primary.
+      // When checking a CO as primary, other COs in that COG will get unchecked.
+      isprimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+        if (cojo.get('isprimary') && cojo.collection !== undefined) {
+          cojo.collection.models
+            .filter((resource) => resource.get('childco'))
+            .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
+              if (other.cid !== cojo.cid) {
+                other.set('isprimary', false);
+              }
+            });
+        }
+      },
+      // Only a single CO in a COG can be set as substrate.
+      // When checking a CO as substrate, other COs in that COG will get unchecked.
+      issubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+        if (cojo.get('issubstrate') && cojo.collection !== undefined) {
+          cojo.collection.models
+            .filter((resource) => resource.get('childco'))
+            .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
+              if (other.cid !== cojo.cid) {
+                other.set('issubstrate', false);
+              }
+            });
+        }
       },
     },
   },
