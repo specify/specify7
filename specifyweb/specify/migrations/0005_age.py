@@ -30,6 +30,7 @@ class Migration(migrations.Migration):
                 ('fullNameDirection', models.IntegerField(blank=True, db_column='FullNameDirection', null=True)),
                 ('name', models.CharField(blank=True, db_column='Name', max_length=255)),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                # relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=protect_with_blockers, related_name='TectonicTreeDef', to='specify.discipline'))
@@ -61,6 +62,7 @@ class Migration(migrations.Migration):
                 ('textafter', models.CharField(blank=True, db_column='TextAfter', max_length=255, null=True)),
                 ('textbefore', models.CharField(blank=True, db_column='TextBefore', max_length=255, null=True)),
                 ('title', models.CharField(blank=True, db_column='Title', max_length=255, null=True)),
+                # relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('tectonictreedef', models.ForeignKey(db_column='TectonicTreeDefID', on_delete=protect_with_blockers, related_name='TectonicTreeDefItem', to='specify.tectonictreedef')), 
@@ -92,6 +94,7 @@ class Migration(migrations.Migration):
                 ('text2', models.TextField(blank=True, db_column='Text2')),
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
+                # relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('tectonictreedef', models.ForeignKey(db_column='TectonicTreeDefID', on_delete=protect_with_blockers, related_name='tectonicunit', to='specify.tectonictreedef')), 
@@ -116,25 +119,27 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='AbsoluteAgeID ', primary_key=True, serialize=False)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('collectiondate', models.DateField(blank=True, db_column='CollectionDate', null=True)),
+                ('absoluteage', models.DecimalField(blank=True, db_column='AbsoluteAge', decimal_places=10, max_digits=22, null=True)),
+                ('ageuncertainty', models.DecimalField(blank=True, db_column='AgeUncertainty', decimal_places=10, max_digits=22, null=True)),
+                # from control vocab (sedimentation, metamorphic, inclusion, original, fall,...) null=False?
+                ('agetype', models.CharField(blank=True, db_column='AgeType', max_length=255, null=False)),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
-                ('text1', models.CharField(blank=True, db_column='Text1', max_length=255)),
-                ('text2', models.CharField(blank=True, db_column='Text2', max_length=255)),
-                ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
-                ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
-                ('integer1', models.IntegerField(blank=True, db_column='Integer1', null=True)),
-                ('integer2', models.IntegerField(blank=True, db_column='Integer2', null=True)),
-                ('date1', models.DateField(blank=True, db_column='Date1', null=True)),
-                ('date2', models.DateField(blank=True, db_column='Date2', null=True)),
                 ('datingmethod', models.CharField(blank=True, db_column='DatingMethod', max_length=255, null=True)),
                 ('datingmethodremarks', models.TextField(blank=True, db_column='DatingMethodRemarks', null=True)),
-                ('absoluteage', models.DecimalField(blank=True, db_column='AbsoluteAge', decimal_places=10, max_digits=22, null=True)),
-                ('ageuncertainty', models.DecimalField(blank=True, db_column='ageUncertainty', decimal_places=10, max_digits=22, null=True)),
-                ('agetype', models.CharField(blank=True, db_column='AgeType', max_length=255, null=False)),
-                ('collectiondate', models.DateField(blank=True, db_column='CollectionDate', null=True)),
+                ('date1', models.DateField(blank=True, db_column='Date1', null=True)),
+                ('date2', models.DateField(blank=True, db_column='Date2', null=True)),
+                ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
+                ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
+                ('text1', models.CharField(blank=True, db_column='Text1', max_length=255, null=True)),
+                ('text2', models.CharField(blank=True, db_column='Text2', max_length=255, null=True)),
+                ('number1', models.DecimalField(blank=True, db_column='Number1', null=True)),
+                ('number2', models.DecimalField(blank=True, db_column='Number2', null=True)),
+                # relationships
+                ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=protect_with_blockers, related_name='AbsoluteAge', to='specify.collectionobject'))
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('agent1', models.ForeignKey(db_column='Agent1', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=protect_with_blockers, related_name='AbsoluteAge', to='specify.collectionobject'))
             ],
             options={
                 'db_table': 'absoluteage',
@@ -166,6 +171,7 @@ class Migration(migrations.Migration):
                 ('text2', models.CharField(blank=True, db_column='Text2', max_length=255)),
                 ('integer1', models.IntegerField(blank=True, db_column='Integer1', null=True)),
                 ('integer2', models.IntegerField(blank=True, db_column='Integer2', null=True)),
+                # relationships
                 ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=protect_with_blockers, related_name='AbsoluteAge', to='specify.collectionobject')), 
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
@@ -185,6 +191,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('ordinal', models.IntegerField(blank=True, db_column='Integer1', default=0)),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                # relationships
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='RelativeAgeAttachment', to='specify.collection')),
@@ -205,6 +212,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('ordinal', models.IntegerField(blank=True, db_column='Integer1', default=0)),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                # relationships
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('collection', models.ForeignKey(db_column='CollectionMemberID', on_delete=protect_with_blockers, related_name='AbsoluteAgeAttachment', to='specify.collection')),
@@ -228,6 +236,7 @@ class Migration(migrations.Migration):
                 ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', default=0, max_length=255)),
                 ('pagenumber', models.CharField(blank=True, db_column='PageNumber', default=0, max_length=255)),
                 ('platenumber', models.CharField(blank=True, db_column='PlateNumber', default=0, max_length=255)),
+                # relationships
                 ('relativeage', models.ForeignKey(db_column='RelativeAgeID', on_delete=protect_with_blockers, related_name='RelativeAgeCitation', to='specify.relativeage')),
                 ('referencework', models.ForeignKey(db_column='ReferenceWorkID', on_delete=protect_with_blockers, related_name='RelativeAgeCitation', to='specify.referencework')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
@@ -250,6 +259,7 @@ class Migration(migrations.Migration):
                 ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', default=0, max_length=255)),
                 ('pagenumber', models.CharField(blank=True, db_column='PageNumber', default=0, max_length=255)),
                 ('platenumber', models.CharField(blank=True, db_column='PlateNumber', default=0, max_length=255)),
+                # relationships
                 ('absoluteage', models.ForeignKey(db_column='AbsoluteAgeID', on_delete=protect_with_blockers, related_name='AbsoluteAgeCitation', to='specify.absoluteage')),
                 ('referencework', models.ForeignKey(db_column='ReferenceWorkID', on_delete=protect_with_blockers, related_name='AbsoluteAgeCitation', to='specify.referencework')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
