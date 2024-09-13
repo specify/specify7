@@ -150,10 +150,9 @@ class Migration(migrations.Migration):
             name='Relativeage', 
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeID ', primary_key=True, serialize=False)),
-                ('agent1', models.ForeignKey(db_column='Agent1', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('agent2', models.ForeignKey(db_column='Agent2', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                # from picklist (sedimentation, metamorphic, inclusion, original, fall,...) null=False?
                 ('agetype', models.CharField(blank=True, db_column='AgeType', max_length=255, null=False)),
                 ('verbatimperiod', models.TextField(blank=True, db_column='VerbatimPeriod', null=True)),
                 ('verbatimname', models.TextField(blank=True, db_column='VerbatimName', null=True)),
@@ -167,15 +166,17 @@ class Migration(migrations.Migration):
                 ('date2', models.DateField(blank=True, db_column='Date2', null=True)),
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
-                ('text1', models.CharField(blank=True, db_column='Text1', max_length=255)),
-                ('text2', models.CharField(blank=True, db_column='Text2', max_length=255)),
-                ('integer1', models.IntegerField(blank=True, db_column='Integer1', null=True)),
-                ('integer2', models.IntegerField(blank=True, db_column='Integer2', null=True)),
+                ('text1', models.CharField(blank=True, db_column='Text1', max_length=255, null=True)),
+                ('text2', models.CharField(blank=True, db_column='Text2', max_length=255, null=True)),
+                ('number1', models.DecimalField(blank=True, db_column='Number1', null=True)),
+                ('number2', models.DecimalField(blank=True, db_column='Number2', null=True)),
                 # relationships
                 ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=protect_with_blockers, related_name='AbsoluteAge', to='specify.collectionobject')), 
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('agename', models.ForeignKey(db_column='AgeNameID', on_delete=protect_with_blockers, related_name='RelativeAge', to='specify.geologictimeperiod'))
+                ('agename', models.ForeignKey(db_column='AgeNameID', null=True, on_delete=protect_with_blockers, related_name='RelativeAge', to='specify.geologictimeperiod')),
+                ('agent1', models.ForeignKey(db_column='Agent1', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('agent2', models.ForeignKey(db_column='Agent2', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
                 'db_table': 'relativeage',
