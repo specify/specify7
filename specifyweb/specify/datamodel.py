@@ -8602,7 +8602,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='taxonTreeDefs'),
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicTreeDefs'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
@@ -8677,7 +8677,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='accepted', type='many-to-one', required=False, relatedModelName='Tectonic', column='AcceptedID'),
+            Relationship(name='acceptedtectonic', type='many-to-one', required=False, relatedModelName='Tectonic', column='AcceptedID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one', required=False, relatedModelName='Tectonic', column='ParentID'),
