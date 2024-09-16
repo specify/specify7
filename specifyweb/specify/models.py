@@ -7699,10 +7699,10 @@ class AbsoluteAgeAttachment(models.Model):
 
     # Fields
     ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
@@ -7725,17 +7725,17 @@ class RelativeAgeAttachment(models.Model):
 
     # Fields
     ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
     collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'relativeageattachment'
