@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-16 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/schema/"
 "ru/>\n"
@@ -410,7 +410,7 @@ msgstr "Конфигурация схемы: {tableName:string}"
 #: components/SchemaViewer/index.tsx:57
 #, fuzzy
 msgid "schemaExportFileName"
-msgstr "Укажите 7 Модель данных"
+msgstr "Укажите 7 моделей данных"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:86
