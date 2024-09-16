@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-09-16 14:23+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
 "es/>\n"
 "Language: es\n"
@@ -15,19 +15,16 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:53
 #: components/Router/OverlayRoutes.tsx:78
 #: components/Toolbar/TreeRepair.tsx:42
-#, fuzzy
 msgid "trees"
 msgstr "Árboles"
 
 #. Used in: Components > Data Model > Tree Business Rules
 #: components/DataModel/treeBusinessRules.ts:68
-#, fuzzy
 msgid "badStructure"
 msgstr "Mala estructura de árbol."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:165
-#, fuzzy
 msgid "move"
 msgstr "Mover"
 
@@ -38,62 +35,52 @@ msgstr "Mover"
 #: components/Merging/index.tsx:367
 #: components/Merging/index.tsx:370
 #: components/TreeView/Actions.tsx:186
-#, fuzzy
 msgid "merge"
-msgstr "Unir"
+msgstr "Fusionar"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:205
-#, fuzzy
 msgid "undoSynonymy"
-msgstr "Nodo de hoja"
+msgstr "Deshacer sinonimia"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:205
-#, fuzzy
 msgid "synonymize"
-msgstr "Sinónimos"
+msgstr "Sinonimizar"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:403
-#, fuzzy
 msgid "actionFailed"
 msgstr "Operación fallida"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:406
-#, fuzzy
 msgid "actionFailedDescription"
-msgstr "Recuento directo [X7X]"
+msgstr "La operación no se pudo completar debido a los siguientes errores:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:425
 #: components/TreeView/Actions.tsx:438
-#, fuzzy
 msgid "moveNode"
 msgstr "Mover nodo"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
-#, fuzzy
 msgid "addChild"
-msgstr "Agregar niño"
+msgstr "Agregar hijo"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
-#, fuzzy
 msgid "moveNodeHere"
-msgstr "Mueva \"{nodeName:string}\" aquí"
+msgstr "Mover \"{nodeName:string}\" aquí"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:387
-#, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr "Mueva todas las preparaciones \"{nodeName:string}\" aquí"
+msgstr "Mover todas las preparaciones \"{nodeName:string}\" aquí"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:450
-#, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
 "El nodo {treeName:string} \"{nodeName:string}\" se colocará, junto con todos "
@@ -108,13 +95,11 @@ msgstr ""
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:358
-#, fuzzy
 msgid "cantMoveHere"
 msgstr "No se puede mover este nodo del árbol aquí"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:365
-#, fuzzy
 msgid "cantMergeHere"
 msgstr "No se puede fusionar este nodo de árbol aquí"
 
