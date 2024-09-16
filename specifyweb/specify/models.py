@@ -7858,33 +7858,33 @@ class TectonicTreeDefItem(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonic(models.Model):
-    specify_model = datamodel.get_table('tectonic')
+class TectonicUnit(models.Model):
+    specify_model = datamodel.get_table('tectonicunit')
 
     # ID Field
-    id = models.AutoField(primary_key=True, db_column='tectonicid')
+    id = models.AutoField(primary_key=True, db_column='tectonicunitid')
 
     # Fields
-    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     fullname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullName', db_index=False)
     guid = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='GUID', db_index=False)
     highestchildnodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='HighestChildNodeNumber', db_index=False)
     isaccepted = models.BooleanField(blank=False, null=False, unique=False, db_column='IsAccepted', db_index=False, default=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     nodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='NodeNumber', db_index=False)   
     number1 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
     number2 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
     rankid = models.IntegerField(blank=False, null=False, unique=False, db_column='RankID', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     
     # Relationships: Many-to-One
-    # accepted = models.ForeignKey('Tectonic', db_column='AcceptedID', related_name='accepted', null=True, on_delete=protect_with_blockers) # TODO: Fix this
+    acceptedtectonic = models.ForeignKey('Tectonic', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
     tectonictreedefitem = models.ForeignKey('TectonicTreeDefItem', db_column='TectonicTreeDefItemID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Tectonic', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
     tectonictreedef = models.ForeignKey('TectonicTreeDef', db_column='TectonicTreeDefID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
