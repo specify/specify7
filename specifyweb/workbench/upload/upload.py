@@ -7,25 +7,26 @@ from datetime import datetime, timezone
 from typing import (
     List,
     Dict,
-    Literal,
+    NamedTuple,
     Union,
     Callable,
     Optional,
     Sized,
     Tuple,
-    Any,
-    TypedDict,
 )
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
+from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.func import Func
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
+from specifyweb.workbench.permissions import BatchEditDataSetPT
+from specifyweb.workbench.upload.auditor import DEFAULT_AUDITOR_PROPS, AuditorProps
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import (
@@ -179,6 +180,13 @@ def do_upload_dataset(
         allow_partial,
         progress,
         batch_edit_packs=batch_edit_packs,
+        auditor_props=AuditorProps(
+            allow_delete_dependents=has_target_permission(
+                collection.id,
+                ds.specify_user.id,
+                [BatchEditDataSetPT.delete_dependents],
+            )
+        ),
     )
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
@@ -284,13 +292,15 @@ def do_upload(
     allow_partial: bool = True,
     progress: Optional[Progress] = None,
     batch_edit_packs: Optional[List[Optional[BatchEditJson]]] = None,
+    auditor_props: AuditorProps = None,
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(
         collection=collection,
+        props=auditor_props or DEFAULT_AUDITOR_PROPS,
         audit_log=None if no_commit else auditlog,
         # Done to allow checking skipping write permission check
-        # during validation
+        # during validations
         skip_create_permission_check=no_commit,
         agent=models.Agent.objects.get(id=uploading_agent_id),
     )

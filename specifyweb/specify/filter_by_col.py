@@ -6,23 +6,36 @@ from django.core.exceptions import FieldError
 from django.db.models import Q
 
 from .scoping import ScopeType
-from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, \
-    Attachment
+from .models import (
+    Geography,
+    Geologictimeperiod,
+    Lithostrat,
+    Taxon,
+    Storage,
+    Attachment,
+)
 
-HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
+CONCRETE_HIERARCHY = ["collection", "discipline", "division", "institution"]
+HIERARCHY = ["collectionobject", *CONCRETE_HIERARCHY]
+
 
 class HierarchyException(Exception):
     pass
 
+
 def filter_by_collection(queryset, collection, strict=True):
     if queryset.model is Attachment:
         return queryset.filter(
-            Q(scopetype=None) |
-            Q(scopetype=ScopeType.GLOBAL) |
-            Q(scopetype=ScopeType.COLLECTION, scopeid=collection.id) |
-            Q(scopetype=ScopeType.DISCIPLINE, scopeid=collection.discipline.id) |
-            Q(scopetype=ScopeType.DIVISION, scopeid=collection.discipline.division.id) |
-            Q(scopetype=ScopeType.INSTITUTION, scopeid=collection.discipline.division.institution.id))
+            Q(scopetype=None)
+            | Q(scopetype=ScopeType.GLOBAL)
+            | Q(scopetype=ScopeType.COLLECTION, scopeid=collection.id)
+            | Q(scopetype=ScopeType.DISCIPLINE, scopeid=collection.discipline.id)
+            | Q(scopetype=ScopeType.DIVISION, scopeid=collection.discipline.division.id)
+            | Q(
+                scopetype=ScopeType.INSTITUTION,
+                scopeid=collection.discipline.division.institution.id,
+            )
+        )
 
     if queryset.model in (Geography, Geologictimeperiod, Lithostrat):
         return queryset.filter(definition__disciplines=collection.discipline)
@@ -31,7 +44,9 @@ def filter_by_collection(queryset, collection, strict=True):
         return queryset.filter(definition__discipline=collection.discipline)
 
     if queryset.model is Storage:
-        return queryset.filter(definition__institutions=collection.discipline.division.institution.id)
+        return queryset.filter(
+            definition__institutions=collection.discipline.division.institution.id
+        )
 
     try:
         return queryset.filter(collectionmemberid=collection.id)
@@ -43,20 +58,22 @@ def filter_by_collection(queryset, collection, strict=True):
             break
     else:
         if strict:
-            raise HierarchyException('queryset model ' + queryset.model.__name__ + ' has no hierarchy field')
+            raise HierarchyException(
+                "queryset model " + queryset.model.__name__ + " has no hierarchy field"
+            )
         else:
             return queryset
 
-    if fieldname == 'collectionobject':
-        lookup = 'collectionobject__collection'
-        join = 'collection'
+    if fieldname == "collectionobject":
+        lookup = "collectionobject__collection"
+        join = "collection"
     else:
         lookup = join = fieldname
 
     value = collection
-    field = 'collection'
+    field = "collection"
     while field != join:
-        field = HIERARCHY[ 1+HIERARCHY.index(field) ]
+        field = HIERARCHY[1 + HIERARCHY.index(field)]
         value = getattr(value, field)
 
-    return queryset.filter(**{ lookup: value })
+    return queryset.filter(**{lookup: value})

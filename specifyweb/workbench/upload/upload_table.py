@@ -607,7 +607,6 @@ class BoundUploadTable(NamedTuple):
             # we don't care about being able to process one-to-one. Instead, we include them in the matching predicates.
             # this allows handing "MatchedMultiple" case of one-to-ones more gracefully, while allowing us to include them
             # in the matching. See "test_ambiguous_one_to_one_match" in testuploading.py.
-            # BUT, we need to still perform a save incase we are updating.
             if not to_one_def.is_one_to_one()
         }
 
@@ -742,7 +741,8 @@ class BoundUploadTable(NamedTuple):
                 fieldname,
                 update,
                 records,
-                self._relationship_is_dependent(fieldname),
+                # we don't care about checking for dependents if we aren't going to delete them!
+                self.auditor.props.allow_delete_dependents and self._relationship_is_dependent(fieldname),
             )
             for fieldname, records in Func.sort_by_key(self.toMany)
         }
@@ -932,7 +932,7 @@ class BoundUpdateTable(BoundUploadTable):
     def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
             field_name: (
-                to_one_def.save_row()
+                to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
                 if to_one_def.is_one_to_one()
                 else to_one_def.process_row()
             )

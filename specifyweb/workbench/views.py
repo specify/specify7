@@ -17,45 +17,20 @@ from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify.models import Recordset, Specifyuser
 from specifyweb.notifications.models import Message
 from specifyweb.permissions.permissions import (
-    PermissionTarget,
-    PermissionTargetAction,
     check_permission_targets,
     check_table_permissions,
 )
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
+from .permissions import DataSetPT, BatchEditDataSetPT
 
 logger = logging.getLogger(__name__)
 
 
-class DataSetPT(PermissionTarget):
-    resource = "/workbench/dataset"
-    create = PermissionTargetAction()
-    update = PermissionTargetAction()
-    delete = PermissionTargetAction()
-    upload = PermissionTargetAction()
-    unupload = PermissionTargetAction()
-    validate = PermissionTargetAction()
-    transfer = PermissionTargetAction()
-    create_recordset = PermissionTargetAction()
-
-
-class BatchEditDataSet(PermissionTarget):
-    resource = "/batch_edit/dataset"
-    create = PermissionTargetAction()
-    update = PermissionTargetAction()
-    delete = PermissionTargetAction()
-    commit = PermissionTargetAction()
-    rollback = PermissionTargetAction()
-    validate = PermissionTargetAction()
-    transfer = PermissionTargetAction()
-    create_recordset = PermissionTargetAction()
-
-
 def resolve_permission(
     dataset: models.Spdataset,
-) -> Union[Type[DataSetPT], Type[BatchEditDataSet]]:
-    return BatchEditDataSet if dataset.isupdate else DataSetPT
+) -> Union[Type[DataSetPT], Type[BatchEditDataSetPT]]:
+    return BatchEditDataSetPT if dataset.isupdate else DataSetPT
 
 
 def regularize_rows(ncols: int, rows: List[List], skip_empty=True) -> List[List[str]]:
@@ -704,7 +679,7 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
     "Initiates an upload or validation of dataset <ds_id>."
     from .upload.upload import do_upload_dataset
 
-    do_permission = BatchEditDataSet.commit if ds.isupdate else DataSetPT.upload
+    do_permission = BatchEditDataSetPT.commit if ds.isupdate else DataSetPT.upload
 
     check_permission_targets(
         request.specify_collection.id,
@@ -770,7 +745,7 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
 def unupload(request, ds) -> http.HttpResponse:
     "Initiates an unupload of dataset <ds_id>."
-    permission = BatchEditDataSet.rollback if ds.isupdate else DataSetPT.unupload
+    permission = BatchEditDataSetPT.rollback if ds.isupdate else DataSetPT.unupload
     check_permission_targets(
         request.specify_collection.id, request.specify_user.id, [permission]
     )

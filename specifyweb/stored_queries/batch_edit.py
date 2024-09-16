@@ -1,5 +1,3 @@
-# type: ignore
-
 # ^^ The above is because we etensively use recursive typedefs of named tuple in this file not supported on our MyPy 0.97 version.
 # When typechecked in MyPy 1.11 (supports recursive typedefs), there is no type issue in the file.
 # However, using 1.11 makes things slower in other files.
@@ -17,6 +15,8 @@ from typing import (
     Union,
     Literal,
 )
+from specifyweb.permissions.permissions import has_target_permission
+from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.datamodel import is_tree_table
@@ -28,6 +28,7 @@ from specifyweb.stored_queries.queryfieldspec import (
     TreeRankQuery,
 )
 from specifyweb.workbench.models import Spdataset
+from specifyweb.workbench.permissions import BatchEditDataSetPT
 from specifyweb.workbench.upload.treerecord import TreeRecord
 from specifyweb.workbench.upload.upload_plan_schema import parse_column_options
 from specifyweb.workbench.upload.upload_table import UploadTable
@@ -54,6 +55,8 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 # TODO: Play-around with localizing
 NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
 
+# TODO: add backend support for making system tables readonly
+READONLY_TABLES = [*CONCRETE_HIERARCHY]
 
 SHARED_READONLY_FIELDS = [
     "timestampcreated",
@@ -70,7 +73,11 @@ SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
 
 def get_readonly_fields(table: Table):
     fields = [*SHARED_READONLY_FIELDS, table.idFieldName.lower()]
-    relationships = []
+    relationships = [
+        rel.name
+        for rel in table.relationships
+        if rel.relatedModelName.lower() in READONLY_TABLES
+    ]
     if table.name.lower() == "determination":
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
@@ -825,6 +832,7 @@ class RowPlanCanonical(NamedTuple):
         query_fields: List[QueryField],
         fields_added: Dict[str, int],
         get_column_id: Callable[[str], int],
+        omit_relationships: bool,
     ) -> Tuple[List[Tuple[Tuple[int, int], str]], Uploadable]:
         # Yuk, finally.
 
@@ -856,6 +864,7 @@ class RowPlanCanonical(NamedTuple):
                 or intermediary_to_tree
                 or (fieldspec.is_temporal() and fieldspec.date_part != "Full Date")
                 or fieldspec.get_field().name.lower() in readonly_fields
+                or fieldspec.table.name.lower() in READONLY_TABLES
             )
             id_in_original_fields = get_column_id(string_id)
             return (
@@ -889,6 +898,7 @@ class RowPlanCanonical(NamedTuple):
                 query_fields,
                 fields_added,
                 get_column_id,
+                omit_relationships,
             )
 
         _to_one_reducer = RowPlanCanonical._make_to_one_flat(_to_upload_plan)
@@ -917,7 +927,11 @@ class RowPlanCanonical(NamedTuple):
         all_headers = [*raw_headers, *to_one_headers, *to_many_headers]
 
         def _relationship_is_editable(name, value):
-            return Func.is_not_empty(name, value) and name not in readonly_rels
+            return (
+                Func.is_not_empty(name, value)
+                and name not in readonly_rels
+                and not omit_relationships
+            )
 
         if intermediary_to_tree:
             assert len(to_many_upload_tables) == 0, "Found to-many for tree!"
@@ -1087,6 +1101,14 @@ def run_batch_edit_query(props: BatchEditProps):
             )
         )[0]
 
+    # Consider optimizing when relationships are not-editable? May not benefit actually
+    # This permission just gets enforced here
+    omit_relationships = not has_target_permission(
+        props["collection"].id,
+        props["user"].id,
+        [BatchEditDataSetPT.edit_multiple_tables],
+    )
+
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
         datamodel.get_table_by_id_strict(tableid, strict=True),
@@ -1094,6 +1116,7 @@ def run_batch_edit_query(props: BatchEditProps):
         query_fields,
         {},
         _get_orig_column,
+        omit_relationships,
     )
 
     headers_enumerated = enumerate(key_and_headers)
