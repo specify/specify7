@@ -6575,14 +6575,14 @@ export type AbsoluteAge = {
     readonly text2: string | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
-    readonly verbatimage: string | null;
-    readonly verbatimname: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly ageattachment: AbsoluteAgeAttachment | null;
     readonly agent1: Agent | null;
     readonly collectionobject: CollectionObject;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
