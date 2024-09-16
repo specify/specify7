@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 #relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='TectonicTreeDef', to='specify.discipline'))
+                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='TectonicTreeDef', to='specify.discipline')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
