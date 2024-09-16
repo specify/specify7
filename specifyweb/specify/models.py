@@ -7833,20 +7833,18 @@ class TectonicTreeDefItem(models.Model):
     id = models.AutoField(primary_key=True, db_column='tectonictreedefitemid')
 
     # Fields
-    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
-    title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
-    isiinfullname = models.BooleanField(blank=True, null=True, unique=False, db_column='IsInFullName', db_index=False)
-    isenforced = models.BooleanField(blank=True, null=True, unique=False, db_column='IsEnforced', db_index=False)
     fullnameseparator = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullNameSeparator', db_index=False)
-    textbefore = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextBefore', db_index=False)
-    textafter = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextAfter', db_index=False)
+    isenforced = models.BooleanField(blank=True, null=True, unique=False, db_column='IsEnforced', db_index=False)
+    isinfullname = models.BooleanField(blank=True, null=True, unique=False, db_column='IsInFullName', db_index=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     rankid = models.IntegerField(blank=True, null=True, unique=False, db_column='RankID', db_index=False)
-    rankname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='RankName', db_index=False)
-    treelevel = models.IntegerField(blank=True, null=True, unique=False, db_column='TreeLevel', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    textafter = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextAfter', db_index=False)
+    textbefore = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextBefore', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
     parentitem = models.ForeignKey('TectonicTreeDefItem', db_column='ParentItemID', related_name='child', null=True, on_delete=protect_with_blockers)
