@@ -31,10 +31,9 @@ const baseWbVariant = {
           count,
         }),
       empty: () =>
-        `${wbText.wbsDialogEmpty()} ${
-          hasPermission('/workbench/dataset', 'create')
-            ? wbText.createDataSetInstructions()
-            : ''
+        `${wbText.wbsDialogEmpty()} ${hasPermission('/workbench/dataset', 'create')
+          ? wbText.createDataSetInstructions()
+          : ''
         }`,
     },
     viewer: {
@@ -55,6 +54,7 @@ const baseWbVariant = {
       doSuccessful: wbText.uploadSuccessful(),
     },
   },
+  documentationUrl: "https://discourse.specifysoftware.org/t/the-specify-7-workbench/540"
 } as const;
 
 // Defines a shared interface to access dataset variants
@@ -87,12 +87,6 @@ export const datasetVariants = {
         resource: wbText.dataSets({ variant: batchEditText.batchEdit() }),
         count,
       }),
-    onEmpty: () =>
-      `${wbText.wbsDialogEmpty()} ${
-        hasPermission('/batch_edit/dataset', 'create')
-          ? batchEditText.createUpdateDataSetInstructions()
-          : ''
-      }`,
     canEdit: () => hasPermission('/batch_edit/dataset', 'update'),
     canCreate: () => hasPermission('/batch_edit/dataset', 'create'),
     canTransfer: () => hasPermission('/batch_edit/dataset', 'transfer'),
@@ -109,10 +103,9 @@ export const datasetVariants = {
             count,
           }),
         empty: () =>
-          `${wbText.wbsDialogEmpty()} ${
-            hasPermission('/batch_edit/dataset', 'create')
-              ? batchEditText.createUpdateDataSetInstructions()
-              : ''
+          `${wbText.wbsDialogEmpty()} ${hasPermission('/batch_edit/dataset', 'create')
+            ? batchEditText.createUpdateDataSetInstructions()
+            : ''
           }`,
       },
       viewer: {
@@ -133,6 +126,8 @@ export const datasetVariants = {
         doSuccessful: batchEditText.commitSuccessful(),
       },
     },
+    // TODO: Change this
+    documentationUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
   },
   bulkAttachment: {
     fetchUrl: '/attachment_gw/dataset/',
@@ -147,6 +142,7 @@ export const datasetVariants = {
     route: (id: number) => `/specify/attachments/import/${id}`,
     // Actually, in retrorespect, this would be a nice feature
     metaRoute: f.never,
+    documentationUrl: "https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374"
   },
 } as const;
 

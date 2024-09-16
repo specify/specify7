@@ -32,6 +32,7 @@ import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
+import { headerText } from '../../localization/header';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(
@@ -95,8 +96,8 @@ function TableHeader({
   onSort: handleSort,
 }: {
   readonly sortConfig:
-    | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
-    | undefined;
+  | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
+  | undefined;
   readonly onSort: (sortField: 'dateCreated' | 'dateUploaded' | 'name') => void;
 }): JSX.Element {
   return (
@@ -151,6 +152,7 @@ export function GenericDataSetsDialog({
     route,
     metaRoute,
     canImport,
+    documentationUrl
   } = datasetVariants[wbVariant];
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
@@ -170,14 +172,14 @@ export function GenericDataSetsDialog({
 
   const datasets = Array.isArray(unsortedDatasets)
     ? applySortConfig(
-        unsortedDatasets,
-        ({ name, timestampcreated, uploadresult }) =>
-          sortConfig.sortField === 'name'
-            ? name
-            : sortConfig.sortField === 'dateCreated'
+      unsortedDatasets,
+      ({ name, timestampcreated, uploadresult }) =>
+        sortConfig.sortField === 'name'
+          ? name
+          : sortConfig.sortField === 'dateCreated'
             ? timestampcreated
             : uploadresult?.timestamp ?? ''
-      )
+    )
     : undefined;
 
   const navigate = useNavigate();
@@ -217,7 +219,12 @@ export function GenericDataSetsDialog({
       onClose={handleClose}
     >
       {datasets.length === 0 ? (
-        <p>{localization.datasetsDialog.empty()}</p>
+        <div className="flex h-full flex-col items-center justify-center gap-3">
+          <p>{localization.datasetsDialog.empty()}</p>
+          <Link.NewTab href={documentationUrl}>
+            {headerText.documentation()}
+          </Link.NewTab>
+        </div>
       ) : (
         <nav>
           <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
@@ -232,9 +239,9 @@ export function GenericDataSetsDialog({
                       onClick={
                         handleDataSetSelect
                           ? (event): void => {
-                              event.preventDefault();
-                              handleDataSetSelect(dataset.id);
-                            }
+                            event.preventDefault();
+                            handleDataSetSelect(dataset.id);
+                          }
                           : undefined
                       }
                     >
