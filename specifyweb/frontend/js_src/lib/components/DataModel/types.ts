@@ -6720,11 +6720,13 @@ export type TectonicTreeDef = {
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
     readonly version: number | null;
+    readonly fullnamedirection: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdbyagent: Agent | null;
     readonly modifiedbyagent: Agent | null;
+    readonly discipline: Discipline;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
