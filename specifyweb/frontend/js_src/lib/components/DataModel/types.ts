@@ -6757,8 +6757,8 @@ export type TectonicTreeDefItem = {
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
 };
-export type Tectonic = {
-  readonly tableName: 'Tectonic';
+export type TectonicUnit = {
+  readonly tableName: 'TectonicUnit';
   readonly fields: {
     readonly fullname: string | null;
     readonly guid: string | null;
@@ -6780,10 +6780,10 @@ export type Tectonic = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
-    readonly accepted: Tectonic | null;
+    readonly accepted: TectonicUnit | null;
     readonly createdbyagent: Agent | null;
     readonly modifiedbyagent: Agent | null;
-    readonly parent: Tectonic | null;
+    readonly parent: TectonicUnit | null;
     readonly tectonictreedef: TectonicTreeDef;
     readonly tectonictreedefitem: TectonicTreeDefItem;
   };
