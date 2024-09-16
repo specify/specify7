@@ -118,11 +118,14 @@ export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
     tableName
   );
 
-  return typeof treeDefinitionId === 'number'
-    ? specificTreeDefinitions.filter(
-        ({ definition }) => definition.id === treeDefinitionId
-      )
-    : specificTreeDefinitions;
+  if (typeof treeDefinitionId === 'number') {
+    const resolvedDefinition = specificTreeDefinitions.find(
+      ({ definition }) => definition.id === treeDefinitionId
+    );
+    return resolvedDefinition === undefined
+      ? specificTreeDefinitions
+      : [resolvedDefinition];
+  } else return specificTreeDefinitions;
 }
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
