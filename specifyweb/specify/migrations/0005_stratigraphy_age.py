@@ -4,13 +4,40 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
+from specifyweb.specify.update_schema_config import revert_table_schema_config, update_table_schema_config_with_defaults
 
+SCHEMA_CONFIG_TABLES = [
+    ('AbsoluteAge', None),
+    ('RelativeAge', None),
+    ('TectonicTreeDef', None),
+    ('TectonicTreeDefItem', None),
+    ('TectonicUnit', None),
+    ('RelativeAgeCitation', None),
+    ('RelativeAgeAttachment', None),
+    ('AbsoluteAgeCitation', None),
+    ('AbsoluteAgeAttachment', None),
+]
+
+def create_table_schema_config_with_defaults():
+    for discipline in specifyweb.specify.models.Discipline.objects.all():
+        for table, desc in SCHEMA_CONFIG_TABLES:
+            update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+
+def revert_table_schema_config_with_defaults():
+    for table, _ in SCHEMA_CONFIG_TABLES:
+        revert_table_schema_config(table)
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('specify', '0004_schema_config_update'),
     ]
+
+    def consolidated_python_django_migration_operations(apps, schema_editor):
+        create_table_schema_config_with_defaults()
+
+    def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        revert_table_schema_config_with_defaults()
 
     operations = [
         migrations.CreateModel(
