@@ -7808,16 +7808,15 @@ class TectonicTreeDef(models.Model):
     id = models.AutoField(primary_key=True, db_column='tectonictreedefid')
 
     # Fields
+    fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False, default=0)
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
-    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
-    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonictreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
