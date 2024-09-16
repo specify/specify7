@@ -1,5 +1,0 @@
-<generators>
-	<generator class="edu.ku.brc.util.thumbnails.ImageThumbnailGenerator"/>
-    <generator class="edu.ku.brc.util.thumbnails.PDFThumbnailGenerator"/>	
-<!--	<generator class="edu.ku.brc.util.thumbnails.TxtThumbnailGenerator"/> -->
-</generators>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tools>
-	<tool name="GoogleEarthExporter" class="edu.ku.brc.specify.rstools.GoogleEarthExporter" addui="true"/>
-	<tool name="ExportToFile" class="edu.ku.brc.specify.rstools.ExportToFile" addui="false"/>
-    <tool name="GeoLocRSProcessor" class="edu.ku.brc.specify.rstools.GeoLocateRecordSetProcessor" addui="true"/>
-</tools>
