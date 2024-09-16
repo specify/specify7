@@ -4868,7 +4868,7 @@ class Paleocontext(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     lithostrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
-    tectonic = models.ForeignKey('Tectonic', db_column='TectonicID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
+    tectonic = models.ForeignKey('TectonicUnit', db_column='TectonicUnitID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -7623,23 +7623,19 @@ class AbsoluteAge(models.Model):
 
     # Fields
     absoluteage = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AbsoluteAge', db_index=False)
-    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
     agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False) # sedimentation, metamorphic, inclusion, original, fall, etc.
+    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
     collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
-    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
-    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
-    magnettopolarity = models.TextField(blank=True, null=True, unique=False, db_column='MagnetoPolarity', db_index=False)
-    magnetointerval = models.TextField(blank=True, null=True, unique=False, db_column='MagnetoInterval', db_index=False)
-    verbatimage = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimAge', db_index=False)
-    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
     controlledvocab = models.TextField(blank=True, null=True, unique=False, db_column='ControlledVocab', db_index=False) # 'normal' or 'reverse'
-    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
     date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
-    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
-    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
     number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
     number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
 
@@ -7662,32 +7658,26 @@ class RelativeAge(models.Model):
     id = models.AutoField(primary_key=True, db_column='relativeageid')
 
     # Fields
-    # startperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='StartPeriod', db_index=False)
-    # endperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='EndPeriod', db_index=False)
-    # relativeageperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='RelativeAgePeriod', db_index=False)
-    # ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
     agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False)
-    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
-    period = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Period', db_index=False)
     ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
-    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
-    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
-    verbatimperiod = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimPeriod', db_index=False)
-    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
-    # magnettopolarity = models.TextField(blank=True, null=True, unique=False, db_column='MagnetoPolarity', db_index=False)
-    # magnetointerval = models.TextField(blank=True, null=True, unique=False, db_column='MagnetoInterval', db_index=False)
-    verbatimage = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimAge', db_index=False)
-    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
     controlledvocab = models.TextField(blank=True, null=True, unique=False, db_column='ControlledVocab', db_index=False) # 'normal' or 'reverse'
-    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
     date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
-    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
-    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
     number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
     number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    relativeageperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='RelativeAgePeriod', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    verbatimperiod = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimPeriod', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
     agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='relativeages', null=True, on_delete=protect_with_blockers)
