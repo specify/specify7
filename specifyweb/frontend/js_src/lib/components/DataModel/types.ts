@@ -6736,20 +6736,15 @@ export type TectonicTreeDefItem = {
   readonly fields: {
     readonly fullnameseparator: string | null;
     readonly isenforced: boolean | null;
-    readonly isiinfullname: boolean | null;
+    readonly isinfullname: boolean | null;
     readonly name: string;
     readonly rankid: number | null;
-    readonly rankname: string | null;
     readonly remarks: string | null;
-    readonly text1: string | null;
-    readonly text2: string | null;
-    readonly text3: string | null;
     readonly textafter: string | null;
     readonly textbefore: string | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
     readonly title: string | null;
-    readonly treelevel: number | null;
     readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;
