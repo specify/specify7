@@ -7750,21 +7750,21 @@ class AbsoluteAgeCitation(models.Model):
     id = models.AutoField(primary_key=True, db_column='absoluteagecitationid')
 
     # Fields
-    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
-    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
     absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
-    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'absoluteagecitation'
@@ -7779,21 +7779,21 @@ class RelativeAgeCitation(models.Model):
     id = models.AutoField(primary_key=True, db_column='relativeagecitationid')
 
     # Fields
-    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
-    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
-    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
-    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'relativeagecitation'
