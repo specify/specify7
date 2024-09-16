@@ -6598,15 +6598,16 @@ export type RelativeAge = {
     readonly date2: string | null;
     readonly datingmethod: string | null;
     readonly datingmethodremarks: string | null;
+    readonly relativeageperiod: number | null;
     readonly number1: number | null;
     readonly number2: number | null;
-    readonly period: number | null;
     readonly remarks: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
+    readonly yesno1: boolean | null;
+    readonly yesno2: boolean | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
-    readonly verbatimage: string | null;
     readonly verbatimname: string | null;
     readonly verbatimperiod: string | null;
   };
@@ -6616,6 +6617,8 @@ export type RelativeAge = {
     readonly agename: GeologicTimePeriod | null;
     readonly agent1: Agent | null;
     readonly collectionobject: CollectionObject;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
