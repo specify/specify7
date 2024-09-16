@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
             name='TectonicTreeDef',
             fields=[
                 ('id', models.AutoField(db_column='TectonicTreeDefID', primary_key=True, serialize=False)),
-                ('fullNameDirection', models.IntegerField(blank=True, db_column='FullNameDirection', null=True)),
+                ('fullnamedirection', models.IntegerField(blank=True, db_column='FullNameDirection', null=True)),
                 ('name', models.CharField(db_column='Name', max_length=255)),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
