@@ -6712,15 +6712,12 @@ export type RelativeAgeCitation = {
 export type TectonicTreeDef = {
   readonly tableName: 'TectonicTreeDef';
   readonly fields: {
+    readonly fullnamedirection: number | null;
     readonly name: string;
     readonly remarks: string | null;
-    readonly text1: string | null;
-    readonly text2: string | null;
-    readonly text3: string | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
     readonly version: number | null;
-    readonly fullnamedirection: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
