@@ -21,7 +21,6 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
-  CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Determination,
   DNASequence,
@@ -207,15 +206,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
   CollectionObjectGroup: {
     fieldChecks: {
-      cogtype: (cog: SpecifyResource<CollectionObjectGroup>) => {
+      cogType: (cog): void => {
         // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
-        cog.rgetPromise('cogtype').then((cogtype) => {
+        cog.rgetPromise('cogType').then((cogtype) => {
           if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
-            const cojos = cog.getDependentResource('cojo');
+            const cojos = cog.getDependentResource('parentCojos');
             // Set first CO in COG to primary
             cojos?.models
-              .find((cojo) => cojo.get('childco'))
-              .set('isprimary', true);
+              .find((cojo) => cojo.get('childCo') !== null)
+              ?.set('isPrimary', true);
           }
         });
       },
@@ -228,13 +227,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * Only a single CO in a COG can be set as primary.
        * When checking a CO as primary, other COs in that COG will get unchecked.
        */
-      isprimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
-        if (cojo.get('isprimary') && cojo.collection !== undefined) {
+      isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+        if (cojo.get('isPrimary') && cojo.collection !== undefined) {
           cojo.collection.models
-            .filter((resource) => resource.get('childco'))
+            .filter((resource) => resource.get('childCo') !== null)
             .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
               if (other.cid !== cojo.cid) {
-                other.set('isprimary', false);
+                other.set('isPrimary', false);
               }
             });
         }
@@ -243,13 +242,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * Only a single CO in a COG can be set as substrate.
        * When checking a CO as substrate, other COs in that COG will get unchecked.
        */
-      issubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
-        if (cojo.get('issubstrate') && cojo.collection !== undefined) {
+      isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+        if (cojo.get('isSubstrate') && cojo.collection !== undefined) {
           cojo.collection.models
-            .filter((resource) => resource.get('childco'))
+            .filter((resource) => resource.get('childCo') !== null)
             .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
               if (other.cid !== cojo.cid) {
-                other.set('issubstrate', false);
+                other.set('isSubstrate', false);
               }
             });
         }
