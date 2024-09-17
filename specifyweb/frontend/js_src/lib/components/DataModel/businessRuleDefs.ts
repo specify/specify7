@@ -60,6 +60,21 @@ const hasNoCurrentDetermination = (collection: Collection<Determination>) =>
     determination.get('isCurrent')
   );
 
+const ensureSingleCollectionObjectCheck = (
+  cojo: SpecifyResource<CollectionObjectGroupJoin>,
+  field: 'isPrimary' | 'isSubstrate'
+) => {
+  if (cojo.get(field) && cojo.collection !== undefined) {
+    cojo.collection.models
+      .filter((resource) => resource.get('childCo') !== null)
+      .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
+        if (other.cid !== cojo.cid) {
+          other.set(field, false);
+        }
+      });
+  }
+};
+
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
     customInit: (address) => {
@@ -228,30 +243,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * When checking a CO as primary, other COs in that COG will get unchecked.
        */
       isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
-        if (cojo.get('isPrimary') && cojo.collection !== undefined) {
-          cojo.collection.models
-            .filter((resource) => resource.get('childCo') !== null)
-            .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
-              if (other.cid !== cojo.cid) {
-                other.set('isPrimary', false);
-              }
-            });
-        }
+        ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
       },
       /*
        * Only a single CO in a COG can be set as substrate.
        * When checking a CO as substrate, other COs in that COG will get unchecked.
        */
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
-        if (cojo.get('isSubstrate') && cojo.collection !== undefined) {
-          cojo.collection.models
-            .filter((resource) => resource.get('childCo') !== null)
-            .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
-              if (other.cid !== cojo.cid) {
-                other.set('isSubstrate', false);
-              }
-            });
-        }
+        ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
     },
   },
