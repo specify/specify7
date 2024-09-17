@@ -107,6 +107,7 @@ export function COJODialog({
             newCOJO.set('parentcog', parentResource);
             collection?.add(newCOJO);
             setState(undefined);
+            setResource(undefined);
             handleClose();
           }}
           onSaving={undefined}
