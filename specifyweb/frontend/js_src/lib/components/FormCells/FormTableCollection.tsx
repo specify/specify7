@@ -68,6 +68,7 @@ export function FormTableCollection({
       }}
       onFetchMore={collection.isComplete() ? undefined : handleFetchMore}
       {...props}
+      collection={collection}
     />
   );
 }

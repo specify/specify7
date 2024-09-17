@@ -5,8 +5,9 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
   CollectionObject,
@@ -19,8 +20,10 @@ import { SearchDialog } from '../SearchDialog';
 
 export function COJODialog({
   parentResource,
+  collection,
 }: {
   readonly parentResource: SpecifyResource<CollectionObjectGroup> | undefined;
+  readonly collection: Collection<AnySchema> | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const COJOChildrentables = [
@@ -80,7 +83,9 @@ export function COJODialog({
           </div>
         </Dialog>
       )}
-      {state === 'Add' && newResource !== undefined ? (
+      {state === 'Add' &&
+      newResource !== undefined &&
+      parentResource !== undefined ? (
         <ResourceView
           dialog="nonModal"
           isDependent={false}
@@ -93,14 +98,23 @@ export function COJODialog({
           }}
           onDeleted={undefined}
           onSaved={(): void => {
-            parentResource?.set('cojo', newResource as never);
+            const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
+            const field =
+              newResource.specifyTable.name === 'CollectionObject'
+                ? 'childco'
+                : 'childcog';
+            newCOJO.set(field, newResource as never);
+            newCOJO.set('parentcog', parentResource);
+            collection?.add(newCOJO);
             setState(undefined);
             handleClose();
           }}
           onSaving={undefined}
         />
       ) : undefined}
-      {state === 'Search' && resource !== undefined ? (
+      {state === 'Search' &&
+      resource !== undefined &&
+      parentResource !== undefined ? (
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
@@ -109,8 +123,14 @@ export function COJODialog({
           table={resource as SpecifyTable<CollectionObject>}
           onClose={(): void => setState(undefined)}
           onSelected={([selectedResource]): void => {
-            // @ts-expect-error Need to refactor this to use generics
-            void newResource.set('cojo', selectedResource);
+            const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
+            const field =
+              selectedResource.specifyTable.name === 'CollectionObject'
+                ? 'childco'
+                : 'childcog';
+            newCOJO.set(field, selectedResource as never);
+            newCOJO.set('parentcog', parentResource);
+            collection?.add(newCOJO);
             setState(undefined);
             handleClose();
           }}
