@@ -34,6 +34,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
 
 const cellToLabel = (
@@ -441,30 +442,34 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
-  const addButton =
-    typeof handleAddResources === 'function' &&
+
+  const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+
+  const addButton = isCOJO ? (
+    <COJODialog />
+  ) : typeof handleAddResources === 'function' &&
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
       relationship.relatedTable.name,
       isDependent ? 'create' : 'read'
     ) ? (
-      <DataEntry.Add
-        onClick={
-          disableAdding
-            ? undefined
-            : isDependent
-            ? (): void => {
-                const resource = new relationship.relatedTable.Resource();
-                handleAddResources([resource]);
-              }
-            : (): void =>
-                setState({
-                  type: 'SearchState',
-                })
-        }
-      />
-    ) : undefined;
+    <DataEntry.Add
+      onClick={
+        disableAdding
+          ? undefined
+          : isDependent
+          ? (): void => {
+              const resource = new relationship.relatedTable.Resource();
+              handleAddResources([resource]);
+            }
+          : (): void =>
+              setState({
+                type: 'SearchState',
+              })
+      }
+    />
+  ) : undefined;
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>

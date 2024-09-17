@@ -42,10 +42,12 @@ export function QueryTablesEdit({
  * TODO: Revert #5236 to unhide COType
  */
 export const HIDDEN_GEO_TABLES = new Set([
-  'CollectionObjectType',
-  'CollectionObjectGroup',
-  'CollectionObjectGroupJoin',
-  'CollectionObjectGroupType',
+  /*
+   * 'CollectionObjectType',
+   * 'CollectionObjectGroup',
+   * 'CollectionObjectGroupJoin',
+   * 'CollectionObjectGroupType',
+   */
 ]);
 export function TablesListEdit({
   isNoRestrictionMode,

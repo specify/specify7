@@ -1162,4 +1162,7 @@ export const formsText = createDictionary({
   invalidTree: {
     'en-us': 'Taxon does not belong to the same tree as this Object Type',
   },
+  addCOGChildren: {
+    'en-us': 'Add COG Children',
+  },
 } as const);
