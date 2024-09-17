@@ -21,7 +21,7 @@ export function COJODialog(): JSX.Element | null {
       {isOpen && (
         <Dialog
           buttons={commonText.cancel()}
-          dimensionsKey="appResourceEditor"
+          dimensionsKey="COGChildren"
           header={formsText.addCOGChildren()}
           onClose={handleClose}
         >
