@@ -26,7 +26,7 @@ export function COJODialog({
   readonly collection: Collection<AnySchema> | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const COJOChildrentables = [
+  const COJOChildrenTables = [
     tables.CollectionObject,
     tables.CollectionObjectGroup,
   ];
@@ -61,7 +61,7 @@ export function COJODialog({
           onClose={handleClose}
         >
           <div className="flex flex-col gap-4">
-            {COJOChildrentables.map((table) => (
+            {COJOChildrenTables.map((table) => (
               <div className="flex items-center gap-2" key={table.name}>
                 <TableIcon label name={table.name} />
                 {localized(table.label)}
