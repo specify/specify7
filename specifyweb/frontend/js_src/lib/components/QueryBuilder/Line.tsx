@@ -44,6 +44,7 @@ import {
   queryFieldFilters,
   QueryLineFilter,
 } from './FieldFilter';
+import { FieldFilterTool } from './FieldFilterTool';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import { QueryFieldFormatter } from './Formatter';
@@ -409,85 +410,15 @@ export function QueryLine({
                   key={index}
                 >
                   <div className="flex contents items-center gap-2">
-                    {index === 0 ? (
-                      <>
-                        {isBasic ? null : mappingElementDivider}
-                        {!hasAny && (
-                          <Button.Small
-                            aria-label={queryText.or()}
-                            aria-pressed={field.filters.length > 1}
-                            className={`
-                          print:hidden
-                          ${className.ariaHandled}
-                          ${isFieldComplete ? '' : 'invisible'}
-                        `}
-                            disabled={handleChange === undefined}
-                            title={queryText.or()}
-                            variant={
-                              field.filters.length > 1
-                                ? className.infoButton
-                                : className.secondaryLightButton
-                            }
-                            onClick={(): void =>
-                              handleFilterChange(field.filters.length, {
-                                type: 'any',
-                                isNot: false,
-                                startValue: '',
-                              })
-                            }
-                          >
-                            {icons.plus}
-                          </Button.Small>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <span className={mappingElementDividerClassName}>
-                          <span
-                            className={`
-                          flex items-center justify-center uppercase
-                          ${iconClassName}
-                        `}
-                          >
-                            {queryText.or()}
-                          </span>
-                        </span>
-                        <Button.Small
-                          aria-label={commonText.remove()}
-                          className="print:hidden"
-                          disabled={handleChange === undefined}
-                          title={commonText.remove()}
-                          variant={className.dangerButton}
-                          onClick={(): void =>
-                            handleFilterChange(index, undefined)
-                          }
-                        >
-                          {icons.trash}
-                        </Button.Small>
-                      </>
-                    )}
-                    {field.filters[index].type !== 'any' && (
-                      <Button.Small
-                        aria-label={queryText.negate()}
-                        aria-pressed={field.filters[index].isNot}
-                        className={className.ariaHandled}
-                        disabled={handleChange === undefined}
-                        title={queryText.negate()}
-                        variant={
-                          field.filters[index].isNot
-                            ? className.dangerButton
-                            : className.secondaryLightButton
-                        }
-                        onClick={(): void =>
-                          handleFilterChange(index, {
-                            ...field.filters[index],
-                            isNot: !field.filters[index].isNot,
-                          })
-                        }
-                      >
-                        {icons.ban}
-                      </Button.Small>
-                    )}
+                    <FieldFilterTool
+                      fieldFilters={field.filters}
+                      handleChange={handleChange}
+                      handleFilterChange={handleFilterChange}
+                      hasAny={hasAny}
+                      index={index}
+                      isBasic={isBasic}
+                      isFieldComplete={isFieldComplete}
+                    />
                     <div className="contents w-full">
                       <Select
                         aria-label={
