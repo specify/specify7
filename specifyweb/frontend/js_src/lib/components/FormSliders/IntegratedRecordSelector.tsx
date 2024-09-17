@@ -112,7 +112,7 @@ export function IntegratedRecordSelector({
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
   const isTaxonTreeDefItemTable = 
-    collection.table.specifyTable.name.includes('TaxonTreeDefItem');
+    collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
