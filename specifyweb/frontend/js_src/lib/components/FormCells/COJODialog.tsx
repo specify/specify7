@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
-import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -16,6 +15,7 @@ import type {
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { SearchDialog } from '../SearchDialog';
 
 export function COJODialog({
   parentResource,
@@ -45,7 +45,6 @@ export function COJODialog({
     if (resource !== undefined) {
       const createdResource = new resource.Resource();
       setNewResource(createdResource);
-      setState('Add');
     }
   }, [resource]);
   return (
@@ -65,10 +64,17 @@ export function COJODialog({
                 {localized(table.label)}
                 <DataEntry.Add
                   onClick={(): void => {
+                    setState('Add');
                     setResource(table);
                   }}
                 />
-                <DataEntry.Search aria-pressed="true" onClick={undefined} />
+                <DataEntry.Search
+                  aria-pressed="true"
+                  onClick={(): void => {
+                    setState('Search');
+                    setResource(table);
+                  }}
+                />
               </div>
             ))}
           </div>
@@ -92,6 +98,22 @@ export function COJODialog({
             handleClose();
           }}
           onSaving={undefined}
+        />
+      ) : undefined}
+      {state === 'Search' && resource !== undefined ? (
+        <SearchDialog
+          extraFilters={undefined}
+          forceCollection={undefined}
+          multiple={false}
+          searchView={undefined}
+          table={resource as SpecifyTable<CollectionObject>}
+          onClose={(): void => setState(undefined)}
+          onSelected={([selectedResource]): void => {
+            // @ts-expect-error Need to refactor this to use generics
+            void newResource.set('cojo', selectedResource);
+            setState(undefined);
+            handleClose();
+          }}
         />
       ) : undefined}
     </>
