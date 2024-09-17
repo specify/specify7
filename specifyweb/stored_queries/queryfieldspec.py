@@ -1,11 +1,15 @@
+from dataclasses import fields
 import logging
 import re
 from collections import namedtuple, deque
+from typing import NamedTuple, Optional, Tuple
 
 from sqlalchemy import sql
 
+from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.geo_time import query_co_in_time_range
 from . import models
 from .query_ops import QueryOps
 
@@ -60,7 +64,40 @@ def make_stringid(fs, table_list):
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
 
+# class QueryFieldSpec(NamedTuple):
+#     root_table: 'Table'
+#     root_sql_table: 'SQLTable' # type: ignore
+#     join_path: Tuple['Field', ...]
+#     table: 'Table'
+#     date_part: Optional[str]
+#     tree_rank: Optional[str]
+#     tree_field: Optional[str]
 
+#     @classmethod
+#     def create(cls, root_table, root_sql_table, join_path, table, date_part=None, tree_rank=None, tree_field=None):
+#         # Create a new QueryFieldSpec instance
+#         instance = cls(
+#             root_table=root_table,
+#             root_sql_table=root_sql_table,
+#             join_path=join_path,
+#             table=table,
+#             date_part=date_part,
+#             tree_rank=tree_rank,
+#             tree_field=tree_field
+#         )
+#         # Validate the instance
+#         instance.validate()
+#         return instance
+
+#     def validate(self):
+#         valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
+#         assert self.is_temporal() or self.date_part is None
+#         if self.date_part not in valid_date_parts:
+#             raise AssertionError(
+#                 f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
+#                 {"datePart": self.date_part,
+#                  "validDateParts": str(valid_date_parts),
+#                  "localizationKey": "invalidDatePart"})
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
@@ -145,13 +182,17 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         return result
 
     def __init__(self, *args, **kwargs):
+        self.validate()
+
+    def validate(self):
         valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
         assert self.is_temporal() or self.date_part is None
-        if self.date_part not in valid_date_parts: raise AssertionError(
-            f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
-            {"datePart" : self.date_part,
-             "validDateParts" : str(valid_date_parts),
-             "localizationKey" : "invalidDatePart"})
+        if self.date_part not in valid_date_parts:
+            raise AssertionError(
+                f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
+                {"datePart": self.date_part,
+                 "validDateParts": str(valid_date_parts),
+                 "localizationKey": "invalidDatePart"})
 
     def to_spquery_attrs(self):
         table_list = make_table_list(self)
@@ -208,9 +249,15 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 uiformatter = field and get_uiformatter(query.collection, table.name, field.name)
                 value = value
 
-            op = QueryOps(uiformatter).by_op_num(op_num)
-
-            f = op(orm_field, value)
+            query_op = QueryOps(uiformatter)
+            op = query_op.by_op_num(op_num)
+            if query_op.is_preprocessed(op_num):
+                # f = op(orm_field, value, query)
+                new_query = op(orm_field, value, query)
+                query = query._replace(query=new_query)
+                f = None
+            else:
+                f = op(orm_field, value) # TODO: Handle when orm_field is a function instead of a field
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -247,7 +294,24 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             if self.tree_rank is not None:
                 query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
             else:
-                orm_field = getattr(orm_model, self.get_field().name)
+                try:
+                    field_name = self.get_field().name
+                    orm_field = getattr(orm_model, field_name)
+                except AttributeError:
+                    # if self.is_virtual_field(field.name):
+                    # if hasattr(self, 'is_virtual_field') and self.is_virtual_field(field.name):
+                    # if table.is_virtual_field(self.get_field().name):
+                    if table.is_virtual_field(field.name) and table.name == 'CollectionObject' and field_name == 'age': # TODO: Create map for all special cases
+                        # orm_field = orm_model.catalogNumber
+                        orm_field = orm_model.collectionObjectId
+                    # elif table.is_virtual_field(field.name):
+                    #     # TODO: Handle SQLAlchemy virtual field creation
+                    #     # NOTE: This might not be the right place to call query_co_in_time_range, maybe find a better place
+                    #     orm_field = query_co_in_time_range # Look at me, I'm a function now!
+                    #     # raise NotImplementedError("Virtual field not implemented yet")
+                    #     # query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=False)
+                    else:
+                        raise
 
                 if field.type == "java.sql.Timestamp":
                     # Only consider the date portion of timestamp fields.
