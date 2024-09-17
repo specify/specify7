@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-17 10:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/tree/"
 "ru/>\n"
@@ -176,10 +176,10 @@ msgstr ""
 #, fuzzy
 msgid "mergeNodeMessage"
 msgstr ""
-"Все ссылки на узел {treeName:string} «{nodeName:string}» будут заменены на "
-"«{parentName:string}», а все потомки «{nodeName:string}» будут перемещены в "
-"«{parentName:string}», при этом все потомки, совпадающие по имени и рангу, "
-"будут рекурсивно объединены."
+"Все ссылки на узел {treeName:string} \"{nodeName:string}\" будут заменены на "
+"\"{parentName:string}\", а все потомки \"{nodeName:string}\" будут "
+"перемещены в \"{parentName:string}\", при этом все потомки, совпадающие по "
+"имени и рангу, будут рекурсивно объединены."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:431
