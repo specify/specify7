@@ -9,6 +9,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { CollectionFetchFilters } from '../DataModel/collection';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type {
   AnyInteractionPreparation,
@@ -43,6 +44,7 @@ export function IntegratedRecordSelector({
   onClose: handleClose,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  onFetch: handleFetch,
   isCollapsed: defaultCollapsed,
   ...rest
 }: Omit<
@@ -54,6 +56,7 @@ export function IntegratedRecordSelector({
   readonly viewName?: string;
   readonly urlParameter?: string;
   readonly onClose: () => void;
+  readonly onFetch?: (filters?: CollectionFetchFilters<AnySchema>) => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -147,6 +150,7 @@ export function IntegratedRecordSelector({
           if (isCollapsed) handleExpand();
           handleDelete?.(...args);
         }}
+        onFetch={handleFetch}
         onSlide={(index): void => {
           handleExpand();
           if (typeof urlParameter === 'string') setIndex(index.toString());
@@ -307,6 +311,7 @@ export function IntegratedRecordSelector({
                   if (isCollapsed) handleExpand();
                   handleDelete?.(index, 'minusButton');
                 }}
+                onFetch={handleFetch}
               />
             ) : null}
             {dialogs}

@@ -680,12 +680,16 @@ export const ResourceBase = Backbone.Model.extend({
         if (!value) return value; // No related object
 
         // Is the related resource cached?
-        let toOne = this.dependentResources[fieldName];
+        let toOne =
+          this.dependentResources[fieldName] ??
+          this.independentResources[fieldName];
+
         if (!toOne) {
           _(value).isString() || softFail('expected URI, got', value);
           toOne = resourceFromUrl(value, {
             noBusinessRules: options.noBusinessRules,
           });
+
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);

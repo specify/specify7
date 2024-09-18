@@ -23,9 +23,10 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
       number
     >
 > & {
-  readonly limit: number;
+  readonly limit?: number;
+  readonly reset?: boolean;
   readonly offset?: number;
-  readonly domainFilter: boolean;
+  readonly domainFilter?: boolean;
   readonly orderBy?:
     | keyof CommonFields
     | keyof SCHEMA['fields']

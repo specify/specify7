@@ -1,89 +1,159 @@
 import React from 'react';
 
-import type { SerializedCollection } from '../components/DataModel/collection';
+import type { CollectionFetchFilters } from '../components/DataModel/collection';
 import type { AnySchema } from '../components/DataModel/helperTypes';
-import { f } from '../utils/functools';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
+import type { Relationship } from '../components/DataModel/specifyField';
+import type { Collection } from '../components/DataModel/specifyTable';
+import { raise } from '../components/Errors/Crash';
+import { relationshipIsToMany } from '../components/WbPlanView/mappingHelpers';
 import type { GetOrSet } from '../utils/types';
-import { defined } from '../utils/types';
+import { overwriteReadOnly } from '../utils/types';
+import type { sortFunction } from '../utils/utils';
 import { useAsyncState } from './useAsyncState';
 
-/**
- * A hook for fetching a collection of resources in a paginated way
- */
-export function useCollection<SCHEMA extends AnySchema>(
-  fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>
-): readonly [
-  SerializedCollection<SCHEMA> | undefined,
-  GetOrSet<SerializedCollection<SCHEMA> | undefined>[1],
-  () => Promise<void>
+type UseCollectionProps<SCHEMA extends AnySchema> = {
+  readonly parentResource: SpecifyResource<SCHEMA>;
+  readonly relationship: Relationship;
+  readonly collectionSortFunction?: ReturnType<
+    typeof sortFunction<
+      SpecifyResource<SCHEMA>,
+      ReturnType<SpecifyResource<SCHEMA>['get']>
+    >
+  >;
+};
+
+export function useCollection<SCHEMA extends AnySchema>({
+  parentResource,
+  relationship,
+  collectionSortFunction,
+}: UseCollectionProps<SCHEMA>): readonly [
+  ...GetOrSet<Collection<SCHEMA> | false | undefined>,
+  (filters?: CollectionFetchFilters<SCHEMA>) => void
 ] {
-  const fetchRef = React.useRef<
-    Promise<SerializedCollection<SCHEMA> | undefined> | undefined
-  >(undefined);
-
-  const callback = React.useCallback(async () => {
-    if (typeof fetchRef.current === 'object')
-      return fetchRef.current.then(f.undefined);
-    if (
-      collectionRef.current !== undefined &&
-      collectionRef.current?.records.length ===
-        collectionRef.current?.totalCount
-    )
-      return undefined;
-    fetchRef.current = fetch(collectionRef.current?.records.length ?? 0).then(
-      (data) => {
-        fetchRef.current = undefined;
-        return data;
-      }
-    );
-    return fetchRef.current;
-  }, [fetch]);
-
-  const currentCallback = React.useRef(f.void);
-
-  const [collection, setCollection] = useAsyncState(
-    React.useCallback(async () => {
-      currentCallback.current = callback;
-      fetchRef.current = undefined;
-      collectionRef.current = undefined;
-      return callback();
-    }, [callback]),
+  const [collection, setCollection] = useAsyncState<
+    Collection<SCHEMA> | false | undefined
+  >(
+    React.useCallback(
+      async () =>
+        relationshipIsToMany(relationship) &&
+        relationship.type !== 'zero-to-one'
+          ? fetchToManyCollection({
+              parentResource,
+              relationship,
+              collectionSortFunction,
+            })
+          : fetchToOneCollection({
+              parentResource,
+              relationship,
+              collectionSortFunction,
+            }),
+      [collectionSortFunction, parentResource, relationship]
+    ),
     false
   );
-  const collectionRef = React.useRef<
-    SerializedCollection<SCHEMA> | undefined
-  >();
-  collectionRef.current = collection;
 
-  const fetchMore = React.useCallback(
-    async () =>
-      /*
-       * Ignore calls to fetchMore before collection is fetched for the first
-       * time
-       */
-      currentCallback.current === callback
-        ? typeof fetchRef.current === 'object'
-          ? callback().then(f.undefined)
-          : callback().then((result) =>
-              result !== undefined &&
-              result.records.length > 0 &&
-              // If the fetch function changed while fetching, discard the results
-              currentCallback.current === callback
-                ? setCollection((collection) => ({
-                    records: [
-                      ...defined(
-                        collection,
-                        'Try to fetch more before collection is fetch.'
-                      ).records,
-                      ...result.records,
-                    ],
-                    totalCount: defined(collection).totalCount,
-                  }))
-                : undefined
-            )
-        : undefined,
-    [callback, collection]
+  const versionRef = React.useRef<number>(0);
+
+  const handleFetch = React.useCallback(
+    (filters?: CollectionFetchFilters<SCHEMA>): void => {
+      if (typeof collection !== 'object') return undefined;
+
+      versionRef.current += 1;
+      const localVersionRef = versionRef.current;
+
+      collection
+        .fetch(filters)
+        .then((collection) => {
+          if (collection === undefined) return undefined;
+          /*
+           * If the collection is already being fetched, don't update it
+           * to prevent a race condition.
+           * REFACTOR: simplify this
+           */
+          versionRef.current === localVersionRef
+            ? setCollection(collection)
+            : undefined;
+        })
+        .catch(raise);
+    },
+    [collection, setCollection]
   );
+  return [collection, setCollection, handleFetch];
+}
 
-  return [collection, setCollection, fetchMore] as const;
+const fetchToManyCollection = async <SCHEMA extends AnySchema>({
+  parentResource,
+  relationship,
+  collectionSortFunction,
+}: UseCollectionProps<SCHEMA>): Promise<Collection<SCHEMA> | undefined> =>
+  parentResource.rgetCollection(relationship.name).then((collection) => {
+    // TEST: check if this can ever happen
+    if (collection === null || collection === undefined)
+      return new relationship.relatedTable.DependentCollection({
+        related: parentResource,
+        field: relationship.getReverse(),
+      }) as Collection<AnySchema>;
+    if (collectionSortFunction === undefined) return collection;
+
+    // Overwriting the models on the collection
+    overwriteReadOnly(
+      collection,
+      'models',
+      Array.from(collection.models).sort(collectionSortFunction)
+    );
+    return collection;
+  });
+
+async function fetchToOneCollection<SCHEMA extends AnySchema>({
+  parentResource,
+  relationship,
+  collectionSortFunction,
+}: UseCollectionProps<SCHEMA>): Promise<
+  Collection<SCHEMA> | false | undefined
+> {
+  /**
+   * If relationship is -to-one, create a collection for the related
+   * resource. This allows to reuse most of the code from the -to-many
+   * relationships. RecordSelector handles collections with -to-one
+   * related field by removing the "+" button after first record is added
+   * and not rendering record count or record slider.
+   */
+  const resource = await parentResource.rgetPromise(relationship.name);
+  const reverse = relationship.getReverse();
+  if (reverse === undefined) return false;
+  const collection = (
+    relationship.isDependent()
+      ? new relationship.relatedTable.DependentCollection({
+          related: parentResource,
+          field: reverse,
+        })
+      : new relationship.relatedTable.IndependentCollection({
+          related: parentResource,
+          field: reverse,
+        })
+  ) as Collection<AnySchema>;
+  if (relationship.isDependent() && parentResource.isNew())
+    // Prevent fetching related for newly created parent
+    overwriteReadOnly(collection, '_totalCount', 0);
+
+  if (typeof resource === 'object' && resource !== null)
+    collection.add(resource);
+  overwriteReadOnly(
+    collection,
+    'related',
+    collection.related ?? parentResource
+  );
+  overwriteReadOnly(
+    collection,
+    'field',
+    collection.field ?? relationship.getReverse()
+  );
+  if (collectionSortFunction !== undefined)
+    overwriteReadOnly(
+      collection,
+      'models',
+      Array.from(collection.models).sort(collectionSortFunction)
+    );
+  return collection;
 }

@@ -6,6 +6,7 @@ import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { Backbone } from './backbone';
 import type { AnySchema } from './helperTypes';
+import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { SpecifyResource } from './legacyTypes';
 
 // REFACTOR: remove @ts-nocheck
@@ -135,15 +136,15 @@ export const LazyCollection = Base.extend({
 
     options ||= {};
 
-    options.update = true;
-    options.remove = false;
+    options.update ??= true;
+    options.remove ??= false;
     options.silent = true;
     assert(options.at == null);
 
     options.data =
       options.data ||
       _.extend({ domainfilter: this.domainfilter }, this.filters);
-    options.data.offset = options.offset || this.length;
+    options.data.offset = options.offset ?? this.length;
 
     _(options).has('limit') && (options.data.limit = options.limit);
     this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
@@ -156,6 +157,9 @@ export const LazyCollection = Base.extend({
     return this._neverFetched && this.related?.isNew() !== true
       ? this.fetch()
       : this;
+  },
+  getFetchOffset() {
+    return this.length;
   },
   getTotalCount() {
     if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
@@ -236,22 +240,29 @@ export const IndependentCollection = LazyCollection.extend({
 
     this._totalCount -= (this.removed as Set<string>).size;
 
-    return records;
+    return records.filter(
+      ({ resource_uri }) => !(this.removed as Set<string>).has(resource_uri)
+    );
   },
   async fetch(options) {
-    if (this.related.isBeingInitialized()) {
+    // If the related is being fetched, don't try and fetch the collection
+    if (this.related._fetch !== null) {
       return this;
     }
     this.filters[this.field.name.toLowerCase()] = this.related.id;
 
-    const offset =
-      this.length === 0 && this.removed.size > 0
-        ? this.removed.size
-        : this.length;
+    const newOptions = {
+      ...options,
+      update: options?.reset !== true,
+      offset: options?.offset ?? this.getFetchOffset(),
+    };
 
-    options = { ...(options ?? {}), silent: true, offset };
-
-    return Reflect.apply(LazyCollection.prototype.fetch, this, [options]);
+    return Reflect.apply(LazyCollection.prototype.fetch, this, [newOptions]);
+  },
+  getFetchOffset() {
+    return this.length === 0 && this.removed.size > 0
+      ? this.removed.size
+      : Math.floor(this.length / DEFAULT_FETCH_LIMIT) * DEFAULT_FETCH_LIMIT;
   },
   toApiJSON(options) {
     const self = this;

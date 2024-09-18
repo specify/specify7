@@ -14,6 +14,7 @@ import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { CollectionFetchFilters } from './collection';
 import {
   DependentCollection,
   IndependentCollection,
@@ -106,7 +107,9 @@ export type Collection<SCHEMA extends AnySchema> = {
   toJSON<V extends IR<unknown>>(): RA<V>;
   add(resource: RA<SpecifyResource<SCHEMA>> | SpecifyResource<SCHEMA>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
-  fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
+  fetch(
+    filters?: CollectionFetchFilters<AnySchema>
+  ): Promise<Collection<SCHEMA>>;
   trigger(eventName: string): void;
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
