@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-18 15:40+0000\n"
+"PO-Revision-Date: 2024-09-18 16:46+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -305,7 +305,7 @@ msgstr "Ця команда наразі недоступна для Specify 7."
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
-"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
+"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Form Commands > Index
@@ -586,7 +586,7 @@ msgstr "Налаштувати поля для перенесення ({tableNam
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Налаштувати поля для масового перенесення ({tableName:string})"
+msgstr "Налаштувати масове перенесення полів ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
