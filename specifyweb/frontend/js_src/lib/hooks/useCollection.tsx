@@ -63,7 +63,7 @@ export function useCollection<SCHEMA extends AnySchema>({
       const localVersionRef = versionRef.current;
 
       collection
-        .fetch(filters)
+        .fetch(filters as CollectionFetchFilters<AnySchema>)
         .then((collection) => {
           if (collection === undefined) return undefined;
           /*
@@ -71,8 +71,8 @@ export function useCollection<SCHEMA extends AnySchema>({
            * to prevent a race condition.
            * REFACTOR: simplify this
            */
-          versionRef.current === localVersionRef
-            ? setCollection(collection)
+          return versionRef.current === localVersionRef
+            ? void setCollection(collection)
             : undefined;
         })
         .catch(raise);

@@ -88,6 +88,9 @@ export const DependentCollection = Base.extend({
   isComplete() {
     return true;
   },
+  getFetchOffset() {
+    return 0;
+  },
   fetch: fakeFetch,
   sync: notSupported,
   create: notSupported,

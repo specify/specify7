@@ -12,6 +12,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { attachmentRelatedTables } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { CollectionFetchFilters } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -89,7 +90,7 @@ export function SubView({
             handleFetch({
               offset: 0,
               reset: true,
-            });
+            } as CollectionFetchFilters<AnySchema>);
           }
         },
         false
