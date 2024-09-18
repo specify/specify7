@@ -8237,8 +8237,8 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
@@ -8271,8 +8271,8 @@ datamodel = Datamodel(tables=[
             Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8291,9 +8291,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='cogtype', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
-            Relationship(name='parentcojos', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentcog', dependent=True),
-            Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childcog', dependent=True),
+            Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
+            Relationship(name='parentCojos', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog', dependent=True),
+            Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childCog', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
         ],
@@ -8311,12 +8311,12 @@ datamodel = Datamodel(tables=[
         idFieldName='collectionObjectGroupJoinId',
         idField=IdField(name='collectionObjectGroupJoinId', column='CollectionObjectGroupJoinID', type='java.lang.Integer'),
         fields=[
-            Field(name='isprimary', column='IsPrimary', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
-            Field(name='issubstrate', column='IsSubstrate', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='isPrimary', column='IsPrimary', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='isSubstrate', column='IsSubstrate', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='precedence', column='Precedence', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8331,9 +8331,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='parentcog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='parentcojos'),
-            Relationship(name='childcog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
-            Relationship(name='childco', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
+            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='parentcojos'),
+            Relationship(name='childCog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
+            Relationship(name='childCo', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
         ],
         fieldAliases=[
 
@@ -8352,8 +8352,8 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
         ],
         indexes=[
 
