@@ -119,6 +119,7 @@ def subquery_co_in_time_range(
     # create initial sqlalchmey subquery 'SELECT collectionobject_id FROM collectionobject'
     subquery = qb_query.session.query(sq_models.CollectionObject.id).subquery()
 
+# TODO: Remove once an implementation which implemention to keep
 def query_co_in_time_range_1(
     qb_query,
     start_time: float,
@@ -211,6 +212,7 @@ def query_co_in_time_range_1(
     # age_subquery = session.query
     # return age_subquery.filter(combined_filter).distinct()
 
+# TODO: Remove once an implementation which implemention to keep
 def query_co_in_time_range_2(
     qb_query,
     start_time: float,
@@ -377,6 +379,7 @@ def query_co_in_time_range_2(
     # age_subquery = session.query
     # return age_subquery.filter(combined_filter).distinct()
 
+# TODO: Remove once an implementation which implemention to keep
 def query_co_in_time_range(query, start_time, end_time, session=None, require_full_overlap=False):
     """
     Modify the given SQLAlchemy query to include filters that only select collection objects
@@ -438,6 +441,7 @@ def query_co_in_time_range(query, start_time, end_time, session=None, require_fu
     return query
 
 
+# TODO: Remove once an implementation which implemention to keep
 def query_co_in_time_range_with_joins(query, start_time, end_time, session=None, require_full_overlap=False):
     start_time = float(start_time)
     end_time = float(end_time)

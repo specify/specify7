@@ -298,12 +298,14 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
                 except AttributeError:
+                    # TODO: Cleanup once an implementation for virtual QB fields is decieded on
                     # if self.is_virtual_field(field.name):
                     # if hasattr(self, 'is_virtual_field') and self.is_virtual_field(field.name):
                     # if table.is_virtual_field(self.get_field().name):
                     if table.is_virtual_field(field.name) and table.name == 'CollectionObject' and field_name == 'age': # TODO: Create map for all special cases
                         # orm_field = orm_model.catalogNumber
                         orm_field = orm_model.collectionObjectId
+                    # TODO: Remove once an implementation for virtual QB fields is decieded on
                     # elif table.is_virtual_field(field.name):
                     #     # TODO: Handle SQLAlchemy virtual field creation
                     #     # NOTE: This might not be the right place to call query_co_in_time_range, maybe find a better place
