@@ -30,7 +30,8 @@ def revert_table_schema_config_with_defaults():
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0004_schema_config_update'),
+        # ('specify', '0004_schema_config_update'), # TODO: reinstate this once merged
+        ('specify', '0003_cotype_picklist'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
