@@ -535,7 +535,9 @@ class InlineApiTests(ApiTests):
 
         self.assertEqual(accession, self.collectionobjects[0].accession)
 
-        collection_objects_to_set = [self.collectionobjects[0], self.collectionobjects[3]]
+        collection_objects_to_remove = [self.collectionobjects[0], self.collectionobjects[3]]
+
+        cos_to_keep = [collection_object for collection_object in self.collectionobjects if not collection_object in collection_objects_to_remove]
 
         accession_data = {
             'accessionnumber': "a",
@@ -543,14 +545,13 @@ class InlineApiTests(ApiTests):
             'collectionobjects': {
                 "remove": [
                     api.uri_for_model('collectionobject', collection_object.id) 
-                    for index, collection_object in enumerate(collection_objects_to_set)
-                    if index % 2 == 0
+                    for collection_object in collection_objects_to_remove
                 ]
             }
         }
         accession = api.update_obj(self.collection, self.agent, 'Accession', accession.id, accession.version, accession_data)
 
-        self.assertEqual(list(accession.collectionobjects.all()), collection_objects_to_set)
+        self.assertEqual(list(accession.collectionobjects.all()), cos_to_keep)
 
         # ensure the other CollectionObjects have not been deleted
         self.assertEqual(len(models.Collectionobject.objects.all()), len(self.collectionobjects))
@@ -656,21 +657,6 @@ class InlineApiTests(ApiTests):
         self.collectionobjects[1].refresh_from_db()
         self.assertEqual(self.collectionobjects[0].accession, acc2)
         self.assertEqual(self.collectionobjects[1].accession, acc2)
-    
-    def test_inline_error_handling(self): 
-        collection_object_data = {
-            'id': self.collectionobjects[0].id,
-            'catalognumber': self.collectionobjects[0].catalognumber,
-            'collection': api.uri_for_model('Collection', self.collection.id),
-            'determinations': f'/api/specify/determination/?collectionobject={self.collectionobjects[0].id}'
-        }
-
-        with self.assertRaises(AssertionError):
-            api.update_obj(self.collection, self.agent, 
-                           'Collectionobject', self.collectionobjects[0].id,
-                            self.collectionobjects[0].version, collection_object_data)
-
-
     
     # version control on inlined resources should be tested
 

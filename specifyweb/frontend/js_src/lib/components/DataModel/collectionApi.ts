@@ -113,7 +113,7 @@ export const LazyCollection = Base.extend({
     return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
   },
   isComplete() {
-    return this._neverFetched && this.length === this._totalCount;
+    return !this._neverFetched && this.length === this._totalCount;
   },
   parse(resp) {
     let objects;
