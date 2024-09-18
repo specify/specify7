@@ -102,7 +102,6 @@ export const LazyCollection = Base.extend({
   constructor(options = {}) {
     this.table = this.model;
     Base.call(this, null, options);
-    this._neverFetched = true;
     this._totalCount = undefined;
     this.filters = options.filters || {};
     this.domainfilter =
@@ -129,10 +128,10 @@ export const LazyCollection = Base.extend({
     return objects;
   },
   async fetch(options) {
-    this._neverFetched = false;
-
     if (this._fetch) return this._fetch;
     else if (this.isComplete() || this.related?.isNew()) return this;
+
+    this._neverFetched = false;
 
     if (this.isComplete())
       console.error('fetching for already filled collection');
@@ -249,9 +248,8 @@ export const IndependentCollection = LazyCollection.extend({
   },
   async fetch(options) {
     // If the related is being fetched, don't try and fetch the collection
-    if (this.related._fetch !== null) {
-      return this;
-    }
+    if (this.related._fetch !== null) return this;
+
     this.filters[this.field.name.toLowerCase()] = this.related.id;
 
     const newOptions = {
