@@ -9,7 +9,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0002_geo'),
+        ('specify', '0003_cotype_picklist'),
     ]
 
     operations = [
