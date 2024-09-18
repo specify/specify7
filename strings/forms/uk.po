@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:54+0000\n"
+"PO-Revision-Date: 2024-09-18 15:40+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -42,7 +42,7 @@ msgstr "Значення має бути унікальним для {fieldName:
 #: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "Нічого не знайдено"
+msgstr "Створіть повну копію поточного запису"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
@@ -270,7 +270,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Запис інформації"
+msgstr "Цю дію не можна скасувати."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -303,7 +303,10 @@ msgstr "Ця команда наразі недоступна для Specify 7."
 #: components/FormPlugins/index.tsx:205
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
-msgstr "(видалено)"
+msgstr ""
+"Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
+"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
+"запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
@@ -558,7 +561,7 @@ msgstr "Підрахунок масового переносу"
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із перенесеними певними полями"
+msgstr "Створіть новий запис із певними перенесеними полями"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:120
@@ -681,14 +684,14 @@ msgstr "Запис інформації"
 #: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
-msgstr "Додати до [X7X]?"
+msgstr "(Діапазон: [X8X] - [X24X])"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "[X0X] #[X20X]"
+msgstr "Показати кнопку «Перенести вперед»."
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
@@ -719,7 +722,7 @@ msgstr "Підвид"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "Значення має бути унікальним для [X24X]"
+msgstr "Точність дати"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
