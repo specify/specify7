@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-28 16:54+0000\n"
+"PO-Revision-Date: 2024-09-18 15:40+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -186,7 +186,7 @@ msgstr "Guardar registro primero"
 #: components/Preferences/UserDefinitions.tsx:1117
 #, fuzzy
 msgid "firstRecord"
-msgstr "Historial de edición"
+msgstr "Creando nuevo registro"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:96
@@ -570,7 +570,7 @@ msgstr "Crear un nuevo registro en blanco"
 #: components/FormMeta/AutoNumbering.tsx:92
 #, fuzzy
 msgid "autoNumbering"
-msgstr "Formulario Meta"
+msgstr "Estado del formulario"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:138
@@ -588,7 +588,7 @@ msgstr "Utilice el formulario generado automáticamente"
 #: components/FormMeta/Definition.tsx:119
 #, fuzzy
 msgid "useFieldLabels"
-msgstr "Comando N/A"
+msgstr "Guardar registro primero"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:205
@@ -643,7 +643,7 @@ msgstr "Compartir registro"
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "[X0X] #[X20X]"
+msgstr "Encuentra usos"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
@@ -674,7 +674,7 @@ msgstr "Subvista"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "El valor debe ser exclusivo de [X24X]"
+msgstr "Seleccionar fuente de tablas"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
@@ -759,4 +759,4 @@ msgstr "(Rango: {from:string} - {to:string})"
 #: components/FieldFormatters/index.ts:282
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
-msgstr "Número de catálogo numérico"
+msgstr "Número de catálogo Numérico"
