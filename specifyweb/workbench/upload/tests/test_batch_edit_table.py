@@ -1,5 +1,4 @@
 from typing import Literal, Union
-from unittest.mock import patch
 from specifyweb.specify.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
@@ -7,7 +6,11 @@ from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.stored_queries.tests.test_batch_edit import props_builder
 from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
-from specifyweb.workbench.upload.preferences import DEFER_KEYS
+from specifyweb.workbench.upload.auditor import (
+    DEFAULT_AUDITOR_PROPS,
+    AuditorProps,
+    BatchEditPrefs,
+)
 from specifyweb.workbench.upload.tests.base import UploadTestsBase
 from specifyweb.workbench.upload.upload import do_upload
 from specifyweb.specify import auditcodes
@@ -18,7 +21,6 @@ from specifyweb.workbench.upload.upload_result import (
     NoChange,
     NullRecord,
     PropagatedFailure,
-    ReportInfo,
     Uploaded,
     Updated,
     Matched,
@@ -34,7 +36,6 @@ from specifyweb.specify.models import (
     Spauditlogfield,
     Collectionobject,
     Agent,
-    Determination,
     Preptype,
     Preparation,
     Collectingeventattribute,
@@ -49,16 +50,11 @@ lookup_in_auditlog = lambda model, _id: get_table("Spauditlog").objects.filter(
 )
 
 
-def make_defer(match, null, force: DEFER_KEYS = None):
-    def _defer(key: DEFER_KEYS):
-        if force and key == DEFER_KEYS:
-            raise Exception(f"Did not epect {key}")
-        if key == "match":
-            return match
-        elif key == "null_check":
-            return null
-
-    return _defer
+def make_defer(match, null) -> AuditorProps:
+    return AuditorProps(
+        allow_delete_dependents=DEFAULT_AUDITOR_PROPS.allow_delete_dependents,
+        batch_edit_prefs=BatchEditPrefs(deferForMatch=match, deferForNullCheck=null),
+    )
 
 
 class UpdateTests(UploadTestsBase):
@@ -292,8 +288,8 @@ class OneToOneUpdateTests(UploadTestsBase):
         # We don't epect matching to happen. Also, match is a lower "priority".
         # The code is smart enough to be as strict as possible when there is ambiguity. This tests that.
         for defer in [
-            make_defer(match=True, null=False, force="match"),
-            make_defer(match=True, null=True, force="match"),
+            BatchEditPrefs(deferForMatch=True, deferForNull=False),
+            BatchEditPrefs(deferForMatch=True, deferForNull=True),
         ]:
 
             data = [
@@ -307,21 +303,22 @@ class OneToOneUpdateTests(UploadTestsBase):
             self._update(inserted[0][1], {"number1": 102})
             self._update(inserted[1][1], {"number1": 212})
 
-            with patch(
-                "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-            ):
-                results = do_upload(
-                    self.collection,
-                    data,
-                    self.plan,
-                    self.agent.id,
-                    batch_edit_packs=batch_edit_pack,
+            results = do_upload(
+                self.collection,
+                data,
+                self.plan,
+                self.agent.id,
+                batch_edit_packs=batch_edit_pack,
+                auditor_props=AuditorProps(
+                    allow_delete_dependents=DEFAULT_AUDITOR_PROPS.allow_delete_dependents,
+                    batch_edit_prefs=defer,
+                ),
+            )
+            for result in results:
+                self.assertIsInstance(result.record_result, NoChange)
+                self.assertIsInstance(
+                    result.toOne["collectionobjectattribute"].record_result, Deleted
                 )
-                for result in results:
-                    self.assertIsInstance(result.record_result, NoChange)
-                    self.assertIsInstance(
-                        result.toOne["collectionobjectattribute"].record_result, Deleted
-                    )
 
             self.assertFalse(
                 get_table("Collectionobjectattribute")
@@ -364,47 +361,39 @@ class OneToOneUpdateTests(UploadTestsBase):
 
         data, inserted, batch_edit_pack = _make_data()
 
-        defer = make_defer(match=True, null=False, force="match")
-
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = do_upload(
-                self.collection,
-                data,
-                self.plan,
-                self.agent.id,
-                batch_edit_packs=batch_edit_pack,
+        results = do_upload(
+            self.collection,
+            data,
+            self.plan,
+            self.agent.id,
+            batch_edit_packs=batch_edit_pack,
+            auditor_props=make_defer(match=True, null=False),
+        )
+        for result in results:
+            self.assertIsInstance(result.record_result, NoChange)
+            # Records cannot be deleted now
+            self.assertIsInstance(
+                result.toOne["collectionobjectattribute"].record_result, Updated
             )
-            for result in results:
-                self.assertIsInstance(result.record_result, NoChange)
-                # Records cannot be deleted now
-                self.assertIsInstance(
-                    result.toOne["collectionobjectattribute"].record_result, Updated
-                )
 
         get_table("Collectionobject").objects.all().delete()
         get_table("Collectionobjectattribute").objects.all().delete()
 
         data, _, batch_edit_pack = _make_data()
 
-        defer = make_defer(match=True, null=True, force="match")
-
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = do_upload(
-                self.collection,
-                data,
-                self.plan,
-                self.agent.id,
-                batch_edit_packs=batch_edit_pack,
+        results = do_upload(
+            self.collection,
+            data,
+            self.plan,
+            self.agent.id,
+            batch_edit_packs=batch_edit_pack,
+            auditor_props=make_defer(match=True, null=True),
+        )
+        for result in results:
+            self.assertIsInstance(result.record_result, NoChange)
+            self.assertIsInstance(
+                result.toOne["collectionobjectattribute"].record_result, Deleted
             )
-            for result in results:
-                self.assertIsInstance(result.record_result, NoChange)
-                self.assertIsInstance(
-                    result.toOne["collectionobjectattribute"].record_result, Deleted
-                )
 
         self.assertFalse(
             get_table("Collectionobjectattribute")
@@ -682,7 +671,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             ce_created.collectingeventattribute.id, "collectingeventattribute", "INSERT"
         )
 
-    def _run_matching_test(self):
+    def _run_matching_test(self, auditor_props: AuditorProps):
         co_4 = Collectionobject.objects.create(
             catalognumber="1000".zfill(9), collection=self.collection
         )
@@ -731,18 +720,18 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         ]
 
         results = do_upload(
-            self.collection, data, plan, self.agent.id, batch_edit_packs=pack
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+            auditor_props=auditor_props,
         )
         return results
 
     def test_matching_without_defer(self):
 
-        defer = make_defer(match=False, null=False)
-
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = self._run_matching_test()
+        results = self._run_matching_test(make_defer(match=False, null=False))
 
         list([self.enforcer(result) for result in results[:2]])
 
@@ -763,14 +752,11 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
     def test_matching_with_defer(self):
 
-        defer = make_defer(
+        auditor_props = make_defer(
             match=True, null=True
         )  # null doesn't matter, can be true or false
 
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = self._run_matching_test()
+        results = self._run_matching_test(auditor_props)
 
         list([self.enforcer(result) for result in results[:2]])
 
@@ -794,7 +780,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
     def test_update_to_many_without_defer(self):
 
-        defer = make_defer(
+        auditor_props = make_defer(
             # These reulsts below should how true for all these cases
             match=False,
             null=False,
@@ -876,12 +862,14 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             },
         ]
 
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = do_upload(
-                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
-            )
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+            auditor_props=auditor_props,
+        )
 
         result_map = {}
 
@@ -1022,86 +1010,87 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
     def test_update_to_many_with_defer(self):
 
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields",
-            new=make_defer(match=True, null=False),
-        ):
-            (headers, data, pack, plan) = self._run_with_defer()
+        (headers, data, pack, plan) = self._run_with_defer()
 
-            results = do_upload(
-                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
-            )
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+            auditor_props=make_defer(match=True, null=False),
+        )
 
-            self.assertIsInstance(
-                results[0].toMany["preparations"][0].record_result, Updated
-            )
-            self.assertIsInstance(
-                results[0].toMany["preparations"][1].record_result, Updated
-            )
-            self.assertIsInstance(
-                results[0].toMany["preparations"][2].record_result, Updated
-            )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][0].record_result, Updated
+        )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][1].record_result, Updated
+        )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][2].record_result, Updated
+        )
 
-            self.assertIsInstance(
-                results[1].toMany["preparations"][0].record_result, Updated
-            )
-            self.assertIsInstance(
-                results[1].toMany["preparations"][1].record_result, Updated
-            )
-            self.assertIsInstance(
-                results[1].toMany["preparations"][2].record_result, NullRecord
-            )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][0].record_result, Updated
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][1].record_result, Updated
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][2].record_result, NullRecord
+        )
 
-            self.assertIsInstance(
-                results[2].toMany["preparations"][0].record_result, NoChange
-            )
-            self.assertIsInstance(
-                results[2].toMany["preparations"][1].record_result, NullRecord
-            )
-            self.assertIsInstance(
-                results[2].toMany["preparations"][2].record_result, NullRecord
-            )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][0].record_result, NoChange
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][1].record_result, NullRecord
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][2].record_result, NullRecord
+        )
 
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields",
-            new=make_defer(match=False, null=True, force="match"),
-        ):
+        (headers, data, pack, plan) = self._run_with_defer()
 
-            (headers, data, pack, plan) = self._run_with_defer()
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+            auditor_props=make_defer(match=False, null=True, force="match"),
+        )
 
-            results = do_upload(
-                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
-            )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][0].record_result, Deleted
+        )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][1].record_result, Deleted
+        )
+        self.assertIsInstance(
+            results[0].toMany["preparations"][2].record_result, Deleted
+        )
 
-            self.assertIsInstance(
-                results[0].toMany["preparations"][0].record_result, Deleted
-            )
-            self.assertIsInstance(
-                results[0].toMany["preparations"][1].record_result, Deleted
-            )
-            self.assertIsInstance(
-                results[0].toMany["preparations"][2].record_result, Deleted
-            )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][0].record_result, Deleted
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][1].record_result, Deleted
+        )
+        self.assertIsInstance(
+            results[1].toMany["preparations"][2].record_result, NullRecord
+        )
 
-            self.assertIsInstance(
-                results[1].toMany["preparations"][0].record_result, Deleted
-            )
-            self.assertIsInstance(
-                results[1].toMany["preparations"][1].record_result, Deleted
-            )
-            self.assertIsInstance(
-                results[1].toMany["preparations"][2].record_result, NullRecord
-            )
-
-            self.assertIsInstance(
-                results[2].toMany["preparations"][0].record_result, Deleted
-            )
-            self.assertIsInstance(
-                results[2].toMany["preparations"][1].record_result, NullRecord
-            )
-            self.assertIsInstance(
-                results[2].toMany["preparations"][2].record_result, NullRecord
-            )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][0].record_result, Deleted
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][1].record_result, NullRecord
+        )
+        self.assertIsInstance(
+            results[2].toMany["preparations"][2].record_result, NullRecord
+        )
 
         # original_data = [
         #     {'CollectionObject integer1': '', 'Agent firstName': 'John', 'Preparation countAmt': '20', 'Preparation countAmt #2': '5', 'Preparation countAmt #3': '88'},
@@ -1328,8 +1317,6 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
     def test_to_many_match_is_possible(self):
 
-        defer = make_defer(match=False, null=True)
-
         agt_1_add_1 = Address.objects.create(
             address="testaddress1", agent=self.test_agent_1
         )
@@ -1394,12 +1381,16 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             },
         ]
 
-        with patch(
-            "specifyweb.workbench.upload.preferences.should_defer_fields", new=defer
-        ):
-            results = do_upload(
-                self.collection, data, plan, self.agent.id, batch_edit_packs=pack
-            )
+        auditor_props = make_defer(match=False, null=True)
+
+        results = do_upload(
+            self.collection,
+            data,
+            plan,
+            self.agent.id,
+            batch_edit_packs=pack,
+            auditor_props=auditor_props,
+        )
 
         list([self.enforcer(record) for record in results[:2]])
 

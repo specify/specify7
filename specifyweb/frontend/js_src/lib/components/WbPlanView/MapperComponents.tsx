@@ -23,10 +23,12 @@ import type {
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
-import type { MappingPath } from './Mapper';
+import { DEFAULT_BATCH_EDIT_PREFS, type BatchEditPrefs, type MappingPath } from './Mapper';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
+import { LocalizedString } from 'typesafe-i18n';
+import { batchEditText } from '../../localization/batchEdit';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -460,18 +462,18 @@ export function MustMatch({
                             id={id(`table-${tableName}`)}
                             {...(isReadOnly
                               ? {
-                                  disabled: true,
-                                }
+                                disabled: true,
+                              }
                               : {
-                                  onChange: (): void => {
-                                    const newPreferences = {
-                                      ...localPreferences,
-                                      [tableName]: !mustMatch,
-                                    };
-                                    handleChange(newPreferences);
-                                    setLocalPreferences(newPreferences);
-                                  },
-                                })}
+                                onChange: (): void => {
+                                  const newPreferences = {
+                                    ...localPreferences,
+                                    [tableName]: !mustMatch,
+                                  };
+                                  handleChange(newPreferences);
+                                  setLocalPreferences(newPreferences);
+                                },
+                              })}
                           />
                         </td>
                       </tr>
@@ -485,4 +487,58 @@ export function MustMatch({
       )}
     </>
   );
+}
+
+export function BatchEditPrefsView({
+  prefs,
+  onChange: handleChange,
+}: {
+  readonly prefs: BatchEditPrefs;
+  readonly onChange: (prefs: BatchEditPrefs) => void;
+}): JSX.Element {
+  // 
+  const prefLocalization: RR<keyof BatchEditPrefs, { readonly title: LocalizedString; readonly description: LocalizedString }> = {
+    deferForMatch: {
+      title: batchEditText.deferForMatch(),
+      description: batchEditText.deferForMatchDescription({ default: DEFAULT_BATCH_EDIT_PREFS.deferForMatch })
+    },
+    deferForNullCheck: {
+      title: batchEditText.deferForNullCheck(),
+      description: batchEditText.deferForNullCheckDescription({ default: DEFAULT_BATCH_EDIT_PREFS.deferForNullCheck })
+    }
+  };
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const [isOpen, handleOpen, handleClose] = useBooleanState(false);
+
+  const [localPrefs, setLocalPrefs] = React.useState<BatchEditPrefs>(prefs);
+
+  const isChanged = React.useMemo(()=>JSON.stringify(localPrefs) !== JSON.stringify(prefs), [localPrefs, prefs]);
+
+  const handleCommit = () => {
+    if (isChanged)handleChange(localPrefs);
+    handleClose();
+  }
+
+  return (<>
+    <Button.Small
+        aria-haspopup="dialog"
+        onClick={handleOpen}
+      >
+        {batchEditText.batchEditPrefs()}
+      </Button.Small>
+    {isOpen && <Dialog
+     buttons={<Button.Info onClick={handleCommit}>{isChanged ? commonText.apply() : commonText.close()}</Button.Info>}
+     className={{container: dialogClassNames.narrowContainer}}
+     header={batchEditText.batchEditPrefs()}
+     onClose={handleCommit}
+    >
+      <div>
+        <Ul>
+          {
+          Object.entries(prefLocalization).map(
+            ([id, { title, description }]) => 
+            <li key={id}><Label.Inline title={description}><Input.Checkbox checked={localPrefs[id]} isReadOnly={isReadOnly} name="batch-edit-prefs" onValueChange={(isChecked) => setLocalPrefs({ ...localPrefs, [id]: isChecked })} />{` ${title}`}</Label.Inline></li>)}</Ul></div></Dialog>}
+  </>)
 }

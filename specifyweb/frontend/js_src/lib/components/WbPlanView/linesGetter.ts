@@ -11,7 +11,7 @@ import type { IR, RA, WritableArray } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import type { AutoMapperResults } from './autoMapper';
 import { AutoMapper } from './autoMapper';
-import type { MappingLine } from './Mapper';
+import type { BatchEditPrefs, MappingLine } from './Mapper';
 import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';

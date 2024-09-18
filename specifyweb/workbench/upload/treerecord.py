@@ -20,7 +20,6 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-import specifyweb.workbench.upload.preferences as defer_preference
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 from .parsing import (
@@ -28,7 +27,6 @@ from .parsing import (
     WorkBenchParseFailure,
     parse_many,
     filter_and_upload,
-    Filter,
 )
 from .upload_result import (
     UploadResult,
@@ -642,14 +640,14 @@ class BoundTreeRecord(NamedTuple):
     def _get_reference(self) -> Optional[Dict[str, Any]]:
 
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null,
-        # the "deferForNull" is redundant. We, do, however need to look at deferForMatch, and we are done.
+        # the "deferForNull" mess is not needed (that's redundant now). We, do, however need to look at deferForMatch, and we are done.
 
         if self.batch_edit_pack is None:
             return None
 
         model = getattr(models, self.name)
 
-        should_defer = defer_preference.should_defer_fields("match")
+        should_defer = self.auditor.props.batch_edit_prefs["deferForMatch"]
 
         references = {}
 

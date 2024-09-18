@@ -66,7 +66,7 @@ function WbPlanViewSafe({
       <WbPlanView
         readonlySpec={
           dataSet.isupdate
-            ? { mustMatch: false, columnOptions: false }
+            ? { mustMatch: false, columnOptions: false, batchEditPrefs: false }
             : undefined
         }
         uploadPlan={dataSet.uploadplan}

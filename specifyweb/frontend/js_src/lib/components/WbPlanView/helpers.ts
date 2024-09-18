@@ -17,6 +17,7 @@ import { AutoMapper } from './autoMapper';
 import { renameNewlyCreatedHeaders } from './headerHelper';
 import type {
   AutoMapperSuggestion,
+  BatchEditPrefs,
   MappingLine,
   MappingPath,
   SelectElementPosition,
@@ -42,11 +43,13 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
+  batchEditPrefs
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -66,7 +69,8 @@ export async function savePlan({
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
+    batchEditPrefs
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;

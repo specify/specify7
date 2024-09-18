@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, List, Literal, NamedTuple, Optional, Union
+from typing import Any, List, NamedTuple, Optional, TypedDict, Union
 
 
 from specifyweb.specify.auditlog import AuditLog
@@ -13,12 +13,21 @@ from specifyweb.specify.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 
 
+class BatchEditPrefs(TypedDict):
+    deferForMatch: bool
+    deferForNullCheck: bool
+
+
 class AuditorProps(NamedTuple):
     allow_delete_dependents: bool
+    batch_edit_prefs: BatchEditPrefs
 
 
 # For unit tests
-DEFAULT_AUDITOR_PROPS = AuditorProps(allow_delete_dependents=True)
+DEFAULT_BATCH_EDIT_PREFS = BatchEditPrefs(deferForMatch=True, deferForNullCheck=False)
+DEFAULT_AUDITOR_PROPS = AuditorProps(
+    allow_delete_dependents=True, batch_edit_prefs=DEFAULT_BATCH_EDIT_PREFS
+)
 
 
 class Auditor(NamedTuple):

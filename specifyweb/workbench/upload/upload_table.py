@@ -16,7 +16,6 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-import specifyweb.workbench.upload.preferences as defer_preference
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
 
@@ -367,7 +366,7 @@ class BoundUploadTable(NamedTuple):
 
     @property
     def _should_defer_match(self):
-        return defer_preference.should_defer_fields("match")
+        return self.auditor.props.batch_edit_prefs['deferForMatch']
 
     def get_django_predicates(
         self,
@@ -580,7 +579,7 @@ class BoundUploadTable(NamedTuple):
         attrs = {
             **(
                 {}
-                if defer_preference.should_defer_fields("null_check")
+                if self.auditor.props.batch_edit_prefs['deferForNullCheck']
                 else self._resolve_reference_attributes(model, self._get_reference())
             ),
             **attrs,
@@ -903,7 +902,7 @@ class BoundUpdateTable(BoundUploadTable):
         # Complicated. consider the case where deferForMatch is true. In that case, we can't always just defer fields,
         # because during updates, we'd wrongly skip to-manys -- and possibly delete them -- if they contain field values (not visible) BUT get skipped due to above.
         # So, we handle it by always going by null_check ONLY IF we know we are doing an update, which we know at this point.
-        return defer_preference.should_defer_fields("null_check")
+        return self.auditor.props.batch_edit_prefs['deferForNullCheck']
 
     def _handle_row(self, skip_match: bool, allow_null: bool):
         assert (
