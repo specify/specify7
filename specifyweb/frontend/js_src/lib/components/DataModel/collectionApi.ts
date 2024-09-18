@@ -131,10 +131,10 @@ export const LazyCollection = Base.extend({
     if (this._fetch) return this._fetch;
     else if (this.isComplete() || this.related?.isNew()) return this;
 
-    this._neverFetched = false;
-
     if (this.isComplete())
       console.error('fetching for already filled collection');
+
+    this._neverFetched = false;
 
     options ||= {};
 
