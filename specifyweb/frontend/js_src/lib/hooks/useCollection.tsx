@@ -6,27 +6,23 @@ import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import type { Relationship } from '../components/DataModel/specifyField';
 import type { Collection } from '../components/DataModel/specifyTable';
 import { raise } from '../components/Errors/Crash';
+import type { SubViewSortField } from '../components/FormParse/cells';
 import { relationshipIsToMany } from '../components/WbPlanView/mappingHelpers';
 import type { GetOrSet } from '../utils/types';
 import { overwriteReadOnly } from '../utils/types';
-import type { sortFunction } from '../utils/utils';
+import { sortFunction } from '../utils/utils';
 import { useAsyncState } from './useAsyncState';
 
 type UseCollectionProps<SCHEMA extends AnySchema> = {
   readonly parentResource: SpecifyResource<SCHEMA>;
   readonly relationship: Relationship;
-  readonly collectionSortFunction?: ReturnType<
-    typeof sortFunction<
-      SpecifyResource<SCHEMA>,
-      ReturnType<SpecifyResource<SCHEMA>['get']>
-    >
-  >;
+  readonly sortBy?: SubViewSortField;
 };
 
 export function useCollection<SCHEMA extends AnySchema>({
   parentResource,
   relationship,
-  collectionSortFunction,
+  sortBy,
 }: UseCollectionProps<SCHEMA>): readonly [
   ...GetOrSet<Collection<SCHEMA> | false | undefined>,
   (filters?: CollectionFetchFilters<SCHEMA>) => void
@@ -41,14 +37,14 @@ export function useCollection<SCHEMA extends AnySchema>({
           ? fetchToManyCollection({
               parentResource,
               relationship,
-              collectionSortFunction,
+              sortBy,
             })
           : fetchToOneCollection({
               parentResource,
               relationship,
-              collectionSortFunction,
+              sortBy,
             }),
-      [collectionSortFunction, parentResource, relationship]
+      [sortBy, parentResource, relationship]
     ),
     false
   );
@@ -85,7 +81,7 @@ export function useCollection<SCHEMA extends AnySchema>({
 const fetchToManyCollection = async <SCHEMA extends AnySchema>({
   parentResource,
   relationship,
-  collectionSortFunction,
+  sortBy,
 }: UseCollectionProps<SCHEMA>): Promise<Collection<SCHEMA> | undefined> =>
   parentResource.rgetCollection(relationship.name).then((collection) => {
     // TEST: check if this can ever happen
@@ -94,13 +90,21 @@ const fetchToManyCollection = async <SCHEMA extends AnySchema>({
         related: parentResource,
         field: relationship.getReverse(),
       }) as Collection<AnySchema>;
-    if (collectionSortFunction === undefined) return collection;
+    if (sortBy === undefined) return collection;
+
+    // BUG: this does not look into related tables
+    const field = sortBy.fieldNames[0];
 
     // Overwriting the models on the collection
     overwriteReadOnly(
       collection,
       'models',
-      Array.from(collection.models).sort(collectionSortFunction)
+      Array.from(collection.models).sort(
+        sortFunction(
+          (resource) => resource.get(field),
+          sortBy.direction === 'desc'
+        )
+      )
     );
     return collection;
   });
@@ -108,7 +112,7 @@ const fetchToManyCollection = async <SCHEMA extends AnySchema>({
 async function fetchToOneCollection<SCHEMA extends AnySchema>({
   parentResource,
   relationship,
-  collectionSortFunction,
+  sortBy,
 }: UseCollectionProps<SCHEMA>): Promise<
   Collection<SCHEMA> | false | undefined
 > {
@@ -149,11 +153,19 @@ async function fetchToOneCollection<SCHEMA extends AnySchema>({
     'field',
     collection.field ?? relationship.getReverse()
   );
-  if (collectionSortFunction !== undefined)
+  if (sortBy !== undefined) {
+    // BUG: this does not look into related tables
+    const field = sortBy.fieldNames[0];
     overwriteReadOnly(
       collection,
       'models',
-      Array.from(collection.models).sort(collectionSortFunction)
+      Array.from(collection.models).sort(
+        sortFunction(
+          (resource) => resource.get(field),
+          sortBy.direction === 'desc'
+        )
+      )
     );
+  }
   return collection;
 }

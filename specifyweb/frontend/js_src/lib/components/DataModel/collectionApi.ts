@@ -147,6 +147,7 @@ export const LazyCollection = Base.extend({
       options.data ||
       _.extend({ domainfilter: this.domainfilter }, this.filters);
     options.data.offset = options.offset ?? this.length;
+    options.data.orderby = options.orderby;
 
     _(options).has('limit') && (options.data.limit = options.limit);
     this._fetch = Backbone.Collection.prototype.fetch.call(this, options);

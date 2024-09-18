@@ -6,7 +6,6 @@ import { useCollection } from '../../hooks/useCollection';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
@@ -71,13 +70,7 @@ export function SubView({
   const [collection, _setCollection, handleFetch] = useCollection({
     parentResource,
     relationship,
-    collectionSortFunction:
-      sortField === undefined
-        ? undefined
-        : sortFunction(
-            (resource) => resource.get(sortField.fieldNames[0]),
-            sortField.direction === 'desc'
-          ),
+    sortBy: sortField,
   });
 
   React.useEffect(
