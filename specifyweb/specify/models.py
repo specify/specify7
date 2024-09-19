@@ -4868,7 +4868,7 @@ class Paleocontext(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     lithostrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
-    tectonic = models.ForeignKey('TectonicUnit', db_column='TectonicUnitID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
+    tectonicunit = models.ForeignKey('TectonicUnit', db_column='TectonicUnitID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
