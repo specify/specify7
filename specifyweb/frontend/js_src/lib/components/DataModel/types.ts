@@ -6777,7 +6777,7 @@ export type TectonicUnit = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
-    readonly accepted: TectonicUnit | null;
+    readonly acceptedTectonicUnit: TectonicUnit | null;
     readonly createdbyagent: Agent | null;
     readonly modifiedbyagent: Agent | null;
     readonly parent: TectonicUnit | null;

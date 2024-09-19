@@ -178,7 +178,7 @@ class Migration(migrations.Migration):
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 #relationships
-                ('acceptedtectonic', models.ForeignKey(db_column='AcceptedID', null=True, on_delete=models.CASCADE, related_name='acceptedchildren', to='specify.tectonicunit')),
+                ('acceptedtectonicunit', models.ForeignKey(db_column='AcceptedID', null=True, on_delete=models.CASCADE, related_name='acceptedchildren', to='specify.tectonicunit')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('parent', models.ForeignKey(db_column='ParentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.tectonic')),

@@ -7883,7 +7883,7 @@ class TectonicUnit(models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     
     # Relationships: Many-to-One
-    acceptedtectonic = models.ForeignKey('Tectonic', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
     tectonictreedefitem = models.ForeignKey('TectonicTreeDefItem', db_column='TectonicTreeDefItemID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Tectonic', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
     tectonictreedef = models.ForeignKey('TectonicTreeDef', db_column='TectonicTreeDefID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
@@ -7891,7 +7891,7 @@ class TectonicUnit(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
-        db_table = 'tectonic'
+        db_table = 'tectonicunit'
         ordering = ()
 
     save = partialmethod(custom_save)

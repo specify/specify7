@@ -8677,10 +8677,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='acceptedtectonic', type='many-to-one', required=False, relatedModelName='Tectonic', column='AcceptedID'),
+            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='Tectonic', column='ParentID'),
+            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='ParentID'),
             Relationship(name='tectonictreedef', type='many-to-one', required=True, relatedModelName='TectonicTreeDef', column='TectonicTreeDefID'),
             Relationship(name='tectonictreedefitem', type='many-to-one', required=True, relatedModelName='TectonicTreeDefItem', column='TectonicTreeDefItemID'),
         ],
