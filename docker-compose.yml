@@ -91,11 +91,6 @@ services:
       - ATTACHMENT_KEY=${ASSET_SERVER_KEY}
       - DEBUG_MODE=false
 
-  specify6:
-    image: specifyconsortium/specify6-service:6.8.03
-    volumes:
-      - "specify6:/volumes/Specify"
-
   nginx:
     image: nginx:alpine
     ports:
