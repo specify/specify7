@@ -8391,7 +8391,9 @@ datamodel = Datamodel(tables=[
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text'),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
         indexes=[
 

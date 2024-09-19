@@ -6572,6 +6572,8 @@ export type AbsoluteAge = {
     readonly remarks: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
+    readonly yesno1: boolean | null;
+    readonly yesno2: boolean | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
   };

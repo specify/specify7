@@ -60,6 +60,8 @@ class Migration(migrations.Migration):
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
+                ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 #relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),

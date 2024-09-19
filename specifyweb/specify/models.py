@@ -7637,12 +7637,13 @@ class AbsoluteAge(models.Model):
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     ageattachment = models.ForeignKey('AbsoluteAgeAttachment', db_column='AgeAttachmentID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='absoluteages', null=False, on_delete=models.CASCADE)
-    # agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'absoluteage'
