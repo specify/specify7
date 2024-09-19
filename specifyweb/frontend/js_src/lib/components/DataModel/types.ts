@@ -6563,7 +6563,6 @@ export type AbsoluteAge = {
     readonly agetype: string | null;
     readonly ageuncertainty: number | null;
     readonly collectiondate: string | null;
-    readonly controlledvocab: string | null;
     readonly date1: string | null;
     readonly date2: string | null;
     readonly datingmethod: string | null;
@@ -6593,7 +6592,6 @@ export type RelativeAge = {
     readonly agetype: string | null;
     readonly ageuncertainty: number | null;
     readonly collectiondate: string | null;
-    readonly controlledvocab: string | null;
     readonly date1: string | null;
     readonly date2: string | null;
     readonly datingmethod: string | null;

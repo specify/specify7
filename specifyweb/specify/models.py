@@ -7626,7 +7626,6 @@ class AbsoluteAge(models.Model):
     agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False) # sedimentation, metamorphic, inclusion, original, fall, etc.
     ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
     collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
-    controlledvocab = models.TextField(blank=True, null=True, unique=False, db_column='ControlledVocab', db_index=False) # 'normal' or 'reverse'
     date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
     date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
     datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
@@ -7661,7 +7660,6 @@ class RelativeAge(models.Model):
     agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False)
     ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
     collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
-    controlledvocab = models.TextField(blank=True, null=True, unique=False, db_column='ControlledVocab', db_index=False) # 'normal' or 'reverse'
     date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
     date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
     datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
