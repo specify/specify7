@@ -181,7 +181,7 @@ class Migration(migrations.Migration):
                 ('acceptedtectonicunit', models.ForeignKey(db_column='AcceptedID', null=True, on_delete=models.CASCADE, related_name='acceptedchildren', to='specify.tectonicunit')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.tectonic')),
+                ('parent', models.ForeignKey(db_column='ParentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.tectonicunit')),
                 ('tectonictreedef', models.ForeignKey(db_column='TectonicTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='tectonics', to='specify.tectonictreedef')),
                 ('tectonictreedefitem', models.ForeignKey(db_column='TectonicTreeDefItemID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='tectonics', to='specify.tectonictreedefitem')),
             ],
