@@ -18,23 +18,36 @@ SCHEMA_CONFIG_TABLES = [
     ('AbsoluteAgeAttachment', None),
 ]
 PICKLIST_NAME = 'AgeType'
+DEFAULT_AGE_TYPES = [
+    'Sedimentation', 
+    'Metamorphic', 
+    'Inclusion', 
+    'Original', 
+    'Fall'
+]
 
 def create_agetype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
+    PicklistItem = apps.get_model('specify', 'Picklistitem')
     # Create a AgeType picklist for each collection
     for collection in Collection.objects.all():
-        Picklist.objects.get_or_create(
+        age_type_picklist, _ = Picklist.objects.get_or_create(
             name=PICKLIST_NAME,
             issystem=False,
             readonly=False,
             sizelimit=-1,
             sorttype=1,
             type=0,
-            tablename='agetype',
             collection=collection,
             formatter=PICKLIST_NAME
         )
+    for age_type in DEFAULT_AGE_TYPES:
+            PicklistItem.objects.create(
+                title=age_type,
+                value=age_type,
+                picklist=age_type_picklist
+            )
 
 def revert_agetype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
