@@ -325,4 +325,5 @@ class Migration(migrations.Migration):
             name='tectonicunit',
             field=models.ForeignKey(db_column='TectonicUnitID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='paleocontexts', to='specify.tectonicunit'),
         ),
+        migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
     ]
