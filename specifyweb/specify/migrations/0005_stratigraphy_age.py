@@ -50,8 +50,17 @@ def create_agetype_picklist(apps):
             )
 
 def revert_agetype_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
-    Picklist.objects.filter(name=PICKLIST_NAME).delete()
+
+    for collection in Collection.objects.all():
+        age_type_pick_list = Picklist.objects.filter(name=PICKLIST_NAME, collection=collection)
+
+        if age_type_pick_list.exists():
+            pick_list_item = apps.get_model('specify', 'Picklistitem')
+            pick_list_item.objects.filter(picklist=age_type_pick_list).delete()
+
+            age_type_pick_list.delete()
 
 def create_table_schema_config_with_defaults(apps):
     for discipline in apps.get_model('specify', 'Discipline'):
