@@ -2,6 +2,12 @@ import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
+import {
+  CURRENT_DETERMINATION_KEY,
+  DETERMINATION_TAXON_KEY,
+  ensureSingleCollectionObjectCheck,
+  hasNoCurrentDetermination,
+} from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -49,30 +55,6 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
-};
-
-const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
-const DETERMINATION_TAXON_KEY = 'determination-taxon';
-
-const hasNoCurrentDetermination = (collection: Collection<Determination>) =>
-  collection.models.length > 0 &&
-  !collection.models.some((determination: SpecifyResource<Determination>) =>
-    determination.get('isCurrent')
-  );
-
-const ensureSingleCollectionObjectCheck = (
-  cojo: SpecifyResource<CollectionObjectGroupJoin>,
-  field: 'isPrimary' | 'isSubstrate'
-) => {
-  if (cojo.get(field) && cojo.collection !== undefined) {
-    cojo.collection.models
-      .filter((resource) => resource.get('childCo') !== null)
-      .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
-        if (other.cid !== cojo.cid) {
-          other.set(field, false);
-        }
-      });
-  }
 };
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
@@ -242,14 +224,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * Only a single CO in a COG can be set as primary.
        * When checking a CO as primary, other COs in that COG will get unchecked.
        */
-      isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+      isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
       },
       /*
        * Only a single CO in a COG can be set as substrate.
        * When checking a CO as substrate, other COs in that COG will get unchecked.
        */
-      isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>) => {
+      isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
     },
