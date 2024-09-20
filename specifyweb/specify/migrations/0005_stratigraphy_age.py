@@ -62,9 +62,8 @@ def revert_agetype_picklist(apps):
 
             age_type_pick_list.delete()
 
-def create_table_schema_config_with_defaults(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all:
+def create_table_schema_config_with_defaults():
+    for discipline in specifyweb.specify.models.Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
 
@@ -80,7 +79,7 @@ class Migration(migrations.Migration):
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_table_schema_config_with_defaults(apps)
+        create_table_schema_config_with_defaults()
         create_agetype_picklist(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
