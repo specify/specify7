@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-20 23:40+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -156,10 +156,10 @@ msgstr "Формат таблиці"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"«Формат таблиці» керує тим, як дані з певної таблиці відображаються в "
-"результатах запитів, експорті та комбінованих полях запитів. Він визначає "
-"поля для відображення та їх порядок. Умовне форматування можна налаштувати "
-"на основі значення в записі."
+"«Формат таблиці» визначає, як дані з певної таблиці відображаються в "
+"результатах запиту, експорті та комбінованих полях запиту. Він визначає поля "
+"для відображення та їх порядок. Умовне форматування можна налаштувати на "
+"основі значення в записі."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
@@ -172,9 +172,9 @@ msgstr "Агрегація таблиць"
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом "
-"в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування "
-"та ліміт попереднього перегляду запису можна налаштувати. Він може "
+"«Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в "
+"один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування та "
+"ліміт попереднього перегляду запису можна налаштувати. Він може "
 "відображатися в результатах запитів і у форматах таблиць."
 
 #. Used in: Components > Web Links > Definition
@@ -408,7 +408,7 @@ msgstr "Визначення"
 #: components/Formatters/Definitions.tsx:85
 #, fuzzy
 msgid "addDefinition"
-msgstr "Додати визначення"
+msgstr "Додайте визначення"
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
