@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-20 23:40+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -557,7 +557,7 @@ msgstr "Formato condicional"
 #: components/Formatters/Fields.tsx:129
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr "Personalizar formatos de campo"
+msgstr "Personalizar formatos de campos"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:261
