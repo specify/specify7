@@ -42,7 +42,7 @@ def create_agetype_picklist(apps):
             collection=collection,
             formatter=PICKLIST_NAME
         )
-    for age_type in DEFAULT_AGE_TYPES:
+        for age_type in DEFAULT_AGE_TYPES:
             PicklistItem.objects.create(
                 title=age_type,
                 value=age_type,
