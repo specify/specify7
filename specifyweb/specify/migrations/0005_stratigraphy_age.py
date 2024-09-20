@@ -17,6 +17,28 @@ SCHEMA_CONFIG_TABLES = [
     ('AbsoluteAgeCitation', None),
     ('AbsoluteAgeAttachment', None),
 ]
+PICKLIST_NAME = 'AgeType'
+
+def create_agetype_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    # Create a AgeType picklist for each collection
+    for collection in Collection.objects.all():
+        Picklist.objects.get_or_create(
+            name=PICKLIST_NAME,
+            issystem=False,
+            readonly=False,
+            sizelimit=-1,
+            sorttype=1,
+            type=0,
+            tablename='agetype',
+            collection=collection,
+            formatter=PICKLIST_NAME
+        )
+
+def revert_agetype_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklist.objects.filter(name=PICKLIST_NAME).delete()
 
 def create_table_schema_config_with_defaults():
     for discipline in specifyweb.specify.models.Discipline.objects.all():
@@ -36,9 +58,11 @@ class Migration(migrations.Migration):
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
         create_table_schema_config_with_defaults()
+        create_agetype_picklist
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults()
+        revert_agetype_picklist
 
     operations = [
         migrations.CreateModel(
