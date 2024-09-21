@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-21 02:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/fr/"
 ">\n"
@@ -371,7 +371,7 @@ msgstr "Rôles utilisateur attribués"
 #: components/Security/Role.tsx:153
 #, fuzzy
 msgid "rolePolicies"
-msgstr "Politiques d'autorisation des rôles"
+msgstr "Stratégies d'autorisation des rôles"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:145
