@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-22 03:40+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/main/pt_BR/>\n"
@@ -35,7 +35,7 @@ msgstr "Página não encontrada"
 #: components/Router/NotFoundView.tsx:25
 #, fuzzy
 msgid "nothingWasFound"
-msgstr "Opa! Nada foi encontrado"
+msgstr "Oops! Nada foi encontrado"
 
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
