@@ -1360,6 +1360,7 @@ export type CollectionObject = {
   readonly tableName: 'CollectionObject';
   readonly fields: {
     readonly actualTotalCountAmt: number | null;
+    readonly age: number | null;
     readonly availability: string | null;
     readonly catalogNumber: string | null;
     readonly catalogedDate: string | null;
