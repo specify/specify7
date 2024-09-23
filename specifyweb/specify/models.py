@@ -7800,11 +7800,11 @@ class RelativeAgeCitation(models.Model):
 
     save = partialmethod(custom_save)
 
-class TectonicTreeDef(models.Model):
-    specify_model = datamodel.get_table('tectonictreedef')
+class TectonicUnitTreeDef(models.Model):
+    specify_model = datamodel.get_table('tectonicunittreedef')
 
     # ID Field
-    id = models.AutoField(primary_key=True, db_column='tectonictreedefid')
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefid')
 
     # Fields
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False, default=0)
@@ -7815,21 +7815,21 @@ class TectonicTreeDef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonictreedefs', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
-        db_table = 'tectonictreedef'
+        db_table = 'tectonicunittreedef'
         ordering = ()
 
     save = partialmethod(custom_save)
 
-class TectonicTreeDefItem(models.Model):
-    specify_model = datamodel.get_table('tectonictreedefitem')
+class TectonicUnitTreeDefItem(models.Model):
+    specify_model = datamodel.get_table('tectonicUnittreedefitem')
 
     # ID Field
-    id = models.AutoField(primary_key=True, db_column='tectonictreedefitemid')
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefitemid')
 
     # Fields
     fullnameseparator = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullNameSeparator', db_index=False)
@@ -7846,13 +7846,13 @@ class TectonicTreeDefItem(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    parentitem = models.ForeignKey('TectonicTreeDefItem', db_column='ParentItemID', related_name='child', null=True, on_delete=protect_with_blockers)
-    tectonictreedef = models.ForeignKey('TectonicTreeDef', db_column='TectonicTreeDefID', related_name='tectonictreedefitems', null=False, on_delete=protect_with_blockers)
+    parentitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='child', null=True, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonicunittreedefitems', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
-        db_table = 'tectonictreedefitem'
+        db_table = 'tectonicunittreedefitem'
         ordering = ()
 
     save = partialmethod(custom_save)
@@ -7884,9 +7884,9 @@ class TectonicUnit(models.Model):
     
     # Relationships: Many-to-One
     acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    tectonictreedefitem = models.ForeignKey('TectonicTreeDefItem', db_column='TectonicTreeDefItemID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
+    tectonicunittreedefitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
-    tectonictreedef = models.ForeignKey('TectonicTreeDef', db_column='TectonicTreeDefID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     

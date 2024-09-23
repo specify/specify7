@@ -6709,8 +6709,8 @@ export type RelativeAgeCitation = {
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
 };
-export type TectonicTreeDef = {
-  readonly tableName: 'TectonicTreeDef';
+export type TectonicUnitTreeDef = {
+  readonly tableName: 'TectonicUnitTreeDef';
   readonly fields: {
     readonly fullnamedirection: number | null;
     readonly name: string;
@@ -6728,8 +6728,8 @@ export type TectonicTreeDef = {
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
 };
-export type TectonicTreeDefItem = {
-  readonly tableName: 'TectonicTreeDefItem';
+export type TectonicUnitTreeDefItem = {
+  readonly tableName: 'TectonicUnitTreeDefItem';
   readonly fields: {
     readonly fullnameseparator: string | null;
     readonly isenforced: boolean | null;
@@ -6748,8 +6748,8 @@ export type TectonicTreeDefItem = {
   readonly toOneIndependent: {
     readonly createdbyagent: Agent | null;
     readonly modifiedbyagent: Agent | null;
-    readonly parentitem: TectonicTreeDefItem | null;
-    readonly tectonictreedef: TectonicTreeDef;
+    readonly parentitem: TectonicUnitTreeDefItem | null;
+    readonly tectonicunittreedef: TectonicUnitTreeDef;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
@@ -6781,8 +6781,8 @@ export type TectonicUnit = {
     readonly createdbyagent: Agent | null;
     readonly modifiedbyagent: Agent | null;
     readonly parent: TectonicUnit | null;
-    readonly tectonictreedef: TectonicTreeDef;
-    readonly tectonictreedefitem: TectonicTreeDefItem;
+    readonly tectonicunittreedef: TectonicUnitTreeDef;
+    readonly tectonicunittreedefitem: TectonicUnitTreeDefItem;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;

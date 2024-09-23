@@ -8580,15 +8580,15 @@ datamodel = Datamodel(tables=[
 
         ]
     ),
-    Table( # TectonicTreeDef
+    Table( # TectonicUnitTreeDef
         sp7_only=True,
         django_app='specify',
-        classname='edu.ku.brc.specify.datamodel.TectonicTreeDef',
-        table='tectonictreedef',
+        classname='edu.ku.brc.specify.datamodel.TectonicUnitTreeDef',
+        table='tectonicunittreedef',
         tableId=1025,
-        idColumn='TectonicTreeDefID',
-        idFieldName='tectonicTreeDefId',
-        idField=IdField(name='tectonicTreeDefId', column='TectonicTreeDefID', type='java.lang.Integer'),
+        idColumn='TectonicUnitTreeDefID',
+        idFieldName='tectonicUnitTreeDefId',
+        idField=IdField(name='tectonicUnitTreeDefId', column='TectonicUnitTreeDefID', type='java.lang.Integer'),
         fields=[
             Field(name='fullnamedirection', column='FullNameDirection', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
@@ -8602,22 +8602,22 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicTreeDefs'),
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicUnitTreeDefs'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
         ]
     ),
-    Table( # TectonicTreeDefItem
+    Table( # TectonicUnitTreeDefItem
         sp7_only=True,
         django_app='specify',
-        classname='edu.ku.brc.specify.datamodel.TectonicTreeDefItem',
-        table='tectonictreedefitem',
+        classname='edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem',
+        table='tectonicunittreedefitem',
         tableId=1026,
-        idColumn='TectonicTreeDefItemID',
-        idFieldName='tectonicTreeDefItemId',
-        idField=IdField(name='tectonicTreeDefItemId', column='TectonicTreeDefItemID', type='java.lang.Integer'),
+        idColumn='TectonicUnitTreeDefItemID',
+        idFieldName='tectonicUnitTreeDefItemId',
+        idField=IdField(name='tectonicUnitTreeDefItemId', column='TectonicUnitTreeDefItemID', type='java.lang.Integer'),
         fields=[
             Field(name='fullnameseparator', column='FullNameSeparator', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='isenforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -8638,8 +8638,8 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parentitem', type='many-to-one', required=False, relatedModelName='TectonicTreeDefItem', column='ParentItemID'),
-            Relationship(name='tectonictreedef', type='many-to-one', required=True, relatedModelName='TectonicTreeDef', column='TectonicTreeDefID'),
+            Relationship(name='parentitem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID'),
+            Relationship(name='tectonicunittreedef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
         ],
         fieldAliases=[
 
@@ -8681,8 +8681,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='ParentID'),
-            Relationship(name='tectonictreedef', type='many-to-one', required=True, relatedModelName='TectonicTreeDef', column='TectonicTreeDefID'),
-            Relationship(name='tectonictreedefitem', type='many-to-one', required=True, relatedModelName='TectonicTreeDefItem', column='TectonicTreeDefItemID'),
+            Relationship(name='tectonicunittreedef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
+            Relationship(name='tectonicunittreedefitem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID'),
         ],
         fieldAliases=[
             
