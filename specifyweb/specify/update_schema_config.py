@@ -44,7 +44,7 @@ def update_table_schema_config_with_defaults(
     fields_config = []
     for field in table.all_fields:
         field_name=field.name
-        field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).capitalize()
+        field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).title()
         fields_config.append(FieldSchemaConfig(
             name=field_name,
             column=field.column,
