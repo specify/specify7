@@ -18,7 +18,7 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
-import type { BatchEditPrefs, MappingLine, ReadonlySpec } from './Mapper';
+import type { MappingLine, ReadonlySpec } from './Mapper';
 import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';

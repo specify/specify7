@@ -35,6 +35,7 @@ import {
   relationshipIsToMany,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { schema } from '../DataModel/schema';
 
 const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   generateMappingPathPreview(
@@ -89,7 +90,7 @@ export function BatchEditFromQuery({
   return (
     <>
       <Button.Small
-        disabled={queryFieldSpecs.some(containsSystemTables)}
+        disabled={queryFieldSpecs.some(containsSystemTables) || queryFieldSpecs.some(hasHierarchyBaseTable)}
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
@@ -152,6 +153,9 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
 
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
   queryFieldSpec.joinPath.some((field) => field.table.isSystem);
+
+const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
+  Object.keys(schema.domainLevelIds).includes(queryFieldSpec.baseTable.name.toLowerCase() as 'collection');
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 

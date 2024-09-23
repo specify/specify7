@@ -26,7 +26,11 @@ from specifyweb.specify.datamodel import Table
 from specifyweb.specify.func import Func
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
 from specifyweb.workbench.permissions import BatchEditDataSetPT
-from specifyweb.workbench.upload.auditor import DEFAULT_AUDITOR_PROPS, AuditorProps
+from specifyweb.workbench.upload.auditor import (
+    DEFAULT_AUDITOR_PROPS,
+    AuditorProps,
+    BatchEditPrefs,
+)
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import (
@@ -264,7 +268,7 @@ def get_batch_edit_pack_from_row(ncols: int, row: List) -> Optional[BatchEditJso
     return extra.get("batch_edit") if extra is not None else None
 
 
-def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
+def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable, BatchEditPrefs]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -293,7 +297,7 @@ def do_upload(
     allow_partial: bool = True,
     progress: Optional[Progress] = None,
     batch_edit_packs: Optional[List[Optional[BatchEditJson]]] = None,
-    auditor_props: AuditorProps = None,
+    auditor_props: Optional[AuditorProps] = None,
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(
@@ -385,7 +389,10 @@ def validate_row(
         try:
             with savepoint("row validation"):
                 bind_result = upload_plan.disambiguate(da).bind(
-                    row, uploading_agent_id, Auditor(collection, None)
+                    # TODO: Handle auditor props better
+                    row,
+                    uploading_agent_id,
+                    Auditor(collection, props=DEFAULT_AUDITOR_PROPS, audit_log=None),
                 )
                 result = (
                     UploadResult(bind_result, {}, {})
@@ -558,7 +565,7 @@ def rollback_batch_edit(
         packs.append(be)
 
     # Don't use parent's plan...
-    base_table, upload_plan, _ = get_raw_ds_upload_plan(backer)
+    base_table, upload_plan, previous_prefs = get_raw_ds_upload_plan(backer)
     results = do_upload(
         collection,
         rows_to_backup,
@@ -569,6 +576,9 @@ def rollback_batch_edit(
         False,
         progress,
         packs,
+        auditor_props=AuditorProps(
+            allow_delete_dependents=False, batch_edit_prefs=previous_prefs
+        ),
     )
 
     success = not any(r.contains_failure() for r in results)

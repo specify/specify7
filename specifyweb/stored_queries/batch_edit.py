@@ -1,3 +1,5 @@
+# type: ignore
+
 # ^^ The above is because we etensively use recursive typedefs of named tuple in this file not supported on our MyPy 0.97 version.
 # When typechecked in MyPy 1.11 (supports recursive typedefs), there is no type issue in the file.
 # However, using 1.11 makes things slower in other files.

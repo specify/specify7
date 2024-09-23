@@ -23,7 +23,7 @@ class AuditorProps(NamedTuple):
     batch_edit_prefs: BatchEditPrefs
 
 
-# For unit tests
+# For unit tests + defaults
 DEFAULT_BATCH_EDIT_PREFS = BatchEditPrefs(deferForMatch=True, deferForNullCheck=False)
 DEFAULT_AUDITOR_PROPS = AuditorProps(
     allow_delete_dependents=True, batch_edit_prefs=DEFAULT_BATCH_EDIT_PREFS

@@ -288,8 +288,8 @@ class OneToOneUpdateTests(UploadTestsBase):
         # We don't epect matching to happen. Also, match is a lower "priority".
         # The code is smart enough to be as strict as possible when there is ambiguity. This tests that.
         for defer in [
-            BatchEditPrefs(deferForMatch=True, deferForNull=False),
-            BatchEditPrefs(deferForMatch=True, deferForNull=True),
+            BatchEditPrefs(deferForMatch=True, deferForNullCheck=False),
+            BatchEditPrefs(deferForMatch=True, deferForNullCheck=True),
         ]:
 
             data = [
@@ -1059,7 +1059,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
             plan,
             self.agent.id,
             batch_edit_packs=pack,
-            auditor_props=make_defer(match=False, null=True, force="match"),
+            auditor_props=make_defer(match=False, null=True),
         )
 
         self.assertIsInstance(
