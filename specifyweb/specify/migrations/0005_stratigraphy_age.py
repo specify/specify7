@@ -20,10 +20,9 @@ SCHEMA_CONFIG_TABLES = [
 PICKLIST_NAME = 'AgeType'
 DEFAULT_AGE_TYPES = [
     'Sedimentation', 
-    'Metamorphic', 
-    'Inclusion', 
-    'Original', 
-    'Fall'
+    'Metamorphism', 
+    'Erosion', 
+    'Diagenetic', 
 ]
 
 def create_agetype_picklist(apps):
