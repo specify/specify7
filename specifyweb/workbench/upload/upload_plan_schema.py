@@ -3,6 +3,7 @@ from typing import Dict, Any, Union, Tuple
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.workbench.upload.auditor import BatchEditPrefs
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .treerecord import TreeRecord, MustMatchTreeRecord
@@ -271,9 +272,15 @@ this column will never be considered for matching purposes, only for uploading."
 }
 
 
-def parse_plan_with_basetable(to_parse: Dict) -> Tuple[Table, Uploadable]:
+def parse_plan_with_basetable(
+    to_parse: Dict,
+) -> Tuple[Table, Uploadable, BatchEditPrefs]:
     base_table = datamodel.get_table_strict(to_parse["baseTableName"])
-    return base_table, parse_uploadable(base_table, to_parse["uploadable"])
+    return (
+        base_table,
+        parse_uploadable(base_table, to_parse["uploadable"]),
+        to_parse["batchEditPrefs"],
+    )
 
 
 def parse_plan(to_parse: Dict) -> Uploadable:

@@ -168,7 +168,7 @@ def do_upload_dataset(
 
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
     batch_edit_packs = [get_batch_edit_pack_from_row(ncols, row) for row in ds.data]
-    base_table, upload_plan = get_raw_ds_upload_plan(ds)
+    base_table, upload_plan, batchEditPrefs = get_raw_ds_upload_plan(ds)
 
     results = do_upload(
         collection,
@@ -183,9 +183,10 @@ def do_upload_dataset(
         auditor_props=AuditorProps(
             allow_delete_dependents=has_target_permission(
                 collection.id,
-                ds.specify_user.id,
+                ds.specifyuser_id,
                 [BatchEditDataSetPT.delete_dependents],
-            )
+            ),
+            batch_edit_prefs=batchEditPrefs,
         ),
     )
     success = not any(r.contains_failure() for r in results)
@@ -273,12 +274,12 @@ def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
         raise Exception("upload plan json is invalid")
 
     validate(plan, schema)
-    base_table, plan = parse_plan_with_basetable(plan)
-    return base_table, plan
+    base_table, plan, batchEditPrefs = parse_plan_with_basetable(plan)
+    return base_table, plan, batchEditPrefs
 
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
-    base_table, plan = get_raw_ds_upload_plan(ds)
+    base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
 
@@ -557,7 +558,7 @@ def rollback_batch_edit(
         packs.append(be)
 
     # Don't use parent's plan...
-    base_table, upload_plan = get_raw_ds_upload_plan(backer)
+    base_table, upload_plan, _ = get_raw_ds_upload_plan(backer)
     results = do_upload(
         collection,
         rows_to_backup,
