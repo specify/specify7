@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-23 05:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/pt_BR/>\n"
@@ -31,13 +31,13 @@ msgstr "O nome da espécie ou GUID deve ser fornecido para exibir esta página"
 #: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
-msgstr "Não foi possível encontrar dados para esta solicitação"
+msgstr "Não foi possível encontrar nenhum dado para esta solicitação"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
 #, fuzzy
 msgid "noDataErrorDescription"
-msgstr "Por favor, tente procurar por um registro diferente"
+msgstr "Por favor, tente procurar um registro diferente"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
