@@ -88,7 +88,7 @@ def update_table_schema_config_with_defaults(
         )
 
         # Splocaleitemstr for the field name and description
-        for k, text in {'itemname': field.name, 'itemdesc': field.description}.items():
+        for k, text in {'itemname': re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).title(), 'itemdesc': field.description}.items():
             itm_str = {
                 'text': text,
                 'language': 'en',
