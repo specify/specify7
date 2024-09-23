@@ -14,6 +14,7 @@ import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -35,7 +36,6 @@ import {
   relationshipIsToMany,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { schema } from '../DataModel/schema';
 
 const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   generateMappingPathPreview(
@@ -90,7 +90,10 @@ export function BatchEditFromQuery({
   return (
     <>
       <Button.Small
-        disabled={queryFieldSpecs.some(containsSystemTables) || queryFieldSpecs.some(hasHierarchyBaseTable)}
+        disabled={
+          queryFieldSpecs.some(containsSystemTables) ||
+          queryFieldSpecs.some(hasHierarchyBaseTable)
+        }
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
@@ -155,7 +158,9 @@ const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
   queryFieldSpec.joinPath.some((field) => field.table.isSystem);
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
-  Object.keys(schema.domainLevelIds).includes(queryFieldSpec.baseTable.name.toLowerCase() as 'collection');
+  Object.keys(schema.domainLevelIds).includes(
+    queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
+  );
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 

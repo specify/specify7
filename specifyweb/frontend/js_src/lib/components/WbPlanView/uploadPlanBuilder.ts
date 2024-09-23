@@ -5,7 +5,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import { BatchEditPrefs } from './Mapper';
+import type { BatchEditPrefs } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 import type {
@@ -93,11 +93,11 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             indexMappings(lines).map(([_index, lines]) =>
-                toUploadTable(
-                  table.strictGetRelationship(fieldName).relatedTable,
-                  lines,
-                  mustMatchPreferences
-                )
+              toUploadTable(
+                table.strictGetRelationship(fieldName).relatedTable,
+                lines,
+                mustMatchPreferences
+              )
             ),
           ] as const
       )
@@ -147,7 +147,7 @@ export const uploadPlanBuilder = (
       .map(([tableName]) => tableName),
     true
   ),
-  batchEditPrefs
+  batchEditPrefs,
 });
 
 const indexMappings = (

@@ -10,6 +10,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
@@ -32,7 +33,6 @@ import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
-import { headerText } from '../../localization/header';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(
@@ -96,8 +96,8 @@ function TableHeader({
   onSort: handleSort,
 }: {
   readonly sortConfig:
-  | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
-  | undefined;
+    | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
+    | undefined;
   readonly onSort: (sortField: 'dateCreated' | 'dateUploaded' | 'name') => void;
 }): JSX.Element {
   return (
@@ -152,7 +152,7 @@ export function GenericDataSetsDialog({
     route,
     metaRoute,
     canImport,
-    documentationUrl
+    documentationUrl,
   } = datasetVariants[wbVariant];
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
@@ -172,14 +172,14 @@ export function GenericDataSetsDialog({
 
   const datasets = Array.isArray(unsortedDatasets)
     ? applySortConfig(
-      unsortedDatasets,
-      ({ name, timestampcreated, uploadresult }) =>
-        sortConfig.sortField === 'name'
-          ? name
-          : sortConfig.sortField === 'dateCreated'
+        unsortedDatasets,
+        ({ name, timestampcreated, uploadresult }) =>
+          sortConfig.sortField === 'name'
+            ? name
+            : sortConfig.sortField === 'dateCreated'
             ? timestampcreated
             : uploadresult?.timestamp ?? ''
-    )
+      )
     : undefined;
 
   const navigate = useNavigate();
@@ -239,9 +239,9 @@ export function GenericDataSetsDialog({
                       onClick={
                         handleDataSetSelect
                           ? (event): void => {
-                            event.preventDefault();
-                            handleDataSetSelect(dataset.id);
-                          }
+                              event.preventDefault();
+                              handleDataSetSelect(dataset.id);
+                            }
                           : undefined
                       }
                     >

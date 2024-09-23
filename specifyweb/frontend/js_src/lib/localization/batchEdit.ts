@@ -81,18 +81,20 @@ export const batchEditText = createDictionary({
     'en-us': 'BE commit of "{dataSet:string}"',
   },
   deferForMatch: {
-    'en-us': "Use only visible fields for match"
+    'en-us': 'Use only visible fields for match',
   },
   deferForMatchDescription: {
-    'en-us': "If true, invisible database fields will not be used for matching. Default value is {default:boolean}"
+    'en-us':
+      'If true, invisible database fields will not be used for matching. Default value is {default:boolean}',
   },
   deferForNullCheck: {
-    'en-us': "Use only visible fields for empty record check",
+    'en-us': 'Use only visible fields for empty record check',
   },
   deferForNullCheckDescription: {
-    'en-us': "If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}"
+    'en-us':
+      'If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}',
   },
   batchEditPrefs: {
-    "en-us": "Batch Edit Prefs"
-  }
+    'en-us': 'Batch Edit Prefs',
+  },
 } as const);

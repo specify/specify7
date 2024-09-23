@@ -86,8 +86,8 @@ export const operationPolicies = {
     'transfer',
     'create_recordset',
     'delete_dependents',
-    'edit_multiple_tables'
-  ]
+    'edit_multiple_tables',
+  ],
 } as const;
 
 /**

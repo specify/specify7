@@ -14,6 +14,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import type { PartialUploadableFileSpec } from './types';
@@ -22,7 +23,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { datasetVariants } from '../WbUtils/datasetVariants';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -33,10 +33,10 @@ const resolveAttachmentDatasetData = (
     ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
       const handleDisambiguate =
         matchedId !== undefined &&
-          matchedId.length > 1 &&
-          attachmentId === undefined &&
-          // FEATURE: Allow disambiguating again
-          disambiguated === undefined
+        matchedId.length > 1 &&
+        attachmentId === undefined &&
+        // FEATURE: Allow disambiguating again
+        disambiguated === undefined
           ? () => setDisambiguationIndex(index)
           : undefined;
 
@@ -44,10 +44,10 @@ const resolveAttachmentDatasetData = (
         baseTableName === undefined
           ? undefined
           : resolveAttachmentRecord(
-            matchedId,
-            disambiguated,
-            uploadFile.parsedName
-          );
+              matchedId,
+              disambiguated,
+              uploadFile.parsedName
+            );
 
       const isRuntimeError =
         status !== undefined &&
@@ -114,12 +114,12 @@ export function ViewAttachmentFiles({
   readonly baseTableName: keyof Tables | undefined;
   readonly uploadSpec: PartialAttachmentUploadSpec;
   readonly onDisambiguation:
-  | ((
-    disambiguatedId: number,
-    indexToDisambiguate: number,
-    multiple: boolean
-  ) => void)
-  | undefined;
+    | ((
+        disambiguatedId: number,
+        indexToDisambiguate: number,
+        multiple: boolean
+      ) => void)
+    | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
   readonly headers: IR<JSX.Element | LocalizedString>;
 }): JSX.Element | null {
@@ -165,33 +165,37 @@ export function ViewAttachmentFiles({
                   {uploadableFiles.some(
                     ({ uploadFile: { file } }) => !(file instanceof File)
                   ) && (
-                      <>
-                        {dialogIcons.warning}
-                        {attachmentsText.pleaseReselectAllFiles()}
-                      </>
-                    )}
+                    <>
+                      {dialogIcons.warning}
+                      {attachmentsText.pleaseReselectAllFiles()}
+                    </>
+                  )}
                 </div>
               </div>
               <GenericSortedDataViewer
                 cellClassName={(row, column, index) =>
-                  `bg-[color:var(--background)] p-2 print:p-1 ${row.canDisambiguate && column === 'record'
-                    ? 'hover:bg-brand-200'
-                    : ''
+                  `bg-[color:var(--background)] p-2 print:p-1 ${
+                    row.canDisambiguate && column === 'record'
+                      ? 'hover:bg-brand-200'
+                      : ''
                   }
-                  ${(row.isNativeError && column === 'record') ||
+                  ${
+                    (row.isNativeError && column === 'record') ||
                     (row.isRuntimeError && column === 'progress')
-                    ? 'wbs-form text-red-600'
-                    : ''
-                  } ${index % 2 === 0
-                    ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
-                    : 'bg-[color:var(--background)]'
+                      ? 'wbs-form text-red-600'
+                      : ''
+                  } ${
+                    index % 2 === 0
+                      ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
+                      : 'bg-[color:var(--background)]'
                   }`
                 }
                 className="w-full"
                 data={data}
                 getLink={undefined}
-                headerClassName={`border-b-2 ${isDragging ? 'bg-brand-100' : ''
-                  }`}
+                headerClassName={`border-b-2 ${
+                  isDragging ? 'bg-brand-100' : ''
+                }`}
                 headers={headers}
               />
             </>
@@ -199,8 +203,8 @@ export function ViewAttachmentFiles({
         </div>
       </div>
       {typeof disambiguationIndex === 'number' &&
-        typeof handleDisambiguation === 'function' &&
-        baseTableName !== undefined ? (
+      typeof handleDisambiguation === 'function' &&
+      baseTableName !== undefined ? (
         <ResourceDisambiguationDialog
           baseTable={baseTableName}
           handleAllResolve={(resourceId) => {

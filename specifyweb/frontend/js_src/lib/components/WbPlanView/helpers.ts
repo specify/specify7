@@ -43,13 +43,13 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
-  batchEditPrefs
+  batchEditPrefs,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
-  readonly batchEditPrefs?: BatchEditPrefs
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,

@@ -20,8 +20,10 @@ export type ColumnDefinition =
   | string
   | (ColumnOptions & { readonly column: string });
 
-// NOTE: This comment was added after workbench supports nested-to-manys.
-// I'm making it partial to not chock on legacy upload plans
+/*
+ * NOTE: This comment was added after workbench supports nested-to-manys.
+ * I'm making it partial to not chock on legacy upload plans
+ */
 export type NestedUploadTable = PartialBy<UploadTable, 'toMany'>;
 
 export type UploadTable = {
@@ -48,7 +50,7 @@ export type Uploadable = TreeRecordVariety | UploadTableVariety;
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
-  readonly batchEditPrefs?: BatchEditPrefs
+  readonly batchEditPrefs?: BatchEditPrefs;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
@@ -131,20 +133,20 @@ const parseUploadTable = (
     )
   ),
   ...Object.entries(uploadPlan.toMany ?? []).flatMap(
-        ([relationshipName, mappings]) =>
-          Object.values(mappings).flatMap((mapping, index) =>
-            parseUploadTable(
-              table.strictGetRelationship(relationshipName).relatedTable,
-              mapping,
-              makeMustMatch,
-              [
-                ...mappingPath,
-                table.strictGetRelationship(relationshipName).name,
-                formatToManyIndex(index + 1),
-              ]
-            )
-          )
-      ),
+    ([relationshipName, mappings]) =>
+      Object.values(mappings).flatMap((mapping, index) =>
+        parseUploadTable(
+          table.strictGetRelationship(relationshipName).relatedTable,
+          mapping,
+          makeMustMatch,
+          [
+            ...mappingPath,
+            table.strictGetRelationship(relationshipName).name,
+            formatToManyIndex(index + 1),
+          ]
+        )
+      )
+  ),
 ];
 
 function parseUploadTableTypes(

@@ -165,9 +165,9 @@ type ReRunAutoMapperAction = Action<
 >;
 
 type ChangeBatchEditPrefs = Action<
-  "ChangeBatchEditPrefs",
+  'ChangeBatchEditPrefs',
   {
-    readonly prefs: BatchEditPrefs
+    readonly prefs: BatchEditPrefs;
   }
 >;
 
@@ -175,15 +175,16 @@ export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
+  | ChangeBatchEditPrefs
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
+  | ChangMustMatchPrefAction
   | ClearMappingLineAction
   | ClearValidationAction
   | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
-  | ChangMustMatchPrefAction
   | OpenSelectElementAction
   | ReRunAutoMapperAction
   | ResetMappingsAction
@@ -192,8 +193,7 @@ export type MappingActions =
   | ToggleMappingViewAction
   | UpdateLinesAction
   | ValidationAction
-  | ValidationResultClickAction
-  | ChangeBatchEditPrefs;
+  | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
   /* Workbench Actions (Shared with Batch-Edit) */
@@ -412,5 +412,9 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     };
   },
   /* Batch-Edit Specific Actions */
-  ChangeBatchEditPrefs: ({state, action})=>({...state, changesMade: true, batchEditPrefs: action.prefs})
+  ChangeBatchEditPrefs: ({ state, action }) => ({
+    ...state,
+    changesMade: true,
+    batchEditPrefs: action.prefs,
+  }),
 });
