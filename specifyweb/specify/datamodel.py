@@ -8377,21 +8377,21 @@ datamodel = Datamodel(tables=[
         idFieldName='absoluteAgeId',
         idField=IdField(name='absoluteAgeId', column='AbsoluteAgeID', type='java.lang.Integer'),
         fields=[
-            Field(name='absoluteage', column='AbsoluteAge', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='agetype', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='ageuncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='collectiondate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='absoluteAge', column='AbsoluteAge', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='ageType', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='ageUncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='collectionDate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
             Field(name='date1', column='Date1', indexed=False, unique=False, required=False, type='java.util.Date'),
             Field(name='date2', column='Date2', indexed=False, unique=False, required=False, type='java.util.Date'),
-            Field(name='datingmethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='datingmethodremarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='datingMethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='datingMethodRemarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text'),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -8400,8 +8400,8 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='AbsoluteAgeAttachment', column='AbsoluteAgeAttachmentID'),
-            Relationship(name='collectionobject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
+            Relationship(name='ageAttachment', type='many-to-one', required=False, relatedModelName='AbsoluteAgeAttachment', column='AbsoluteAgeAttachmentID'),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -8419,23 +8419,23 @@ datamodel = Datamodel(tables=[
         idFieldName='relativeAgeId',
         idField=IdField(name='relativeAgeId', column='RelativeAgeID', type='java.lang.Integer'),
         fields=[
-            Field(name='agetype', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='ageuncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='collectiondate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='ageType', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='ageUncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='collectionDate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
             Field(name='date1', column='Date1', indexed=False, unique=False, required=False, type='java.util.Date'),
             Field(name='date2', column='Date2', indexed=False, unique=False, required=False, type='java.util.Date'),
-            Field(name='datingmethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='datingmethodremarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='datingMethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='datingMethodRemarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='relativeageperiod', column='RelativeAgePeriod', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='relativeAgePeriod', column='RelativeAgePeriod', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text'),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='verbatimname', column='VerbatimName', indexed=False, unique=False, required=False, type='text'),
-            Field(name='verbatimperiod', column='VerbatimPeriod', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='verbatimName', column='VerbatimName', indexed=False, unique=False, required=False, type='text'),
+            Field(name='verbatimPeriod', column='VerbatimPeriod', indexed=False, unique=False, required=False, type='text'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -8443,10 +8443,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='agename', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameID'),
+            Relationship(name='ageName', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameID'),
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(name='ageattachment', type='many-to-one', required=False, relatedModelName='RelativeAgeAttachment', column='RelativeAgeAttachmentID'),
-            Relationship(name='collectionobject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
+            Relationship(name='ageAttachment', type='many-to-one', required=False, relatedModelName='RelativeAgeAttachment', column='RelativeAgeAttachmentID'),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -8466,19 +8466,19 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
         ],
         relationships=[
-            Relationship(name='absoluteage', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
+            Relationship(name='absoluteAge', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
             Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID'),
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -8496,8 +8496,8 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
@@ -8505,10 +8505,10 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID'),
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='relativeage', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='relativeAge', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
         ],
         fieldAliases=[
 
@@ -8524,24 +8524,24 @@ datamodel = Datamodel(tables=[
         idFieldName='absoluteAgeCitationId',
         idField=IdField(name='absoluteAgeCitationId', column='AbsoluteAgeCitationID', type='java.lang.Integer'),
         fields=[
-            Field(name='figurenumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='isfigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='pagenumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='platenumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='figureNumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='isFigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='pageNumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='plateNumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
         ],
         relationships=[
-            Relationship(name='absoluteage', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='referencework', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
+            Relationship(name='absoluteAge', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID'),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
         ],
         fieldAliases=[
 
@@ -8557,24 +8557,24 @@ datamodel = Datamodel(tables=[
         idFieldName='relativeAgeCitationId',
         idField=IdField(name='relativeAgeCitationId', column='RelativeAgeCitationID', type='java.lang.Integer'),
         fields=[
-            Field(name='figurenumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='isfigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='pagenumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='platenumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='figureNumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='isFigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='pageNumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='plateNumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
         ],
         relationships=[
-            Relationship(name='collectionmember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='referencework', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
-            Relationship(name='relativeage', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
+            Relationship(name='relativeAge', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID'),
         ],
         fieldAliases=[
 
@@ -8590,20 +8590,20 @@ datamodel = Datamodel(tables=[
         idFieldName='tectonicUnitTreeDefId',
         idField=IdField(name='tectonicUnitTreeDefId', column='TectonicUnitTreeDefID', type='java.lang.Integer'),
         fields=[
-            Field(name='fullnamedirection', column='FullNameDirection', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='fullNameDirection', column='FullNameDirection', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
         ],
         relationships=[
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicUnitTreeDefs'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -8619,16 +8619,16 @@ datamodel = Datamodel(tables=[
         idFieldName='tectonicUnitTreeDefItemId',
         idField=IdField(name='tectonicUnitTreeDefItemId', column='TectonicUnitTreeDefItemID', type='java.lang.Integer'),
         fields=[
-            Field(name='fullnameseparator', column='FullNameSeparator', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='isenforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='isinfullname', column='IsInFullName', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='fullNameSeparator', column='FullNameSeparator', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='isEnforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isInFullName', column='IsInFullName', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='rankid', column='RankID', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
-            Field(name='textafter', column='TextAfter', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='textbefore', column='TextBefore', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='textAfter', column='TextAfter', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='textBefore', column='TextBefore', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
@@ -8637,9 +8637,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parentitem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID'),
-            Relationship(name='tectonicunittreedef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID'),
+            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
         ],
         fieldAliases=[
 
@@ -8655,20 +8655,20 @@ datamodel = Datamodel(tables=[
         idFieldName='tectonicUnitId',
         idField=IdField(name='tectonicUnitId', column='TectonicUnitID', type='java.lang.Integer'),
         fields=[
-            Field(name='fullname', column='FullName', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='fullName', column='FullName', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
-            Field(name='highestchildnodenumber', column='HighestChildNodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='isaccepted', column='IsAccepted', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='highestChildNodeNumber', column='HighestChildNodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isAccepted', column='IsAccepted', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='nodenumber', column='NodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='nodeNumber', column='NodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='rankid', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -8678,11 +8678,11 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='ParentID'),
-            Relationship(name='tectonicunittreedef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
-            Relationship(name='tectonicunittreedefitem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID'),
+            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
+            Relationship(name='tectonicUnitTreeDefItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID'),
         ],
         fieldAliases=[
             
