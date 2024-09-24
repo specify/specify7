@@ -338,7 +338,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
       default: {
         throw new Error(
-          `setDependentToOne: unhandled field type: ${field.type}`
+          `storeIndependentToOne: unhandled field type: ${field.type} for  ${this.specifyTable.name}.${field.name}`
         );
       }
     }
@@ -810,9 +810,11 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch().then((fetchedCollection) => {
-      this.storeIndependent(field, fetchedCollection);
-      return fetchedCollection;
+    return collection.fetch({
+      // Only store the collection if fetch is successful (doesn't return undefined)
+      success: (collection) => {
+        this.storeIndependent(field, collection);
+      },
     });
   },
   async save({
