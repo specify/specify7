@@ -1258,7 +1258,7 @@ expected_errors = {
     "not_found": [
       "absoluteAges",
       "projects", 
-      "realtiveAges", 
+      "relativeAges", 
     ],
   },
   "DNASequencingRun": {
