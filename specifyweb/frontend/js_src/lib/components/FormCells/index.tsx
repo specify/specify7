@@ -235,7 +235,10 @@ const cellRenderers: {
             break;
           }
           const value = await fetchPathAsString(resource, condition.field);
-          if (!destructorCalled && value === condition.value) {
+          if (
+            (!destructorCalled && value === condition.value) ||
+            (condition.value === 'EMPTY' && value === '')
+          ) {
             foundIndex = Number.parseInt(index);
             break;
           }
