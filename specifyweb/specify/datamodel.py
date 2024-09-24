@@ -1595,6 +1595,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
             Relationship(name='collectionObjectType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
+            Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
+            Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
         ],
         fieldAliases=[
 

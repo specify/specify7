@@ -1446,6 +1446,7 @@ export type CollectionObject = {
     readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
+    readonly absoluteAges: RA<AbsoluteAge>;
     readonly cojo: RA<CollectionObjectGroupJoin>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
@@ -1458,6 +1459,7 @@ export type CollectionObject = {
     readonly leftSideRels: RA<CollectionRelationship>;
     readonly otherIdentifiers: RA<OtherIdentifier>;
     readonly preparations: RA<Preparation>;
+    readonly relativeAges: RA<RelativeAge>;
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;

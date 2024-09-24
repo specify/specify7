@@ -305,6 +305,11 @@ class Migration(migrations.Migration):
             name='collectionobject',
             field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='relativeages', to='specify.collectionobject'),
         ),
+        migrations.AddField(
+            model_name='collectionobject',
+            name='relativeage',
+            field=models.ForeignKey(db_column='RelativeAgeID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjects', to='specify.relativeage'),
+        ),
         migrations.CreateModel(
             name='AbsoluteAgeCitation',
             fields=[
@@ -364,6 +369,11 @@ class Migration(migrations.Migration):
             model_name='absoluteage',
             name='collectionobject',
             field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='absoluteages', to='specify.collectionobject'),
+        ),
+        migrations.AddField(
+            model_name='collectionobject',
+            name='absoluteage',
+            field=models.ForeignKey(db_column='AbsoluteAgeID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjects', to='specify.absoluteage'),
         ),
         migrations.AddField(
             model_name='paleocontext',
