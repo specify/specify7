@@ -1256,9 +1256,9 @@ expected_errors = {
   },
   "CollectionObject": {
     "not_found": [
+      "absoluteAges"
       "projects", 
       "realtiveAges", 
-      "absoluteAges"
     ],
   },
   "DNASequencingRun": {
