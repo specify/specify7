@@ -108,7 +108,6 @@ class Migration(migrations.Migration):
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 #relationships
-                ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='absoluteages', to='specify.collectionobject')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
@@ -362,9 +361,9 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='Agent1ID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent'),
         ),
         migrations.AddField(
-            model_name='collectionobject',
-            name='absoluteage',
-            field=models.ForeignKey(db_column='AbsoluteAgeID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjects', to='specify.absoluteage'),
+            model_name='absoluteage',
+            name='collectionobject',
+            field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='absoluteages', to='specify.collectionobject'),
         ),
         migrations.AddField(
             model_name='paleocontext',
