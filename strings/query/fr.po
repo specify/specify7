@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-25 21:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -178,7 +178,7 @@ msgstr "{value:string} (valeur actuelle, non valide)"
 #, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Requête : « {queryName:string} » sur {recordSetTable:string} : « "
+"Requête : « {queryName:string} » sur {recordSetTable:string} : « "
 "{recordSetName:string} »"
 
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
@@ -191,7 +191,7 @@ msgstr "{tableName:string} en utilisant « {nodeFullName:string} »"
 #: components/QueryBuilder/Wrapped.tsx:465
 #, fuzzy
 msgid "newButtonDescription"
-msgstr "Configurer les tables de requête visibles"
+msgstr "Ajouter un nouveau champ"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:55
@@ -574,15 +574,16 @@ msgstr ""
 #: components/QueryBuilder/Import.tsx:159
 #, fuzzy
 msgid "importHiddenFields"
-msgstr "Les champs suivants sont masqués dans la requête que vous avez importée :"
+msgstr ""
+"Les champs suivants sont masqués dans la requête que vous avez importée :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La requête que vous avez importée contient des tables auxquelles vous "
-"n'avez pas accès en lecture :"
+"La requête que vous avez importée contient des tables auxquelles vous n'avez "
+"pas accès en lecture :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
