@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -10,7 +9,7 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { schema } from '../DataModel/schema';
 import { genericTables, getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -22,7 +21,6 @@ import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
-  mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
