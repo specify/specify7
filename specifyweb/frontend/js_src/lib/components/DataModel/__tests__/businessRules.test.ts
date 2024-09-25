@@ -211,26 +211,44 @@ describe('Collection Object business rules', () => {
 });
 
 describe('CollectionObjectGroup business rules', () => {
-  test('Only one CO COJO can be primary', () => {
+  const getBaseCOG = () => {
     const cog = new tables.CollectionObjectGroup.Resource({
       id: 1,
       cogType: getResourceApiUrl('CollectionObjectGroupType', 1),
+      resource_uri: getResourceApiUrl('CollectionObjectGroup', 1),
     });
 
     const cojo1 = new tables.CollectionObjectGroupJoin.Resource({
-      isPrimary: true,
+      isPrimary: false,
+      isSubstrate: true,
       childCo: getResourceApiUrl('CollectionObject', 1),
       parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
     });
     const cojo2 = new tables.CollectionObjectGroupJoin.Resource({
-      isPrimary: false,
+      isPrimary: true,
+      isSubstrate: false,
       childCo: getResourceApiUrl('CollectionObject', 2),
       parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
     });
-    cog.set('parentCojos', [cojo1, cojo2]);
-    cojo2.set('isPrimary', true);
 
-    expect(cojo1.get('isPrimary')).toBe(false);
+    cog.set('parentCojos', [cojo1, cojo2]);
+    return { cog, cojo1, cojo2 };
+  };
+
+  test('Only one CO COJO can be primary', () => {
+    const { cojo1, cojo2 } = getBaseCOG();
+    cojo1.set('isPrimary', true);
+
+    expect(cojo1.get('isPrimary')).toBe(true);
+    expect(cojo2.get('isPrimary')).toBe(false);
+  });
+
+  test('Only one CO COJO can be substrate', () => {
+    const { cojo1, cojo2 } = getBaseCOG();
+    cojo2.set('isSubstrate', true);
+
+    expect(cojo1.get('isSubstrate')).toBe(false);
+    expect(cojo2.get('isSubstrate')).toBe(true);
   });
 });
 
