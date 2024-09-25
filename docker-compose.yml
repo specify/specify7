@@ -19,7 +19,6 @@ services:
     volumes:
       - "database:/var/lib/mysql" # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
-      - "./mariadb.cnf:/etc/mysql/mariadb.cnf"
     ports:
       - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
     command: --max_allowed_packet=1073741824
@@ -33,11 +32,6 @@ services:
     build:
       context: ./.
       target: run-development
-    ports:
-      # - "80:80"
-      - "8000:8000"
-      - "3000:3000" # Django Debug
-      - "8888:8888" # Debugging service (ptvsd)
     command: ve/bin/python manage.py runserver 0.0.0.0:8000
     init: true
     restart: unless-stopped
@@ -97,14 +91,6 @@ services:
       - ATTACHMENT_KEY=${ASSET_SERVER_KEY}
       - DEBUG_MODE=false
 
-  # specify6:
-  #   image: specifyconsortium/specify6-service:6.8.03
-  #   # build:
-  #   #   context: ../specify6
-  #   #   target: run-specify6
-  #   volumes:
-  #     - "specify6:/volumes/Specify"
-
   nginx:
     image: arm64v8/nginx:alpine
     ports:
@@ -120,37 +106,6 @@ services:
 
   report-runner:
     image: specifyconsortium/report-runner
-    # build:
-    #   context: ../report-runner-service
-    #   target: run-report-runner
-
-  flower:
-    image: mher/flower
-    # container_name: specify7-flower
-    command: celery flower
-    environment:
-      # - SERVER_NAME=host.docker.internal
-      # - SERVER_PORT=80
-      # - ATTACHMENT_KEY=${ASSET_SERVER_KEY}
-      # - DEBUG_MODE=false
-      - CELERY_BROKER_URL=redis://redis/0
-      - CELERY_RESULT_BACKEND=redis://redis/1
-      - FLOWER_PORT=5555
-    ports:
-      - 5555:5555
-
-  # apache:
-  #   image: arm64v8/httpd:alpine
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - "static-files:/volumes/static-files:ro"
-  #     - "specify6:/volumes/specify6:ro"
-  #     - "webpack-output:/volumes/webpack-output:ro"
-
-  #     # - "./specifyweb_apache.conf:/etc/apache2/sites-enabled/000-default.conf:ro"
-  #     - "./specifyweb_apache.conf:/etc/confd/default.conf:ro"
-  #     - "./specifyweb_apache.conf:/usr/local/apache2/conf/httpd/conf:ro"
 
 volumes:
   attachments: # the asset-servers attachment files
