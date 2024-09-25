@@ -29588,7 +29588,7 @@
     "classname": "edu.ku.brc.specify.datamodel.SpAuditLog",
     "table": "spauditlog",
     "tableId": 530,
-    "system": true,
+    "system": false,
     "idColumn": "SpAuditLogID",
     "idFieldName": "spAuditLogId",
     "fields": [
@@ -38130,7 +38130,7 @@
         "type": "java.lang.Integer"
       },
       {
-        "name": "timestampcreated",
+        "name": "timestampCreated",
         "column": "TimestampCreated",
         "indexed": false,
         "unique": false,
@@ -38138,7 +38138,7 @@
         "type": "java.sql.Timestamp"
       },
       {
-        "name": "timestampmodified",
+        "name": "timestampModified",
         "column": "TimestampModified",
         "indexed": false,
         "unique": false,
@@ -38261,7 +38261,7 @@
         "type": "java.lang.Integer"
       },
       {
-        "name": "timestampcreated",
+        "name": "timestampCreated",
         "column": "TimestampCreated",
         "indexed": false,
         "unique": false,
@@ -38269,7 +38269,7 @@
         "type": "java.sql.Timestamp"
       },
       {
-        "name": "timestampmodified",
+        "name": "timestampModified",
         "column": "TimestampModified",
         "indexed": false,
         "unique": false,
@@ -38386,7 +38386,7 @@
         "column": "CollectionID"
       },
       {
-        "name": "cogtype",
+        "name": "cogType",
         "type": "many-to-one",
         "required": true,
         "dependent": false,
@@ -38394,12 +38394,12 @@
         "column": "COGTypeID"
       },
       {
-        "name": "parentcojos",
+        "name": "parentCojos",
         "type": "one-to-many",
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
-        "otherSideName": "parentcog"
+        "otherSideName": "parentCog"
       },
       {
         "name": "cojo",
@@ -38407,7 +38407,7 @@
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
-        "otherSideName": "childcog"
+        "otherSideName": "childCog"
       },
       {
         "name": "createdByAgent",
@@ -38437,7 +38437,7 @@
     "idFieldName": "collectionObjectGroupJoinId",
     "fields": [
       {
-        "name": "isprimary",
+        "name": "isPrimary",
         "column": "IsPrimary",
         "indexed": false,
         "unique": false,
@@ -38445,7 +38445,7 @@
         "type": "java.lang.Boolean"
       },
       {
-        "name": "issubstrate",
+        "name": "isSubstrate",
         "column": "IsSubstrate",
         "indexed": false,
         "unique": false,
@@ -38469,7 +38469,7 @@
         "type": "java.lang.Integer"
       },
       {
-        "name": "timestampcreated",
+        "name": "timestampCreated",
         "column": "TimestampCreated",
         "indexed": false,
         "unique": false,
@@ -38477,7 +38477,7 @@
         "type": "java.sql.Timestamp"
       },
       {
-        "name": "timestampmodified",
+        "name": "timestampModified",
         "column": "TimestampModified",
         "indexed": false,
         "unique": false,
@@ -38562,7 +38562,7 @@
     ],
     "relationships": [
       {
-        "name": "parentcog",
+        "name": "parentCog",
         "type": "many-to-one",
         "required": true,
         "dependent": false,
@@ -38571,8 +38571,8 @@
         "otherSideName": "parentcojos"
       },
       {
-        "name": "childcog",
-        "type": "many-to-one",
+        "name": "childCog",
+        "type": "one-to-one",
         "required": false,
         "dependent": false,
         "relatedModelName": "CollectionObjectGroup",
@@ -38580,8 +38580,8 @@
         "otherSideName": "cojo"
       },
       {
-        "name": "childco",
-        "type": "many-to-one",
+        "name": "childCo",
+        "type": "one-to-one",
         "required": false,
         "dependent": false,
         "relatedModelName": "CollectionObject",
@@ -38626,7 +38626,7 @@
         "type": "java.lang.Integer"
       },
       {
-        "name": "timestampcreated",
+        "name": "timestampCreated",
         "column": "TimestampCreated",
         "indexed": false,
         "unique": false,
@@ -38634,7 +38634,7 @@
         "type": "java.sql.Timestamp"
       },
       {
-        "name": "timestampmodified",
+        "name": "timestampModified",
         "column": "TimestampModified",
         "indexed": false,
         "unique": false,
