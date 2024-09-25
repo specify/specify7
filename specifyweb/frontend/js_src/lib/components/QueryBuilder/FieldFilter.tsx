@@ -428,6 +428,7 @@ export const queryFieldFilters: RR<
       'text',
       'formatter',
       'aggregator',
+      'age',
     ],
   },
   like: {
