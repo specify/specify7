@@ -10,6 +10,10 @@ from specifyweb.specify.models import (
 from typing import List, Optional, NamedTuple
 from django.db.models import Q
 
+HIDDEN_FIELDS = [
+    "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
+]
+
 class TableSchemaConfig(NamedTuple):
     name: str
     discipline_id: int
@@ -52,10 +56,6 @@ def update_table_schema_config_with_defaults(
             description=field_desc,
             language="en"
         ))
-
-    HIDDEN_FIELDS = [
-        "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
-    ]
 
     # Create Splocalecontainer for the table
     sp_local_container = Splocalecontainer.objects.create(
@@ -112,3 +112,67 @@ def revert_table_schema_config(table_name):
     ).delete()
     items.delete()
     containers.delete()
+
+def update_table_field_schema_config_with_defaults(
+    table_name,
+    discipline_id: int,
+    discipline: Optional[Discipline],
+    field_name: str = None,
+):
+    table: Table = datamodel.get_table(table_name)
+    table_name = table.name
+    table_config = TableSchemaConfig(
+        name=table_name.lower(),
+        discipline_id=discipline_id,
+        schema_type=0,
+        language="en"
+    )
+
+    sp_local_container = Splocalecontainer.objects.get(
+        name=table.name.lower(),
+        discipline=discipline,
+        schematype=table_config.schema_type,
+    )
+
+    field = table.get_field(field_name)
+    field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).title()
+    field_config = FieldSchemaConfig(
+        name=field_name,
+        column=field.column,
+        java_type=field.type,
+        description=field_desc,
+        language="en"
+    )
+
+    sp_local_container_item = Splocalecontaineritem.objects.create(
+        name=field_config.name,
+        container=sp_local_container,
+        ishidden=field_config.name.lower() in HIDDEN_FIELDS,
+        issystem=table.system,
+        version=0,
+    )
+
+    for k, text in {
+        "itemname": re.sub(r"(?<!^)(?=[A-Z])", " ", field_config.name).title(),
+        "itemdesc": field_config.description,
+    }.items():
+        itm_str = {
+            'text': text,
+            'language': 'en',
+            'version': 0,
+        }
+        itm_str[k] = sp_local_container_item
+        Splocaleitemstr.objects.create(**itm_str)
+
+def revert_table_field_schema_config(table_name, field_name):
+    table: Table = datamodel.get_table(table_name)
+    table_name = table.name
+    field = table.get_field(field_name)
+
+    containers = Splocalecontainer.objects.filter(name=table_name)
+    items = Splocalecontaineritem.objects.filter(container__in=containers, name=field_name)
+    Splocaleitemstr.objects.filter(
+        Q(itemname__in=items) |
+        Q(itemdesc__in=items)
+    ).delete()
+    items.delete()

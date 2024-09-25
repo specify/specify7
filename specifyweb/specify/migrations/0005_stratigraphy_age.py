@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.update_schema_config import revert_table_schema_config, update_table_schema_config_with_defaults
+from specifyweb.specify.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
 SCHEMA_CONFIG_TABLES = [
     ('AbsoluteAge', None),
@@ -17,6 +17,9 @@ SCHEMA_CONFIG_TABLES = [
     ('AbsoluteAgeCitation', None),
     ('AbsoluteAgeAttachment', None),
 ]
+SCHEMA_CONFIG_MOD_TABLE_FIELDS = {
+    'Collectionobject': ['relativeAges', 'absoluteAges'],
+}
 PICKLIST_NAME = 'AgeType'
 DEFAULT_AGE_TYPES = [
     'Sedimentation', 
@@ -66,9 +69,16 @@ def create_table_schema_config_with_defaults():
         for table, desc in SCHEMA_CONFIG_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
 
+        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+            for field in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, discipline, field)
+
 def revert_table_schema_config_with_defaults():
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table)
+    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+        for field in fields:
+            revert_table_field_schema_config(table, field)
 
 class Migration(migrations.Migration):
 
@@ -305,11 +315,6 @@ class Migration(migrations.Migration):
             name='collectionobject',
             field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='relativeages', to='specify.collectionobject'),
         ),
-        migrations.AddField(
-            model_name='collectionobject',
-            name='relativeage',
-            field=models.ForeignKey(db_column='RelativeAgeID',null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjects', to='specify.relativeage'),
-        ),
         migrations.CreateModel(
             name='AbsoluteAgeCitation',
             fields=[
@@ -369,11 +374,6 @@ class Migration(migrations.Migration):
             model_name='absoluteage',
             name='collectionobject',
             field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='absoluteages', to='specify.collectionobject'),
-        ),
-        migrations.AddField(
-            model_name='collectionobject',
-            name='absoluteage',
-            field=models.ForeignKey(db_column='AbsoluteAgeID',null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjects', to='specify.absoluteage'),
         ),
         migrations.AddField(
             model_name='paleocontext',
