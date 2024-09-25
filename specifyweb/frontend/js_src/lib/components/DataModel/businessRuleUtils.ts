@@ -31,7 +31,7 @@ export const ensureSingleCollectionObjectCheck = (
   if (cojo.get(field) && cojo.collection !== undefined) {
     cojo.collection.models
       .filter((resource) => resource.get('childCo') !== null)
-      .map((other: SpecifyResource<CollectionObjectGroupJoin>) => {
+      .forEach((other: SpecifyResource<CollectionObjectGroupJoin>) => {
         if (other.cid !== cojo.cid) {
           other.set(field, false);
         }

@@ -31,7 +31,7 @@ test('Parent table relationships are calculated properly', () =>
       "CollectionObjectAttachment": "[relationship CollectionObjectAttachment.collectionObject]",
       "CollectionObjectAttr": "[relationship CollectionObjectAttr.collectionObject]",
       "CollectionObjectCitation": "[relationship CollectionObjectCitation.collectionObject]",
-      "CollectionObjectGroupJoin": "[relationship CollectionObjectGroupJoin.parentcog]",
+      "CollectionObjectGroupJoin": "[relationship CollectionObjectGroupJoin.parentCog]",
       "CollectionObjectProperty": "[relationship CollectionObjectProperty.collectionObject]",
       "Collector": "[relationship Collector.collectingEvent]",
       "CommonNameTx": "[relationship CommonNameTx.taxon]",
