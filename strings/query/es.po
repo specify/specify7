@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-25 21:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -526,7 +526,7 @@ msgstr "Desplazarse al editor"
 #: components/QueryBuilder/ResultsTable.tsx:187
 #, fuzzy
 msgid "viewRecords"
-msgstr "Elija el formateador"
+msgstr "Ver registros"
 
 #. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:65
