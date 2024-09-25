@@ -23,7 +23,9 @@ import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
+  geoPick,
   getFrontEndPickLists,
+  monthsPickList,
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
@@ -43,7 +45,9 @@ async function unsafeFetchPickList(
 ): Promise<SpecifyResource<PickList> | undefined> {
   getFrontEndPickLists();
 
-  const geologicPickList = getFrontEndPickLists().GeologicTimePeriod;
+  const geologicPickList = getFrontEndPickLists().GeologicTimePeriod?.name;
+  const monthsPick = monthsPickList();
+  console.log(monthsPick);
 
   let pickList: SpecifyResource<PickList> | undefined =
     unsafeGetPickLists()[pickListName];
