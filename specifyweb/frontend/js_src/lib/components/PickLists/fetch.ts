@@ -23,7 +23,6 @@ import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
-  geoPick,
   getFrontEndPickLists,
   monthsPickList,
   PickListTypes,
