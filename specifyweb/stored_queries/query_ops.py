@@ -1,7 +1,7 @@
 from collections import namedtuple
 import sqlalchemy
 
-from specifyweb.specify.geo_time import query_co_in_time_period, query_co_in_time_range, search_co_ids_in_time_range
+# from specifyweb.specify.geo_time import query_co_in_time_period, query_co_in_time_range, search_co_ids_in_time_range
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
 
@@ -123,16 +123,16 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
             return field.like(value + "%")
 
     # TODO: Remove once an implementation which implemention to keep
-    def op_age_range_simple(self, field, value):
-        values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
-        co_ids = search_co_ids_in_time_range(start_time, end_time, require_full_overlap=False)
-        return field.in_(co_ids)
+    # def op_age_range_simple(self, field, value):
+    #     values = [self.format(v.strip()) for v in value.split(',')[:2]]
+    #     start_time, end_time = values
+    #     co_ids = search_co_ids_in_time_range(start_time, end_time, require_full_overlap=False)
+    #     return field.in_(co_ids)
 
-    def op_age_range(self, field, value, query):
-        values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
-        return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=False)
+    # def op_age_range(self, field, value, query):
+    #     values = [self.format(v.strip()) for v in value.split(',')[:2]]
+    #     start_time, end_time = values
+    #     return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=False)
 
     # TODO: Add new operations for age range and period
     def op_age_range_2(self, field, value, query):
@@ -143,15 +143,15 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         # Need to either add a join a filter statement to the query,
         # or do a subquery, or run query to get the data and add to the query with filter statement (in [1,2,3]).
     
-    def op_age_period(self, field, value, query):
-        time_period_name = value
-        return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=False)
+    # def op_age_period(self, field, value, query):
+    #     time_period_name = value
+    #     return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=False)
 
-    def op_age_range_strict(self, field, value, query):
-        values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
-        return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=True)
+    # def op_age_range_strict(self, field, value, query):
+    #     values = [self.format(v.strip()) for v in value.split(',')[:2]]
+    #     start_time, end_time = values
+    #     return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=True)
 
-    def op_age_period_strict(self, field, value, query):
-        time_period_name = value
-        return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=True)
+    # def op_age_period_strict(self, field, value, query):
+    #     time_period_name = value
+    #     return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=True)

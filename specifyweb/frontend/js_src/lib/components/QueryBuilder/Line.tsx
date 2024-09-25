@@ -162,6 +162,8 @@ export function QueryLine({
           tableName === 'CollectionObject' &&
           dataModelField.name === 'catalogNumber'
             ? 'id'
+            : tableName === 'CollectionObject' && dataModelField.name === 'age'
+            ? 'age'
             : parser.type ?? 'text';
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';

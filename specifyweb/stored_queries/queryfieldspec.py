@@ -9,7 +9,7 @@ from sqlalchemy import sql
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
-from specifyweb.specify.geo_time import query_co_in_time_range
+# from specifyweb.specify.geo_time import query_co_in_time_range
 from . import models
 from .query_ops import QueryOps
 
