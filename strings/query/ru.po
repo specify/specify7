@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-25 21:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -187,7 +187,7 @@ msgstr "{tableName:string} с использованием \"{nodeFullName:strin
 #: components/QueryBuilder/Wrapped.tsx:465
 #, fuzzy
 msgid "newButtonDescription"
-msgstr "Настройте видимые таблицы запросов"
+msgstr "Добавить новое поле"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:55
@@ -257,7 +257,7 @@ msgstr "Выбрать форматировщик"
 #: components/Toolbar/ListEdit.tsx:117
 #, fuzzy
 msgid "moveDown"
-msgstr "Двигаться вниз"
+msgstr "Переместить вниз"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:81
