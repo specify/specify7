@@ -55,6 +55,18 @@ def create_agetype_picklist(apps):
                 picklist=age_type_picklist
             )
 
+def create_fdefault_tecto(apps): 
+    TectonicUnit = apps.get_model('specify', 'TectonicUnitTreeDefItem')
+    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
+    tectonic_tree_def = TectonicTreeDef.objects.first()
+    
+    root = TectonicUnit.objects.create(name='Root', rankid=0, parentitem=None, tectonicunittreedef=tectonic_tree_def)
+    superstructure = TectonicUnit.objects.create(name='Superstructure', rankid=10, parentitem=root, tectonicunittreedef=tectonic_tree_def)
+    tectonic_domain = TectonicUnit.objects.create(name='Tectonic Domain', rankid=10, parentitem=root, tectonicunittreedef=tectonic_tree_def)
+    tectonic_subdomain = TectonicUnit.objects.create(name='Tectonic Subdomain', rankid=10, parentitem=tectonic_domain, tectonicunittreedef=tectonic_tree_def)
+    tectonic_unit = TectonicUnit.objects.create(name='Tectonic Unit', rankid=10, parentitem=tectonic_subdomain, tectonicunittreedef=tectonic_tree_def)
+    tectonic_subunit = TectonicUnit.objects.create(name='Tectonic Subunit', rankid=10, parentitem=tectonic_unit, tectonicunittreedef=tectonic_tree_def)
+
 def revert_agetype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
