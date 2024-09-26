@@ -180,12 +180,14 @@ export function QueryLine({
               ? ({
                   type: 'any',
                   isNot: false,
+                  isStrict: false,
                   startValue: '',
                 } as const)
               : filter.type === 'any' && filter.isNot
               ? {
                   ...filter,
                   isNot: false,
+                  isStrict: false,
                 }
               : filter;
           })

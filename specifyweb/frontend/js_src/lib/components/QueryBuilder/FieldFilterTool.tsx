@@ -65,6 +65,7 @@ export function FieldFilterTool({
                   type: 'any',
                   isNot: false,
                   startValue: '',
+                  isStrict: false,
                 })
               }
             >
