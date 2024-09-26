@@ -119,7 +119,7 @@ export function FieldFilterTool({
           {icons.ban}
         </Button.Small>
       )}
-      {fieldName === 'age' && (
+      {fieldName === 'age' && index === 0 ? (
         <Button.Small
           aria-label={
             fieldFilters[index].isStrict
@@ -136,7 +136,7 @@ export function FieldFilterTool({
           }
           variant={
             fieldFilters[index].isStrict
-              ? className.dangerButton
+              ? className.warningButton
               : className.secondaryLightButton
           }
           onClick={(): void =>
@@ -148,7 +148,7 @@ export function FieldFilterTool({
         >
           {icons.arrowsCollapse}
         </Button.Small>
-      )}
+      ) : undefined}
     </>
   );
 }
