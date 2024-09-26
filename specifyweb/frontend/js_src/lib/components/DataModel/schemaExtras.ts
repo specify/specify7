@@ -84,7 +84,6 @@ export const schemaExtras: {
         unique: false,
       }),
       new LiteralField(table, {
-        // TODO: LiteralField or Relationship?
         name: 'age',
         required: false,
         readOnly: true,
