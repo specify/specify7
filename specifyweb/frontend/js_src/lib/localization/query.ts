@@ -913,4 +913,10 @@ export const queryText = createDictionary({
   range: {
     'en-us': 'Range',
   },
+  strict: {
+    'en-us': 'Strict',
+  },
+  nonStrict: {
+    'en-us': 'Non strict',
+  },
 } as const);

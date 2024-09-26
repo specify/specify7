@@ -18,6 +18,7 @@ export function FieldFilterTool({
   isBasic,
   hasAny,
   isFieldComplete,
+  fieldName,
   handleChange,
   handleFilterChange,
 }: {
@@ -25,11 +26,13 @@ export function FieldFilterTool({
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
+    readonly isStrict: boolean;
   }>;
   readonly index: number;
   readonly isBasic: boolean;
   readonly hasAny: boolean;
   readonly isFieldComplete: boolean;
+  readonly fieldName: string;
   readonly handleChange: ((newField: QueryField) => void) | undefined;
   readonly handleFilterChange: (
     index: number,
@@ -113,6 +116,36 @@ export function FieldFilterTool({
           }
         >
           {icons.ban}
+        </Button.Small>
+      )}
+      {fieldName === 'age' && (
+        <Button.Small
+          aria-label={
+            fieldFilters[index].isStrict
+              ? queryText.strict()
+              : queryText.nonStrict()
+          }
+          aria-pressed={fieldFilters[index].isStrict}
+          className={className.ariaHandled}
+          disabled={handleChange === undefined}
+          title={
+            fieldFilters[index].isStrict
+              ? queryText.strict()
+              : queryText.nonStrict()
+          }
+          variant={
+            fieldFilters[index].isStrict
+              ? className.dangerButton
+              : className.secondaryLightButton
+          }
+          onClick={(): void =>
+            handleFilterChange(index, {
+              ...fieldFilters[index],
+              isStrict: !fieldFilters[index].isStrict,
+            })
+          }
+        >
+          {icons.arrowsCollapse}
         </Button.Small>
       )}
     </>

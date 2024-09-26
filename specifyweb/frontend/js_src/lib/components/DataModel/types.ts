@@ -5307,6 +5307,7 @@ export type SpQueryField = {
     readonly formatName: string | null;
     readonly isDisplay: boolean;
     readonly isNot: boolean;
+    readonly isStrict: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
     readonly operEnd: number | null;

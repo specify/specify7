@@ -412,6 +412,7 @@ export function QueryLine({
                   <div className="flex contents items-center gap-2">
                     <FieldFilterTool
                       fieldFilters={field.filters}
+                      fieldName={field.mappingPath[0]}
                       handleChange={handleChange}
                       handleFilterChange={handleFilterChange}
                       hasAny={hasAny}
