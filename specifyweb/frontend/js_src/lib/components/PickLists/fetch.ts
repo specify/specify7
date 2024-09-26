@@ -45,8 +45,6 @@ async function unsafeFetchPickList(
   getFrontEndPickLists();
 
   const geologicPickList = getFrontEndPickLists().GeologicTimePeriod?.name;
-  const monthsPick = monthsPickList();
-  console.log(monthsPick);
 
   let pickList: SpecifyResource<PickList> | undefined =
     unsafeGetPickLists()[pickListName];
