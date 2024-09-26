@@ -55,7 +55,7 @@ def create_agetype_picklist(apps):
                 picklist=age_type_picklist
             )
 
-def create_fdefault_tecto(apps): 
+def create_default_tectonicRanks(apps): 
     TectonicUnit = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     tectonic_tree_def = TectonicTreeDef.objects.first()
@@ -106,6 +106,7 @@ class Migration(migrations.Migration):
     def consolidated_python_django_migration_operations(apps, schema_editor):
         create_table_schema_config_with_defaults()
         create_agetype_picklist(apps)
+        create_default_tectonicRanks(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults()
