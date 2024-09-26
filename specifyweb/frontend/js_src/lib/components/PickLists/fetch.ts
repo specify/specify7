@@ -24,7 +24,6 @@ import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
   getFrontEndPickLists,
-  monthsPickList,
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
