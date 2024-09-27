@@ -108,11 +108,7 @@ export function TreeSelectDialog({
                   <Link.Default
                     className="flex-1"
                     href={getLink(treeName)}
-                    title={
-                      (treeDefinition?.get('remarks') as
-                        | LocalizedString
-                        | undefined) ?? undefined
-                    }
+                    title={treeDefinition?.get('remarks') ?? undefined}
                     onClick={(event): void => {
                       if (handleClick === undefined) return;
                       event.preventDefault();
