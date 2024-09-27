@@ -7,6 +7,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { isRelationshipCollection } from './collectionApi';
@@ -301,7 +302,7 @@ export const ResourceBase = Backbone.Model.extend({
   ) {
     assert(!field.isDependent());
 
-    if (field.type === 'one-to-many')
+    if (relationshipIsToMany(field))
       this._storeIndependentToMany(field, related);
     else this._storeIndependentToOne(field, related);
   },

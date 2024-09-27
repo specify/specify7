@@ -8,6 +8,7 @@ import { Backbone } from './backbone';
 import type { AnySchema } from './helperTypes';
 import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { SpecifyResource } from './legacyTypes';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -187,10 +188,16 @@ export const IndependentCollection = LazyCollection.extend({
     this.updated = {};
   },
   initialize(_tables, options) {
+    setupToOne(this, options);
+
     this.on(
       'change',
       function (resource: SpecifyResource<AnySchema>) {
         if (!resource.isBeingInitialized()) {
+          if (relationshipIsToMany(this.field)) {
+            const otherSideName = this.field.getReverse().name;
+            this.related.set(otherSideName, resource);
+          }
           this.updated[resource.cid] = resource;
           this.trigger('saverequired');
         }
@@ -230,8 +237,9 @@ export const IndependentCollection = LazyCollection.extend({
       this.updated = {};
       this.removed = new Set<string>();
     });
-
-    setupToOne(this, options);
+  },
+  isComplete() {
+    return false;
   },
   parse(resp) {
     const self = this;

@@ -59,18 +59,18 @@ export function useCollection<SCHEMA extends AnySchema>({
       const localVersionRef = versionRef.current;
 
       collection
-        .fetch(filters as CollectionFetchFilters<AnySchema>)
-        .then((collection) => {
-          if (collection === undefined) return undefined;
-          /*
-           * If the collection is already being fetched, don't update it
-           * to prevent a race condition.
-           * REFACTOR: simplify this
-           */
-          return versionRef.current === localVersionRef
-            ? void setCollection(collection)
-            : undefined;
-        })
+        .fetch({
+          ...filters,
+          success: (collection) => {
+            /*
+             * If the collection is already being fetched, don't update it
+             * to prevent a race condition.
+             * REFACTOR: simplify this
+             */
+            if (versionRef.current === localVersionRef)
+              setCollection(collection);
+          },
+        } as CollectionFetchFilters<AnySchema>)
         .catch(raise);
     },
     [collection, setCollection]
