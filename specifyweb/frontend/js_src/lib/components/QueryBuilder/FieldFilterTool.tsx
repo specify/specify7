@@ -134,11 +134,7 @@ export function FieldFilterTool({
               ? queryText.strict()
               : queryText.nonStrict()
           }
-          variant={
-            fieldFilters[index].isStrict
-              ? className.warningButton
-              : className.secondaryLightButton
-          }
+          variant={className.secondaryLightButton}
           onClick={(): void =>
             handleFilterChange(index, {
               ...fieldFilters[index],
@@ -146,7 +142,7 @@ export function FieldFilterTool({
             })
           }
         >
-          {icons.arrowsCollapse}
+          {fieldFilters[index].isStrict ? icons.strict : icons.nonStrict}
         </Button.Small>
       ) : undefined}
     </>
