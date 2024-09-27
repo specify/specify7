@@ -31,6 +31,25 @@ DEFAULT_AGE_TYPES = [
     'Erosion', 
     'Diagenetic', 
 ]
+GEO_SCHEMA_MOD_CONFIG_TABLES = [
+    'CollectionObjectType',
+    'CollectionObjectGroupType',
+    'CollectionObjectGroup',
+    'CollectionObjectGroupJoin',
+    'SpUserExternalId',
+    'SpAttachmentDataSet',
+    'UniquenessRule',
+    'UniquenessRuleField',
+    'Message',
+    'SpMerging',
+    'UserPolicy',
+    'UserRole',
+    'Role',
+    'RolePolicy',
+    'LibraryRole',
+    'LibraryRolePolicy',
+    'SpDataSet',
+]
 
 def create_agetype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
@@ -100,6 +119,18 @@ def revert_table_schema_config_with_defaults():
     for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
         for field in fields:
             revert_table_field_schema_config(table, field)
+
+def fix_geo_schema_config_formatting(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table in SCHEMA_CONFIG_TABLES:
+            update_table_schema_config_with_defaults(table, discipline.id, discipline, None)
+
+def revert_geo_schema_config_formatting(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table in SCHEMA_CONFIG_TABLES:
+            revert_table_schema_config(table)
 
 class Migration(migrations.Migration):
 
@@ -403,4 +434,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='TectonicUnitID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='paleocontexts', to='specify.tectonicunit'),
         ),
         migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
+        migrations.RunPython(fix_geo_schema_config_formatting, revert_geo_schema_config_formatting, atomic=True),
     ]
