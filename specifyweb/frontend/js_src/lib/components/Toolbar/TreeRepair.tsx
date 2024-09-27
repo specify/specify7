@@ -75,10 +75,12 @@ export function TreeSelectDialog({
                 : hasTreeAccess(treeName, 'read')
             )
             .map((treeName) => {
-              const treeDefinition = deserializeResource(
-                getTreeDefinitions(treeName)[0].definition
-              );
-              return [treeName, treeDefinition] as const;
+              const treeDefinitions = getTreeDefinitions(treeName);
+              const defaultTreeDefinition =
+                treeDefinitions.length > 0
+                  ? deserializeResource(treeDefinitions[0].definition)
+                  : undefined;
+              return [treeName, defaultTreeDefinition] as const;
             })
         : undefined,
     [permissionName, treeRanks]
