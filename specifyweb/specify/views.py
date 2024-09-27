@@ -5,7 +5,7 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-import re
+import os
 from typing import Union, List, Tuple, Dict, Any
 from uuid import uuid4
 
@@ -24,7 +24,7 @@ from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
-from .specify_jar import specify_jar
+from .specify_jar import specify_jar_dir_path
 
 
 def login_maybe_required(view):
@@ -135,9 +135,11 @@ def images(request, path):
     mimetype = mimetypes.guess_type(path)[0]
     path = 'edu/ku/brc/specify/images/' + path
     try:
-        image = specify_jar.read(path)
-    except KeyError as e:
-        raise http.Http404(e)
+        images_path = os.path.join(specify_jar_dir_path, 'edu_ku_brc_specify_images')
+        with open(os.path.join(images_path, path), 'rb') as f:
+            image = f.read()
+    except FileNotFoundError as e:
+        return http.HttpResponseNotFound('Not all images from Specify jar file are available here, please check latest Specify 6 jar file manually.')
     return http.HttpResponse(image, content_type=mimetype)
 
 
@@ -146,8 +148,15 @@ def images(request, path):
 @cache_control(max_age=24 * 60 * 60, public=True)
 def properties(request, name):
     """Returns the <name>.properities file from the thickclient jar file."""
-    path = name + '.properties'
-    return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+    properties_path = os.path.join(specify_jar_dir_path, name) + '.properties'
+    # Try opening the file
+    try:
+        with open(properties_path, 'rb') as f:
+            properties = f.read()
+    except FileNotFoundError as e:
+        return http.HttpResponseNotFound('Not all properties from Specify jar file are available here, please check latest Specify 6 jar file manually.')
+
+    return http.HttpResponse(properties, content_type='text/plain')
 
 
 class SetPasswordPT(PermissionTarget):

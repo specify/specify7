@@ -29,7 +29,7 @@ from specifyweb.specify.models import Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
-from specifyweb.specify.specify_jar import specify_jar
+from specifyweb.specify.specify_jar import specify_jar_resources_en_properties
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
@@ -634,7 +634,7 @@ def system_info(request):
 
     info = dict(
         version=settings.VERSION,
-        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar_resources_en_properties.decode('utf-8'))[0],
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
         stats_url=settings.STATS_URL,
