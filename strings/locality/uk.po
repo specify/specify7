@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-27 06:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "locality/uk/>\n"
@@ -299,7 +299,7 @@ msgstr "Розпочато процес оновлення місцевості"
 #, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"За допомогою guid: {guid:string} знайдено більше одного населеного пункту. "
+"З guid: {guid:string} знайдено більше одного населеного пункту. "
 "Ідентифікатори населених пунктів: {localityIds: рядок}"
 
 #. Used in: Components > Locality Update > Status
