@@ -19,5 +19,4 @@ except (FileNotFoundError, KeyError):
     if found_jar_path:
         specify_jar = ZipFile(found_jar_path)
     else:
-        # Fall back to default path if the file is not found
         specify_jar = ZipFile(DEFAULT_SPECIFY_JAR_PATH)
