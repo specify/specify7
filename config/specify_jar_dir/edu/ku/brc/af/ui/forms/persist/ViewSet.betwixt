@@ -1,8 +1,0 @@
-<info primitiveTypes="element">
-  <element name="viewset">
-    <attribute name="name" property="name"/>
-    <attribute name="xmlns:xsi" value="http://www.w3.org/2001/XMLSchema-instance"/>
-    <attribute name="xsi:noNamespaceSchemaLocation" value="form.xsd"/>
-    <element name="view" property="views"/>
-  </element>
-</info>

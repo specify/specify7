@@ -1,7 +1,0 @@
-<info primitiveTypes="element">
-  <element name="cell">
-    <attribute name="type" property="type"/>
-    <attribute name="name" property="name"/>
-    <attribute name="label" property="label"/>
-  </element>
-</info>

@@ -1,7 +1,0 @@
-<info primitiveTypes="element">
-  <element name="container" property="SpContainer">
-    <element name="version" property="version"/>
-    <element name="isHidden" property="isHidden"/>
-    <addDefaults/>
-  </element>
-</info>

@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<info primitiveTypes="element">
-	<element name="fieldalias" property="FieldAlias">
-		<attribute name="vname"  property="virtualFieldName"/>
-		<attribute name="aname" property="actualFieldName"/>
-		<addDefaults/>
-	</element>
-</info>
