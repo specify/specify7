@@ -165,7 +165,8 @@ def fix_geo_schema_config_formatting(apps, schema_editor):
 
 def revert_geo_schema_config_formatting(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
-    revert_table_schema_config(table)
+    for table in GEO_SCHEMA_MOD_CONFIG_TABLES:
+        revert_table_schema_config(table)
 
 class Migration(migrations.Migration):
 
