@@ -1,0 +1,29 @@
+<info primitiveTypes="element">
+  <element name="view">
+    <attribute name="id" property="id"/>
+    <attribute name="name" property="name"/>
+    <attribute name="class" property="className"/>
+    <attribute name="type" property="type"/>
+     <attribute name="gettable" property="gettableClassName"/>
+    <attribute name="resourceLabels" property="resourceLabels"/>
+    
+    <element name="desc"/>
+    
+    <element name="altviews">
+      <element name="alt" property="altViews"/>
+    </element>
+    
+    <element name="columnDef">
+      <element name="cellDef" property="columnDef"/>
+    </element>
+    
+    <element name="rowDef">
+      <element name="cellDef" property="rowDef"/>
+    </element>
+    
+    <element name="rows">
+      <element name="row" property="rows"/>
+    </element>
+    
+  </element>
+</info>

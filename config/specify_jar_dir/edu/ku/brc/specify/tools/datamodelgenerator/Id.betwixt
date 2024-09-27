@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info primitiveTypes="element">
+	<element name="Id">
+		<attribute name="column" property="column"/>
+		<attribute name="name" property="name"/>
+		<attribute name="type" property="type"/>
+		<attribute name="length" property="length"/>
+	</element>
+</info>
+
+    

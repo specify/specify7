@@ -1,10 +1,10 @@
 import os
 from django.conf import settings
 
-DEFAULT_SPECIFY_JAR_PATH = '/opt/specify7/config/specify_jar'
+DEFAULT_SPECIFY_JAR_PATH = '/opt/specify7/config/specify_jar_dir'
 
 # Determine the path to the specify_jar directory
-specify_jar_dir_path = os.path.join(settings.SPECIFY_THICK_CLIENT, 'config/specify_jar')
+specify_jar_dir_path = os.path.join(settings.SPECIFY_THICK_CLIENT, 'config/specify_jar_dir')
 
 # If specify_jar_dir_path does not exist, then use DEFAULT_SPECIFY_JAR_PATH
 if not os.path.exists(specify_jar_dir_path):

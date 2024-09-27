@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewset name="missing subview id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="form.xsd">
+    <view id="1" type="form" resourceLabels="false">
+        <altviews>
+            <alt id="3" label="Table"/>
+        </altviews>
+        <columnDef>
+            <cellDef>right:max(50dlu;p)</cellDef>
+        </columnDef>
+        <rowDef>
+            <cellDef>p</cellDef>
+        </rowDef>
+        <rows>
+            <row>
+                <cell type="separator" label="Accession"/>
+            </row>
+        </rows>
+    </view>
+    
+    <view id="2" type="form" resourceLabels="false">
+        <columnDef>
+            <cellDef>right:max(50dlu;p)</cellDef>
+        </columnDef>
+        <rowDef>
+            <cellDef>p</cellDef>
+        </rowDef>
+        <rows>
+            <row>
+                <cell type="separator" label="Accession"/>
+            </row>
+        </rows>
+    </view>
+</viewset>

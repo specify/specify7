@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info primitiveTypes="element">
+	<element name="Relationship">
+		<attribute name="type" property="type"/>
+		<attribute name="classname" property="className"/>
+		<attribute name="shortname" property="shortName"/>
+		<attribute name="relationshipname" property="relationshipName"/>
+		<attribute name="columnname" property="columnName"/>
+		<attribute name="othersidename" property="otherSideName"/>
+		<attribute name="updatable" property="updatable"/>
+		<attribute name="required" property="required"/>
+		<attribute name="jointable" property="joinTableName"/>
+        <attribute name="save" property="save"/>
+        <attribute name="likemanytoone" property="likeManyToOne"/>
+		<addDefaults/>
+	</element>
+</info>

@@ -1,0 +1,5 @@
+<info primitiveTypes="element">
+  <element name="row">
+    <element name="cell" property="cells"/>
+  </element>
+</info>

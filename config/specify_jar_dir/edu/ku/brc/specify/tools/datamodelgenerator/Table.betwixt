@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info primitiveTypes="element">
+	<element name="table" property="Table">
+		<attribute name="classname" property="name"/>
+		<attribute name="table" property="table"/>
+		<attribute name="tableid" property="tableId"/>
+		<attribute name="lazy" property="lazy"/>
+		<attribute name="view" property="defaultView"/>
+		<attribute name="searchable" property="searchable"/>
+		<attribute name="businessrule" property="businessRule"/>
+		<attribute name="abbrv" property="abbrv"/>
+		<addDefaults/>
+	</element>
+</info>

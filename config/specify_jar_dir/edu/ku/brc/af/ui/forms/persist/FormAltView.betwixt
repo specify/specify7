@@ -1,0 +1,6 @@
+<info primitiveTypes="element">
+  <element name="alt">
+    <attribute name="id" property="id"/>
+    <attribute name="label" property="label"/>
+  </element>
+</info>

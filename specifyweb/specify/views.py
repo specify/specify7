@@ -135,8 +135,8 @@ def images(request, path):
     mimetype = mimetypes.guess_type(path)[0]
     path = 'edu/ku/brc/specify/images/' + path
     try:
-        images_path = os.path.join(specify_jar_dir_path, 'edu_ku_brc_specify_images')
-        with open(os.path.join(images_path, path), 'rb') as f:
+        images_path = os.path.join(specify_jar_dir_path, path)
+        with open(images_path, 'rb') as f:
             image = f.read()
     except FileNotFoundError as e:
         return http.HttpResponseNotFound('Not all images from Specify jar file are available here, please check latest Specify 6 jar file manually.')

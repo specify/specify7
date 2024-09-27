@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info primitiveTypes="element">
+	<element name="name" property="name">
+		<attribute name="country" property="country"/>
+		<attribute name="language" property="language"/>
+		<attribute name="variant" property="variant"/>
+		<text property='text'/>
+		<addDefaults/>
+	</element>
+</info>
+
+    

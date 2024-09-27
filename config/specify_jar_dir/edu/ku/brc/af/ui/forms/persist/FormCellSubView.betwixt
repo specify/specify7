@@ -1,0 +1,11 @@
+<info primitiveTypes="element">
+  <element name="cell">
+    <attribute name="type" property="type"/>
+    <attribute name="name" property="name"/>
+    <attribute name="id" property="id"/>
+    <attribute name="viewsetname" property="viewSetName"/>
+    <attribute name="class" property="classDesc"/>
+    <attribute name="colspan" property="colspan"/>
+    <attribute name="rowspan" property="rowspan"/>
+  </element>
+</info>

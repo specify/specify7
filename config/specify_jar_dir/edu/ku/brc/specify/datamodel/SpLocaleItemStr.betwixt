@@ -1,0 +1,9 @@
+<info primitiveTypes="element">
+  <element name="str">
+    <element name="version" property="version"/>
+    <attribute name="language" property="language"/>
+    <attribute name="country" property="country"/>
+    <attribute name="variant" property="variant"/>
+    <element name="text" property="text"/>
+  </element>
+</info>

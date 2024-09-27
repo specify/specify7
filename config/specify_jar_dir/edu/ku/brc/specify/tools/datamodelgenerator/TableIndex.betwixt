@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info primitiveTypes="element">
+	<element name="tableindex" property="TableIndex">
+		<attribute name="indexName" property="indexName"/>
+		<attribute name="columnNames" property="columnNames"/>
+	</element>
+</info>

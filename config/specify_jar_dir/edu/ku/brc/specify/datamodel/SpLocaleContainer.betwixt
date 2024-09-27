@@ -1,0 +1,26 @@
+<info primitiveTypes="attribute">
+  <element name="container">
+  
+    <element name="version" property="version"/>
+    <element name="isHidden" property="isHidden"/>
+    
+    
+    <element name="items">
+      <element name="item" property="items"/>
+    </element>
+    
+    <element name="names">
+      <element name="str" property="names"/>
+    </element>
+    
+    <element name="descs">
+      <element name="str" property="descs"/>
+    </element>
+
+    
+    <attribute name="name" property="name"/>
+    <attribute name="type" property="type"/>
+    <attribute name="format" property="format"/>
+    <attribute name="isUIFormatter" property="isUIFormatter"/>
+  </element>
+</info>
