@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-28 16:47+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -118,8 +118,8 @@ msgstr "Зменшити прозорість"
 #, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
-"Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли "
-"це можливо (наприклад, заголовки таблиць у перегляді дерева)."
+"Чи вимикати прозорі фони для компонентів інтерфейсу користувача, коли це "
+"можливо (наприклад, заголовки таблиць у перегляді дерева)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:171
@@ -841,7 +841,7 @@ msgstr "Гнучка ширина колонки"
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Гнучка ширина стовпця сітки вкладеного перегляду"
+msgstr "Гнучка ширина стовпця сітки підперегляду"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
@@ -939,7 +939,7 @@ msgstr "Зробіть діалогові вікна форми сірими ф�
 #: components/Preferences/UserDefinitions.tsx:1337
 #, fuzzy
 msgid "autoScrollTree"
-msgstr "Автоматичне прокручування дерева до виділеного вузла"
+msgstr "Автоматичне прокручування дерева до вибраного вузла"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1871
@@ -1127,7 +1127,7 @@ msgstr "Автоматично створювати записи {agentVariantTa
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Під час об’єднання агентів автоматично створюйте записи "
+"Під час об’єднання агентів автоматично створювати записи "
 "{agentVariantTable:string} на основі варіацій імені/прізвища."
 
 #. Used in: Components > App Resources > Types
