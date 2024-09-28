@@ -9,21 +9,21 @@
 			</altviews>
 		</view>
 		<view name="CollectionObjectGroup" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupBusRules" resourcelabels="false">
-			<desc>The Collection Object Type form.</desc>
+			<desc>The Collection Object Group form.</desc>
 			<altviews>
 				<altview name="CollectionObjectGroup View" viewdef="CollectionObjectGroup" mode="view" default="true"/>
 				<altview name="CollectionObjectGroup Edit" viewdef="CollectionObjectGroup" mode="edit"/>
 			</altviews>
 		</view>
 		<view name="CollectionObjectGroupType" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupTypeBusRules" resourcelabels="false">
-			<desc>The Collection Object Type form.</desc>
+			<desc>The Collection Object Group Type form.</desc>
 			<altviews>
 				<altview name="CollectionObjectGroupType View" viewdef="CollectionObjectGroupType" mode="view" default="true"/>
 				<altview name="CollectionObjectGroupType Edit" viewdef="CollectionObjectGroupType" mode="edit"/>
 			</altviews>
 		</view>
 		<view name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
-			<desc>The Collection Object Type form.</desc>
+			<desc>The Collection Object Group Join form.</desc>
 			<altviews>
 				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin" mode="view" default="true"/>
 				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin" mode="edit"/>
@@ -47,7 +47,7 @@
     -->
 	<viewdefs>
 		<viewdef name="CollectionObjectType" class="edu.ku.brc.specify.datamodel.CollectionObjectType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The CollectionObjectType Table</desc>
+			<desc>The Collection Object Type Form</desc>
 			<enableRules/>
 			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
@@ -84,7 +84,7 @@
 			</rows>
 		</viewdef>
 		<viewdef name="CollectionObjectGroupType" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The CollectionObjectGroupType Table</desc>
+			<desc>The Collection Object Group Type Form</desc>
 			<enableRules/>
 			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
@@ -100,7 +100,7 @@
 			</rows>
 		</viewdef>
 		<viewdef name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The CollectionObjectGroupJoin Table</desc>
+			<desc>The Collection Object Group Join Form</desc>
 			<enableRules/>
 			<columnDef>100px,2px,178px,5px,108px,2px,130px,5px,100px,2px,195px,0px,15px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,196px,2px,113px,2px,150px,2px,115px,5px,215px,0px,15px,p:g</columnDef>
