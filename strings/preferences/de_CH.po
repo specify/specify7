@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-28 16:48+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -928,7 +928,7 @@ msgstr "Einrücken mit <key>Tabulator</key>"
 #: components/Preferences/UserDefinitions.tsx:767
 #, fuzzy
 msgid "formHeaderFormat"
-msgstr "Formularkopfzeilenformat"
+msgstr "Format der Formularkopfzeile"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:774
@@ -1093,7 +1093,7 @@ msgstr "{agentVariantTable:string}-Datensätze automatisch erstellen"
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "Beim Zusammenführen von Agenten werden automatisch {agentVariantTable:string}"
-" Datensätze basierend auf den Variationen von Vorname/Nachname erstellt."
+" Datensätze auf Basis der Vornamen-/Nachnamenvariationen erstellt."
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:110
