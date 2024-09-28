@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-28 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -47,7 +47,7 @@ msgstr "Preferências de usuário padrão"
 #: components/Preferences/UserDefinitions.tsx:1681
 #, fuzzy
 msgid "general"
-msgstr "Imagem personalizada"
+msgstr "Em geral"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:82
@@ -234,7 +234,7 @@ msgstr "Fundo de campo desabilitado (tema escuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Largura de coluna de grade de subvisualização flexível"
+msgstr "Largura flexível da coluna da grade de subvisualização"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -566,7 +566,7 @@ msgstr "Permite consultar dados de qualquer campo em qualquer tabela."
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "AVISO: habilitar isso pode levar à perda de dados ou corrupção do banco de "
-"dados. Certifique-se de que você sabe o que está fazendo."
+"dados. Por favor, certifique-se de que você sabe o que está fazendo."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
@@ -712,7 +712,9 @@ msgstr "Direção do movimento quando a tecla <key>Enter</key> é pressionada"
 #: components/Preferences/UserDefinitions.tsx:1740
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Sinônimo de cor"
+msgstr ""
+"Você pode mover na direção oposta pressionando "
+"<key>Shift</key>+<key>Enter</key>."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1765
@@ -796,7 +798,7 @@ msgstr "Mostrar filtros de consulta ao executar um relatório de um formulário"
 #: components/Preferences/UserDefinitions.tsx:1045
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Direção do movimento quando a tecla [X27X]Tab[X35X] é pressionada"
+msgstr "Permitir que o preenchimento automático cresça tanto quanto necessário"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:753
@@ -838,7 +840,7 @@ msgstr "Inércia da panela"
 #: components/Preferences/UserDefinitions.tsx:1960
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Destacar substring correspondente"
+msgstr "O mouse arrasta"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1967
@@ -856,13 +858,13 @@ msgstr "Largura de coluna flexível"
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largura flexível da coluna da grade de subvisualização"
+msgstr "Largura de coluna de grade de subvisualização flexível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
 #, fuzzy
 msgid "closeOnEsc"
-msgstr "Ícone e nome da tabela"
+msgstr "Fechar ao pressionar a tecla <key>ESC</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:476
@@ -941,7 +943,9 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Use o seletor de mês acessível"
+msgstr ""
+"<key>{altKeyName:string}</key>+<key>Clique</key> em um link que normalmente "
+"abre em uma nova aba para abri-lo na aba atual."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
@@ -1002,7 +1006,7 @@ msgstr "Altura máxima"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Determina legendas de campo, notas de uso e legendas de tabela."
+msgstr "Preenchimento automático"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1076,7 +1080,7 @@ msgstr "Usar"
 #: components/Preferences/UserDefinitions.tsx:688
 #, fuzzy
 msgid "dontUse"
-msgstr "Zoom da roda de rolagem"
+msgstr "Não use"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:569
@@ -1149,7 +1153,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr "Personalização"
+msgstr "Preferências de coleção"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
