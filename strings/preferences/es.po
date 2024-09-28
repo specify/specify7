@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-28 16:48+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -953,8 +953,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:787
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr ""
-"Hacer que los cuadros de diálogo del formulario aparezcan en gris en el fondo"
+msgstr "Hacer que los cuadros de diálogo del formulario tengan el fondo en gris"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1337
