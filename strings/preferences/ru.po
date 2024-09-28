@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-28 16:46+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -367,7 +367,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:746
 #, fuzzy
 msgid "updatePageTitleFormDescription"
-msgstr "Обновлять ли заголовок страницы для соответствия текущей записи."
+msgstr "Следует ли обновить заголовок страницы для соответствия текущей записи."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1054
@@ -567,7 +567,7 @@ msgstr ""
 #: components/Preferences/index.tsx:245
 #, fuzzy
 msgid "adminsOnlyPreference"
-msgstr "У вас нет разрешения на изменение этой опции"
+msgstr "У вас нет разрешения на изменение этой опции."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1536
@@ -720,7 +720,7 @@ msgstr "Фильтрация элементов списка выбора"
 #: components/Preferences/UserDefinitions.tsx:1785
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Разделитель файлов экспорта"
+msgstr "Разделитель экспортируемых файлов"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1576
