@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-29 07:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -229,7 +229,7 @@ msgstr ""
 #: components/WorkBench/Disambiguation.tsx:68
 #, fuzzy
 msgid "disambiguateMatches"
-msgstr "Mehrere Datensatzübereinstimmungen eindeutig machen"
+msgstr "Aufdecken mehrerer Datensatzübereinstimmungen"
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:57
@@ -348,7 +348,7 @@ msgstr "Status des Datensatz-Uploads"
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
-"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann in die "
+"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in die "
 "Datenbank erfolgen."
 
 #. Used in: Components > Wb Actions > Index
@@ -816,7 +816,7 @@ msgstr "Neu erstellen"
 #: components/WorkBench/DataSetMeta.tsx:183
 #, fuzzy
 msgid "dataSetMeta"
-msgstr "Dataset-Eigenschaften"
+msgstr "Datensatzeigenschaften"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
