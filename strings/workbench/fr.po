@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-11 22:09+0000\n"
+"PO-Revision-Date: 2024-09-29 07:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
@@ -114,7 +114,7 @@ msgstr "Vérification des données : activée"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Remarque : la validation en direct est une fonctionnalité expérimentale et "
+"Remarque : la validation en direct est une fonctionnalité expérimentale et "
 "ne remplace pas la validation régulière."
 
 #. Used in: Components > Wb Toolkit > Change Owner
@@ -672,7 +672,7 @@ msgstr "Déterminer automatiquement"
 #: components/WbImport/index.tsx:118
 #, fuzzy
 msgid "chooseDataSetName"
-msgstr "Nom du nouvel ensemble de données :"
+msgstr "Nom du nouvel ensemble de données :"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:242
