@@ -8641,7 +8641,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID'),
-            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID'),
+            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
+            otherSideName='tectonicUnitTreeDefItems'),
         ],
         fieldAliases=[
 
