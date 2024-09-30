@@ -6752,6 +6752,7 @@ export type TectonicUnitTreeDefItem = {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parentItem: TectonicUnitTreeDefItem | null;
+    readonly tectonicUnitTreeDef: TectonicUnitTreeDef;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
