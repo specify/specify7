@@ -73,7 +73,7 @@ def create_default_tectonic_ranks(apps):
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
+        tectonic_tree_def = TectonicTreeDef.objects.create(name="Tectonic Unit", discipline=discipline)
 
         root = TectonicUnit.objects.create(
             name="Root",
@@ -157,7 +157,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AbsoluteAge',
+            name='Absoluteage',
             fields=[
                 ('id', models.AutoField(db_column='AbsoluteAgeID', primary_key=True, serialize=False)),
                 ('absoluteage', models.DecimalField(blank=True, db_column='AbsoluteAge', decimal_places=10, max_digits=22, null=True)),
@@ -187,7 +187,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RelativeAge',
+            name='Relativeage',
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeID', primary_key=True, serialize=False)),
                 ('agetype', models.CharField(blank=True, db_column='AgeType', max_length=64, null=True)),
@@ -219,7 +219,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='TectonicUnitTreeDef',
+            name='Tectonicunittreedef',
             fields=[
                 ('id', models.AutoField(db_column='TectonicUnitTreeDefID', primary_key=True, serialize=False)),
                 ('fullnamedirection', models.IntegerField(blank=True, db_column='FullNameDirection', null=True)),
@@ -245,7 +245,7 @@ class Migration(migrations.Migration):
             preserve_default=False,
         ),
         migrations.CreateModel(
-            name='TectonicUnitTreeDefItem',
+            name='Tectonicunittreedefitem',
             fields=[
                 ('id', models.AutoField(db_column='TectonicUnitTreeDefItemID', primary_key=True, serialize=False)),
                 ('fullnameseparator', models.CharField(blank=True, db_column='FullNameSeparator', max_length=255, null=True)),
@@ -272,7 +272,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='TectonicUnit',
+            name='Tectonicunit',
             fields=[
                 ('id', models.AutoField(db_column='TectonicUnitID', primary_key=True, serialize=False)),
                 ('fullname', models.CharField(blank=True, db_column='FullName', max_length=255, null=True)),
@@ -306,7 +306,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RelativeAgeCitation',
+            name='Relativeagecitation',
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeCitationID', primary_key=True, serialize=False)),
                 ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', max_length=50, null=True)),
@@ -330,7 +330,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='RelativeAgeAttachment',
+            name='Relativeageattachment',
             fields=[
                 ('id', models.AutoField(db_column='RelativeAgeAttachmentID', primary_key=True, serialize=False)),
                 ('ordinal', models.IntegerField(blank=True, db_column='Ordinal', null=True)),
@@ -376,7 +376,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='CollectionObjectID', on_delete=django.db.models.deletion.CASCADE, related_name='relativeages', to='specify.collectionobject'),
         ),
         migrations.CreateModel(
-            name='AbsoluteAgeCitation',
+            name='Absoluteagecitation',
             fields=[
                 ('id', models.AutoField(db_column='AbsoluteAgeCitationID', primary_key=True, serialize=False)),
                 ('figurenumber', models.CharField(blank=True, db_column='FigureNumber', max_length=50, null=True)),
@@ -400,7 +400,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='AbsoluteAgeAttachment',
+            name='Absoluteageattachment',
             fields=[
                 ('id', models.AutoField(db_column='AbsoluteAgeAttachmentID', primary_key=True, serialize=False)),
                 ('ordinal', models.IntegerField(blank=True, db_column='Ordinal', null=True)),
