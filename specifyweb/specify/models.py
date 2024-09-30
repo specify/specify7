@@ -7884,9 +7884,9 @@ class TectonicUnit(models.Model):
     
     # Relationships: Many-to-One
     acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    tectonicunittreedefitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
+    tectonicunittreedefitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='tectonicunits', null=False, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
-    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonics', null=False, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonicunits', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
