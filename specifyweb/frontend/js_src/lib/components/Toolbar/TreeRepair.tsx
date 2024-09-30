@@ -76,10 +76,14 @@ export function TreeSelectDialog({
             )
             .map((treeName) => {
               const treeDefinitions = getTreeDefinitions(treeName);
-              const defaultTreeDefinition =
-                treeDefinitions.length > 0
-                  ? deserializeResource(treeDefinitions[0].definition)
-                  : undefined;
+              if (treeDefinitions.length === 0) {
+                console.warn(`No tree definitions exist for ${treeName}`);
+                return [treeName, undefined] as const;
+              }
+
+              const defaultTreeDefinition = deserializeResource(
+                treeDefinitions[0].definition
+              );
               return [treeName, defaultTreeDefinition] as const;
             })
         : undefined,
