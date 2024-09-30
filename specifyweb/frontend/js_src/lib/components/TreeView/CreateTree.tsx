@@ -1,9 +1,9 @@
 import React from 'react';
-
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { DeepPartial } from '../../utils/types';
+import type { DeepPartial} from '../../utils/types';
 import { localized } from '../../utils/types';
+import { getUniqueName } from '../../utils/uniquifyName';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -16,16 +16,28 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
 
-export function CreateTree<SCHEMA extends AnyTree>({
+export function CreateTree<
+    SCHEMA extends AnyTree,
+    TREE_NAME extends AnyTree['tableName']
+>({
   tableName,
+  treeDefinitions,
 }: {
   readonly tableName: SCHEMA['tableName'];
+  readonly treeDefinitions: TreeInformation[TREE_NAME];
 }): JSX.Element {
+  
+  const treeNameArray = treeDefinitions.map(
+    (tree) => tree.definition.name
+  );
+
   const [isActive, setIsActive] = React.useState(0);
+
   const [selectedResource, setSelectedResource] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
@@ -33,8 +45,14 @@ export function CreateTree<SCHEMA extends AnyTree>({
   const handleClick = (
     resource: DeepPartial<SerializedResource<TaxonTreeDef>>
   ) => {
+    const uniqueName = getUniqueName(
+      resource.name!,
+      treeNameArray,
+      Number.POSITIVE_INFINITY,
+      'name');
     const dsResource = deserializeResource(resource);
     setSelectedResource(dsResource);
+    selectedResource?.set('name', uniqueName as never);
     setIsActive(2);
   };
 
