@@ -68,65 +68,6 @@ def revert_agetype_picklist(apps, schema_editor):
             PicklistItem.objects.filter(picklist=age_type_pick_list).delete()
             age_type_pick_list.delete()
 
-def create_default_tectonic_ranks(apps): 
-    TectonicUnit = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.create(name="Tectonic Unit", discipline=discipline)
-
-        root = TectonicUnit.objects.create(
-            name="Root",
-            title="Root",
-            rankid=0,
-            parentitem=None,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-        superstructure = TectonicUnit.objects.create(
-            name="Superstructure",
-            title="Superstructure",
-            rankid=10,
-            parentitem=root,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-        tectonic_domain = TectonicUnit.objects.create(
-            name="Tectonic Domain",
-            title="Tectonic Domain",
-            rankid=20,
-            parentitem=superstructure,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-        tectonic_subdomain = TectonicUnit.objects.create(
-            name="Tectonic Subdomain",
-            title="Tectonic Subdomain",
-            rankid=30,
-            parentitem=tectonic_domain,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-        tectonic_unit = TectonicUnit.objects.create(
-            name="Tectonic Unit",
-            title="Tectonic Unit",
-            rankid=40,
-            parentitem=tectonic_subdomain,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-        tectonic_subunit = TectonicUnit.objects.create(
-            name="Tectonic Subunit",
-            title="Tectonic Subunit",
-            rankid=50,
-            parentitem=tectonic_unit,
-            tectonicunittreedef=tectonic_tree_def,
-        )
-
-def revert_default_tectonic_ranks(apps, schema_editor):
-    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline)
-        if tectonic_tree_def:
-            tectonic_tree_def.delete()
-
 def create_table_schema_config_with_defaults(apps):
     Discipline = specify_apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
@@ -152,14 +93,12 @@ class Migration(migrations.Migration):
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_default_tectonic_ranks(apps)
         create_table_schema_config_with_defaults(apps)
         create_agetype_picklist(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults()
         revert_agetype_picklist(apps, schema_editor)
-        revert_default_tectonic_ranks(apps)
 
     operations = [
         migrations.CreateModel(
