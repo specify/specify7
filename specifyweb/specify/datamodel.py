@@ -8638,11 +8638,13 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='TectonicTreeTreeDefItem', otherSideName='parentitem'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID'),
+            Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID', otherSideName='children'),
             Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
             otherSideName='tectonicUnitTreeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
         ],
         fieldAliases=[
 

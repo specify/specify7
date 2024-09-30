@@ -263,7 +263,7 @@ class Migration(migrations.Migration):
                 #relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parentitem', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=protect_with_blockers, related_name='child', to='specify.tectonicunittreedefitem')),
+                ('parentitem', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=protect_with_blockers, related_name='children', to='specify.tectonicunittreedefitem')),
                 ('tectonicunittreedef', models.ForeignKey(db_column='TectonicUnitTreeDefID', on_delete=protect_with_blockers, related_name='tectonicunittreedefitems', to='specify.tectonicunittreedef')),
             ],
             options={

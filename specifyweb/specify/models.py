@@ -7846,10 +7846,10 @@ class Tectonicunittreedefitem(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    parentitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='child', null=True, on_delete=protect_with_blockers)
-    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonicunittreedefitems', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parentitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonicunittreedefitems', null=False, on_delete=protect_with_blockers)
     
     class Meta:
         db_table = 'tectonicunittreedefitem'
