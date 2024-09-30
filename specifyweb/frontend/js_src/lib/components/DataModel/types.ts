@@ -6786,7 +6786,7 @@ export type TectonicUnit = {
     readonly acceptedTectonicUnit: TectonicUnit | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly parent: TectonicUnit | null;
+    readonly parent: TectonicUnit;
     readonly tectonicUnitTreeDef: TectonicUnitTreeDef;
     readonly tectonicUnitTreeDefItem: TectonicUnitTreeDefItem;
   };
