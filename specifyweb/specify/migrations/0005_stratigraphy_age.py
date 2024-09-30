@@ -73,7 +73,7 @@ def create_default_tectonic_ranks(apps):
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.create(name="Tectonic Unit", discipline=discipline)
+        tectonic_tree_def = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
 
         root = TectonicUnit.objects.create(
             name="Root",
