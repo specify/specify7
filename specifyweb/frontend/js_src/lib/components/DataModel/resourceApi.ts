@@ -695,7 +695,8 @@ export const ResourceBase = Backbone.Model.extend({
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
           } else {
-            this.storeIndependent(field, toOne);
+            const fetchedToOne = toOne.isNew() ? toOne : await toOne.fetch();
+            this.storeIndependent(field, fetchedToOne);
           }
         }
         // If we want a field within the related resource then recur

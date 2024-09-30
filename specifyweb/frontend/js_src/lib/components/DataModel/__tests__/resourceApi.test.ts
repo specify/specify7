@@ -21,7 +21,11 @@ const collectionObjectUrl = getResourceApiUrl(
 );
 const accessionId = 11;
 const accessionUrl = getResourceApiUrl('Accession', accessionId);
-const collectingEventUrl = getResourceApiUrl('CollectingEvent', 8868);
+const collectingEventId = 8868;
+const collectingEventUrl = getResourceApiUrl(
+  'CollectingEvent',
+  collectingEventId
+);
 const determinationUrl = getResourceApiUrl('Determination', 123);
 
 const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
@@ -64,9 +68,12 @@ const accessionResponse = {
 };
 overrideAjax(accessionUrl, accessionResponse);
 
+const collectingEventText = 'testCollectingEvent';
+
 const collectingEventResponse = {
   resource_uri: collectingEventUrl,
-  id: 8868,
+  text1: collectingEventText,
+  id: collectingEventId,
 };
 overrideAjax(collectingEventUrl, collectingEventResponse);
 
@@ -172,14 +179,27 @@ describe('rgetCollection', () => {
     expect(agents.models).toHaveLength(0);
   });
 
-  test('repeated calls for independent return different object', async () => {
+  test('repeated calls for independent return same object', async () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
     const secondCollectingEvent = await resource.rgetPromise('collectingEvent');
     expect(firstCollectingEvent?.toJSON()).toEqual(collectingEventResponse);
-    expect(firstCollectingEvent).not.toBe(secondCollectingEvent);
+    expect(firstCollectingEvent).toBe(secondCollectingEvent);
+  });
+
+  test('call for independent refetches related', async () => {
+    const resource = new tables.CollectionObject.Resource({
+      id: collectionObjectId,
+    });
+    const newCollectingEvent = new tables.CollectingEvent.Resource({
+      id: collectingEventId,
+      text1: 'someOtherText',
+    });
+    resource.set('collectingEvent', newCollectingEvent);
+    const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
+    expect(firstCollectingEvent?.get('text1')).toEqual(collectingEventText);
   });
 
   test('repeated calls for dependent return same object', async () => {
