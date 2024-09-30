@@ -73,7 +73,7 @@ function Interactions({
                     ? `/specify/overlay/interactions/return-loan/`
                     : interactionsWithPrepTables.includes(
                         (table as SpecifyTable<InteractionWithPreps>).name
-                      )
+                      ) || table.name === 'Accession'
                     ? `/specify/overlay/interactions/create/${table.name}/`
                     : getResourceViewUrl(table.name)
                 }
@@ -97,10 +97,11 @@ export function InteractionAction(): JSX.Element | null {
   const { tableName = '' } = useParams();
   const rawTable = React.useMemo(() => getTable(tableName), [tableName]);
   const table =
-    typeof rawTable === 'object' &&
-    interactionsWithPrepTables.includes(
-      (rawTable as SpecifyTable<InteractionWithPreps>).name
-    )
+    (typeof rawTable === 'object' &&
+      interactionsWithPrepTables.includes(
+        (rawTable as SpecifyTable<InteractionWithPreps>).name
+      )) ||
+    rawTable?.name === 'Accession'
       ? (rawTable as SpecifyTable<InteractionWithPreps>)
       : undefined;
   return table === undefined ? (
