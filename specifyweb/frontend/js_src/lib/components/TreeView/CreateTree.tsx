@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { DeepPartial} from '../../utils/types';
+import type { DeepPartial } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { Ul } from '../Atoms';
@@ -16,14 +17,14 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
-import { TreeInformation } from '../InitialContext/treeRanks';
+import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
 
 export function CreateTree<
-    SCHEMA extends AnyTree,
-    TREE_NAME extends AnyTree['tableName']
+  SCHEMA extends AnyTree,
+  TREE_NAME extends AnyTree['tableName']
 >({
   tableName,
   treeDefinitions,
@@ -31,10 +32,7 @@ export function CreateTree<
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinitions: TreeInformation[TREE_NAME];
 }): JSX.Element {
-  
-  const treeNameArray = treeDefinitions.map(
-    (tree) => tree.definition.name
-  );
+  const treeNameArray = treeDefinitions.map((tree) => tree.definition.name);
 
   const [isActive, setIsActive] = React.useState(0);
 
@@ -49,7 +47,8 @@ export function CreateTree<
       resource.name!,
       treeNameArray,
       Number.POSITIVE_INFINITY,
-      'name');
+      'name'
+    );
     const dsResource = deserializeResource(resource);
     setSelectedResource(dsResource);
     selectedResource?.set('name', uniqueName as never);

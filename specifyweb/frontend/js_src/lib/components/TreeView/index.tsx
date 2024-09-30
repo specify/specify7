@@ -286,7 +286,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           resource={deserializedResource}
           onSaved={(): void => globalThis.location.reload()}
         />
-        <CreateTree 
+        <CreateTree
           tableName={tableName}
           treeDefinitions={definitionsForTree}
         />
