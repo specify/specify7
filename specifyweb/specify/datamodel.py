@@ -8644,7 +8644,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID', otherSideName='children'),
             Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
             otherSideName='tectonicUnitTreeDefItems'),
-            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
+            Relationship(name='tectonicUnits', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
