@@ -77,36 +77,42 @@ def create_default_tectonic_ranks(apps):
 
         root = TectonicUnit.objects.create(
             name="Root",
+            title="Root",
             rankid=0,
             parentitem=None,
             tectonicunittreedef=tectonic_tree_def,
         )
         superstructure = TectonicUnit.objects.create(
             name="Superstructure",
+            title="Superstructure",
             rankid=10,
             parentitem=root,
             tectonicunittreedef=tectonic_tree_def,
         )
         tectonic_domain = TectonicUnit.objects.create(
             name="Tectonic Domain",
+            title="Tectonic Domain",
             rankid=20,
             parentitem=superstructure,
             tectonicunittreedef=tectonic_tree_def,
         )
         tectonic_subdomain = TectonicUnit.objects.create(
             name="Tectonic Subdomain",
+            title="Tectonic Subdomain",
             rankid=30,
             parentitem=tectonic_domain,
             tectonicunittreedef=tectonic_tree_def,
         )
         tectonic_unit = TectonicUnit.objects.create(
             name="Tectonic Unit",
+            title="Tectonic Unit",
             rankid=40,
             parentitem=tectonic_subdomain,
             tectonicunittreedef=tectonic_tree_def,
         )
         tectonic_subunit = TectonicUnit.objects.create(
             name="Tectonic Subunit",
+            title="Tectonic Subunit",
             rankid=50,
             parentitem=tectonic_unit,
             tectonicunittreedef=tectonic_tree_def,
