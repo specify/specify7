@@ -6756,8 +6756,8 @@ export type TectonicUnitTreeDefItem = {
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
-    readonly children: RA<TaxonTreeDefItem>;
-    readonly treeEntries: RA<Taxon>;
+    readonly children: RA<TectonicUnitTreeDefItem>;
+    readonly treeEntries: RA<TectonicUnit>;
   };
 };
 export type TectonicUnit = {
