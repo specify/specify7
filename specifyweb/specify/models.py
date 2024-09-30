@@ -7615,7 +7615,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
 
     save = partialmethod(custom_save)
 
-class Absoluteage(models.Model):
+class AbsoluteAge(models.Model):
     specify_model = datamodel.get_table('absoluteage')
 
     # ID Field
@@ -7651,7 +7651,7 @@ class Absoluteage(models.Model):
 
     save = partialmethod(custom_save)
 
-class Relativeage(models.Model):
+class RelativeAge(models.Model):
     specify_model = datamodel.get_table('relativeage')
 
     # ID Field
@@ -7690,7 +7690,7 @@ class Relativeage(models.Model):
 
     save = partialmethod(custom_save)
 
-class Absoluteageattachment(models.Model):
+class AbsoluteAgeAttachment(models.Model):
     specify_model = datamodel.get_table('absoluteageattachment')
 
     # ID Field
@@ -7716,7 +7716,7 @@ class Absoluteageattachment(models.Model):
 
     save = partialmethod(custom_save)
 
-class Relativeageattachment(models.Model):
+class RelativeAgeAttachment(models.Model):
     specify_model = datamodel.get_table('relativeageattachment')
 
     # ID Field
@@ -7742,7 +7742,7 @@ class Relativeageattachment(models.Model):
 
     save = partialmethod(custom_save)
 
-class Absoluteagecitation(models.Model):
+class AbsoluteAgeCitation(models.Model):
     specify_model = datamodel.get_table('absoluteagecitation')
 
     # ID Field
@@ -7771,7 +7771,7 @@ class Absoluteagecitation(models.Model):
 
     save = partialmethod(custom_save)
 
-class Relativeagecitation(models.Model):
+class RelativeAgeCitation(models.Model):
     specify_model = datamodel.get_table('relativeagecitation')
 
     # ID Field
@@ -7800,7 +7800,7 @@ class Relativeagecitation(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonicunittreedef(models.Model):
+class TectonicUnitTreeDef(models.Model):
     specify_model = datamodel.get_table('tectonicunittreedef')
 
     # ID Field
@@ -7825,7 +7825,7 @@ class Tectonicunittreedef(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonicunittreedefitem(models.Model):
+class TectonicUnitTreeDefItem(models.Model):
     specify_model = datamodel.get_table('tectonicUnittreedefitem')
 
     # ID Field
@@ -7857,7 +7857,7 @@ class Tectonicunittreedefitem(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonicunit(models.Model):
+class TectonicUnit(models.Model):
     specify_model = datamodel.get_table('tectonicunit')
 
     # ID Field
