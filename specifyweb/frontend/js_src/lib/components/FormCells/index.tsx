@@ -18,7 +18,8 @@ import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
-import { EMPTY_VALUE_CONDITION, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
+import { EMPTY_VALUE_CONDITION } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type {
   cellAlign,

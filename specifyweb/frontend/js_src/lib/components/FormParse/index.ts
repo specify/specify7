@@ -468,7 +468,7 @@ export type FormCondition =
   | State<'Always'>
   | undefined;
 
-export const EMPTY_VALUE_CONDITION="_EMPTY";
+export const EMPTY_VALUE_CONDITION = '_EMPTY';
 
 export type ConditionalFormDefinition = RA<{
   readonly condition: FormCondition;
