@@ -1293,7 +1293,7 @@ exports[`tableScoping 1`] = `
   "CollectionObjectAttribute": undefined,
   "CollectionObjectCitation": "collectionObject",
   "CollectionObjectGroup": "collection",
-  "CollectionObjectGroupJoin": "parentcog > collection",
+  "CollectionObjectGroupJoin": "parentCog > collection",
   "CollectionObjectGroupType": "collection",
   "CollectionObjectProperty": "collectionObject",
   "CollectionObjectType": "collection",

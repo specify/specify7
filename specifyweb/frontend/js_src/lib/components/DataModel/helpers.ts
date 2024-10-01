@@ -216,3 +216,10 @@ export async function fetchDistantRelated(
         field,
       };
 }
+
+// Cog types: Discrete, Consolidated, Drill Core
+export const cogTypes = {
+  DISCRETE: 'Discrete',
+  CONSOLIDATED: 'Consolidated',
+  DRILL_CORE: 'Drill Core',
+};

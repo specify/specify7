@@ -127,6 +127,7 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table RepositoryAgreement]",
   "[table RepositoryAgreementAttachment]",
   "[table Shipment]",
+  "[table SpAuditLog]",
   "[table Storage]",
   "[table StorageAttachment]",
   "[table StorageTreeDef]",

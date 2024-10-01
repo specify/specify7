@@ -19,6 +19,7 @@ import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
+import { EMPTY_VALUE_CONDITION } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type {
   cellAlign,
@@ -235,7 +236,10 @@ const cellRenderers: {
             break;
           }
           const value = await fetchPathAsString(resource, condition.field);
-          if (!destructorCalled && value === condition.value) {
+          if (
+            (!destructorCalled && value === condition.value) ||
+            (condition.value === EMPTY_VALUE_CONDITION && value === '')
+          ) {
             foundIndex = Number.parseInt(index);
             break;
           }
