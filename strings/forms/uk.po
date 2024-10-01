@@ -570,19 +570,19 @@ msgstr "Налаштуйте поля для перенесення"
 msgid "bulkCarryForwardSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:338
+#: components/FormMeta/CarryForward.tsx:339
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Налаштувати поля для перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:335
+#: components/FormMeta/CarryForward.tsx:336
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:408
+#: components/FormMeta/CarryForward.tsx:409
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"

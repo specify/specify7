@@ -127,7 +127,7 @@ msgstr "Ausgewählte Präparate zurückgeben"
 msgid "selectAllAvailablePreparations"
 msgstr "Alle verfügbaren Präparate auswählen"
 
-#: components/FormMeta/CarryForward.tsx:305
+#: components/FormMeta/CarryForward.tsx:306
 #: components/Interactions/LoanReturn.tsx:176
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepDialog.tsx:196
@@ -213,7 +213,7 @@ msgstr ""
 "{count:number|formatted} {tablePreparation:string} Datensätze wurden "
 "zurückgegeben und gespeichert"
 
-#: components/FormMeta/CarryForward.tsx:326
+#: components/FormMeta/CarryForward.tsx:327
 #: components/Interactions/LoanReturn.tsx:191
 #: components/Interactions/PrepDialog.tsx:108
 #: components/QueryBuilder/Results.tsx:211

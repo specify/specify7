@@ -142,7 +142,7 @@ msgstr "Вернуть выбранные препараты"
 msgid "selectAllAvailablePreparations"
 msgstr "Выбрать все доступные препараты"
 
-#: components/FormMeta/CarryForward.tsx:305
+#: components/FormMeta/CarryForward.tsx:306
 #: components/Interactions/LoanReturn.tsx:176
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepDialog.tsx:196
@@ -233,7 +233,7 @@ msgstr ""
 "{count:number|formatted} {tablePreparation:string} записи возвращены и "
 "сохранены"
 
-#: components/FormMeta/CarryForward.tsx:326
+#: components/FormMeta/CarryForward.tsx:327
 #: components/Interactions/LoanReturn.tsx:191
 #: components/Interactions/PrepDialog.tsx:108
 #: components/QueryBuilder/Results.tsx:211

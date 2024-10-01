@@ -495,17 +495,17 @@ msgstr "Configure fields to carry forward"
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configure fields to bulk carry forward"
 
-#: components/FormMeta/CarryForward.tsx:338
+#: components/FormMeta/CarryForward.tsx:339
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configure fields to carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:335
+#: components/FormMeta/CarryForward.tsx:336
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configure fields to bulk carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:408
+#: components/FormMeta/CarryForward.tsx:409
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "This field must be unique. It can not be carried over"

@@ -85,7 +85,7 @@ msgstr "Campos Opcionales"
 msgid "hiddenFields"
 msgstr "Campos Ocultos"
 
-#: components/FormMeta/CarryForward.tsx:370
+#: components/FormMeta/CarryForward.tsx:371
 #: components/QueryBuilder/Toolbar.tsx:36
 #: components/WbPlanView/MapperComponents.tsx:70
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
