@@ -34,6 +34,11 @@ GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
 
+# Precalculated fields that are not in the database. Map from table name to field name.
+PRECALCULATED_FIELDS = {
+    'CollectionObject': 'age',
+}
+
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
     if match:
@@ -238,7 +243,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
     def is_specify_username_end(self):
        return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
 
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
+    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -251,13 +256,13 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
 
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(op_num)
-            if query_op.is_preprocessed(op_num):
+            if query_op.is_precalculated(op_num):
                 # f = op(orm_field, value, query)
-                new_query = op(orm_field, value, query)
+                new_query = op(orm_field, value, query, is_strict=strict)
                 query = query._replace(query=new_query)
                 f = None
             else:
-                f = op(orm_field, value) # TODO: Handle when orm_field is a function instead of a field
+                f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -265,7 +270,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         query = query.reset_joinpoint()
         return query, orm_field, predicate
 
-    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
+    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False, strict=False):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
         # if self.get_field() is not None:
@@ -298,20 +303,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
                 except AttributeError:
-                    # TODO: Cleanup once an implementation for virtual QB fields is decieded on
-                    # if self.is_virtual_field(field.name):
-                    # if hasattr(self, 'is_virtual_field') and self.is_virtual_field(field.name):
-                    # if table.is_virtual_field(self.get_field().name):
-                    if table.is_virtual_field(field.name) and table.name == 'CollectionObject' and field_name == 'age': # TODO: Create map for all special cases
-                        # orm_field = orm_model.catalogNumber
-                        orm_field = orm_model.collectionObjectId
-                    # TODO: Remove once an implementation for virtual QB fields is decieded on
-                    # elif table.is_virtual_field(field.name):
-                    #     # TODO: Handle SQLAlchemy virtual field creation
-                    #     # NOTE: This might not be the right place to call query_co_in_time_range, maybe find a better place
-                    #     orm_field = query_co_in_time_range # Look at me, I'm a function now!
-                    #     # raise NotImplementedError("Virtual field not implemented yet")
-                    #     # query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=False)
+                    if table.name in PRECALCULATED_FIELDS:
+                        field_name = PRECALCULATED_FIELDS[table.name]
+                        # orm_field = getattr(orm_model, field_name)
+                        orm_field = getattr(orm_model, orm_model._id) # Replace with recordId, future just remove column from results
                     else:
                         raise
 

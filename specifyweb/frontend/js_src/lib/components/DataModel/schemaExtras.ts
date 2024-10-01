@@ -83,7 +83,7 @@ export const schemaExtras: {
         indexed: false,
         unique: false,
       }),
-      new LiteralField(table, {
+      new LiteralField(table, { // TODO: LiteralField or Relationship?
         name: 'age',
         required: false,
         readOnly: true,
