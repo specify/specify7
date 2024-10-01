@@ -579,4 +579,7 @@ export const treeText = createDictionary({
   defaultRemarks: {
     'en-us': 'A default taxon tree',
   },
+  emptyTree: {
+    'en-us': 'Empty Tree',
+  },
 } as const);

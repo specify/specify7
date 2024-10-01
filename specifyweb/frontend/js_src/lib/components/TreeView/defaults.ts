@@ -491,6 +491,16 @@ export const vertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
+export const emptyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
+  name: treeText.emptyTree(),
+  remarks: treeText.defaultRemarks(),
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+  ],
+}
+
 export const defaultTreeDefs: RA<DeepPartial<SerializedResource<TaxonTreeDef>>> = [
   botanyTreeDef,
   entomologyTreeDef,
@@ -503,4 +513,5 @@ export const defaultTreeDefs: RA<DeepPartial<SerializedResource<TaxonTreeDef>>> 
   paleobotTreeDef,
   vascplantTreeDef,
   vertpaleoTreeDef,
+  emptyTreeDef,
 ]
