@@ -3,9 +3,14 @@ import { group, removeKey, split, toLowerCase } from '../../utils/utils';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { isTreeTable } from '../InitialContext/treeRanks';
+import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
+import {
+  getNameFromTreeDefinitionName,
+  valueIsTreeDefinition,
+  valueIsTreeRank,
+} from './mappingHelpers';
 import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 import type {
   ColumnDefinition,
@@ -33,21 +38,64 @@ const toTreeRecordRanks = (
 ): IR<ColumnDefinition> =>
   Object.fromEntries(
     rankMappedFields.map(({ mappingPath, headerName, columnOptions }) => [
-      mappingPath[0].toLowerCase(),
+      /*
+       * Use the last element of the mapping path to get the field name
+       * e.g: mappingPath when a tree is specified: ['$Kingdom', 'name'] vs when no tree is specified: ['name']
+       */
+      mappingPath.at(-1)?.toLowerCase(),
       toColumnOptions(headerName, columnOptions),
     ])
   );
 
-const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
-  ranks: Object.fromEntries(
-    indexMappings(lines).map(([fullRankName, rankMappedFields]) => [
-      getNameFromTreeRankName(fullRankName),
-      {
-        treeNodeCols: toTreeRecordRanks(rankMappedFields),
-      },
-    ])
-  ),
-});
+const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
+  const treeDefinitions = getTreeDefinitions('Taxon', 'all');
+
+  return {
+    ranks: Object.fromEntries(
+      indexMappings(lines).flatMap(([fullName, rankMappedFields]) => {
+        /*
+         * For collections with only 1 tree, rankMappedFields already has the correct format for generating an upload plan
+         * When there are multiple trees in the mapper, rankMappedFields is actually a mapping path of trees mapped to ranks
+         * which means we need to get the index mappings of it again to get the actual rankMappedFields
+         */
+        const rankMappings: RA<readonly [string, RA<SplitMappingPath>]> =
+          valueIsTreeRank(fullName)
+            ? [[fullName, rankMappedFields]]
+            : indexMappings(rankMappedFields);
+
+        const treeName: string | undefined = valueIsTreeDefinition(fullName)
+          ? getNameFromTreeDefinitionName(fullName)
+          : undefined;
+
+        return rankMappings.map(([fullName, mappedFields]) => {
+          const rankName = getNameFromTreeRankName(fullName);
+
+          // Resolve treeId using treeName or using rankName as fallback
+          const treeId =
+            treeName === undefined
+              ? treeDefinitions.find(({ ranks }) =>
+                  ranks.find((r) => r.name === rankName)
+                )?.definition.id
+              : treeDefinitions.find(
+                  ({ definition }) => definition.name === treeName
+                )?.definition.id;
+
+          return [
+            treeId === undefined
+              ? rankName
+              : `${
+                  treeName === undefined ? '' : treeName + RANK_KEY_DELIMITER
+                }${rankName}`,
+            {
+              treeNodeCols: toTreeRecordRanks(mappedFields),
+              treeId,
+            },
+          ];
+        });
+      })
+    ),
+  };
+};
 
 function toUploadTable(
   table: SpecifyTable,
@@ -165,3 +213,6 @@ const indexMappings = (
         ] as const
     )
   );
+
+// Delimiter used for rank name keys i.e: <rankname>~><treeId>
+export const RANK_KEY_DELIMITER = '~>';
