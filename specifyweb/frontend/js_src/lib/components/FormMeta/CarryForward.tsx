@@ -207,6 +207,7 @@ export const tableValidForBulkClone = (table: SpecifyTable): boolean =>
       ?.fields.some(
         (field) =>
           field.type === 'regex' ||
+          field.type === 'alphanumeric' ||
           (field.type === 'numeric' && !field.canAutonumber())
       ) ?? false
   );
