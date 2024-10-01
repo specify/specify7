@@ -85,9 +85,9 @@ msgstr "Нет"
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:57
 #: components/WbActions/WbUpload.tsx:60
-#: components/WbPlanView/Mapper.tsx:387
-#: components/WbPlanView/MapperComponents.tsx:318
-#: components/WbPlanView/MapperComponents.tsx:344
+#: components/WbPlanView/Mapper.tsx:397
+#: components/WbPlanView/MapperComponents.tsx:327
+#: components/WbPlanView/MapperComponents.tsx:353
 #: components/WbPlanView/State.tsx:92
 #: components/WbToolkit/ChangeOwner.tsx:86
 #: components/WbToolkit/CoordinateConverter.tsx:227
@@ -254,8 +254,8 @@ msgstr "Создать"
 #: components/WbActions/WbNoUploadPlan.tsx:42
 #: components/WbActions/index.tsx:199
 #: components/WbActions/index.tsx:210
-#: components/WbPlanView/MapperComponents.tsx:197
-#: components/WbPlanView/MapperComponents.tsx:413
+#: components/WbPlanView/MapperComponents.tsx:206
+#: components/WbPlanView/MapperComponents.tsx:422
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:76
 #: components/WbToolkit/DevShowPlan.tsx:81
@@ -274,7 +274,7 @@ msgstr "Закрыть"
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:120
 #: components/Security/SetPassword.tsx:37
-#: components/WbPlanView/MapperComponents.tsx:414
+#: components/WbPlanView/MapperComponents.tsx:423
 #: components/WbToolkit/CoordinateConverter.tsx:228
 #: components/WorkBench/Disambiguation.tsx:48
 #. Used in: Components > Data Entry Tables > Edit ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -294,6 +294,11 @@ msgstr "Применить все"
 msgid "clearAll"
 msgstr "Очистить все"
 
+#: components/WbPlanView/MapperComponents.tsx:62
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deleteUnmapped"
+msgstr ""
+
 #: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
 #: components/Forms/Save.tsx:62
@@ -310,7 +315,7 @@ msgstr "Очистить все"
 #: components/Statistics/StatsPageEditing.tsx:46
 #: components/Statistics/index.tsx:594
 #: components/WbActions/WbSave.tsx:66
-#: components/WbPlanView/Mapper.tsx:395
+#: components/WbPlanView/Mapper.tsx:405
 #: components/WbToolkit/DevShowPlan.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:179
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta

@@ -31,7 +31,7 @@ msgid "tables"
 msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:778
-#: components/WbPlanView/MapperComponents.tsx:437
+#: components/WbPlanView/MapperComponents.tsx:446
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "tableName"
@@ -61,7 +61,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr ""
 
 #: components/SchemaConfig/Components.tsx:38
-#: components/WbPlanView/MapperComponents.tsx:320
+#: components/WbPlanView/MapperComponents.tsx:329
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"

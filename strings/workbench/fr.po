@@ -37,7 +37,7 @@ msgstr "Retour en arriere"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
-#: components/WbPlanView/Mapper.tsx:380
+#: components/WbPlanView/Mapper.tsx:390
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 msgid "validate"
 msgstr "Valider"
@@ -177,7 +177,7 @@ msgstr "Nouvelles cellules"
 msgid "errorCells"
 msgstr "Cellules d'erreur"
 
-#: components/WbPlanView/Mapper.tsx:387
+#: components/WbPlanView/Mapper.tsx:397
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataEditor"
 msgstr "Éditeur de données"
@@ -724,7 +724,7 @@ msgstr "Propriétés de l'ensemble de données"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
-#: components/WbPlanView/Mapper.tsx:403
+#: components/WbPlanView/Mapper.tsx:413
 #: components/WorkBench/DataSetMeta.tsx:207
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"

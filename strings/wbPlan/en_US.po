@@ -41,7 +41,7 @@ msgstr "Unmapped"
 msgid "mapped"
 msgstr "Mapped"
 
-#: components/WbPlanView/MapperComponents.tsx:229
+#: components/WbPlanView/MapperComponents.tsx:238
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
 msgstr "Match Behavior:"
@@ -75,24 +75,24 @@ msgstr "Hidden Fields"
 
 #: components/FormMeta/CarryForward.tsx:370
 #: components/QueryBuilder/Toolbar.tsx:36
-#: components/WbPlanView/MapperComponents.tsx:61
+#: components/WbPlanView/MapperComponents.tsx:70
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Reveal Hidden Form Fields"
 
-#: components/WbPlanView/Mapper.tsx:574
-#: components/WbPlanView/Mapper.tsx:576
 #: components/WbPlanView/Mapper.tsx:584
+#: components/WbPlanView/Mapper.tsx:586
+#: components/WbPlanView/Mapper.tsx:594
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Mapping Options"
 
-#: components/WbPlanView/MapperComponents.tsx:233
+#: components/WbPlanView/MapperComponents.tsx:242
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Ignore when Blank"
 
-#: components/WbPlanView/MapperComponents.tsx:234
+#: components/WbPlanView/MapperComponents.tsx:243
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
@@ -100,61 +100,61 @@ msgstr ""
 "considered for matching purposes. Blank values are ignored when matching "
 "even if a default value is provided"
 
-#: components/WbPlanView/MapperComponents.tsx:237
+#: components/WbPlanView/MapperComponents.tsx:246
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Always Ignore"
 
-#: components/WbPlanView/MapperComponents.tsx:238
+#: components/WbPlanView/MapperComponents.tsx:247
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "When set to \"Ignore Always\" the value in this column will never be "
 "considered for matching purposes, only for uploading."
 
-#: components/WbPlanView/MapperComponents.tsx:241
+#: components/WbPlanView/MapperComponents.tsx:250
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Never Ignore"
 
-#: components/WbPlanView/MapperComponents.tsx:242
+#: components/WbPlanView/MapperComponents.tsx:251
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
 "This column would always be considered for matching purposes, regardless of "
 "it's value"
 
-#: components/WbPlanView/MapperComponents.tsx:270
+#: components/WbPlanView/MapperComponents.tsx:279
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Allow Null Values"
 
-#: components/WbPlanView/MapperComponents.tsx:287
+#: components/WbPlanView/MapperComponents.tsx:296
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Use Default Value"
 
-#: components/WbPlanView/MapperComponents.tsx:296
+#: components/WbPlanView/MapperComponents.tsx:305
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Default Value"
 
-#: components/WbPlanView/MapperComponents.tsx:304
+#: components/WbPlanView/MapperComponents.tsx:313
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "This value would be used in place of empty cells"
 
-#: components/WbPlanView/MapperComponents.tsx:53
+#: components/WbPlanView/MapperComponents.tsx:57
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
 msgstr "Add New Column"
 
-#: components/WbPlanView/MapperComponents.tsx:90
+#: components/WbPlanView/MapperComponents.tsx:99
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailed"
 msgstr "Validation found missing mappings:"
 
-#: components/WbPlanView/MapperComponents.tsx:94
+#: components/WbPlanView/MapperComponents.tsx:103
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailedDescription"
 msgstr ""
@@ -167,17 +167,17 @@ msgstr ""
 msgid "mappingIsRequired"
 msgstr "Mapping is required"
 
-#: components/WbPlanView/MapperComponents.tsx:83
+#: components/WbPlanView/MapperComponents.tsx:92
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
 msgstr "Continue Editing"
 
-#: components/WbPlanView/MapperComponents.tsx:86
+#: components/WbPlanView/MapperComponents.tsx:95
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
 msgstr "Save Unfinished"
 
-#: components/WbPlanView/Mapper.tsx:470
+#: components/WbPlanView/Mapper.tsx:480
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Map"
@@ -187,7 +187,7 @@ msgstr "Map"
 msgid "unmap"
 msgstr "Unmap"
 
-#: components/WbPlanView/Mapper.tsx:467
+#: components/WbPlanView/Mapper.tsx:477
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Map selected field to selected header"
@@ -213,30 +213,30 @@ msgstr "Choose Existing Plan"
 msgid "showAllTables"
 msgstr "Show All Tables"
 
-#: components/WbPlanView/Mapper.tsx:412
+#: components/WbPlanView/Mapper.tsx:422
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Data Set uploaded. This Upload Plan cannot be changed"
 
-#: components/WbPlanView/Mapper.tsx:410
+#: components/WbPlanView/Mapper.tsx:420
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
 "You are viewing the mappings for an uploaded dataset.\n"
 "To edit the mappings, rollback the uploaded data or create a new dataset"
 
-#: components/WbPlanView/Mapper.tsx:404
-#: components/WbPlanView/MapperComponents.tsx:328
+#: components/WbPlanView/Mapper.tsx:414
+#: components/WbPlanView/MapperComponents.tsx:337
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Base Table"
 
-#: components/WbPlanView/MapperComponents.tsx:324
+#: components/WbPlanView/MapperComponents.tsx:333
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Change the Base Table for Mapping Data Set Columns?"
 
-#: components/WbPlanView/MapperComponents.tsx:325
+#: components/WbPlanView/MapperComponents.tsx:334
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTableDescription"
 msgstr ""
@@ -251,87 +251,87 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Clear Mapping"
 
-#: components/WbPlanView/MapperComponents.tsx:346
+#: components/WbPlanView/MapperComponents.tsx:355
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "Rerun AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:355
+#: components/WbPlanView/MapperComponents.tsx:364
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:159
+#: components/WbPlanView/MapperComponents.tsx:168
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Map Explorer"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:370
+#: components/WbPlanView/MapperComponents.tsx:379
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Hide Field Mapper"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:371
+#: components/WbPlanView/MapperComponents.tsx:380
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Show Field Mapper"
 
-#: components/WbPlanView/Mapper.tsx:485
+#: components/WbPlanView/Mapper.tsx:495
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Mappings"
 
-#: components/WbPlanView/Mapper.tsx:301
+#: components/WbPlanView/Mapper.tsx:311
 #. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Clear Mappings"
 
-#: components/WbPlanView/MapperComponents.tsx:198
+#: components/WbPlanView/MapperComponents.tsx:207
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Empty Data Set"
 
-#: components/WbPlanView/MapperComponents.tsx:202
+#: components/WbPlanView/MapperComponents.tsx:211
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "This Data Set doesn't have any columns."
 
-#: components/WbPlanView/MapperComponents.tsx:205
+#: components/WbPlanView/MapperComponents.tsx:214
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Press the \"Add New Column\" button below the mapping lines to add new "
 "columns."
 
-#: components/WbPlanView/MapperComponents.tsx:350
+#: components/WbPlanView/MapperComponents.tsx:359
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
 msgstr "Automap to start a new Upload Plan?"
 
-#: components/WbPlanView/MapperComponents.tsx:351
+#: components/WbPlanView/MapperComponents.tsx:360
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "This will erase existing data field mappings."
 
-#: components/WbPlanView/MapperComponents.tsx:420
+#: components/WbPlanView/MapperComponents.tsx:429
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Change Matching Logic"
 
-#: components/WbPlanView/MapperComponents.tsx:428
+#: components/WbPlanView/MapperComponents.tsx:437
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Require Data to Match Existing Records"
 
-#: components/WbPlanView/MapperComponents.tsx:424
+#: components/WbPlanView/MapperComponents.tsx:433
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Matching logic is unavailable for current mappings"
 
-#: components/WbPlanView/MapperComponents.tsx:406
-#: components/WbPlanView/MapperComponents.tsx:440
+#: components/WbPlanView/MapperComponents.tsx:415
+#: components/WbPlanView/MapperComponents.tsx:449
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Must Match"
@@ -341,7 +341,7 @@ msgstr "Must Match"
 msgid "unloadProtectMessage"
 msgstr "This mapping has not been saved."
 
-#: components/WbPlanView/MapperComponents.tsx:48
+#: components/WbPlanView/MapperComponents.tsx:52
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
 msgstr "New Column {index:number}"
