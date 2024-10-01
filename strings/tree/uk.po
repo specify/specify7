@@ -302,31 +302,31 @@ msgstr "Редагувати ранги"
 msgid "resourceToDelete"
 msgstr "Це призведе до остаточного видалення наступного ресурсу"
 
-#: components/TreeView/index.tsx:374
+#: components/TreeView/index.tsx:378
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
 msgstr "Вертикальний"
 
-#: components/TreeView/index.tsx:306
+#: components/TreeView/index.tsx:310
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "splitView"
 msgstr "Розділений перегляд"
 
-#: components/TreeView/index.tsx:312
+#: components/TreeView/index.tsx:316
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "horizontal"
 msgstr "Горизонтальний"
 
-#: components/TreeView/index.tsx:312
+#: components/TreeView/index.tsx:316
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "vertical"
 msgstr "Вертикальний"
 
-#: components/TreeView/index.tsx:321
+#: components/TreeView/index.tsx:325
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
@@ -354,8 +354,8 @@ msgstr "Виберіть батьківський рейтинг"
 msgid "moveItems"
 msgstr "Переміщення елементів"
 
-#: components/TreeView/index.tsx:262
-#: components/TreeView/index.tsx:264
+#: components/TreeView/index.tsx:266
+#: components/TreeView/index.tsx:268
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"

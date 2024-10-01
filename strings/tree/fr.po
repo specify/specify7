@@ -299,31 +299,31 @@ msgstr "Modifier les classements"
 msgid "resourceToDelete"
 msgstr "Cela supprimera définitivement la ressource suivante"
 
-#: components/TreeView/index.tsx:374
+#: components/TreeView/index.tsx:378
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
 msgstr "Verticale"
 
-#: components/TreeView/index.tsx:306
+#: components/TreeView/index.tsx:310
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "splitView"
 msgstr "Vue partagé"
 
-#: components/TreeView/index.tsx:312
+#: components/TreeView/index.tsx:316
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:312
+#: components/TreeView/index.tsx:316
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "vertical"
 msgstr "Verticale"
 
-#: components/TreeView/index.tsx:321
+#: components/TreeView/index.tsx:325
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
@@ -351,8 +351,8 @@ msgstr "Choisissez le rang des parents"
 msgid "moveItems"
 msgstr "Déplacer des éléments"
 
-#: components/TreeView/index.tsx:262
-#: components/TreeView/index.tsx:264
+#: components/TreeView/index.tsx:266
+#: components/TreeView/index.tsx:268
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"

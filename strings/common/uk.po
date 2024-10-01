@@ -946,7 +946,7 @@ msgid "collapse"
 msgstr "Згорнути"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:288
+#: components/TreeView/index.tsx:292
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"
