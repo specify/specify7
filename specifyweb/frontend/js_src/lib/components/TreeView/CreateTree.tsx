@@ -50,8 +50,8 @@ export function CreateTree<
       'name'
     );
     const dsResource = deserializeResource(resource);
+    dsResource.set('name', uniqueName as never);
     setSelectedResource(dsResource);
-    selectedResource?.set('name', uniqueName as never);
     setIsActive(2);
   };
 
