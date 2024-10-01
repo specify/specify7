@@ -2,7 +2,7 @@ import type { RA, WritableArray } from '../../utils/types';
 import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { idFromUrl } from '../DataModel/resource';
+import { idFromUrl, strictIdFromUrl } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -73,6 +73,7 @@ export function getQueryComboBoxConditions({
   treeData,
   subViewRelationship,
   relatedTable,
+  treeDefinition,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -80,6 +81,7 @@ export function getQueryComboBoxConditions({
   readonly collectionRelationships: CollectionRelationships | undefined;
   readonly relatedTable: SpecifyTable;
   readonly subViewRelationship: Relationship | undefined;
+  readonly treeDefinition: string | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
@@ -139,6 +141,20 @@ export function getQueryComboBoxConditions({
     } else if (fieldName === 'hybridParent1' || fieldName === 'hybridParent2') {
       // Nothing to do
     }
+  }
+
+  if (
+    resource.specifyTable === tables.Determination &&
+    fieldName === 'fullName' &&
+    treeDefinition !== undefined
+  ) {
+    fields.push(
+      QueryFieldSpec.fromPath(tables.Taxon.name, ['definition', 'id'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('startValue', strictIdFromUrl(treeDefinition).toString())
+        .set('operStart', queryFieldFilters.equal.id)
+    );
   }
 
   if (
