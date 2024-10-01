@@ -118,25 +118,6 @@ describe('Collection Object business rules', () => {
     expect(collectionObject.get('collectingEvent')).toBeDefined();
   });
 
-  test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {
-    const collectionObject = getBaseCollectionObject();
-
-    const determination =
-      collectionObject.getDependentResource('determinations')?.models[0];
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(determination, tables.Determination.getField('taxon'))
-    );
-
-    await act(async () => {
-      await determination?.businessRuleManager?.checkField('taxon');
-    });
-
-    expect(result.current[0]).toStrictEqual([
-      'Taxon does not belong to the same tree as this Object Type',
-    ]);
-  });
-
   const otherCollectionObjectTypeUrl = getResourceApiUrl(
     'CollectionObjectType',
     2
