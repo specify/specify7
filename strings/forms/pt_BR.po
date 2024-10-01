@@ -660,8 +660,3 @@ msgstr ""
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr ""
-
-#: components/DataModel/businessRuleDefs.ts:266
-#. Used in: Components > Data Model > Business Rule Defs
-msgid "invalidTree"
-msgstr ""
