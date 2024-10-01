@@ -58,7 +58,7 @@ function fixDayJsBugs(
 function unsafeParseMonthYear(
   value: string
 ): ReturnType<typeof dayjs> | undefined {
-  const parsed = /(\d{2})\D(\d{4})/.exec(value)?.slice(1);
+  const parsed = /(\d{2})\D(\d{4})/u.exec(value)?.slice(1);
   if (parsed === undefined) return undefined;
   const [month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1));
@@ -72,7 +72,7 @@ function unsafeParseFullDate(
   value: string
 ): ReturnType<typeof dayjs> | undefined {
   if (fullDateFormat().toUpperCase() !== 'DD/MM/YYYY') return;
-  const parsed = /(\d{2})\D(\d{2})\D(\d{4})/.exec(value)?.slice(1);
+  const parsed = /(\d{2})\D(\d{2})\D(\d{4})/u.exec(value)?.slice(1);
   if (parsed === undefined) return undefined;
   const [day, month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1, day));

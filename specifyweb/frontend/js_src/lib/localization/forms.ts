@@ -915,6 +915,22 @@ export const formsText = createDictionary({
     'uk-ua': 'Автоматична нумерація',
     'de-ch': 'Automatische Nummerierung',
   },
+  autoNumberByYear: {
+    'en-us': 'Auto-number by year',
+    'de-ch': 'Auto-Nummer nach Jahr',
+    'es-es': 'Auto-número por año',
+    'fr-fr': 'Auto-numéro par année',
+    'ru-ru': 'Автонумерация по году',
+    'uk-ua': 'Автонумерація за роком',
+  },
+  autoNumber: {
+    'en-us': 'Auto-number',
+    'de-ch': 'Auto-Nummer',
+    'es-es': 'Auto-número',
+    'fr-fr': 'Auto-numéro',
+    'ru-ru': 'Автонумерация',
+    'uk-ua': 'Автонумерація',
+  },
   editFormDefinition: {
     'en-us': 'Edit Form Definition',
     'ru-ru': 'Изменить определение формы',

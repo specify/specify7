@@ -145,13 +145,20 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Веб-посилання',
     'de-ch': 'Weblinks',
   },
-  uiFormatters: {
+  fieldFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
     'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
+  },
+  fieldFormattersDescription: {
+    'en-us': `
+      Field formatter controls how data for a specific table field is
+      shown in query results, exports, and on the form. It determines
+      autonumbering and individual parts that make up the field.
+    `,
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
@@ -284,7 +291,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Доступные агрегаты таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
-  availableWebLink: {
+  availableWebLinks: {
     'en-us': 'Available Web Links',
     'de-ch': 'Verfügbare Weblinks',
     'es-es': 'Enlaces web disponibles',
@@ -292,20 +299,16 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Доступные веб-ссылки',
     'uk-ua': 'Доступні веб-посилання',
   },
+  availableFieldFormatters: {
+    'en-us': 'Available Field Formatters',
+    'de-ch': 'Verfügbare Feldformatierer',
+    'es-es': 'Formateadores de campo disponibles',
+    'fr-fr': 'Formateurs de champs disponibles',
+    'ru-ru': 'Доступные форматеры полей',
+    'uk-ua': 'Доступні форматувальники полів',
+  },
   selectDefaultFormatter: {
-    'en-us': 'Please select a default record formatter for this table',
-    'de-ch':
-      'Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle',
-    'es-es':
-      'Seleccione un formateador de registros predeterminado para esta tabla',
-    'fr-fr': `
-      Veuillez sélectionner un formateur d'enregistrement par défaut pour cette
-      table
-    `,
-    'ru-ru': `
-      Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.
-    `,
-    'uk-ua': 'Виберіть стандартний формат запису для цієї таблиці',
+    'en-us': 'Please designate one of the formatters as default',
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
@@ -524,7 +527,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Попередній перегляд',
   },
   previewExplainer: {
-    'en-us': 'Search your collection records to preview the record formatter',
+    'en-us': 'Search your collection records to preview the formatter',
     'de-ch': `
       Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des
       Datensatzformatierers anzuzeigen
@@ -538,12 +541,12 @@ export const resourcesText = createDictionary({
       formateur d'enregistrements
     `,
     'ru-ru': `
-      Выполните поиск в записях своей коллекции, чтобы просмотреть средство
-      форматирования записей.
+      Выполните поиск в записях своей коллекции, чтобы просмотреть
+      форматирования.
     `,
     'uk-ua': `
-      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
-      форматування записів
+      Виконайте пошук у своїх записах колекції, щоб переглянути
+      форматування 
     `,
   },
   editorNotAvailable: {
@@ -838,5 +841,48 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Une détermination actuelle est requise.',
     'ru-ru': 'Требуется текущее определение.',
     'uk-ua': 'Потрібне поточне визначення.',
+  },
+  formatterPreviewUnavailable: {
+    'en-us': 'Preview for formatter of this type is not available',
+  },
+  nonConformingInline: {
+    'en-us': '(non-conforming)',
+  },
+  hint: {
+    'en-us': 'Hint',
+    'de-ch': 'Hinweis',
+    'es-es': 'Sugerencia',
+    'fr-fr': 'Indice',
+    'ru-ru': 'Подсказка',
+    'uk-ua': 'Підказка',
+  },
+  constant: {
+    'en-us': 'Constant',
+  },
+  alpha: {
+    'en-us': 'Alpha',
+  },
+  numeric: {
+    'en-us': 'Numeric',
+  },
+  alphanumeric: {
+    'en-us': 'Alphanumeric',
+  },
+  anychar: {
+    'en-us': 'Any character',
+  },
+  regex: {
+    'en-us': 'Regular expression',
+  },
+  exampleField: {
+    'en-us': 'Example Field',
+    'de-ch': 'Beispielfeld',
+    'es-es': 'Campo de ejemplo',
+    'fr-fr': "Champ d'exemple",
+    'ru-ru': 'Пример поля',
+    'uk-ua': 'Приклад поле',
+  },
+  pattern: {
+    'en-us': 'Pattern',
   },
 } as const);

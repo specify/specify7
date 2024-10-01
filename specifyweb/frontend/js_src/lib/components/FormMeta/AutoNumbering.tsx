@@ -65,7 +65,7 @@ function AutoNumberingDialog({
     if (stringValue.length === 0 && resource.isNew()) {
       const field = resource.specifyTable.strictGetLiteralField(fieldName);
       const formatter = field.getUiFormatter()!;
-      const wildCard = formatter.valueOrWild();
+      const wildCard = formatter.defaultValue;
       resource.set(fieldName, wildCard as never);
     }
     handleChange([...config, fieldName]);
@@ -74,7 +74,7 @@ function AutoNumberingDialog({
   function handleDisableAutoNumbering(fieldName: string): void {
     const field = resource.specifyTable.strictGetLiteralField(fieldName);
     const formatter = field.getUiFormatter()!;
-    const wildCard = formatter.valueOrWild();
+    const wildCard = formatter.defaultValue;
     if (resource.get(fieldName) === wildCard)
       resource.set(fieldName, null as never);
     handleChange(config.filter((name) => name !== fieldName));
