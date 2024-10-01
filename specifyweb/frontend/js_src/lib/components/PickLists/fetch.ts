@@ -43,8 +43,6 @@ async function unsafeFetchPickList(
 ): Promise<SpecifyResource<PickList> | undefined> {
   getFrontEndPickLists();
 
-  const geologicPickList = getFrontEndPickLists().GeologicTimePeriod?.name;
-
   let pickList: SpecifyResource<PickList> | undefined =
     unsafeGetPickLists()[pickListName];
   if (pickList === undefined) {
@@ -55,10 +53,7 @@ async function unsafeFetchPickList(
       // Pick list does not exist
       return undefined;
     if (!hasToolPermission('pickLists', 'read')) return undefined;
-    pickList =
-      pickListName === 'systemGeologicPicklist'
-        ? geologicPickList
-        : await rawFetchPickList(pickListName, true);
+    pickList = await rawFetchPickList(pickListName, true);
     if (pickList === undefined)
       pickList = await rawFetchPickList(pickListName, false);
     unsafeGetPickLists()[pickListName] = pickList;

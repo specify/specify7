@@ -286,8 +286,7 @@ export function resolveParser(
   const formatter =
     field.isRelationship === false ? field.getUiFormatter?.() : undefined;
   return mergeParsers(parser, {
-    pickListName:
-      field.name === 'age' ? 'systemGeologicPicklist' : field.getPickList?.(),
+    pickListName: field.getPickList?.(),
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,

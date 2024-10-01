@@ -193,8 +193,8 @@ export const getFrontEndPickLists = f.store<{
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
-    GeologicTimePeriod: {
-      name: definePicklist('_GeologicTimePeriod', [])
+    CollectionObject: {
+      age: definePicklist('_GeologicTimePeriod', [])
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'geologictimeperiod')
         .set('fieldName', 'name'),
