@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:16+0000\n"
+"PO-Revision-Date: 2024-10-02 20:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -473,7 +473,7 @@ msgstr "Показати значок у заголовку"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Інтерфейс масштабу"
+msgstr "Інтерфейс масштабування"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -933,7 +933,7 @@ msgstr "Використовуйте доступний засіб вибору 
 #: components/Preferences/UserDefinitions.tsx:787
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr "Зробіть діалогові вікна форми сірими"
+msgstr "Зробіть діалогові вікна форми сірими фоном"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1337
@@ -1036,8 +1036,8 @@ msgstr "Використовуйте спеціальні роздільники
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Список роздільників, які слід використовувати на додаток до визначених вище. "
-"Поставте один роздільник на рядок."
+"Список розділювачів для використання на додаток до визначених вище. Поставте "
+"один роздільник на рядок."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:638
@@ -1127,7 +1127,7 @@ msgstr "Автоматично створювати записи {agentVariantTa
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Під час об’єднання агентів автоматично створювати записи "
+"Під час об’єднання агентів автоматично створюйте записи "
 "{agentVariantTable:string} на основі варіацій імені/прізвища."
 
 #. Used in: Components > App Resources > Types
@@ -1140,13 +1140,13 @@ msgstr "Налаштування"
 #: components/Preferences/UserDefinitions.tsx:490
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr "Пам'ятайте про розміри діалогових вікон"
+msgstr "Запам'ятайте розміри діалогових вікон"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
 #, fuzzy
 msgid "rememberDialogPositions"
-msgstr "Запам'ятовуйте положення діалогового вікна"
+msgstr "Запам'ятайте положення діалогового вікна"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1304
