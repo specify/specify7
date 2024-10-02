@@ -236,6 +236,38 @@
             </altviews>
         </view>
 
+		<view name="CollectionObjectType" class="edu.ku.brc.specify.datamodel.CollectionObjectType" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectTypeBusRules" resourcelabels="false">
+			<desc>The Collection Object Type form.</desc>
+			<altviews>
+				<altview name="CollectionObjectType View" viewdef="CollectionObjectType" mode="view" default="true"/>
+				<altview name="CollectionObjectType Edit" viewdef="CollectionObjectType" mode="edit"/>
+			</altviews>
+		</view>
+
+        <view name="CollectionObjectGroup" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupBusRules" resourcelabels="false">
+			<desc>The Collection Object Group form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroup View" viewdef="CollectionObjectGroup" mode="view" default="true"/>
+				<altview name="CollectionObjectGroup Edit" viewdef="CollectionObjectGroup" mode="edit"/>
+			</altviews>
+		</view>
+
+		<view name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
+			<desc>The Collection Object Group Join form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin" mode="view" default="true"/>
+				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin" mode="edit"/>
+			</altviews>
+		</view>
+
+		<view name="CollectionObjectGroupType" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupTypeBusRules" resourcelabels="false">
+			<desc>The Collection Object Group Type form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroupType View" viewdef="CollectionObjectGroupType" mode="view" default="true"/>
+				<altview name="CollectionObjectGroupType Edit" viewdef="CollectionObjectGroupType" mode="edit"/>
+			</altviews>
+		</view>
+
         <view name="Collection Object Search"
               class="edu.ku.brc.specify.datamodel.CollectionObject"
               busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectBusRules"
@@ -2526,6 +2558,143 @@
                 </row>-->
             </rows>
         </viewdef>
+
+		<viewdef name="CollectionObjectGroup" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Collection Object Group Form</desc>
+			<enableRules/>
+			<columnDef>100px,2px,178px,5px,108px,2px,130px,5px,100px,2px,195px,0px,15px,p:g</columnDef>
+			<columnDef os="lnx">115px,2px,196px,2px,113px,2px,150px,2px,115px,5px,215px,0px,15px,p:g</columnDef>
+			<columnDef os="mac">130px,2px,216px,2px,133px,2px,170px,2px,135px,5px,235px,0px,15px,p:g</columnDef>
+			<columnDef os="exp">p,2px,p:g,2px,p:g(2),5px,p:g,2px,p:g(2),5px:g,p,2px,p:g,0px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="cogType"/>
+					<cell type="field" id="cogType" name="cogType" uitype="combobox" picklist="COGTypes"/>
+				</row>
+				<row>
+					<cell type="subview" id="4" name="cojo" uitype="subview" isrequired="false" colspan="13"/>
+				</row>
+				<row>
+					<cell type="subview" id="4" name="parentCojos" uitype="subview" isrequired="false" colspan="13"/>
+				</row>
+			</rows>
+		</viewdef>
+
+		<viewdef name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Join Form</desc>
+			<enableRules/>
+			<columnDef>100px,2px,178px,5px,108px,2px,130px,5px,100px,2px,195px,0px,15px,p:g</columnDef>
+			<columnDef os="lnx">115px,2px,196px,2px,113px,2px,150px,2px,115px,5px,215px,0px,15px,p:g</columnDef>
+			<columnDef os="mac">130px,2px,216px,2px,133px,2px,170px,2px,135px,5px,235px,0px,15px,p:g</columnDef>
+			<columnDef os="exp">p,2px,p:g,2px,p:g(2),5px,p:g,2px,p:g(2),5px:g,p,2px,p:g,0px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="panel" colspan="3">
+						<rows>
+							<row>
+								<cell type="label" labelfor="1"/>
+								<cell type="field" id="1" name="isPrimary" uitype="checkbox"/>
+								<cell type="label" labelfor="2"/>
+								<cell type="field" id="2" name="isSubstrate" uitype="checkbox"/>
+								<!-- 						<cell type="label" labelfor="3"/>
+						<cell type="field" id="3" name="precedence" uitype="text"/> -->
+							</row>
+						</rows>
+					</cell>
+					<cell type="label" labelfor="5"/>
+					<cell type="field" id="5" name="childCog" uitype="querycbx" readonly="true"/>
+					<cell type="label" labelfor="6"/>
+					<cell type="field" id="6" name="childCo" uitype="querycbx" readonly="true"/>
+				</row>
+				<row>
+					<cell type="panel" colspan="13">
+						<rows>
+							<row/>
+						</rows>
+						<rows condition="childCo.CollectionObjectID=">
+							<row>
+								<cell type="subview" id="childCO" name="childCo" uitype="subview" colspan="13"/>
+							</row>
+						</rows>
+						<rows condition="childCog.CollectionObjectGroupID=">
+							<row>
+								<cell type="subview" id="childCOG" name="childCog" uitype="subview" colspan="13"/>
+							</row>
+						</rows>
+					</cell>
+				</row>
+				<!-- 		<row>
+			<cell type="label" labelfor="7"/>
+			<cell type="field" id="7" name="version" uitype="text"/>
+			<cell type="label" labelfor="8"/>
+			<cell type="field" id="8" name="timestampCreated" uitype="text"/>
+			<cell type="label" labelfor="9"/>
+			<cell type="field" id="9" name="timestampModified" uitype="text"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="10"/>
+			<cell type="field" id="10" name="text1" uitype="text"/>
+			<cell type="label" labelfor="11"/>
+			<cell type="field" id="11" name="text2" uitype="text"/>
+			<cell type="label" labelfor="12"/>
+			<cell type="field" id="12" name="text3" uitype="text"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="13"/>
+			<cell type="field" id="13" name="integer1" uitype="text"/>
+			<cell type="label" labelfor="14"/>
+			<cell type="field" id="14" name="integer2" uitype="text"/>
+			<cell type="label" labelfor="15"/>
+			<cell type="field" id="15" name="integer3" uitype="text"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="16"/>
+			<cell type="field" id="16" name="Yesno1" uitype="checkbox"/>
+			<cell type="label" labelfor="17"/>
+			<cell type="field" id="17" name="Yesno2" uitype="checkbox"/>
+			<cell type="label" labelfor="18"/>
+			<cell type="field" id="18" name="Yesno3" uitype="checkbox"/>
+		</row> -->
+			</rows>
+		</viewdef>
+
+		<viewdef name="CollectionObjectGroupType" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Type Form</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="name" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="type" uitype="combobox" picklist="DefaultCollectionObjectGroupTypes"/>
+				</row>
+			</rows>
+		</viewdef>
+
+        <viewdef name="CollectionObjectType" class="edu.ku.brc.specify.datamodel.CollectionObjectType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Type Form</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="taxontreedef" uitype="querycbx" isrequired="true"/>
+				</row>
+			</rows>
+		</viewdef>
 
         <viewdef
                 type="form"
