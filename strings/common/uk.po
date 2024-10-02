@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:16+0000\n"
+"PO-Revision-Date: 2024-10-02 20:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -1104,7 +1104,7 @@ msgstr "Масове вирішення"
 #: components/WorkBench/RemainingLoadingTime.tsx:45
 #, fuzzy
 msgid "timeRemaining"
-msgstr "Час, що залишився"
+msgstr "Залишився час"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
