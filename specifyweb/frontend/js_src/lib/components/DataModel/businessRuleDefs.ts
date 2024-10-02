@@ -12,15 +12,15 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { fetchResource, idFromUrl } from './resource';
+import { fetchResource, getResourceApiUrl, idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
+import { schema } from './schema';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
   Address,
   BorrowMaterial,
   CollectionObject,
-  Collection as CollectionTable,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -159,16 +159,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
 
       // Set the default CoType
-      if (collectionObject.get('collectionObjectType') === undefined)
-        collectionObject
-          .rgetPromise('collection')
-          .then((collection: SpecifyResource<CollectionTable> | null) => {
-            if (collection !== null)
-              collectionObject.set(
-                'collectionObjectType',
-                collection.get('collectionObjectType')
-              );
-          });
+      if (typeof schema.defaultCollectionObjectType === 'number')
+        collectionObject.set(
+          'collectionObjectType',
+          getResourceApiUrl(
+            'CollectionObjectType',
+            schema.defaultCollectionObjectType
+          )
+        );
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {

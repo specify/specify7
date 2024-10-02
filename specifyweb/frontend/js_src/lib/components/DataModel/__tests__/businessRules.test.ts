@@ -116,6 +116,7 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
+    expect(collectionObject.get('collectionObjectType')).toBeDefined();
   });
 
   test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {

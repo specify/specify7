@@ -21,6 +21,7 @@ type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
+  readonly defaultCollectionObjectType: number;
   readonly orgHierarchy: readonly [
     'CollectionObject',
     'Collection',
@@ -48,6 +49,9 @@ const schemaBase: Writable<Schema> = {
 
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
+
+  // Default collectionObjectType for the collection
+  defaultCollectionObjectType: undefined!,
 
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [
@@ -87,6 +91,7 @@ export const fetchContext = load<
   schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
   schemaBase.paleoContextChildTable = data.paleoContextChildTable;
   schemaBase.catalogNumFormatName = data.catalogNumFormatName;
+  schemaBase.defaultCollectionObjectType = data.defaultCollectionObjectType;
   return schemaBase;
 });
 

@@ -204,11 +204,7 @@ describe('needsSaved', () => {
       id: collectionObjectId,
     });
 
-    // Need to wait until the business rule fetches Collection -> CollectionObjectType (https://github.com/specify/specify7/pull/5224)
-    // See: https://stackoverflow.com/a/51045733
-    await new Promise(process.nextTick);
     expect(resource.needsSaved).toBe(false);
-
     resource.set('text1', 'a');
     expect(resource.needsSaved).toBe(true);
   });
@@ -218,11 +214,7 @@ describe('needsSaved', () => {
       id: collectionObjectId,
     });
 
-    // Need to wait until the business rule fetches Collection -> CollectionObjectType (https://github.com/specify/specify7/pull/5224)
-    // See: https://stackoverflow.com/a/51045733
-    await new Promise(process.nextTick);
     expect(resource.needsSaved).toBe(false);
-
     resource.set('determinations', []);
     expect(resource.needsSaved).toBe(true);
   });
