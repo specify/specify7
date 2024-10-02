@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:17+0000\n"
+"PO-Revision-Date: 2024-10-02 20:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -858,7 +858,7 @@ msgstr "Largura de coluna flexível"
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largura de coluna de grade de subvisualização flexível"
+msgstr "Largura flexível da coluna da grade de subvisualização"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
