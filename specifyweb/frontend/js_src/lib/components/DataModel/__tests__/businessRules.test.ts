@@ -231,7 +231,7 @@ describe('CollectionObjectGroup business rules', () => {
       parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
     });
 
-    cog.set('parentCojos', [cojo1, cojo2]);
+    cog.set('cojo', [cojo1, cojo2]);
     return { cog, cojo1, cojo2 };
   };
 
