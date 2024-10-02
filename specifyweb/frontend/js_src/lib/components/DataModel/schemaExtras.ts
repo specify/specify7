@@ -87,7 +87,7 @@ export const schemaExtras: {
         name: 'age',
         required: false,
         readOnly: true,
-        type: 'java.lang.Integer' as 'java.lang.Integer' | 'java.lang.String',
+        type: 'java.lang.String',
         indexed: false,
         unique: false,
       }),
