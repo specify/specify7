@@ -77,7 +77,7 @@ msgstr "Нет"
 #: components/Toolbar/Query.tsx:210
 #: components/Toolbar/RecordSets.tsx:176
 #: components/Toolbar/RecordSets.tsx:215
-#: components/Toolbar/TreeRepair.tsx:91
+#: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:398
 #: components/TreeView/Actions.tsx:414
@@ -249,7 +249,7 @@ msgstr "Создать"
 #: components/Toolbar/MasterKey.tsx:97
 #: components/Toolbar/QueryTablesEdit.tsx:84
 #: components/Toolbar/QueryTablesWrapper.tsx:155
-#: components/Toolbar/TreeRepair.tsx:91
+#: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:402
 #: components/WbActions/WbNoUploadPlan.tsx:42
 #: components/WbActions/index.tsx:199

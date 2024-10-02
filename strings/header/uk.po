@@ -108,12 +108,12 @@ msgstr "Створити новий звіт"
 
 #: components/Header/userToolDefinitions.ts:74
 #: components/Router/OverlayRoutes.tsx:165
-#: components/Toolbar/TreeRepair.tsx:171
+#: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
 msgstr "Ремонтувати дерево"
 
-#: components/Toolbar/TreeRepair.tsx:166
+#: components/Toolbar/TreeRepair.tsx:168
 #. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
 msgstr "Ремонт дерева завершено."
