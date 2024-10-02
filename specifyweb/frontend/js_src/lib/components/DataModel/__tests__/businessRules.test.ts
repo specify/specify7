@@ -211,7 +211,7 @@ describe('Collection Object business rules', () => {
 });
 
 describe('CollectionObjectGroup business rules', () => {
-  const getBaseCOG = () => {
+  const getBaseCog = () => {
     const cog = new tables.CollectionObjectGroup.Resource({
       id: 1,
       cogType: getResourceApiUrl('CollectionObjectGroupType', 1),
