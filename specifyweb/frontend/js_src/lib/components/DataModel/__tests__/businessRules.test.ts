@@ -236,7 +236,7 @@ describe('CollectionObjectGroup business rules', () => {
   };
 
   test('Only one CO COJO can be primary', () => {
-    const { cojo1, cojo2 } = getBaseCOG();
+    const { cojo1, cojo2 } = getBaseCog();
     cojo1.set('isPrimary', true);
 
     expect(cojo1.get('isPrimary')).toBe(true);
@@ -244,7 +244,7 @@ describe('CollectionObjectGroup business rules', () => {
   });
 
   test('Only one CO COJO can be substrate', () => {
-    const { cojo1, cojo2 } = getBaseCOG();
+    const { cojo1, cojo2 } = getBaseCog();
     cojo2.set('isSubstrate', true);
 
     expect(cojo1.get('isSubstrate')).toBe(false);
