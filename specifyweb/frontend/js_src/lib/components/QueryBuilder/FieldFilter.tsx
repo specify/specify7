@@ -566,7 +566,7 @@ export const queryFieldFilters: RR<
     hasParser: true,
   },
   name: {
-    id: 15,
+    id: 17,
     label: resourcesText.name(),
     description: undefined,
     renderPickList: true,

@@ -257,10 +257,11 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(op_num)
             if query_op.is_precalculated(op_num):
-                # f = op(orm_field, value, query)
-                new_query = op(orm_field, value, query, is_strict=strict)
-                query = query._replace(query=new_query)
-                f = None
+                f = op(orm_field, value, query, is_strict=strict) # Needed if using op_age_range_simple
+                # Handle modifying query from op_age_range
+                # new_query = op(orm_field, value, query, is_strict=strict)
+                # query = query._replace(query=new_query)
+                # f = None
             else:
                 f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f

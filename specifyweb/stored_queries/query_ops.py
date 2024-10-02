@@ -2,7 +2,7 @@ from collections import namedtuple
 import re
 import sqlalchemy
 
-from specifyweb.specify.geo_time import query_co_in_time_period, query_co_in_time_range, query_co_in_time_range_with_joins, search_co_ids_in_time_range
+from specifyweb.specify.geo_time import query_co_in_time_period, query_co_in_time_range, query_co_in_time_range_with_joins, search_co_ids_in_time_period, search_co_ids_in_time_range, search_co_in_time_range
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
 
@@ -119,6 +119,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         values = [self.format(v.strip()) for v in value.split(',')[:2]]
         start_time, end_time = values
         co_ids = search_co_ids_in_time_range(start_time, end_time, require_full_overlap=is_strict)
+        # co_ids = search_co_in_time_range(start_time, end_time, require_full_overlap=is_strict)
         return field.in_(co_ids)
 
     # TODO: Remove once an implementation which implemention to keep
@@ -130,19 +131,15 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
     # TODO: Add new operations for age range and period
     def op_age_range_new(self, field, value, query, is_strict=False):
         values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        # query.query = field(query.query, values[0], values[1], session=None, require_full_overlap=False)
-        # return field.between(*values)
-        # TODO: Maybe call query_co_in_time_range here, or maybe outside of this function maybe in apply_filter.
-        # Need to either add a join a filter statement to the query,
-        # or do a subquery, or run query to get the data and add to the query with filter statement (in [1,2,3]).
         start_time, end_time = values
         return query_co_in_time_range_with_joins(query.query, start_time, end_time, session=None, require_full_overlap=is_strict)
 
     def op_age_range(self, field, value, query, is_strict=False):
-        # return self.op_age_range_simple(field, value, is_strict)
+        return self.op_age_range_simple(field, value, is_strict)
         # return self.op_age_range_old(field, value, query, is_strict)
-        return self.op_age_range_new(field, value, query=query, is_strict=is_strict)
+        # return self.op_age_range_new(field, value, query=query, is_strict=is_strict)
 
     def op_age_period(self, field, value, query, is_strict=False):
         time_period_name = value
-        return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=False)
+        return field.in_(search_co_ids_in_time_period(time_period_name, require_full_overlap=False))
+        # return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=False)
