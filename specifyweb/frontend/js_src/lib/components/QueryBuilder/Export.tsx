@@ -22,6 +22,8 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
+import { format } from '../Formatters/formatters';
+import { jsonToXml } from '../Syncer/xmlToJson';
 
 export function QueryExportButtons({
   baseTableName,
@@ -89,16 +91,23 @@ export function QueryExportButtons({
     'exportCsvUtf8Bom'
   );
 
+  function formatExportFileName(
+    file_extension: string
+  ): string {
+    return `${
+      queryResource.isNew()
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
+        : queryResource.get('name')
+    } - ${new Date().toDateString()}.${file_extension}`;
+  }
+
   /*
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  async function exportSelected(): Promise<void> {
-    const name = `${
-      queryResource.isNew()
-        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
-        : queryResource.get('name')
-    } - ${new Date().toDateString()}.csv`;
+  
+  async function exportCsvSelected(): Promise<void> {
+    const name = formatExportFileName('csv');
 
     const selectedResults = results?.current?.map((row) =>
       row !== undefined && f.has(selectedRows, row[0])
@@ -123,6 +132,131 @@ export function QueryExportButtons({
       separator,
       utf8Bom
     );
+  }
+
+  async function exportKmlSelected(): Promise<void> {
+    const name = formatExportFileName('kml');
+
+    const selectedResults = results?.current?.map((row) =>
+      row !== undefined && f.has(selectedRows, row[0])
+        ? row?.slice(1).map((cell) => cell?.toString() ?? '')
+        : undefined
+    );
+
+    if (selectedResults === undefined) return undefined;
+
+    let jsonData: {
+      tagName: string;
+      attributes: {
+        xmlns: string;
+      };
+      children: RA<{
+        tagName: string;
+        attributes: {};
+        children: RA<{}>
+      }>;
+    } = {
+      tagName: "kml",
+      attributes: {
+        xmlns: "http://earth.google.com/kml/2.2"
+      },
+      children: [
+        {
+          tagName: "Document",
+          attributes: {},
+          children: []
+        }
+      ]
+    };
+
+    let placemarkTarget = jsonData.children[0].children;
+
+    selectedResults?.forEach((result) => {
+      let placemark = {
+        tagName: "Placemark",
+        attributes: {},
+        children: []
+      };
+
+      // <ExtendedData>
+      let extendedData: {
+        tagName: string;
+        attributes: {};
+        children: Array<{
+          tagName: string;
+          attributes: { name: string };
+          children: Array<{
+            tagName: string;
+            attributes: {};
+            children: string[]
+          }>
+        }>
+      } = {
+        tagName: "ExtendedData",
+        attributes: {},
+        children: []
+      };
+      
+      fields.forEach((field, index) => {
+        const fieldValue = result?.[index + 1];
+
+        (extendedData.children as Array<{
+          tagName: string;
+          attributes: { name: string };
+          children: Array<{ tagName: string; attributes: {}; children: string[] }>;
+        }>).push({
+          tagName: "Data",
+          attributes: { name: field.mappingPath.toString() },
+          children: [
+            {
+              tagName: "value",
+              attributes: {},
+              children: [String(fieldValue)]
+            }
+          ]
+        });
+      });
+      // push
+      placemark.children.push(extendedData);
+
+      // <name>
+      const nameValue = fields.map((field) => result?.[field.id]).join(' - ');
+      let nameData = {
+        tagName: "name",
+        attributes: {},
+        children: [nameValue]
+      };
+      // push
+      placemark.children.push(nameData);
+
+      // <Point>
+      const coordinatesValue = fields
+        .filter(
+          (field) =>
+            field.mappingPath.toString().includes('latitude') ||
+            field.mappingPath.toString().includes('longitude')
+        )
+        .map((field) => result?.[field.id])
+        .join(', ');
+      let pointData = {
+        tagName: "Point",
+        attributes: {},
+        children: [
+          {
+            tagName: "coordinates",
+            attributes: {},
+            children: [coordinatesValue]
+          }
+        ]
+      };
+      // push
+      placemark.children.push(pointData);
+    });
+
+    const json = JSON.stringify(jsonData);
+    const fileData = jsonToXml(json);
+
+    return downloadFile(name, fileData);
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -159,7 +293,7 @@ export function QueryExportButtons({
           onClick={(): void => {
             selectedRows.size === 0
               ? doQueryExport('/stored_query/exportcsv/', separator, utf8Bom)
-              : exportSelected().catch(softFail);
+              : exportCsvSelected().catch(softFail);
           }}
         >
           {queryText.createCsv()}
@@ -171,7 +305,11 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
+              ? (
+                selectedRows.size === 0
+                  ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
+                  : exportKmlSelected().catch(softFail)
+              )
               : setState('warning')
           }
         >
