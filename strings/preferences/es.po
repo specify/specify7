@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:16+0000\n"
+"PO-Revision-Date: 2024-10-02 20:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: components/Router/Routes.tsx:365
 #, fuzzy
 msgid "preferences"
-msgstr "Preferencias"
+msgstr "Esquinas redondeadas"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:45
@@ -214,7 +214,7 @@ msgstr "Campo obligatorio background"
 #: components/Preferences/UserDefinitions.tsx:930
 #, fuzzy
 msgid "darkFieldBackground"
-msgstr "Fondo de campo (tema oscuro)"
+msgstr "(fuente predeterminada)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:938
@@ -475,7 +475,7 @@ msgstr "Mostrar icono en el encabezado"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Interfaz de escala"
+msgstr "Mostrar vista básica"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -572,7 +572,7 @@ msgstr "No tienes permiso para cambiar esta opción"
 #: components/Preferences/UserDefinitions.tsx:1536
 #, fuzzy
 msgid "stickyScrolling"
-msgstr "Barra de desplazamiento fija"
+msgstr "Comienza con (distingue entre mayúsculas y minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:967
@@ -634,7 +634,7 @@ msgstr "Color de acento 4"
 #: components/Preferences/UserDefinitions.tsx:285
 #, fuzzy
 msgid "accentColor5"
-msgstr "Color de acento 5"
+msgstr "Fondo de campo deshabilitado (tema oscuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1694
@@ -664,7 +664,7 @@ msgstr "Navegue hacia el otro lado al llegar a la fila del borde."
 #: components/Preferences/UserDefinitions.tsx:1756
 #, fuzzy
 msgid "enterBeginsEditing"
-msgstr "La tecla Enter inicia la edición de la celda"
+msgstr "Ancho de columna de cuadrícula de subvista flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1722
@@ -767,7 +767,7 @@ msgstr "Los cuadros de texto crecen automáticamente"
 #: components/Preferences/UserDefinitions.tsx:1659
 #, fuzzy
 msgid "clearQueryFilters"
-msgstr "Restablecer filtros de consulta"
+msgstr "Color de acento 1"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1660
@@ -1104,7 +1104,7 @@ msgstr "Bien"
 #: components/Preferences/UserDefinitions.tsx:512
 #, fuzzy
 msgid "showUnsavedIndicator"
-msgstr "Mostrar indicador de cambios no guardados"
+msgstr "Desenfocar el contenido detrás del diálogo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:513
@@ -1275,7 +1275,7 @@ msgstr "Color del botón de información"
 #: components/Preferences/UserDefinitions.tsx:382
 #, fuzzy
 msgid "warningButtonColor"
-msgstr "Color del botón de advertencia"
+msgstr "Dirección del movimiento cuando se presiona la tecla [X27X]Enter[X37X]"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:337
