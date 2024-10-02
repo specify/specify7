@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:17+0000\n"
+"PO-Revision-Date: 2024-10-02 20:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -348,8 +348,8 @@ msgstr "Status des Datensatz-Uploads"
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
-"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in "
-"die Datenbank erfolgen."
+"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann in die "
+"Datenbank erfolgen."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:307
@@ -816,7 +816,7 @@ msgstr "Neu erstellen"
 #: components/WorkBench/DataSetMeta.tsx:183
 #, fuzzy
 msgid "dataSetMeta"
-msgstr "Datensatzeigenschaften"
+msgstr "Dataset-Eigenschaften"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
@@ -898,7 +898,7 @@ msgstr "Datensatz-Rollbackstatus"
 #: components/WorkBench/Status.tsx:66
 #, fuzzy
 msgid "wbStatusUpload"
-msgstr "Status des Datensatz-Uploads"
+msgstr "Upload-Status des Datensatzes"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:65
