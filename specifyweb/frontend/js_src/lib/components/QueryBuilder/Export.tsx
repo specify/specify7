@@ -145,17 +145,51 @@ export function QueryExportButtons({
 
     if (selectedResults === undefined) return undefined;
 
-    let jsonData: {
+    interface XmlNode {
       tagName: string;
+      attributes: { [key: string]: string | undefined };
+      children: Array<XmlNode | XmlTextNode | XmlCommentNode>;
+    }
+    
+    interface XmlTextNode {
+      type: 'Text';
+      string: string;
+    }
+    
+    interface XmlCommentNode {
+      type: 'Comment';
+      comment: string;
+    }
+
+    interface KmlData {
+      tagName: "kml";
       attributes: {
-        xmlns: string;
+        xmlns: "http://earth.google.com/kml/2.2";
       };
-      children: RA<{
-        tagName: string;
-        attributes: {};
-        children: RA<{}>
-      }>;
-    } = {
+      children: XmlNode[];
+    }
+
+    interface Placemark extends XmlNode {
+      tagName: "Placemark";
+      attributes: {};
+      children: XmlNode[];
+    }
+    
+    interface ExtendedData extends XmlNode {
+      tagName: "ExtendedData";
+      attributes: {};
+      children: XmlNode[];
+    }
+    
+    interface Data extends XmlNode {
+      tagName: "Data";
+      attributes: {
+        name: string;
+      };
+      children: XmlTextNode[];
+    }
+
+    let jsonData: kmlData = {
       tagName: "kml",
       attributes: {
         xmlns: "http://earth.google.com/kml/2.2"
@@ -172,7 +206,7 @@ export function QueryExportButtons({
     let placemarkTarget = jsonData.children[0].children;
 
     selectedResults?.forEach((result) => {
-      let placemark = {
+      let placemark: Placemark = {
         tagName: "Placemark",
         attributes: {},
         children: []
@@ -238,6 +272,7 @@ export function QueryExportButtons({
         )
         .map((field) => result?.[field.id])
         .join(', ');
+      
       let pointData = {
         tagName: "Point",
         attributes: {},
