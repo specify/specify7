@@ -426,7 +426,7 @@ msgstr ""
 #: components/WbActions/index.tsx:213
 #, fuzzy
 msgid "validationCanceled"
-msgstr "Validação Cancelada"
+msgstr "Validação cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:221
@@ -646,7 +646,7 @@ msgstr "Pesquisa ao vivo"
 #: components/WorkBench/AdvancedSearch.tsx:170
 #, fuzzy
 msgid "replaceOptions"
-msgstr "Opções de substituição"
+msgstr "Substituir opções"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
