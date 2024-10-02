@@ -37,12 +37,8 @@ export function QueryTablesEdit({
     />
   );
 }
-/*
- * TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
- * TODO: Revert #5236 to unhide COType
- */
+// TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
 export const HIDDEN_GEO_TABLES = new Set([
-  'CollectionObjectType',
   'CollectionObjectGroup',
   'CollectionObjectGroupJoin',
   'CollectionObjectGroupType',
