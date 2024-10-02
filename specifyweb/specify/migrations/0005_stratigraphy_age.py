@@ -69,7 +69,7 @@ def revert_agetype_picklist(apps, schema_editor):
             age_type_pick_list.delete()
 
 def create_table_schema_config_with_defaults(apps):
-    Discipline = specify_apps.get_model('specify', 'Discipline')
+    Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
