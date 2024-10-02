@@ -6498,7 +6498,7 @@ export type CollectionObjectGroup = {
     readonly yesno3: boolean | null;
   };
   readonly toOneDependent: {
-    readonly parentcojos: RA<CollectionObjectGroupJoin>;
+    readonly parentcojo: CollectionObjectGroupJoin | null;
   };
   readonly toOneIndependent: {
     readonly cogtype: CollectionObjectGroupType;
