@@ -250,13 +250,19 @@ def query_co_in_time_range_1(
     absolute_end_filter = sq_models.AbsoluteAge.absoluteAge <= (end_time - sq_models.AbsoluteAge.ageUncertainty)
     chrono_start_filter = sq_models.Geologictimeperiod.startPeriod >= (start_time + sq_models.Geologictimeperiod.startUncertainty)
     chrono_end_filter = sq_models.Geologictimeperiod.startPeriod <= (end_time - sq_models.Geologictimeperiod.endUncertainty)
+    paleocontext_start_filter = sq_models.PaleoContext.chronosstrat.startPeriod >= (start_time + sq_models.PaleoContext.chronosstrat.startUncertainty) or \
+        sq_models.PaleoContext.chronosstratend.startPeriod >= (start_time + sq_models.PaleoContext.chronosstratend.startUncertainty)
+    paleocontext_end_filter = sq_models.PaleoContext.chronosstrat.endPeriod <= (end_time - sq_models.PaleoContext.chronosstrat.endUncertainty) or \
+        sq_models.PaleoContext.chronosstratend.endPeriod <= (end_time - sq_models.PaleoContext.chronosstratend.endUncertainty)
 
     if require_full_overlap:
         absolute_overlap_filter = and_(absolute_start_filter, absolute_end_filter)
         chrono_overlap_filter = and_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = and_(paleocontext_start_filter, paleocontext_end_filter)
     else:
         absolute_overlap_filter = or_(absolute_start_filter, absolute_end_filter)
         chrono_overlap_filter = or_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = or_(paleocontext_start_filter, paleocontext_end_filter)
 
     # Aliases for joins
     relative_age_alias = aliased(sq_models.RelativeAge)
@@ -542,7 +548,7 @@ def query_co_in_time_range(query, start_time, end_time, session=None, require_fu
 
 
 # TODO: Remove once an implementation which implemention to keep
-def query_co_in_time_range_with_joins(query, start_time, end_time, session=None, require_full_overlap=False):
+def query_co_in_time_range_with_joins_old(query, start_time, end_time, session=None, require_full_overlap=False):
     start_time = float(start_time)
     end_time = float(end_time)
 
@@ -554,11 +560,6 @@ def query_co_in_time_range_with_joins(query, start_time, end_time, session=None,
         literal(end_time) - sq_models.AbsoluteAge.ageUncertainty
     )
 
-    if require_full_overlap:
-        absolute_overlap_filter = and_(absolute_start_filter, absolute_end_filter)
-    else:
-        absolute_overlap_filter = or_(absolute_start_filter, absolute_end_filter)
-
     # Build the geologic time period filters
     chrono_start_filter = sq_models.GeologicTimePeriod.startPeriod >= (
         literal(start_time) + sq_models.GeologicTimePeriod.startUncertainty
@@ -566,11 +567,27 @@ def query_co_in_time_range_with_joins(query, start_time, end_time, session=None,
     chrono_end_filter = sq_models.GeologicTimePeriod.startPeriod <= (
         literal(end_time) - sq_models.GeologicTimePeriod.endUncertainty
     )
+    
+    # Build the paleocontext filters
+    paleocontext_start_filter = sq_models.PaleoContext.chronosstrat.startPeriod >= (
+        literal(start_time) + sq_models.PaleoContext.chronosstrat.startUncertainty
+    ) | sq_models.PaleoContext.chronosstratend.startPeriod >= (
+        literal(start_time) + sq_models.PaleoContext.chronosstratend.startUncertainty
+    )
+    paleocontext_end_filter = sq_models.PaleoContext.chronosstrat.endPeriod <= (
+        literal(end_time) - sq_models.PaleoContext.chronosstrat.endUncertainty
+    ) | sq_models.PaleoContext.chronosstratend.endPeriod <= (
+        literal(end_time) - sq_models.PaleoContext.chronosstratend.endUncertainty
+    )
 
     if require_full_overlap:
+        absolute_overlap_filter = and_(absolute_start_filter, absolute_end_filter)
         chrono_overlap_filter = and_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = and_(paleocontext_start_filter, paleocontext_end_filter)
     else:
+        absolute_overlap_filter = or_(absolute_start_filter, absolute_end_filter)
         chrono_overlap_filter = or_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = or_(paleocontext_start_filter, paleocontext_end_filter)
 
     # Join with AbsoluteAge and apply filter
     absolute_query = query.join(
@@ -593,6 +610,86 @@ def query_co_in_time_range_with_joins(query, start_time, end_time, session=None,
 
     # Combine the two queries using UNION to avoid duplicates
     combined_query = absolute_query.union(chrono_query)
+
+    return combined_query
+
+from sqlalchemy import and_, or_, literal
+from sqlalchemy.orm import aliased
+
+def query_co_in_time_range_with_joins(query, start_time, end_time, session=None, require_full_overlap=False):
+    start_time = float(start_time)
+    end_time = float(end_time)
+
+    # Build the absolute age filters
+    absolute_start_filter = sq_models.AbsoluteAge.absoluteAge >= (
+        literal(start_time) + sq_models.AbsoluteAge.ageUncertainty
+    )
+    absolute_end_filter = sq_models.AbsoluteAge.absoluteAge <= (
+        literal(end_time) - sq_models.AbsoluteAge.ageUncertainty
+    )
+
+    # Build the geologic time period filters
+    chrono_start_filter = sq_models.GeologicTimePeriod.startPeriod >= (
+        literal(start_time) + sq_models.GeologicTimePeriod.startUncertainty
+    )
+    chrono_end_filter = sq_models.GeologicTimePeriod.startPeriod <= (
+        literal(end_time) - sq_models.GeologicTimePeriod.endUncertainty
+    )
+    
+    # Aliases for joining PaleoContext with GeologicTimePeriod
+    start_period = aliased(sq_models.GeologicTimePeriod)
+    end_period = aliased(sq_models.GeologicTimePeriod)
+
+    # Build the paleocontext filters
+    paleocontext_start_filter = start_period.startPeriod >= (
+        literal(start_time) + start_period.startUncertainty
+    ) | end_period.startPeriod >= (
+        literal(start_time) + end_period.startUncertainty
+    )
+    paleocontext_end_filter = start_period.endPeriod <= (
+        literal(end_time) - start_period.endUncertainty
+    ) | end_period.endPeriod <= (
+        literal(end_time) - end_period.endUncertainty
+    )
+
+    if require_full_overlap:
+        absolute_overlap_filter = and_(absolute_start_filter, absolute_end_filter)
+        chrono_overlap_filter = and_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = and_(paleocontext_start_filter, paleocontext_end_filter)
+    else:
+        absolute_overlap_filter = or_(absolute_start_filter, absolute_end_filter)
+        chrono_overlap_filter = or_(chrono_start_filter, chrono_end_filter)
+        paleocontext_overlap_filter = or_(paleocontext_start_filter, paleocontext_end_filter)
+
+    # Join with AbsoluteAge and apply filter
+    absolute_query = query.join(
+        sq_models.AbsoluteAge,
+        sq_models.AbsoluteAge.CollectionObjectID == sq_models.CollectionObject.collectionObjectId,
+    ).filter(absolute_overlap_filter)
+
+    # Join with RelativeAge and GeologicTimePeriod and apply filter
+    chrono_query = query.join(
+        sq_models.RelativeAge,
+        sq_models.RelativeAge.CollectionObjectID == sq_models.CollectionObject.collectionObjectId,
+    ).join(
+        sq_models.GeologicTimePeriod,
+        sq_models.RelativeAge.AgeNameID == sq_models.GeologicTimePeriod.geologicTimePeriodId,
+    ).filter(chrono_overlap_filter)
+
+    # Join with PaleoContext and GeologicTimePeriod and apply filter
+    paleocontext_query = query.join(
+        sq_models.PaleoContext,
+        sq_models.PaleoContext.CollectionObjectID == sq_models.CollectionObject.collectionObjectId,
+    ).join(
+        start_period,
+        sq_models.PaleoContext.chronosStrat.startPeriodID == start_period.geologicTimePeriodId,
+    ).join(
+        end_period,
+        sq_models.PaleoContext.chronosStrat.endPeriodID == end_period.geologicTimePeriodId,
+    ).filter(paleocontext_overlap_filter)
+
+    # Combine the queries using UNION to avoid duplicates
+    combined_query = absolute_query.union(chrono_query, paleocontext_query)
 
     return combined_query
 
