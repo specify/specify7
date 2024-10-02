@@ -84,11 +84,10 @@ export const schemaExtras: {
         unique: false,
       }),
       new LiteralField(table, {
-        // TODO: LiteralField or Relationship?
         name: 'age',
         required: false,
         readOnly: true,
-        type: 'java.lang.Integer',
+        type: 'java.lang.Integer' as 'java.lang.Integer' | 'java.lang.String',
         indexed: false,
         unique: false,
       }),
