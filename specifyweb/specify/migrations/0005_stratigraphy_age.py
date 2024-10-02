@@ -307,6 +307,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='relativeage',
+            name='agenameend',
+            field=models.ForeignKey(db_column='AgeNameEndID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.geologictimeperiod'),
+        ),
+        migrations.AddField(
+            model_name='relativeage',
             name='agent1',
             field=models.ForeignKey(db_column='Agent1ID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent'),
         ),

@@ -6618,6 +6618,7 @@ export type RelativeAge = {
   readonly toOneIndependent: {
     readonly ageAttachment: RelativeAgeAttachment | null;
     readonly ageName: GeologicTimePeriod | null;
+    readonly ageNameEnd: GeologicTimePeriod | null;
     readonly agent1: Agent | null;
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
