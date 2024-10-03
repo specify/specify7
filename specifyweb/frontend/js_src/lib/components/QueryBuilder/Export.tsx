@@ -23,7 +23,8 @@ import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
 import { format } from '../Formatters/formatters';
-import { jsonToXml } from '../Syncer/xmlToJson';
+import { jsonToXml, XmlNode } from '../Syncer/xmlToJson';
+import { downloadFile } from '../Molecules/FilePicker';
 
 export function QueryExportButtons({
   baseTableName,
@@ -145,51 +146,15 @@ export function QueryExportButtons({
 
     if (selectedResults === undefined) return undefined;
 
-    interface XmlNode {
-      tagName: string;
-      attributes: { [key: string]: string | undefined };
-      children: Array<XmlNode | XmlTextNode | XmlCommentNode>;
-    }
-    
-    interface XmlTextNode {
-      type: 'Text';
-      string: string;
-    }
-    
-    interface XmlCommentNode {
-      type: 'Comment';
-      comment: string;
-    }
+    const filteredResults = filterArray(selectedResults);
 
-    interface KmlData {
-      tagName: "kml";
-      attributes: {
-        xmlns: "http://earth.google.com/kml/2.2";
-      };
-      children: XmlNode[];
-    }
+    const columnsName = fields
+      .filter((field) => field.isDisplay)
+      .map((field) =>
+        generateMappingPathPreview(baseTableName, field.mappingPath)
+      );
 
-    interface Placemark extends XmlNode {
-      tagName: "Placemark";
-      attributes: {};
-      children: XmlNode[];
-    }
-    
-    interface ExtendedData extends XmlNode {
-      tagName: "ExtendedData";
-      attributes: {};
-      children: XmlNode[];
-    }
-    
-    interface Data extends XmlNode {
-      tagName: "Data";
-      attributes: {
-        name: string;
-      };
-      children: XmlTextNode[];
-    }
-
-    let jsonData: kmlData = {
+    let jsonData: any = {
       tagName: "kml",
       attributes: {
         xmlns: "http://earth.google.com/kml/2.2"
@@ -205,27 +170,15 @@ export function QueryExportButtons({
 
     let placemarkTarget = jsonData.children[0].children;
 
-    selectedResults?.forEach((result) => {
-      let placemark: Placemark = {
+    filteredResults?.forEach((result: any) => {
+      let placemark: any = {
         tagName: "Placemark",
         attributes: {},
         children: []
       };
 
       // <ExtendedData>
-      let extendedData: {
-        tagName: string;
-        attributes: {};
-        children: Array<{
-          tagName: string;
-          attributes: { name: string };
-          children: Array<{
-            tagName: string;
-            attributes: {};
-            children: string[]
-          }>
-        }>
-      } = {
+      let extendedData: any = {
         tagName: "ExtendedData",
         attributes: {},
         children: []
@@ -234,18 +187,16 @@ export function QueryExportButtons({
       fields.forEach((field, index) => {
         const fieldValue = result?.[index + 1];
 
-        (extendedData.children as Array<{
-          tagName: string;
-          attributes: { name: string };
-          children: Array<{ tagName: string; attributes: {}; children: string[] }>;
-        }>).push({
+        extendedData.children.push({
           tagName: "Data",
           attributes: { name: field.mappingPath.toString() },
           children: [
             {
               tagName: "value",
               attributes: {},
-              children: [String(fieldValue)]
+              children: [],
+              type: "Text",
+              string: String(fieldValue)
             }
           ]
         });
@@ -255,10 +206,18 @@ export function QueryExportButtons({
 
       // <name>
       const nameValue = fields.map((field) => result?.[field.id]).join(' - ');
-      let nameData = {
+      let nameData: any = {
         tagName: "name",
         attributes: {},
-        children: [nameValue]
+        children: [
+          {
+            tagName: "name",
+            attributes: {},
+            children: [],
+            type: "Text",
+            string: nameValue
+          }
+        ],
       };
       // push
       placemark.children.push(nameData);
@@ -273,25 +232,37 @@ export function QueryExportButtons({
         .map((field) => result?.[field.id])
         .join(', ');
       
-      let pointData = {
+      let pointData: any = {
         tagName: "Point",
         attributes: {},
         children: [
           {
             tagName: "coordinates",
             attributes: {},
-            children: [coordinatesValue]
+            children: [
+              {
+                tagName: "coordinates",
+                attributes: {},
+                children: [],
+                type: "Text",
+                string: coordinatesValue
+              }
+            ],
           }
         ]
       };
       // push
       placemark.children.push(pointData);
+
+      // Insert placemark into document (target)
+      placemarkTarget.push(placemark);
     });
 
-    const json = JSON.stringify(jsonData);
-    const fileData = jsonToXml(json);
+    const xmlElement = jsonToXml(jsonData);
+    const serializer = new XMLSerializer();
+    const xmlString = serializer.serializeToString(xmlElement);
 
-    return downloadFile(name, fileData);
+    return downloadFile(name, xmlString);
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
