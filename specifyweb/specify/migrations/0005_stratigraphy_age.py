@@ -297,8 +297,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='relativeage',
-            name='ageattachment',
-            field=models.ForeignKey(db_column='AgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment'),
+            name='relativeageattachment',
+            field=models.ForeignKey(db_column='RelativeAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment'),
         ),
         migrations.AddField(
             model_name='relativeage',
@@ -372,8 +372,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='absoluteage',
-            name='ageattachment',
-            field=models.ForeignKey(db_column='AgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment'),
+            name='absoluteageattachment',
+            field=models.ForeignKey(db_column='AbsoluteAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment'),
         ),
         migrations.AddField(
             model_name='absoluteage',
