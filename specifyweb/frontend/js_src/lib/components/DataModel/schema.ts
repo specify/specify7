@@ -21,7 +21,7 @@ type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
-  readonly defaultCollectionObjectType: number;
+  readonly defaultCollectionObjectType: number | null;
   readonly orgHierarchy: readonly [
     'CollectionObject',
     'Collection',

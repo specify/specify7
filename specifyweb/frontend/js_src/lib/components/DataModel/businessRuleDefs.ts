@@ -159,7 +159,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
 
       // Set the default CoType
-      if (typeof schema.defaultCollectionObjectType === 'number')
+      if (
+        typeof schema.defaultCollectionObjectType === 'number' &&
+        collectionObject.get('collectionObjectType') === undefined
+      )
         collectionObject.set(
           'collectionObjectType',
           getResourceApiUrl(

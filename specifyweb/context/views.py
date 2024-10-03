@@ -340,8 +340,8 @@ def domain(request):
         'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         'catalogNumFormatName': collection.catalognumformatname,
-        'defaultCollectionObjectType': collection.collectionobjecttype.id
-        }
+        'defaultCollectionObjectType': collection.collectionobjecttype.id if collection.collectionobjecttype is not None else None
+    }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
 
