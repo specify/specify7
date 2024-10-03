@@ -86,7 +86,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       !isToOne &&
       isLazy &&
       collection.related?.isNew() !== true &&
-      !collection.isComplete() &&
       collection.models[index] === undefined
     )
       handleFetch({
