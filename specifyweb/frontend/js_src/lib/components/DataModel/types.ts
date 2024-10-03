@@ -6588,7 +6588,7 @@ export type AbsoluteAge = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
-    readonly ageAttachment: RA<AbsoluteAgeAttachment | null>;
+    readonly absoluteAgeAttachments: RA<AbsoluteAgeAttachment | null>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
@@ -6626,7 +6626,7 @@ export type RelativeAge = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
-    readonly ageAttachment: RA<RelativeAgeAttachment | null>;
+    readonly relativeAgeAttachments: RA<RelativeAgeAttachment | null>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
