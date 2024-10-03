@@ -6582,13 +6582,14 @@ export type AbsoluteAge = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
-    readonly ageAttachment: AbsoluteAgeAttachment | null;
     readonly agent1: Agent | null;
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
+  readonly toManyDependent: {
+    readonly ageAttachment: RA<AbsoluteAgeAttachment | null>;
+  };
   readonly toManyIndependent: RR<never, never>;
 };
 export type RelativeAge = {
@@ -6616,7 +6617,6 @@ export type RelativeAge = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
-    readonly ageAttachment: RelativeAgeAttachment | null;
     readonly ageName: GeologicTimePeriod | null;
     readonly ageNameEnd: GeologicTimePeriod | null;
     readonly agent1: Agent | null;
@@ -6625,7 +6625,9 @@ export type RelativeAge = {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
+  readonly toManyDependent: {
+    readonly ageAttachment: RA<RelativeAgeAttachment | null>;
+  };
   readonly toManyIndependent: RR<never, never>;
 };
 export type AbsoluteAgeAttachment = {
@@ -6637,10 +6639,11 @@ export type AbsoluteAgeAttachment = {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: RR<never, never>;
+  readonly toOneDependent: {
+    readonly attachment: Attachment;
+  };
   readonly toOneIndependent: {
     readonly absoluteAge: AbsoluteAge;
-    readonly attachment: Attachment;
     readonly collectionMember: Collection;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
@@ -6657,9 +6660,10 @@ export type RelativeAgeAttachment = {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: RR<never, never>;
-  readonly toOneIndependent: {
+  readonly toOneDependent: {
     readonly attachment: Attachment;
+  };
+  readonly toOneIndependent: {
     readonly collectionMember: Collection;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
