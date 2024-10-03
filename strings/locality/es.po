@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:16+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-10-03 16:15+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
 "Language: es\n"
@@ -89,7 +89,7 @@ msgstr "{geographyTable:string} debe ser mapeado"
 #. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:118
 msgid "geographyRequiredDescription"
-msgstr "El complemento GeoLocate requiere que se complete el campo de geografía."
+msgstr "El complemento GeoLocate requiere que se rellene el campo de geografía."
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:278
@@ -209,21 +209,18 @@ msgstr "Solo se aceptan los siguientes encabezados"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
-#, fuzzy
 msgid "localityUpdateStarting"
-msgstr "Actualización de localidad inicial"
+msgstr "Actualización de localidad de inicio"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:35
-#, fuzzy
 msgid "localityUpdateParsing"
-msgstr "Análisis del conjunto de datos de localidad"
+msgstr "Análisis del conjunto de datos de la localidad"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:37
-#, fuzzy
 msgid "localityUpdateProgressing"
-msgstr "Importación de un conjunto de datos de localidad"
+msgstr "Importación del conjunto de datos de la localidad"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
