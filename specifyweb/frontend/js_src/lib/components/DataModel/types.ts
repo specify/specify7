@@ -6620,6 +6620,7 @@ export type RelativeAge = {
     readonly ageName: GeologicTimePeriod | null;
     readonly ageNameEnd: GeologicTimePeriod | null;
     readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;

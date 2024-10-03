@@ -7682,6 +7682,7 @@ class RelativeAge(models.Model):
     agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='agename_relativeages', null=True, on_delete=protect_with_blockers)
     agenameend = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameEndID', related_name='agenameend_relativeages', null=True, on_delete=protect_with_blockers)
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
     ageattachment = models.ForeignKey('RelativeAgeAttachment', db_column='AgeAttachmentID', related_name='relativeages', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
 

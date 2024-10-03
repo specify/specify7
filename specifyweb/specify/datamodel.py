@@ -8448,6 +8448,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='ageName', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameID'),
             Relationship(name='ageNameEnd', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameEndID'),
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one', required=False, relatedModelName='Agent', column='Agent2ID'),
             Relationship(name='ageAttachment', type='many-to-one', required=False, relatedModelName='RelativeAgeAttachment', column='RelativeAgeAttachmentID'),
             Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
