@@ -641,7 +641,7 @@ export const ResourceBase = Backbone.Model.extend({
         return value;
       });
   },
-  async _rget<OPTIONS extends { noBusinessRules: boolean }>(
+  async _rget<OPTIONS extends { readonly noBusinessRules: boolean }>(
     path: RA<string>,
     options: OPTIONS
   ) {
@@ -772,19 +772,19 @@ export const ResourceBase = Backbone.Model.extend({
       console.warn('expected dependent resource to be in cache');
 
     const collection =
-      existingToMany !== undefined
-        ? existingToMany
-        : this.isNew()
-        ? new relatedTable.DependentCollection(collectionOptions, [])
-        : await new relatedTable.ToOneCollection(collectionOptions)
-            .fetch({ limit: 0 })
-            .then(
-              (collection) =>
-                new relatedTable.DependentCollection(
-                  collectionOptions,
-                  collection.models
-                )
-            );
+      existingToMany === undefined
+        ? this.isNew()
+          ? new relatedTable.DependentCollection(collectionOptions, [])
+          : await new relatedTable.ToOneCollection(collectionOptions)
+              .fetch({ limit: 0 })
+              .then(
+                (collection) =>
+                  new relatedTable.DependentCollection(
+                    collectionOptions,
+                    collection.models
+                  )
+              )
+        : existingToMany;
 
     return collection.fetch({ limit: 0 }).then((collection) => {
       self.storeDependent(field, collection);

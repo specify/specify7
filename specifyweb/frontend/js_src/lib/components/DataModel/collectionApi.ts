@@ -4,11 +4,11 @@ import _ from 'underscore';
 
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
-import { Backbone } from './backbone';
-import type { AnySchema } from './helperTypes';
-import { DEFAULT_FETCH_LIMIT } from './collection';
-import type { SpecifyResource } from './legacyTypes';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { Backbone } from './backbone';
+import { DEFAULT_FETCH_LIMIT } from './collection';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -213,11 +213,11 @@ export const IndependentCollection = LazyCollection.extend({
     this.on(
       'add',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isNew()) {
-          (this.removed as Set<string>).delete(resource.url());
-          this.updated[resource.cid] = resource.url();
-        } else {
+        if (resource.isNew()) {
           this.updated[resource.cid] = resource;
+        } else {
+          (this.removed as ReadonlySet<string>).delete(resource.url());
+          this.updated[resource.cid] = resource.url();
         }
         this._totalCount += 1;
         this.trigger('saverequired');
@@ -229,7 +229,7 @@ export const IndependentCollection = LazyCollection.extend({
       'remove',
       function (resource: SpecifyResource<AnySchema>) {
         if (!resource.isNew()) {
-          (this.removed as Set<string>).add(resource.url());
+          (this.removed as ReadonlySet<string>).add(resource.url());
         }
         this.updated = removeKey(this.updated, resource.cid);
         this._totalCount -= 1;
@@ -251,10 +251,11 @@ export const IndependentCollection = LazyCollection.extend({
       arguments
     );
 
-    this._totalCount -= (this.removed as Set<string>).size;
+    this._totalCount -= (this.removed as ReadonlySet<string>).size;
 
     return records.filter(
-      ({ resource_uri }) => !(this.removed as Set<string>).has(resource_uri)
+      ({ resource_uri }) =>
+        !(this.removed as ReadonlySet<string>).has(resource_uri)
     );
   },
   async fetch(options) {
