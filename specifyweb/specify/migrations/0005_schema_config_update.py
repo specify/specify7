@@ -21,12 +21,12 @@ FIELD_DATA = [
     {
         "table": "GeographyTreeDef",
         "field": "discipline",
-        "isrequired": True,
+        "isrequired": False,
     },
     {
         "table": "GeologicTimePeriodTreeDef",
         "field": "discipline",
-        "isrequired": True,
+        "isrequired": False,
     },
     {
         "table": "LithostratTreeDef",
@@ -79,7 +79,7 @@ def remove_fields(apps):
 
     for data in FIELD_DATA:
         Splocaleitemstr.objects.filter(
-            text=data["field"].title(),
+            text=data["field"],
             itemname__name=data["field"],
             itemname__container__name=data["table"], 
             itemname__container__schematype=0
@@ -157,7 +157,7 @@ def revert_cogtype_type_splocalecontaineritem(apps):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0003_cotype_picklist'),
+        ('specify', '0004_stratigraphy_age'),
     ]
 
     def apply_migration(apps, schema_editor):
