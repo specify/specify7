@@ -16,6 +16,7 @@ import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
+  IndependentCollection,
   LazyCollection,
   ToOneCollection,
 } from './collectionApi';
@@ -73,7 +74,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     >;
     readonly domainfilter?: boolean;
   },
-  tables?: RA<SpecifyResource<AnySchema>>
+  initalResources?: RA<SpecifyResource<AnySchema>>
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
@@ -87,6 +88,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
   readonly models: RA<SpecifyResource<SCHEMA>>;
+  readonly length: number;
   readonly table: {
     readonly specifyTable: SpecifyTable<SCHEMA>;
   };
@@ -177,6 +179,8 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    */
   public readonly DependentCollection: CollectionConstructor<SCHEMA>;
 
+  public readonly IndependentCollection: CollectionConstructor<SCHEMA>;
+
   /**
    * A Backbone collection for loading a collection of items of this type as a
    * backwards -to-one collection of some other resource.
@@ -232,6 +236,11 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
 
     this.DependentCollection = DependentCollection.extend({
       __name__: `${this.name}DependentCollection`,
+      model: this.Resource,
+    });
+
+    this.IndependentCollection = IndependentCollection.extend({
+      __name__: `${this.name}IndependentCollection`,
       model: this.Resource,
     });
 

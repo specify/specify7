@@ -1,4 +1,5 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -71,6 +72,19 @@ export function IntegratedRecordSelector({
   const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
     useBooleanState(defaultCollapsed);
 
+  const [state, setState] = React.useState<
+    | State<
+        'AddResourceState',
+        {
+          readonly resource: SpecifyResource<AnySchema>;
+          readonly handleAdd: (
+            resources: RA<SpecifyResource<AnySchema>>
+          ) => void;
+        }
+      >
+    | State<'MainState'>
+  >({ type: 'MainState' });
+
   const blockers = useAllSaveBlockers(collection.related, relationship);
   const hasBlockers = blockers.length > 0;
   React.useEffect(() => {
@@ -120,7 +134,7 @@ export function IntegratedRecordSelector({
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
         relationship={relationship}
-        onAdd={(resources) => {
+        onAdd={(resources): void => {
           if (isInteraction) {
             setInteractionResource(resources[0]);
             handleOpenDialog();
@@ -145,6 +159,7 @@ export function IntegratedRecordSelector({
           resource,
           onAdd: handleAdd,
           onRemove: handleRemove,
+          showSearchDialog,
           isLoading,
         }): JSX.Element => (
           <>
@@ -178,20 +193,51 @@ export function IntegratedRecordSelector({
                         !isDependent && dialog === false ? resource : undefined
                       }
                     />
+                    {!isDependent &&
+                    hasTablePermission(
+                      relationship.relatedTable.name,
+                      'read'
+                    ) &&
+                    typeof handleAdd === 'function' ? (
+                      <DataEntry.Search
+                        disabled={
+                          isReadOnly ||
+                          (isToOne && collection.models.length > 0)
+                        }
+                        onClick={showSearchDialog}
+                      />
+                    ) : undefined}
                     {hasTablePermission(
                       relationship.relatedTable.name,
-                      isDependent ? 'create' : 'read'
+                      'create'
                     ) && typeof handleAdd === 'function' ? (
                       <DataEntry.Add
+                        aria-pressed={state.type === 'AddResourceState'}
                         disabled={
                           isReadOnly ||
                           (isToOne && collection.models.length > 0)
                         }
                         onClick={(): void => {
-                          focusFirstField();
                           const resource =
                             new collection.table.specifyTable.Resource();
-                          handleAdd([resource]);
+
+                          if (
+                            isDependent ||
+                            viewName === relationship.relatedTable.view
+                          ) {
+                            focusFirstField();
+                            handleAdd([resource]);
+                            return;
+                          }
+
+                          if (state.type === 'AddResourceState')
+                            setState({ type: 'MainState' });
+                          else
+                            setState({
+                              type: 'AddResourceState',
+                              resource,
+                              handleAdd,
+                            });
                         }}
                       />
                     ) : undefined}
@@ -264,6 +310,22 @@ export function IntegratedRecordSelector({
               />
             ) : null}
             {dialogs}
+            {state.type === 'AddResourceState' &&
+            typeof handleAdd === 'function' ? (
+              <ResourceView
+                dialog="nonModal"
+                isDependent={isDependent}
+                isSubForm={false}
+                resource={state.resource}
+                onAdd={undefined}
+                onClose={(): void => setState({ type: 'MainState' })}
+                onDeleted={undefined}
+                onSaved={(): void => {
+                  state.handleAdd([state.resource]);
+                  setState({ type: 'MainState' });
+                }}
+              />
+            ) : null}
           </>
         )}
       </RecordSelectorFromCollection>
