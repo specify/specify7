@@ -17,6 +17,8 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
+import { COJODialog } from '../FormCells/COJODialog';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
@@ -128,6 +130,8 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
+  const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -211,35 +215,44 @@ export function IntegratedRecordSelector({
                       relationship.relatedTable.name,
                       'create'
                     ) && typeof handleAdd === 'function' ? (
-                      <DataEntry.Add
-                        aria-pressed={state.type === 'AddResourceState'}
-                        disabled={
-                          isReadOnly ||
-                          (isToOne && collection.models.length > 0)
-                        }
-                        onClick={(): void => {
-                          const resource =
-                            new collection.table.specifyTable.Resource();
-
-                          if (
-                            isDependent ||
-                            viewName === relationship.relatedTable.view
-                          ) {
-                            focusFirstField();
-                            handleAdd([resource]);
-                            return;
+                      isCOJO ? (
+                        <COJODialog
+                          collection={collection}
+                          parentResource={
+                            collection?.related as SpecifyResource<CollectionObjectGroup>
                           }
+                        />
+                      ) : (
+                        <DataEntry.Add
+                          aria-pressed={state.type === 'AddResourceState'}
+                          disabled={
+                            isReadOnly ||
+                            (isToOne && collection.models.length > 0)
+                          }
+                          onClick={(): void => {
+                            const resource =
+                              new collection.table.specifyTable.Resource();
 
-                          if (state.type === 'AddResourceState')
-                            setState({ type: 'MainState' });
-                          else
-                            setState({
-                              type: 'AddResourceState',
-                              resource,
-                              handleAdd,
-                            });
-                        }}
-                      />
+                            if (
+                              isDependent ||
+                              viewName === relationship.relatedTable.view
+                            ) {
+                              focusFirstField();
+                              handleAdd([resource]);
+                              return;
+                            }
+
+                            if (state.type === 'AddResourceState')
+                              setState({ type: 'MainState' });
+                            else
+                              setState({
+                                type: 'AddResourceState',
+                                resource,
+                                handleAdd,
+                              });
+                          }}
+                        />
+                      )
                     ) : undefined}
                     {hasTablePermission(
                       relationship.relatedTable.name,
