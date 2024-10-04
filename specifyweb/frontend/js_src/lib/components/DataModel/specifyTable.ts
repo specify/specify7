@@ -14,7 +14,7 @@ import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { CollectionFetchFilters } from './collection';
+import type { CollectionFetchFilters } from './collection';
 import {
   DependentCollection,
   IndependentCollection,
