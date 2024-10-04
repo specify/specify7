@@ -1,6 +1,5 @@
 """
-This migration updates the Schema Config entries for pre-geo tables. 
-Geo migration added new fields to already existing tables. This migration updates the Schema Config to reflect those changes.
+This migration updates the Schema Config entries for pre-geo tables and creates picklists for COGTypes.
 
 Fields added:
 Collection -> collectionObjectType
@@ -9,6 +8,8 @@ GeologicTimePeriodTreeDef -> discipline
 LithostratTreeDef -> discipline
 StorageTreeDef -> institution
 TaxonTreeDef -> discipline
+
+Picklist created for COGType -> type and updates an existing incorrect picklist for COG -> COGType
 """
 from django.db import migrations
 
@@ -45,9 +46,10 @@ FIELD_DATA = [
     },
 ]
 
-PICKLIST_NAME = 'CollectionObjectGroupType'
+PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
 PICKLIST_TEXT = 'Collection Object Group Type'
+SYSTEM_COGTYPE_PICKLIST_NAME = "SystemCOGTypes"
 
 def add_fields(apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -80,13 +82,11 @@ def remove_fields(apps):
     for data in FIELD_DATA:
         Splocaleitemstr.objects.filter(
             text=data["field"],
-            itemname__name=data["field"],
             itemname__container__name=data["table"], 
             itemname__container__schematype=0
         ).delete()
         Splocaleitemstr.objects.filter(
             text=data["field"],
-            itemdesc__name=data["field"],
             itemdesc__container__name=data["table"], 
             itemdesc__container__schematype=0
         ).delete()
@@ -138,12 +138,33 @@ def revert_cogtype_splocalecontaineritem(apps):
         isrequired=None
     )
 
+def update_systemcogtypes_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name='Default Collection Object Group Types').update(
+        name=SYSTEM_COGTYPE_PICKLIST_NAME,
+        type=0,
+        issystem=True,
+        readonly=True,
+        sizelimit=3,
+        tablename=None
+    )
+
+def revert_systemcogtypes_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    # revert only changes the name and not the other attributes as those were incorrect
+    Picklist.objects.filter(name=SYSTEM_COGTYPE_PICKLIST_NAME).update(
+        name='Default Collection Object Group Types',
+    )
+
+
 # Updates cogtype -> type to use the Default COGType picklist (Drill Core, Discrete, Consolidated)
 def update_cogtype_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     Splocalecontaineritem.objects.filter(container__name='collectionobjectgrouptype', container__schematype=0, name='type').update(
-        picklistname='Default Collection Object Group Types',
+        picklistname=SYSTEM_COGTYPE_PICKLIST_NAME,
         isrequired=True
     )
 
@@ -164,12 +185,14 @@ class Migration(migrations.Migration):
         add_fields(apps)
         create_cogtype_picklist(apps)
         update_cogtype_splocalecontaineritem(apps)
+        update_systemcogtypes_picklist(apps)
         update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
         remove_fields(apps)
         revert_cogtype_picklist(apps)
         revert_cogtype_splocalecontaineritem(apps)
+        revert_systemcogtypes_picklist(apps)
         revert_cogtype_type_splocalecontaineritem(apps)
 
     operations = [
