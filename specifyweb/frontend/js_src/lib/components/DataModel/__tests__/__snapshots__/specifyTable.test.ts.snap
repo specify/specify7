@@ -3,6 +3,7 @@
 exports[`fields are loaded 1`] = `
 [
   "[literalField CollectionObject.actualTotalCountAmt]",
+  "[literalField CollectionObject.age]",
   "[literalField CollectionObject.availability]",
   "[literalField CollectionObject.catalogNumber]",
   "[literalField CollectionObject.catalogedDate]",
@@ -106,6 +107,7 @@ exports[`indexed fields are loaded 1`] = `
 {
   "accession": "[relationship CollectionObject.accession]",
   "actualTotalCountAmt": "[literalField CollectionObject.actualTotalCountAmt]",
+  "age": "[literalField CollectionObject.age]",
   "agent1": "[relationship CollectionObject.agent1]",
   "altCatalogNumber": "[literalField CollectionObject.altCatalogNumber]",
   "appraisal": "[relationship CollectionObject.appraisal]",
@@ -207,6 +209,7 @@ exports[`indexed fields are loaded 1`] = `
 exports[`literal fields are loaded 1`] = `
 [
   "[literalField CollectionObject.actualTotalCountAmt]",
+  "[literalField CollectionObject.age]",
   "[literalField CollectionObject.availability]",
   "[literalField CollectionObject.catalogNumber]",
   "[literalField CollectionObject.catalogedDate]",
