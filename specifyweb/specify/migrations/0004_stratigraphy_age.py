@@ -88,7 +88,6 @@ def revert_table_schema_config_with_defaults():
 class Migration(migrations.Migration):
 
     dependencies = [
-        # ('specify', '0004_schema_config_update'), # TODO: reinstate this once merged
         ('specify', '0003_cotype_picklist'),
     ]
 
@@ -297,13 +296,18 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='relativeage',
-            name='ageattachment',
-            field=models.ForeignKey(db_column='AgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment'),
+            name='relativeageattachment',
+            field=models.ForeignKey(db_column='RelativeAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment'),
         ),
         migrations.AddField(
             model_name='relativeage',
             name='agename',
             field=models.ForeignKey(db_column='AgeNameID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.geologictimeperiod'),
+        ),
+        migrations.AddField(
+            model_name='relativeage',
+            name='agenameend',
+            field=models.ForeignKey(db_column='AgeNameEndID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.geologictimeperiod'),
         ),
         migrations.AddField(
             model_name='relativeage',
@@ -367,8 +371,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='absoluteage',
-            name='ageattachment',
-            field=models.ForeignKey(db_column='AgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment'),
+            name='absoluteageattachment',
+            field=models.ForeignKey(db_column='AbsoluteAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment'),
         ),
         migrations.AddField(
             model_name='absoluteage',
