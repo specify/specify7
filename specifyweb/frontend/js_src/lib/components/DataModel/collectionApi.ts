@@ -4,7 +4,9 @@ import _ from 'underscore';
 
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
+import { DEFAULT_FETCH_LIMIT } from './collection';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 
@@ -27,6 +29,33 @@ function notSupported() {
 
 async function fakeFetch() {
   return this;
+}
+
+async function lazyFetch(options) {
+  assert(this instanceof LazyCollection);
+  if (this._fetch) return this._fetch;
+  if (this.related?.isNew()) return this;
+
+  this._neverFetched = false;
+
+  options ||= {};
+
+  options.update ??= true;
+  options.remove ??= false;
+  options.silent = true;
+  assert(options.at == null);
+
+  options.data =
+    options.data || _.extend({ domainfilter: this.domainfilter }, this.filters);
+  options.data.offset = options.offset ?? this.length;
+  options.data.orderby = options.orderby;
+
+  _(options).has('limit') && (options.data.limit = options.limit);
+  this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
+  return this._fetch.then(() => {
+    this._fetch = null;
+    return this;
+  });
 }
 
 function setupToOne(collection, options) {
@@ -87,6 +116,9 @@ export const DependentCollection = Base.extend({
   isComplete() {
     return true;
   },
+  getFetchOffset() {
+    return 0;
+  },
   fetch: fakeFetch,
   sync: notSupported,
   create: notSupported,
@@ -98,7 +130,6 @@ export const LazyCollection = Base.extend({
   constructor(options = {}) {
     this.table = this.model;
     Base.call(this, null, options);
-    this._neverFetched = true;
     this._totalCount = undefined;
     this.filters = options.filters || {};
     this.domainfilter =
@@ -109,7 +140,7 @@ export const LazyCollection = Base.extend({
     return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
   },
   isComplete() {
-    return this._neverFetched && this.length === this._totalCount;
+    return !this._neverFetched && this.length === this._totalCount;
   },
   parse(resp) {
     let objects;
@@ -125,37 +156,19 @@ export const LazyCollection = Base.extend({
     return objects;
   },
   async fetch(options) {
-    this._neverFetched = false;
-
-    if (this._fetch) return this._fetch;
-    else if (this.isComplete() || this.related?.isNew()) return this;
-
-    if (this.isComplete())
+    if (this.isComplete()) {
       console.error('fetching for already filled collection');
-
-    options ||= {};
-
-    options.update = true;
-    options.remove = false;
-    options.silent = true;
-    assert(options.at == null);
-
-    options.data =
-      options.data ||
-      _.extend({ domainfilter: this.domainfilter }, this.filters);
-    options.data.offset = options.offset || this.length;
-
-    _(options).has('limit') && (options.data.limit = options.limit);
-    this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
-    return this._fetch.then(() => {
-      this._fetch = null;
       return this;
-    });
+    }
+    return lazyFetch.call(this, options);
   },
   async fetchIfNotPopulated() {
     return this._neverFetched && this.related?.isNew() !== true
       ? this.fetch()
       : this;
+  },
+  getFetchOffset() {
+    return this.length;
   },
   getTotalCount() {
     if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
@@ -180,10 +193,16 @@ export const IndependentCollection = LazyCollection.extend({
     this.updated = {};
   },
   initialize(_tables, options) {
+    setupToOne(this, options);
+
     this.on(
       'change',
       function (resource: SpecifyResource<AnySchema>) {
         if (!resource.isBeingInitialized()) {
+          if (relationshipIsToMany(this.field)) {
+            const otherSideName = this.field.getReverse().name;
+            this.related.set(otherSideName, resource);
+          }
           this.updated[resource.cid] = resource;
           this.trigger('saverequired');
         }
@@ -194,11 +213,11 @@ export const IndependentCollection = LazyCollection.extend({
     this.on(
       'add',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isNew()) {
-          (this.removed as Set<string>).delete(resource.url());
-          this.updated[resource.cid] = resource.url();
-        } else {
+        if (resource.isNew()) {
           this.updated[resource.cid] = resource;
+        } else {
+          (this.removed as ReadonlySet<string>).delete(resource.url());
+          this.updated[resource.cid] = resource.url();
         }
         this._totalCount += 1;
         this.trigger('saverequired');
@@ -210,7 +229,7 @@ export const IndependentCollection = LazyCollection.extend({
       'remove',
       function (resource: SpecifyResource<AnySchema>) {
         if (!resource.isNew()) {
-          (this.removed as Set<string>).add(resource.url());
+          (this.removed as ReadonlySet<string>).add(resource.url());
         }
         this.updated = removeKey(this.updated, resource.cid);
         this._totalCount -= 1;
@@ -223,8 +242,6 @@ export const IndependentCollection = LazyCollection.extend({
       this.updated = {};
       this.removed = new Set<string>();
     });
-
-    setupToOne(this, options);
   },
   parse(resp) {
     const self = this;
@@ -234,24 +251,31 @@ export const IndependentCollection = LazyCollection.extend({
       arguments
     );
 
-    this._totalCount -= (this.removed as Set<string>).size;
+    this._totalCount -= (this.removed as ReadonlySet<string>).size;
 
-    return records;
+    return records.filter(
+      ({ resource_uri }) =>
+        !(this.removed as ReadonlySet<string>).has(resource_uri)
+    );
   },
   async fetch(options) {
-    if (this.related.isBeingInitialized()) {
-      return this;
-    }
+    // If the related is being fetched, don't try and fetch the collection
+    if (this.related._fetch !== null) return this;
+
     this.filters[this.field.name.toLowerCase()] = this.related.id;
 
-    const offset =
-      this.length === 0 && this.removed.size > 0
-        ? this.removed.size
-        : this.length;
+    const newOptions = {
+      ...options,
+      update: options?.reset !== true,
+      offset: options?.offset ?? this.getFetchOffset(),
+    };
 
-    options = { ...(options ?? {}), silent: true, offset };
-
-    return Reflect.apply(LazyCollection.prototype.fetch, this, [options]);
+    return lazyFetch.call(this, newOptions);
+  },
+  getFetchOffset() {
+    return this.length === 0 && this.removed.size > 0
+      ? this.removed.size
+      : Math.floor(this.length / DEFAULT_FETCH_LIMIT) * DEFAULT_FETCH_LIMIT;
   },
   toApiJSON(options) {
     const self = this;

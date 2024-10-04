@@ -7,6 +7,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { isRelationshipCollection } from './collectionApi';
@@ -301,7 +302,7 @@ export const ResourceBase = Backbone.Model.extend({
   ) {
     assert(!field.isDependent());
 
-    if (field.type === 'one-to-many')
+    if (relationshipIsToMany(field))
       this._storeIndependentToMany(field, related);
     else this._storeIndependentToOne(field, related);
   },
@@ -338,7 +339,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
       default: {
         throw new Error(
-          `setDependentToOne: unhandled field type: ${field.type}`
+          `storeIndependentToOne: unhandled field type: ${field.type} for  ${this.specifyTable.name}.${field.name}`
         );
       }
     }
@@ -640,7 +641,7 @@ export const ResourceBase = Backbone.Model.extend({
         return value;
       });
   },
-  async _rget<OPTIONS extends { noBusinessRules: boolean }>(
+  async _rget<OPTIONS extends { readonly noBusinessRules: boolean }>(
     path: RA<string>,
     options: OPTIONS
   ) {
@@ -680,17 +681,22 @@ export const ResourceBase = Backbone.Model.extend({
         if (!value) return value; // No related object
 
         // Is the related resource cached?
-        let toOne = this.dependentResources[fieldName];
+        let toOne =
+          this.dependentResources[fieldName] ??
+          this.independentResources[fieldName];
+
         if (!toOne) {
           _(value).isString() || softFail('expected URI, got', value);
           toOne = resourceFromUrl(value, {
             noBusinessRules: options.noBusinessRules,
           });
+
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
           } else {
-            this.storeIndependent(field, toOne);
+            const fetchedToOne = toOne.isNew() ? toOne : toOne;
+            this.storeIndependent(field, fetchedToOne);
           }
         }
         // If we want a field within the related resource then recur
@@ -766,19 +772,19 @@ export const ResourceBase = Backbone.Model.extend({
       console.warn('expected dependent resource to be in cache');
 
     const collection =
-      existingToMany !== undefined
-        ? existingToMany
-        : this.isNew()
-        ? new relatedTable.DependentCollection(collectionOptions, [])
-        : await new relatedTable.ToOneCollection(collectionOptions)
-            .fetch({ limit: 0 })
-            .then(
-              (collection) =>
-                new relatedTable.DependentCollection(
-                  collectionOptions,
-                  collection.models
-                )
-            );
+      existingToMany === undefined
+        ? this.isNew()
+          ? new relatedTable.DependentCollection(collectionOptions, [])
+          : await new relatedTable.ToOneCollection(collectionOptions)
+              .fetch({ limit: 0 })
+              .then(
+                (collection) =>
+                  new relatedTable.DependentCollection(
+                    collectionOptions,
+                    collection.models
+                  )
+              )
+        : existingToMany;
 
     return collection.fetch({ limit: 0 }).then((collection) => {
       self.storeDependent(field, collection);
@@ -806,9 +812,11 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch().then((fetchedCollection) => {
-      this.storeIndependent(field, fetchedCollection);
-      return fetchedCollection;
+    return collection.fetch({
+      // Only store the collection if fetch is successful (doesn't return undefined)
+      success: (collection) => {
+        this.storeIndependent(field, collection);
+      },
     });
   },
   async save({

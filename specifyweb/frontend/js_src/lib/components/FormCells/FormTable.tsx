@@ -212,7 +212,10 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
+      <div
+        className={isCollapsed ? 'hidden' : 'overflow-x-auto'}
+        onScroll={handleScroll}
+      >
         <DataEntry.Grid
           className="sticky w-fit"
           display="inline"
@@ -227,7 +230,6 @@ export function FormTable<SCHEMA extends AnySchema>({
             maxHeight: `${maxHeight}px`,
           }}
           viewDefinition={collapsedViewDefinition}
-          onScroll={handleScroll}
         >
           <div
             /*

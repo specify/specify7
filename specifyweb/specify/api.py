@@ -714,8 +714,8 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
         for rel_obj in to_remove: 
             fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
             rel_data = cached_objs[fk_id]
-            assert rel_data[related_field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {rel_obj}"
-            rel_data[related_field.name] = None
+            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {rel_obj}"
+            rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj): 
