@@ -23,7 +23,7 @@ import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
 import { format } from '../Formatters/formatters';
-import { jsonToXml, XmlNode } from '../Syncer/xmlToJson';
+import { jsonToXml, XmlNode, SimpleXmlNode } from '../Syncer/xmlToJson';
 import { downloadFile } from '../Molecules/FilePicker';
 
 export function QueryExportButtons({
@@ -154,59 +154,51 @@ export function QueryExportButtons({
         generateMappingPathPreview(baseTableName, field.mappingPath)
       );
 
-    let jsonData: any = {
-      tagName: "kml",
-      attributes: {
-        xmlns: "http://earth.google.com/kml/2.2"
-      },
-      children: [
-        {
-          tagName: "Document",
-          attributes: {},
-          children: []
-        }
-      ]
-    };
 
-    let placemarkTarget = jsonData.children[0].children;
+    let placemarkTarget: any = [];
 
     filteredResults?.forEach((result: any) => {
-      let placemark: any = {
-        tagName: "Placemark",
-        attributes: {},
-        children: []
-      };
+      let dataTarget: any = [];
 
       // <ExtendedData>
-      let extendedData: any = {
-        tagName: "ExtendedData",
-        attributes: {},
-        children: []
-      };
+      let extendedDataTarget: any = [];
       
       fields.forEach((field, index) => {
         const fieldValue = result?.[index + 1];
 
-        extendedData.children.push({
+        extendedDataTarget.push({
           tagName: "Data",
-          attributes: { name: field.mappingPath.toString() },
+          attributes: { name: columnsName[index + 1] },
           children: [
             {
               tagName: "value",
               attributes: {},
-              children: [],
-              type: "Text",
-              string: String(fieldValue)
+              children: [
+                {
+                  tagName: "value",
+                  attributes: {},
+                  children: [],
+                  type: "Text",
+                  string: String(fieldValue)
+                }
+              ],
             }
           ]
         });
       });
+
+      let extendedData: XmlNode = {
+        tagName: "ExtendedData",
+        attributes: {},
+        children: extendedDataTarget as ReadonlyArray<XmlNode>
+      };
+
       // push
-      placemark.children.push(extendedData);
+      dataTarget.push(extendedData);
 
       // <name>
       const nameValue = fields.map((field) => result?.[field.id]).join(' - ');
-      let nameData: any = {
+      let nameData: XmlNode = {
         tagName: "name",
         attributes: {},
         children: [
@@ -220,7 +212,7 @@ export function QueryExportButtons({
         ],
       };
       // push
-      placemark.children.push(nameData);
+      dataTarget.push(nameData);
 
       // <Point>
       const coordinatesValue = fields
@@ -232,7 +224,7 @@ export function QueryExportButtons({
         .map((field) => result?.[field.id])
         .join(', ');
       
-      let pointData: any = {
+      let pointData: XmlNode = {
         tagName: "Point",
         attributes: {},
         children: [
@@ -252,15 +244,35 @@ export function QueryExportButtons({
         ]
       };
       // push
-      placemark.children.push(pointData);
+      dataTarget.push(pointData);
+
+      let placemark: XmlNode = {
+        tagName: "Placemark",
+        attributes: {},
+        children: dataTarget as ReadonlyArray<XmlNode>
+      };
 
       // Insert placemark into document (target)
       placemarkTarget.push(placemark);
     });
 
+    let jsonData: XmlNode = {
+      tagName: "kml",
+      attributes: {
+        xmlns: "http://earth.google.com/kml/2.2"
+      },
+      children: [
+        {
+          tagName: "Document",
+          attributes: {},
+          children: placemarkTarget as ReadonlyArray<XmlNode>
+        }
+      ]
+    };
+
     const xmlElement = jsonToXml(jsonData);
     const serializer = new XMLSerializer();
-    const xmlString = serializer.serializeToString(xmlElement);
+    const xmlString = '<?xml version="1.0" encoding="utf-8"?>\n' + serializer.serializeToString(xmlElement);
 
     return downloadFile(name, xmlString);
   }
