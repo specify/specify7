@@ -1,32 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
-    <file level="3" mimetype="text/xml" name="StartUpPanel" description="StartUpPanel" file="startup_panel.xml"/>    
-    <file level="3" mimetype="text/xml" name="StatisticsPanel" description="StatisticsPanel" file="statistics_panel.xml"/>    
-    <file level="3" mimetype="text/xml" name="StatsSummaryPanel" description="StatsSummaryPanel" file="stats_summary_panel.xml"/>
     <file level="3" mimetype="text/xml" name="DataEntryTaskInit" description="DataEntryTaskInit" file="dataentry_task.xml"/>
-    <file level="3" mimetype="text/xml" name="QueryFreqList" description="QueryFreqList" file="queryfreqlist.xml"/>
-    <file level="3" mimetype="text/xml" name="QueryExtraList" description="QueryExtraList" file="queryextralist.xml"/>
     <file level="3" mimetype="text/xml" name="ExpressSearchConfig" description="ExpressSearchConfig" file="es_config.xml"/>    
-    
-    <!-- Labels -->  
-    <!-- removing sample loan and specimen reports    
-    <file level="3" mimetype="jrxml/label" name="botany_label.jrxml" description="Botany Labels" file="botany_label.jrxml" 
-          metadata="tableid=1;reqrs=true;type=Report;action=PrintBasicLabel;reporttype=Report;icon=Labels16"/>    
-        
-    <file level="3" mimetype="jrxml/report" name="botany_LoanInvoice.jrxml" description="Loan Invoice" file="botany_LoanInvoice.jrxml" 
-        metadata="tableid=52;reqrs=true;type=Labels;action=PrintLabel;reporttype=Invoice;subreports=botany_LoanInvoice_subreport1.jrxml"/>
-        
-    <file level="3" mimetype="jrxml/subreport" name="botany_LoanInvoice_subreport1.jrxml" description="LoanInvoice SubReport" 
-        file="botany_LoanInvoice_subreport1.jrxml" metadata=""/>
-    -->
-    
-    <!-- Although DataSet Summary is a Report the Workbench groups the labels and reports together -->
-    <file level="3" mimetype="jrxml/report" name="wb_items.jrxml" description="Data Set Summary" file="wb_items.jrxml" 
-        metadata="tableid=79;reqrs=true;type=Report;action=PrintWBItems;reporttype=Workbench;icon=Reports16"/>
-   
-    <file level="3" mimetype="jrxml/report" name="basic_label.jrxml" description="Basic Label" file="basic_label.jrxml" 
-        metadata="tableid=79;reqrs=true;type=Report;action=PrintBasicLabel;reporttype=Report;icon=Labels16"/>
-
-    <file level="3" mimetype="jrxml/report" name="upload_problem_report.jrxml" description="Upload Report" file="upload_problem_report.jrxml" 
-        metadata="type=Report;action=PrintUploadProblemReport;reporttype=Report;icon=Labels16"/>
 </files>

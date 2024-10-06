@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
     <file type="user" name="Invertebrate Views" title="Invertebrate" file="invertebrate.views.xml"/>
-    <!-- <file type="user" name="ViewSet" title="viewset" file="viewset.xml"/>  -->
 </files>

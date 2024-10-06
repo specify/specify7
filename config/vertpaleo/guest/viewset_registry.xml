@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
     <file type="user" name="Vertpaleo Views" title="Vertpaleo" file="vertpaleo.views.xml"/>
-    <!-- <file type="user" name="ViewSet" title="viewset" file="viewset.xml"/>  -->
 </files>
