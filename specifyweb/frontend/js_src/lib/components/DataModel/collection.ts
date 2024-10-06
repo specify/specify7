@@ -10,7 +10,7 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import { Collection } from './specifyTable';
+import type { Collection } from './specifyTable';
 import { genericTables, tables } from './tables';
 import type { Tables } from './types';
 

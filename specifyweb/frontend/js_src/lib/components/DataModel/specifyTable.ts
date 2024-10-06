@@ -79,9 +79,9 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
-  readonly fetch: (filter?: {
-    readonly limit: number;
-  }) => Promise<Collection<SCHEMA>>;
+  readonly fetch: (
+    filter?: CollectionFetchFilters<AnySchema>
+  ) => Promise<Collection<SCHEMA>>;
 };
 
 export type Collection<SCHEMA extends AnySchema> = {
@@ -93,6 +93,8 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly table: {
     readonly specifyTable: SpecifyTable<SCHEMA>;
   };
+  readonly updated?: IR<SpecifyResource<SCHEMA> | string>;
+  readonly removed?: ReadonlySet<string>;
   readonly constructor: CollectionConstructor<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
@@ -103,6 +105,10 @@ export type Collection<SCHEMA extends AnySchema> = {
   isComplete(): boolean;
   getTotalCount(): Promise<number>;
   getFetchOffset(): number;
+  toApiJSON(): {
+    readonly update: RA<SpecifyResource<SCHEMA> | string>;
+    readonly remove: RA<string>;
+  };
   indexOf(resource: SpecifyResource<SCHEMA>): number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
