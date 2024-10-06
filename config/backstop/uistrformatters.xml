@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<formats>
-
-  <format name="AccessionStringFormatter" titlekey="AccessionStringFormatter" class="edu.ku.brc.specify.datamodel.Accession" fieldname="AccessionNumber" uilen="10"/>
-
-
-</formats>
