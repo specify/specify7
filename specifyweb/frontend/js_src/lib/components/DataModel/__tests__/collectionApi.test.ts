@@ -142,7 +142,7 @@ describe('Independent Collection', () => {
 
     const collection = await rawCollection.fetch();
     expect(collection._totalCount).toBe(collectionObjectsResponse.length);
-    expect(collection.length).toBe(DEFAULT_FETCH_LIMIT);
+    expect(collection).toHaveLength(DEFAULT_FETCH_LIMIT);
     expect(collection.models.map(({ id }) => id)).toStrictEqual(
       collectionObjectsResponse
         .slice(0, DEFAULT_FETCH_LIMIT)
@@ -150,7 +150,7 @@ describe('Independent Collection', () => {
     );
 
     await collection.fetch();
-    expect(collection.length).toBe(DEFAULT_FETCH_LIMIT * 2);
+    expect(collection).toHaveLength(DEFAULT_FETCH_LIMIT * 2);
     expect(
       collection.models
         .slice(DEFAULT_FETCH_LIMIT, DEFAULT_FETCH_LIMIT * 2)
@@ -162,7 +162,7 @@ describe('Independent Collection', () => {
     );
 
     await collection.fetch();
-    expect(collection.length).toBe(collection._totalCount);
+    expect(collection).toHaveLength(collection._totalCount);
   });
 
   test('specified offset', async () => {
@@ -178,7 +178,7 @@ describe('Independent Collection', () => {
     const collection = await rawCollection.fetch({
       offset: DEFAULT_FETCH_LIMIT,
     });
-    expect(collection.length).toBe(DEFAULT_FETCH_LIMIT);
+    expect(collection).toHaveLength(DEFAULT_FETCH_LIMIT);
     expect(collection.models.map(({ id }) => id)).toStrictEqual(
       collectionObjectsResponse
         .slice(DEFAULT_FETCH_LIMIT, DEFAULT_FETCH_LIMIT * 2)
@@ -200,7 +200,7 @@ describe('Independent Collection', () => {
       offset: DEFAULT_FETCH_LIMIT,
       limit: 0,
     });
-    expect(collection.length).toBe(
+    expect(collection).toHaveLength(
       collectionObjectsResponse.length - DEFAULT_FETCH_LIMIT
     );
     expect(collection.models.map(({ id }) => id)).toStrictEqual(
@@ -210,7 +210,7 @@ describe('Independent Collection', () => {
       reset: true,
       offset: 0,
     } as CollectionFetchFilters<AnySchema>);
-    expect(collection.length).toBe(DEFAULT_FETCH_LIMIT);
+    expect(collection).toHaveLength(DEFAULT_FETCH_LIMIT);
     expect(collection.models.map(({ id }) => id)).toStrictEqual(
       collectionObjectsResponse
         .slice(0, DEFAULT_FETCH_LIMIT)
