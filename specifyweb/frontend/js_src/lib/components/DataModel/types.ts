@@ -6497,7 +6497,7 @@ export type CollectionObjectGroup = {
     readonly yesno2: boolean | null;
     readonly yesno3: boolean | null;
   };
-  readonly toOneDependent: {};
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly parentcojo: CollectionObjectGroupJoin | null;
     readonly cogtype: CollectionObjectGroupType;
@@ -6537,7 +6537,7 @@ export type CollectionObjectGroupJoin = {
     readonly collectionObjectGroup: CollectionObjectGroup;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {};
+  readonly toManyIndependent: RR<never, never>;
 };
 export type CollectionObjectGroupType = {
   readonly tableName: 'CollectionObjectGroupType';
