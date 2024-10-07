@@ -6497,10 +6497,9 @@ export type CollectionObjectGroup = {
     readonly yesno2: boolean | null;
     readonly yesno3: boolean | null;
   };
-  readonly toOneDependent: {
-    readonly parentcojo: CollectionObjectGroupJoin | null;
-  };
+  readonly toOneDependent: {};
   readonly toOneIndependent: {
+    readonly parentcojo: CollectionObjectGroupJoin | null;
     readonly cogtype: CollectionObjectGroupType;
     readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
@@ -6535,11 +6534,10 @@ export type CollectionObjectGroupJoin = {
     readonly childco: CollectionObject | null;
     readonly childcog: CollectionObjectGroup | null;
     readonly parentcog: CollectionObjectGroup;
+    readonly collectionObjectGroup: CollectionObjectGroup;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: {
-    readonly collectionObjectGroups: RA<CollectionObjectGroup>;
-  };
+  readonly toManyIndependent: {};
 };
 export type CollectionObjectGroupType = {
   readonly tableName: 'CollectionObjectGroupType';
