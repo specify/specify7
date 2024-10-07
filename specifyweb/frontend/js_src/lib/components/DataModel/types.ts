@@ -6537,7 +6537,9 @@ export type CollectionObjectGroupJoin = {
     readonly parentcog: CollectionObjectGroup;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyIndependent: {
+    readonly collectionObjectGroups: RA<CollectionObjectGroup>;
+  };
 };
 export type CollectionObjectGroupType = {
   readonly tableName: 'CollectionObjectGroupType';
