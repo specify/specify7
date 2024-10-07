@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-10-07 23:15+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
 "Language: es\n"
@@ -352,48 +352,40 @@ msgstr "Alcance"
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
-#, fuzzy
 msgid "uniquenessDuplicatesFound"
-msgstr "Muchos a uno"
+msgstr "Duplicados encontrados en la base de datos"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
-#, fuzzy
 msgid "exportDuplicates"
 msgstr "Exportar duplicados"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
-#, fuzzy
 msgid "numberOfDuplicates"
-msgstr "Número de duplicados"
+msgstr "Cantidad de duplicados"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
-#, fuzzy
 msgid "schemaViewTitle"
-msgstr "Configuración del esquema: {tableName:string}"
+msgstr "Esquema de configuración: {tableName:string}"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:57
-#, fuzzy
 msgid "schemaExportFileName"
-msgstr "Especificar 7 modelos de datos"
+msgstr "Specify 7 modelos de datos"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:86
-#, fuzzy
 msgid "sortByHiddenFields"
 msgstr "Ordenar por campos ocultos"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:101
-#, fuzzy
 msgid "hidden"
 msgstr "oculto"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:70
-#, fuzzy
 msgid "customFieldFormat"
-msgstr "Formato de campo personalizado"
+msgstr "Formato del campo personalizado"
