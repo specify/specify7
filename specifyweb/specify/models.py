@@ -7569,7 +7569,7 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parentcojo = models.ForeignKey('parentCojo', db_column='ParentCojoID', related_name='collectionobjectgroups', null=True, on_delete=protect_with_blockers)
+    parentcojo = models.ForeignKey('CollectionObjectGroupJoin', db_column='ParentCojoID', related_name='collectionobjectgroups', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectgroup'
