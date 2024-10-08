@@ -27,14 +27,19 @@ function notSupported() {
   throw new Error('method is not supported');
 }
 
-async function fakeFetch() {
+async function fakeFetch(rawOptions) {
+  const options = {
+    ...rawOptions,
+  };
+  if (typeof options.success === 'function')
+    options.success.call(options.context, this, undefined, options);
   return this;
 }
 
 async function lazyFetch(options) {
   assert(this instanceof LazyCollection);
   if (this._fetch) return this._fetch;
-  if (this.related?.isNew()) return this;
+  if (this.related?.isNew()) return fakeFetch.call(this, options);
 
   this._neverFetched = false;
 
@@ -119,7 +124,9 @@ export const DependentCollection = Base.extend({
   getFetchOffset() {
     return 0;
   },
-  fetch: fakeFetch,
+  async fetch(options) {
+    return fakeFetch.call(this, options);
+  },
   sync: notSupported,
   create: notSupported,
 });
@@ -258,7 +265,7 @@ export const IndependentCollection = LazyCollection.extend({
   },
   async fetch(options) {
     // If the related is being fetched, don't try and fetch the collection
-    if (this.related._fetch !== null) return this;
+    if (this.related._fetch !== null) return fakeFetch.call(this, options);
 
     this.filters[this.field.name.toLowerCase()] = this.related.id;
 
