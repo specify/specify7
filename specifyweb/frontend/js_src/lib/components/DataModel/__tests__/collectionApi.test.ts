@@ -162,7 +162,8 @@ describe('Independent Collection', () => {
     );
 
     await collection.fetch();
-    expect(collection).toHaveLength(collection._totalCount);
+    const totalCount = collection._totalCount ?? 0;
+    expect(collection).toHaveLength(totalCount);
   });
 
   test('specified offset', async () => {
