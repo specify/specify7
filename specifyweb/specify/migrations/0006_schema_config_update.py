@@ -9,7 +9,7 @@ LithostratTreeDef -> discipline
 StorageTreeDef -> institution
 TaxonTreeDef -> discipline
 
-Picklist created for COGType -> type and updates an existing incorrect picklist for COG -> COGType
+Creates a picklist for COGType -> type and updates an existing incorrect picklist for COG -> COGType
 """
 from django.db import migrations
 
@@ -178,7 +178,7 @@ def revert_cogtype_type_splocalecontaineritem(apps):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0004_stratigraphy_age'),
+        ('specify', '0005_collectionobjectgroup_parentcojo'),
     ]
 
     def apply_migration(apps, schema_editor):

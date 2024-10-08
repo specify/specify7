@@ -244,13 +244,10 @@ export type Accession = {
   readonly fields: {
     readonly accessionCondition: string | null;
     readonly accessionNumber: string;
-    readonly accessionNumber: string;
     readonly actualTotalCountAmt: number | null;
     readonly collectionObjectCount: number | null;
     readonly dateAccessioned: string | null;
-    readonly dateAccessioned: string | null;
     readonly dateAcknowledged: string | null;
-    readonly dateReceived: string | null;
     readonly dateReceived: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
@@ -1371,11 +1368,11 @@ export type Collection = {
 export type CollectionObject = {
   readonly tableName: 'CollectionObject';
   readonly fields: {
+    readonly yesNo1: boolean | null;
     readonly actualTotalCountAmt: number | null;
     readonly age: number | null;
     readonly altCatalogNumber: string | null;
     readonly availability: string | null;
-    readonly catalogNumber: string | null;
     readonly catalogedDate: string | null;
     readonly catalogedDatePrecision: number | null;
     readonly catalogedDateVerbatim: string | null;
@@ -1383,34 +1380,33 @@ export type CollectionObject = {
     readonly remarks: string | null;
     readonly collectionMemberId: number;
     readonly countAmt: number | null;
-    readonly reservedText: string | null;
+    readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
     readonly deaccessioned: boolean | null;
-    readonly timestampModified: string | null;
     readonly embargoReason: string | null;
     readonly embargoReleaseDate: string | null;
     readonly embargoReleaseDatePrecision: number | null;
     readonly embargoStartDate: string | null;
     readonly embargoStartDatePrecision: number | null;
-    readonly yesNo2: boolean | null;
-    readonly fieldNumber: string | null;
     readonly guid: string | null;
-    readonly text2: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly inventoryDate: string | null;
     readonly inventoryDatePrecision: number | null;
+    readonly text2: string | null;
+    readonly fieldNumber: string | null;
     readonly modifier: string | null;
     readonly name: string | null;
     readonly notifications: string | null;
     readonly numberOfDuplicates: number | null;
+    readonly number1: number | null;
+    readonly number2: number | null;
     readonly objectCondition: string | null;
     readonly ocr: string | null;
-    readonly altCatalogNumber: string | null;
+    readonly text1: string | null;
     readonly projectNumber: string | null;
-    readonly remarks: string | null;
     readonly reservedInteger3: number | null;
     readonly reservedInteger4: number | null;
     readonly reservedText: string | null;
@@ -1418,7 +1414,6 @@ export type CollectionObject = {
     readonly reservedText3: string | null;
     readonly restrictions: string | null;
     readonly sgrStatus: number | null;
-    readonly text1: string | null;
     readonly description: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
@@ -1429,11 +1424,8 @@ export type CollectionObject = {
     readonly totalCountAmt: number | null;
     readonly totalValue: number | null;
     readonly uniqueIdentifier: string | null;
-    readonly number1: number | null;
     readonly version: number | null;
     readonly visibility: number | null;
-    readonly fieldNumber: string | null;
-    readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
@@ -1448,13 +1440,13 @@ export type CollectionObject = {
     readonly agent1: Agent | null;
     readonly appraisal: Appraisal | null;
     readonly cataloger: Agent | null;
+    readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
     readonly currentDetermination: Determination | null;
-    readonly modifiedByAgent: Agent | null;
     readonly embargoAuthority: Agent | null;
     readonly fieldNotebookPage: FieldNotebookPage | null;
     readonly inventorizedBy: Agent | null;
@@ -1525,23 +1517,12 @@ export type CollectionObjectAttr = {
 export type CollectionObjectAttribute = {
   readonly tableName: 'CollectionObjectAttribute';
   readonly fields: {
-    readonly number1: number | null;
-    readonly text4: string | null;
     readonly bottomDistance: number | null;
     readonly collectionMemberId: number;
-    readonly text11: string | null;
-    readonly text12: string | null;
-    readonly text10: string | null;
-    readonly text2: string | null;
-    readonly number37: number | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
-    readonly remarks: string | null;
-    readonly text15: string | null;
     readonly direction: string | null;
     readonly distanceUnits: string | null;
-    readonly text6: string | null;
-    readonly number2: number | null;
     readonly integer1: number | null;
     readonly integer10: number | null;
     readonly integer2: number | null;
@@ -1552,8 +1533,6 @@ export type CollectionObjectAttribute = {
     readonly integer7: number | null;
     readonly integer8: number | null;
     readonly integer9: number | null;
-    readonly number12: number | null;
-    readonly number13: number | null;
     readonly number1: number | null;
     readonly number10: number | null;
     readonly number11: number | null;
@@ -1565,6 +1544,7 @@ export type CollectionObjectAttribute = {
     readonly number17: number | null;
     readonly number18: number | null;
     readonly number19: number | null;
+    readonly number2: number | null;
     readonly number20: number | null;
     readonly number21: number | null;
     readonly number22: number | null;
@@ -1583,9 +1563,12 @@ export type CollectionObjectAttribute = {
     readonly number34: number | null;
     readonly number35: number | null;
     readonly number36: number | null;
+    readonly number37: number | null;
+    readonly number38: number | null;
     readonly number39: number | null;
     readonly number4: number | null;
     readonly number40: number | null;
+    readonly number41: number | null;
     readonly number42: number | null;
     readonly number5: number | null;
     readonly number6: number | null;
@@ -1616,6 +1599,7 @@ export type CollectionObjectAttribute = {
     readonly text27: string | null;
     readonly text28: string | null;
     readonly text29: string | null;
+    readonly text3: string | null;
     readonly text30: string | null;
     readonly text31: string | null;
     readonly text32: string | null;
@@ -1626,17 +1610,17 @@ export type CollectionObjectAttribute = {
     readonly text37: string | null;
     readonly text38: string | null;
     readonly text39: string | null;
+    readonly text4: string | null;
     readonly text40: string | null;
     readonly text5: string | null;
     readonly text6: string | null;
     readonly text7: string | null;
+    readonly text8: string | null;
     readonly text9: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly topDistance: number | null;
-    readonly text1: string | null;
     readonly version: number | null;
-    readonly text2: string | null;
     readonly yesNo1: boolean | null;
     readonly yesNo10: boolean | null;
     readonly yesNo11: boolean | null;
@@ -2384,10 +2368,11 @@ export type DataType = {
 export type Deaccession = {
   readonly tableName: 'Deaccession';
   readonly fields: {
+    readonly timestampModified: string | null;
     readonly date1: string | null;
     readonly date2: string | null;
-    readonly deaccessionDate: string | null;
     readonly deaccessionNumber: string;
+    readonly deaccessionDate: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
@@ -2406,7 +2391,6 @@ export type Deaccession = {
     readonly text4: string | null;
     readonly text5: string | null;
     readonly timestampCreated: string;
-    readonly timestampModified: string | null;
     readonly totalItems: number | null;
     readonly totalPreps: number | null;
     readonly type: string | null;
@@ -2475,12 +2459,12 @@ export type Determination = {
   readonly tableName: 'Determination';
   readonly fields: {
     readonly addendum: string | null;
-    readonly text1: string | null;
     readonly alternateName: string | null;
     readonly collectionMemberId: number;
     readonly isCurrent: boolean;
     readonly determinedDate: string | null;
     readonly determinedDatePrecision: number | null;
+    readonly featureOrBasis: string | null;
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
@@ -2499,7 +2483,6 @@ export type Determination = {
     readonly confidence: string | null;
     readonly remarks: string | null;
     readonly subSpQualifier: string | null;
-    readonly text1: string | null;
     readonly text2: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
@@ -2509,10 +2492,8 @@ export type Determination = {
     readonly text8: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
-    readonly text2: string | null;
     readonly typeStatusName: string | null;
     readonly varQualifier: string | null;
-    readonly featureOrBasis: string | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
@@ -2526,8 +2507,8 @@ export type Determination = {
     readonly createdByAgent: Agent | null;
     readonly determiner: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly taxon: Taxon | null;
     readonly preferredTaxon: Taxon | null;
+    readonly taxon: Taxon | null;
   };
   readonly toManyDependent: {
     readonly determinationCitations: RA<DeterminationCitation>;
@@ -3882,6 +3863,8 @@ export type LoanReturnPreparation = {
 export type Locality = {
   readonly tableName: 'Locality';
   readonly fields: {
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
     readonly datum: string | null;
     readonly elevationAccuracy: number | null;
     readonly elevationMethod: string | null;
@@ -3910,7 +3893,6 @@ export type Locality = {
     readonly sgrStatus: number | null;
     readonly shortName: string | null;
     readonly srcLatLongUnit: number;
-    readonly text1: string | null;
     readonly text2: string | null;
     readonly text3: string | null;
     readonly text4: string | null;
@@ -4415,7 +4397,6 @@ export type Preparation = {
     readonly sampleNumber: string | null;
     readonly status: string | null;
     readonly storageLocation: string | null;
-    readonly text1: string | null;
     readonly text10: string | null;
     readonly text11: string | null;
     readonly text12: string | null;
@@ -6536,10 +6517,7 @@ export type CollectionObjectGroup = {
     readonly modifiedByAgent: Agent | null;
     readonly parentCojo: CollectionObjectGroupJoin | null;
   };
-  readonly toManyDependent: {
-    readonly cojo: RA<CollectionObjectGroupJoin>;
-    readonly parentcojos: RA<CollectionObjectGroupJoin>;
-  };
+  readonly toManyDependent: { readonly cojo: RA<CollectionObjectGroupJoin> };
   readonly toManyIndependent: RR<never, never>;
 };
 export type CollectionObjectGroupJoin = {
