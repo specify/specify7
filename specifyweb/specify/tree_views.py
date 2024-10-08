@@ -521,7 +521,7 @@ class LithostratMutationPT(PermissionTarget):
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
-class TectonicUnitMutationPT(PermissionTarget):
+class TectonicunitMutationPT(PermissionTarget):
     resource = "/tree/edit/tectonicunit"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
@@ -537,5 +537,5 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
-        'tectonicunit': TectonicUnitMutationPT
+        'tectonicunit': TectonicunitMutationPT
     }[tree]
