@@ -152,6 +152,9 @@ const defaultFields: RR<
         : []),
     ];
   },
+  TectonicUnit: async (_nodeId, _rankName) => {
+    return [makeField('catalogNumber', {})];
+  },
 };
 
 async function fetchPaleoPath(): Promise<string | undefined> {
