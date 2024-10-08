@@ -162,7 +162,8 @@ describe('Independent Collection', () => {
     );
 
     await collection.fetch();
-    expect(collection).toHaveLength(collection._totalCount);
+    // eslint-disable-next-line jest/prefer-to-have-length
+    expect(collection.length).toBe(collection._totalCount);
   });
 
   test('specified offset', async () => {
