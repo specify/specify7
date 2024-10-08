@@ -152,6 +152,9 @@ const defaultFields: RR<
         : []),
     ];
   },
+  TectonicUnit(nodeId, rankName) {
+    
+  }
 };
 
 async function fetchPaleoPath(): Promise<string | undefined> {
