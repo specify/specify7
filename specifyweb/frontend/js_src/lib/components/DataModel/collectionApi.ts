@@ -178,17 +178,15 @@ export const LazyCollection = Base.extend({
 
 export const IndependentCollection = LazyCollection.extend({
   __name__: 'IndependentCollectionBase',
-  constructor(options, records = []) {
+  constructor(options) {
     this.table = this.model;
-    assert(_.isArray(records));
-    Base.call(this, records, options);
+    Base.call(this, null, options);
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&
       this.model?.specifyTable.getScopingRelationship() !== undefined;
 
-    this._totalCount = records.length;
-
+    this._totalCount = 0;
     this.removed = new Set<string>();
     this.updated = {};
   },
@@ -278,11 +276,9 @@ export const IndependentCollection = LazyCollection.extend({
       : Math.floor(this.length / DEFAULT_FETCH_LIMIT) * DEFAULT_FETCH_LIMIT;
   },
   toApiJSON(options) {
-    const self = this;
-
     return {
       update: Object.values(this.updated),
-      remove: Array.from(self.removed),
+      remove: Array.from(this.removed),
     };
   },
 });
