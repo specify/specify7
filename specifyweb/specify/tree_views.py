@@ -26,8 +26,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
-                     'Geography', 'Geologictimeperiod', 'Lithostrat']
-
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'TectonicUnit']
+# TODO: Move TectonicUnit to new Geo trees 
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
@@ -521,6 +521,14 @@ class LithostratMutationPT(PermissionTarget):
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
+class TectonicUnitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
 
 def perm_target(tree):
     return {
@@ -529,4 +537,5 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
+        'tectonicunit': TectonicUnitMutationPT
     }[tree]
