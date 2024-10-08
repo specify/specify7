@@ -2579,6 +2579,7 @@ export type Discipline = {
     readonly division: Division;
     readonly geographyTreeDef: GeographyTreeDef;
     readonly lithoStratTreeDef: LithoStratTreeDef | null;
+    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
   };
