@@ -108,14 +108,4 @@ class Migration(migrations.Migration):
             name='id',
             field=models.AutoField(db_column='tectonicunittreedefitemid', primary_key=True, serialize=False),
         ),
-        migrations.RemoveField(
-            model_name='discipline',
-            name='tectonicunittreedef',
-        ),
-        migrations.AddField(
-            model_name='discipline',
-            name='tectonicunittreedef',
-            field=models.ForeignKey(db_column='TectonicUnitTreeDefID', default=None, null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='disciplines', to='specify.tectonicunittreedef'),
-            preserve_default=False,
-        ),
     ]
