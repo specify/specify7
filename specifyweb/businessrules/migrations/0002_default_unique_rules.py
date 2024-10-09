@@ -5,7 +5,8 @@ from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_r
 
 
 def apply_rules_to_discipline(apps, schema_editor):
-    for disp in spmodels.Discipline.objects.all():
+    Discipline = apps.get_model('specify', 'Discipline')
+    for disp in Discipline.objects.all():
         apply_default_uniqueness_rules(disp)
 
 
