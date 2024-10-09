@@ -7833,7 +7833,7 @@ class Tectonicunittreedef(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonicunittreedefitem(models.Model):
+class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
     specify_model = datamodel.get_table('tectonicUnittreedefitem')
 
     # ID Field
@@ -7865,7 +7865,7 @@ class Tectonicunittreedefitem(models.Model):
 
     save = partialmethod(custom_save)
 
-class Tectonicunit(models.Model):
+class Tectonicunit(model_extras.Tectonicunit):
     specify_model = datamodel.get_table('tectonicunit')
 
     # ID Field
