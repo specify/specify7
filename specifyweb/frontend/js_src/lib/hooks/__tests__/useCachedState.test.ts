@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 
-import { useCachedState } from '../useCachedState';
 import { getCache } from '../../utils/cache';
+import { useCachedState } from '../useCachedState';
 
 // Mock cache utility functions
 jest.mock('../../utils/cache', () => ({
@@ -14,10 +14,9 @@ jest.mock('../../utils/cache', () => ({
 }));
 
 test('Initialize state from cache', () => {
-  (getCache as jest.Mock).mockReturnValue(true);  // Assume boolean value
+  (getCache as jest.Mock).mockReturnValue(true); // Assume boolean value
   const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
 
   expect(result.current[0]).toBe(true);
   expect(getCache).toHaveBeenCalledWith('header', 'isCollapsed');
 });
-
