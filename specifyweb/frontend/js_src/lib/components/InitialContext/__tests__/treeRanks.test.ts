@@ -66,8 +66,9 @@ describe('strictGetTreeDefinitionItems', () => {
 });
 
 test('getTreeScope', () =>
-  expect(Object.fromEntries(testingTrees.map((tree) => [tree, getTreeScope(tree)])))
-    .toMatchInlineSnapshot(`
+  expect(
+    Object.fromEntries(testingTrees.map((tree) => [tree, getTreeScope(tree)]))
+  ).toMatchInlineSnapshot(`
       {
         "Geography": "discipline",
         "GeologicTimePeriod": "discipline",
