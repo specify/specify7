@@ -2582,6 +2582,7 @@ export type Discipline = {
     readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
+    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -6804,5 +6805,5 @@ export type TectonicUnit = {
     readonly parent: TectonicUnit;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyIndependent: { readonly acceptedChildren: RA<TectonicUnit> };
 };

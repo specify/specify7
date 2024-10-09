@@ -8688,7 +8688,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID'),
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='acceptedTectonicUnit'),
+            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID', otherSideName='acceptedChildren'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one', required=True, relatedModelName='TectonicUnit', column='ParentID'),
