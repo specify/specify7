@@ -3,8 +3,8 @@
  * Afterward, some manual edits have been made. Those are marked with
  * "NOTE:" comments
  *
- * Schema version: 2.12
- * Date generated: October 07, 2024
+ * Schema version: 2.11
+ * Date generated: July 17, 2024
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -1381,10 +1381,10 @@ export type CollectionObject = {
     readonly collectionMemberId: number;
     readonly countAmt: number | null;
     readonly timestampCreated: string;
+    readonly timestampModified: string | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
     readonly deaccessioned: boolean | null;
-    readonly timestampModified: string | null;
     readonly embargoReason: string | null;
     readonly embargoReleaseDate: string | null;
     readonly embargoReleaseDatePrecision: number | null;
@@ -1401,6 +1401,8 @@ export type CollectionObject = {
     readonly name: string | null;
     readonly notifications: string | null;
     readonly numberOfDuplicates: number | null;
+    readonly number1: number | null;
+    readonly number2: number | null;
     readonly objectCondition: string | null;
     readonly ocr: string | null;
     readonly text1: string | null;
@@ -1422,7 +1424,6 @@ export type CollectionObject = {
     readonly totalCountAmt: number | null;
     readonly totalValue: number | null;
     readonly uniqueIdentifier: string | null;
-    readonly number1: number | null;
     readonly version: number | null;
     readonly visibility: number | null;
     readonly yesNo2: boolean | null;
@@ -1516,23 +1517,12 @@ export type CollectionObjectAttr = {
 export type CollectionObjectAttribute = {
   readonly tableName: 'CollectionObjectAttribute';
   readonly fields: {
-    readonly number1: number | null;
-    readonly text4: string | null;
     readonly bottomDistance: number | null;
     readonly collectionMemberId: number;
-    readonly text11: string | null;
-    readonly text12: string | null;
-    readonly text10: string | null;
-    readonly text2: string | null;
-    readonly number37: number | null;
     readonly date1: string | null;
     readonly date1Precision: number | null;
-    readonly remarks: string | null;
-    readonly text15: string | null;
     readonly direction: string | null;
     readonly distanceUnits: string | null;
-    readonly text6: string | null;
-    readonly number2: number | null;
     readonly integer1: number | null;
     readonly integer10: number | null;
     readonly integer2: number | null;
@@ -1543,6 +1533,7 @@ export type CollectionObjectAttribute = {
     readonly integer7: number | null;
     readonly integer8: number | null;
     readonly integer9: number | null;
+    readonly number1: number | null;
     readonly number10: number | null;
     readonly number11: number | null;
     readonly number12: number | null;
@@ -1553,6 +1544,7 @@ export type CollectionObjectAttribute = {
     readonly number17: number | null;
     readonly number18: number | null;
     readonly number19: number | null;
+    readonly number2: number | null;
     readonly number20: number | null;
     readonly number21: number | null;
     readonly number22: number | null;
@@ -1571,9 +1563,12 @@ export type CollectionObjectAttribute = {
     readonly number34: number | null;
     readonly number35: number | null;
     readonly number36: number | null;
+    readonly number37: number | null;
+    readonly number38: number | null;
     readonly number39: number | null;
     readonly number4: number | null;
     readonly number40: number | null;
+    readonly number41: number | null;
     readonly number42: number | null;
     readonly number5: number | null;
     readonly number6: number | null;
@@ -1581,9 +1576,11 @@ export type CollectionObjectAttribute = {
     readonly number8: number | null;
     readonly number9: number | null;
     readonly positionState: string | null;
+    readonly remarks: string | null;
     readonly text1: string | null;
     readonly text13: string | null;
     readonly text14: string | null;
+    readonly text15: string | null;
     readonly text16: string | null;
     readonly text17: string | null;
     readonly text18: string | null;
@@ -1598,6 +1595,7 @@ export type CollectionObjectAttribute = {
     readonly text27: string | null;
     readonly text28: string | null;
     readonly text29: string | null;
+    readonly text3: string | null;
     readonly text30: string | null;
     readonly text31: string | null;
     readonly text32: string | null;
@@ -1608,6 +1606,7 @@ export type CollectionObjectAttribute = {
     readonly text37: string | null;
     readonly text38: string | null;
     readonly text39: string | null;
+    readonly text4: string | null;
     readonly text40: string | null;
     readonly text5: string | null;
     readonly text7: string | null;
@@ -2364,10 +2363,11 @@ export type DataType = {
 export type Deaccession = {
   readonly tableName: 'Deaccession';
   readonly fields: {
+    readonly timestampModified: string | null;
     readonly date1: string | null;
     readonly date2: string | null;
-    readonly deaccessionDate: string | null;
     readonly deaccessionNumber: string;
+    readonly deaccessionDate: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
@@ -2386,7 +2386,6 @@ export type Deaccession = {
     readonly text4: string | null;
     readonly text5: string | null;
     readonly timestampCreated: string;
-    readonly timestampModified: string | null;
     readonly totalItems: number | null;
     readonly totalPreps: number | null;
     readonly type: string | null;
@@ -2455,12 +2454,12 @@ export type Determination = {
   readonly tableName: 'Determination';
   readonly fields: {
     readonly addendum: string | null;
-    readonly text1: string | null;
     readonly alternateName: string | null;
     readonly collectionMemberId: number;
     readonly isCurrent: boolean;
     readonly determinedDate: string | null;
     readonly determinedDatePrecision: number | null;
+    readonly featureOrBasis: string | null;
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
@@ -2489,7 +2488,6 @@ export type Determination = {
     readonly timestampModified: string | null;
     readonly typeStatusName: string | null;
     readonly varQualifier: string | null;
-    readonly featureOrBasis: string | null;
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
@@ -2503,8 +2501,8 @@ export type Determination = {
     readonly createdByAgent: Agent | null;
     readonly determiner: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly taxon: Taxon | null;
     readonly preferredTaxon: Taxon | null;
+    readonly taxon: Taxon | null;
   };
   readonly toManyDependent: {
     readonly determinationCitations: RA<DeterminationCitation>;
@@ -4393,7 +4391,6 @@ export type Preparation = {
     readonly sampleNumber: string | null;
     readonly status: string | null;
     readonly storageLocation: string | null;
-    readonly text1: string | null;
     readonly text10: string | null;
     readonly text11: string | null;
     readonly text12: string | null;
@@ -6514,10 +6511,7 @@ export type CollectionObjectGroup = {
     readonly modifiedByAgent: Agent | null;
     readonly parentCojo: CollectionObjectGroupJoin | null;
   };
-  readonly toManyDependent: {
-    readonly cojo: RA<CollectionObjectGroupJoin>;
-    readonly parentCojos: RA<CollectionObjectGroupJoin>;
-  };
+  readonly toManyDependent: { readonly cojo: RA<CollectionObjectGroupJoin> };
   readonly toManyIndependent: RR<never, never>;
 };
 export type CollectionObjectGroupJoin = {

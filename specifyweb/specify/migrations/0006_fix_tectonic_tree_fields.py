@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0004_stratigraphy_age'),
+        ('specify', '0005_collectionobjectgroup_parentcojo'),
     ]
 
     operations = [
@@ -107,5 +107,15 @@ class Migration(migrations.Migration):
             model_name='tectonicunittreedefitem',
             name='id',
             field=models.AutoField(db_column='tectonicunittreedefitemid', primary_key=True, serialize=False),
+        ),
+        migrations.RemoveField(
+            model_name='discipline',
+            name='tectonicunittreedef',
+        ),
+        migrations.AddField(
+            model_name='discipline',
+            name='tectonicunittreedef',
+            field=models.ForeignKey(db_column='TectonicUnitTreeDefID', default=None, null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='disciplines', to='specify.tectonicunittreedef'),
+            preserve_default=False,
         ),
     ]
