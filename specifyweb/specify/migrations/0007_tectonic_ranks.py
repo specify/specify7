@@ -14,43 +14,43 @@ def create_default_tectonic_ranks(apps):
             name="Root",
             title="Root",
             rankid=0,
-            parentitem=None,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=None,
+            treedef=tectonic_tree_def,
         )
         superstructure = TectonicUnit.objects.create(
             name="Superstructure",
             title="Superstructure",
             rankid=10,
-            parentitem=root,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=root,
+            treedef=tectonic_tree_def,
         )
         tectonic_domain = TectonicUnit.objects.create(
             name="Tectonic Domain",
             title="Tectonic Domain",
             rankid=20,
-            parentitem=superstructure,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=superstructure,
+            treedef=tectonic_tree_def,
         )
         tectonic_subdomain = TectonicUnit.objects.create(
             name="Tectonic Subdomain",
             title="Tectonic Subdomain",
             rankid=30,
-            parentitem=tectonic_domain,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=tectonic_domain,
+            treedef=tectonic_tree_def,
         )
         tectonic_unit = TectonicUnit.objects.create(
             name="Tectonic Unit",
             title="Tectonic Unit",
             rankid=40,
-            parentitem=tectonic_subdomain,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=tectonic_subdomain,
+            treedef=tectonic_tree_def,
         )
         tectonic_subunit = TectonicUnit.objects.create(
             name="Tectonic Subunit",
             title="Tectonic Subunit",
             rankid=50,
-            parentitem=tectonic_unit,
-            tectonicunittreedef=tectonic_tree_def,
+            parent=tectonic_unit,
+            treedef=tectonic_tree_def,
         )
 
 def revert_default_tectonic_ranks(apps, schema_editor):
@@ -65,7 +65,7 @@ def revert_default_tectonic_ranks(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0006_collectionobjectgroup_parentcojo'),
+        ('specify', '0006_fix_tectonic_tree_fields'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
