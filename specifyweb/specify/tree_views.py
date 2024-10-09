@@ -29,7 +29,7 @@ TREE_TABLE = Literal['Taxon', 'Storage',
                      'Geography', 'Geologictimeperiod', 'Lithostrat']
 
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
-                                        'Geography']
+                                        'Geography', 'Tectonicunit']
 
 ALL_TRESS: Tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat']
@@ -522,6 +522,15 @@ class LithostratMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 
+class TectonicUnitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+
 def perm_target(tree):
     return {
         'taxon': TaxonMutationPT,
@@ -529,4 +538,5 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
+        'tectonicunit': TectonicUnitMutationPT
     }[tree]
