@@ -2582,7 +2582,6 @@ export type Discipline = {
     readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
-    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {

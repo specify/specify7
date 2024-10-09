@@ -65,7 +65,7 @@ def revert_default_tectonic_ranks(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0005_collectionobjectgroup_parentcojo'),
+        ('specify', '0006_collectionobjectgroup_parentcojo'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):

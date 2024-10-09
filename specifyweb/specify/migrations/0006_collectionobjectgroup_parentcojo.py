@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0004_stratigraphy_age'),
+        ('specify', '0005_fix_tectonic_tree_fields'),
     ]
 
     operations = [
