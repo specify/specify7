@@ -22,8 +22,8 @@ const fullNames = {
   LithoStrat: 'Cretaceous',
 };
 
-// TODO: Add static data for Tectonic Unit and replace testingTrees with allTrees
-const testingTrees = allTrees.filter((t) => t !== 'TectonicUnit');
+// TODO: Add static data for Tectonic Unit and replace ALL testingTrees usages with allTrees
+export const testingTrees = allTrees.filter((t) => t !== 'TectonicUnit');
 testingTrees.map((table, rankId) => {
   const nodeId = rankId * 4;
   const rankUrl = getResourceApiUrl(`${table}TreeDefItem`, rankId);
