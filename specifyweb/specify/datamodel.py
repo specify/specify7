@@ -8697,8 +8697,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='treeEntries'),
         ],
         fieldAliases=[
-            
-        ]
+            {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
+        ],
     ),
 ])
 
