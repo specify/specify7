@@ -2,14 +2,22 @@ import { act, renderHook } from '@testing-library/react';
 
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { useCachedState } from '../useCachedState';
+import { resourceLimits } from 'worker_threads';
+
+let eventHandler: (payload: { category: string; key: string }) => void;
 
 // Mock cache utility functions
 jest.mock('../../utils/cache', () => ({
   getCache: jest.fn(),
   setCache: jest.fn(),
   cacheEvents: {
-    on: jest.fn(),
-    emit: jest.fn(),
+    on: jest.fn((eventName: string, handler: (payload: any) => void) => {
+      if (eventName === 'change') {
+        eventHandler = handler;
+      }
+      return jest.fn();
+    }),
+    trigger: jest.fn(),
   },
 }));
 
@@ -56,28 +64,56 @@ test('Do not update state if cache value is the same', () => {
   expect(setCache).not.toHaveBeenCalled();
 });
 
-/*
- * Test('Update state when cacheEvents change is triggered', () => {
- *   (getCache as jest.Mock).mockReturnValueOnce(true);
- *   const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
- */
+test('Do not update state if setCachedState is called with undefined', () => {
+  (getCache as jest.Mock).mockReturnValue(true);
+  const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
 
-//   Expect(result.current[0]).toBe(true);
+  expect(result.current[0]).toBe(true);
 
-//   (getCache as jest.Mock).mockReturnValueOnce(false); // Cache changes to false
+  act(() => {
+    result.current[1](undefined); // Call with undefined
+  });
 
-/*
- *   // Trigger cache event listener to simulate a cache change
- *   act(() => {
- *     (cacheEvents.on as jest.Mock).mock.calls[0][1]({
- *       category: 'header',
- *       key: 'isCollapsed',
- *     });
- *   });
- */
+  expect(result.current[0]).toBe(true);
+  expect(setCache).not.toHaveBeenCalled();
+});
 
-/*
- *   Expect(result.current[0]).toBe(false);
- *   expect(getCache).toHaveBeenCalledWith('header', 'isCollapsed');
- *  });
- */
+//fails
+test('Retain state after multiple renders', () => {
+  (getCache as jest.Mock).mockReturnValue(true);
+  const { result, rerender } = renderHook(() =>
+    useCachedState('header', 'isCollapsed')
+  );
+
+  expect(result.current[0]).toBe(true);
+
+  act(() => {
+    result.current[1](false); // Update the state to false
+  });
+
+  expect(result.current[0]).toBe(false);
+
+  rerender();
+
+  expect(result.current[0]).toBe(false);
+});
+
+/* wip
+test('Update state when cacheEvents change is triggered', () => {
+  (getCache as jest.Mock).mockReturnValueOnce(true);
+  const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
+
+  expect(result.current[0]).toBe(true);
+
+  (getCache as jest.Mock).mockReturnValueOnce(false);
+
+  act(() => {
+    eventHandler({ category: 'header', key: 'isCollapsed' });
+  });
+
+  console.log("state after cache change event ", result.current[0]);
+
+  expect(result.current[0]).toBe(false);
+  expect(getCache).toHaveBeenCalledWith('header', 'isCollapsed');
+});
+*/
