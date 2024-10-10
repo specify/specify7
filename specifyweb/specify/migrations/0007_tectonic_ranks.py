@@ -66,12 +66,12 @@ def revert_default_tectonic_ranks(apps, schema_editor):
 def create_root_tectonic_node(apps): 
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
+    TectonicUnitTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
 
     for discipline in Discipline.objects.all(): 
 
-        tectonic_tree_def, created = TectonicTreeDef.objects.get_or_create(
+        tectonic_tree_def, created = TectonicUnitTreeDef.objects.get_or_create(
             name="Tectonic Unit",
             discipline=discipline
         )
@@ -85,7 +85,7 @@ def create_root_tectonic_node(apps):
             name="Root",
             isaccepted=1,
             nodenumber=1,
-            rankid=1,
+            rankid=0,
             parent=None,
             definition=tectonic_tree_def,
             definitionitem=tectonic_tree_def_item
@@ -119,5 +119,5 @@ class Migration(migrations.Migration):
         revert_create_root_tectonic_node(apps)
     
     operations = [
-                migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
+        migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
     ]
