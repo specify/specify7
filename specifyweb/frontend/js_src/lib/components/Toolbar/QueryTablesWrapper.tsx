@@ -73,6 +73,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Storage',
   'Taxon',
   'TreatmentEvent',
+  // TODO: do we need to add tectonicUnit here?
 ];
 
 export function useQueryTables(): GetSet<RA<SpecifyTable>> {
