@@ -1,2 +1,141 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
+"report/pt/>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.8-dev\n"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
+#: components/Header/menuItemDefinitions.ts:86
+#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Reports/Parameters.tsx:91
+#: components/Reports/index.tsx:142
+#: components/Reports/index.tsx:149
+#: components/Router/OverlayRoutes.tsx:144
+#, fuzzy
+msgid "reports"
+msgstr "Relatórios"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:206
+#, fuzzy
+msgid "reportProblems"
+msgstr "Problemas com o relatório"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:210
+#, fuzzy
+msgid "reportProblemsDescription"
+msgstr "O relatório selecionado apresenta os seguintes problemas:"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:77
+#, fuzzy
+msgid "label"
+msgstr "Rótulo"
+
+#. Used in: Components > Reports > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/Reports/index.tsx:160
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/Table.tsx:58
+#: components/SchemaViewer/schemaToTsv.tsx:16
+#: components/SchemaViewer/schemaToTsv.tsx:21
+#, fuzzy
+msgid "labels"
+msgstr "Etiquetas"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:85
+#, fuzzy
+msgid "report"
+msgstr "Relatório"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:211
+#, fuzzy
+msgid "missingAttachments"
+msgstr "Anexos ausentes"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:215
+#: components/Reports/Report.tsx:217
+#, fuzzy
+msgid "fix"
+msgstr "Consertar"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:228
+#, fuzzy
+msgid "chooseFile"
+msgstr "Escolha o arquivo"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:316
+#, fuzzy
+msgid "reportParameters"
+msgstr "Parâmetros do Relatório"
+
+#. Used in: Components > Reports > Parameters
+#: components/Reports/Parameters.tsx:87
+#, fuzzy
+msgid "runReport"
+msgstr "Executar relatório"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:52
+#, fuzzy
+msgid "missingReportQuery"
+msgstr "Consulta de relatório ausente"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:56
+#, fuzzy
+msgid "missingReportQueryDescription"
+msgstr "Este relatório não possui uma consulta associada"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:61
+#, fuzzy
+msgid "missingReport"
+msgstr "Relatório ausente"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:65
+#, fuzzy
+msgid "missingReportDescription"
+msgstr ""
+"Não é possível encontrar um registro SpReport para este recurso de aplicativo"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:173
+#, fuzzy
+msgid "generateLabel"
+msgstr "Gerar etiqueta"
+
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+#: components/FormMeta/index.tsx:191
+#: components/FormParse/fields.ts:132
+#: components/FormParse/__tests__/fields.test.ts:147
+#, fuzzy
+msgid "generateLabelOnSave"
+msgstr "Gerar etiqueta ao salvar"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:172
+#, fuzzy
+msgid "generateReport"
+msgstr "Gerar relatório"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:190
+#, fuzzy
+msgid "generateReportOnSave"
+msgstr "Gerar relatório ao salvar"
