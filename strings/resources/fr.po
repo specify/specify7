@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -270,7 +270,7 @@ msgstr "Coutume"
 #: components/AppResources/types.tsx:119
 #, fuzzy
 msgid "leafletLayers"
-msgstr "Couches de folioles"
+msgstr "Couches de dépliants"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
