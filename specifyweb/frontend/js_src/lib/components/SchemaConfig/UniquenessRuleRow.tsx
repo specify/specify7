@@ -84,7 +84,7 @@ export function UniquenessRuleRow({
           <Input.Text
             form={formId}
             forwardRef={index === 0 ? validationRef : undefined}
-            isReadOnly={true}
+            isReadOnly
             key={index}
             value={
               (fields.find(({ name }) => name === field) ??
