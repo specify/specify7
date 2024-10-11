@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -229,7 +229,7 @@ msgstr ""
 #: components/WorkBench/Disambiguation.tsx:68
 #, fuzzy
 msgid "disambiguateMatches"
-msgstr "Aufdecken mehrerer Datensatzübereinstimmungen"
+msgstr "Mehrere Datensatzübereinstimmungen eindeutig machen"
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:57
@@ -242,7 +242,7 @@ msgstr "„Alle anwenden“ ist nicht verfügbar, während die Datenprüfung lä
 #: components/WbActions/WbRollback.tsx:76
 #, fuzzy
 msgid "beginRollback"
-msgstr "Mit Datensatz-Rollback beginnen?"
+msgstr "Mit dem Zurücksetzen des Datensatzes beginnen?"
 
 #. Used in: Components > Wb Actions > Wb Rollback
 #: components/WbActions/WbRollback.tsx:79
@@ -816,7 +816,7 @@ msgstr "Neu erstellen"
 #: components/WorkBench/DataSetMeta.tsx:183
 #, fuzzy
 msgid "dataSetMeta"
-msgstr "Dataset-Eigenschaften"
+msgstr "Datensatzeigenschaften"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
