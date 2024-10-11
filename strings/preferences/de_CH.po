@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -874,8 +874,8 @@ msgstr "Dies bestimmt die visuelle Reihenfolge der Sammlungen."
 #, fuzzy
 msgid "recordSetRecordToOpen"
 msgstr ""
-"Beim Zusammenführen von Agenten werden automatisch [X42X] Datensätze "
-"basierend auf den Variationen von Vorname/Nachname erstellt."
+"Beim Zusammenführen von Agenten werden automatisch [X42X] Datensätze auf "
+"Basis der Vornamen-/Nachnamenvariationen erstellt."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
@@ -1093,7 +1093,7 @@ msgstr "{agentVariantTable:string}-Datensätze automatisch erstellen"
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "Beim Zusammenführen von Agenten werden automatisch {agentVariantTable:string}"
-" Datensätze auf Basis der Vornamen-/Nachnamenvariationen erstellt."
+" Datensätze basierend auf den Variationen von Vorname/Nachname erstellt."
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:110
