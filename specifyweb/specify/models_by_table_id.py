@@ -213,9 +213,9 @@ model_names_by_table_id = {
     1022: 'RelativeAgeAttachment', 
     1023: 'AbsoluteAgeCitation', 
     1024: 'RelativeAgeCitation',
-    1025: 'TectonicUnitTreeDef',
-    1026: 'TectonicUnitTreeDefItem',
-    1027: 'TectonicUnit', 
+    1025: 'Tectonicunittreedef',
+    1026: 'Tectonicunittreedefitem',
+    1027: 'Tectonicunit', 
 }
 
 model_names_by_app = {
@@ -442,9 +442,9 @@ model_names_by_app = {
         'RelativeAgeAttachment', 
         'AbsoluteAgeCitation', 
         'RelativeAgeCitation',
-        'TectonicUnitTreeDef',
-        'TectonicUnitTreeDefItem',
-        'TectonicUnit', 
+        'Tectonicunittreedef',
+        'Tectonicunittreedefitem',
+        'Tectonicunit', 
     }
 }
 
