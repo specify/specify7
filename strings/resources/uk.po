@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -156,10 +156,10 @@ msgstr "Формат таблиці"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"«Формат таблиці» визначає, як дані з певної таблиці відображаються в "
-"результатах запиту, експорті та комбінованих полях запиту. Він визначає поля "
-"для відображення та їх порядок. Умовне форматування можна налаштувати на "
-"основі значення в записі."
+"«Формат таблиці» керує тим, як дані з певної таблиці відображаються в "
+"результатах запитів, експорті та комбінованих полях запитів. Він визначає "
+"поля для відображення та їх порядок. Умовне форматування можна налаштувати "
+"на основі значення в записі."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
@@ -408,7 +408,7 @@ msgstr "Визначення"
 #: components/Formatters/Definitions.tsx:85
 #, fuzzy
 msgid "addDefinition"
-msgstr "Додати визначення"
+msgstr "Додайте визначення"
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
@@ -507,7 +507,7 @@ msgstr "Надіслати сповіщення про завершення ко
 #: components/ExportFeed/Editor.tsx:273
 #, fuzzy
 msgid "runInCollection"
-msgstr "Запустити в колекції"
+msgstr "Запустити в колекцію"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
