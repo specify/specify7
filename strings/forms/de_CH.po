@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-18 16:46+0000\n"
+"PO-Revision-Date: 2024-10-11 16:47+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -162,7 +162,7 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #: components/PickLists/index.tsx:290
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "Dateneingabetabellen konfigurieren"
+msgstr "Konfigurieren von Dateneingabetabellen"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
