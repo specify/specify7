@@ -80,10 +80,18 @@ def filter_by_collection(model, query, collection):
     if model is models.GeologicTimePeriod:
         logger.info("filtering geologic time period to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
-#TODO: add tectonic? 
+
     if model is models.GeologicTimePeriodTreeDefItem:
         logger.info("filtering geologic time period rank to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+
+    if model is models.TectonicUnit:
+        logger.info("filtering tectonic unit to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+
+    if model is models.TectonicUnitTreeDefItem:
+        logger.info("filtering tectonic unit rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
 
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
