@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
@@ -269,7 +269,7 @@ msgstr "Conjunto de datos de actualización de localidad analizados"
 #: components/Notifications/NotificationRenderers.tsx:253
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Error en la actualización de la localidad"
+msgstr "Línea"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
@@ -290,7 +290,7 @@ msgstr "Actualización de localidad cancelada"
 #: components/Notifications/NotificationRenderers.tsx:297
 #, fuzzy
 msgid "localityUpdateSucceeded"
-msgstr "Actualización de localidad realizada con éxito"
+msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
