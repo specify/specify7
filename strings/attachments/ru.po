@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-26 13:16+0000\n"
+"PO-Revision-Date: 2024-10-11 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/ru/>\n"
@@ -44,7 +44,7 @@ msgstr "Сервер прикрепленных файлов недоступе�
 #: components/Attachments/index.tsx:57
 #, fuzzy
 msgid "attachmentServerUnavailableDescription"
-msgstr "Настройте сервер вложений"
+msgstr "Настройте свой сервер вложений"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
@@ -307,7 +307,7 @@ msgstr "Всего файлов"
 #: components/AttachmentsBulkImport/utils.ts:487
 #, fuzzy
 msgid "correctlyFormatted"
-msgstr "Правильно отформатирован"
+msgstr "Правильно отформатировано"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:488
