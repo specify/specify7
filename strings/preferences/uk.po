@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -118,8 +118,8 @@ msgstr "Зменшити прозорість"
 #, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
-"Чи вимикати прозорі фони для компонентів інтерфейсу користувача, коли це "
-"можливо (наприклад, заголовки таблиць у перегляді дерева)."
+"Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли "
+"це можливо (наприклад, заголовки таблиць у перегляді дерева)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:171
@@ -473,7 +473,7 @@ msgstr "Показати значок у заголовку"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Інтерфейс масштабування"
+msgstr "Інтерфейс масштабу"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -793,7 +793,7 @@ msgstr "Включіть назву таблиці в заголовок сто�
 #: components/Preferences/UserDefinitions.tsx:760
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Сфокусувати перше поле"
+msgstr "Перейти до першого поля"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1932
@@ -1036,7 +1036,7 @@ msgstr "Використовуйте спеціальні роздільники
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Список розділювачів для використання на додаток до визначених вище. "
+"Список роздільників, які слід використовувати на додаток до визначених вище. "
 "Поставте один роздільник на рядок."
 
 #. Used in: Components > Preferences > User Definitions
@@ -1146,7 +1146,7 @@ msgstr "Запам'ятайте розміри діалогових вікон"
 #: components/Preferences/UserDefinitions.tsx:483
 #, fuzzy
 msgid "rememberDialogPositions"
-msgstr "Запам'ятовуйте розташування діалогового вікна"
+msgstr "Запам'ятовуйте положення діалогового вікна"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1304
