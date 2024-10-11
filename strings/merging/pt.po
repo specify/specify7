@@ -1,2 +1,182 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
+"merging/pt/>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.8-dev\n"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1616
+#, fuzzy
+msgid "recordMerging"
+msgstr "Mesclagem de registros"
+
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
+#: components/FormMeta/MergeRecord.tsx:56
+#: components/Merging/index.tsx:89
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:405
+#: components/Merging/index.tsx:418
+#: components/Router/OverlayRoutes.tsx:222
+#, fuzzy
+msgid "mergeRecords"
+msgstr "Mesclar Registros"
+
+#. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:225
+#, fuzzy
+msgid "mergedRecord"
+msgstr "Registro mesclado"
+
+#. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:451
+#, fuzzy
+msgid "showConflictingFieldsOnly"
+msgstr "Mostrar apenas campos conflitantes"
+
+#. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:190
+#, fuzzy
+msgid "newMergedRecord"
+msgstr "Novo registro mesclado"
+
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
+#: components/Merging/CompareSubView.tsx:230
+#: components/Merging/Header.tsx:191
+#, fuzzy
+msgid "duplicateRecord"
+msgstr "Pré-visualização {index:number|formatted}"
+
+#. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:111
+#, fuzzy
+msgid "nRecords"
+msgstr "{count:number|formatted} registros"
+
+#. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:425
+#, fuzzy
+msgid "subViewControls"
+msgstr "Controles de subvisualização"
+
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:211
+#, fuzzy
+msgid "mergeFields"
+msgstr "Mesclar {field:string}"
+
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
+#: components/Merging/index.tsx:267
+#: components/Preferences/UserDefinitions.tsx:1622
+#, fuzzy
+msgid "autoPopulate"
+msgstr "Preenchimento automático"
+
+#. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:88
+#, fuzzy
+msgid "dismissFromMerging"
+msgstr "Descartar da fusão"
+
+#. Used in: Components > Merging > Definitions
+#: components/Merging/definitions.ts:23
+#, fuzzy
+msgid "agentContainsGroupDescription"
+msgstr "Registro mesclado"
+
+#. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:30
+#, fuzzy
+msgid "recordNotBeMergedReason"
+msgstr "Os seguintes registros não podem ser mesclados. Motivo:"
+
+#. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:93
+#, fuzzy
+msgid "someCannotBeMerged"
+msgstr "Algo deu errado durante o processo de mesclagem."
+
+#. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:88
+#, fuzzy
+msgid "mergeOthers"
+msgstr "Mesclar outros"
+
+#. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:408
+#, fuzzy
+msgid "warningMergeText"
+msgstr ""
+"Antes de prosseguir, observe que a ação a seguir pode interromper outros "
+"usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de "
+"certos recursos para usuários do Specify. Considere o impacto na experiência "
+"deles. Esta mesclagem não pode ser desfeita"
+
+#. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:24
+#: components/Merging/Status.tsx:25
+#, fuzzy
+msgid "mergeFailed"
+msgstr "Falha na mesclagem"
+
+#. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:26
+#, fuzzy
+msgid "mergeSucceeded"
+msgstr "Mesclagem bem-sucedida"
+
+#. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:23
+#, fuzzy
+msgid "merging"
+msgstr "Mesclando"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:150
+#, fuzzy
+msgid "mergingHasStarted"
+msgstr "O processo de fusão foi iniciado."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:205
+#, fuzzy
+msgid "mergingHasSucceeded"
+msgstr "O processo de mesclagem foi bem-sucedido."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:167
+#, fuzzy
+msgid "mergingHasFailed"
+msgstr "O processo de mesclagem falhou."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:185
+#, fuzzy
+msgid "mergingHasBeenCanceled"
+msgstr "O processo de mesclagem foi cancelado."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:170
+#, fuzzy
+msgid "retryMerge"
+msgstr "Tentar mesclar novamente."
+
+#. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:144
+#, fuzzy
+msgid "mergingWentWrong"
+msgstr "Algo deu errado durante o processo de mesclagem."
+
+#. Used in: Components > Merging > Usages
+#: components/Merging/Usages.tsx:22
+#: components/Merging/Usages.tsx:78
+#, fuzzy
+msgid "linkedRecords"
+msgstr "Registros vinculados"
