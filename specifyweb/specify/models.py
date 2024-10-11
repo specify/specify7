@@ -2265,7 +2265,7 @@ class Container(models.Model):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='containers', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3594,7 +3594,7 @@ class Geography(model_extras.Geography):
     definition = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geography'
@@ -3699,7 +3699,7 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     definition = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geologictimeperiod'
@@ -4191,7 +4191,7 @@ class Lithostrat(model_extras.Lithostrat):
     definition = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'lithostrat'
@@ -6566,7 +6566,7 @@ class Storage(model_extras.Storage):
     definition = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'storage'
@@ -6765,7 +6765,7 @@ class Taxon(model_extras.Taxon):
     hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
     hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     taxonattribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7886,7 +7886,7 @@ class TectonicUnit(models.Model):
     # Relationships: Many-to-One
     acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
     tectonicunittreedefitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='tectonicunits', null=False, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='tectonicunits', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
