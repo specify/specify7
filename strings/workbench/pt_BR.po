@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:44+0000\n"
+"PO-Revision-Date: 2024-10-11 18:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/pt_BR/>\n"
@@ -646,7 +646,7 @@ msgstr "Pesquisa ao vivo"
 #: components/WorkBench/AdvancedSearch.tsx:170
 #, fuzzy
 msgid "replaceOptions"
-msgstr "Opções de substituição"
+msgstr "Substituir opções"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
