@@ -27,9 +27,11 @@ logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
                      'Geography', 'Geologictimeperiod', 'Lithostrat']
-# TODO: Move TectonicUnit to new Geo trees 
+
+GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
+
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
-                                        'Geography', 'Tectonicunit']
+                                        'Geography', *GEO_TREES]
 
 ALL_TRESS: Tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat']

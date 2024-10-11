@@ -1,6 +1,5 @@
 from django.db import migrations
 
-from specifyweb.specify import models as spmodels
 from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 
 
