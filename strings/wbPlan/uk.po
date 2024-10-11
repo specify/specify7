@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-28 16:45+0000\n"
+"PO-Revision-Date: 2024-10-11 16:46+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/uk/>\n"
@@ -51,7 +51,7 @@ msgstr "НЕ ВИБРАНО"
 #: components/Molecules/TableIcon.tsx:96
 #, fuzzy
 msgid "unmapped"
-msgstr "Некартований"
+msgstr "Не зіставлений"
 
 #. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
