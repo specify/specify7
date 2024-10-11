@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-09-18 15:40+0000\n"
+"PO-Revision-Date: 2024-10-11 16:46+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -35,7 +35,7 @@ msgstr "Créer une copie complète de l'enregistrement actuel"
 #: components/DataModel/uniquenessRules.ts:140
 #, fuzzy
 msgid "valueMustBeUniqueToField"
-msgstr "Précision de la date"
+msgstr "La valeur doit être unique à {fieldName:string}"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:143
@@ -76,7 +76,7 @@ msgstr "Supprimer bloqué"
 msgid "deleteBlockedDescription"
 msgstr ""
 "La ressource ne peut pas être supprimée car elle est référencée par les "
-"ressources suivantes :"
+"ressources suivantes :"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
@@ -162,7 +162,7 @@ msgstr "Définir sur la date du jour"
 #: components/PickLists/index.tsx:285
 #, fuzzy
 msgid "addToPickListConfirmation"
-msgstr "(Plage : [X8X] - [X24X])"
+msgstr "Ajouter à {pickListTable:string} ?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:290
@@ -280,7 +280,8 @@ msgstr "Cette action ne peut pas être annulée."
 #: components/Forms/Save.tsx:376
 #, fuzzy
 msgid "saveBlockedDescription"
-msgstr "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
+msgstr ""
+"Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
@@ -399,7 +400,7 @@ msgstr "Valeur invalide"
 #: utils/parser/__tests__/parse.test.ts:228
 #, fuzzy
 msgid "requiredFormat"
-msgstr "Format requis : {format:string}."
+msgstr "Format requis : {format:string}."
 
 #. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: utils/parser/definitions.ts:49
@@ -537,7 +538,7 @@ msgstr "Supprimer de {recordSetTable:string}"
 #: components/Molecules/AutoComplete.tsx:533
 #, fuzzy
 msgid "nothingFound"
-msgstr "Créer une copie complète de l'enregistrement actuel"
+msgstr "Rien trouvé"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:256
@@ -684,13 +685,13 @@ msgstr "État du formulaire"
 #: components/FormMeta/index.tsx:227
 #, fuzzy
 msgid "recordInformation"
-msgstr "Cette action ne peut pas être annulée."
+msgstr "Informations sur le dossier"
 
 #. Used in: Components > Form Meta > Share Record
 #: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
-msgstr "(Plage : [X8X] - [X24X])"
+msgstr "(Plage : [X8X] - [X24X])"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
@@ -789,7 +790,7 @@ msgstr "Nouveau {tableName:string}"
 #: components/Forms/dataObjFormatters.ts:161
 #, fuzzy
 msgid "resourceFormatter"
-msgstr "Afficher le bouton \"Transférer en avant\""
+msgstr "{tableName:string} #{id:number}"
 
 #. Used in: Components > Forms > Resource View
 #: components/Forms/ResourceView.tsx:213
@@ -807,7 +808,7 @@ msgstr "L'élément a été supprimé avec succès."
 #: components/Forms/DateRange.tsx:53
 #, fuzzy
 msgid "dateRange"
-msgstr "(Plage : {from:string} - {to:string})"
+msgstr "(Plage : {from:string} - {to:string})"
 
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:282
