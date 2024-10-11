@@ -72,8 +72,8 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'SpAuditLog',
   'Storage',
   'Taxon',
+  'TectonicUnit',
   'TreatmentEvent',
-  // TODO: do we need to add tectonicUnit here?
 ];
 
 export function useQueryTables(): GetSet<RA<SpecifyTable>> {
