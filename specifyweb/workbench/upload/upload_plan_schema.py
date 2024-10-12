@@ -1,16 +1,18 @@
-from typing import Dict, Any, Union, Tuple
+from functools import reduce
+from os import name
+from typing import Dict, Any, Optional, Union, Tuple
+import logging
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
-from specifyweb.specify.load_datamodel import DoesNotExistError
-from specifyweb.specify import models
 
 from .upload_table import DeferredScopeUploadTable, UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
-from .treerecord import TreeRecord, MustMatchTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 from .scoping import DEFERRED_SCOPING
 
+logger = logging.getLogger(__name__)
 
 schema: Dict = {
     'title': 'Specify 7 Workbench Upload Plan',
@@ -33,7 +35,7 @@ schema: Dict = {
                   'additionalProperties': False
                 },
             ]
-        },
+        }
     },
     'required': [ 'baseTableName', 'uploadable' ],
     'additionalProperties': False,
@@ -91,6 +93,7 @@ schema: Dict = {
                                 'type': 'object',
                                 'properties': {
                                     'treeNodeCols': { '$ref': '#/definitions/treeNodeCols' },
+                                    'treeId': { '$ref': '#definitions/treeId'}
                                 },
                                 'required': [ 'treeNodeCols' ],
                                 'additionalProperties': False
@@ -138,6 +141,13 @@ schema: Dict = {
                   'additionalProperties': False
                 },
             ],
+        },
+
+        'treeId': {
+            "oneOf": [
+                { "type": "integer" },
+                { "type": "null" }
+            ]
         },
 
         'wbcols': {
@@ -288,17 +298,45 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
     )
 
 def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
-    ranks = {
-        rank: {'name': parse_column_options(name_or_cols)} if isinstance(name_or_cols, str)
-        else {k: parse_column_options(v) for k,v in name_or_cols['treeNodeCols'].items() }
-        for rank, name_or_cols in to_parse['ranks'].items()
-    }
-    for rank, cols in ranks.items():
-        assert 'name' in cols, to_parse
+    """Parse tree record from the given data"""
+
+    def parse_rank(name_or_cols):
+        if isinstance(name_or_cols, str):
+            return name_or_cols, {'name': parse_column_options(name_or_cols)}, None
+        tree_node_cols = {k: parse_column_options(v) for k, v in name_or_cols['treeNodeCols'].items()}
+        rank_name = name_or_cols['treeNodeCols']['name']
+        treedefid = name_or_cols.get('treeId')
+        return rank_name, tree_node_cols, treedefid
+
+    def create_tree_rank_record(rank, table_name, treedefid):
+        return TreeRank.create(rank, table_name, treedefid).tree_rank_record()
+
+    def parse_ranks(to_parse, table_name):
+        def parse_single_rank(rank, name_or_cols):
+            rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
+            tree_rank_record = create_tree_rank_record(rank, table_name, treedefid)
+            return tree_rank_record, parsed_cols
+
+        def aggregate_ranks(acc, item):
+            rank, name_or_cols = item
+            tree_rank_record, parsed_cols = parse_single_rank(rank, name_or_cols)
+            acc[tree_rank_record] = parsed_cols
+            return acc
+
+        ranks = reduce(aggregate_ranks, to_parse['ranks'].items(), {})
+        return ranks
+
+    # Validate ranks by checking if 'name' is present in each rank
+    def validate_ranks(ranks, to_parse):
+        for rank, cols in ranks.items():
+            assert 'name' in cols, to_parse
+
+    ranks = parse_ranks(to_parse, table.name)
+    validate_ranks(ranks, to_parse)
 
     return TreeRecord(
         name=table.django_name,
-        ranks=ranks,
+        ranks=ranks
     )
 
 def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:

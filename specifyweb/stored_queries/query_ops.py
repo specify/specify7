@@ -27,7 +27,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         'op_trueornull',        # 13
         'op_falseornull',       # 14
         'op_startswith',        # 15
-        ]
+    ]
 
     def by_op_num(self, op_num):
         return getattr(self, self.OPERATIONS[op_num])

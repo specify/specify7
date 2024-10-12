@@ -480,8 +480,9 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                         # TODO fix this
                         # return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
                         pass
-
-                    new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
+                    
+                    parsed_plan = upload_plan_schema.parse_plan(request.specify_collection, plan)
+                    new_cols = parsed_plan.get_cols() - set(ds.columns)
                     if new_cols:
                         ncols = len(ds.columns)
                         ds.columns += list(new_cols)
@@ -626,22 +627,35 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
         if ds.was_uploaded():
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
-        taskid = str(uuid4())
-        async_result = tasks.upload.apply_async([
-            request.specify_collection.id,
-            request.specify_user_agent.id,
-            ds.id,
-            no_commit,
-            allow_partial
-        ], task_id=taskid)
-        ds.uploaderstatus = {
-            'operation': "validating" if no_commit else "uploading",
-            'taskid': taskid
-        }
-        ds.save(update_fields=['uploaderstatus'])
+        data = json.loads(request.body) if request.body else {}
+        background = True
+        if 'background' in data:
+            background = bool(data['background']) # {"background": false}
 
-    return http.JsonResponse(async_result.id, safe=False)
-
+        if background:
+            taskid = str(uuid4())
+            async_result = tasks.upload.apply_async([
+                request.specify_collection.id,
+                request.specify_user_agent.id,
+                ds.id,
+                no_commit,
+                allow_partial
+            ], task_id=taskid)
+            ds.uploaderstatus = {
+                'operation': "validating" if no_commit else "uploading",
+                'taskid': taskid
+            }
+            ds.save(update_fields=['uploaderstatus'])
+            return http.JsonResponse(async_result.id, safe=False)
+        else:
+            tasks.upload_data(
+                request.specify_collection.id,
+                request.specify_user_agent.id,
+                ds.id,
+                no_commit,
+                allow_partial,
+            )
+            return http.JsonResponse(None, safe=False)
 
 @openapi(schema={
     'post': {
