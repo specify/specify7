@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"PO-Revision-Date: 2024-10-12 23:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/development/pt_BR/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: components/Router/Routes.tsx:454
 #, fuzzy
 msgid "crashReportVisualizer"
-msgstr "Visualizador de Relatório de Crash"
+msgstr "Detalhes"
 
 #. Used in: Components > Developer > Crash Report Visualizer
 #: components/Developer/CrashReportVisualizer.tsx:34
