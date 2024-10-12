@@ -199,7 +199,7 @@ describe('rgetCollection', () => {
 });
 
 describe('needsSaved', () => {
-  test('changing field makes needsSaved true', async () => {
+  test('changing field makes needsSaved true', () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
@@ -209,7 +209,7 @@ describe('needsSaved', () => {
     expect(resource.needsSaved).toBe(true);
   });
 
-  test('changing dependent relationship makes needsSaved true', async () => {
+  test('changing dependent relationship makes needsSaved true', () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
