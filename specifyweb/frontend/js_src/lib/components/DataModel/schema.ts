@@ -30,7 +30,8 @@ type Schema = {
     'Institution'
   ];
   readonly referenceSymbol: string;
-  readonly treeSymbol: string;
+  readonly treeDefinitionSymbol: string;
+  readonly treeRankSymbol: string;
   readonly fieldPartSeparator: string;
 };
 
@@ -64,8 +65,10 @@ const schemaBase: Writable<Schema> = {
 
   // Prefix for -to-many indexes
   referenceSymbol: '#',
+  // Prefix for Tree Definitions
+  treeDefinitionSymbol: '%',
   // Prefix for tree ranks
-  treeSymbol: '$',
+  treeRankSymbol: '$',
   // Separator for partial fields (date parts in Query Builder)
   fieldPartSeparator: '-',
 };
