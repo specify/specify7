@@ -6,5 +6,6 @@
   "embeddedCollectingEvent": false,
   "embeddedPaleoContext": true,
   "paleoContextChildTable": "collectionobject",
-  "catalogNumFormatName": "CatalogNumberNumeric"
+  "catalogNumFormatName": "CatalogNumberNumeric",
+  "defaultCollectionObjectType": "/api/specify/collectionobjecttype/1/"
 }

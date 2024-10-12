@@ -11,7 +11,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { fetchResource, getResourceApiUrl, idFromUrl } from './resource';
+import { fetchResource, idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { Collection } from './specifyTable';
@@ -158,15 +158,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
       // Set the default CoType
       if (
-        typeof schema.defaultCollectionObjectType === 'number' &&
+        typeof schema.defaultCollectionObjectType === 'string' &&
         typeof collectionObject.get('collectionObjectType') !== 'string'
       )
         collectionObject.set(
           'collectionObjectType',
-          getResourceApiUrl(
-            'CollectionObjectType',
-            schema.defaultCollectionObjectType
-          )
+          schema.defaultCollectionObjectType
         );
     },
     fieldChecks: {
