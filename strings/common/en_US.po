@@ -97,7 +97,7 @@ msgid "cancel"
 msgstr "Cancel"
 
 #: components/SchemaConfig/Languages.tsx:73
-#: components/SchemaConfig/Tables.tsx:46
+#: components/SchemaConfig/Tables.tsx:45
 #. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 msgid "back"
 msgstr "Back"
@@ -228,7 +228,7 @@ msgstr "Create"
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
-#: components/SchemaConfig/TableUniquenessRules.tsx:141
+#: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
 #: components/SearchDialog/index.tsx:297
 #: components/Security/Role.tsx:198
@@ -246,7 +246,7 @@ msgstr "Create"
 #: components/Statistics/StatsPageEditing.tsx:42
 #: components/Toolbar/Language.tsx:76
 #: components/Toolbar/MasterKey.tsx:97
-#: components/Toolbar/QueryTablesEdit.tsx:84
+#: components/Toolbar/QueryTablesEdit.tsx:73
 #: components/Toolbar/QueryTablesWrapper.tsx:155
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:402
@@ -306,7 +306,7 @@ msgstr "Delete unmapped columns"
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:313
 #: components/SchemaConfig/Components.tsx:42
-#: components/SchemaConfig/TableUniquenessRules.tsx:143
+#: components/SchemaConfig/TableUniquenessRules.tsx:141
 #: components/Security/MissingAgentsDialog.tsx:94
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:72
@@ -778,7 +778,7 @@ msgstr "Ordinal"
 
 #: components/Header/userToolDefinitions.ts:88
 #: components/QueryBuilder/Edit.tsx:80
-#: components/SchemaConfig/Tables.tsx:40
+#: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:85
 #: components/WbToolkit/index.tsx:87
@@ -883,7 +883,7 @@ msgstr "Collapse All"
 
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
-#: components/Toolbar/QueryTablesEdit.tsx:81
+#: components/Toolbar/QueryTablesEdit.tsx:70
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 msgid "reset"
 msgstr "Reset"

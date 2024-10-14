@@ -103,7 +103,7 @@ msgstr "Voulez-vous vraiment quitter cette page ?"
 
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
-#: components/SchemaConfig/TableUniquenessRules.tsx:207
+#: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89
 #. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"

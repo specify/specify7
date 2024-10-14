@@ -198,7 +198,7 @@ msgstr ""
 msgid "chooseExistingPlan"
 msgstr ""
 
-#: components/SchemaConfig/Tables.tsx:169
+#: components/SchemaConfig/Tables.tsx:166
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr ""

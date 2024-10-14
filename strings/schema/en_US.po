@@ -13,7 +13,7 @@ msgstr "Table"
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:399
-#: components/SchemaConfig/Tables.tsx:50
+#: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
@@ -265,12 +265,12 @@ msgstr "Relationship count"
 msgid "databaseSchema"
 msgstr "Database Schema"
 
-#: components/Toolbar/QueryTablesEdit.tsx:94
+#: components/Toolbar/QueryTablesEdit.tsx:83
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Selected Tables"
 
-#: components/Toolbar/QueryTablesEdit.tsx:92
+#: components/Toolbar/QueryTablesEdit.tsx:81
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Possible Tables"
@@ -285,7 +285,7 @@ msgstr "Go to top"
 msgid "idField"
 msgstr "ID Field"
 
-#: components/SchemaConfig/TableUniquenessRules.tsx:147
+#: components/SchemaConfig/TableUniquenessRules.tsx:145
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Uniqueness Rules"
@@ -296,13 +296,13 @@ msgstr "{tableName:string} Uniqueness Rules"
 msgid "uniquenessRules"
 msgstr "Uniqueness Rules"
 
-#: components/SchemaConfig/TableUniquenessRules.tsx:180
+#: components/SchemaConfig/TableUniquenessRules.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:247
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 msgid "uniqueFields"
 msgstr "Unique Fields"
 
-#: components/SchemaConfig/TableUniquenessRules.tsx:138
+#: components/SchemaConfig/TableUniquenessRules.tsx:136
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 msgid "addUniquenessRule"
 msgstr "Add Uniqueness Rule"
@@ -312,7 +312,7 @@ msgstr "Add Uniqueness Rule"
 msgid "configureUniquenessRule"
 msgstr "Configure Uniqueness Rule"
 
-#: components/SchemaConfig/TableUniquenessRules.tsx:181
+#: components/SchemaConfig/TableUniquenessRules.tsx:179
 #: components/SchemaConfig/UniquenessRuleRow.tsx:300
 #: components/SchemaViewer/Fields.tsx:38
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
@@ -345,12 +345,12 @@ msgstr "Schema Config: {tableName:string}"
 msgid "schemaExportFileName"
 msgstr "Specify 7 Data Model"
 
-#: components/SchemaConfig/Fields.tsx:86
+#: components/SchemaConfig/Fields.tsx:78
 #. Used in: Components > Schema Config > Fields
 msgid "sortByHiddenFields"
 msgstr "Sort by hidden fields"
 
-#: components/SchemaConfig/Fields.tsx:101
+#: components/SchemaConfig/Fields.tsx:93
 #. Used in: Components > Schema Config > Fields
 msgid "hidden"
 msgstr "hidden"
