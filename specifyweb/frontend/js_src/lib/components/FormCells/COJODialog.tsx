@@ -101,10 +101,10 @@ export function COJODialog({
             const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
             const field =
               newResource.specifyTable.name === 'CollectionObject'
-                ? 'childco'
-                : 'childcog';
+                ? 'childCo'
+                : 'childCog';
             newCOJO.set(field, newResource as never);
-            newCOJO.set('parentcog', parentResource);
+            newCOJO.set('parentCog', parentResource as never);
             collection?.add(newCOJO);
             setState(undefined);
             setResource(undefined);
@@ -127,10 +127,10 @@ export function COJODialog({
             const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
             const field =
               selectedResource.specifyTable.name === 'CollectionObject'
-                ? 'childco'
-                : 'childcog';
+                ? 'childCo'
+                : 'childCog';
             newCOJO.set(field, selectedResource as never);
-            newCOJO.set('parentcog', parentResource);
+            newCOJO.set('parentCog', parentResource as never);
             collection?.add(newCOJO);
             setState(undefined);
             handleClose();
