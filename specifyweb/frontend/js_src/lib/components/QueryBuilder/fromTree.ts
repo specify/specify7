@@ -152,6 +152,17 @@ const defaultFields: RR<
         : []),
     ];
   },
+  TectonicUnit: async (_nodeId, _rankName) => {
+    // TODO: Fields below are a placeholder. Remove once we determine the requirements for querying Tectonic trees
+    return [
+      makeField('catalogNumber', {}),
+      makeField('determinations.taxon.fullName', {}),
+      makeField('determinations.isCurrent', {
+        isDisplay: false,
+        operStart: queryFieldFilters.trueOrNull.id,
+      }),
+    ];
+  },
 };
 
 async function fetchPaleoPath(): Promise<string | undefined> {

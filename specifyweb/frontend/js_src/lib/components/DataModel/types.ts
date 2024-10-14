@@ -3,8 +3,8 @@
  * Afterward, some manual edits have been made. Those are marked with
  * "NOTE:" comments
  *
- * Schema version: 2.12
- * Date generated: October 07, 2024
+ * Schema version: 2.11
+ * Date generated: July 17, 2024
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -2585,6 +2585,7 @@ export type Discipline = {
     readonly lithoStratTreeDef: LithoStratTreeDef | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
+    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -6739,8 +6740,10 @@ export type TectonicUnitTreeDef = {
     readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyDependent: {
+    readonly treeDefItems: RA<TectonicUnitTreeDefItem>;
+  };
+  readonly toManyIndependent: { readonly treeEntries: RA<TectonicUnit> };
 };
 export type TectonicUnitTreeDefItem = {
   readonly tableName: 'TectonicUnitTreeDefItem';
@@ -6749,7 +6752,7 @@ export type TectonicUnitTreeDefItem = {
     readonly isEnforced: boolean | null;
     readonly isInFullName: boolean | null;
     readonly name: string;
-    readonly rankId: number | null;
+    readonly rankId: number;
     readonly remarks: string | null;
     readonly textAfter: string | null;
     readonly textBefore: string | null;
@@ -6762,8 +6765,8 @@ export type TectonicUnitTreeDefItem = {
   readonly toOneIndependent: {
     readonly createdbyagent: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly parentItem: TectonicUnitTreeDefItem | null;
-    readonly tectonicUnitTreeDef: TectonicUnitTreeDef;
+    readonly parent: TectonicUnitTreeDefItem | null;
+    readonly treeDef: TectonicUnitTreeDef;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -6796,11 +6799,13 @@ export type TectonicUnit = {
   readonly toOneIndependent: {
     readonly acceptedTectonicUnit: TectonicUnit | null;
     readonly createdByAgent: Agent | null;
+    readonly definition: TectonicUnitTreeDef;
+    readonly definitionItem: TectonicUnitTreeDefItem;
     readonly modifiedByAgent: Agent | null;
     readonly parent: TectonicUnit | null;
     readonly tectonicUnitTreeDef: TectonicUnitTreeDef;
     readonly tectonicUnitTreeDefItem: TectonicUnitTreeDefItem;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyIndependent: { readonly acceptedChildren: RA<TectonicUnit> };
 };
