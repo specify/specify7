@@ -162,8 +162,8 @@ describe('Independent Collection', () => {
     );
 
     await collection.fetch();
-    const totalCount = collection._totalCount ?? 0;
-    expect(collection).toHaveLength(totalCount);
+    // eslint-disable-next-line jest/prefer-to-have-length
+    expect(collection.length).toBe(collection._totalCount);
   });
 
   test('specified offset', async () => {
@@ -406,6 +406,24 @@ describe('Independent Collection', () => {
       [collectionObject.cid]: collectionObject.url(),
     });
     expect(collection.removed).toStrictEqual(new Set());
+  });
+
+  test('success options respected', async () => {
+    const accession = new tables.Accession.Resource();
+
+    expect(accession.isNew()).toBe(true);
+
+    const collection = new tables.CollectionObject.IndependentCollection({
+      related: accession,
+      field: tables.CollectionObject.strictGetRelationship('accession'),
+    }) as Collection<CollectionObject>;
+
+    await collection.fetch({
+      success: (collection) => {
+        collection.add(new tables.CollectionObject.Resource());
+      },
+    } as CollectionFetchFilters<AnySchema>);
+    expect(collection.models).toHaveLength(1);
   });
 
   overrideAjax('/api/specify/collectionobject/200/', {
