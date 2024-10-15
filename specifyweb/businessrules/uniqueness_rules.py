@@ -3,6 +3,7 @@ import logging
 import json
 from typing import Dict, List, Union, Iterable
 
+from django.apps import apps
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
@@ -46,15 +47,13 @@ def check_unique(model, instance):
     else:
         return
 
-    registry = None
-    if not model.__mro__[0] is cannonical_model.__mro__[0]:
-        registry = model._meta.apps
+    registry = model._meta.apps
 
-    UniquenessRule = registry.get_model(
-        'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
+    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule')
     UniquenessRuleField = registry.get_model(
-        'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
+        'businessrules', 'UniquenessRuleField')
     rules = UniquenessRule.objects.filter(modelName=model_name)
+    # raise KeyError(model_name, rules, UniquenessRule.objects.all())
     for rule in rules:
         rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
         if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) and not in_same_scope(rule, instance):

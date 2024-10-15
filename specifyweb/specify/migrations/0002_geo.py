@@ -183,7 +183,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('specify', '0001_initial'),
-        ('businessrules', '0001_initial')
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
