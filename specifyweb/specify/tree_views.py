@@ -26,7 +26,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
-                     'Geography', 'Geologictimeperiod', 'Lithostrat']
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
 
 GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
