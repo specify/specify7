@@ -52,8 +52,8 @@ def check_unique(model, instance):
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule')
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField')
+    
     rules = UniquenessRule.objects.filter(modelName=model_name)
-    # raise KeyError(model_name, rules, UniquenessRule.objects.all())
     for rule in rules:
         rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
         if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) and not in_same_scope(rule, instance):
