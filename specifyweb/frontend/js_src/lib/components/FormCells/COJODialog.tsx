@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -103,9 +104,27 @@ export function COJODialog({
               newResource.specifyTable.name === 'CollectionObject'
                 ? 'childCo'
                 : 'childCog';
-            newCOJO.set(field, newResource as never);
-            newCOJO.set('parentCog', parentResource as never);
+            // NewResource.set('cojo', newCOJO);
+            void newResource.save();
+            const newResourceUrl = newResource.url();
+            newCOJO.set(field, newResourceUrl as never);
+            /*
+             * Might not need to set the parent cog here, can do it with business rules on the main COG form when saving that
+             *  NewCOJO.set('parentCog', parentResource as never); ==> this creates the infinite loop
+             */
+            /*
+             * Const field =
+             *   newResource.specifyTable.name === 'CollectionObject'
+             *     ? 'childCo'
+             *     : 'childCog';
+             * newCOJO.set(field, newResource as never);
+             * newCOJO.set('parentCog', parentResource as never);
+             */
             collection?.add(newCOJO);
+            /*
+             * HandleAdd([newCOJO]);
+             * Collection?.add(newCOJO);
+             */
             setState(undefined);
             setResource(undefined);
             handleClose();

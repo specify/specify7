@@ -456,31 +456,32 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
 
-  const addButtons = isCOJO ? (
-    <COJODialog
-      collection={collection}
-      parentResource={
-        collection?.related as SpecifyResource<CollectionObjectGroup>
-      }
-    />
-  ) : typeof handleAddResources === 'function' &&
-    mode !== 'view' &&
-    !disableAdding ? (
-    <>
-      {!isDependent &&
-      hasTablePermission(relationship.relatedTable.name, 'read') ? (
-        <DataEntry.Search disabled={isReadOnly} onClick={showSearchDialog} />
-      ) : undefined}
-      {hasTablePermission(relationship.relatedTable.name, 'create') ? (
-        <DataEntry.Add
-          onClick={(): void => {
-            const resource = new relationship.relatedTable.Resource();
-            handleAddResources([resource]);
-          }}
-        />
-      ) : undefined}
-    </>
-  ) : undefined;
+  const addButtons =
+    isCOJO && typeof handleAddResources === 'function' ? (
+      <COJODialog
+        collection={collection}
+        parentResource={
+          collection?.related as SpecifyResource<CollectionObjectGroup>
+        }
+      />
+    ) : typeof handleAddResources === 'function' &&
+      mode !== 'view' &&
+      !disableAdding ? (
+      <>
+        {!isDependent &&
+        hasTablePermission(relationship.relatedTable.name, 'read') ? (
+          <DataEntry.Search disabled={isReadOnly} onClick={showSearchDialog} />
+        ) : undefined}
+        {hasTablePermission(relationship.relatedTable.name, 'create') ? (
+          <DataEntry.Add
+            onClick={(): void => {
+              const resource = new relationship.relatedTable.Resource();
+              handleAddResources([resource]);
+            }}
+          />
+        ) : undefined}
+      </>
+    ) : undefined;
 
   return dialog === false ? (
     <DataEntry.SubForm>

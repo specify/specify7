@@ -64,6 +64,7 @@ function eventHandlerForToOne(related, field) {
 
 function eventHandlerForToMany(_related, field) {
   return function (event) {
+    console.log('eventHandlerForToMany', field);
     const args = _.toArray(arguments);
     switch (event) {
       case 'changing': {
