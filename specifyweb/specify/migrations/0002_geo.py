@@ -121,11 +121,11 @@ def create_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
 
 def revert_table_schema_config_with_defaults(apps):
     for table, _ in SCHEMA_CONFIG_TABLES:
-        revert_table_schema_config(table)
+        revert_table_schema_config(table, apps)
 
 def create_default_collection_object_types(apps):
     Collection = apps.get_model('specify', 'Collection')
@@ -183,6 +183,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('specify', '0001_initial'),
+        ('businessrules', '0001_initial')
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
