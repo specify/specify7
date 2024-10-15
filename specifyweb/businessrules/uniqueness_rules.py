@@ -3,7 +3,6 @@ import logging
 import json
 from typing import Dict, List, Union, Iterable
 
-from django.apps import apps
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
@@ -47,12 +46,13 @@ def check_unique(model, instance):
     else:
         return
 
+    # We can't directly use the main app registry in the context of migrations, which uses fake models
     registry = model._meta.apps
 
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule')
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField')
-    
+
     rules = UniquenessRule.objects.filter(modelName=model_name)
     for rule in rules:
         rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
