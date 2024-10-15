@@ -160,7 +160,7 @@ export const remotePrefsDefinitions = f.store(
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter.trim],
-        isLegacy: true,
+        isLegacy: false,
       },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
