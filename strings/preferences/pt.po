@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 18:15+0000\n"
+"PO-Revision-Date: 2024-10-16 10:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "preferences/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -235,7 +235,7 @@ msgstr "Fundo de campo desabilitado (tema escuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Largura de coluna de grade de subvisualização flexível"
+msgstr "Largura flexível da coluna da grade de subvisualização"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -555,7 +555,7 @@ msgstr "Permite consultar dados de qualquer campo em qualquer tabela."
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "AVISO: habilitar isso pode levar à perda de dados ou corrupção do banco de "
-"dados. Certifique-se de que você sabe o que está fazendo."
+"dados. Por favor, certifique-se de que você sabe o que está fazendo."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
