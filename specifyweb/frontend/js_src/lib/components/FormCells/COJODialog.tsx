@@ -104,29 +104,13 @@ export function COJODialog({
               newResource.specifyTable.name === 'CollectionObject'
                 ? 'childCo'
                 : 'childCog';
-            // NewResource.set('cojo', newCOJO);
+            // NewResource.set('cojo', newCOJO); Do this in bus rule when saving main COG?
             void newResource.save();
             const newResourceUrl = newResource.url();
             const parentResourceUrl = parentResource.url();
             newCOJO.set(field, newResourceUrl as never);
             newCOJO.set('parentCog', parentResourceUrl as never);
-            /*
-             * Might not need to set the parent cog here, can do it with business rules on the main COG form when saving that
-             *  NewCOJO.set('parentCog', parentResource as never); ==> this creates the infinite loop
-             */
-            /*
-             * Const field =
-             *   newResource.specifyTable.name === 'CollectionObject'
-             *     ? 'childCo'
-             *     : 'childCog';
-             * newCOJO.set(field, newResource as never);
-             * newCOJO.set('parentCog', parentResource as never);
-             */
             collection?.add(newCOJO);
-            /*
-             * HandleAdd([newCOJO]);
-             * Collection?.add(newCOJO);
-             */
             setState(undefined);
             setResource(undefined);
             handleClose();
