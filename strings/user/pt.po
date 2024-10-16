@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 18:15+0000\n"
+"PO-Revision-Date: 2024-10-16 10:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "user/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:76
@@ -29,8 +29,8 @@ msgstr "A senha estava incorreta."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Você não tem acesso a nenhum {collectionTable:string} que contenha este "
-"recurso por meio da conta atualmente conectada"
+"Você não tem acesso a nenhum {collectionTable:string} contendo este recurso "
+"por meio da conta atualmente conectada"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -174,7 +174,7 @@ msgstr "Você pode fazer login no {collectionTable:string}, para prosseguir:"
 #: components/Permissions/PermissionDenied.tsx:232
 #, fuzzy
 msgid "sessionTimeOut"
-msgstr "Privilégios insuficientes"
+msgstr "Privilégios Insuficientes"
 
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #: components/Formatters/formatters.ts:196
