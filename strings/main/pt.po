@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-07 21:43+0000\n"
+"PO-Revision-Date: 2024-10-16 10:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "main/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:65
@@ -37,7 +37,7 @@ msgstr "Página não encontrada"
 #: components/Router/NotFoundView.tsx:25
 #, fuzzy
 msgid "nothingWasFound"
-msgstr "Oops! Nada foi encontrado"
+msgstr "Opa! Nada foi encontrado"
 
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
