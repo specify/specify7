@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -12,6 +13,7 @@ import { tables } from '../DataModel/tables';
 import type {
   CollectionObject,
   CollectionObjectGroup,
+  CollectionObjectGroupJoin,
 } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
@@ -80,6 +82,14 @@ export function COJODialog({
     newCOJO.set('parentCog', parentResourceUrl as never);
 
     collection?.add(newCOJO);
+
+    /*
+     * ParentResource.set('cojo', [newCOJO] as RA<
+     *   SpecifyResource<CollectionObjectGroupJoin>
+     * >);
+     */
+    const parentResourceCojo = parentResource.getDependentResource('cojo');
+    if (typeof parentResourceCojo === 'object') parentResourceCojo.add(newCOJO);
   };
 
   const handleStates = (): void => {
