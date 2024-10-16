@@ -135,25 +135,34 @@ export function COJODialog({
         />
       ) : undefined}
       {state === 'Search' &&
-      resource !== undefined &&
+      newResource !== undefined &&
       parentResource !== undefined ? (
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
-          multiple={false}
+          multiple
           searchView={undefined}
           table={resource as SpecifyTable<CollectionObject>}
           onClose={(): void => setState(undefined)}
-          onSelected={([selectedResource]): void => {
-            const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
-            const field =
-              selectedResource.specifyTable.name === 'CollectionObject'
-                ? 'childCo'
-                : 'childCog';
-            newCOJO.set(field, selectedResource as never);
-            newCOJO.set('parentCog', parentResource as never);
-            collection?.add(newCOJO);
+          onSelected={(selectedResources): void => {
+            selectedResources.forEach((selectedResource) => {
+              const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
+              const field =
+                selectedResource.specifyTable.name === 'CollectionObject'
+                  ? 'childCo'
+                  : 'childCog';
+
+              const selectedResourceUrl = selectedResource.url();
+              const parentResourceUrl = parentResource.url();
+
+              newCOJO.set(field, selectedResourceUrl as never);
+              newCOJO.set('parentCog', parentResourceUrl as never);
+
+              collection?.add(newCOJO);
+            });
+
             setState(undefined);
+            setResource(undefined);
             handleClose();
           }}
         />
