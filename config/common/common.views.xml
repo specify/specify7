@@ -252,6 +252,14 @@
 			</altviews>
 		</view>
 
+		<view name="CollectionObjectGroupSub" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupBusRules" resourcelabels="false">
+			<desc>The Collection Object Group form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroup View" viewdef="CollectionObjectGroupSub" mode="view" default="true"/>
+				<altview name="CollectionObjectGroup Edit" viewdef="CollectionObjectGroupSub" mode="edit"/>
+			</altviews>
+		</view>
+
 		<view name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
 			<desc>The Collection Object Group Join form.</desc>
 			<altviews>
@@ -2573,12 +2581,29 @@
 					<cell type="field" id="name" name="name" uitype="text"/>
 					<cell type="label" labelfor="cogType"/>
 					<cell type="field" id="cogType" name="cogType" uitype="combobox" picklist="COGTypes"/>
+					<cell type="label" labelfor="parentCojo"/>
+					<cell type="field" id="parentCojo" name="parentCojo" uitype="querycbx" isrequired="false"/>
 				</row>
 				<row>
-					<cell type="subview" id="4" name="cojo" uitype="subview" isrequired="false" colspan="13"/>
+					<cell type="subview" id="cojo" name="cojo" uitype="subview" isrequired="false" defaulttype="table" colspan="13"/>
 				</row>
+			</rows>
+		</viewdef>
+
+		<viewdef name="CollectionObjectGroupSub" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Collection Object Group Subform</desc>
+			<enableRules/>
+			<columnDef>50px,2px,150px,5px,50px,2px,150px,5px,50px,2px,200px,2px,50px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
 				<row>
-					<cell type="subview" id="4" name="parentCojos" uitype="subview" isrequired="false" colspan="13"/>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="cogType"/>
+					<cell type="field" id="cogType" name="cogType" uitype="combobox" picklist="COGTypes"/>
+					<cell type="label" labelfor="parentCojo"/>
+					<cell type="field" id="parentCojo" name="parentCojo" uitype="querycbx" isrequired="false"/>
+					<cell type="subview" id="cojo" name="cojo" uitype="subview" isrequired="false" defaulttype="table" initialize="btn=true; align=center" colspan="13"/>
 				</row>
 			</rows>
 		</viewdef>
@@ -2586,43 +2611,37 @@
 		<viewdef name="CollectionObjectGroupJoin" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form</desc>
 			<enableRules/>
-			<columnDef>100px,2px,178px,5px,108px,2px,130px,5px,100px,2px,195px,0px,15px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,196px,2px,113px,2px,150px,2px,115px,5px,215px,0px,15px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,216px,2px,133px,2px,170px,2px,135px,5px,235px,0px,15px,p:g</columnDef>
-			<columnDef os="exp">p,2px,p:g,2px,p:g(2),5px,p:g,2px,p:g(2),5px:g,p,2px,p:g,0px,p,p:g</columnDef>
+			<columnDef>50px,2px,30px,5px,50px,2px,30px,5px,50px,2px,100px,0px,50px,2px,100px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
-					<cell type="panel" colspan="3">
-						<rows>
-							<row>
-								<cell type="label" labelfor="1"/>
-								<cell type="field" id="1" name="isPrimary" uitype="checkbox"/>
-								<cell type="label" labelfor="2"/>
-								<cell type="field" id="2" name="isSubstrate" uitype="checkbox"/>
-								<!-- 						<cell type="label" labelfor="3"/>
-						<cell type="field" id="3" name="precedence" uitype="text"/> -->
-							</row>
-						</rows>
-					</cell>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="isPrimary" uitype="checkbox"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="isSubstrate" uitype="checkbox"/>
+					<!--<cell type="label" labelfor="3"/>
+      <cell type="field" id="3" name="precedence" uitype="text"/>-->
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" name="childCog" uitype="querycbx" readonly="true"/>
 					<cell type="label" labelfor="6"/>
 					<cell type="field" id="6" name="childCo" uitype="querycbx" readonly="true"/>
 				</row>
 				<row>
-					<cell type="panel" colspan="13">
+					<cell type="panel" colspan="15">
 						<rows>
 							<row/>
-						</rows>
-						<rows condition="childCo.CollectionObjectID=">
-							<row>
-								<cell type="subview" id="childCO" name="childCo" uitype="subview" colspan="13"/>
-							</row>
+							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
 						</rows>
 						<rows condition="childCog.CollectionObjectGroupID=">
+							<!-- If there is no CollectionObjectGroupID, display CO -->
 							<row>
-								<cell type="subview" id="childCOG" name="childCog" uitype="subview" colspan="13"/>
+								<cell type="subview" viewname="CollectionObjectSub" id="childCO" name="childCo" uitype="subview" colspan="13"/>
+							</row>
+						</rows>
+						<rows condition="childCo.CollectionObjectID=">
+							<!-- If there is no CollectionObjectID, display COG -->
+							<row>
+								<cell type="subview" viewname="CollectionObjectGroupSub" id="childCOG" name="childCog" uitype="subview" colspan="13"/>
 							</row>
 						</rows>
 					</cell>
