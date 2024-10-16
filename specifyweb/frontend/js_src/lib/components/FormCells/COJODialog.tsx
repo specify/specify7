@@ -83,11 +83,6 @@ export function COJODialog({
 
     collection?.add(newCOJO);
 
-    /*
-     * ParentResource.set('cojo', [newCOJO] as RA<
-     *   SpecifyResource<CollectionObjectGroupJoin>
-     * >);
-     */
     const parentResourceCojo = parentResource.getDependentResource('cojo');
     if (typeof parentResourceCojo === 'object') parentResourceCojo.add(newCOJO);
   };
