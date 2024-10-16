@@ -3,7 +3,6 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -47,7 +46,9 @@ export function COJODialog({
 
   React.useEffect(() => {
     if (resource !== undefined) {
-      const createdResource = new resource.Resource();
+      const createdResource = new resource.Resource() as
+        | SpecifyResource<CollectionObject>
+        | SpecifyResource<CollectionObjectGroup>;
       setNewResource(createdResource);
     }
   }, [resource]);
