@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-02 18:17+0000\n"
+"PO-Revision-Date: 2024-10-16 10:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:129
@@ -40,7 +40,7 @@ msgstr "Não mostrar isso novamente"
 #: components/Molecules/FilePicker.tsx:106
 #, fuzzy
 msgid "multipleFilePickerMessage"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Selecione os arquivos ou arraste-os aqui"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
@@ -482,7 +482,7 @@ msgstr "(nulo)"
 #: components/Molecules/FilePicker.tsx:107
 #, fuzzy
 msgid "filePickerMessage"
-msgstr "Escolha um arquivo ou arraste-o aqui"
+msgstr "Selecione um arquivo ou arraste-o aqui"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
@@ -772,7 +772,7 @@ msgstr "Cancelar"
 #: components/SchemaConfig/Tables.tsx:44
 #, fuzzy
 msgid "back"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Voltar"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -1128,4 +1128,4 @@ msgstr "Enviado"
 #: components/WbPlanView/MapperComponents.tsx:62
 #, fuzzy
 msgid "deleteUnmapped"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Selecione os arquivos ou arraste-os aqui"
