@@ -51,6 +51,42 @@ export function COJODialog({
       setNewResource(createdResource);
     }
   }, [resource]);
+
+  const handleCOJOCreation = (
+    selectedResource?: SpecifyResource<AnySchema>
+  ): void => {
+    // NewResource.set('cojo', newCOJO); Do this in bus rule when saving main COG?
+    if (parentResource === undefined) return;
+
+    const resourceToUse = selectedResource ?? newResource;
+
+    if (resourceToUse === undefined) return;
+
+    if (newResource) {
+      void newResource.save();
+    }
+
+    const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
+    const field =
+      resourceToUse.specifyTable.name === 'CollectionObject'
+        ? 'childCo'
+        : 'childCog';
+
+    const resourceUrl = resourceToUse.url();
+    const parentResourceUrl = parentResource.url();
+
+    newCOJO.set(field, resourceUrl as never);
+    newCOJO.set('parentCog', parentResourceUrl as never);
+
+    collection?.add(newCOJO);
+  };
+
+  const handleStates = (): void => {
+    setState(undefined);
+    setResource(undefined);
+    handleClose();
+  };
+
   return (
     <>
       <DataEntry.Add onClick={handleOpen} />
@@ -99,28 +135,13 @@ export function COJODialog({
           }}
           onDeleted={undefined}
           onSaved={(): void => {
-            const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
-            const field =
-              newResource.specifyTable.name === 'CollectionObject'
-                ? 'childCo'
-                : 'childCog';
-            // NewResource.set('cojo', newCOJO); Do this in bus rule when saving main COG?
-            void newResource.save();
-            const newResourceUrl = newResource.url();
-            const parentResourceUrl = parentResource.url();
-            newCOJO.set(field, newResourceUrl as never);
-            newCOJO.set('parentCog', parentResourceUrl as never);
-            collection?.add(newCOJO);
-            setState(undefined);
-            setResource(undefined);
-            handleClose();
+            handleCOJOCreation();
+            handleStates();
           }}
           onSaving={undefined}
         />
       ) : undefined}
-      {state === 'Search' &&
-      newResource !== undefined &&
-      parentResource !== undefined ? (
+      {state === 'Search' && parentResource !== undefined ? (
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
@@ -130,24 +151,9 @@ export function COJODialog({
           onClose={(): void => setState(undefined)}
           onSelected={(selectedResources): void => {
             selectedResources.forEach((selectedResource) => {
-              const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
-              const field =
-                selectedResource.specifyTable.name === 'CollectionObject'
-                  ? 'childCo'
-                  : 'childCog';
-
-              const selectedResourceUrl = selectedResource.url();
-              const parentResourceUrl = parentResource.url();
-
-              newCOJO.set(field, selectedResourceUrl as never);
-              newCOJO.set('parentCog', parentResourceUrl as never);
-
-              collection?.add(newCOJO);
+              handleCOJOCreation(selectedResource);
             });
-
-            setState(undefined);
-            setResource(undefined);
-            handleClose();
+            handleStates();
           }}
         />
       ) : undefined}
