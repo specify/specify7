@@ -17,6 +17,7 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import { strictGetTable } from '../DataModel/tables';
@@ -69,6 +70,19 @@ export function DeleteButton<SCHEMA extends AnySchema>({
       [resource, deferred]
     ),
     false
+  );
+
+  React.useEffect(
+    () =>
+      deferred
+        ? undefined
+        : resourceOn(
+            resource,
+            'saved',
+            () => void fetchBlockers(resource).then(setBlockers),
+            false
+          ),
+    [resource, deferred]
   );
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
