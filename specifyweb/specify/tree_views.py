@@ -30,8 +30,6 @@ TREE_TABLE = Literal['Taxon', 'Storage',
 
 GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
-GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
-
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography', *GEO_TREES]
 
