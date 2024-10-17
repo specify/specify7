@@ -152,6 +152,30 @@ const defaultFields: RR<
         : []),
     ];
   },
+  TectonicUnit: async (nodeId, rankName) => {
+    // TODO: Fields below are a placeholder. Remove once we determine the requirements for querying Tectonic trees
+    const paleoPath = await fetchPaleoPath();
+    return [
+      makeField('catalogNumber', {}),
+      makeField('determinations.taxon.fullName', {
+        sortType: flippedSortTypes.ascending,
+      }),
+      makeField('determinations.isCurrent', {
+        isDisplay: false,
+        operStart: queryFieldFilters.trueOrNull.id,
+      }),
+      ...(typeof paleoPath === 'string'
+        ? [
+            makeField(`${paleoPath}.tectonicUnit.fullName`, {}),
+            makeField(`${paleoPath}.tectonicUnit.${rankName}.lithoStratId`, {
+              operStart: queryFieldFilters.equal.id,
+              startValue: nodeId.toString(),
+              isDisplay: false,
+            }),
+          ]
+        : []),
+    ];
+  },
 };
 
 async function fetchPaleoPath(): Promise<string | undefined> {

@@ -6,13 +6,13 @@ from typing import Dict, List, Union, Iterable
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
-from specifyweb.specify import models
+from specifyweb.specify.api import get_model
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
 from specifyweb.specify.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
-from .models import UniquenessRule
+from . import models
 
 DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]]]] = json.load(
     open('specifyweb/businessrules/uniqueness_rules.json'))
@@ -29,7 +29,13 @@ logger = logging.getLogger(__name__)
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def check_unique(model, instance):
     model_name = instance.__class__.__name__
-    rules = UniquenessRule.objects.filter(modelName=model_name)
+    cannonical_model = get_model(model_name)
+
+    if not cannonical_model:
+        # The model is not a Specify Model
+        # probably a Django-specific model
+        return
+
     applied_migrations = MigrationRecorder(
         connections['default']).applied_migrations()
 
@@ -40,14 +46,23 @@ def check_unique(model, instance):
     else:
         return
 
+    # We can't directly use the main app registry in the context of migrations, which uses fake models
+    registry = model._meta.apps
+
+    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule')
+    UniquenessRuleField = registry.get_model(
+        'businessrules', 'UniquenessRuleField')
+
+    rules = UniquenessRule.objects.filter(modelName=model_name)
     for rule in rules:
-        if not rule_is_global(tuple(field.fieldPath for field in rule.fields.filter(isScope=True))) and not in_same_scope(rule, instance):
+        rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
+        if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) and not in_same_scope(rule, instance):
             continue
 
         field_names = [
-            field.fieldPath.lower() for field in rule.fields.filter(isScope=False)]
+            field.fieldPath.lower() for field in rule_fields.filter(isScope=False)]
 
-        _scope = rule.fields.filter(isScope=True)
+        _scope = rule_fields.filter(isScope=True)
         scope = None if len(_scope) == 0 else _scope[0]
 
         all_fields = [*field_names]
@@ -138,7 +153,9 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
-def apply_default_uniqueness_rules(discipline: models.Discipline):
+def apply_default_uniqueness_rules(discipline, registry=None):
+    UniquenessRule = registry.get_model(
+        'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     has_set_global_rules = len(
         UniquenessRule.objects.filter(discipline=None)) > 0
 
@@ -156,15 +173,23 @@ def apply_default_uniqueness_rules(discipline: models.Discipline):
                     _discipline = None
 
             create_uniqueness_rule(
-                model_name, _discipline, isDatabaseConstraint, fields, scopes)
+                model_name, _discipline, isDatabaseConstraint, fields, scopes, registry)
 
 
-def create_uniqueness_rule(model_name, discipline, is_database_constraint, fields, scopes) -> UniquenessRule:
+def create_uniqueness_rule(model_name, discipline, is_database_constraint, fields, scopes, registry=None):
+    UniquenessRule = registry.get_model(
+        'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
+    UniquenessRuleField = registry.get_model(
+        'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
+
     created_rule = UniquenessRule.objects.create(discipline=discipline,
-                                                 modelName=model_name, isDatabaseConstraint=is_database_constraint)
-    created_rule.fields.set(fields)
-    created_rule.fields.add(
-        *scopes, through_defaults={"isScope": True})
+                                                           modelName=model_name, isDatabaseConstraint=is_database_constraint)
+    for field in fields:
+        UniquenessRuleField.objects.get_or_create(
+            uniquenessrule=created_rule, fieldPath=field, isScope=False)
+    for scope in scopes:
+        UniquenessRuleField.objects.get_or_create(
+            uniquenessrule=created_rule, fieldPath=scope, isScope=True)
 
 
 """If a uniqueness rule has a scope which traverses through a hiearchy 
