@@ -80,12 +80,11 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
                   ({ definition }) => definition.name === treeName
                 )?.definition.id;
 
+          // Key can be either <rankName> or <treeName>~><rankName>
           return [
-            treeId === undefined
+            treeId === undefined || treeName === undefined
               ? rankName
-              : `${
-                  treeName === undefined ? '' : treeName + RANK_KEY_DELIMITER
-                }${rankName}`,
+              : formatTreeRankKey(rankName, treeName),
             {
               treeNodeCols: toTreeRecordRanks(mappedFields),
               treeId,
@@ -214,5 +213,13 @@ const indexMappings = (
     )
   );
 
-// Delimiter used for rank name keys i.e: <rankname>~><treeId>
+// Delimiter used for rank name keys i.e: <treeName>~><rankName>
 export const RANK_KEY_DELIMITER = '~>';
+
+/**
+ * Returns a formatted tree rank name along with its tree name: (e.x Taxonomy~>Kingdom)
+ * Used for generating unique key names in the upload plan when there are multiple trees with the same rank name.
+ * NOTE: Opposite of uploadPlanParser.ts > getRankNameFromKey()
+ */
+const formatTreeRankKey = (rankName: string, treeName: string): string =>
+  `${treeName}${RANK_KEY_DELIMITER}${rankName}`;

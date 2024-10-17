@@ -83,7 +83,7 @@ const parseTree = (
         getTreeDefinitions('Taxon', 'all').length > 1
           ? [resolveTreeId(rankData.treeId)]
           : []),
-        formatTreeRank(getRankNameWithoutTreeId(rankName)),
+        formatTreeRank(getRankNameFromKey(rankName)),
       ]
     )
   );
@@ -215,9 +215,8 @@ export function parseUploadPlan(uploadPlan: UploadPlan): {
 }
 
 /**
- * Returns the tree rank name after stripping its tree id: (e.x Kingdom~>1 => Kingdom)
- * NOTE: Does not consider whether rankName is formatted with $ or not.
- * Opposite of uploadPlanBuilder.ts > formatTreeRankWithTreeId()
+ * Returns the tree rank name from a tree upload plan key (ex: <treeName>~><rankName> => <rankName>)
+ * NOTE: Opposite of uploadPlanBuilder.ts > formatTreeRankKey()
  */
-const getRankNameWithoutTreeId = (rankName: string): string =>
-  rankName.split(RANK_KEY_DELIMITER)[0];
+const getRankNameFromKey = (rankName: string): string =>
+  rankName.split(RANK_KEY_DELIMITER).at(-1)!;
