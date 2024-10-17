@@ -81,12 +81,12 @@ def remove_fields(apps):
 
     for data in FIELD_DATA:
         Splocaleitemstr.objects.filter(
-            text=data["field"],
+            itemname__name=data["field"],
             itemname__container__name=data["table"], 
             itemname__container__schematype=0
         ).delete()
         Splocaleitemstr.objects.filter(
-            text=data["field"],
+            itemdesc__name=data["field"],
             itemdesc__container__name=data["table"], 
             itemdesc__container__schematype=0
         ).delete()
