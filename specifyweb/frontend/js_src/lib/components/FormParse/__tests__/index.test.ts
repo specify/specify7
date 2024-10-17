@@ -356,6 +356,12 @@ test('parseViewDefinition', async () => {
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
+    rawDefinition: {
+      ...viewDefinition,
+      viewdefs: {
+        Preparation: tinyFormView,
+      },
+    },
   });
 });
 
