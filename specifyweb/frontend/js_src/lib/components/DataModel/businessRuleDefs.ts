@@ -13,6 +13,7 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { fetchResource, idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
+import { schema } from './schema';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -154,6 +155,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           new tables.CollectingEvent.Resource()
         );
       }
+
+      // Set the default CoType
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof collectionObject.get('collectionObjectType') !== 'string'
+      )
+        collectionObject.set(
+          'collectionObjectType',
+          schema.defaultCollectionObjectType
+        );
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
