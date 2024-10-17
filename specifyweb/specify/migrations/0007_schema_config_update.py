@@ -178,7 +178,7 @@ def revert_cogtype_type_splocalecontaineritem(apps):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0005_collectionobjectgroup_parentcojo'),
+        ('specify', '0006_fix_tectonic_tree_fields'),
     ]
 
     def apply_migration(apps, schema_editor):
