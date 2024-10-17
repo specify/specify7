@@ -182,7 +182,7 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
-    created_rule, _ = UniquenessRule.objects.get_or_create(discipline_id=discipline.id if discipline else None,
+    created_rule = UniquenessRule.objects.create(discipline=discipline,
                                                            modelName=model_name, isDatabaseConstraint=is_database_constraint)
     for field in fields:
         UniquenessRuleField.objects.get_or_create(
