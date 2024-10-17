@@ -7604,7 +7604,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
+    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='childcojos', null=False, on_delete=models.CASCADE)
 
     # Relationships: One-to-One
     childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
