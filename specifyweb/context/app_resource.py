@@ -35,6 +35,7 @@ DISCIPLINE_DIRS = {
     "botany": "botany",
     "invertebrate": "invertebrate",
     "minerals": "minerals",
+    "geology": "geology",
     "anthropology": "anthropology",
     # "vascplant": "vascplant",
     # "fungi": "fungi",

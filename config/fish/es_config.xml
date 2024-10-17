@@ -1,0 +1,690 @@
+<search>
+    <tables>
+        <searchtable>
+            <tableName>Agent</tableName>
+            <displayOrder>0</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>lastName</fieldName>
+                    <isSortable>true</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>3</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>firstName</fieldName>
+                    <formatter></formatter>
+                    <order>1</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+                <displayfield>
+                    <fieldName>lastName</fieldName>
+                    <formatter></formatter>
+                    <order>0</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>CollectingEvent</tableName>
+            <displayOrder>2</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>startDate</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>1</order>
+                </searchfield>
+                <searchfield>
+                    <fieldName>stationFieldNumber</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>2</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>startDate</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+                <displayfield>
+                    <fieldName>stationFieldNumber</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>CollectionObject</tableName>
+            <displayOrder>3</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>catalogNumber</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>0</order>
+                </searchfield>
+                <searchfield>
+                    <fieldName>catalogedDate</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>1</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>catalogNumber</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+                <displayfield>
+                    <fieldName>catalogedDate</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>Determination</tableName>
+            <displayOrder>5</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>determinedDate</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>0</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>determinedDate</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>Geography</tableName>
+            <displayOrder>6</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>fullName</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>0</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>fullName</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>Locality</tableName>
+            <displayOrder>7</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>localityName</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>0</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>localityName</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>Preparation</tableName>
+            <displayOrder>1</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>barCode</fieldName>
+                    <isSortable>true</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>0</order>
+                </searchfield>
+                <searchfield>
+                    <fieldName>guid</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>1</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>barCode</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+                <displayfield>
+                    <fieldName>guid</fieldName>
+                    <formatter></formatter>
+                    <order>2147483647</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+        <searchtable>
+            <tableName>Taxon</tableName>
+            <displayOrder>8</displayOrder>
+            <searchFields>
+                <searchfield>
+                    <fieldName>fullName</fieldName>
+                    <isSortable>false</isSortable>
+                    <isAscending>true</isAscending>
+                    <order>1</order>
+                </searchfield>
+            </searchFields>
+            <displayFields>
+                <displayfield>
+                    <fieldName>fullName</fieldName>
+                    <formatter></formatter>
+                    <order>0</order>
+                    <isWebServiceField>false</isWebServiceField>
+                    <isInitialInUse>false</isInitialInUse>
+                </displayfield>
+            </displayFields>
+            <wsFields/>
+        </searchtable>
+    </tables>
+    <relatedQueries>
+        <relatedquery>
+            <id>9</id>
+            <displayOrder>4</displayOrder>
+        </relatedquery>
+        <relatedquery>
+            <id>1</id>
+            <displayOrder>9</displayOrder>
+        </relatedquery>
+        <relatedquery>
+            <id>2</id>
+            <displayOrder>10</displayOrder>
+        </relatedquery>
+        <relatedquery>
+            <id>3</id>
+            <displayOrder>11</displayOrder>
+        </relatedquery>
+        <relatedquery>
+            <id>4</id>
+            <displayOrder>12</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>5</id>
+            <displayOrder>13</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>11</id>
+            <displayOrder>14</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>7</id>
+            <displayOrder>15</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>8</id>
+            <displayOrder>15</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>10</id>
+            <displayOrder>16</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>12</id>
+            <displayOrder>17</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>6</id>
+            <displayOrder>18</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>32</id>
+            <displayOrder>19</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>33</id>
+            <displayOrder>20</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>34</id>
+            <displayOrder>21</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>36</id>
+            <displayOrder>22</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>38</id>
+            <displayOrder>23</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>39</id>
+            <displayOrder>24</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>43</id>
+            <displayOrder>25</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>45</id>
+            <displayOrder>26</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>48</id>
+            <displayOrder>27</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>49</id>
+            <displayOrder>28</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>51</id>
+            <displayOrder>29</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>52</id>
+            <displayOrder>30</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>15</id>
+            <displayOrder>31</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>13</id>
+            <displayOrder>32</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>29</id>
+            <displayOrder>33</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>37</id>
+            <displayOrder>34</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>40</id>
+            <displayOrder>35</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>16</id>
+            <displayOrder>36</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>31</id>
+            <displayOrder>37</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>35</id>
+            <displayOrder>38</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>41</id>
+            <displayOrder>39</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>42</id>
+            <displayOrder>40</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>44</id>
+            <displayOrder>41</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>46</id>
+            <displayOrder>42</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>47</id>
+            <displayOrder>43</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>50</id>
+            <displayOrder>44</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>53</id>
+            <displayOrder>45</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>55</id>
+            <displayOrder>46</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>56</id>
+            <displayOrder>47</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>58</id>
+            <displayOrder>48</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>59</id>
+            <displayOrder>49</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>17</id>
+            <displayOrder>50</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>24</id>
+            <displayOrder>51</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>54</id>
+            <displayOrder>52</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>28</id>
+            <displayOrder>53</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="false">
+            <id>26</id>
+            <displayOrder>54</displayOrder>
+        </relatedquery>
+        <relatedquery isactive="true">
+            <id>60</id>
+            <displayOrder>55</displayOrder>
+        </relatedquery>
+    </relatedQueries>
+    <relatedQueryIdHash>
+        <entry>
+            <string>29</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[27]"/>
+        </entry>
+        <entry>
+            <string>28</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[47]"/>
+        </entry>
+        <entry>
+            <string>59</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[43]"/>
+        </entry>
+        <entry>
+            <string>26</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[48]"/>
+        </entry>
+        <entry>
+            <string>60</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[49]"/>
+        </entry>
+        <entry>
+            <string>58</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[42]"/>
+        </entry>
+        <entry>
+            <string>24</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[45]"/>
+        </entry>
+        <entry>
+            <string>56</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[41]"/>
+        </entry>
+        <entry>
+            <string>55</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[40]"/>
+        </entry>
+        <entry>
+            <string>54</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[46]"/>
+        </entry>
+        <entry>
+            <string>53</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[39]"/>
+        </entry>
+        <entry>
+            <string>52</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[24]"/>
+        </entry>
+        <entry>
+            <string>51</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[23]"/>
+        </entry>
+        <entry>
+            <string>50</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[38]"/>
+        </entry>
+        <entry>
+            <string>9</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery"/>
+        </entry>
+        <entry>
+            <string>8</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[9]"/>
+        </entry>
+        <entry>
+            <string>7</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[8]"/>
+        </entry>
+        <entry>
+            <string>17</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[44]"/>
+        </entry>
+        <entry>
+            <string>6</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[12]"/>
+        </entry>
+        <entry>
+            <string>49</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[22]"/>
+        </entry>
+        <entry>
+            <string>5</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[6]"/>
+        </entry>
+        <entry>
+            <string>16</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[30]"/>
+        </entry>
+        <entry>
+            <string>48</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[21]"/>
+        </entry>
+        <entry>
+            <string>47</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[37]"/>
+        </entry>
+        <entry>
+            <string>4</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[5]"/>
+        </entry>
+        <entry>
+            <string>15</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[25]"/>
+        </entry>
+        <entry>
+            <string>46</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[36]"/>
+        </entry>
+        <entry>
+            <string>3</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[4]"/>
+        </entry>
+        <entry>
+            <string>2</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[3]"/>
+        </entry>
+        <entry>
+            <string>13</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[26]"/>
+        </entry>
+        <entry>
+            <string>45</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[20]"/>
+        </entry>
+        <entry>
+            <string>1</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[2]"/>
+        </entry>
+        <entry>
+            <string>12</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[11]"/>
+        </entry>
+        <entry>
+            <string>44</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[35]"/>
+        </entry>
+        <entry>
+            <string>11</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[7]"/>
+        </entry>
+        <entry>
+            <string>43</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[19]"/>
+        </entry>
+        <entry>
+            <string>10</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[10]"/>
+        </entry>
+        <entry>
+            <string>42</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[34]"/>
+        </entry>
+        <entry>
+            <string>41</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[33]"/>
+        </entry>
+        <entry>
+            <string>40</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[29]"/>
+        </entry>
+        <entry>
+            <string>39</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[18]"/>
+        </entry>
+        <entry>
+            <string>38</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[17]"/>
+        </entry>
+        <entry>
+            <string>37</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[28]"/>
+        </entry>
+        <entry>
+            <string>36</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[16]"/>
+        </entry>
+        <entry>
+            <string>35</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[32]"/>
+        </entry>
+        <entry>
+            <string>34</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[15]"/>
+        </entry>
+        <entry>
+            <string>33</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[14]"/>
+        </entry>
+        <entry>
+            <string>32</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[13]"/>
+        </entry>
+        <entry>
+            <string>31</string>
+            <relatedquery reference="../../../relatedQueries/relatedquery[31]"/>
+        </entry>
+    </relatedQueryIdHash>
+    <tableIdHash>
+        <entry>
+            <string>9</string>
+            <searchtable reference="../../../tables/searchtable[4]"/>
+        </entry>
+        <entry>
+            <string>5</string>
+            <searchtable reference="../../../tables/searchtable"/>
+        </entry>
+        <entry>
+            <string>4</string>
+            <searchtable reference="../../../tables/searchtable[8]"/>
+        </entry>
+        <entry>
+            <string>3</string>
+            <searchtable reference="../../../tables/searchtable[5]"/>
+        </entry>
+        <entry>
+            <string>2</string>
+            <searchtable reference="../../../tables/searchtable[6]"/>
+        </entry>
+        <entry>
+            <string>1</string>
+            <searchtable reference="../../../tables/searchtable[3]"/>
+        </entry>
+        <entry>
+            <string>10</string>
+            <searchtable reference="../../../tables/searchtable[2]"/>
+        </entry>
+        <entry>
+            <string>63</string>
+            <searchtable reference="../../../tables/searchtable[7]"/>
+        </entry>
+    </tableIdHash>
+    <tableNameHash>
+        <entry>
+            <string>Preparation</string>
+            <searchtable reference="../../../tables/searchtable[7]"/>
+        </entry>
+        <entry>
+            <string>Geography</string>
+            <searchtable reference="../../../tables/searchtable[5]"/>
+        </entry>
+        <entry>
+            <string>CollectingEvent</string>
+            <searchtable reference="../../../tables/searchtable[2]"/>
+        </entry>
+        <entry>
+            <string>Determination</string>
+            <searchtable reference="../../../tables/searchtable[4]"/>
+        </entry>
+        <entry>
+            <string>CollectionObject</string>
+            <searchtable reference="../../../tables/searchtable[3]"/>
+        </entry>
+        <entry>
+            <string>Taxon</string>
+            <searchtable reference="../../../tables/searchtable[8]"/>
+        </entry>
+        <entry>
+            <string>Agent</string>
+            <searchtable reference="../../../tables/searchtable"/>
+        </entry>
+        <entry>
+            <string>Locality</string>
+            <searchtable reference="../../../tables/searchtable[6]"/>
+        </entry>
+    </tableNameHash>
+</search>
