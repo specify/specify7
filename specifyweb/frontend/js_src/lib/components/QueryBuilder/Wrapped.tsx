@@ -196,6 +196,7 @@ function Wrapped({
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
           isDisplay: true,

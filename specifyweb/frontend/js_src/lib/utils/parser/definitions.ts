@@ -50,7 +50,7 @@ export const validators: IR<(value: unknown) => string | undefined> = {
 } as const;
 
 export type Parser = Partial<{
-  readonly type: 'checkbox' | 'date' | 'number' | 'text';
+  readonly type: 'age' | 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
   // Number, or a string date in yyyy-mm-dd format

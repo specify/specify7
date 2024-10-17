@@ -910,4 +910,13 @@ export const queryText = createDictionary({
     'ru-ru': 'Выберите форматтер',
     'uk-ua': 'Виберіть форматер',
   },
+  range: {
+    'en-us': 'Range',
+  },
+  strict: {
+    'en-us': 'Strict',
+  },
+  nonStrict: {
+    'en-us': 'Non strict',
+  },
 } as const);

@@ -1,6 +1,8 @@
 from collections import namedtuple
+import re
 import sqlalchemy
 
+from specifyweb.specify.geo_time import query_co_in_time_period, query_co_in_time_range, query_co_in_time_range_with_joins, search_co_ids_in_time_period, search_co_ids_in_time_range, search_co_in_time_range
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
 
@@ -27,10 +29,17 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         'op_trueornull',        # 13
         'op_falseornull',       # 14
         'op_startswith',        # 15
+        'op_age_range',         # 16
+        'op_age_period',        # 17
     ]
+
+    PRECALCUALTED_OPERATION_NUMS = {16, 17}
 
     def by_op_num(self, op_num):
         return getattr(self, self.OPERATIONS[op_num])
+    
+    def is_precalculated(self, op_num):
+        return op_num in self.PRECALCUALTED_OPERATION_NUMS
 
     def format(self, value):
         if self.uiformatter is not None:
@@ -104,3 +113,33 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
             return field.op('REGEXP')("^0*" + value)
         else:
             return field.like(value + "%")
+
+    # TODO: Remove once an implementation which implemention to keep
+    def op_age_range_simple(self, field, value, is_strict=False):
+        values = [self.format(v.strip()) for v in value.split(',')[:2]]
+        start_time, end_time = values
+        co_ids = search_co_ids_in_time_range(start_time, end_time, require_full_overlap=is_strict)
+        # co_ids = search_co_in_time_range(start_time, end_time, require_full_overlap=is_strict)
+        return field.in_(co_ids)
+
+    # TODO: Remove once an implementation which implemention to keep
+    def op_age_range_old(self, field, value, query, is_strict=False):
+        values = [self.format(v.strip()) for v in value.split(',')[:2]]
+        start_time, end_time = values
+        return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=is_strict)
+
+    # TODO: Add new operations for age range and period
+    def op_age_range_new(self, field, value, query, is_strict=False):
+        values = [self.format(v.strip()) for v in value.split(',')[:2]]
+        start_time, end_time = values
+        return query_co_in_time_range_with_joins(query.query, start_time, end_time, session=None, require_full_overlap=is_strict)
+
+    def op_age_range(self, field, value, query, is_strict=False):
+        return self.op_age_range_simple(field, value, is_strict)
+        # return self.op_age_range_old(field, value, query, is_strict)
+        # return self.op_age_range_new(field, value, query=query, is_strict=is_strict)
+
+    def op_age_period(self, field, value, query, is_strict=False):
+        time_period_name = value
+        return field.in_(search_co_ids_in_time_period(time_period_name, require_full_overlap=False))
+        # return query_co_in_time_period(query.query, time_period_name, session=None, require_full_overlap=False)
