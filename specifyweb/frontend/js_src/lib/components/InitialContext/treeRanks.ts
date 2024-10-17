@@ -40,7 +40,11 @@ let treeDefinitions: TreeInformation = undefined!;
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 const treesForGeo = ['TectonicUnit'] as const;
-export const allTrees = [...commonTrees, ...treesForPaleo, ...treesForGeo] as const;
+export const allTrees = [
+  ...commonTrees,
+  ...treesForPaleo,
+  ...treesForGeo,
+] as const;
 /*
  * Until discipline information is loaded, assume all trees are appropriate in
  * this discipline
