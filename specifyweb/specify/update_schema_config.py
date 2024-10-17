@@ -1,14 +1,14 @@
 import re
+
+from typing import NamedTuple
+
+from django.db.models import Q
+from django.apps import apps
+
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.models import (
-    Splocalecontainer,
-    Splocalecontaineritem,
-    Splocaleitemstr,
-    Discipline,
     datamodel,
 )
-from typing import List, Optional, NamedTuple
-from django.db.models import Q
 
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
@@ -31,9 +31,13 @@ class FieldSchemaConfig(NamedTuple):
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
-    discipline: Optional[Discipline],
     description: str = None,
+    apps = apps
 ):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
     table: Table = datamodel.get_table(table_name)
     table_name = table.name
     table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
@@ -60,7 +64,7 @@ def update_table_schema_config_with_defaults(
     # Create Splocalecontainer for the table
     sp_local_container = Splocalecontainer.objects.create(
         name=table.name.lower(),
-        discipline=discipline,
+        discipline_id=discipline_id,
         schematype=table_config.schema_type,
         ishidden=False,
         issystem=table.system,
@@ -101,9 +105,13 @@ def update_table_schema_config_with_defaults(
             Splocaleitemstr.objects.create(**itm_str)
 
 
-def revert_table_schema_config(table_name):
+def revert_table_schema_config(table_name, apps = apps):
     table: Table = datamodel.get_table(table_name)
     table_name = table.name
+
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     containers = Splocalecontainer.objects.filter(name=table_name)
     items = Splocalecontaineritem.objects.filter(container__in=containers)
@@ -119,8 +127,8 @@ def revert_table_schema_config(table_name):
 def update_table_field_schema_config_with_defaults(
     table_name,
     discipline_id: int,
-    discipline: Optional[Discipline],
     field_name: str = None,
+    apps = apps
 ):
     table: Table = datamodel.get_table(table_name)
     table_name = table.name
@@ -131,9 +139,13 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
     sp_local_container = Splocalecontainer.objects.get(
         name=table.name.lower(),
-        discipline=discipline,
+        discipline_id=discipline_id,
         schematype=table_config.schema_type,
     )
 
@@ -167,10 +179,13 @@ def update_table_field_schema_config_with_defaults(
         itm_str[k] = sp_local_container_item
         Splocaleitemstr.objects.create(**itm_str)
 
-def revert_table_field_schema_config(table_name, field_name):
+def revert_table_field_schema_config(table_name, field_name, apps = apps):
     table: Table = datamodel.get_table(table_name)
     table_name = table.name
-    field = table.get_field(field_name)
+
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     containers = Splocalecontainer.objects.filter(name=table_name)
     items = Splocalecontaineritem.objects.filter(container__in=containers, name=field_name)

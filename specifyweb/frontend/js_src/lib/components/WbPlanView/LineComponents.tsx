@@ -227,8 +227,7 @@ export function MappingElement({
   fieldsData,
   ...props
 }: MappingElementProps): JSX.Element {
-  const { collectionObjectType, ...rest } = fieldsData;
-  const fieldGroups = Object.entries(rest).reduce<
+  const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, fieldData]) => {
     const groupName = getFieldGroupName(
