@@ -4,12 +4,17 @@ import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { backboneFieldSeparator } from './helpers';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -19,6 +24,8 @@ import {
 } from './resource';
 import { initializeResource } from './scoping';
 import { specialFields } from './serializers';
+import type { Relationship } from './specifyField';
+import type { Collection } from './specifyTable';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -100,6 +107,11 @@ export const ResourceBase = Backbone.Model.extend({
   constructor() {
     this.specifyTable = this.constructor.specifyTable;
     this.dependentResources = {}; // References to related objects referred to by field in this resource
+
+    this.independentResources = {
+      toMany: {},
+      toOne: {},
+    }; // Independent resources
     Reflect.apply(Backbone.Model, this, arguments); // TEST: check if this is necessary
   },
   initialize(attributes, options) {
@@ -204,10 +216,10 @@ export const ResourceBase = Backbone.Model.extend({
     );
     return newResource;
   },
-  url() {
+  url(): string {
     return getResourceApiUrl(this.specifyTable.name, this.id);
   },
-  viewUrl() {
+  viewUrl(): string {
     // Returns the url for viewing this resource in the UI
     if (!_.isNumber(this.id))
       softFail(new Error('viewUrl called on resource without id'), this);
@@ -221,7 +233,7 @@ export const ResourceBase = Backbone.Model.extend({
     // Case insensitive
     return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
   },
-  storeDependent(field, related) {
+  storeDependent(field: Relationship, related): void {
     assert(field.isDependent());
     const setter =
       field.type === 'one-to-many'
@@ -229,7 +241,7 @@ export const ResourceBase = Backbone.Model.extend({
         : '_setDependentToOne';
     this[setter](field, related);
   },
-  _setDependentToOne(field, related) {
+  _setDependentToOne(field: Relationship, related): void {
     const oldRelated = this.dependentResources[field.name.toLowerCase()];
     if (!related) {
       if (oldRelated) {
@@ -265,7 +277,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
     }
   },
-  _setDependentToMany(field, toMany) {
+  _setDependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
     const oldToMany = this.dependentResources[field.name.toLowerCase()];
     oldToMany && oldToMany.off('all', null, this);
 
@@ -471,7 +483,8 @@ export const ResourceBase = Backbone.Model.extend({
       });
     return value;
   },
-  _handleUri(value, fieldName) {
+  _handleUri(value, _fieldName) {
+    const fieldName = _fieldName.toLowerCase();
     const field = this.specifyTable.getField(fieldName);
     const oldRelated = this.dependentResources[fieldName];
 
@@ -721,6 +734,7 @@ export const ResourceBase = Backbone.Model.extend({
           });
         throw error;
       })
+      .then(this.handleSavingIndependent())
       .then(() => {
         resource._save = null;
       });
@@ -799,6 +813,190 @@ export const ResourceBase = Backbone.Model.extend({
   },
   getDependentResource(fieldName) {
     return this.dependentResources[fieldName.toLowerCase()];
+  },
+  addIndependentResources(
+    _fieldName,
+    resources: RA<SpecifyResource<AnySchema>>
+  ) {
+    const fieldName = _fieldName.toLowerCase();
+    const relationship = this.specifyTable.getRelationship(fieldName) as
+      | Relationship
+      | undefined;
+    if (
+      relationship === undefined ||
+      relationship.otherSideName === undefined ||
+      !relationshipIsToMany(relationship) ||
+      relationship.isDependent()
+    )
+      softFail(
+        new Error(`Relationship ${relationship?.name} is not independent`)
+      );
+
+    if (!this.independentResources.toMany[fieldName]?.added)
+      this.independentResources.toMany[fieldName] = {
+        added: [],
+        removed: [],
+      };
+
+    const currentIndependent: RA<SpecifyResource<AnySchema>> =
+      this.independentResources.toMany[fieldName]?.added ?? [];
+
+    const resolvedResources: RA<SpecifyResource<AnySchema>> = Array.isArray(
+      resources
+    )
+      ? resources
+      : [resources];
+
+    const uniqueResources = (
+      [...resolvedResources, ...currentIndependent] as RA<
+        SpecifyResource<AnySchema>
+      >
+    ).reduce(
+      ({ resources, identifiers }, resource) =>
+        identifiers.includes(resource.id) || identifiers.includes(resource.cid)
+          ? { resources, identifiers }
+          : {
+              resources: [...resources, resource],
+              identifiers: filterArray([
+                ...identifiers,
+                resource.cid,
+                resource.id,
+              ]),
+            },
+      {
+        resources: [] as RA<SpecifyResource<AnySchema>>,
+        identifiers: [] as RA<number | string>,
+      }
+    ).resources;
+    this.independentResources.toMany[fieldName].added = uniqueResources;
+
+    this.trigger('saverequired');
+
+    return this.independentResources.toMany[fieldName].added;
+  },
+  removeIndependentResources(
+    _fieldName: string,
+    resources: RA<SpecifyResource<AnySchema>>
+  ) {
+    const fieldName = _fieldName.toLowerCase();
+    const relationship = this.specifyTable.getRelationship(fieldName) as
+      | Relationship
+      | undefined;
+    if (
+      relationship === undefined ||
+      relationship.otherSideName === undefined ||
+      !relationshipIsToMany(relationship) ||
+      relationship.isDependent()
+    )
+      softFail(
+        new Error(`Relationship ${relationship?.name} is not independent`)
+      );
+
+    if (!this.independentResources.toMany[fieldName]?.added)
+      this.independentResources.toMany[fieldName] = {
+        added: [],
+        removed: [],
+      };
+
+    const currentIndependent: RA<SpecifyResource<AnySchema>> =
+      this.independentResources.toMany[fieldName]?.removed ?? [];
+
+    const resolvedResources: RA<SpecifyResource<AnySchema>> = Array.isArray(
+      resources
+    )
+      ? resources
+      : [resources];
+
+    const uniqueResources = (
+      [...resolvedResources, ...currentIndependent] as RA<
+        SpecifyResource<AnySchema>
+      >
+    ).reduce(
+      ({ resources, identifiers }, resource) =>
+        identifiers.includes(resource.id) || identifiers.includes(resource.cid)
+          ? { resources, identifiers }
+          : {
+              resources: [...resources, resource],
+              identifiers: filterArray([
+                ...identifiers,
+                resource.cid,
+                resource.id,
+              ]),
+            },
+      {
+        resources: [] as RA<SpecifyResource<AnySchema>>,
+        identifiers: [] as RA<number | string>,
+      }
+    ).resources;
+    this.independentResources.toMany[fieldName].removed = uniqueResources;
+
+    this.trigger('saverequired');
+
+    return this.independentResources.toMany[fieldName].removed;
+  },
+  setIndependentResource(
+    _fieldName: string,
+    resource: SpecifyResource<AnySchema> | null
+  ) {
+    const fieldName = _fieldName.toLowerCase();
+    const relationship = this.specifyTable.getRelationship(fieldName) as
+      | Relationship
+      | undefined;
+    if (
+      relationship === undefined ||
+      relationship.otherSideName == undefined ||
+      relationshipIsToMany(relationship) ||
+      relationship.isDependent()
+    )
+      softFail(
+        new Error(`Relationship ${relationship?.name} is not independent`)
+      );
+
+    this.independentResources.toOne[fieldName] = resource;
+    this.trigger('saverequired');
+    return this.independentResources.toOne[fieldName];
+  },
+  async handleSavingIndependent(): Promise<void> {
+    const self = this;
+    const toMany = this.independentResources.toMany as IR<{
+      readonly added: RA<SpecifyResource<AnySchema>>;
+      readonly removed: RA<SpecifyResource<AnySchema>>;
+    }>;
+    const toOne = this.independentResources
+      .toOne as IR<SpecifyResource<AnySchema> | null>;
+
+    Object.entries(toMany).forEach(([fieldName, { added, removed }]) => {
+      const relationship = self.specifyTable.getRelationship(
+        fieldName
+      ) as Relationship;
+
+      added.forEach(async (added) => {
+        const otherResource = await added.fetch();
+        otherResource.set(relationship.otherSideName!, self);
+        otherResource.save();
+      });
+
+      removed.forEach(async (removed) => {
+        const otherResource = await added.fetch();
+        otherResource.set(relationship.otherSideName!, null);
+        otherResource.save();
+      });
+    });
+
+    Object.entries(toOne).forEach(async ([fieldName, resource]) => {
+      const relationship = self.specifyTable.getRelationship(
+        fieldName
+      ) as Relationship;
+
+      const currentResource = await self.rgetPromise(fieldName);
+      currentResource.set(relationship.otherSideName!, null);
+      await currentResource.save();
+
+      if (resource !== null) {
+        const otherResource = await resource.fetch();
+        otherResource.set(relationship.otherSideName!, self);
+      }
+    });
   },
 });
 
