@@ -80,9 +80,6 @@ export function COJODialog({
     newCOJO.set('parentCog', parentResourceUrl as never);
 
     collection?.add(newCOJO);
-
-    const parentResourceCojo = parentResource.getDependentResource('cojo');
-    if (typeof parentResourceCojo === 'object') parentResourceCojo.add(newCOJO);
   };
 
   const handleStates = (): void => {
