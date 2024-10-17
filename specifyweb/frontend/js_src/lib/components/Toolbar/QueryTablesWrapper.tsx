@@ -72,6 +72,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'SpAuditLog',
   'Storage',
   'Taxon',
+  'TectonicUnit',
   'TreatmentEvent',
 ];
 
