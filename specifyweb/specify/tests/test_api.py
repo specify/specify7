@@ -12,6 +12,7 @@ from django.test import TestCase, Client
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
+from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
 from specifyweb.specify.models import (
@@ -663,11 +664,10 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
     def setUp(self):
         super().setUp()
         cog_type_picklist = Picklist.objects.create(
-            name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
-            issystem=False,
-            type=1,
-            readonly=False,
+            name=SYSTEM_COGTYPES_PICKLIST,
+            issystem=True,
+            type=0,
+            readonly=True,
             collection=self.collection
         )
         Picklistitem.objects.create(
