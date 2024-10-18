@@ -85,19 +85,14 @@ export const DependentCollection = Base.extend({
     Base.call(this, records, options);
   },
   initialize(_tables, options) {
+    setupToOne(this, options);
     this.on(
       'add remove',
       function () {
-        /*
-         * Warning: changing a collection record does not trigger a
-         * change event in the parent (though it probably should)
-         */
         this.trigger('saverequired');
       },
       this
     );
-
-    setupToOne(this, options);
 
     /*
      * If the id of the related resource changes, we go through and update
@@ -243,7 +238,7 @@ export const IndependentCollection = LazyCollection.extend({
       this
     );
 
-    this.listenTo(options.related, 'saved', function () {
+    this.listenTo(this.related, 'saved', function () {
       this.updated = {};
       this.removed = new Set<string>();
     });

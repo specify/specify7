@@ -2,6 +2,7 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { replaceItem } from '../../../utils/utils';
+import { addMissingFields } from '../addMissingFields';
 import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { tables } from '../tables';
@@ -217,6 +218,90 @@ describe('rgetCollection', () => {
   });
 
   // TEST: add dependent and independent tests for all relationship types (and zero-to-one)
+});
+
+describe('eventHandlerForToMany', () => {
+  test('saverequired', () => {
+    const resource = new tables.CollectionObject.Resource(
+      addMissingFields('CollectionObject', {
+        preparations: [
+          {
+            id: 1,
+            _tableName: 'Preparation',
+          },
+        ],
+      })
+    );
+    const testFunction = jest.fn();
+    resource.on('saverequired', testFunction);
+    expect(testFunction).toHaveBeenCalledTimes(0);
+    expect(resource.needsSaved).toBe(false);
+    resource
+      .getDependentResource('preparations')
+      ?.models[0].set('text1', 'helloWorld');
+
+    expect(resource.needsSaved).toBe(true);
+    expect(testFunction).toHaveBeenCalledTimes(1);
+  });
+  test('changing collection propagates to related', () => {
+    const resource = new tables.CollectionObject.Resource(
+      addMissingFields('CollectionObject', {
+        preparations: [
+          {
+            id: 1,
+            _tableName: 'Preparation',
+          },
+        ],
+      })
+    );
+    const onResourceChange = jest.fn();
+    const onPrepChange = jest.fn();
+    const onPrepAdd = jest.fn();
+    const onPrepRemoval = jest.fn();
+    resource.on('change', onResourceChange);
+    resource.on('change:preparations', onPrepChange);
+    resource.on('add:preparations', onPrepAdd);
+    resource.on('remove:preparations', onPrepRemoval);
+
+    resource
+      .getDependentResource('preparations')
+      ?.models[0].set('text1', 'helloWorld', { silent: false });
+    expect(onResourceChange).toHaveBeenCalledWith(
+      resource,
+      resource.getDependentResource('preparations')
+    );
+    expect(onPrepChange).toHaveBeenCalledWith(
+      resource.getDependentResource('preparations')?.models[0],
+      { silent: false }
+    );
+    const newPrep = new tables.Preparation.Resource({
+      barCode: 'test',
+    });
+    resource.getDependentResource('preparations')?.add(newPrep);
+    expect(onPrepAdd).toHaveBeenCalledWith(
+      newPrep,
+      resource.getDependentResource('preparations'),
+      {}
+    );
+    resource.getDependentResource('preparations')?.remove(newPrep);
+    expect(onPrepRemoval).toHaveBeenCalledWith(
+      newPrep,
+      resource.getDependentResource('preparations'),
+      { index: 1 }
+    );
+
+    expect(onResourceChange).toHaveBeenCalledTimes(3);
+
+    resource.set('determinations', [
+      addMissingFields('Determination', {
+        taxon: getResourceApiUrl('Taxon', 1),
+      }),
+    ]);
+    expect(onResourceChange).toHaveBeenCalledTimes(4);
+    expect(onPrepChange).toHaveBeenCalledTimes(1);
+    expect(onPrepAdd).toHaveBeenCalledTimes(1);
+    expect(onPrepRemoval).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('needsSaved', () => {
