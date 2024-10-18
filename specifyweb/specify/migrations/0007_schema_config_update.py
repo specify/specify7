@@ -81,16 +81,22 @@ def remove_fields(apps):
     for data in FIELD_DATA:
         Splocaleitemstr.objects.filter(
             itemname__name=data["field"],
+            itemname__type='ManyToOne',
+            itemname__isrequired=data["isrequired"],
             itemname__container__name=data["table"], 
             itemname__container__schematype=0
         ).delete()
         Splocaleitemstr.objects.filter(
             itemdesc__name=data["field"],
+            itemdesc__type='ManyToOne',
+            itemdesc__isrequired=data["isrequired"],
             itemdesc__container__name=data["table"], 
             itemdesc__container__schematype=0
         ).delete()
         Splocalecontaineritem.objects.filter(
             name=data["field"],
+            type='ManyToOne',
+            isrequired=data["isrequired"],
             container__name=data["table"],
             container__schematype=0,
         ).delete()
@@ -188,7 +194,7 @@ class Migration(migrations.Migration):
         update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        # remove_fields(apps)
+        remove_fields(apps)
         revert_cogtype_picklist(apps)
         revert_cogtype_splocalecontaineritem(apps)
         revert_systemcogtypes_picklist(apps)
