@@ -156,6 +156,12 @@ export const remotePrefsDefinitions = f.store(
         formatters: [formatter.trim],
         isLegacy: true,
       },
+      'TectonicUnit.treeview_sort_field': {
+        description: 'Sort order for nodes in the tree viewer',
+        defaultValue: 'name',
+        formatters: [formatter.trim],
+        isLegacy: false,
+      },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
@@ -185,6 +191,13 @@ export const remotePrefsDefinitions = f.store(
         isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.Storage': {
+        description:
+          'Show Collection Object count only for nodes with RankID >= than this value',
+        defaultValue: 99_999,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+      'TreeEditor.Rank.Threshold.TectonicUnit': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
@@ -262,6 +275,13 @@ export const remotePrefsDefinitions = f.store(
       },
       'sp7.allow_adding_child_to_synonymized_parent.Storage': {
         description: 'Allowed to add children to synopsized Storage records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
+      'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
+        description:
+          'Allowed to add children to synopsized TectonicUnit records',
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,

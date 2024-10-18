@@ -66,6 +66,13 @@ export const operationPolicies = {
     'repair',
   ],
   '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
+  '/tree/edit/tectonicunit': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
   '/workbench/dataset': [
     'create',
     'update',
