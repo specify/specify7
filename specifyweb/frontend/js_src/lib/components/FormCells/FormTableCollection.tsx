@@ -12,6 +12,7 @@ export function FormTableCollection({
   collection,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  onFetch: handleFetch,
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
@@ -21,13 +22,14 @@ export function FormTableCollection({
   readonly onDelete:
     | ((resource: SpecifyResource<AnySchema>, index: number) => void)
     | undefined;
+  readonly onFetch?: () => void;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
     () =>
       resourceOn(
         collection,
-        'add remove sort',
+        'add remove sort sync',
         () => setRecords(Array.from(collection.models)),
         true
       ),
@@ -35,9 +37,9 @@ export function FormTableCollection({
   );
 
   const handleFetchMore = React.useCallback(async () => {
-    await collection.fetch();
+    handleFetch?.() ?? collection.fetch();
     setRecords(Array.from(collection.models));
-  }, [collection]);
+  }, [collection, handleFetch]);
 
   const isDependent = collection instanceof DependentCollection;
   const relationship = collection.field?.getReverse();
