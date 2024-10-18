@@ -38,6 +38,7 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
 
 const collectionObjectResponse = {
   id: collectionObjectId,
+  collectionobjecttype: getResourceApiUrl('CollectionObjectType', 1),
   resource_uri: collectionObjectUrl,
   accession: accessionUrl,
   catalognumber: '000029432',
@@ -223,6 +224,7 @@ describe('needsSaved', () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
+
     expect(resource.needsSaved).toBe(false);
     resource.set('text1', 'a');
     expect(resource.needsSaved).toBe(true);
@@ -232,6 +234,7 @@ describe('needsSaved', () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
+
     expect(resource.needsSaved).toBe(false);
     resource.set('determinations', []);
     expect(resource.needsSaved).toBe(true);
@@ -349,7 +352,7 @@ describe('placeInSameHierarchy', () => {
 
   test('invalid hierarchy', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
-      id: 100,
+      id: collectionObjectId,
     });
     const author = new tables.Author.Resource();
     await expect(
