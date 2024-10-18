@@ -48,7 +48,6 @@ FIELD_DATA = [
 
 PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
-PICKLIST_TEXT = 'Collection Object Group Type'
 SYSTEM_COGTYPE_PICKLIST_NAME = "SystemCOGTypes"
 
 def add_fields(apps):
@@ -182,14 +181,14 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        add_fields(apps)
+        # add_fields(apps)
         create_cogtype_picklist(apps)
         update_cogtype_splocalecontaineritem(apps)
         update_systemcogtypes_picklist(apps)
         update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        remove_fields(apps)
+        # remove_fields(apps)
         revert_cogtype_picklist(apps)
         revert_cogtype_splocalecontaineritem(apps)
         revert_systemcogtypes_picklist(apps)
