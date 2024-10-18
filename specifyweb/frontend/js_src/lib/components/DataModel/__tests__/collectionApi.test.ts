@@ -293,6 +293,7 @@ describe('Independent Collection', () => {
       {
         id: 1,
         resource_uri: '/api/specify/collectionobject/1/',
+        collectionobjecttype: '/api/specify/collectionobjecttype/1/',
         text1: 'someValue',
       },
     ]);

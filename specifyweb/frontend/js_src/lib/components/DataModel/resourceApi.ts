@@ -40,7 +40,6 @@ function eventHandlerForToOne(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
-        this.trigger.apply(this, args);
         return;
       }
       case 'change:id': {
@@ -62,7 +61,7 @@ function eventHandlerForToOne(related, field) {
   };
 }
 
-function eventHandlerForToMany(_related, field) {
+function eventHandlerForToMany(related, field) {
   return function (event) {
     const args = _.toArray(arguments);
     switch (event) {
@@ -72,14 +71,15 @@ function eventHandlerForToMany(_related, field) {
       }
       case 'saverequired': {
         this.handleChanged();
-        this.trigger.apply(this, args);
         break;
       }
+      case 'change':
       case 'add':
       case 'remove': {
         // Annotate add and remove events with the field in which they occurred
         args[0] = `${event}:${field.name.toLowerCase()}`;
         this.trigger.apply(this, args);
+        this.trigger.apply(this, ['change', this, related]);
         break;
       }
     }
