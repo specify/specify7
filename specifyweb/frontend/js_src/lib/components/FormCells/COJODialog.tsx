@@ -56,7 +56,6 @@ export function COJODialog({
   const handleCOJOCreation = (
     selectedResource?: SpecifyResource<AnySchema>
   ): void => {
-    // NewResource.set('cojo', newCOJO); Do this in bus rule when saving main COG?
     if (parentResource === undefined) return;
 
     const resourceToUse = selectedResource ?? newResource;
