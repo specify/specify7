@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-19 21:15+0000\n"
+"PO-Revision-Date: 2024-10-20 08:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/fr/"
 ">\n"
@@ -285,7 +285,7 @@ msgstr "({directCount:number|formatted})"
 #: components/TreeView/helpers.ts:197
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Compte direct {collectionObjectTable:string}"
+msgstr "Nombre direct {collectionObjectTable:string}"
 
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:205
