@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-20 14:16+0000\n"
+"PO-Revision-Date: 2024-10-20 17:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
@@ -179,7 +179,7 @@ msgstr ""
 "Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено "
 "на «{parentName:string}», а всі нащадки «{nodeName:string}» буде переміщено "
 "до «{parentName:string}», а будь-які нащадки, що відповідають імені та "
-"рангу, будуть самі собою об'єднано рекурсивно."
+"рангу, будуть самі собою об'єднані рекурсивно."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:431
@@ -354,7 +354,7 @@ msgstr "Виберіть батьківський рейтинг"
 #: components/TreeView/Actions.tsx:440
 #, fuzzy
 msgid "moveItems"
-msgstr "Переміщення елементів"
+msgstr "Перемістити елементи"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:266
