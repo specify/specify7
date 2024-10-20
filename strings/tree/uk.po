@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-20 02:15+0000\n"
+"PO-Revision-Date: 2024-10-20 08:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
@@ -59,7 +59,7 @@ msgstr "Синонімізувати"
 #: components/TreeView/Actions.tsx:403
 #, fuzzy
 msgid "actionFailed"
-msgstr "Не вдалося виконати операцію"
+msgstr "Операція не вдалася"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:406
@@ -130,7 +130,7 @@ msgstr "Неможливо перейти до синоніма"
 #: components/TreeView/Actions.tsx:366
 #, fuzzy
 msgid "cantMergeIntoSynonym"
-msgstr "Не можна об’єднувати в синоніми"
+msgstr "Неможливо злити в синоніми"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:369
@@ -354,7 +354,7 @@ msgstr "Виберіть батьківський рейтинг"
 #: components/TreeView/Actions.tsx:440
 #, fuzzy
 msgid "moveItems"
-msgstr "Перемістити елементи"
+msgstr "Переміщення елементів"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:266
