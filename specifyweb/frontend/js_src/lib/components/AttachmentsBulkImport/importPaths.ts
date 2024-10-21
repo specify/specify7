@@ -27,5 +27,6 @@ export const staticAttachmentImportPaths: IR<ReturnType<typeof createItem>> = {
   loanNumber: createItem('Loan', 'loanNumber'),
   accessionNumber: createItem('Accession', 'accessionNumber'),
   giftNumber: createItem('Gift', 'giftNumber'),
+  preparationBarcode: createItem('Preparation', 'barCode'),
   borrowInvoiceNumber: createItem('Borrow', 'invoiceNumber'),
 };
