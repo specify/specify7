@@ -2,104 +2,40 @@
 This migration updates the Schema Config entries for pre-geo tables and creates picklists for COGTypes.
 
 Fields added:
-Collection -> collectionObjectType
-GeographyTreeDef -> discipline
-GeologicTimePeriodTreeDef -> discipline
-LithostratTreeDef -> discipline
 StorageTreeDef -> institution
-TaxonTreeDef -> discipline
+
+Fields removed:
+CollectionObject -> collectionObjectType (duplicate)
 
 Creates a picklist for COGType -> type and updates an existing incorrect picklist for COG -> COGType
 """
 from django.db import migrations
-
-FIELD_DATA = [
-    {
-        "table": "Collection",
-        "field": "collectionObjectType",
-        "isrequired": False,
-    },
-    {
-        "table": "GeographyTreeDef",
-        "field": "discipline",
-        "isrequired": False,
-    },
-    {
-        "table": "GeologicTimePeriodTreeDef",
-        "field": "discipline",
-        "isrequired": False,
-    },
-    {
-        "table": "LithostratTreeDef",
-        "field": "discipline",
-        "isrequired": True,
-    },
-    {
-        "table": "StorageTreeDef",
-        "field": "institution",
-        "isrequired": True,
-    },
-    {
-        "table": "TaxonTreeDef",
-        "field": "discipline",
-        "isrequired": True,
-    },
-]
+from specifyweb.specify.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
 
 PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
 SYSTEM_COGTYPE_PICKLIST_NAME = "SystemCOGTypes"
 
-def add_fields(apps):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+def update_fields(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    
+    # Add StorageTreeDef -> institution
+    for discipline in Discipline.objects.all():
+        update_table_field_schema_config_with_defaults('StorageTreeDef', discipline.id, 'institution', apps)
 
-    for data in FIELD_DATA:
-        for container in Splocalecontainer.objects.filter(name=data['table'], schematype=0):
-            container_item, _ = Splocalecontaineritem.objects.get_or_create(
-                name=data["field"],
-                type='ManyToOne',
-                container=container,
-                isrequired=data["isrequired"]
-            )
-            Splocaleitemstr.objects.get_or_create(
-                language='en',
-                text=data["field"],
-                itemname=container_item
-            )
-            Splocaleitemstr.objects.get_or_create(
-                language='en',
-                text=data["field"],
-                itemdesc=container_item
-            )
+    # Remove duplicate CollectionObject -> collectionObjectType
+    container_items = Splocalecontaineritem.objects.filter(name='collectionObjectType', picklistname=None, container__name='CollectionObject')
+    for container_item in container_items:
+        Splocaleitemstr.objects.filter(itemname=container_item).delete()
+        Splocaleitemstr.objects.filter(itemdesc=container_item).delete()
+    container_items.delete()
 
-def remove_fields(apps):
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-
-    for data in FIELD_DATA:
-        Splocaleitemstr.objects.filter(
-            itemname__name=data["field"],
-            itemname__type='ManyToOne',
-            itemname__isrequired=data["isrequired"],
-            itemname__container__name=data["table"], 
-            itemname__container__schematype=0
-        ).delete()
-        Splocaleitemstr.objects.filter(
-            itemdesc__name=data["field"],
-            itemdesc__type='ManyToOne',
-            itemdesc__isrequired=data["isrequired"],
-            itemdesc__container__name=data["table"], 
-            itemdesc__container__schematype=0
-        ).delete()
-        Splocalecontaineritem.objects.filter(
-            name=data["field"],
-            type='ManyToOne',
-            isrequired=data["isrequired"],
-            container__name=data["table"],
-            container__schematype=0,
-        ).delete()
+# NOTE: The reverse function will not re-add the duplicate CO -> coType as its unnecessary
+def revert_update_fields(apps):
+    # Remove StorageTreeDef -> institution
+    revert_table_field_schema_config('StorageTreeDef', 'institution', apps)
         
 def create_cogtype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
@@ -163,7 +99,6 @@ def revert_systemcogtypes_picklist(apps):
         name='Default Collection Object Group Types',
     )
 
-
 # Updates cogtype -> type to use the Default COGType picklist (Drill Core, Discrete, Consolidated)
 def update_cogtype_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -187,14 +122,14 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        # add_fields(apps)
+        update_fields(apps)
         create_cogtype_picklist(apps)
         update_cogtype_splocalecontaineritem(apps)
         update_systemcogtypes_picklist(apps)
         update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        remove_fields(apps)
+        revert_update_fields(apps)
         revert_cogtype_picklist(apps)
         revert_cogtype_splocalecontaineritem(apps)
         revert_systemcogtypes_picklist(apps)
