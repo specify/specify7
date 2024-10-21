@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-20 17:15+0000\n"
+"PO-Revision-Date: 2024-10-21 01:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
@@ -130,7 +130,7 @@ msgstr "Неможливо перейти до синоніма"
 #: components/TreeView/Actions.tsx:366
 #, fuzzy
 msgid "cantMergeIntoSynonym"
-msgstr "Не можна об’єднувати в синоніми"
+msgstr "Неможливо злити в синоніми"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:369
@@ -179,7 +179,7 @@ msgstr ""
 "Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено "
 "на «{parentName:string}», а всі нащадки «{nodeName:string}» буде переміщено "
 "до «{parentName:string}», а будь-які нащадки, що відповідають імені та "
-"рангу, будуть самі собою об'єднані рекурсивно."
+"рангу, будуть самі собою об'єднано рекурсивно."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:431
@@ -192,7 +192,7 @@ msgstr "Синонімізувати вузол"
 #: components/TreeView/Actions.tsx:391
 #, fuzzy
 msgid "makeSynonym"
-msgstr "Зробити {nodeName:string} синонімом {synonymName:string}"
+msgstr "Зробіть {nodeName:string} синонімом {synonymName:string}"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:346
