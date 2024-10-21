@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:47+0000\n"
+"PO-Revision-Date: 2024-10-21 05:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -44,7 +44,7 @@ msgstr "Der Wert muss in der Datenbank eindeutig sein"
 #: components/DataModel/uniquenessRules.ts:131
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
-msgstr "Der Wert muss in der Datenbank eindeutig sein"
+msgstr "Möchten Sie dieses [X49X] wirklich dauerhaft aus der Datenbank löschen?"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:135
@@ -70,7 +70,7 @@ msgstr "Blockierte löschen"
 #: components/Forms/DeleteButton.tsx:168
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "[X0X] #[X20X]"
+msgstr "Verwendungen finden"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
@@ -98,9 +98,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass {localityTable:string} über "
-"geografische Koordinaten verfügt und dass im Paläokontext ein geografisches "
-"Alter mit mindestens einer Start- oder Endzeit angegeben ist."
+"Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische "
+"Koordinaten hat und dass der Paläokontext ein geografisches Alter mit "
+"mindestens einer ausgefüllten Start- und Endzeit hat."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -162,7 +162,7 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #: components/PickLists/index.tsx:290
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "Konfigurieren von Dateneingabetabellen"
+msgstr "JJJJ"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -710,7 +710,7 @@ msgstr "Netz"
 #: components/FormMeta/index.tsx:197
 #, fuzzy
 msgid "subviewConfiguration"
-msgstr "Duplikat [X10X]"
+msgstr "Weitertragen"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:50
@@ -741,7 +741,7 @@ msgstr "Deaktivieren des Nur-Lese-Modus"
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
-msgstr "Konflikt speichern"
+msgstr "Anzahl der Massenüberträge"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:129
