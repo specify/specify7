@@ -1,49 +1,49 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-16 10:16+0000\n"
+"PO-Revision-Date: 2024-10-21 00:21+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/welcome/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
+"fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.8-rc\n"
 
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:65
 #: components/Router/Routes.tsx:464
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Accueillir"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:112
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:197
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "À propos de Spécifier 7"
 
-#: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:56
 msgid "downloadInformation"
 msgstr "À propos de Spécifier 7"
 
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:246
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Tuiles Taxons"
 
-#: components/HomePage/TaxonTiles.tsx:73
 #. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:73
 msgid "taxonTilesDescription"
 msgstr ""
 "Affichage des taxons avec des enregistrements {count:number|formatted} ou "
 "plus {collectionObjectTable:string}"
 
-#: components/HomePage/AboutSpecify.tsx:79
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:79
 msgid "fullAddress"
 msgstr ""
 "Préciser le consortium de collections <br />\n"
@@ -52,8 +52,8 @@ msgstr ""
 "1345, boulevard Jayhawk. <br />\n"
 "Lawrence, KS 66045 États-Unis"
 
-#: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
 msgid "disclosure"
 msgstr ""
 "Le logiciel Specify est un produit du Specify Collections Consortium qui "
@@ -67,78 +67,78 @@ msgstr ""
 "l'Université du Kansas. Specify a été soutenu de 1996 à 2018 par des "
 "subventions de la National Science Foundation des États-Unis."
 
-#: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
 #, fuzzy
 msgid "licence"
 msgstr ""
 "Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du Kansas. "
-"Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel "
-"gratuit et open source sous licence GNU General Public License v2."
+"Spécifiez n'offre AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open "
+"source sous licence GNU General Public License v2."
 
-#: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:95
 #, fuzzy
 msgid "systemInformation"
 msgstr "Informations système"
 
-#: components/HomePage/AboutSpecify.tsx:99
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:99
 #, fuzzy
 msgid "specifyVersion"
-msgstr "Spécifiez la version 7 :"
+msgstr "Spécifiez la version 7 :"
 
-#: components/HomePage/AboutSpecify.tsx:100
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
 #, fuzzy
 msgid "gitSha"
-msgstr "Git SHA :"
+msgstr "Date de construction :"
 
-#: components/HomePage/AboutSpecify.tsx:101
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:101
 #, fuzzy
 msgid "buildDate"
-msgstr "Date de construction:"
+msgstr "Date de construction :"
 
-#: components/HomePage/AboutSpecify.tsx:103
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:103
 #, fuzzy
 msgid "specifySixVersion"
-msgstr "Spécifiez la version 6 :"
+msgstr "Spécifiez la version 6 :"
 
-#: components/HomePage/AboutSpecify.tsx:106
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:106
 #, fuzzy
 msgid "databaseVersion"
-msgstr "Version de la base de données :"
+msgstr "Version de la base de données :"
 
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 #: components/HomePage/AboutSpecify.tsx:108
 #: components/SchemaViewer/index.tsx:34
-#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaVersion"
 msgstr "Version du schéma de base de données"
 
-#: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:113
 #, fuzzy
 msgid "databaseName"
-msgstr "Nom de la base de données:"
+msgstr "Nom de la base de données :"
 
-#: components/HomePage/AboutSpecify.tsx:135
 #. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:135
 #, fuzzy
 msgid "isaNumber"
-msgstr "Numéro ISA :"
+msgstr "Numéro ISA :"
 
-#: components/HomePage/AboutSpecify.tsx:138
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:138
 #, fuzzy
 msgid "browser"
 msgstr "Navigateur:"
 
-#: components/HomePage/AboutSpecify.tsx:117
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:117
 #, fuzzy
 msgid "databaseCreationDate"
-msgstr "Date de création de la base de données :"
+msgstr "Date de création de la base de données :"
