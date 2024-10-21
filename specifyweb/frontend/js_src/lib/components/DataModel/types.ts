@@ -1578,9 +1578,6 @@ export type CollectionObjectAttribute = {
     readonly positionState: string | null;
     readonly remarks: string | null;
     readonly text1: string | null;
-    readonly text10: string | null;
-    readonly text11: string | null;
-    readonly text12: string | null;
     readonly text13: string | null;
     readonly text14: string | null;
     readonly text15: string | null;
@@ -1588,7 +1585,6 @@ export type CollectionObjectAttribute = {
     readonly text17: string | null;
     readonly text18: string | null;
     readonly text19: string | null;
-    readonly text2: string | null;
     readonly text20: string | null;
     readonly text21: string | null;
     readonly text22: string | null;
@@ -1613,7 +1609,6 @@ export type CollectionObjectAttribute = {
     readonly text4: string | null;
     readonly text40: string | null;
     readonly text5: string | null;
-    readonly text6: string | null;
     readonly text7: string | null;
     readonly text8: string | null;
     readonly text9: string | null;
@@ -2478,7 +2473,6 @@ export type Determination = {
     readonly number3: number | null;
     readonly number4: number | null;
     readonly number5: number | null;
-    readonly text1: string | null;
     readonly qualifier: string | null;
     readonly confidence: string | null;
     readonly remarks: string | null;
@@ -2583,9 +2577,9 @@ export type Discipline = {
     readonly division: Division;
     readonly geographyTreeDef: GeographyTreeDef;
     readonly lithoStratTreeDef: LithoStratTreeDef | null;
+    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
-    readonly tectonicUnitTreeDef: TectonicUnitTreeDef | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -4384,7 +4378,6 @@ export type Preparation = {
     readonly date4Precision: number | null;
     readonly description: string | null;
     readonly guid: string | null;
-    readonly text1: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly isOnLoan: boolean | null;
