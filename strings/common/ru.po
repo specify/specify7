@@ -40,7 +40,7 @@ msgstr "Нет"
 #: components/Forms/ResourceView.tsx:347
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:261
+#: components/Interactions/InteractionDialog.tsx:267
 #: components/Interactions/InteractionsDialog.tsx:56
 #: components/Interactions/LoanReturn.tsx:161
 #: components/Interactions/PrepDialog.tsx:93
@@ -195,8 +195,8 @@ msgstr "Создать"
 #: components/Forms/Save.tsx:372
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:237
-#: components/Interactions/InteractionDialog.tsx:324
+#: components/Interactions/InteractionDialog.tsx:243
+#: components/Interactions/InteractionDialog.tsx:330
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:90
 #: components/Leaflet/Map.tsx:103
@@ -376,7 +376,7 @@ msgid "delete"
 msgstr "Удалить"
 
 #: components/Attachments/Dialog.tsx:113
-#: components/Interactions/InteractionDialog.tsx:364
+#: components/Interactions/InteractionDialog.tsx:370
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 msgid "next"
@@ -591,7 +591,7 @@ msgid "end"
 msgstr "Конец"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:363
+#: components/Interactions/InteractionDialog.tsx:369
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
