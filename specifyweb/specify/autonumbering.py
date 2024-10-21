@@ -51,13 +51,13 @@ def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[s
 
 def get_tables_to_lock(collection, obj, field_names) -> Set[str]:
     # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
-    from specifyweb.businessrules.models import UniquenessRule
+    from specifyweb.businessrules.models import UniquenessRule, UniquenessRuleField
 
     obj_table = obj._meta.db_table
     scope_table = Scoping(obj).get_scope_model()
 
     tables = set([obj._meta.db_table, 'django_migrations',
-                  UniquenessRule._meta.db_table, 'discipline', scope_table._meta.db_table])
+                  UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table, 'discipline', scope_table._meta.db_table])
 
     rules = UniquenessRule.objects.filter(
         modelName=obj_table, discipline=collection.discipline)
