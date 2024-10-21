@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:46+0000\n"
+"PO-Revision-Date: 2024-10-21 05:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -41,7 +41,7 @@ msgstr "La valeur doit être unique à {fieldName:string}"
 #: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "Créer une copie complète de l'enregistrement actuel"
+msgstr "Rien trouvé"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
@@ -274,7 +274,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Cette action ne peut pas être annulée."
+msgstr "Informations sur le dossier"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -308,10 +308,7 @@ msgstr "Cette commande n'est actuellement pas disponible pour Specify 7."
 #: components/FormPlugins/index.tsx:205
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
-msgstr ""
-"Les données affichées sur cette page ont été modifiées par un autre "
-"utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La page "
-"doit être rechargée pour éviter l'enregistrement de données incohérentes."
+msgstr "(supprimé)"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
@@ -691,14 +688,14 @@ msgstr "Informations sur le dossier"
 #: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
-msgstr "(Plage : [X8X] - [X24X])"
+msgstr "Ajouter à [X7X] ?"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "Afficher le bouton \"Transférer en avant\""
+msgstr "[X0X] #[X20X]"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
@@ -729,7 +726,7 @@ msgstr "Sous-vue"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "Précision de la date"
+msgstr "La valeur doit être unique à [X24X]"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
