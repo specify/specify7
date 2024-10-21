@@ -122,6 +122,7 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
         },
