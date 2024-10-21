@@ -287,7 +287,7 @@ msgstr "Comptage direct {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Nombre indirect {collectionObjectTable:string}"
 
-#: components/TreeView/Tree.tsx:163
+#: components/TreeView/Tree.tsx:164
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"

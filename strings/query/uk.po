@@ -33,7 +33,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1498
+#: components/Preferences/UserDefinitions.tsx:1519
 #: components/SearchDialog/index.tsx:177
 #: components/SearchDialog/index.tsx:314
 #: components/Security/registry.ts:210
@@ -155,7 +155,7 @@ msgstr ""
 "Запит: \"{queryName:string}\" на {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:190
+#: components/QueryBuilder/fromTree.ts:214
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""

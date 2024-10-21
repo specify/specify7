@@ -279,7 +279,7 @@ msgstr ""
 msgid "indirectCollectionObjectCount"
 msgstr ""
 
-#: components/TreeView/Tree.tsx:163
+#: components/TreeView/Tree.tsx:164
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"

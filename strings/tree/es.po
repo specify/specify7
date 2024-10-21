@@ -251,7 +251,7 @@ msgstr "Conteo directo {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Recuento indirecto {collectionObjectTable:string}"
 
-#: components/TreeView/Tree.tsx:163
+#: components/TreeView/Tree.tsx:164
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Editar rangos"
