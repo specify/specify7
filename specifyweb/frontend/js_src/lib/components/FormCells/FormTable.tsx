@@ -2,7 +2,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -10,20 +9,13 @@ import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
-import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { useAttachment } from '../Attachments/Plugin';
-import { AttachmentViewer } from '../Attachments/Viewer';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { attachmentView } from '../FormParse/webOnlyViews';
-import { SpecifyForm } from '../Forms/SpecifyForm';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -32,9 +24,10 @@ import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SearchDialog } from '../SearchDialog';
-import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormCell } from './index';
+import { CollapsedForm } from './CollapsedForm';
+import { ExpandedForm } from './ExpandedForm';
+import { FormTableUtils } from './FormTableUtils';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -169,7 +162,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode,
   });
 
-  const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<
     IR<boolean | undefined>
   >({});
@@ -283,150 +275,45 @@ export function FormTable<SCHEMA extends AnySchema>({
               <React.Fragment key={resource.cid}>
                 <div className="contents" role="row">
                   {isExpanded[resource.cid] === true ? (
-                    <>
-                      <div className="h-full" role="cell">
-                        <Button.Small
-                          aria-label={commonText.collapse()}
-                          className="h-full"
-                          title={commonText.collapse()}
-                          onClick={(): void =>
-                            setExpandedRecords({
-                              ...isExpanded,
-                              [resource.cid]: false,
-                            })
-                          }
-                        >
-                          {icons.chevronDown}
-                        </Button.Small>
-                      </div>
-                      <DataEntry.Cell
-                        align="left"
-                        colSpan={collapsedViewDefinition.columns.length}
-                        role="cell"
-                        tabIndex={-1}
-                        verticalAlign="stretch"
-                        visible
-                      >
-                        <SpecifyForm
-                          display="inline"
-                          resource={resource}
-                          viewDefinition={expandedViewDefinition}
-                        />
-                      </DataEntry.Cell>
-                    </>
+                    <ExpandedForm
+                      collapsedViewDefinition={collapsedViewDefinition}
+                      expandedViewDefinition={expandedViewDefinition}
+                      resource={resource}
+                      onCollapse={(): void =>
+                        setExpandedRecords({
+                          ...isExpanded,
+                          [resource.cid]: false,
+                        })
+                      }
+                    />
                   ) : (
-                    <>
-                      <div className="h-full" role="cell">
-                        <Button.Small
-                          aria-label={commonText.expand()}
-                          className="h-full"
-                          title={commonText.expand()}
-                          onClick={(): void =>
-                            setExpandedRecords({
-                              ...isExpanded,
-                              [resource.cid]: true,
-                            })
-                          }
-                        >
-                          {icons.chevronRight}
-                        </Button.Small>
-                      </div>
-                      <ReadOnlyContext.Provider
-                        value={
-                          isReadOnly || collapsedViewDefinition.mode === 'view'
-                        }
-                      >
-                        <SearchDialogContext.Provider
-                          value={
-                            isInSearchDialog ||
-                            collapsedViewDefinition.mode === 'search'
-                          }
-                        >
-                          {collapsedViewDefinition.name === attachmentView ? (
-                            <div className="flex gap-8" role="cell">
-                              <Attachment resource={resource} />
-                            </div>
-                          ) : (
-                            collapsedViewDefinition.rows[0].map(
-                              (
-                                {
-                                  colSpan,
-                                  align,
-                                  verticalAlign,
-                                  visible,
-                                  id: cellId,
-                                  ...cellData
-                                },
-                                index
-                              ) => (
-                                <DataEntry.Cell
-                                  align={align}
-                                  colSpan={colSpan}
-                                  key={index}
-                                  role="cell"
-                                  verticalAlign={verticalAlign}
-                                  visible={visible}
-                                >
-                                  <FormCell
-                                    align={align}
-                                    cellData={cellData}
-                                    formatId={(suffix: string): string =>
-                                      id(`${index}-${suffix}`)
-                                    }
-                                    formType="formTable"
-                                    id={cellId}
-                                    resource={resource}
-                                    verticalAlign={verticalAlign}
-                                  />
-                                </DataEntry.Cell>
-                              )
-                            )
-                          )}
-                        </SearchDialogContext.Provider>
-                      </ReadOnlyContext.Provider>
-                    </>
+                    <CollapsedForm
+                      collapsedViewDefinition={collapsedViewDefinition}
+                      isInSearchDialog={
+                        isInSearchDialog ||
+                        collapsedViewDefinition.mode === 'search'
+                      }
+                      isReadOnly={
+                        isReadOnly || collapsedViewDefinition.mode === 'view'
+                      }
+                      resource={resource}
+                      onExpand={(): void =>
+                        setExpandedRecords({
+                          ...isExpanded,
+                          [resource.cid]: true,
+                        })
+                      }
+                    />
                   )}
-                  <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] === true ? (
-                      <Link.Small
-                        aria-label={commonText.openInNewTab()}
-                        className="flex-1"
-                        href={resource.viewUrl()}
-                        title={commonText.openInNewTab()}
-                      >
-                        {icons.externalLink}
-                      </Link.Small>
-                    ) : undefined}
-                    {displayDeleteButton &&
-                    (!resource.isNew() ||
-                      hasTablePermission(
-                        relationship.relatedTable.name,
-                        'delete'
-                      )) ? (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyTable.name,
-                            'delete'
-                          )
-                        }
-                        title={commonText.remove()}
-                        onClick={(): void => handleDelete(resource)}
-                      >
-                        {icons.trash}
-                      </Button.Small>
-                    ) : undefined}
-                    {isExpanded[resource.cid] === true && (
-                      <FormMeta
-                        className="flex-1"
-                        resource={resource}
-                        viewDescription={expandedViewDefinition}
-                      />
-                    )}
-                  </div>
+                  <FormTableUtils
+                    displayDeleteButton={displayDeleteButton}
+                    displayViewButton={displayViewButton}
+                    expandedViewDefinition={expandedViewDefinition}
+                    isExpanded={isExpanded}
+                    relationship={relationship}
+                    resource={resource}
+                    onDelete={handleDelete}
+                  />
                 </div>
               </React.Fragment>
             ))}
@@ -496,28 +383,5 @@ export function FormTable<SCHEMA extends AnySchema>({
     >
       {children}
     </Dialog>
-  );
-}
-
-function Attachment({
-  resource,
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-}): JSX.Element | null {
-  const related = React.useState<SpecifyResource<AnySchema> | undefined>(
-    undefined
-  );
-  const [attachment] = useAttachment(resource);
-  return typeof attachment === 'object' ? (
-    <AttachmentViewer
-      attachment={attachment}
-      related={related}
-      showMeta={false}
-      onViewRecord={undefined}
-    />
-  ) : attachment === false ? (
-    <p>{formsText.noData()}</p>
-  ) : (
-    <AttachmentPluginSkeleton />
   );
 }

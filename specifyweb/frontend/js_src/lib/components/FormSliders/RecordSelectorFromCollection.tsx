@@ -20,13 +20,12 @@ import type {
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 
-export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
+export function useRecordSelectorFromCollection<SCHEMA extends AnySchema>({
   collection,
   relationship,
   onAdd: handleAdd,
   onDelete: handleDelete,
   onSlide: handleSlide,
-  children,
   defaultIndex = 0,
   ...rest
 }: Omit<
@@ -43,8 +42,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     readonly collection: Collection<SCHEMA>;
     readonly relationship: Relationship;
     readonly defaultIndex?: number;
-    readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
-  }): JSX.Element | null {
+  }): RecordSelectorState<SCHEMA> {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
       Array.from(collection.models),
@@ -90,7 +88,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .catch(raise);
   }, [collection, isLazy, getRecords, index, records.length]);
 
-  const state = useRecordSelector({
+  return useRecordSelector({
     ...rest,
     index,
     table: collection.table.specifyTable,
@@ -124,6 +122,4 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       callback?.();
     },
   });
-
-  return children(state);
 }
