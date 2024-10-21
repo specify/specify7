@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-20 17:15+0000\n"
+"PO-Revision-Date: 2024-10-21 01:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/tree/pt_BR/>\n"
@@ -205,8 +205,8 @@ msgstr "Selecione um alvo para \"{nodeName:string}\" para ser sinonimizado"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"O nó {treeName:string} \"{nodeName:string}\" se tornará sinônimo de \""
-"{synonymName:string}\"."
+"O nó {treeName:string} \"{nodeName:string}\" será transformado em sinônimo "
+"de \"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:395
