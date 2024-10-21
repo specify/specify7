@@ -1492,6 +1492,27 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      tectonicUnit: {
+        title: '_TectonicUnit' as LocalizedString,
+        items: {
+          treeAccentColor: definePref({
+            title: preferencesText.treeAccentColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#f79245',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          synonymColor: definePref({
+            title: preferencesText.synonymColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#dc2626',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
     },
   },
   queryBuilder: {
@@ -2005,6 +2026,11 @@ import('../DataModel/tables')
         trees.lithoStrat,
         'title',
         getField(tables.LithoStrat, 'name').label
+      );
+      overwriteReadOnly(
+        trees.tectonicUnit,
+        'title',
+        getField(tables.TectonicUnit, 'name').label
       );
       overwriteReadOnly(
         userPreferenceDefinitions.form.subCategories.recordSet,

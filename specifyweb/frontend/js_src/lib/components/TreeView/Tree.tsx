@@ -31,6 +31,7 @@ const treeToPref = {
   Storage: 'storage',
   GeologicTimePeriod: 'geologicTimePeriod',
   LithoStrat: 'lithoStrat',
+  TectonicUnit: 'tectonicUnit'
 } as const;
 
 export function Tree<
