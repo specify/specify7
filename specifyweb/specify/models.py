@@ -7621,7 +7621,7 @@ class AbsoluteAge(models.Model):
     specify_model = datamodel.get_table('absoluteage')
 
     # ID Field
-    id = models.AutoField(db_column='AbsoluteAgeID', primary_key=True, serialize=False)
+    id = models.AutoField(db_column='AbsoluteAgeID', primary_key=True)
 
     # Fields
     absoluteage = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AbsoluteAge', db_index=False)

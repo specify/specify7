@@ -5157,6 +5157,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='lithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='LithoStratID', otherSideName='paleoContexts'),
+            Relationship(name='tectonicUnit', type='many-to-one',required=False, relatedModelName='TectonicUnit', column='TectonicUnitID', otherSideName='paleoContexts'),
             Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='paleoContext'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
