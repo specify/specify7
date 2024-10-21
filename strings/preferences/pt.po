@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-16 10:16+0000\n"
+"PO-Revision-Date: 2024-10-21 00:21+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "preferences/pt/>\n"
@@ -555,7 +555,7 @@ msgstr "Permite consultar dados de qualquer campo em qualquer tabela."
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "AVISO: habilitar isso pode levar à perda de dados ou corrupção do banco de "
-"dados. Por favor, certifique-se de que você sabe o que está fazendo."
+"dados. Certifique-se de que você sabe o que está fazendo."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
@@ -1318,7 +1318,7 @@ msgstr "Visão detalhada"
 #: components/Preferences/UserDefinitions.tsx:1311
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr "Modo de visualização de anexo"
+msgstr "Modo de pré-visualização de anexos"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1318
