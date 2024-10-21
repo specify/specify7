@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:46+0000\n"
+"PO-Revision-Date: 2024-10-21 05:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "forms/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -34,7 +34,7 @@ msgstr "O valor deve ser exclusivo para {fieldName:string}"
 #: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "O valor deve ser exclusivo para o banco de dados"
+msgstr "Nada encontrado"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
@@ -78,7 +78,7 @@ msgid "paleoRequiresGeographyDescription"
 msgstr ""
 "O plugin Paleo Map requer que o {localityTable:string} tenha coordenadas "
 "geográficas e que o contexto paleo tenha uma idade geográfica com pelo menos "
-"uma hora de início ou uma hora de término preenchidas."
+"uma hora de início ou de término preenchida."
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:137
@@ -226,7 +226,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Salvar bloqueado"
+msgstr "Informações do registro"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -259,9 +259,7 @@ msgstr "Este comando não está disponível no momento para o Specify 7."
 #: components/FormPlugins/index.tsx:205
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
-msgstr ""
-"Provavelmente foi incluído neste formulário do Specify 6 e pode ser "
-"suportado no futuro."
+msgstr "(apagado)"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
@@ -639,14 +637,14 @@ msgstr "Informações do registro"
 #: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
-msgstr "Compartilhar registro"
+msgstr "Adicionar a [X7X]?"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "Encontrar usos"
+msgstr "[X0X] #[X20X]"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
@@ -677,7 +675,7 @@ msgstr "Subvisualização"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "Selecione a fonte das tabelas"
+msgstr "O valor deve ser exclusivo para [X24X]"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
