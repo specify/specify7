@@ -19,12 +19,11 @@ SCHEMA_CONFIG_TABLES = [
     ('AbsoluteAgeAttachment', None),
 ]
 SCHEMA_CONFIG_MOD_TABLE_FIELDS = { # TODO: make schema config corrections in new migration
-    'Collectionobject': ['relativeAges', 'absoluteAges'],
+    'Collectionobject': ['relativeAges', 'absoluteAges', 'collectionObjectType'],
     'Collection': ['collectionObjectType'],
     'Geographytreedef': ['discipline'],
     'Geologictimeperiodtreedef': ['discipline'],
     'Lithostrattreedef': ['discipline'],
-    'StorageTreeDef': ['institution'],
 }
 PICKLIST_NAME = 'AgeType'
 DEFAULT_AGE_TYPES = [
