@@ -56,7 +56,7 @@ def create_agetype_picklist(apps):
                 picklist=age_type_picklist
             )
 
-def revert_agetype_picklist(apps, schema_editor):
+def revert_agetype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     PicklistItem = apps.get_model('specify', 'Picklistitem')
@@ -72,18 +72,18 @@ def create_table_schema_config_with_defaults(apps):
     Discipline = specify_apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
 
         for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
             for field in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, discipline, field)
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
 
-def revert_table_schema_config_with_defaults():
+def revert_table_schema_config_with_defaults(apps):
     for table, _ in SCHEMA_CONFIG_TABLES:
-        revert_table_schema_config(table)
+        revert_table_schema_config(table, apps)
     for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
         for field in fields:
-            revert_table_field_schema_config(table, field)
+            revert_table_field_schema_config(table, field, apps)
 
 class Migration(migrations.Migration):
 
@@ -96,8 +96,8 @@ class Migration(migrations.Migration):
         create_agetype_picklist(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_table_schema_config_with_defaults()
-        revert_agetype_picklist(apps, schema_editor)
+        revert_table_schema_config_with_defaults(apps)
+        revert_agetype_picklist(apps)
 
     operations = [
         migrations.CreateModel(
