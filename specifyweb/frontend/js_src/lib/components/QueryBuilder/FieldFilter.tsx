@@ -17,7 +17,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { RA, RR } from '../../utils/types';
+import { type RA, type RR, filterArray } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
@@ -26,6 +26,7 @@ import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
@@ -65,6 +66,14 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'equal',
   'in',
 ]);
+
+const showComparisonOperatorsForString = f.store(() =>
+  userPreferences.get(
+    'queryBuilder',
+    'behavior',
+    'showComparisonOperatorsForString'
+  )
+);
 
 export function QueryInputField({
   currentValue,
@@ -415,7 +424,6 @@ export const queryFieldFilters: RR<
     label: queryText.any(),
     description: undefined,
     renderPickList: false,
-    hasParser: false,
     types: [
       'checkbox',
       'date',
@@ -425,6 +433,7 @@ export const queryFieldFilters: RR<
       'formatter',
       'aggregator',
     ],
+    hasParser: false,
   },
   like: {
     id: 0,
@@ -440,16 +449,21 @@ export const queryFieldFilters: RR<
     label: queryText.equal(),
     description: undefined,
     renderPickList: true,
+    types: ['text', 'number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
-    types: ['text', 'number', 'date', 'id'],
   },
   greater: {
     id: 2,
     label: queryText.greaterThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
+    types: filterArray([
+      showComparisonOperatorsForString() ? 'text' : undefined,
+      'number',
+      'date',
+      'id',
+    ]),
     component: SingleField,
     hasParser: true,
   },
@@ -458,7 +472,12 @@ export const queryFieldFilters: RR<
     label: queryText.lessThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
+    types: filterArray([
+      showComparisonOperatorsForString() ? 'text' : undefined,
+      'number',
+      'date',
+      'id',
+    ]),
     component: SingleField,
     hasParser: true,
   },
@@ -467,7 +486,12 @@ export const queryFieldFilters: RR<
     label: queryText.greaterOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
+    types: filterArray([
+      showComparisonOperatorsForString() ? 'text' : undefined,
+      'number',
+      'date',
+      'id',
+    ]),
     component: SingleField,
     hasParser: true,
   },
@@ -476,7 +500,12 @@ export const queryFieldFilters: RR<
     label: queryText.lessOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
+    types: filterArray([
+      showComparisonOperatorsForString() ? 'text' : undefined,
+      'number',
+      'date',
+      'id',
+    ]),
     component: SingleField,
     hasParser: true,
   },
@@ -523,8 +552,8 @@ export const queryFieldFilters: RR<
     label: queryText.contains(),
     description: undefined,
     renderPickList: false,
-    component: SingleField,
     types: ['text', 'number', 'date', 'id'],
+    component: SingleField,
     hasParser: false,
   },
   startsWith: {
@@ -532,8 +561,8 @@ export const queryFieldFilters: RR<
     label: queryText.startsWith(),
     description: undefined,
     renderPickList: false,
-    component: SingleField,
     types: ['text', 'number', 'date', 'id'],
+    component: SingleField,
     hasParser: false,
   },
   empty: {
