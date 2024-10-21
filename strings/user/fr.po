@@ -3,15 +3,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-10-21 00:21+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/fr/"
-">\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/user/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.8-rc\n"
 
-#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:39
@@ -20,91 +19,92 @@ msgstr ""
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 msgid "logIn"
 msgstr "Connexion"
 
-#. Used in: Components > Login > Index
 #: components/Login/index.tsx:136
+#. Used in: Components > Login > Index
 msgid "username"
 msgstr "Nom d'utilisateur"
 
-#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #: components/Login/index.tsx:148
 #: components/Security/SetPassword.tsx:54
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
 msgstr "Mot de passe"
 
-#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
 #: components/QueryComboBox/index.tsx:548
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "Vous n'avez pas accès à cette collection"
 
-#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
 #: components/QueryComboBox/index.tsx:551
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "Le compte actuellement connecté n'a pas accès à la collection "
 "{collectionName:string}."
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 #: components/Header/userToolDefinitions.ts:33
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 msgid "changePassword"
 msgstr "Modifier le mot de passe"
 
-#. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
+#. Used in: Components > Password Change > Index
 msgid "oldPassword"
 msgstr "Mot de passe actuel"
 
-#. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:76
+#. Used in: Components > Password Change > Index
 msgid "newPassword"
 msgstr "Nouveau mot de passe"
 
-#. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:88
+#. Used in: Components > Password Change > Index
 msgid "repeatPassword"
 msgstr "Répéter le nouveau mot de passe"
 
-#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #: components/Core/Main.tsx:94
 #: components/Header/userToolDefinitions.ts:27
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Se déconnecter"
 
-#. Used in: Components > Security > Missing Agents Dialog
 #: components/Security/MissingAgentsDialog.tsx:99
+#. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setUserAgents"
 msgstr "Définir les agents utilisateurs"
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:101
+#. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "L'utilisateur actuel n'a pas d'agent attribué"
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:104
+#. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
 msgstr ""
-"Veuillez vous connecter en tant qu'administrateur et affecter un agent à cet "
-"utilisateur"
+"Veuillez vous connecter en tant qu'administrateur et attribuer un agent à "
+"cet utilisateur"
 
-#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #: components/Login/OicLogin.tsx:46
 #: components/Login/index.tsx:121
+#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Bonjour, {userName:string} !"
 
-#. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:48
+#. Used in: Components > Login > Oic Login
 #, fuzzy
 msgid "oicWelcomeMessage"
 msgstr ""
@@ -112,565 +112,565 @@ msgstr ""
 "utilisateur Specify. Cela vous permettra de vous connecter à Specify avec "
 "le fournisseur de votre choix à l'avenir."
 
-#. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
+#. Used in: Components > Login > Oic Login
 #, fuzzy
 msgid "legacyLogin"
-msgstr "Connectez-vous avec le compte spécifié"
+msgstr "Connectez-vous avec Spécifier le compte"
 
-#. Used in: Components > Login > Index
 #: components/Login/index.tsx:123
+#. Used in: Components > Login > Index
 #, fuzzy
 msgid "unknownOicUser"
 msgstr ""
-"Il n'y a actuellement aucun utilisateur spécifié associé à votre compte "
-"{providerName:string}. Si vous avez un nom d'utilisateur et un mot de passe "
-"spécifiés, vous pouvez les saisir ci-dessous pour associer cet utilisateur à "
-"votre compte {providerName:string} pour les connexions futures."
+"Il n'y a actuellement aucun utilisateur Spécifier associé à votre compte "
+"{providerName:string}. Si vous disposez d'un nom d'utilisateur et d'un mot "
+"de passe Spécifier, vous pouvez les saisir ci-dessous pour associer cet "
+"utilisateur à votre compte {providerName:string} pour de futures connexions."
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:83
 #: components/Router/OverlayRoutes.tsx:173
 #: components/Toolbar/MasterKey.tsx:43
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
 msgstr "Générer la clé principale"
 
-#. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:71
+#. Used in: Components > Toolbar > Master Key
 msgid "userPassword"
 msgstr "Mot de passe utilisateur"
 
-#. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:40
+#. Used in: Components > Toolbar > Master Key
 msgid "generate"
 msgstr "Générer"
 
-#. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:98
+#. Used in: Components > Toolbar > Master Key
 msgid "masterKeyGenerated"
 msgstr "Clé principale générée"
 
-#. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:104
+#. Used in: Components > Toolbar > Master Key
 msgid "masterKeyFieldLabel"
 msgstr "Clé principale"
 
-#. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:62
+#. Used in: Components > Toolbar > Master Key
 msgid "incorrectPassword"
 msgstr "Le mot de passe était incorrect."
 
-#. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:66
+#. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
 "Vous n'avez accès à aucun {collectionTable:string} contenant cette "
 "ressource via le compte actuellement connecté"
 
-#. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
+#. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "resourceInaccessible"
 msgstr ""
-"La ressource demandée n'est pas accessible lorsque vous êtes connecté à la "
+"La ressource demandée n’est pas accessible lorsque vous êtes connecté à la "
 "collection actuelle."
 
-#. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:74
+#. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "selectCollection"
 msgstr "L'utilisateur actuel n'a pas d'agent attribué"
 
-#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:92
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "loginToProceed"
-msgstr "Vous pouvez vous connecter au {collectionTable:string} pour continuer :"
+msgstr "Vous pouvez vous connecter au {collectionTable:string}, pour procéder :"
 
-#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 #: components/Permissions/FormatError.tsx:33
 #: components/Permissions/PermissionDenied.tsx:232
+#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 #, fuzzy
 msgid "sessionTimeOut"
 msgstr "Privilèges insuffisants"
 
-#. Used in: Components > Permissions > Permission Denied
 #: components/Permissions/PermissionDenied.tsx:239
+#. Used in: Components > Permissions > Permission Denied
 #, fuzzy
 msgid "sessionTimeOutDescription"
 msgstr ""
 "Vous ne disposez pas de privilèges suffisants pour cette action ou votre "
 "session actuelle a été déconnectée."
 
-#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #: components/Formatters/formatters.ts:196
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #, fuzzy
 msgid "noPermission"
 msgstr "AUCUNE AUTORISATION"
 
-#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 #: components/Forms/DataTask.tsx:135
 #: components/Permissions/PermissionDenied.tsx:223
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 #, fuzzy
 msgid "permissionDeniedError"
 msgstr "Erreur d'autorisation refusée"
 
-#. Used in: Components > Permissions > Format Error
 #: components/Permissions/FormatError.tsx:62
+#. Used in: Components > Permissions > Format Error
 #, fuzzy
 msgid "permissionDeniedDescription"
 msgstr ""
-"Vous ne disposez d'aucune politique ni d'aucun rôle vous autorisant à "
-"effectuer l'action suivante :"
+"Vous ne disposez d'aucune stratégie ou rôle qui vous autorise à effectuer "
+"l'action suivante :"
 
-#. Used in: Components > Forms > Data Task
 #: components/Forms/DataTask.tsx:138
+#. Used in: Components > Forms > Data Task
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
 msgstr "Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule"
 
-#. Used in: Components > Permissions > Format Error
 #: components/Permissions/FormatError.tsx:120
+#. Used in: Components > Permissions > Format Error
 #, fuzzy
 msgid "permissionDeniedForUrl"
 msgstr "Autorisation refusée lors de l'accès à <url />"
 
-#. Used in: Components > Choose Collection > Index
 #: components/ChooseCollection/index.tsx:170
+#. Used in: Components > Choose Collection > Index
 #, fuzzy
 msgid "noAccessToCollections"
 msgstr ""
-"L'utilisateur connecté n'a pas accès aux collections de cette base de "
-"données. Vous devez vous connecter sous un autre nom d'utilisateur."
+"L'utilisateur connecté n'a eu accès à aucune collection de cette base de "
+"données. Vous devez vous connecter en tant qu'autre utilisateur."
 
-#. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:25
+#. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userAccount"
-msgstr "Compte utilisateur"
+msgstr "Compte d'utilisateur"
 
-#. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:84
+#. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "removeAdmin"
 msgstr "Supprimer l'administrateur"
 
-#. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:52
+#. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "canNotRemoveYourself"
 msgstr "Vous ne pouvez pas révoquer votre propre statut d'administrateur"
 
-#. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:84
+#. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "makeAdmin"
-msgstr "Créer un administrateur"
+msgstr "Faire administrateur"
 
-#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #: components/Security/AdminStatusPlugin.tsx:50
 #: components/Security/UserCollections.tsx:128
+#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
-msgstr "Enregistrer l'utilisateur en premier"
+msgstr "Enregistrez d'abord l'utilisateur"
 
-#. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:55
+#. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "mustBeManager"
 msgstr ""
-"Politiques personnalisées au niveau de l'institution (s'appliquent à toutes "
-"les collections attribuées)"
+"Politiques personnalisées au niveau de l'établissement (s'appliquent à "
+"toutes les collections attribuées)"
 
-#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:227
 #: components/Security/CollectionRole.tsx:185
+#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
 msgid "users"
-msgstr "Comptes d'utilisateurs"
+msgstr "Comptes utilisateur"
 
-#. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:140
+#. Used in: Components > Security > Institution
 #, fuzzy
 msgid "institutionUsers"
 msgstr "Comptes d'utilisateurs définis dans ce {institutionTable:string}"
 
-#. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:151
+#. Used in: Components > Security > Collection
 #, fuzzy
 msgid "collectionUsers"
 msgstr "Comptes d'utilisateurs attribués à ce {collectionTable:string}"
 
-#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
 #: components/Security/UserComponents.tsx:191
 #: components/Security/UserComponents.tsx:195
+#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Définir le mot de passe"
 
-#. Used in: Components > Security > Set Password
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
+#. Used in: Components > Security > Set Password
 msgid "passwordsDoNotMatchError"
 msgstr "Les mots de passe ne correspondent pas."
 
-#. Used in: Components > Security > Set Password
 #: components/Security/SetPassword.tsx:65
+#. Used in: Components > Security > Set Password
 msgid "confirmPassword"
 msgstr "Confirmer"
 
-#. Used in: Components > Toolbar > Security
 #: components/Toolbar/Security.tsx:133
+#. Used in: Components > Toolbar > Security
 msgid "collections"
 msgstr "Collections"
 
-#. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:76
+#. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "configureCollectionAccess"
-msgstr "Sélectionner l'accès à la collection d'utilisateurs"
+msgstr "Sélectionnez l'accès à la collection d'utilisateurs"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #: components/Header/userToolDefinitions.ts:69
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
 msgstr "Sécurité et comptes"
 
-#. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:83
+#. Used in: Components > Security > Institution
 #, fuzzy
 msgid "userRoleLibrary"
 msgstr "Bibliothèque institutionnelle de modèles de rôles"
 
-#. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:246
+#. Used in: Components > Security > Import Export
 msgid "userRoles"
 msgstr "Rôles utilisateur"
 
-#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 #: components/Security/CollectionComponents.tsx:122
 #: components/Security/PreviewComponents.tsx:88
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 #, fuzzy
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} Rôles des utilisateurs"
 
-#. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:109
+#. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Rôles utilisateur attribués"
 
-#. Used in: Components > Security > Role
 #: components/Security/Role.tsx:153
+#. Used in: Components > Security > Role
 #, fuzzy
 msgid "rolePolicies"
-msgstr "Politiques d'autorisation des rôles"
+msgstr "Politiques d'autorisation de rôle"
 
-#. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:145
+#. Used in: Components > Security > Preview Components
 #, fuzzy
 msgid "userPolicies"
 msgstr "Politiques d'autorisation des utilisateurs"
 
-#. Used in: Components > Security > User
 #: components/Security/User.tsx:388
+#. Used in: Components > Security > User
 #, fuzzy
 msgid "customUserPolices"
 msgstr ""
-"Politiques personnalisées au niveau de la collection (s'applique uniquement "
+"Stratégies personnalisées au niveau de la collection (s'applique uniquement "
 "à cette collection)"
 
-#. Used in: Components > Security > Role
 #: components/Security/Role.tsx:117
+#. Used in: Components > Security > Role
 #, fuzzy
 msgid "role"
 msgstr "Rôle"
 
-#. Used in: Components > Security > Preview Tables
 #: components/Security/PreviewTables.tsx:65
+#. Used in: Components > Security > Preview Tables
 msgid "read"
 msgstr "Lire"
 
-#. Used in: Components > Security > Preview
 #: components/Security/Preview.tsx:61
+#. Used in: Components > Security > Preview
 #, fuzzy
 msgid "userPermissionPreview"
 msgstr "Profil d'autorisation de l'utilisateur (lecture seule)"
 
-#. Used in: Components > Security > Preview
 #: components/Security/Preview.tsx:65
+#. Used in: Components > Security > Preview
 #, fuzzy
 msgid "outOfDateWarning"
 msgstr ""
-"Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour "
+"Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour "
 "mettre à jour l'aperçu"
 
-#. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
+#. Used in: Components > Security > Preview Components
 msgid "allUsers"
 msgstr "Tous les utilisateurs"
 
-#. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:174
+#. Used in: Components > Security > Preview Components
 msgid "thisUser"
 msgstr "Cet utilisateur"
 
-#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 #: components/Permissions/FormatError.tsx:67
 #: components/Security/PreviewComponents.tsx:91
 #: components/Security/PreviewComponents.tsx:147
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Action"
 
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 #: components/AttachmentsBulkImport/Import.tsx:209
 #: components/Permissions/FormatError.tsx:68
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "resource"
 msgstr "Ressource"
 
-#. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:176
+#. Used in: Components > Security > Preview Components
 msgid "allCollections"
 msgstr "Toutes les collections"
 
-#. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:177
+#. Used in: Components > Security > Preview Components
 msgid "thisCollection"
 msgstr "Cette collection"
 
-#. Used in: Components > Security > Utils
 #: components/Security/utils.ts:144
+#. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "Toutes les actions"
 
-#. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:260
+#. Used in: Components > Security > User Collections
 msgid "collectionAccess"
 msgstr "Autoriser l'accès à la collection"
 
-#. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:150
+#. Used in: Components > Router > Routes
 msgid "createRole"
 msgstr "Créer un rôle"
 
-#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #: components/Router/Routes.tsx:99
 #: components/Router/Routes.tsx:158
 #: components/Security/RoleTemplate.tsx:83
+#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"
 msgstr "Nouveau rôle"
 
-#. Used in: Components > Security > Role Template
 #: components/Security/RoleTemplate.tsx:108
+#. Used in: Components > Security > Role Template
 msgid "fromLibrary"
 msgstr "Depuis la bibliothèque :"
 
-#. Used in: Components > Security > Role Template
 #: components/Security/RoleTemplate.tsx:177
+#. Used in: Components > Security > Role Template
 msgid "fromExistingRole"
 msgstr "À partir d'un rôle existant :"
 
-#. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:32
+#. Used in: Components > Security > Import Export
 #, fuzzy
 msgid "createNewRoles"
-msgstr "Créer de nouveaux rôles :"
+msgstr "Créez de nouveaux rôles :"
 
-#. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:30
+#. Used in: Components > Security > Import Export
 #, fuzzy
 msgid "updateExistingRoles"
-msgstr "Mettre à jour les rôles existants :"
+msgstr "Mettre à jour les rôles existants :"
 
-#. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:31
+#. Used in: Components > Security > Import Export
 msgid "unchangedRoles"
 msgstr "Rôles inchangés :"
 
-#. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:86
+#. Used in: Components > Security > User Components
 msgid "institutionAdmin"
 msgstr "Administrateur de l'établissement"
 
-#. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:51
+#. Used in: Components > Security > User Invite Link
 msgid "createInviteLink"
 msgstr "Créer un lien d'invitation"
 
-#. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:56
+#. Used in: Components > Security > User Invite Link
 msgid "userInviteLink"
 msgstr "Lien d'invitation utilisateur"
 
-#. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:61
+#. Used in: Components > Security > User Invite Link
 msgid "userInviteLinkDescription"
 msgstr ""
 "Envoyez le lien suivant à {userName:string} pour leur permettre de se "
 "connecter pour la première fois."
 
-#. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:72
+#. Used in: Components > Security > User Invite Link
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Aucun fournisseur d'identité externe n'est configuré. Vous pouvez en "
 "configurer certains dans les paramètres du serveur de Specify 7"
 
-#. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
+#. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Autorisations de Specify 6"
 
-#. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:198
+#. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
 "Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs "
 "sans mot de passe ne pourront pas se connecter"
 
-#. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:133
+#. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "setCollections"
-msgstr "Collections d'ensembles"
+msgstr "Définir les collections"
 
-#. Used in: Components > Security > Missing Agents Dialog
 #: components/Security/MissingAgentsDialog.tsx:153
+#. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "agentInUse"
 msgstr "Cet agent est déjà associé à un autre utilisateur."
 
-#. Used in: Components > Security > Missing Agents Dialog
 #: components/Security/MissingAgentsDialog.tsx:102
+#. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
 msgstr ""
-"L'utilisateur connecté n'a pas accès aux collections de cette base de "
-"données. Vous devez vous connecter sous un autre nom d'utilisateur."
+"L'utilisateur connecté n'a eu accès à aucune collection de cette base de "
+"données. Vous devez vous connecter en tant qu'autre utilisateur."
 
-#. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:211
+#. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "Fournisseurs d'identité externes :"
 
-#. Used in: Components > Security > Registry
 #: components/Security/registry.ts:116
+#. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "Tous les tableaux"
 
-#. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:194
+#. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Chargement des administrateurs…"
 
-#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:158
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "specifyAdmin"
-msgstr "(Spécifiez 7 Admin)"
+msgstr "(Spécifiez 7 Administrateur)"
 
-#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:162
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "legacyAdmin"
-msgstr "(Spécifiez 6 Admin)"
+msgstr "(Spécifiez 6 Administrateur)"
 
-#. Used in: Components > Security > Role
 #: components/Security/Role.tsx:227
+#. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsers"
-msgstr "Supprimer un rôle qui a des utilisateurs ?"
+msgstr "Supprimer le rôle comportant des utilisateurs ?"
 
-#. Used in: Components > Security > Role
 #: components/Security/Role.tsx:230
+#. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsersDescription"
 msgstr "Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle."
 
-#. Used in: Components > Security > User
 #: components/Security/User.tsx:305
+#. Used in: Components > Security > User
 #, fuzzy
 msgid "institutionPolicies"
 msgstr ""
-"Politiques personnalisées au niveau de l'institution (s'appliquent à toutes "
-"les collections attribuées)"
+"Politiques personnalisées au niveau de l'établissement (s'appliquent à "
+"toutes les collections attribuées)"
 
-#. Used in: Components > Security > User
 #: components/Security/User.tsx:665
+#. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Impossible de supprimer le statut d'administrateur de l'établissement"
 
-#. Used in: Components > Security > User
 #: components/Security/User.tsx:668
+#. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr ""
 "Il doit y avoir au moins un administrateur d'établissement dans "
 "l'établissement"
 
-#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:74
 #: components/Security/Policies.tsx:42
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToHorizontalLayout"
 msgstr "Passer à l'affichage horizontal"
 
-#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:75
 #: components/Security/Policies.tsx:43
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToVerticalLayout"
 msgstr "Passer à l'affichage vertical"
 
-#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #: components/Security/Preview.tsx:78
 #: components/Security/registry.ts:81
+#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Tableaux avancés"
 
-#. Used in: Components > Security > Utils
 #: components/Security/utils.ts:132
+#. Used in: Components > Security > Utils
 #, fuzzy
 msgid "excludedInstitutionalPolicies"
-msgstr "Politiques institutionnelles exclues :"
+msgstr "Politiques institutionnelles exclues :"
 
-#. Used in: Components > Security > Policies
 #: components/Security/Policies.tsx:169
+#. Used in: Components > Security > Policies
 #, fuzzy
 msgid "excludedInstitutionalPoliciesDescription"
 msgstr ""
-"(Certaines politiques qui s’appliquent uniquement au niveau de l’institution "
-"ne sont pas présentes ici au niveau de la collection.)"
+"(Certaines politiques qui s'appliquent uniquement au niveau de "
+"l'institution ne sont pas présentes ici au niveau de la collection.)"
 
-#. Used in: Components > Security > User
 #: components/Security/User.tsx:262
+#. Used in: Components > Security > User
 #, fuzzy
 msgid "accountSetupOptions"
 msgstr "Options de configuration du compte"
 
-#. Used in: Components > Query Builder > Specify User Auto Complete
 #: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
 #: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#. Used in: Components > Query Builder > Specify User Auto Complete
 #, fuzzy
 msgid "currentUser"
 msgstr "Utilisateur actuel"
 
-#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
 #: components/Security/CollectionComponents.tsx:66
 #: components/Security/CollectionComponents.tsx:71
 #: components/Security/RoleTemplate.tsx:96
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "addRole"
 msgstr "Ajouter un rôle"
 
-#. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:215
+#. Used in: Components > Security > Collection
 #, fuzzy
 msgid "addUser"
 msgstr "Ajouter un utilisateur"

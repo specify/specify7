@@ -3,394 +3,397 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-10-21 00:21+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"locality/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/locality/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.8-rc\n"
 
-#. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
 #: components/QueryBuilder/QueryLineTools.tsx:47
+#. Used in: Components > Query Builder > Query Line Tools
 #, fuzzy
 msgid "openMap"
 msgstr "Abrir mapa"
 
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:1926
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WbToolkit/WbLeafletMap.tsx:65
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #, fuzzy
 msgid "geoMap"
-msgstr "Mapa geográfico"
+msgstr "GeoMap"
 
-#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:257
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 #, fuzzy
 msgid "queryMapSubset"
 msgstr ""
-"GeoMap - Representación gráfica de {plotted:number|formatted} de "
-"{total:number|formatted} registros"
+"GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted} "
+"registros"
 
-#. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:254
+#. Used in: Components > Query Builder > To Map
 #, fuzzy
 msgid "queryMapAll"
-msgstr "GeoMap - Registros graficados {plotted:number|formatted}"
+msgstr "GeoMap - {plotted:number|formatted} registros trazados"
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:91
+#. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "polygonBoundaries"
-msgstr "Límites del polígono"
+msgstr "Límites de polígono"
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:92
+#. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "errorRadius"
 msgstr "Radio de error"
 
-#. Used in: Components > Form Plugins > Leaflet
 #: components/FormPlugins/Leaflet.tsx:84
+#. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "showMap"
 msgstr "Mostrar mapa"
 
-#. Used in: Components > Form Plugins > Leaflet
 #: components/FormPlugins/Leaflet.tsx:41
+#. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "noCoordinates"
 msgstr "Sin coordenadas"
 
-#. Used in: Components > Form Plugins > Leaflet
 #: components/FormPlugins/Leaflet.tsx:44
+#. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "notEnoughInformationToMap"
-msgstr "{localityTable:string} debe tener coordenadas para ser mapeadas."
+msgstr "{localityTable:string} debe tener coordenadas para ser mapeado."
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:89
+#. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePoints"
-msgstr "Patas"
+msgstr "Chinchetas"
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:90
+#. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePolygons"
 msgstr "Polígonos"
 
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
 #: components/WbToolkit/GeoLocate.tsx:60
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 #, fuzzy
 msgid "geoLocate"
-msgstr "GEOlocalizar"
+msgstr "GEOLocate"
 
-#. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:113
+#. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequired"
 msgstr "{geographyTable:string} debe ser mapeado"
 
-#. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:118
+#. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequiredDescription"
 msgstr "El complemento GeoLocate requiere que se complete el campo de geografía."
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:278
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinates"
 msgstr "Coordenadas"
 
-#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:281
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "northWestCorner"
-msgstr "Esquina noroeste"
+msgstr "Esquina NO"
 
-#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:292
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "southEastCorner"
 msgstr "Esquina SE"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:251
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinateType"
-msgstr "Tipo de coordenadas"
+msgstr "Tipo de coordenada"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:262
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "point"
 msgstr "Punto"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:263
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "line"
 msgstr "Línea"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:264
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "rectangle"
 msgstr "Rectángulo"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:270
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "parsed"
-msgstr "Analizado"
+msgstr "Procesado"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:180
 #: components/FormPlugins/LatLongUi.tsx:268
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "latitude"
 msgstr "Latitud"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:193
 #: components/FormPlugins/LatLongUi.tsx:269
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "longitude"
 msgstr "Longitud"
 
-#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #: components/AppResources/Editor.tsx:177
 #: components/AppResources/Editor.tsx:179
 #: components/Leaflet/extend.ts:46
 #: components/Leaflet/extend.ts:47
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"
 msgstr "Cambiar a pantalla completa"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:82
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degrees"
-msgstr "DD.DDDD (32.7619)"
+msgstr "GG.GGGG (32.7619)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:87
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degreesMinutes"
-msgstr "DDMMMM (32.45.714)"
+msgstr "GG MMMM (32. 45.714)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:92
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degreesMinutesSeconds"
-msgstr "DD MM SS.SS (32 45 42,84)"
+msgstr "GG MM SS.SS (32 45 42.84)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:97
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degreesWithDirection"
-msgstr "DD.DDDD N/S/E/O (32.7619 N)"
+msgstr "GG.GGGG N/S/E/O (32.7619 N)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:102
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degreesMinutesWithDirection"
-msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
+msgstr "GG MM.MM N/S/E/O (32 45.714 N)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:107
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #, fuzzy
 msgid "degreesMinutesSecondsWithDirection"
-msgstr "DD MM SS.SS N/S/E/O (32 45 42,84 N)"
+msgstr "GG MM SS.SS N/S/E/W (32 45 42.84 N)"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:140
+#. Used in: Components > Locality Update > Index
 #, fuzzy
 msgid "localityUpdateHeaderError"
-msgstr "Errores encontrados en los encabezados de columnas"
+msgstr "Errores encontrados en los encabezados de las columnas"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:151
+#. Used in: Components > Locality Update > Index
 #, fuzzy
 msgid "localityUpdateMissingHeader"
 msgstr "Las siguientes columnas son obligatorias pero faltan en el conjunto de datos"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:161
+#. Used in: Components > Locality Update > Index
 #, fuzzy
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
-"Las siguientes columnas del conjunto de datos no se reconocen y se ignorarán "
-"durante la importación"
+"Las siguientes columnas del conjunto de datos no se reconocen y se "
+"ignorarán al importar"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:169
+#. Used in: Components > Locality Update > Index
 #, fuzzy
 msgid "localityUpdateAcceptedHeaders"
-msgstr "Solo se aceptan los siguientes encabezados"
+msgstr "Sólo se aceptan los siguientes encabezados"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "localityUpdateStarting"
 msgstr "Actualización de localidad inicial"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:35
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "localityUpdateParsing"
 msgstr "Análisis del conjunto de datos de localidad"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:37
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "localityUpdateProgressing"
-msgstr "Importación de un conjunto de datos de localidad"
+msgstr "Importación de conjunto de datos de localidad"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:285
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParsed"
-msgstr "Conjunto de datos de actualización de localidad analizados"
+msgstr "Conjunto de datos de actualización de localidad analizado"
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:467
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:253
+#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Línea"
+msgstr "Error al actualizar la localidad"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:229
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParseFailure"
-msgstr "Error en el análisis de actualización de localidad"
+msgstr "Error al analizar la actualización de localidad"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:274
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Actualización de localidad cancelada"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:297
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateSucceeded"
-msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
+msgstr "Actualización de localidad exitosa"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
 #: components/LocalityUpdate/Status.tsx:509
+#. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateWentWrong"
 msgstr "Algo salió mal durante el proceso de actualización de localidad"
 
-#. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:368
+#. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateParseErrorFileName"
-msgstr "Errores de actualización de localidad - {date:string}"
+msgstr "Errores de actualización de localidad: {date:string}"
 
-#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:453
 #: components/LocalityUpdate/Status.tsx:494
+#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateCrashFileName"
 msgstr ""
-"Actualización de localidad {taskId: string} Informe de fallas - {date: "
-"string}"
+"Actualización de localidad {taskId: cadena} Informe de fallas - {fecha: "
+"cadena}"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:53
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "guidHeaderNotProvided"
 msgstr "El conjunto de datos debe contener un encabezado 'guid'"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:55
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "El proceso de actualización de localidad ha comenzado"
+msgstr "Sin localidad con guid: '{guid:string}'"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
+#. Used in: Components > Locality Update > Utils
 #, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"Se encontró más de una localidad con guid: {guid:string}. ID de localidad: "
-"{localityIds: string}"
+"Más de una localidad encontrada con guid: {guid:string}. ID de localidad: "
+"{localityIds: cadena}"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:239
+#. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateEffectCounts"
 msgstr ""
-"La siguiente cantidad de registros {localityTabelLabel: string} se verá "
-"afectada por la actualización y se crearán registros "
+"La siguiente cantidad de registros {localityTabelLabel: string} se verán "
+"afectados por la actualización y se crearán registros "
 "{geoCoordDetailTableLabel: string}:"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:289
+#. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUploadedDescription"
 msgstr ""
-"Se actualizaron los siguientes registros {localityTabelLabel: string} y se "
-"crearon registros {geoCoordDetailTableLabel: string}:"
+"Se actualizó el siguiente número de registros {localityTabelLabel: string} "
+"y se crearon registros {geoCoordDetailTableLabel: string}:"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:217
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateStarted"
-msgstr "El proceso de actualización de localidad ha comenzado"
+msgstr "El proceso de actualización de localidad ha comenzado."
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:336
 #: components/Notifications/NotificationRenderers.tsx:299
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
-msgstr "Resultados de actualización de localidad"
+msgstr "Resultados de la actualización de la localidad"
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:397
 #: components/Notifications/NotificationRenderers.tsx:231
 #: components/Notifications/NotificationRenderers.tsx:255
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailureResults"
-msgstr "Resultados de fallas en la actualización de localidad"
+msgstr "Resultados de error de actualización de localidad"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:219
 #: components/Notifications/NotificationRenderers.tsx:243
 #: components/Notifications/NotificationRenderers.tsx:265
 #: components/Notifications/NotificationRenderers.tsx:276
 #: components/Notifications/NotificationRenderers.tsx:287
 #: components/Notifications/NotificationRenderers.tsx:316
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "taskId"
-msgstr "Identificación de la tarea"
+msgstr "ID de tarea"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:92
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "validLatitude"
 msgstr "La latitud debe tener un valor entre -90° y 90°"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:93
+#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "validLongitude"
-msgstr "Radio de error"
+msgstr ""
+"La siguiente cantidad de registros {localityTabelLabel: string} se verán "
+"afectados por la actualización y se crearán registros "
+"{geoCoordDetailTableLabel: string}:"
