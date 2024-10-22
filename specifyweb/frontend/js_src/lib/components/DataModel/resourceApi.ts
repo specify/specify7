@@ -79,7 +79,7 @@ function eventHandlerForToMany(related, field) {
         // Annotate add and remove events with the field in which they occurred
         args[0] = `${event}:${field.name.toLowerCase()}`;
         this.trigger.apply(this, args);
-        this.trigger.apply(this, ['change', this, related]);
+        Reflect.apply(this.trigger, this, ['change', this, related]);
         break;
       }
     }
