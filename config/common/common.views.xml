@@ -1393,6 +1393,24 @@
             </altviews>
         </view>
 
+		<view name="RelativeAge" objtitle="RelativeAge" class="edu.ku.brc.specify.datamodel.RelativeAge">
+			<altviews>
+				<altview name="RelativeAge View" viewdef="RelativeAge" mode="view" validated="false"/>
+				<altview name="RelativeAge Edit" viewdef="RelativeAge" mode="edit" default="true" validated="false"/>
+				<altview name="RelativeAge Table View" viewdef="RelativeAge Table" mode="view" validated="false"/>
+				<altview name="RelativeAge Table Edit" viewdef="RelativeAge Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+
+		<view name="AbsoluteAge" objtitle="AbsoluteAge" class="edu.ku.brc.specify.datamodel.AbsoluteAge">
+			<altviews>
+				<altview name="AbsoluteAge View" viewdef="AbsoluteAge" mode="view" validated="false"/>
+				<altview name="AbsoluteAge Edit" viewdef="AbsoluteAge" mode="edit" default="true" validated="false"/>
+				<altview name="AbsoluteAge Table View" viewdef="AbsoluteAge Table" mode="view" validated="false"/>
+				<altview name="AbsoluteAge Table Edit" viewdef="AbsoluteAge Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+
     </views>
 
     <!--
@@ -8633,6 +8651,84 @@
                 </row>
             </rows>
         </viewdef>
+
+		<viewdef name="RelativeAge" class="edu.ku.brc.specify.datamodel.RelativeAge" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The RelativeAge Table</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="ageType"/>
+					<cell type="field" id="ageType" uitype="combobox" name="ageType"/>
+					<cell type="label" label="Attachments"/>
+					<cell type="subview" id="attachments" viewname="ObjectAttachment" name="relativeAgeAttachments" initialize="btn=true;align=left;verticalAlign=center" defaulttype="icon"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="ageName"/>
+					<cell type="field" id="ageName" uitype="querycbx" name="ageName"/>
+					<cell type="label" labelfor="ageNameEnd"/>
+					<cell type="field" id="ageNameEnd" uitype="querycbx" name="ageNameEnd"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="verbatimName"/>
+					<cell type="field" id="verbatimName" uitype="text" name="verbatimName"/>
+					<cell type="label" labelfor="verbatimPeriod"/>
+					<cell type="field" id="verbatimPeriod" uitype="textareabrief" name="verbatimPeriod"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="datingMethod"/>
+					<cell type="field" id="datingMethod" uitype="text" name="datingMethod"/>
+					<cell type="label" labelfor="datingMethodRemarks"/>
+					<cell type="field" id="datingMethodRemarks" uitype="textareabrief" name="datingMethodRemarks"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" uitype="textareabrief" rows="2" name="remarks" colspan="6"/>
+				</row>
+			</rows>
+		</viewdef>
+        
+		<viewdef name="RelativeAge Table" class="edu.ku.brc.specify.datamodel.RelativeAge" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The RelativeAge Table</desc>
+			<definition>RelativeAge</definition>
+		</viewdef>
+
+		<viewdef name="AbsoluteAge" class="edu.ku.brc.specify.datamodel.AbsoluteAge" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The RelativeAge Table</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="ageType"/>
+					<cell type="field" id="ageType" uitype="combobox" name="ageType"/>
+					<cell type="label" label="Attachments"/>
+					<cell type="subview" id="attachments" viewname="ObjectAttachment" name="absoluteAgeAttachments" initialize="btn=true;align=left;verticalAlign=center" defaulttype="icon"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="absoluteAge"/>
+					<cell type="field" id="absoluteAge" uitype="text" name="absoluteAge"/>
+					<cell type="label" labelfor="ageUncertainty"/>
+					<cell type="field" id="ageUncertainty" uitype="text" name="ageUncertainty"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="datingMethod"/>
+					<cell type="field" id="datingMethod" uitype="text" name="datingMethod"/>
+					<cell type="label" labelfor="datingMethodRemarks"/>
+					<cell type="field" id="datingMethodRemarks" uitype="textareabrief" name="datingMethodRemarks"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" uitype="textareabrief" rows="2" name="remarks" colspan="6"/>
+				</row>
+			</rows>
+		</viewdef>
+
+		<viewdef name="AbsoluteAge Table" class="edu.ku.brc.specify.datamodel.AbsoluteAge" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The AbsoluteAge Table</desc>
+			<definition>AbsoluteAge</definition>
+		</viewdef>
 
     </viewdefs>
 </viewset>
