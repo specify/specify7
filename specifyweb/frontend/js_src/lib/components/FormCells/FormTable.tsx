@@ -455,6 +455,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     );
 
   const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+  // TODO: change when upadte childCojos to children in models
   const isChildCojos = relationship.name === 'childCojos';
 
   const addButtons =

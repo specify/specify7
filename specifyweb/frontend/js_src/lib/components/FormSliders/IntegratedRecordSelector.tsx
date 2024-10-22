@@ -134,6 +134,7 @@ export function IntegratedRecordSelector({
     collection.table.specifyTable.name.includes('Attachment');
 
   const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+  // TODO: change when upadte childCojos to children in models
   const isChildCojos = relationship.name === 'childCojos';
 
   return (
