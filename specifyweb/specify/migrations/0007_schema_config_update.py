@@ -62,7 +62,7 @@ def create_cogtype_picklist(apps):
             type=1,
             tablename='collectionobjectgrouptype',
             collection=collection,
-            formatter=PICKLIST_NAME
+            formatter='CollectionObjectGroupType'
         )
 
 def revert_cogtype_picklist(apps):
