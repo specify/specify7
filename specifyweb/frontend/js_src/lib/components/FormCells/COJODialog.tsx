@@ -33,7 +33,7 @@ export function COJODialog({
   const [state, setState] = React.useState<'Add' | 'Search' | undefined>(
     undefined
   );
-  const [resource, setResource] = React.useState<
+  const [resourceTable, setResourceTable] = React.useState<
     | SpecifyTable<CollectionObject>
     | SpecifyTable<CollectionObjectGroup>
     | undefined
@@ -45,13 +45,13 @@ export function COJODialog({
   >(undefined);
 
   React.useEffect(() => {
-    if (resource !== undefined) {
-      const createdResource = new resource.Resource() as
+    if (resourceTable !== undefined) {
+      const createdResource = new resourceTable.Resource() as
         | SpecifyResource<CollectionObject>
         | SpecifyResource<CollectionObjectGroup>;
       setNewResource(createdResource);
     }
-  }, [resource]);
+  }, [resourceTable]);
 
   const handleCOJOCreation = (
     selectedResource?: SpecifyResource<AnySchema>
@@ -62,9 +62,7 @@ export function COJODialog({
 
     if (resourceToUse === undefined) return;
 
-    if (newResource) {
-      void newResource.save();
-    }
+    void newResource?.save();
 
     const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
     const field =
@@ -83,7 +81,7 @@ export function COJODialog({
 
   const handleStates = (): void => {
     setState(undefined);
-    setResource(undefined);
+    setResourceTable(undefined);
     handleClose();
   };
 
@@ -101,18 +99,18 @@ export function COJODialog({
             {COJOChildrenTables.map((table) => (
               <div className="flex items-center gap-2" key={table.name}>
                 <TableIcon label name={table.name} />
-                {localized(table.label)}
+                {table.label}
                 <DataEntry.Add
                   onClick={(): void => {
                     setState('Add');
-                    setResource(table);
+                    setResourceTable(table);
                   }}
                 />
                 <DataEntry.Search
                   aria-pressed="true"
                   onClick={(): void => {
                     setState('Search');
-                    setResource(table);
+                    setResourceTable(table);
                   }}
                 />
               </div>
@@ -147,7 +145,7 @@ export function COJODialog({
           forceCollection={undefined}
           multiple
           searchView={undefined}
-          table={resource as SpecifyTable<CollectionObject>}
+          table={resourceTable as SpecifyTable<CollectionObject>}
           onClose={(): void => setState(undefined)}
           onSelected={(selectedResources): void => {
             selectedResources.forEach((selectedResource) => {

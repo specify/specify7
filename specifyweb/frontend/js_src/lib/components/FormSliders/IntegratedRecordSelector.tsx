@@ -134,6 +134,7 @@ export function IntegratedRecordSelector({
     collection.table.specifyTable.name.includes('Attachment');
 
   const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+  const isChildCojos = relationship.name === 'childCojos';
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -219,7 +220,7 @@ export function IntegratedRecordSelector({
                       relationship.relatedTable.name,
                       'create'
                     ) && typeof handleAdd === 'function' ? (
-                      isCOJO ? (
+                      isCOJO && isChildCojos ? (
                         <COJODialog
                           collection={collection}
                           parentResource={
