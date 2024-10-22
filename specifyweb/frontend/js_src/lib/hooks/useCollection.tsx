@@ -8,7 +8,7 @@ import type { Collection } from '../components/DataModel/specifyTable';
 import { raise } from '../components/Errors/Crash';
 import type { SubViewSortField } from '../components/FormParse/cells';
 import { relationshipIsToMany } from '../components/WbPlanView/mappingHelpers';
-import type { GetOrSet } from '../utils/types';
+import type { GetOrSet, RA } from '../utils/types';
 import { overwriteReadOnly } from '../utils/types';
 import { sortFunction } from '../utils/utils';
 import { useAsyncState } from './useAsyncState';
@@ -25,7 +25,9 @@ export function useCollection<SCHEMA extends AnySchema>({
   sortBy,
 }: UseCollectionProps<SCHEMA>): readonly [
   ...GetOrSet<Collection<SCHEMA> | false | undefined>,
-  (filters?: CollectionFetchFilters<SCHEMA>) => void
+  (
+    filters?: CollectionFetchFilters<SCHEMA>
+  ) => Promise<Collection<SCHEMA> | undefined>
 ] {
   const [collection, setCollection] = useAsyncState<
     Collection<SCHEMA> | false | undefined
@@ -52,13 +54,15 @@ export function useCollection<SCHEMA extends AnySchema>({
   const versionRef = React.useRef<number>(0);
 
   const handleFetch = React.useCallback(
-    (filters?: CollectionFetchFilters<SCHEMA>): void => {
+    async (
+      filters?: CollectionFetchFilters<SCHEMA>
+    ): Promise<Collection<SCHEMA> | undefined> => {
       if (typeof collection !== 'object') return undefined;
 
       versionRef.current += 1;
       const localVersionRef = versionRef.current;
 
-      collection
+      return collection
         .fetch({
           ...filters,
           success: (collection) => {
@@ -71,7 +75,10 @@ export function useCollection<SCHEMA extends AnySchema>({
               setCollection(collection);
           },
         } as CollectionFetchFilters<AnySchema>)
-        .catch(raise);
+        .catch((error: Error, ...args: RA<unknown>) => {
+          raise(error, args);
+          return undefined;
+        });
     },
     [collection, setCollection]
   );
