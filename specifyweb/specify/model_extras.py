@@ -173,6 +173,10 @@ class Lithostrat(Tree):
     class Meta:
         abstract = True
 
+class Tectonicunit(Tree):
+    class Meta:
+        abstract = True
+
 class Geographytreedefitem(TreeRank):
     class Meta:
         abstract = True
@@ -190,5 +194,9 @@ class Storagetreedefitem(TreeRank):
         abstract = True
 
 class Taxontreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True
