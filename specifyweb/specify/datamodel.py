@@ -8297,7 +8297,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
             Relationship(name='parentCojo', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',column='CollectionObjectGroupJoinID', otherSideName='collectionobjectgroup'),
-            Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childCog', dependent=True),
+            Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
         ],
@@ -8335,7 +8335,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='parentcojos'),
+            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='children'),
             Relationship(name='childCog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
             Relationship(name='childCo', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
             Relationship(name='collectionobjectgroup', type='one-to-many',required=False, relatedModelName='CollectionObjectGroup', otherSideName='parentCojo'),

@@ -1,15 +1,20 @@
 """
-This migration updates the Schema Config entries for pre-geo tables and creates picklists for COGTypes.
+This migration updates the data model for COG and Schema Config entries for pre-geo tables and creates picklists for COGTypes.
 
-Fields added:
-StorageTreeDef -> institution
+Data model changes:
+Removed COG -> cojo
+Added COG -> children
 
-Fields removed:
-CollectionObject -> collectionObjectType (duplicate)
+Schema Config changes:
+Added StorageTreeDef -> institution
+Added COG -> children
+Removed CollectionObject -> collectionObjectType (duplicate)
+Removed COG -> cojo
 
 Creates a picklist for COGType -> type and updates an existing incorrect picklist for COG -> COGType
 """
-from django.db import migrations
+from django.db import migrations, models
+import django.db.models.deletion
 from specifyweb.specify.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
 
 PICKLIST_NAME = 'COGTypes'
@@ -20,10 +25,14 @@ def update_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-    
-    # Add StorageTreeDef -> institution
+
+    # Add StorageTreeDef -> institution and COG -> children
     for discipline in Discipline.objects.all():
         update_table_field_schema_config_with_defaults('StorageTreeDef', discipline.id, 'institution', apps)
+        update_table_field_schema_config_with_defaults('CollectionObjectGroup', discipline.id, 'children', apps)
+
+    # Remove COG -> cojo
+    revert_table_field_schema_config('CollectionObjectGroup', 'cojo', apps)
 
     # Remove duplicate CollectionObject -> collectionObjectType
     container_items = Splocalecontaineritem.objects.filter(name='collectionObjectType', picklistname=None, container__name='CollectionObject')
@@ -32,10 +41,11 @@ def update_fields(apps):
         Splocaleitemstr.objects.filter(itemdesc=container_item).delete()
     container_items.delete()
 
-# NOTE: The reverse function will not re-add the duplicate CO -> coType as its unnecessary
+# NOTE: The reverse function will not re-add the duplicate CO -> coType or COG -> cojo as its unnecessary
 def revert_update_fields(apps):
-    # Remove StorageTreeDef -> institution
+    # Remove StorageTreeDef -> institution and COG -> children
     revert_table_field_schema_config('StorageTreeDef', 'institution', apps)
+    revert_table_field_schema_config('CollectionObjectGroup', 'children', apps)
         
 def create_cogtype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
@@ -136,5 +146,10 @@ class Migration(migrations.Migration):
         revert_cogtype_type_splocalecontaineritem(apps)
 
     operations = [
+        migrations.AlterField(
+            model_name='collectionobjectgroupjoin',
+            name='parentcog',
+            field=models.ForeignKey(db_column='ParentCOGID', on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.collectionobjectgroup'),
+        ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
     ]
