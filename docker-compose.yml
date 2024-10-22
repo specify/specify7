@@ -44,7 +44,7 @@ services:
       - webpack
       - mariadb
     volumes:
-      - "./config:/opt/specify7/config" # provides Specify 6 files to Specify 7 and the web server
+      - "./config:/opt/Specify/config:ro" # provides Specify 6 files to Specify 7 and the web server
       - "static-files:/volumes/static-files" # provides Specify 7 static files to the web server
       - "./specifyweb:/opt/specify7/specifyweb"
       - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro" # mount webpack output as read-only
@@ -70,7 +70,7 @@ services:
     command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q $DATABASE_NAME"
     init: true
     volumes:
-      - "./config:/opt/specify7/config"
+      - "./config:/opt/Specify/config:ro"
       - "static-files:/volumes/static-files"
       - "./specifyweb:/opt/specify7/specifyweb"
     extra_hosts:
@@ -92,7 +92,7 @@ services:
       - DEBUG_MODE=false
 
   nginx:
-    image: arm64v8/nginx:alpine
+    image: nginx:alpine
     ports:
       - "80:80"
       # - "443:443"
