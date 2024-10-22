@@ -182,14 +182,25 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
-    created_rule = UniquenessRule.objects.create(discipline=discipline,
-                                                           modelName=model_name, isDatabaseConstraint=is_database_constraint)
+    matching_fields = UniquenessRuleField.objects.filter(
+        fieldPath__in=fields, uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=is_database_constraint, uniquenessrule__discipline=discipline, isScope=False)
+
+    matching_scopes = UniquenessRuleField.objects.filter(
+        fieldPath__in=scopes, uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=is_database_constraint, uniquenessrule__discipline=discipline, isScope=True)
+
+    # If the rule already exists, skip creating the rule
+    if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
+        return
+
+    rule = UniquenessRule.objects.create(
+        discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint)
+
     for field in fields:
-        UniquenessRuleField.objects.get_or_create(
-            uniquenessrule=created_rule, fieldPath=field, isScope=False)
+        UniquenessRuleField.objects.create(
+            uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
-        UniquenessRuleField.objects.get_or_create(
-            uniquenessrule=created_rule, fieldPath=scope, isScope=True)
+        UniquenessRuleField.objects.create(
+            uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 
 """If a uniqueness rule has a scope which traverses through a hiearchy 
