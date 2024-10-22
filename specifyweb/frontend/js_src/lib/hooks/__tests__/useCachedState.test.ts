@@ -3,10 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { useCachedState } from '../useCachedState';
 
-let eventHandler: (payload: {
-  readonly category: string;
-  readonly key: string;
-}) => void;
+let eventHandler: (payload: { category: string; key: string }) => void;
 
 // Mock cache utility functions
 jest.mock('../../utils/cache', () => ({
@@ -92,24 +89,38 @@ test('Update cache when setCachedState is called after cacheEvents change', () =
     eventHandler({ category: 'header', key: 'isCollapsed' });
   });
 
-  expect(setCache).toHaveBeenCalledWith('header', 'isCollapsed', false, false);
+  expect(setCache).toHaveBeenCalledWith('header', 'isCollapsed', false, false); 
 });
 
-/*
- * //fails
- * // wip: checked that state does indeed update to true, but the test is not reflecting that? returning undefined. maybe bc async state updates
- *test('Collapsing the header updates both the state and cache', () => {
- *  (getCache as jest.Mock).mockReturnValueOnce(false);
- *  const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
- *
- *  expect(result.current[0]).toBe(false);
- *
- *  act(() => {
- *    result.current[1](true);
- *  });
- *
- *  expect(result.current[0]).toBe(true);
- *
- *  expect(setCache).toHaveBeenCalledWith('header', 'isCollapsed', true, true);
- *});
- */
+//fails
+test('should update state correctly', async () => {
+  (getCache as jest.Mock).mockReturnValueOnce(false);  
+  const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
+  await act(async () => {
+    console.log('calling setCachedState with true', result.current[0]);
+    await result.current[1](true);
+    console.log('calling setCachedState with true', result.current[0]);
+  });
+});
+
+
+
+//fails
+// wip: checked that state does indeed update to true, but the test is not reflecting that? returning undefined. maybe bc async state updates
+test('Collapsing the header updates both the state and cache', () => {
+  (getCache as jest.Mock).mockReturnValue(false);
+  const { result } = renderHook(() => useCachedState('header', 'isCollapsed'));
+
+  expect(result.current[0]).toBe(false);
+
+  act(() => {
+    console.log('before setter: ', result.current[0]); // Returns false
+    result.current[1](() => true);
+    console.log('after setter: ', result.current[0]); // Returns false; may be running default getcache?
+  });
+
+  console.log('after act: ', result.current); // Returns undefined
+  expect(result.current[0]).toBe(true);
+
+  // expect(setCache).toHaveBeenCalledWith('header', 'isCollapsed', true, true);
+ });
