@@ -7646,6 +7646,7 @@ class AbsoluteAge(models.Model):
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='absoluteages', null=False, on_delete=models.CASCADE)
     absoluteageattachment = models.ForeignKey(db_column='AbsoluteAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment')
+    absoluteagecitation = models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
 
@@ -7689,6 +7690,7 @@ class RelativeAge(models.Model):
     agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
     relativeageattachment = models.ForeignKey(db_column='RelativeAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment')
+    relativeagecitation = models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
 
