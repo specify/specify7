@@ -129,10 +129,8 @@ async function fetchToOneCollection<SCHEMA extends AnySchema>({
 > {
   /**
    * If relationship is -to-one, create a collection for the related
-   * resource. This allows to reuse most of the code from the -to-many
-   * relationships. RecordSelector handles collections with -to-one
-   * related field by removing the "+" button after first record is added
-   * and not rendering record count or record slider.
+   * resource. This allows to reuse most of the code from -to-many
+   * relationships in components like Subview and RecordSelectorFromCollection
    */
   const resource = await parentResource.rgetPromise(relationship.name);
   const reverse = relationship.getReverse();
