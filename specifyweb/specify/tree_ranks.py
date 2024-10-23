@@ -77,6 +77,14 @@ LITHO_STRAT_RANKS = {
     'member': 400,
     'bed': 500
 }
+TECTONIC_UNIT_RANKS = {
+    'root': 0,
+    'superstructure': 10,
+    'domain': 20,
+    'subdomain': 30,
+    'unit': 40,
+    'subunit': 50,
+}
 
 DEFAULT_RANK_INCREMENT = 100
 TAXON_RANK_INCREMENT = 10
@@ -84,6 +92,7 @@ GEOGRAPHY_RANK_INCREMENT = DEFAULT_RANK_INCREMENT
 STORAGE_RANK_INCREMENT = 50
 GEOLOGIC_TIME_PERIOD_INCREMENT = DEFAULT_RANK_INCREMENT
 LITHO_STRAT_INCREMENT = DEFAULT_RANK_INCREMENT
+TECTONIC_UNIT_INCREMENT = 10
 
 # Map tree type to default tree ranks and default rank id increment
 TREE_RANKS_MAPPING = {
@@ -92,6 +101,7 @@ TREE_RANKS_MAPPING = {
     'storage': (STORAGE_RANKS, STORAGE_RANK_INCREMENT),
     'geologictimeperiod': (GEOLOGIC_TIME_PERIOD_RANKS, GEOLOGIC_TIME_PERIOD_INCREMENT),
     'lithostrat': (LITHO_STRAT_RANKS, LITHO_STRAT_INCREMENT),
+    'tectonicunit': (TECTONIC_UNIT_RANKS, TECTONIC_UNIT_INCREMENT),
 }
 
 TREE_RANK_TO_ITEM_MAP = {
@@ -99,7 +109,8 @@ TREE_RANK_TO_ITEM_MAP = {
     'Geographytreedefitem': 'Geography',
     'Storagetreedefitem': 'Storage',
     'Geologictimeperiodtreedefitem': 'Geologictimeperiod',
-    'Lithostrattreedefitem': 'Lithostrat'
+    'Lithostrattreedefitem': 'Lithostrat',
+    'Tectonicunittreedefitem': 'Tectonicunit'
 }
 
 def get_tree_item_model(tree_rank_model_name):

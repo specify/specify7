@@ -291,7 +291,7 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
 
     to_fix = [
         tree
-        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage')
+        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage', 'tectonicunit')
         if any(changed_tree(tree, r) for r in results)
     ]
 
