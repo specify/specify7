@@ -303,6 +303,9 @@ export const queryText = createDictionary({
     'uk-ua': 'Виразний',
     'de-ch': 'Unterscheidbar',
   },
+  searchSynonyms: {
+    'en-us': 'Search Synonyms',
+  },
   createCsv: {
     'en-us': 'Create CSV',
     'ru-ru': 'Создать CSV-файл',

@@ -393,6 +393,7 @@ def run_ephemeral_query(collection, user, spquery):
     offset = spquery.get('offset', 0)
     recordsetid = spquery.get('recordsetid', None)
     distinct = spquery['selectdistinct']
+    searchSynonymy = spquery['searchsynonymy']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
     try:
@@ -402,7 +403,8 @@ def run_ephemeral_query(collection, user, spquery):
 
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-        return execute(session, collection, user, tableid, distinct, count_only,
+        return execute(session, collection, user, tableid, distinct, 
+                       searchSynonymy, count_only,
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
 def augment_field_specs(field_specs, formatauditobjs=False):
@@ -533,11 +535,11 @@ def return_loan_preps(collection, user, agent, data):
                 ])
         return to_return
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
+def execute(session, collection, user, tableid, distinct, searchSynonymy, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session.connection())
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct, searchSynonymy=searchSynonymy)
 
     if count_only:
         return {'count': query.count()}
@@ -550,7 +552,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs,
-                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, implicit_or=True):
+                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, searchSynonymy=False, implicit_or=True):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -575,6 +577,8 @@ def build_query(session, collection, user, tableid, field_specs,
     replace_nulls = if True, replace null values with ""
 
     distinct = if True, group by all display fields, and return all record IDs associated with a row
+
+    searchSynonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
@@ -587,6 +591,7 @@ def build_query(session, collection, user, tableid, field_specs,
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
         query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct else session.query(id_field),
+        searchSynonymy=searchSynonymy
     )
 
     tables_to_read = set([
