@@ -388,12 +388,12 @@ msgstr ""
 msgid "createNewRecordSet"
 msgstr ""
 
-#: components/PickLists/definitions.ts:145
+#: components/PickLists/definitions.ts:151
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr ""
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:150
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr ""

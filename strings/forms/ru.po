@@ -478,13 +478,13 @@ msgstr "Создание новой записи"
 msgid "createNewRecordSet"
 msgstr "Создать новый набор записей"
 
-#: components/PickLists/definitions.ts:145
+#: components/PickLists/definitions.ts:151
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "Вперед"
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:150
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"

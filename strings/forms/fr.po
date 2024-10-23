@@ -490,13 +490,13 @@ msgstr "Création d'un nouvel enregistrement"
 msgid "createNewRecordSet"
 msgstr "Créer un nouveau jeu d'enregistrements"
 
-#: components/PickLists/definitions.ts:145
+#: components/PickLists/definitions.ts:151
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "Avant"
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:150
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"

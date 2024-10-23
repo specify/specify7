@@ -487,13 +487,13 @@ msgstr "Neuen Datensatz erstellen"
 msgid "createNewRecordSet"
 msgstr "Erstellen Sie einen neuen Datensatz"
 
-#: components/PickLists/definitions.ts:145
+#: components/PickLists/definitions.ts:151
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "Nach vorne"
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:150
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"
