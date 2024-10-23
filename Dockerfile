@@ -69,8 +69,12 @@ COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 COPY --chown=specify:specify config /opt/specify7/config
+
+USER root
 RUN mkdir -p /opt/Specify
 RUN ln -s /opt/specify7/config /opt/Specify/config
+RUN chown specify:specify /opt/Specify/config
+USER specify
 
 ARG BUILD_VERSION
 ARG GIT_SHA
