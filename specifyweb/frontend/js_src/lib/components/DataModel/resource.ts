@@ -288,8 +288,10 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
         .filter(({ rule: { scopes } }) =>
           scopes.every(
             (fieldPath) =>
+              (getFieldsFromPath(table, fieldPath).at(-1)?.name ?? '') ===
+                'createdByAgent' ||
               (
-                getFieldsFromPath(table, fieldPath).at(-1)?.name ?? ''
+                getFieldsFromPath(table, fieldPath).at(-1)?.table.name ?? ''
               ).toLowerCase() in schema.domainLevelIds
           )
         )
