@@ -4,7 +4,7 @@
 
 import type { IR, RA } from '../../utils/types';
 import type { BusinessRuleManager } from './businessRules';
-import { CollectionFetchFilters } from './collection';
+import type { CollectionFetchFilters } from './collection';
 import type {
   AnySchema,
   CommonFields,
@@ -158,7 +158,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): SpecifyResource<SCHEMA>;
   // Not type safe
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
-  //Unsafe
+  // Unsafe
   readonly independentResources: IR<
     Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
   >;
