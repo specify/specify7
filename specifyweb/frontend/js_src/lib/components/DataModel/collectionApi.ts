@@ -38,6 +38,7 @@ async function fakeFetch(rawOptions) {
 
 async function lazyFetch(options) {
   assert(this instanceof LazyCollection);
+  const self = this;
   if (this._fetch) return this._fetch;
   if (this.related?.isNew()) return fakeFetch.call(this, options);
 
@@ -58,8 +59,8 @@ async function lazyFetch(options) {
   _(options).has('limit') && (options.data.limit = options.limit);
   this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
   return this._fetch.then(() => {
-    this._fetch = null;
-    return this;
+    self._fetch = null;
+    return self;
   });
 }
 
@@ -216,7 +217,7 @@ export const IndependentCollection = LazyCollection.extend({
         if (resource.isNew()) {
           this.updated[resource.cid] = resource;
         } else {
-          (this.removed as ReadonlySet<string>).delete(resource.url());
+          this.removed.delete(resource.url());
           this.updated[resource.cid] = resource.url();
         }
         this._totalCount += 1;
@@ -229,7 +230,7 @@ export const IndependentCollection = LazyCollection.extend({
       'remove',
       function (resource: SpecifyResource<AnySchema>) {
         if (!resource.isNew()) {
-          (this.removed as ReadonlySet<string>).add(resource.url());
+          this.removed.add(resource.url());
         }
         this.updated = removeKey(this.updated, resource.cid);
         this._totalCount -= 1;

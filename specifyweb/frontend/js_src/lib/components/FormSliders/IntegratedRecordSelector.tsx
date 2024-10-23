@@ -58,7 +58,9 @@ export function IntegratedRecordSelector({
   readonly viewName?: string;
   readonly urlParameter?: string;
   readonly onClose: () => void;
-  readonly onFetch?: (filters?: CollectionFetchFilters<AnySchema>) => void;
+  readonly onFetch?: (
+    filters?: CollectionFetchFilters<AnySchema>
+  ) => Promise<Collection<AnySchema> | undefined>;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -326,7 +328,7 @@ export function IntegratedRecordSelector({
                   if (isCollapsed) handleExpand();
                   handleDelete?.(index, 'minusButton');
                 }}
-                onFetch={handleFetch}
+                onFetchMore={handleFetch}
               />
             ) : null}
             {dialogs}

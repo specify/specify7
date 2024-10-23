@@ -37,7 +37,7 @@ ReadPermChecker = Callable[[Any], None]
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-def get_model(name: str):
+def strict_get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
@@ -51,6 +51,12 @@ def get_model(name: str):
                 if model._meta.model_name == name:
                     return model
         raise e
+    
+def get_model(name: str): 
+    try: 
+        return strict_get_model(name)
+    except AttributeError: 
+        return None
 
 def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
     """Return the correct field name for a model given a case insensitive
@@ -302,7 +308,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
     try:
-        return get_model(name)
+        return strict_get_model(name)
     except AttributeError as e:
         raise Http404(e)
 

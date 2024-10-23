@@ -10,6 +10,7 @@ import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
+import { CollectionFetchFilters } from './collection';
 import { isRelationshipCollection } from './collectionApi';
 import { backboneFieldSeparator } from './helpers';
 import type {
@@ -606,8 +607,12 @@ export const ResourceBase = Backbone.Model.extend({
     );
   },
   // Duplicate definition for purposes of better typing:
-  async rgetCollection(fieldName) {
-    return this.getRelated(fieldName, { prePop: true });
+  async rgetCollection(fieldName, rawOptions) {
+    const options = {
+      ...rawOptions,
+      prePop: true,
+    };
+    return this.getRelated(fieldName, options);
   },
   async getRelated(fieldName, options) {
     options ||= {
@@ -695,8 +700,7 @@ export const ResourceBase = Backbone.Model.extend({
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
           } else {
-            const fetchedToOne = toOne.isNew() ? toOne : toOne;
-            this.storeIndependent(field, fetchedToOne);
+            this.storeIndependent(field, toOne);
           }
         }
         // If we want a field within the related resource then recur
@@ -708,8 +712,8 @@ export const ResourceBase = Backbone.Model.extend({
         }
 
         return field.isDependent()
-          ? this.getDependentToMany(field)
-          : this.getIndependentToMany(field);
+          ? this.getDependentToMany(field, options)
+          : this.getIndependentToMany(field, options);
       }
       case 'zero-to-one': {
         /*
@@ -752,7 +756,8 @@ export const ResourceBase = Backbone.Model.extend({
     }
   },
   async getDependentToMany(
-    field: Relationship
+    field: Relationship,
+    filters
   ): Promise<Collection<AnySchema>> {
     assert(field.isDependent());
 
@@ -776,7 +781,7 @@ export const ResourceBase = Backbone.Model.extend({
         ? this.isNew()
           ? new relatedTable.DependentCollection(collectionOptions, [])
           : await new relatedTable.ToOneCollection(collectionOptions)
-              .fetch({ limit: 0 })
+              .fetch({ ...filters, limit: 0 })
               .then(
                 (collection) =>
                   new relatedTable.DependentCollection(
@@ -786,13 +791,14 @@ export const ResourceBase = Backbone.Model.extend({
               )
         : existingToMany;
 
-    return collection.fetch({ limit: 0 }).then((collection) => {
+    return collection.fetch({ ...filters, limit: 0 }).then((collection) => {
       self.storeDependent(field, collection);
       return collection;
     });
   },
   async getIndependentToMany(
-    field: Relationship
+    field: Relationship,
+    filters
   ): Promise<Collection<AnySchema>> {
     assert(!field.isDependent());
 
@@ -813,6 +819,7 @@ export const ResourceBase = Backbone.Model.extend({
         : existingToMany;
 
     return collection.fetch({
+      ...filters,
       // Only store the collection if fetch is successful (doesn't return undefined)
       success: (collection) => {
         this.storeIndependent(field, collection);
