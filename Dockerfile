@@ -68,9 +68,9 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
-# TODO: Decide where to put the config files.
 COPY --chown=specify:specify config /opt/specify7/config
-COPY --chown=specify:specify config /opt/Specify/config
+RUN mkdir -p /opt/Specify
+RUN ln -s /opt/specify7/config /opt/Specify/config
 
 ARG BUILD_VERSION
 ARG GIT_SHA
