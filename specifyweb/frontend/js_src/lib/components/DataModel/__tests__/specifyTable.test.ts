@@ -366,6 +366,7 @@ test('tableScoping', () =>
 test('indexed fields are loaded', () =>
   expect(tables.CollectionObject.field).toMatchInlineSnapshot(`
     {
+      "absoluteAges": "[relationship CollectionObject.absoluteAges]",
       "accession": "[relationship CollectionObject.accession]",
       "actualTotalCountAmt": "[literalField CollectionObject.actualTotalCountAmt]",
       "age": "[literalField CollectionObject.age]",
@@ -430,6 +431,7 @@ test('indexed fields are loaded', () =>
       "preparations": "[relationship CollectionObject.preparations]",
       "projectNumber": "[literalField CollectionObject.projectNumber]",
       "projects": "[relationship CollectionObject.projects]",
+      "relativeAges": "[relationship CollectionObject.relativeAges]",
       "remarks": "[literalField CollectionObject.remarks]",
       "reservedInteger3": "[literalField CollectionObject.reservedInteger3]",
       "reservedInteger4": "[literalField CollectionObject.reservedInteger4]",
