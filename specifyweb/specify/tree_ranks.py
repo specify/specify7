@@ -80,14 +80,10 @@ LITHO_STRAT_RANKS = {
 TECTONIC_UNIT_RANKS = {
     'root': 0,
     'superstructure': 10,
-    'tectonic_domain': 20,
-    'tectonic_subdomain': 30,
-    'tectonic_unit': 40,
-    'tectonic_subunit': 50,
-    'tectonic domain': 20,
-    'tectonic subdomain': 30,
-    'tectonic unit': 40,
-    'tectonic subunit': 50
+    'domain': 20,
+    'subdomain': 30,
+    'unit': 40,
+    'subunit': 50,
 }
 
 DEFAULT_RANK_INCREMENT = 100
