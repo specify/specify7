@@ -453,4 +453,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Технічні документи',
     'de-ch': 'Technische Dokumentation',
   },
+  chronostratigraphicChart: {
+    'en-us': 'Chronostratigraphic Chart',
+  },
 } as const);
