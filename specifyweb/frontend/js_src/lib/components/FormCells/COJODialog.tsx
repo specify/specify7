@@ -54,7 +54,9 @@ export function COJODialog({
   }, [resourceTable]);
 
   const handleCOJOCreation = (
-    selectedResource?: SpecifyResource<AnySchema>
+    selectedResource?:
+      | SpecifyResource<CollectionObject>
+      | SpecifyResource<CollectionObjectGroup>
   ): void => {
     if (parentResource === undefined) return;
 
@@ -75,6 +77,13 @@ export function COJODialog({
 
     newCOJO.set(field, resourceUrl as never);
     newCOJO.set('parentCog', parentResourceUrl as never);
+
+    if (resourceToUse.specifyTable.name === 'CollectionObjectGroup') {
+      (resourceToUse as SpecifyResource<CollectionObjectGroup>).set(
+        'parentCojo',
+        newCOJO
+      );
+    }
 
     collection?.add(newCOJO);
   };
