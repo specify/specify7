@@ -18,7 +18,8 @@ import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
@@ -33,6 +34,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { useSearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
 
 const cellToLabel = (
@@ -72,6 +74,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onFetchMore: handleFetchMore,
   isCollapsed = false,
   preHeaderButtons,
+  collection,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -88,6 +91,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly isCollapsed: boolean | undefined;
   readonly preHeaderButtons?: JSX.Element;
+  readonly collection: Collection<AnySchema> | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -449,10 +453,22 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
+
+  const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
+  // TODO: change when upadte childCojos to children in models
+  const isChildCojos = relationship.name === 'childCojos';
+
   const addButtons =
-    typeof handleAddResources === 'function' &&
-    mode !== 'view' &&
-    !disableAdding ? (
+    isCOJO && isChildCojos ? (
+      <COJODialog
+        collection={collection}
+        parentResource={
+          collection?.related as SpecifyResource<CollectionObjectGroup>
+        }
+      />
+    ) : typeof handleAddResources === 'function' &&
+      mode !== 'view' &&
+      !disableAdding ? (
       <>
         {!isDependent &&
         hasTablePermission(relationship.relatedTable.name, 'read') ? (
@@ -468,6 +484,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         ) : undefined}
       </>
     ) : undefined;
+
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
