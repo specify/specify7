@@ -3,7 +3,7 @@ from zipfile import ZipFile
 
 from django.conf import settings
 
-DEFAULT_SPECIFY_JAR_PATH = '/opt/specify7/config/specify.jar'
+DEFAULT_SPECIFY_JAR_PATH = '/opt/Specify/config/specify.jar'
 
 def find_jar(filename='specify.jar', search_dir='/'):
     for root, dirs, files in os.walk(search_dir):
