@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-21 08:09+0000\n"
+"PO-Revision-Date: 2024-10-23 14:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
@@ -151,9 +151,7 @@ msgstr "Ранг узла дерева больше, чем у некоторы�
 #: components/Errors/JsonError.tsx:160
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
-msgstr ""
-"{operation:string} узел \"{nodeName:string}\" к синонимизированному "
-"родительскому \"{parentName:string}\""
+msgstr "Набор данных уже загружен"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:166
@@ -189,7 +187,8 @@ msgstr ""
 #: components/Errors/JsonError.tsx:181
 #, fuzzy
 msgid "operationAcrossTrees"
-msgstr "{operation:string} через деревья"
+msgstr ""
+"Неожиданный идентификатор таблицы \"[X21X]\" в запросе. Ожидается \"[X61X]\""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:185
@@ -252,7 +251,7 @@ msgstr "В запросе для таблицы {table:string} не найден
 #, fuzzy
 msgid "invalidDatePart"
 msgstr ""
-"Неверная часть даты \"{datePart:string}\". Ожидалось одно из "
+"Неверная часть даты \"{datePart:string}\". Ожидается один из "
 "{validDateParts:string}"
 
 #. Used in: Components > Errors > Json Error
