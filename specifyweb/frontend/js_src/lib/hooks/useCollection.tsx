@@ -5,10 +5,9 @@ import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import type { Relationship } from '../components/DataModel/specifyField';
 import type { Collection } from '../components/DataModel/specifyTable';
-import { raise } from '../components/Errors/Crash';
 import type { SubViewSortField } from '../components/FormParse/cells';
 import { relationshipIsToMany } from '../components/WbPlanView/mappingHelpers';
-import type { GetOrSet, RA } from '../utils/types';
+import type { GetOrSet } from '../utils/types';
 import { overwriteReadOnly } from '../utils/types';
 import { sortFunction } from '../utils/utils';
 import { useAsyncState } from './useAsyncState';
@@ -17,6 +16,7 @@ type UseCollectionProps<SCHEMA extends AnySchema> = {
   readonly parentResource: SpecifyResource<SCHEMA>;
   readonly relationship: Relationship;
   readonly sortBy?: SubViewSortField;
+  readonly filters?: CollectionFetchFilters<SCHEMA>;
 };
 
 export function useCollection<SCHEMA extends AnySchema>({
@@ -44,7 +44,6 @@ export function useCollection<SCHEMA extends AnySchema>({
           : fetchToOneCollection({
               parentResource,
               relationship,
-              sortBy,
             }),
       [sortBy, parentResource, relationship]
     ),
@@ -62,25 +61,28 @@ export function useCollection<SCHEMA extends AnySchema>({
       versionRef.current += 1;
       const localVersionRef = versionRef.current;
 
-      return collection
-        .fetch({
-          ...filters,
-          success: (collection) => {
-            /*
-             * If the collection is already being fetched, don't update it
-             * to prevent a race condition.
-             * REFACTOR: simplify this
-             */
-            if (versionRef.current === localVersionRef)
-              setCollection(collection);
-          },
-        } as CollectionFetchFilters<AnySchema>)
-        .catch((error: Error, ...args: RA<unknown>) => {
-          raise(error, args);
-          return undefined;
-        });
+      const fetchCollection =
+        relationshipIsToMany(relationship) &&
+        relationship.type !== 'zero-to-one'
+          ? fetchToManyCollection({
+              parentResource,
+              relationship,
+              sortBy,
+              filters,
+            })
+          : fetchToOneCollection({ parentResource, relationship });
+
+      return fetchCollection.then((collection) => {
+        if (
+          typeof collection === 'object' &&
+          versionRef.current === localVersionRef
+        ) {
+          setCollection(collection);
+        }
+        return collection === false ? undefined : collection;
+      });
     },
-    [collection, setCollection]
+    [collection, parentResource, relationship, setCollection, sortBy]
   );
   return [collection, setCollection, handleFetch];
 }
@@ -89,37 +91,39 @@ const fetchToManyCollection = async <SCHEMA extends AnySchema>({
   parentResource,
   relationship,
   sortBy,
+  filters,
 }: UseCollectionProps<SCHEMA>): Promise<Collection<SCHEMA> | undefined> =>
-  parentResource.rgetCollection(relationship.name).then((collection) => {
-    // TEST: check if this can ever happen
-    if (collection === null || collection === undefined)
-      return new relationship.relatedTable.DependentCollection({
-        related: parentResource,
-        field: relationship.getReverse(),
-      }) as Collection<AnySchema>;
-    if (sortBy === undefined) return collection;
+  parentResource
+    .rgetCollection(relationship.name, filters)
+    .then((collection) => {
+      // TEST: check if this can ever happen
+      if (collection === null || collection === undefined)
+        return new relationship.relatedTable.DependentCollection({
+          related: parentResource,
+          field: relationship.getReverse(),
+        }) as Collection<AnySchema>;
+      if (sortBy === undefined) return collection;
 
-    // BUG: this does not look into related tables
-    const field = sortBy.fieldNames[0];
+      // BUG: this does not look into related tables
+      const field = sortBy.fieldNames[0];
 
-    // Overwriting the models on the collection
-    overwriteReadOnly(
-      collection,
-      'models',
-      Array.from(collection.models).sort(
-        sortFunction(
-          (resource) => resource.get(field),
-          sortBy.direction === 'desc'
+      // Overwriting the models on the collection
+      overwriteReadOnly(
+        collection,
+        'models',
+        Array.from(collection.models).sort(
+          sortFunction(
+            (resource) => resource.get(field),
+            sortBy.direction === 'desc'
+          )
         )
-      )
-    );
-    return collection;
-  });
+      );
+      return collection;
+    });
 
 async function fetchToOneCollection<SCHEMA extends AnySchema>({
   parentResource,
   relationship,
-  sortBy,
 }: UseCollectionProps<SCHEMA>): Promise<
   Collection<SCHEMA> | false | undefined
 > {
@@ -160,19 +164,5 @@ async function fetchToOneCollection<SCHEMA extends AnySchema>({
     'field',
     collection.field ?? relationship.getReverse()
   );
-  if (sortBy !== undefined) {
-    // BUG: this does not look into related tables
-    const field = sortBy.fieldNames[0];
-    overwriteReadOnly(
-      collection,
-      'models',
-      Array.from(collection.models).sort(
-        sortFunction(
-          (resource) => resource.get(field),
-          sortBy.direction === 'desc'
-        )
-      )
-    );
-  }
   return collection;
 }

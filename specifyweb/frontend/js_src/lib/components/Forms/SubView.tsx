@@ -79,12 +79,10 @@ export function SubView({
         parentResource,
         'saved',
         (): void => {
-          if (!relationship.isDependent()) {
-            handleFetch({
-              offset: 0,
-              reset: true,
-            } as CollectionFetchFilters<AnySchema>);
-          }
+          handleFetch({
+            offset: 0,
+            reset: true,
+          } as CollectionFetchFilters<AnySchema>);
         },
         false
       ),
