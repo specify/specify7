@@ -20,7 +20,7 @@ export const webOnlyViews = f.store(() =>
     /*
      * This is a special view that would be replaced by the <AttachmentPlugin />
      */
-    [attachmentView]: {
+    ObjectAttachment: {
       columns: [undefined],
       rows: [
         [
