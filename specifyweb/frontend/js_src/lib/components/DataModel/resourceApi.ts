@@ -511,9 +511,9 @@ export const ResourceBase = Backbone.Model.extend({
    * REFACTOR: remove the need for this
    * Like "rget", but returns native promise
    */
-  async rgetPromise(fieldName, prePop = true) {
+  async rgetPromise(fieldName, prePop = true, strict = true) {
     return (
-      this.getRelated(fieldName, { prePop })
+      this.getRelated(fieldName, { prePop, strict })
         // GetRelated may return either undefined or null (yuk)
         .then((data) => (data === undefined ? null : data))
     );
@@ -532,7 +532,7 @@ export const ResourceBase = Backbone.Model.extend({
       : fieldName.split(backboneFieldSeparator);
 
     // First make sure we actually have this object.
-    return this.fetch()
+    return this.fetch(options)
       .then((_this) => _this._rget(path, options))
       .then((value) => {
         /*
@@ -544,7 +544,8 @@ export const ResourceBase = Backbone.Model.extend({
           if (!value) return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
-          else if (typeof value.fetch === 'function') return value.fetch();
+          else if (typeof value.fetch === 'function')
+            return value.fetch(options);
         }
         return value;
       });
@@ -760,14 +761,18 @@ export const ResourceBase = Backbone.Model.extend({
     )
       return this;
     else if (this._fetch) return this._fetch;
-    else
-      return (this._fetch = Backbone.Model.prototype.fetch
-        .call(this, options)
-        .then(() => {
+    else {
+      const fetchCallback = () =>
+        Backbone.Model.prototype.fetch.call(this, options).then(() => {
           this._fetch = null;
           // BUG: consider doing this.needsSaved=false here
           return this;
-        }));
+        });
+      return (this._fetch =
+        options === undefined || options.strict
+          ? fetchCallback()
+          : hijackBackboneAjax([Http.NOT_FOUND], fetchCallback));
+    }
   },
   parse(_resp) {
     // Since we are putting in data, the resource in now populated
