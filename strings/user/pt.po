@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-22 14:16+0000\n"
+"PO-Revision-Date: 2024-10-24 09:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "user/pt/>\n"
@@ -29,8 +29,8 @@ msgstr "A senha estava incorreta."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Você não tem acesso a nenhum {collectionTable:string} que contenha este "
-"recurso por meio da conta atualmente conectada"
+"Você não tem acesso a nenhum {collectionTable:string} contendo este recurso "
+"por meio da conta atualmente conectada"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
