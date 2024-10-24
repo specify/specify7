@@ -536,7 +536,7 @@ export function QueryComboBox({
                 }
               />
             )}
-            {hasViewButton && hasTablePermission(relatedTable.name, 'create')
+            {hasViewButton && hasTablePermission(relatedTable.name, 'read')
               ? viewButton
               : undefined}
           </>
