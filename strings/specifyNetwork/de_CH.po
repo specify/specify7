@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-24 22:16+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/de_CH/>\n"
@@ -84,10 +84,10 @@ msgstr ""
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in "
+"Bei GBIF-Daten werden einzelne Punkte und Punktgruppen als Sechsecke in "
 "unterschiedlichen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote "
-"Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare "
-"dieser Art."
+"Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser "
+"Art."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
