@@ -95,14 +95,11 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
-      # - "443:443"
     volumes:
       - "static-files:/volumes/static-files:ro"
       - "./config:/volumes/specify-config:ro"
       - "webpack-output:/volumes/webpack-output:ro"
       - "./nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-      # - "./sp7cert.pem:/etc/nginx/certs/cert.pem:ro"
-      # - "./sp7key.pem:/etc/nginx/certs/key.pem:ro"
 
   report-runner:
     image: specifyconsortium/report-runner
