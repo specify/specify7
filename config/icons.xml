@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icons>
+    <!--
+        <icon name="AppIcon"    file="specify_icon.gif"   sizes="32"/>
+        <icon name="Specify16"  file="specify_icon16.gif" sizes="16"/>
+        <icon name="SpecifyLargeIcon" file="specify_large_icon.gif" sizes="NonStd"/>
+    -->
+    
+    <icon name="MySQLFull"            file="mysql_logo_name.png" sizes="NonStd"/>
+    <icon name="AppIcon"          file="specify32.png" sizes="all"/>
+    <icon name="AppIconE"         file="specify32E.png" sizes="all"/>
+    <icon name="AppIconM"         file="specify32M.png" sizes="all"/>
+
+    <icon name="SpecifyLargeIcon" file="specify128.png" sizes="NonStd"/>//
+    <icon name="SpecifyLargeIconE" file="specify128E.png" sizes="NonStd"/>
+    <icon name="SpecifyLargeIconM" file="specify128M.png" sizes="NonStd"/>
+    <icon name="SpecifyConv"       file="specify128Conv.png" sizes="NonStd"/>
+    <icon name="SpecifySecWiz"     file="spsecwizard128.png" sizes="NonStd"/>
+    <icon name="SpecifySecWiz32"    file="spsecwizard32.png" sizes="all"/>
+    
+    
+    <icon name="Specify16"        file="specify16.png" sizes="16"/>   <!-- Not Needed anymore -->
+    <icon name="SpecifySmallSplash"    file="SpecifySplash.png" sizes="NonStd"/>
+    <icon name="SpecifySplashCache" file="SpecifySplash.png" sizes="NonStd"/>
+    <icon name="SpecifySplash"      file="SpecifyBigSplash.png" sizes="NonStd"/>
+    
+    <icon name="WizardIcon"       file="spwizard128.png" sizes="NonStd"/>
+    <icon name="WizardIconE"      file="spwizard128E.png" sizes="NonStd"/>
+    <icon name="WizardIconM"      file="spwizard128M.png" sizes="NonStd"/>
+    
+    <icon name="DatabaseIcon"     file="spbackup128.png" sizes="NonStd"/>
+    <icon name="DatabaseIconE"    file="spbackup128E.png" sizes="NonStd"/>
+    <icon name="DatabaseIconM"    file="spbackup128M.png" sizes="NonStd"/>
+    
+    <icon name="SPIReports"       file="spireport128.png" sizes="NonStd"/>
+    <icon name="SPIReportsE"      file="spireport128.png" sizes="NonStd"/>
+    <icon name="SpBuilder"        file="spbuilder.png" sizes="NonStd"/>
+    
+    <icon name="SpecifyWhite32"   file="specify32White.png" sizes="32"/>
+    <icon name="SpecifyWhite32E"   file="specify32EWhite.png" sizes="32"/>
+    <icon name="SpecifyWhite32M"   file="specify32MWhite.png" sizes="32"/>
+    
+    <icon name="Help"             file="win_help.png"     sizes="16"/>
+    <icon name="MacHelp"          file="MacHelp24x24.png" sizes="24"/>
+    <icon name="Save"             file="Save32x32.png" sizes="all"/>
+    <icon name="Import16"         file="ImportData16x16.png" sizes="16"/>
+    <icon name="ImportImages"     file="ImportImages16x16.png" sizes="16"/>
+    <icon name="Export16"         file="ExportDataSet16x16.png" sizes="16"/>
+    <icon name="ExportExcel16"    file="ExportExcelTemplate16x16.png" sizes="16"/>
+    
+    <icon name="Workbench16"      file="Workbench32x32.png" sizes="16"/>
+    <icon name="Workbench"        file="Workbench32x32.png" sizes="all"/>
+    <icon name="Interactions"     file="interactions.png" sizes="all"/>
+    <icon name="Statistics"       file="Statistics32x32.png" sizes="all"/>
+    <icon name="Pie_Chart"        file="PieChart32x32.png" sizes="all"/>
+    <icon name="Bar_Chart"        file="BarGraph32x32.png" sizes="all"/>
+    <icon name="Record_Set"       file="RecordSet32x32.png" sizes="all"/>
+    <icon name="Query"            file="Query32x32.png" sizes="all"/>
+    <icon name="BatchEdit"        file="BatchEdit32x32.png" sizes="all"/>
+    <icon name="MoreTables"       file="more_tables.png" sizes="all"/>
+    <icon name="MoreForms"        file="more_forms.png" sizes="all"/>
+    <icon name="Search"           file="Search32x32.png" sizes="all"/>
+    <icon name="SearchAdd"        file="SearchAdd32x32.png" sizes="all"/>
+    <icon name="GlobalSearch"     file="global_search16x16.png" sizes="16"/>
+    <icon name="SystemSetup"      file="System32x32.png" sizes="all"/>
+    <icon name="AuditPrefs"       file="audit_prefs.png" sizes="all"/>
+    <icon name="WebPortalPrefs"   file="web_portal_prefs_32.png" sizes="all"/>
+    <icon name="PlaceHolder"      file="specify32faded.png" sizes="32"/>
+    <icon name="Lifemapper"       file="lifemapper32.png" sizes="all"/>
+    <icon name="iPadExportTask"   file="iPadExportTask.png" sizes="all"/>
+   
+    
+    <icon name="Labels16"      file="Label16x16.png" sizes="16"/>
+    <icon name="Reports"       file="Reports32x32.png" sizes="all"/>
+    <icon name="Reports16"     file="Reports16x16.png" sizes="16"/>
+    <icon name="DataSet"       file="DataSet32x32.png" sizes="all"/>
+    <icon name="DataSet16"     file="DataSet16x16.png" sizes="16"/>
+    <icon name="Trash"         file="trash.png"  sizes="NonStd"/>
+    <icon name="TrashFull"     file="trash_full.png"   sizes="NonStd"/>
+    <icon name="NewDataSet"    file="NewDataSet16x16.png" sizes="16"/>
+    <icon name="Labels"        file="Label32x32.png" sizes="all"/>
+    <icon name="Form"          file="Form32x32.png" sizes="all"/>
+    <icon name="FormEdit"      file="FormEdit32x32.png" sizes="all"/>
+    <icon name="EditForm20"    file="FormEdit20x20.png" sizes="NonStd"/>
+    <icon name="EditIcon"      file="edit_icon.gif"  sizes="NonStd"/>
+    <icon name="EditForm"      file="FormEdit16x16.png" sizes="16"/>
+    <icon name="InfoIcon"      file="info.png"           sizes="all"/>
+    <icon name="MetaData"      file="metadata.png"       sizes="all"/>
+    <icon name="Filter20"      file="filter20x20.png"    sizes="20"/>
+    <icon name="Reload"        file="view-refresh16.png" sizes="16"/>
+    <icon name="ViewForm16"    file="Form16x16.png" sizes="16"/>
+    <icon name="ViewForm"      file="Form32x32.png" sizes="32"/>
+    <icon name="CleanUp"       file="cleanup.png" sizes="all"/>
+    <icon name="Loading"       file="loading.png" sizes="all"/>
+    
+    <icon name="Data_Entry"    file="Data_Entry.png" sizes="all"/>
+    <icon name="Configure16"   file="Configure16x16.png" sizes="16"/>
+    <icon name="CarryForward"  file="CarryForward16x16.png" sizes="16"/>
+    <icon name="CarryForward20x20" file="CarryForward20x20.png" sizes="NonStd"/>
+    <icon name="EMail"         file="Email32x32.png" sizes="all"/>
+    <icon name="Taskbar"       file="taskbar.png" sizes="all"/>
+    
+    <icon name="Configure"     file="Configure20x20.png" sizes="NonStd"/>
+    <icon name="AddRec"        file="AddNewRecord20x20.png" sizes="NonStd"/>
+    <icon name="DelRec"        file="RemoveRecord20x20.png" sizes="NonStd"/>
+    <icon name="AddRecord"     file="AddNewRecord32x32.png" sizes="all"/>
+    <icon name="DelRecord"     file="RemoveRecord16x16.png" sizes="16"/>
+    <icon name="Spreadsheet20" file="Grid20x20.png" sizes="NonStd"/>
+    <icon name="Spreadsheet16" file="Grid16x16.png" sizes="16"/>
+    <icon name="Spreadsheet"   file="Grid32x32.png" sizes="all"/>
+    <icon name="SpreadsheetEdit" file="GridEdit32x32.png" sizes="all"/>
+    <icon name="Export"        file="ExportDataSet20x20.png" sizes="NonStd"/>
+    <icon name="Upload"        file="upload_workbench20x20.png" sizes="NonStd"/>    
+    <icon name="ValidateWB"    file="validate_workbench20x20.png" sizes="NonStd"/>    
+    <icon name="Eraser"        file="Clear20x20.png"   sizes="NonStd"/>
+    <icon name="Eraser16"      file="Clear16x16.png"   sizes="NonStd"/>
+    <icon name="CardImage"     file="ImageWindow20x20.png" sizes="NonStd"/>
+    <icon name="LocalityMapper" file="map20x20.png" sizes="NonStd"/>
+    <icon name="MapIcon"        file="map.png" sizes="32"/>
+    <icon name="ControlEdit"    file="EditProperties20x20.png" sizes="NonStd"/>
+    <icon name="EditProps"      file="EditProperties32x32.png" sizes="all"/>
+    <icon name="Plugins"        file="plug_in.png" sizes="32"/>
+    <icon name="DropIndicator"  file="dropindicator.png" sizes="NonStd"/>
+    <icon name="Formatting"     file="formatting.png" sizes="32"/>
+    <icon name="WebLink"        file="weblink.png" sizes="32"/>
+    <icon name="Calendar"       file="Calendar32x32.png" sizes="all"/>
+    
+    <icon name="VisualQuery"    file="Search32x32.png" sizes="32"/>
+    
+    <icon name="ImageWindow"    file="ImageWindow20x20.png" sizes="NonStd"/>
+    <icon name="ZoomIn20"       file="ZoomIn20x20.png" sizes="NonStd"/>
+    <icon name="ZoomOut20"      file="ZoomOut20x20.png" sizes="NonStd"/>
+
+    <icon name="SpiceDigOccurrence"       file="longspnetwork.png" sizes="all"/>
+    <icon name="SpiceDigTaxonName"      file="SNPrefs.png" sizes="all"/>
+    <icon name="SpiceDigOccurrenceFrm"       file="SNPrefs.png" sizes="all"/>
+    <icon name="SpiceDigTaxonNameFrm"      file="SNPrefs.png" sizes="all"/>
+    <icon name="SNPrefs"      file="SNPrefs.png" sizes="all"/>
+
+    <!-- Aliases -->
+    <icon name="ShowMap"                   alias="LocalityMapper"/>
+    <icon name="workbench"                 alias="Workbench"/>
+    <icon name="recordset"                 alias="Record_Set"/>
+    
+    
+    <icon name="taxontreedef"              alias="taxon"/>
+    <icon name="geographytreedef"          alias="geography"/>
+    <icon name="geologictimePeriodtreedef" alias="geologictimeperiod"/>
+    <icon name="locationlreedef"           alias="location"/>
+    
+    <icon name="Startup"                   alias="AppIcon"/>
+    
+    <!-- Done Aliases -->
+    
+    <icon name="UserInterface" file="FormEdit32x32.png" sizes="all"/>
+    
+    <icon name="DropDownArrow" file="dropdownarrow.gif" sizes="NonStd"/>
+    <icon name="UpArrow"       file="up.png"            sizes="16"/>
+    <icon name="DownArrow"     file="down.png"          sizes="16"/>
+    <icon name="BlankIcon"     file="blank32x32.png"    sizes="all"/>
+    <icon name="PlusSign"      file="add.png"      sizes="16"/>
+    <icon name="MinusSign"     file="delete.png"     sizes="16"/>
+    <icon name="GrayDot"       file="graydot.gif"       sizes="16"/>
+    <icon name="Eraser16"      file="Clear16x16.png"  sizes="16"/>
+    
+    <icon name="NewRecord"     alias="PlusSign"/>
+    <icon name="DeleteRecord"  alias="MinusSign"/>
+    <icon name="Separator"     file="separator16.gif" sizes="16"/>
+    
+    <icon name="Key"           file="key.png" sizes="all"/>
+    
+    
+    <icon name="CreateObj" alias="PlusSign"/>
+    <icon name="CloneObj"  file="clone.png"          sizes="all"/>
+    <icon name="RelatedTable" file="related_table.png"  sizes="32"/>
+    <icon name="TableField" file="field.png"  sizes="all"/>
+    
+    
+    <icon name="WebPage"       file="html.png"          sizes="all"/>
+    
+    <icon name="BrokenImage"   file="gtk-brokenimage.png" sizes="all"/>
+    
+    <icon name="FirstRec" file="first.gif" sizes="NonStd"/>
+    <icon name="PrevRec"  file="prev.gif"  sizes="NonStd"/>
+    <icon name="NextRec"  file="next.gif"  sizes="NonStd"/>
+    <icon name="LastRec"  file="last.gif"  sizes="NonStd"/>
+    
+    <icon name="Close"         file="close.png" sizes="NonStd"/>
+    <icon name="CloseHover"    file="close_hover.png" sizes="NonStd"/>
+    <icon name="Print"         file="printer.png" sizes="all"/>
+    <icon name="Backup"        file="backup.png" sizes="all"/>
+    <icon name="Reload"        file="reload.png" sizes="NonStd"/>
+    
+    <!-- <icon name="BGImage"  file="frogs_bg.gif" sizes="NonStd"/> -->
+    
+    <icon name="ClipboardCopy"   file="clipboardPaste32.png"  sizes="all"/>
+    <icon name="ClipboardPaste"  file="clipboardPaste32.png" sizes="all"/>
+    
+    <icon name="ValidationValid"   file="validation-valid.gif"    sizes="all"/>
+    <icon name="ValidationWarning" file="FeedbackYellow32x32.png" sizes="all"/>
+    <icon name="ValidationError"   file="FeedbackRed32x32.png"    sizes="all"/>
+    
+    <icon name="Warning"    alias="ValidationWarning"/>
+    <icon name="Error"      alias="ValidationError"/>
+    
+    
+    <icon name="Green Arrow Down" file="green_arrow_down.gif"   sizes="16"/>
+    <icon name="Green Arrow Up"   file="green_arrow_up.gif"     sizes="16"/>
+    <icon name="Linked"           file="linked.png"          sizes="NonStd"/>
+    <icon name="LinkedRight"      file="linked_right.png"     sizes="NonStd"/>
+    
+    <icon name="Down"             file="Down16x16.png" sizes="16"/>
+    <icon name="Forward"          file="Forward16x16.png" sizes="16"/>
+    
+    <icon name="WBValidatorDown"  file="down_32.png" sizes="all"/>
+    <icon name="WBValidatorUp"    file="up_32.png" sizes="all"/>
+    
+    <icon name="ExclaimGreen"     file="exclaim_green.gif" sizes="NonStd"/>
+    <icon name="ExclaimYellow"    file="exclaim_yellow.gif" sizes="NonStd"/>
+    <icon name="ExclaimRed"       file="exclaim.gif" sizes="NonStd"/>
+    
+    <icon name="MultiKid"         file="MultiKid.png" sizes="16"/>
+    <icon name="SingleKid"        file="SingleKid.png" sizes="16"/>
+    
+    <icon name="Minimize"         file="minimize.gif" sizes="16"/>
+    <icon name="Maximize"         file="maximize.gif" sizes="16"/>
+    <icon name="Map"              file="Map16x16.png" sizes="16"/>
+    <icon name="Unmap"            file="Unmap16x16.png" sizes="16"/>
+    <icon name="ReorderUp"        file="ReorderUp16x16.png" sizes="16"/>
+    <icon name="ReorderDown"      file="ReorderDown16x16.png" sizes="16"/>
+    
+    <icon name="Checkmark"        file="Checkmark32x32.png" sizes="all"/>
+    <icon name="Attach"           file="attachicon.png" sizes="all"/>
+    <icon name="Attach16"         file="attachicon16.png" sizes="16"/>
+    <icon name="RedDot6x6"        file="reddot.gif" sizes="NonStd"/>
+    
+    <icon name="ISOIcon"          file="iso.png" sizes="all"/>
+    
+    <!-- Preferences -->
+    <icon name="Preferences"      file="preferences.png"    sizes="all"/>
+    <icon name="AttachmentPrefs"  file="attach_pref.png"    sizes="all"/>
+    
+    <!-- TreeTableViewer icons -->
+    <icon name="TTV_Subtree"        file="ExpandChildren32x32.png"    sizes="all"/>
+    <icon name="TTV_WholeTree"      file="ExpandParent32x32.png"   sizes="all"/>
+    <icon name="TTV_AllDescend"     file="expand.png"     sizes="16"/>
+    <icon name="TTV_SyncViews"      file="sync.png"       sizes="16"/>
+    <icon name="TTV_NewChild"       alias="PlusSign"/>
+    <icon name="TTV_EditNode"       alias="EditIcon"/>
+    <icon name="TTV_DelNode"        alias="MinusSign"/>
+    <icon name="TTV_ToParent"       file="undo.png"       sizes="16"/>
+    <icon name="TTV_SplitViewMode"  file="SplitWindow32x32.png" sizes="all"/>
+    <icon name="TTV_SingleViewMode" file="SingleView32x32.png"  sizes="all"/>
+    
+    <!-- MIME type icons -->
+    <icon name="audio"              file="audio.png"         sizes="all"/>
+    <icon name="video"              file="Video32x32.png"    sizes="all"/>
+    <icon name="image"              file="Image-Window-B-32x32.png"    sizes="all"/>
+    <icon name="unknown"            file="binary.png"        sizes="all"/>
+    <icon name="text"               file="text.png"          sizes="all"/>
+    <icon name="pdf"                file="pdf.png"           sizes="all"/>
+    <icon name="html"               file="html.png"          sizes="all"/>
+    <icon name="MSExcel"            file="msexcel64x64.png"  sizes="NonStd"/>
+    <icon name="MSWord"             file="msword64x64.png"   sizes="NonStd"/>
+    <icon name="MSPowerPoint"       file="msppt64x64.png"    sizes="NonStd"/>
+    
+    <!-- sorting button icons -->
+    <icon name="move_to_start"      file="start.png"        sizes="all"/>
+    <icon name="move_left"          file="1leftarrow.png"   sizes="all"/>
+    <icon name="move_right"         file="1rightarrow.png"  sizes="all"/>
+    <icon name="move_to_end"        file="finish.png"       sizes="all"/>
+    
+    <!-- prep type icons -->
+    <icon name="skeleton"            file="fishskel.png"     sizes="all"/>
+    <icon name="xray"                file="xray.png"         sizes="all"/>
+    <icon name="etoh"                file="fishinjar.png"    sizes="all"/>
+    <icon name="cs"                  file="fishskeljar.png"  sizes="all"/>
+    
+    <!-- LatLon PluginUI -->
+    <icon name="LatLonPoint"           file="LatLonPoint32x32.png"      sizes="all"/>
+    <icon name="LatLonLine"            file="LatLonLine32x32.png"       sizes="all"/>
+    <icon name="LatLonRect"            file="LatLonRect32x32.png"       sizes="all"/>
+    <icon name="LatLonLineLeft"        file="LatLonLineLeft32x32.png"   sizes="all"/>
+    <icon name="LatLonLineRight"       file="LatLonLineRight32x32.png"  sizes="all"/>
+    <icon name="LatLonRectTopLeft"     file="LatLonRectLeft32x32.png"   sizes="all"/>
+    <icon name="LatLonRectBottomRight" file="LatLonRectRight32x32.png"  sizes="all"/>
+    
+    <icon name="LatLonPointSel"        file="LatLonPoint32x32Sel.png"   sizes="all"/>
+    <icon name="LatLonLineSel"         file="LatLonLine32x32Sel.png"    sizes="all"/>
+    <icon name="LatLonRectSel"         file="LatLonRect32x32Sel.png"    sizes="all"/>
+    
+    <!-- Tree Node Find Widget -->
+    <icon name="Top"                   file="RightSideUp.png"     sizes="all"/>
+    <icon name="Bottom"                file="LeftSideDown.png"    sizes="all"/>
+    <icon name="Both"                  file="UpAndDown.png"       sizes="all"/>
+    
+    <!--  Prefs -->
+    <icon name="MiscPref"              file="Miscellaneous32x32.png" sizes="all"/>
+    <icon name="TreePref"              file="Tree32x32.png" sizes="all"/>
+    <icon name="Security"              file="security.png" sizes="all"/>
+    <icon name="SecurityOn"            file="security_on.png" sizes="all"/>
+    <icon name="SecurityOff"           file="security_off.png" sizes="all"/>
+    <icon name="Login"                 file="login.png" sizes="all"/>
+    <icon name="MySQL"                 file="mysql_logo.png" sizes="all"/>
+    
+    <!-- For Containers -->
+    <icon name="Folder"                file="folder32x32.png" sizes="all"/>
+    <icon name="Sheet"                 file="sheet32x32.png" sizes="all"/>
+    <icon name="PlantSpecimen"         file="plantspec32x32.png" sizes="all"/>
+    
+    <!-- ImportFileSlicer -->
+    <icon name="Splicer"               file="data_split.png" sizes="all"/>
+    
+    <!-- ViewMorphBankPage -->
+    <icon name="MorphBankLogo"		  file="mbLogoHeader.png" sizes="all"/>
+    
+    <!-- iPad Exporter -->
+    <icon name="ExportSpMobile" file="export_spmobile.png" sizes="NonStd"/>
+    <icon name="SpecifySmalliPad128x128" file="SpecifySmalliPad128x128.png" sizes="NonStd"/>
+    
+</icons>

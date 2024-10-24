@@ -1,0 +1,1168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<formatters>
+    <format
+        name="Accession"
+        title="Accession"
+        class="edu.ku.brc.specify.datamodel.Accession"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>accessionNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="AccessionAgent"
+        title="AccessionAgent"
+        class="edu.ku.brc.specify.datamodel.AccessionAgent"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+                <field sep=" - ">role</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="AccessionAuthorization"
+        title="AccessionAuthorization"
+        class="edu.ku.brc.specify.datamodel.AccessionAuthorization"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>accession.accessionNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Address"
+        title="Address"
+        class="edu.ku.brc.specify.datamodel.Address"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>address</field>
+                <field sep=" ">address2</field>
+                <field sep=", ">city</field>
+                <field sep=", ">state</field>
+                <field sep=" ">postalCode</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Agent"
+        title="Agent"
+        class="edu.ku.brc.specify.datamodel.Agent"
+        default="true"
+        >
+        <switch single="false" field="agentType">
+            <fields value="0">
+                <field>lastName</field>
+            </fields>
+            <fields value="1">
+                <field>lastName</field>
+                <field sep=", ">firstName</field>
+            </fields>
+            <fields value="2">
+                <field>lastName</field>
+            </fields>
+            <fields value="3">
+                <field>lastName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Attachment"
+        title="Attachment"
+        class="edu.ku.brc.specify.datamodel.Attachment"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>title</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="AutoNumberingScheme"
+        title="AutoNumberingScheme"
+        class="edu.ku.brc.specify.datamodel.AutoNumberingScheme"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>schemeName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Author"
+        title="Author"
+        class="edu.ku.brc.specify.datamodel.Author"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Borrow"
+        title="Borrow"
+        class="edu.ku.brc.specify.datamodel.Borrow"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>receivedDate</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="CollectingEvent"
+        title="CollectingEvent"
+        class="edu.ku.brc.specify.datamodel.CollectingEvent"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>stationFieldNumber</field>
+                <field sep="; ">locality.localityName</field>
+                <field sep="; ">locality.geography.fullName</field>
+                <field type="bigdecimal" sep="; ">locality.latitude1</field>
+                <field type="bigdecimal" sep=", ">locality.longitude1</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="CollectingEventDetail"
+        title="CollectingEventDetail"
+        class="edu.ku.brc.specify.datamodel.CollectingEvent"
+        >
+        <switch single="true">
+          <external class="edu.ku.brc.specify.ui.CollectingEventDataObjFmt"/>
+        </switch>
+    </format>
+
+    <format
+        name="CollectingEventSFN"
+        title="CollectingEventSFN"
+        class="edu.ku.brc.specify.datamodel.CollectingEvent"
+        >
+        <switch single="true">
+            <fields>
+                <field>stationFieldNumber</field>
+                <field sep=", ">startDate</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="CollectingEventStartDate"
+        title="CollectingEventStartDate"
+        class="edu.ku.brc.specify.datamodel.CollectingEvent"
+        >
+        <switch single="true">
+          <external class="edu.ku.brc.specify.ui.CollectingEventDataObjFmt"/>
+        </switch>
+    </format>
+
+    <format
+        name="CollectingTrip"
+        title="CollectingTrip"
+        class="edu.ku.brc.specify.datamodel.CollectingTrip"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>collectingTripName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Collection"
+        title="Collection"
+        class="edu.ku.brc.specify.datamodel.Collection"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>collectionName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="CollectionObject"
+        title="CollectionObject"
+        class="edu.ku.brc.specify.datamodel.CollectionObject"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field uifieldformatter="CatalogNumber">catalogNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="CollectionRelType"
+        title="CollectionRelType"
+        class="edu.ku.brc.specify.datamodel.CollectionRelType"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Collector"
+        title="Collector"
+        class="edu.ku.brc.specify.datamodel.Collector"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Container"
+        title="Container"
+        class="edu.ku.brc.specify.datamodel.Container"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="DataType"
+        title="DataType"
+        class="edu.ku.brc.specify.datamodel.DataType"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Deaccession"
+        title="Deaccession"
+        class="edu.ku.brc.specify.datamodel.Deaccession"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>deaccessionNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Determination"
+        title="Determination"
+        class="edu.ku.brc.specify.datamodel.Determination"
+        default="true"
+        >
+        <switch single="false" field="isCurrent">
+            <fields value="true">
+                <field>preferredTaxon.fullName</field>
+                <field type="boolean" format=" " sep=" (current)">isCurrent</field>
+            </fields>
+            <fields value="false">
+                <field>taxon.fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Discipline"
+        title="Discipline"
+        class="edu.ku.brc.specify.datamodel.Discipline"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Division"
+        title="Division"
+        class="edu.ku.brc.specify.datamodel.Division"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="DNAPrimer"
+        title="DNAPrimer"
+        class="edu.ku.brc.specify.datamodel.DNAPrimer"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>primerDesignator</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+            name="Extractor"
+            title="Extractor"
+            class="edu.ku.brc.specify.datamodel.Extractor"
+            default="true"
+    >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="FieldNotebookPage"
+        title="FieldNotebookPage"
+        class="edu.ku.brc.specify.datamodel.FieldNotebookPage"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>pageNumber</field>
+                <field sep=" - ">pageSet.fieldNotebook.name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="FundingAgent"
+        title="FundingAgent"
+        class="edu.ku.brc.specify.datamodel.FundingAgent"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+            </fields>
+        </switch>
+    </format>
+
+
+    <format
+        name="Geography"
+        title="Geography"
+        class="edu.ku.brc.specify.datamodel.Geography"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="GeographyTreeDef"
+        title="GeographyTreeDef"
+        class="edu.ku.brc.specify.datamodel.GeographyTreeDef"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="GeographyTreeDefItem"
+        title="GeographyTreeDefItem"
+        class="edu.ku.brc.specify.datamodel.GeographyTreeDefItem"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="GeologicTimePeriodTreeDef"
+        title="GeologicTimePeriodTreeDef"
+        class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="GeologicTimePeriod"
+        title="GeologicTimePeriod"
+        class="edu.ku.brc.specify.datamodel.GeologicTimePeriod"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Journal"
+        title="Journal"
+        class="edu.ku.brc.specify.datamodel.Journal"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>journalName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LithoStrat"
+        title="LithoStrat"
+        class="edu.ku.brc.specify.datamodel.LithoStrat"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LithoStratTreeDef"
+        title="LithoStratTreeDef"
+        class="edu.ku.brc.specify.datamodel.LithoStratTreeDef"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LithoStratTreeDefItem"
+        title="LithoStratTreeDefItem"
+        class="edu.ku.brc.specify.datamodel.LithoStratTreeDefItem"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Loan"
+        title="Loan"
+        class="edu.ku.brc.specify.datamodel.Loan"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>loanNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LoanAgent"
+        title="LoanAgent"
+        class="edu.ku.brc.specify.datamodel.LoanAgent"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+                <field sep=" - ">role</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LoanPreparation"
+        title="LoanPreparation"
+        class="edu.ku.brc.specify.datamodel.LoanPreparation"
+        default="true"
+        >
+        <switch single="true">
+        </switch>
+    </format>
+
+    <format
+        name="LoanReturnPreparation"
+        title="LoanReturnPreparation"
+        class="edu.ku.brc.specify.datamodel.LoanReturnPreparation"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="PrepType">loanPreparation.preparation.prepType</field>
+                <field type="int" format="%d" sep=" - ">quantityResolved</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Locality"
+        title="Locality"
+        class="edu.ku.brc.specify.datamodel.Locality"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>localityName</field>
+                <field sep="; " >geography.fullName</field>
+                <field sep="; ">latitude1</field>
+                <field sep=", ">longitude1</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="LocalityLatitude"
+        title="LocalityLatitude"
+        class="edu.ku.brc.specify.datamodel.Locality"
+        >
+        <switch single="true">
+          <external class="edu.ku.brc.specify.ui.LocalityLatLonFormatter">
+            <param name="type">Latitude</param>
+            <param name="dir">symbol</param>
+            <param name="dir">DDDDDD</param>
+            <param name="which">1</param>
+          </external>
+        </switch>
+    </format>
+
+    <format
+        name="LocalityLongitude"
+        title="LocalityLongitude"
+        class="edu.ku.brc.specify.datamodel.Locality"
+        >
+        <switch single="true">
+          <external class="edu.ku.brc.specify.ui.LocalityLatLonFormatter">
+            <param name="type">Longitude</param>
+            <param name="dir">symbol</param>
+            <param name="dir">DDDDDD</param>
+            <param name="which">1</param>
+          </external>
+        </switch>
+    </format>
+
+    <format
+        name="PaleoContext"
+        title="PaleoContext"
+        class="edu.ku.brc.specify.datamodel.PaleoContext"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+            	<field>paleoContextName</field>
+            	<!-- sep is apparently ignored if formatter is set? -->
+                <!--field sep=", " formatter="GeologicTimePeriod">chronosStrat</field>
+                <field sep=", " formatter="LithoStrat">lithoStrat</field-->
+                <field sep=", " >chronosStrat.fullName</field>
+                <field sep=", " >lithoStrat.fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Permit"
+        title="Permit"
+        class="edu.ku.brc.specify.datamodel.Permit"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>permitNumber</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="PrepType"
+        title="PrepType"
+        class="edu.ku.brc.specify.datamodel.PrepType"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Preparation"
+        title="Preparation"
+        class="edu.ku.brc.specify.datamodel.Preparation"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="PrepType">prepType</field>
+                <field type="int" format="%d" sep=" - ">countAmt</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="ReferenceWork"
+        title="ReferenceWork"
+        class="edu.ku.brc.specify.datamodel.ReferenceWork"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>title</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+            name="PcrPerson"
+            title="PcrPerson"
+            class="edu.ku.brc.specify.datamodel.PcrPerson"
+            default="true"
+    >
+        <switch single="true">
+            <fields>
+                <field formatter="Agent">agent</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Shipment"
+        title="Shipment"
+        class="edu.ku.brc.specify.datamodel.Shipment"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>shipmentDate</field>
+                <field sep=" - ">shipmentNumber</field>
+                <field sep=" - ">shipmentMethod</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Storage"
+        title="Storage"
+        class="edu.ku.brc.specify.datamodel.Storage"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="StorageTreeDef"
+        title="StorageTreeDef"
+        class="edu.ku.brc.specify.datamodel.StorageTreeDef"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="StorageTreeDefItem"
+        title="StorageTreeDefItem"
+        class="edu.ku.brc.specify.datamodel.StorageTreeDefItem"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="Taxon"
+        title="Taxon"
+        class="edu.ku.brc.specify.datamodel.Taxon"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>fullName</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="TaxonCitation"
+        title="TaxonCitation"
+        class="edu.ku.brc.specify.datamodel.TaxonCitation"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field formatter="ReferenceWork">referenceWork</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="TaxonTreeDef"
+        title="TaxonTreeDef"
+        class="edu.ku.brc.specify.datamodel.TaxonTreeDef"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+    <format
+        name="TaxonTreeDefItem"
+        title="TaxonTreeDefItem"
+        class="edu.ku.brc.specify.datamodel.TaxonTreeDefItem"
+        default="true"
+        >
+        <switch single="true">
+            <fields>
+                <field>name</field>
+            </fields>
+        </switch>
+    </format>
+
+  <aggregators>
+    <aggregator name="AccessionAgent"
+                title="AccessionAgent"
+                class="edu.ku.brc.specify.datamodel.AccessionAgent"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="AccessionAgent"
+                orderfieldname=""
+               />
+
+    <aggregator name="AccessionAttachment"
+                title="AccessionAttachment"
+                class="edu.ku.brc.specify.datamodel.AccessionAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="AccessionAuthorization"
+                title="AccessionAuthorization"
+                class="edu.ku.brc.specify.datamodel.AccessionAuthorization"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="AccessionAuthorization"
+                orderfieldname=""
+               />
+
+    <aggregator name="Address"
+                title="Address"
+                class="edu.ku.brc.specify.datamodel.Address"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="Address"
+                orderfieldname=""
+               />
+
+    <aggregator name="AgentAttachment"
+                title="AgentAttachment"
+                class="edu.ku.brc.specify.datamodel.AgentAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="Author"
+                title="Author"
+                class="edu.ku.brc.specify.datamodel.Author"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="Author"
+                orderfieldname="orderNumber"
+               />
+
+    <aggregator name="BorrowAttachment"
+                title="BorrowAttachment"
+                class="edu.ku.brc.specify.datamodel.BorrowAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="CollectingEventAttachment"
+                title="CollectingEventAttachment"
+                class="edu.ku.brc.specify.datamodel.CollectingEventAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="CollectionObject"
+                title="CollectionObject"
+                class="edu.ku.brc.specify.datamodel.CollectionObject"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="CollectionObject"
+                orderfieldname=""
+               />
+
+    <aggregator name="CollectionObjectAttachment"
+                title="CollectionObjectAttachment"
+                class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="Collector"
+                title="Collector"
+                class="edu.ku.brc.specify.datamodel.Collector"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="Collector"
+                orderfieldname="orderNumber"
+               />
+
+    <aggregator name="ConservDescriptionAttachment"
+                title="ConservDescriptionAttachment"
+                class="edu.ku.brc.specify.datamodel.ConservDescriptionAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="ConservEventAttachment"
+                title="ConservEventAttachment"
+                class="edu.ku.brc.specify.datamodel.ConservEventAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="DNASequenceAttachment"
+                title="DNASequenceAttachment"
+                class="edu.ku.brc.specify.datamodel.DNASequenceAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="DNASequencingRunAttachment"
+                title="DNASequencingRunAttachment"
+                class="edu.ku.brc.specify.datamodel.DNASequencingRunAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="Determination"
+                title="Determination"
+                class="edu.ku.brc.specify.datamodel.Determination"
+                default="true"
+                separator="; "
+                ending=""
+                count="1"
+                format="Determination"
+                orderfieldname=""
+               />
+
+      <aggregator name="Extractor"
+                  title="Extractor"
+                  class="edu.ku.brc.specify.datamodel.Extractor"
+                  default="true"
+                  separator="; "
+                  ending=""
+                  count=""
+                  format="Extractor"
+                  orderfieldname="orderNumber"
+      />
+
+    <aggregator name="FieldNotebookAttachment"
+                title="FieldNotebookAttachment"
+                class="edu.ku.brc.specify.datamodel.FieldNotebookAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="FieldNotebookPageAttachment"
+                title="FieldNotebookPageAttachment"
+                class="edu.ku.brc.specify.datamodel.FieldNotebookPageAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="FieldNotebookPageSetAttachment"
+                title="FieldNotebookPageSetAttachment"
+                class="edu.ku.brc.specify.datamodel.FieldNotebookPageSetAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="FundingAgent"
+                title="FundingAgent"
+                class="edu.ku.brc.specify.datamodel.FundingAgent"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="FundingAgent"
+                orderfieldname="orderNumber"
+               />
+
+    <aggregator name="GiftAttachment"
+                title="GiftAttachment"
+                class="edu.ku.brc.specify.datamodel.GiftAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="LoanAgent"
+                orderfieldname=""
+               />
+
+    <aggregator name="LoanAgent"
+                title="LoanAgent"
+                class="edu.ku.brc.specify.datamodel.LoanAgent"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="LoanAgent"
+                orderfieldname=""
+               />
+
+    <aggregator name="LoanAttachment"
+                title="LoanAttachment"
+                class="edu.ku.brc.specify.datamodel.LoanAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="LoanPrep"
+                title="LoanPrep"
+                class="edu.ku.brc.specify.datamodel.LoanPreparation"
+                default="true"
+                separator="; "
+                ending=""
+                count="0"
+                format="LoanPreparation"
+                orderfieldname=""
+               />
+
+    <aggregator name="LoanReturnPrep"
+                title="Loan Return Prep"
+                class="edu.ku.brc.specify.datamodel.LoanReturnPreparation"
+                default="true"
+                separator="; "
+                ending=""
+                count="0"
+                format="LoanReturnPreparation"
+                orderfieldname=""
+               />
+
+    <aggregator name="LocalityAttachment"
+                title="LocalityAttachment"
+                class="edu.ku.brc.specify.datamodel.LocalityAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="PermitAttachment"
+                title="PermitAttachment"
+                class="edu.ku.brc.specify.datamodel.PermitAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="Preparation"
+                title="Preparation"
+                class="edu.ku.brc.specify.datamodel.Preparation"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="Preparation"
+                orderfieldname=""
+               />
+
+    <aggregator name="PreparationAttachment"
+                title="PreparationAttachment"
+                class="edu.ku.brc.specify.datamodel.PreparationAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="ReferenceWorkAttachment"
+                title="ReferenceWorkAttachment"
+                class="edu.ku.brc.specify.datamodel.ReferenceWorkAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+    <aggregator name="RepositoryAgreementAttachment"
+                title="RepositoryAgreementAttachment"
+                class="edu.ku.brc.specify.datamodel.RepositoryAgreementAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+      <aggregator name="PcrPerson"
+                  title="PcrPerson"
+                  class="edu.ku.brc.specify.datamodel.PcrPerson"
+                  default="true"
+                  separator="; "
+                  ending=""
+                  count=""
+                  format="PcrPerson"
+                  orderfieldname="orderNumber"
+      />
+
+    <aggregator name="TaxonAttachment"
+                title="TaxonAttachment"
+                class="edu.ku.brc.specify.datamodel.TaxonAttachment"
+                default="true"
+                separator="; "
+                ending=""
+                count=""
+                format="identity"
+                orderfieldname="ordinal"
+               />
+
+  </aggregators>
+
+
+</formatters>
