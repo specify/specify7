@@ -1,6 +1,6 @@
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import Collectionobjectgroupjoin
+from specifyweb.specify.models import Collectionobjectgroupjoin, Collectionobjectgroup
 
 @orm_signal_handler('pre_save', 'Collectionobjectgroupjoin')
 def cojo_pre_save(cojo):
@@ -25,3 +25,8 @@ def cojo_pre_save(cojo):
          .filter(parentcog=cojo.parentcog)
          .update(issubstrate=False))
         
+@orm_signal_handler('post_save', 'Collectionobjectgroupjoin')
+def cojo_post_save(cojo):
+    if cojo.childcog is not None:
+        cojo.childcog.parentcojo = cojo
+        cojo.childcog.save()

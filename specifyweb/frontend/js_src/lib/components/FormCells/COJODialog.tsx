@@ -76,14 +76,6 @@ export function COJODialog({
 
     newCOJO.set(field, resourceUrl as never);
     newCOJO.set('parentCog', parentResourceUrl as never);
-
-    if (resourceToUse.specifyTable.name === 'CollectionObjectGroup') {
-      (resourceToUse as SpecifyResource<CollectionObjectGroup>).set(
-        'parentCojo',
-        newCOJO
-      );
-    }
-
     collection?.add(newCOJO);
   };
 
