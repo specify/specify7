@@ -1,6 +1,6 @@
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import Collectionobjectgroupjoin, Collectionobjectgroup
+from specifyweb.specify.models import Collectionobjectgroupjoin
 
 @orm_signal_handler('pre_save', 'Collectionobjectgroupjoin')
 def cojo_pre_save(cojo):
