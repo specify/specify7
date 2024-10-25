@@ -1,5 +1,4 @@
-from django.apps import apps as specify_apps
-from django.db import migrations, models
+from django.db import migrations
 from specifyweb.specify.models import protect_with_blockers
 
 
@@ -118,7 +117,7 @@ def revert_create_root_tectonic_node(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0006_fix_tectonic_tree_fields'),
+        ('specify', '0007_schema_config_update'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
