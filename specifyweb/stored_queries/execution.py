@@ -161,7 +161,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                          distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, strip_id=False)
+                         recordsetid=recordsetid, strip_id=False, selected=spquery['selected'])
             message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
@@ -227,7 +227,7 @@ def row_has_geocoords(coord_cols, row):
 
 
 def query_to_kml(session, collection, user, tableid, field_specs, path, captions, host,
-                 recordsetid=None, strip_id=False):
+                 recordsetid=None, strip_id=False, selected=None):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
     file path.
@@ -236,6 +236,14 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     """
     set_group_concat_max_len(session.connection())
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+    logger.debug(f"selected: {selected}")
+    logger.debug(query)
+    if selected:
+        # TODO
+        # If selected is defined (its a set of numerical ids), modify the query to only include those ids
+        # the build_query function could also be modified to take a selected ids parameter, which can be used for batch edit
+        # query = query.filter(getattr(models.models_by_tableid[tableid], models.models_by_tableid[tableid]._id).in_(selected))
+        pass
 
     logger.debug('query_to_kml starting')
 

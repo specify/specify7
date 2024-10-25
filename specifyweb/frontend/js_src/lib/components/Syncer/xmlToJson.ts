@@ -50,7 +50,7 @@ export const xmlToJson = (element: Element): XmlNode => ({
 /**
  * Reverse conversion to JSON
  */
-export function jsonToXml(node: any): Element {
+export function jsonToXml(node: XmlNode): Element {
   const xmlDocument = document.implementation.createDocument(null, null);
   const element = xmlDocument.createElement(node.tagName);
   xmlDocument.append(element);

@@ -56,6 +56,7 @@ export function QueryExportButtons({
 
   function doQueryExport(
     url: string,
+    selected: ReadonlySet<number> | undefined,
     delimiter: string | undefined,
     bom: boolean | undefined
   ): void {
@@ -73,6 +74,7 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
+        selected,
         delimiter,
         bom,
       }),
@@ -136,8 +138,6 @@ export function QueryExportButtons({
   }
 
   async function exportKmlSelected(): Promise<void> {
-    const name = formatExportFileName('kml');
-
     const selectedResults = results?.current?.map((row) =>
       row !== undefined && f.has(selectedRows, row[0])
         ? row?.slice(1).map((cell) => cell?.toString() ?? '')
@@ -145,136 +145,10 @@ export function QueryExportButtons({
     );
 
     if (selectedResults === undefined) return undefined;
+    
+    doQueryExport('/stored_query/exportkml/', selectedRows, undefined, undefined)
 
-    const filteredResults = filterArray(selectedResults);
-
-    const columnsName = fields
-      .filter((field) => field.isDisplay)
-      .map((field) =>
-        generateMappingPathPreview(baseTableName, field.mappingPath)
-      );
-
-
-    let placemarkTarget: any = [];
-
-    filteredResults?.forEach((result: any) => {
-      let dataTarget: any = [];
-
-      // <ExtendedData>
-      let extendedDataTarget: any = [];
-      
-      fields.forEach((field, index) => {
-        const fieldValue = result?.[index + 1];
-
-        extendedDataTarget.push({
-          tagName: "Data",
-          attributes: { name: columnsName[index + 1] },
-          children: [
-            {
-              tagName: "value",
-              attributes: {},
-              children: [
-                {
-                  tagName: "value",
-                  attributes: {},
-                  children: [],
-                  type: "Text",
-                  string: String(fieldValue)
-                }
-              ],
-            }
-          ]
-        });
-      });
-
-      let extendedData: XmlNode = {
-        tagName: "ExtendedData",
-        attributes: {},
-        children: extendedDataTarget as ReadonlyArray<XmlNode>
-      };
-
-      // push
-      dataTarget.push(extendedData);
-
-      // <name>
-      const nameValue = fields.map((field) => result?.[field.id]).join(' - ');
-      let nameData: XmlNode = {
-        tagName: "name",
-        attributes: {},
-        children: [
-          {
-            tagName: "name",
-            attributes: {},
-            children: [],
-            type: "Text",
-            string: nameValue
-          }
-        ],
-      };
-      // push
-      dataTarget.push(nameData);
-
-      // <Point>
-      const coordinatesValue = fields
-        .filter(
-          (field) =>
-            field.mappingPath.toString().includes('latitude') ||
-            field.mappingPath.toString().includes('longitude')
-        )
-        .map((field) => result?.[field.id])
-        .join(', ');
-      
-      let pointData: XmlNode = {
-        tagName: "Point",
-        attributes: {},
-        children: [
-          {
-            tagName: "coordinates",
-            attributes: {},
-            children: [
-              {
-                tagName: "coordinates",
-                attributes: {},
-                children: [],
-                type: "Text",
-                string: coordinatesValue
-              }
-            ],
-          }
-        ]
-      };
-      // push
-      dataTarget.push(pointData);
-
-      let placemark: XmlNode = {
-        tagName: "Placemark",
-        attributes: {},
-        children: dataTarget as ReadonlyArray<XmlNode>
-      };
-
-      // Insert placemark into document (target)
-      placemarkTarget.push(placemark);
-    });
-
-    let jsonData: XmlNode = {
-      tagName: "kml",
-      attributes: {
-        xmlns: "http://earth.google.com/kml/2.2"
-      },
-      children: [
-        {
-          tagName: "Document",
-          attributes: {},
-          children: placemarkTarget as ReadonlyArray<XmlNode>
-        }
-      ]
-    };
-
-    const xmlElement = jsonToXml(jsonData);
-    const serializer = new XMLSerializer();
-    const xmlString = '<?xml version="1.0" encoding="utf-8"?>\n' + serializer.serializeToString(xmlElement);
-
-    return downloadFile(name, xmlString);
+    return;
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -310,7 +184,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, utf8Bom)
+              ? doQueryExport('/stored_query/exportcsv/', undefined, separator, utf8Bom)
               : exportCsvSelected().catch(softFail);
           }}
         >
@@ -325,7 +199,7 @@ export function QueryExportButtons({
             hasLocalityColumns(fields)
               ? (
                 selectedRows.size === 0
-                  ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
+                  ? doQueryExport('/stored_query/exportkml/', undefined, undefined, undefined)
                   : exportKmlSelected().catch(softFail)
               )
               : setState('warning')
