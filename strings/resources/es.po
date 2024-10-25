@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-25 03:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -242,7 +242,7 @@ msgstr "Otros recursos JSON"
 #: components/AppResources/types.tsx:204
 #, fuzzy
 msgid "otherPropertiesResource"
-msgstr "Recursos de otras propiedades"
+msgstr "Otros recursos de propiedades"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:211
@@ -372,7 +372,7 @@ msgstr "(por defecto)"
 #: components/Formatters/Aggregator.tsx:85
 #, fuzzy
 msgid "sortField"
-msgstr "Campo de ordenación"
+msgstr "Ordenar campo"
 
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
