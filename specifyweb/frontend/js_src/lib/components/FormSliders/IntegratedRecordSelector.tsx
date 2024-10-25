@@ -135,9 +135,9 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
-  const isCOJO = relationship.relatedTable.name === 'CollectionObjectGroupJoin';
-  // TODO: change when upadte childCojos to children in models
-  const isChildCojos = relationship.name === 'childCojos';
+  const isCOJO =
+    relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
+    relationship.name === 'children';
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -223,7 +223,7 @@ export function IntegratedRecordSelector({
                       relationship.relatedTable.name,
                       'create'
                     ) && typeof handleAdd === 'function' ? (
-                      isCOJO && isChildCojos ? (
+                      isCOJO ? (
                         <COJODialog
                           collection={collection}
                           parentResource={
