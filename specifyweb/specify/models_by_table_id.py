@@ -207,6 +207,15 @@ model_names_by_table_id = {
     1016: 'Collectionobjectgroup',
     1017: 'Collectionobjectgroupjoin',
     1018: 'Collectionobjectgrouptype',
+    1019: 'AbsoluteAge', 
+    1020: 'RelativeAge', 
+    1021: 'AbsoluteAgeAttachment',
+    1022: 'RelativeAgeAttachment', 
+    1023: 'AbsoluteAgeCitation', 
+    1024: 'RelativeAgeCitation',
+    1025: 'Tectonicunittreedef',
+    1026: 'Tectonicunittreedefitem',
+    1027: 'Tectonicunit', 
 }
 
 model_names_by_app = {
@@ -427,6 +436,15 @@ model_names_by_app = {
         'Collectionobjectgroup',
         'Collectionobjectgroupjoin',
         'Collectionobjectgrouptype',
+        'AbsoluteAge', 
+        'RelativeAge', 
+        'AbsoluteAgeAttachment',
+        'RelativeAgeAttachment', 
+        'AbsoluteAgeCitation', 
+        'RelativeAgeCitation',
+        'Tectonicunittreedef',
+        'Tectonicunittreedefitem',
+        'Tectonicunit', 
     }
 }
 
