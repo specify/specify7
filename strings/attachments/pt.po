@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"PO-Revision-Date: 2024-10-26 13:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "attachments/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
@@ -216,7 +216,7 @@ msgstr "Interrompido"
 #: components/AttachmentsBulkImport/ActionState.tsx:55
 #, fuzzy
 msgid "tryNow"
-msgstr "Experimente agora"
+msgstr "Configure seu servidor de anexos"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:62
@@ -248,7 +248,7 @@ msgstr "Nenhum anexo foi encontrado nos primeiros registros {halt:number}."
 #: components/Attachments/RecordSetAttachment.tsx:142
 #, fuzzy
 msgid "fetchNextAttachments"
-msgstr "Procure mais anexos"
+msgstr "Escolha o caminho"
 
 #. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:87
@@ -393,7 +393,7 @@ msgstr ""
 #: components/Router/Routes.tsx:182
 #, fuzzy
 msgid "attachments"
-msgstr "Anexos"
+msgstr "Resultados da reversão"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:224
