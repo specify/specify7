@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"PO-Revision-Date: 2024-10-27 22:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/report/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:172
@@ -75,7 +75,7 @@ msgstr "Anexos ausentes"
 #: components/Reports/Report.tsx:217
 #, fuzzy
 msgid "fix"
-msgstr "Consertar"
+msgstr "Escolha o arquivo"
 
 #. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:228
