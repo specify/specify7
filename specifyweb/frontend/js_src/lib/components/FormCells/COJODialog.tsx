@@ -6,6 +6,7 @@ import { formsText } from '../../localization/forms';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { fetchResource } from '../DataModel/resource';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
@@ -62,8 +63,6 @@ export function COJODialog({
     const resourceToUse = selectedResource ?? newResource;
 
     if (resourceToUse === undefined) return;
-
-    void resourceToUse?.save();
 
     const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
     const field =
