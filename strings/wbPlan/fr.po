@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:46+0000\n"
+"PO-Revision-Date: 2024-10-28 16:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -89,7 +89,7 @@ msgstr "Champs obligatoires"
 #: components/WbPlanView/LineComponents.tsx:213
 #, fuzzy
 msgid "optionalFields"
-msgstr "Champs facultatifs"
+msgstr "Champs optionnels"
 
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #: components/QueryBuilder/Import.tsx:155
@@ -104,7 +104,7 @@ msgstr "Champs cachés"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Révéler les champs de formulaire cachés"
+msgstr "Ensemble de données vide"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
@@ -149,7 +149,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:241
 #, fuzzy
 msgid "ignoreNever"
-msgstr "Ne jamais ignorer"
+msgstr "AUCUN SÉLECTIONNÉ"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:242
@@ -200,7 +200,7 @@ msgstr "La validation a trouvé des mappages manquants :"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Ce mappage de données manque d'un ou de plusieurs champs de données requis "
+"Il manque à ce mappage de données un ou plusieurs champs de données requis "
 "pour le téléchargement par votre configuration Spécifier. Ajoutez les "
 "mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
 "inachevé."
@@ -227,7 +227,7 @@ msgstr "Enregistrer inachevé"
 #: components/WbPlanView/Mapper.tsx:470
 #, fuzzy
 msgid "map"
-msgstr "Carte"
+msgstr "AutoMapper"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -239,7 +239,11 @@ msgstr "Démapper"
 #: components/WbPlanView/Mapper.tsx:467
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr "Mapper le champ sélectionné à l'en-tête sélectionné"
+msgstr ""
+"Ce mappage de données manque d'un ou de plusieurs champs de données requis "
+"pour le téléchargement par votre configuration Spécifier. Ajoutez les "
+"mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
+"inachevé."
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
@@ -420,7 +424,7 @@ msgstr "Doit correspondre"
 #: components/WbPlanView/Mapper.tsx:156
 #, fuzzy
 msgid "unloadProtectMessage"
-msgstr "Cette cartographie n'a pas été enregistrée."
+msgstr "Ce mappage n'a pas été enregistré."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:48
