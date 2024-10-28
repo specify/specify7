@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-10-28 16:00+0000\n"
+"Last-Translator: Vitalii <stopchan@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -549,9 +549,8 @@ msgstr "Немає результатів"
 #: components/Merging/Header.tsx:122
 #: components/Merging/Usages.tsx:23
 #: components/WorkBench/DataSetMeta.tsx:320
-#, fuzzy
 msgid "notApplicable"
-msgstr "N/A"
+msgstr "н/д"
 
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 #: components/AppResources/Create.tsx:227
@@ -795,9 +794,8 @@ msgstr "Переглянути запис"
 #: components/FormCells/index.tsx:311
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
-#, fuzzy
 msgid "nullInline"
-msgstr "(null)"
+msgstr "(нульовий)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
