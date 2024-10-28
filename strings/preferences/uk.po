@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:15+0000\n"
+"PO-Revision-Date: 2024-10-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -795,7 +795,7 @@ msgstr "Включіть назву таблиці в заголовок сто�
 #: components/Preferences/UserDefinitions.tsx:760
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Сфокусувати перше поле"
+msgstr "Перейти до першого поля"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1953
@@ -935,13 +935,13 @@ msgstr "Використовуйте доступний засіб вибору 
 #: components/Preferences/UserDefinitions.tsx:787
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr "Зробіть діалогові вікна форми сірими"
+msgstr "Зробіть діалогові вікна форми сірими фоном"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1337
 #, fuzzy
 msgid "autoScrollTree"
-msgstr "Автоматичне прокручування дерева до виділеного вузла"
+msgstr "Автоматичне прокручування дерева до вибраного вузла"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1892
@@ -1038,7 +1038,7 @@ msgstr "Використовуйте спеціальні роздільники
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Список розділювачів для використання на додаток до визначених вище. "
+"Список роздільників, які слід використовувати на додаток до визначених вище. "
 "Поставте один роздільник на рядок."
 
 #. Used in: Components > Preferences > User Definitions
@@ -1142,13 +1142,13 @@ msgstr "Налаштування"
 #: components/Preferences/UserDefinitions.tsx:490
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr "Пам'ятайте про розміри діалогових вікон"
+msgstr "Запам'ятайте розміри діалогових вікон"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
 #, fuzzy
 msgid "rememberDialogPositions"
-msgstr "Запам'ятовуйте розташування діалогового вікна"
+msgstr "Запам'ятовуйте положення діалогового вікна"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1304
