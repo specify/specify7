@@ -95,7 +95,7 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  
+
   async function exportCsvSelected(): Promise<void> {
     const name = `${
       queryResource.isNew()
@@ -161,7 +161,12 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', undefined, separator, utf8Bom)
+              ? doQueryExport(
+                  '/stored_query/exportcsv/',
+                  undefined,
+                  separator,
+                  utf8Bom
+                )
               : exportCsvSelected().catch(softFail);
           }}
         >
@@ -174,9 +179,12 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? (
-                doQueryExport('/stored_query/exportkml/', selectedRows.size === 0 ? undefined : selectedRows, undefined, undefined)
-              )
+              ? doQueryExport(
+                  '/stored_query/exportkml/',
+                  selectedRows.size === 0 ? undefined : selectedRows,
+                  undefined,
+                  undefined
+                )
               : setState('warning')
           }
         >
