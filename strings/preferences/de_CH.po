@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -695,7 +695,7 @@ msgstr "Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden."
 #: components/Preferences/UserDefinitions.tsx:1797
 #, fuzzy
 msgid "caseSensitive"
-msgstr "Groß-/Kleinschreibung beachten"
+msgstr "Groß- und Kleinschreibung beachten"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1801
@@ -761,7 +761,7 @@ msgstr "Konzentrieren Sie sich auf das erste Feld"
 #: components/Preferences/UserDefinitions.tsx:1953
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Doppelklicken zum Vergrößern"
+msgstr "Doppelklicken zum Zoomen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1960
