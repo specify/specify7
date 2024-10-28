@@ -791,10 +791,10 @@ export const ResourceBase = Backbone.Model.extend({
               )
         : existingToMany;
 
-    return collection.fetch({ ...filters, limit: 0 }).then((collection) => {
+    await collection.fetch({ ...filters, limit: 0 }).then((collection) => {
       self.storeDependent(field, collection);
-      return collection;
     });
+    return this.getDependentResource(field.name);
   },
   async getIndependentToMany(
     field: Relationship,
@@ -818,13 +818,14 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch({
+    await collection.fetch({
       ...filters,
       // Only store the collection if fetch is successful (doesn't return undefined)
       success: (collection) => {
         this.storeIndependent(field, collection);
       },
     });
+    return this.independentResources[field.name.toLowerCase()];
   },
   async save({
     onSaveConflict: handleSaveConflict,
