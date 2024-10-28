@@ -52,6 +52,9 @@ def create_default_tectonic_ranks(apps):
             treedef=tectonic_tree_def,
         )
 
+        discipline.tectonicunittreedef = tectonic_tree_def
+        discipline.save()
+
 def revert_default_tectonic_ranks(apps, schema_editor):
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
@@ -69,6 +72,8 @@ def revert_default_tectonic_ranks(apps, schema_editor):
 
                 item.delete()
 
+            discipline.tectonicunittreedef = None
+            discipline.save()
             tectonic_tree_def.delete()
 
 def create_root_tectonic_node(apps): 
