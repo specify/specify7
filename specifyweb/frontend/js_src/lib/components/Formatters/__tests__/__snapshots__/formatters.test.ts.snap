@@ -2765,7 +2765,6 @@ exports[`getMainTableFields 1`] = `
   ],
   "TectonicUnit": [
     "name",
-    "fullName",
     "guid",
     "text1",
     "text2",
