@@ -22,9 +22,6 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
-import { format } from '../Formatters/formatters';
-import { jsonToXml, XmlNode, SimpleXmlNode } from '../Syncer/xmlToJson';
-import { downloadFile } from '../Molecules/FilePicker';
 
 export function QueryExportButtons({
   baseTableName,
@@ -56,7 +53,7 @@ export function QueryExportButtons({
 
   function doQueryExport(
     url: string,
-    selected: ReadonlySet<number> | undefined,
+    selectedRows: ReadonlySet<number> | undefined,
     delimiter: string | undefined,
     bom: boolean | undefined
   ): void {
@@ -74,7 +71,7 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
-        selected,
+        selectedRows: selectedRows ? Array.from(selectedRows) : undefined,
         delimiter,
         bom,
       }),
@@ -94,23 +91,17 @@ export function QueryExportButtons({
     'exportCsvUtf8Bom'
   );
 
-  function formatExportFileName(
-    file_extension: string
-  ): string {
-    return `${
-      queryResource.isNew()
-        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
-        : queryResource.get('name')
-    } - ${new Date().toDateString()}.${file_extension}`;
-  }
-
   /*
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
   
   async function exportCsvSelected(): Promise<void> {
-    const name = formatExportFileName('csv');
+    const name = `${
+      queryResource.isNew()
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
+        : queryResource.get('name')
+    } - ${new Date().toDateString()}.csv`;
 
     const selectedResults = results?.current?.map((row) =>
       row !== undefined && f.has(selectedRows, row[0])
@@ -135,20 +126,6 @@ export function QueryExportButtons({
       separator,
       utf8Bom
     );
-  }
-
-  async function exportKmlSelected(): Promise<void> {
-    const selectedResults = results?.current?.map((row) =>
-      row !== undefined && f.has(selectedRows, row[0])
-        ? row?.slice(1).map((cell) => cell?.toString() ?? '')
-        : undefined
-    );
-
-    if (selectedResults === undefined) return undefined;
-    
-    doQueryExport('/stored_query/exportkml/', selectedRows, undefined, undefined)
-
-    return;
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -198,9 +175,7 @@ export function QueryExportButtons({
           onClick={(): void =>
             hasLocalityColumns(fields)
               ? (
-                selectedRows.size === 0
-                  ? doQueryExport('/stored_query/exportkml/', undefined, undefined, undefined)
-                  : exportKmlSelected().catch(softFail)
+                doQueryExport('/stored_query/exportkml/', selectedRows.size === 0 ? undefined : selectedRows, undefined, undefined)
               )
               : setState('warning')
           }
