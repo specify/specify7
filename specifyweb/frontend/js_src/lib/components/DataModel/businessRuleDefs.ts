@@ -142,7 +142,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       },
     },
   },
-
   CollectionObject: {
     customInit: (collectionObject: SpecifyResource<CollectionObject>): void => {
       const ceField = collectionObject.specifyTable.getField('collectingEvent');
