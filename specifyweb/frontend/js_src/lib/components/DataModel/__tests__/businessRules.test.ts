@@ -85,7 +85,6 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
-      collectionobjecttype: collectionObjectTypeUrl,
       determinations: [
         {
           taxon: getResourceApiUrl('Taxon', otherTaxonId),
@@ -116,6 +115,9 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
+    expect(collectionObject.get('collectionObjectType')).toEqual(
+      schema.defaultCollectionObjectType
+    );
   });
 
   const otherCollectionObjectTypeUrl = getResourceApiUrl(

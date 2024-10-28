@@ -26,13 +26,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
-                     'Geography', 'Geologictimeperiod', 'Lithostrat']
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
+
+GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
 ALL_TRESS: Tuple[TREE_TABLE, ...] = [
-    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat']
+    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 
 def tree_mutation(mutation):
@@ -454,10 +456,10 @@ def all_tree_information(request):
         return has_table_permission(
             request.specify_collection.id, request.specify_user.id, tree, 'read')
 
-    is_paleo_discipline = request.specify_collection.discipline.is_paleo()
+    is_paleo_or_geo_discipline = request.specify_collection.discipline.is_paleo_geo()
 
     accessible_trees = tuple(filter(
-        has_tree_read_permission, ALL_TRESS if is_paleo_discipline else COMMON_TREES))
+        has_tree_read_permission, ALL_TRESS if is_paleo_or_geo_discipline else COMMON_TREES))
 
     result = {}
 
@@ -522,6 +524,15 @@ class LithostratMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 
+class TectonicUnitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+
 def perm_target(tree):
     return {
         'taxon': TaxonMutationPT,
@@ -529,4 +540,5 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
+        'tectonicunit': TectonicUnitMutationPT
     }[tree]

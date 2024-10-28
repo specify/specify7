@@ -2992,6 +2992,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='taxonTreeDef', type='many-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='disciplines'),
             Relationship(name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
             Relationship(name='lithoStratTreeDef', type='many-to-one',required=False, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='disciplines'),
+            Relationship(name='tectonicUnitTreeDef', type='many-to-one',required=False, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='disciplines'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='disciplines'),
             Relationship(name='spExportSchemas', type='one-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='discipline'),
@@ -3847,7 +3848,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='geographyTreeDefs'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID', otherSideName='geographyTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definition')
@@ -3963,7 +3964,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='geologicTimePeriodTreeDefs'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID', otherSideName='geologicTimePeriodTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definition')
@@ -5156,6 +5157,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='lithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='LithoStratID', otherSideName='paleoContexts'),
+            Relationship(name='tectonicUnit', type='many-to-one',required=False, relatedModelName='TectonicUnit', column='TectonicUnitID', otherSideName='paleoContexts'),
             Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='paleoContext'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -8294,8 +8296,8 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
-            Relationship(name='parentCojos', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog', dependent=True),
-            Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childCog', dependent=True),
+            Relationship(name='parentCojo', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',column='CollectionObjectGroupJoinID', otherSideName='collectionobjectgroup'),
+            Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
         ],
@@ -8333,9 +8335,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='parentcojos'),
+            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='children'),
             Relationship(name='childCog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
             Relationship(name='childCo', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
+            Relationship(name='collectionobjectgroup', type='one-to-many',required=False, relatedModelName='CollectionObjectGroup', otherSideName='parentCojo'),
         ],
         fieldAliases=[
 
@@ -8607,7 +8610,9 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicUnitTreeDefs'),
-            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TectonicUnitTreeDefItem', otherSideName='treeDef', dependent=True),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -8627,7 +8632,7 @@ datamodel = Datamodel(tables=[
             Field(name='isEnforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='isInFullName', column='IsInFullName', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='rankId', column='RankID', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='textAfter', column='TextAfter', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='textBefore', column='TextBefore', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8640,13 +8645,13 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='children', type='one-to-many',required=False, relatedModelName='TectonicUnitTreeDefItem', otherSideName='parentitem'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='TectonicUnitTreeDefItem', otherSideName='parent'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parentItem', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
-            otherSideName='tectonicUnitTreeDefItems'),
-            Relationship(name='tectonicUnits', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
+            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
+            otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -8684,12 +8689,13 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID'),
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='acceptedTectonicUnit'),
+            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID', otherSideName='acceptedChildren'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='ParentID'),
-            Relationship(name='tectonicUnitTreeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='tectonicUnits'),
-            Relationship(name='tectonicUnitTreeDefItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='tectonicUnits'),
+            Relationship(name='parent', type='many-to-one', required=True, relatedModelName='TectonicUnit', column='ParentID'),
+            Relationship(name='definition', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='treeEntries'),
         ],
         fieldAliases=[
             
