@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "preferences/pt/>\n"
@@ -829,7 +829,7 @@ msgstr "Inércia da panela"
 #: components/Preferences/UserDefinitions.tsx:1960
 #, fuzzy
 msgid "mouseDrags"
-msgstr "O mouse arrasta"
+msgstr "Arrastos do mouse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1967
@@ -871,7 +871,7 @@ msgstr "Especificar emblema de rede"
 #: components/Preferences/UserDefinitions.tsx:872
 #, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr "Use um seletor de data completo acessível"
+msgstr "Use o seletor de data completo acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:879
