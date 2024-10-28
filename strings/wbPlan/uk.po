@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:46+0000\n"
+"PO-Revision-Date: 2024-10-28 16:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -103,7 +103,7 @@ msgstr "Приховані поля"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Відкрийте приховані поля форми"
+msgstr "Порожній набір даних"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
@@ -146,7 +146,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:241
 #, fuzzy
 msgid "ignoreNever"
-msgstr "Ніколи не ігноруйте"
+msgstr "НЕ ВИБРАНО"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:242
@@ -223,7 +223,7 @@ msgstr "Зберегти незавершене"
 #: components/WbPlanView/Mapper.tsx:470
 #, fuzzy
 msgid "map"
-msgstr "Карта"
+msgstr "AutoMapper"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -235,7 +235,10 @@ msgstr "Відмінити карту"
 #: components/WbPlanView/Mapper.tsx:467
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr "Зіставити вибране поле з вибраним заголовком"
+msgstr ""
+"У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні "
+"для завантаження вашою конфігурацією Specify. Додайте відсутні відображення "
+"або збережіть цей план завантаження як незавершений."
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
