@@ -368,6 +368,7 @@ test('indexed fields are loaded', () =>
     {
       "accession": "[relationship CollectionObject.accession]",
       "actualTotalCountAmt": "[literalField CollectionObject.actualTotalCountAmt]",
+      "age": "[literalField CollectionObject.age]",
       "agent1": "[relationship CollectionObject.agent1]",
       "altCatalogNumber": "[literalField CollectionObject.altCatalogNumber]",
       "appraisal": "[relationship CollectionObject.appraisal]",
