@@ -53,9 +53,9 @@ export function QueryExportButtons({
 
   function doQueryExport(
     url: string,
-    selectedRows: ReadonlySet<number> | undefined,
     delimiter: string | undefined,
-    bom: boolean | undefined
+    bom: boolean | undefined,
+    selectedRows: ReadonlySet<number> | undefined
   ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
@@ -71,7 +71,7 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
-        selectedRows: selectedRows ? Array.from(selectedRows) : undefined,
+        selectedRows: selectedRows !== undefined ? Array.from(selectedRows) : undefined,
         delimiter,
         bom,
       }),
@@ -163,9 +163,9 @@ export function QueryExportButtons({
             selectedRows.size === 0
               ? doQueryExport(
                   '/stored_query/exportcsv/',
-                  undefined,
                   separator,
-                  utf8Bom
+                  utf8Bom,
+                  undefined
                 )
               : exportCsvSelected().catch(softFail);
           }}
@@ -181,9 +181,9 @@ export function QueryExportButtons({
             hasLocalityColumns(fields)
               ? doQueryExport(
                   '/stored_query/exportkml/',
-                  selectedRows.size === 0 ? undefined : selectedRows,
                   undefined,
-                  undefined
+                  undefined,
+                  selectedRows.size === 0 ? undefined : selectedRows
                 )
               : setState('warning')
           }
