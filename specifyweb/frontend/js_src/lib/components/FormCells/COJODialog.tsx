@@ -63,7 +63,7 @@ export function COJODialog({
 
     if (resourceToUse === undefined) return;
 
-    void newResource?.save();
+    void resourceToUse?.save();
 
     const newCOJO = new tables.CollectionObjectGroupJoin.Resource();
     const field =
