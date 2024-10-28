@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:15+0000\n"
+"PO-Revision-Date: 2024-10-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -226,7 +226,7 @@ msgstr "Fondo de campo deshabilitado (tema oscuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Ancho de columna de cuadrícula de subvista flexible"
+msgstr "Fondo de campo no válido (tema oscuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -408,9 +408,7 @@ msgstr "Comienza con (distingue entre mayúsculas y minúsculas)"
 #: components/Preferences/UserDefinitions.tsx:1023
 #, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr ""
-"[X0X][X5X][X24X]+[X31X]Haga clic[X41X] en un enlace que normalmente se abre "
-"en una nueva pestaña para abrirlo en la pestaña actual."
+msgstr "Busque valores que comiencen con una cadena de consulta determinada."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1027
@@ -618,7 +616,7 @@ msgstr "Color de acento 1"
 #: components/Preferences/UserDefinitions.tsx:261
 #, fuzzy
 msgid "accentColor2"
-msgstr "Permitir que el autocompletado crezca tanto como sea necesario"
+msgstr "Color de acento 2"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:269
@@ -708,13 +706,15 @@ msgstr "Dirección del movimiento cuando se presiona la tecla <key>Enter</key>"
 #: components/Preferences/UserDefinitions.tsx:1761
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Sinónimo color"
+msgstr ""
+"Puedes moverte en la dirección opuesta presionando "
+"<key>Shift</key>+<key>Enter</key>."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1786
 #, fuzzy
 msgid "filterPickLists"
-msgstr "No utilizar"
+msgstr "Filtrar elementos de la lista de selección"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1569
@@ -751,7 +751,7 @@ msgstr "No distingue entre mayúsculas y minúsculas"
 #: components/Preferences/UserDefinitions.tsx:1537
 #, fuzzy
 msgid "showNoReadTables"
-msgstr "General"
+msgstr "Mostrar tablas sin acceso de \"Lectura\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1863
@@ -855,7 +855,7 @@ msgstr "Ancho de columna de cuadrícula de subvista flexible"
 #: components/Preferences/UserDefinitions.tsx:469
 #, fuzzy
 msgid "closeOnEsc"
-msgstr "Icono y nombre de la tabla"
+msgstr "Cerrar al presionar la tecla <key>ESC</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:476
@@ -993,9 +993,7 @@ msgstr "Altura máxima"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr ""
-"Determina los títulos de los campos, las notas de uso y los títulos de las "
-"tablas."
+msgstr "Completar automáticamente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1142,7 +1140,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr "Personalización"
+msgstr "Preferencias de colección"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
@@ -1160,7 +1158,7 @@ msgstr "Recordar las posiciones de las ventanas de diálogo"
 #: components/Preferences/UserDefinitions.tsx:1304
 #, fuzzy
 msgid "autoPlayMedia"
-msgstr "Reproducir automáticamente los medios"
+msgstr "Reproducir automáticamente medios"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:225
