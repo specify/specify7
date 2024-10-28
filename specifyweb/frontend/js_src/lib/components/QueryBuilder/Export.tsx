@@ -71,7 +71,8 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
-        selectedRows: selectedRows !== undefined ? Array.from(selectedRows) : undefined,
+        selectedRows:
+          selectedRows === undefined ? undefined : Array.from(selectedRows),
         delimiter,
         bom,
       }),
