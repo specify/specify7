@@ -8,6 +8,7 @@ RUN apt-get update \
         python3.8 \
         libldap-2.4-2 \
         libmariadbclient18 \
+        rsync \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -68,6 +69,7 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
+COPY --chown=specify:specify config /opt/specify7/config
 
 ARG BUILD_VERSION
 ARG GIT_SHA

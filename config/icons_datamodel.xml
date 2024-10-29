@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icons type="datamodel" subdir="datamodel">
+    
+    <icon name="colobj_backstop" file="collection_object.png" sizes="all"/>
+    
+    <!--  Table Icons -->
+    <icon name="accession"            file="accession.png" sizes="all"/>
+    <icon name="accessioncitation" file="citation.png" sizes="all"/>
+    <icon name="appraisal"            file="appraisal.png" sizes="all"/>
+    <icon name="accessionagent"       file="agent.png" sizes="all"/>
+    <icon name="address"              file="address.png" sizes="all"/>
+    <icon name="addressofrecord"      file="address.png" sizes="all"/>
+    <icon name="agent"                file="agent.png" sizes="all"/>
+    <icon name="agentgeography"       file="agent_geography.png" sizes="all"/>
+    <icon name="agentspecialty"       file="agent_specialty.png" sizes="all"/>
+    <icon name="agentvariant"         file="agent.png" sizes="all"/>
+    <icon name="author"               file="author.png" sizes="all"/>
+    <icon name="attachment"           file="attachment.png" sizes="all"/>
+    <icon name="attribute"            file="attribute.png" sizes="all"/>
+    <icon name="attributedef"         file="attribute_def.png" sizes="all"/>
+    <icon name="borrow"               file="borrow.png" sizes="all"/>
+    <icon name="borrowmaterial"       file="borrow_material.png" sizes="all"/>
+    <icon name="borrowreturnmaterial" file="borrow_return_material.png" sizes="all"/>
+    <icon name="collectingevent"      file="collecting_event.png" sizes="all"/>
+    <icon name="collectingeventauthorization"      file="collectingeventauthorization.png" sizes="all"/>
+    <icon name="ce_restore"           file="collecting_event.png" sizes="all"/>
+    <icon name="collectinginformation" file="collecting_information.png" sizes="all"/>
+    <icon name="collectingtrip" file="collection_trip.png" sizes="all" />
+    <icon name="collectingtripauthorization"       file="collectingtripauthorization.png" sizes="all"/>
+    <icon name="collectingtripattribute"        file="collectingtripattribute.png" sizes="all"/>
+    <icon name="collection"           file="collection.png" sizes="all"/>
+    <icon name="collectionrelationship" file="collection_relationship.png" sizes="all"/>
+    <icon name="collectionreltype"    file="collection_rel_type.png" sizes="all"/>
+    <icon name="collector"            file="collector.png" sizes="all"/>
+    <icon name="collectionobject"     file="collection_object.png" sizes="all"/>
+    <icon name="collectionobjectcitation" file="citation.png" sizes="all"/>
+    <icon name="collectionobjectproperty" file="collectionobjectproperty.png" sizes="all"/>
+    <icon name="commonnametx"         file="common_name.png" sizes="all"/>
+    <icon name="commonnametxcitation" file="common_name_taxon_citation.png" sizes="all" />
+    <icon name="container"            file="container.png" sizes="all"/>
+    <icon name="conservator"          file="conservator.png" sizes="all"/>
+    <icon name="conservdescription"   file="conserv_description.png" sizes="all"/>
+    <icon name="conservevent"         file="conserv_event.png" sizes="all"/>
+    <icon name="datatype"             file="data_type.png" sizes="all"/>
+    <icon name="deaccession"          file="deaccession.png" sizes="all"/>
+    <icon name="determination"        file="determination.png" sizes="all"/>
+    <icon name="discipline"           file="discipline.png" sizes="all"/>
+    <icon name="disposal"             file="disposal.png" sizes="all"/>
+    <icon name="division"             file="division.png" sizes="all"/>
+    <icon name="dnaprimer"            file="dna_primer.png" sizes="all"/>
+    <icon name="dnasequence"          file="dna.png" sizes="all"/>
+    <icon name="dnasequencingrun"     file="dna_seq_run.png" sizes="all"/>
+    <icon name="dnasequencingruncitation"     file="dna_seq_run_citation.png" sizes="all"/>
+    <icon name="exsiccata"            file="exsiccata.png" sizes="all"/>
+    <icon name="exsiccataitem"        file="exsiccata_item.png" sizes="all"/>
+    <icon name="exchangein"           file="exchange_in.png" sizes="all"/>
+    <icon name="exchangeinprep"       file="exchange_in.png" sizes="all"/>
+    <icon name="exchangeout"          file="exchange_out.png" sizes="all"/>
+    <icon name="exchangeoutprep"      file="exchange_out.png" sizes="all"/>
+    <icon name="extractor"            file="extractor.png" sizes="all"/>
+    <icon name="fieldnotebook"        file="field_notebook.png" sizes="all"/>
+    <icon name="fieldnotebookpage"    file="field_notebook_page.png" sizes="all"/>
+    <icon name="fieldnotebookpageset" file="field_notebook_page_set.png" sizes="all"/>
+    <icon name="fundingagent"         file="fundingagent.png" sizes="all"/>
+    <icon name="geocoorddetail"       file="geo_coord_detail.png" sizes="all"/>
+    <icon name="geography"            file="geography.png" sizes="all"/>
+    <icon name="gift"                 file="gift.png" sizes="all"/>
+    <icon name="geologictimeperiod"   file="chronostratigraphy.png" sizes="all"/>
+    <icon name="inforequest"          file="information_request.png" sizes="all"/>
+    <icon name="institution"          file="institution.png" sizes="all"/>
+    <icon name="institutionnetwork"   file="inst_network.png" sizes="all"/>
+    <icon name="journal"              file="journal.png" sizes="all"/>
+    <icon name="lithostrat"           file="stratigraphy.png" sizes="all"/>
+    <icon name="loan"                 file="loan.png" sizes="all"/>
+    <icon name="loanreturnpreparation" file="loan_return_prep.png" sizes="all"/>
+    <icon name="locality"             file="locality.png" sizes="all"/>
+    <icon name="localitydetail"       file="locality_detail.png" sizes="all"/>
+    <icon name="localitynamealias"    file="locality_name_alias.png" sizes="all"/>
+    <icon name="latlonpolygon"        file="lat_lon_polygon.png" sizes="all"/>
+    <icon name="latlonpolygonpnt"     file="lat_lon_polygon_pnt.png" sizes="all"/>
+    <icon name="materialsample"       file="material_sample.png" sizes="all"/>
+    <icon name="otheridentifier"      file="other_identifier.png" sizes="all"/>
+    <icon name="paleocontext"         file="paleocontext.png" sizes="all"/>
+    <icon name="pcrperson"            file="pcrperson.png" sizes="all"/>
+    <icon name="permit"               file="permit.png" sizes="all"/>
+    <icon name="preparation"          file="preparation.png" sizes="all"/>
+    <icon name="preparationproperty"  file="preparationproperty.png" sizes="all"/>
+    <icon name="preptype"             file="prep_type.png" sizes="all"/>
+    <icon name="picklist"             file="pick_list.png" sizes="all"/>
+    <icon name="project"              file="project.png" sizes="all"/>
+    <icon name="referencework"        file="reference_work.png" sizes="all"/>
+    <icon name="repositoryagreement"  file="repository_agreement.png" sizes="all"/>
+    <icon name="shipment"             file="shipment.png" sizes="all"/>
+    <icon name="spauditlog"           file="audit_log_32.png" sizes="all"/>
+    <icon name="spauditlogfield"      file="audit_log_field_32.png" sizes="all"/>
+    <icon name="spsymbiotainstance"   file="sp_symbiota_instance.png" sizes="all"/>
+    <icon name="storage"              file="storage.png" sizes="all"/>
+    <icon name="taxon"                file="taxon.png" sizes="all"/>
+    <icon name="taxonattribute"       file="taxonattribute.png" sizes="all"/>
+    <icon name="treatmentevent"       file="treatment_event.png" sizes="all"/>
+    <icon name="voucherrelationship"       file="voucherrelationship.png" sizes="all"/>
+
+    <!--  Attribute Icons -->
+    <icon name="CollectionObjectAttribute"      file="collection_object_attr.png" sizes="all"/>
+    <icon name="CollectingEventAttribute"       file="collecting_event_attr.png" sizes="all"/>
+    <icon name="CollectingTripAttribute"        file="collectingtripattribute.png" sizes="all"/>
+    <icon name="PreparationAttribute"           file="preparation_attr.png" sizes="all"/>
+    
+    <!--  Attachment Icons -->
+    <icon name="AccessionAttachment"             file="accession_attachment.png" sizes="NonStd"/>
+	<icon name="AgentAttachment"                 file="agent_attachment.png" sizes="NonStd"/>
+    <icon name="BorrowAttachment"                file="borrow_attachment.png" sizes="NonStd"/>
+    <icon name="CollectingEventAttachment"       file="collecting_event_attachment.png" sizes="NonStd"/>
+    <icon name="CollectingTripAttachment"        file="collectingtripattachment.png" sizes="NonStd"/>
+	<icon name="CollectionObjectAttachment"      file="collection_object_attachment.png" sizes="NonStd"/>
+    <icon name="DeaccessionAttachment"           file="deaccession_attachment.png" sizes="NonStd"/>
+    <icon name="DisposalAttachment"              file="disposal_attachment.png" sizes="NonStd"/>
+    <icon name="ExchangeInAttachment"              file="exchange_in_attachment.png" sizes="NonStd"/>
+    <icon name="ExchangeOutAttachment"              file="exchange_out_attachment.png" sizes="NonStd"/>
+	<icon name="ConservDescriptionAttachment"    file="conserv_description_attachment.png" sizes="NonStd"/>
+	<icon name="ConservEventAttachment"          file="conserv_event_attachment.png" sizes="NonStd"/>
+    <icon name="DNASequenceAttachment"           file="dna_attachment.png" sizes="NonStd"/>
+    <icon name="DNASequencingRunAttachment"      file="dna_seq_run_attachment.png" sizes="NonStd"/>
+	<icon name="FieldNotebookAttachment"         file="field_notebook_attachment.png" sizes="NonStd"/>
+	<icon name="FieldNotebookPageAttachment"     file="field_notebook_page_attachment.png" sizes="NonStd"/>
+	<icon name="FieldNotebookPageSetAttachment"  file="field_notebook_page_set_attachment.png" sizes="NonStd"/>
+    <icon name="GiftAttachment"                  file="gift_attachment.png" sizes="NonStd"/>
+	<icon name="LoanAttachment"                  file="loan_attachment.png" sizes="NonStd"/>
+	<icon name="LocalityAttachment"              file="locality_attachment.png" sizes="NonStd"/>
+	<icon name="PermitAttachment"                file="permit_attachment.png" sizes="NonStd"/>
+	<icon name="PreparationAttachment"           file="preparation_attachment.png" sizes="NonStd"/>
+    <icon name="ReferenceWorkAttachment"         file="refwork_attachment.png" sizes="NonStd"/>
+	<icon name="RepositoryAgreementAttachment"   file="repository_agreement_attachment.png" sizes="NonStd"/>
+	<icon name="StorageAttachment"               file="storage_attachment.png" sizes="NonStd"/> 
+	<icon name="TaxonAttachment"                 file="taxon_attachment.png" sizes="NonStd"/> 
+    <icon name="TreatmentEventAttachment"        file="TreatmentEventAttachment.png" sizes="NonStd"/>
+	
+    <!--  Extra Icons -->
+    <icon name="group"                           file="group.png" sizes="all"/>
+    <icon name="person"                          file="person.png" sizes="all"/>
+    
+    <icon name="add-person"                      file="add-person.png" sizes="NonStd"/>
+    <icon name="addext-person"                   file="addext-person.png" sizes="NonStd"/>
+    <icon name="del-person"                      file="del-person.png" sizes="NonStd"/>
+    <icon name="rmv-person"                      file="rmv-person.png" sizes="NonStd"/>
+    <icon name="add-group"                       file="add-group.png" sizes="NonStd"/>
+    <!-- <icon name="add-discipline"                  file="add-discipline.png" sizes="NonStd"/>
+    <icon name="add-collection"                  file="add-collection.png" sizes="NonStd"/>  -->
+    <icon name="AdminGroup"                      file="admingroup.png" sizes="all"/>
+    <icon name="AdminInst"                       file="admininstitution.png" sizes="all"/>
+
+    <!-- Aliases -->
+	<icon name="borrowagent"                    alias="agent"/>
+	<icon name="giftagent"                      alias="agent"/>
+	<icon name="loanagent"                      alias="agent"/>
+	<icon name="groupperson"                    alias="agent"/>
+	<icon name="deaccessionagent"               alias="agent"/>
+	
+	<icon name="BorrowAgent"                    alias="agent"/>
+	<icon name="GiftAgent"                      alias="agent"/>
+	<icon name="LoanAgent"                      alias="agent"/>
+	<icon name="GroupPerson"                    alias="agent"/>
+    <icon name="DeaccessionAgent"               alias="agent"/>
+    <icon name="DisposalAgent"                  alias="agent"/>
+
+	<icon name="accessionauthorization"         alias="permit"/>
+	<icon name="AccessionAuthorization"         alias="permit"/>
+	
+	<!--  Attachment Icons Alias -->
+	<icon name="accessionattachment"            alias="AccessionAttachment"/>
+	<icon name="agentattachment"                alias="AgentAttachment"/>
+	<icon name="attachment"                     alias="attachment"/>
+	<icon name="attachmentmetadata"             alias="attachment"/>
+	<icon name="attachmenttag"                  alias="attachment"/>
+	<icon name="collectingeventattachment"      alias="CollectingEventAttachment"/>
+    <icon name="collectingtripattachment"      alias="CollectingTripAttachment"/>
+	<icon name="collectionobjectattachment"     alias="CollectionObjectAttachment"/>
+	<icon name="conservdescriptionattachment"   alias="ConservDescriptionAttachment"/>
+	<icon name="conserveventattachment"         alias="ConservEventAttachment"/>
+    <icon name="deaccessionattachment"          alias="DeaccessionAttachment"/>
+    <icon name="disposalattachment"            alias="DisposalAttachment"/>
+    <icon name="dnasequenceattachment"          alias="DNASequenceAttachment"/>
+    <icon name="dnasequencingrunattachment"     alias="DNASequencingRunAttachment"/>
+	<icon name="fieldnotebookattachment"        alias="FieldNotebookAttachment"/>
+	<icon name="fieldnotebookpageattachment"    alias="FieldNotebookPageAttachment"/>
+	<icon name="fieldnotebookpagesetattachment" alias="FieldNotebookPageSetAttachment"/>
+	<icon name="loanattachment"                 alias="LoanAttachment"/>
+	<icon name="localityattachment"             alias="LocalityAttachment"/>
+	<icon name="permitattachment"               alias="PermitAttachment"/>
+	<icon name="preparationattachment"          alias="PreparationAttachment"/>
+	<icon name="repositoryagreementattachment"  alias="RepositoryAgreementAttachment"/>
+    <icon name="storageattachment"              alias="StorageAttachment"/>
+	<icon name="taxonattachment"                alias="TaxonAttachment"/>
+
+    <icon name="loanpreparation"        alias="preparation"/>
+    <icon name="LoanPreparation"        alias="preparation"/>
+    <icon name="giftpreparation"        alias="preparation"/>
+    <icon name="GiftPreparation"        alias="preparation"/>
+    <icon name="disposalpreparation"    alias="preparation"/>
+    <icon name="DisposalPreparation"    alias="preparation"/>
+    
+    
+	<icon name="citation"               file="citation.png" sizes="all"/>
+    <icon name="determinationcitation"  alias="citation"/>
+    <icon name="localitycitation"       alias="citation"/>
+    <icon name="taxoncitation"          alias="citation"/>
+    <icon name="determinationcitaton"   alias="citation"/>
+    <icon name="localitycitation"       alias="citation"/>
+    <icon name="taxoncitation"          alias="citation"/>
+    
+    <icon name="DeterminationCitation"  alias="citation"/>
+    <icon name="LocalityCitation"       alias="citation"/>
+    <icon name="TaxonCitation"          alias="citation"/>
+    <icon name="DeterminationCitaton"   alias="citation"/>
+    <icon name="LocalityCitation"       alias="citation"/>
+    <icon name="TaxonCitation"          alias="citation"/>
+    
+    <icon name="collectingeventattribute"  alias="CollectingEventAttribute"/>
+    <icon name="collectingeventattr"       alias="CollectingEventAttribute"/>
+    <icon name="preparationattribute"      alias="PreparationAttribute"/>
+    <icon name="preparationattr"           alias="PreparationAttribute"/>
+  	<icon name="collectionobjectattribute" alias="CollectionObjectAttribute"/>
+  	<icon name="collectionobjectattr"      alias="CollectionObjectAttribute"/>
+    
+    <icon name="CollectingEventAttribute"  alias="CollectingEventAttribute"/>
+    <icon name="CollectingEventAttr"       alias="CollectingEventAttribute"/>
+    <icon name="PreparationAttribute"      alias="PreparationAttribute"/>
+    <icon name="PreparationAttr"           alias="PreparationAttribute"/>
+  	<icon name="CollectionObjectAttribute" alias="CollectionObjectAttribute"/>
+  	<icon name="CollectionObjectAttr"      alias="CollectionObjectAttribute"/>
+    
+    
+    <icon name="Accession Agent"        alias="accessionagent"/>
+    <icon name="Collecting Event"       alias="collectingevent"/>
+    <icon name="Collecting Trip"        alias="collectingtrip"/>
+    <icon name="Collection Object"      alias="collectionobject"/>
+    <icon name="Collection Object Attribute" alias="attribute"/>
+    <icon name="Container"              alias="container"/>
+    <icon name="Collecting Event Attribute" alias="attribute"/>
+    <icon name="Preparation Attribute" alias="attribute"/>
+    <icon name="Preparation Type"       alias="preptype"/>
+    <icon name="Repository Agreement"   alias="repositoryagreement"/>
+    <icon name="RepositoryAgreement"   alias="repositoryagreement"/>
+    <icon name="Reference Work"         alias="referencework"/>
+    
+    <icon name="Accession"              alias="accession"/>
+    <icon name="AccessionCitation" alias="citation"/>
+    <icon name="AccessionAgent"         alias="agent"/>
+    <icon name="Address"                alias="address"/>
+    <icon name="AddressOfRecord"        alias="addressofrecord"/>
+    <icon name="Agent"                  alias="agent"/>
+    <icon name="AgentGeography"         alias="agentgeography"/>
+    <icon name="AgentSpecialty"         alias="agentspecialty"/>
+    <icon name="AgentVariant"           alias="agentvariant"/>
+    <icon name="Appraisal"              alias="appraisal"/>
+    <icon name="Attachment"             alias="attachment"/>
+    <icon name="AttributeDef"           alias="attributedef"/>
+    <icon name="Author"                 alias="author"/>
+    <icon name="Borrow"                 alias="borrow"/>
+    <icon name="BorrowMaterial"         alias="borrowmaterial"/>
+    <icon name="BorrowReturnMaterial"   alias="borrowreturnmaterial"/>
+    <icon name="ColObjAttributes"       alias="attribute"/>
+    <icon name="CollectionObjectCitation" alias="citation"/>
+    <icon name="CollectingEvent"        alias="collectingevent"/>
+    <icon name="CollectingEventAuthorization"        alias="collectingeventauthorization"/>
+    <icon name="CollectingTrip"         alias="collectingtrip"/>
+    <icon name="CollectingTripAttribute"             alias="collectingtripattribute"/>
+    <icon name="CollectingTripAuthorization"         alias="collectingtripauthorization"/>
+    <icon name="Collection"             alias="collection"/>
+    <icon name="CollectionRelationship" alias="collectionrelationship"/>
+    <icon name="CollectionRelType"      alias="collectionreltype"/>
+    <icon name="Collector"              alias="collector"/>
+    <icon name="CollectionName"         alias="collectionname"/>
+    <icon name="CollectionObject"       alias="collectionobject"/>
+    <icon name="CollectionObjectProperty"       alias="collectionobjectproperty"/>
+    <icon name="CommonNameTx"           alias="commonnametx"/>
+    <icon name="CommonNameTxCitation"   alias="commonnametxcitation"/>
+    <icon name="Conservator"            alias="conservator"/>
+    <icon name="ConservDescription"     alias="conservdescription"/>
+    <icon name="ConservEvent"           alias="conservevent"/>
+    <icon name="DataType"               alias="datatype"/>
+    <icon name="Deaccession"            alias="deaccession"/>
+    <icon name="Determination"          alias="determination"/>
+    <!-- <icon name="DeterminationStatus"    alias="determinationstatus"/>-->
+    <icon name="Disposal"               alias="disposal"/>
+    <icon name="Division"               alias="division"/>
+    <icon name="Discipline"             alias="discipline"/>
+    <icon name="DNAPrimer"              alias="dnaprimer"/>
+    <icon name="DNASequence"            alias="dnasequence"/>
+    <icon name="DNASequencingRun"       alias="dnasequencingrun"/>
+    <icon name="Deaccession"            alias="deaccession"/>
+    <icon name="Exsiccata"              alias="exsiccata"/>
+    <icon name="ExsiccataItem"          alias="exsiccataitem"/>
+    <icon name="ExchangeIn"             alias="exchangein"/>
+    <icon name="ExchangeOut"            alias="exchangeout"/>
+    <icon name="Extractor"              alias="extractor"/>
+    <icon name="FieldNotebookPage"      alias="fieldnotebookpage"/>
+    <icon name="FieldNotebookPageSet"   alias="fieldnotebookpageset"/>
+    <icon name="FieldNotebook"          alias="fieldnotebook"/>
+    <icon name="FundingAgent"           alias="fundingagent"/>
+    <icon name="GeoCoordDetail"         alias="geocoorddetail"/>
+    <icon name="Geography"              alias="geography"/>
+    <icon name="GeologicTimePeriod"     alias="geologictimeperiod"/>
+    <icon name="Gift"                   alias="gift"/>
+    <icon name="InfoRequest"            alias="inforequest"/>
+    <icon name="Institution"            alias="institution"/>
+    <icon name="InstitutionNetwork"     alias="institutionnetwork"/>
+    <icon name="Journal"                alias="journal"/>
+    <icon name="LithoStrat"             alias="lithostrat"/>
+    <icon name="Loan"                   alias="loan"/>
+    <icon name="LoanReturnPreparation"  alias="loanreturnpreparation"/>
+    <icon name="Locality"               alias="locality"/>
+    <icon name="LocalityDetail"         alias="locality_detail"/>
+    <icon name="LocalityNameAlias"      alias="localitynamealias"/>
+    <icon name="MaterialSample"         alias="materialsample"/>
+    <icon name="OtherIdentifier"        alias="otheridentifier"/>
+    <icon name="PcrPerson"              alias="pcrperson"/>
+    <icon name="Permit"                 alias="permit"/>
+    <icon name="PaleoContext"           alias="paleocontext"/>
+    <icon name="Preparation"            alias="preparation"/>
+    <icon name="PreparationProperty"            alias="preparationproperty"/>
+    <icon name="PickList"               alias="picklist"/>
+    <icon name="PrepType"               alias="preptype"/>
+    <icon name="Project"                alias="project"/>
+    <icon name="ReferenceWork"          alias="referencework"/>
+    <icon name="Shipment"               alias="shipment"/>
+    <icon name="SpAuditLog"           alias="spauditlog"/>
+    <icon name="SpAuditLogField"      alias="spauditlogfield"/>
+    <icon name="Storage"                alias="storage"/>
+    <icon name="Taxon"                  alias="taxon"/>
+    <icon name="TaxonAttribute"         alias="taxonattribute"/>
+    <icon name="TreatmentEvent"         alias="treatmentevent"/>
+    <icon name="VoucherRelationship"         alias="voucherrelationship"/>
+
+    <icon name="taxontreedef"              alias="taxon"/>
+    <icon name="geographytreedef"          alias="geography"/>
+    <icon name="geologictimeperiodtreedef" alias="geologictimeperiod"/>
+    <icon name="storagetreedef"            alias="storage"/>
+    <icon name="lithostrattreedef"         alias="lithostrat"/>
+    
+    <!-- Tree Task icons -->
+    <icon name="TaxonTree"                 alias="taxon"/>
+    <icon name="GeographyTree"             alias="geography"/>
+    <icon name="GeoTimePeriodTree"         alias="geologictimeperiod"/>
+    <icon name="StorageTree"               alias="storage"/>
+    <icon name="LithoStratTree"            alias="lithostrat"/>
+    
+    <icon name="TreeDefEditor"             alias="taxon"/>
+    <icon name="TreeViewer"			       alias="taxon"/>
+    
+    <!--  Misc -->
+    
+    <icon name="InstBldg"                  file="institution_bldg.png" sizes="all"/> 
+    <icon name="Person"                    alias="person"/>
+    <icon name="People"                    alias="group"/>
+    
+</icons>
