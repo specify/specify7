@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-29 20:09+0000\n"
+"PO-Revision-Date: 2024-10-29 20:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "interactions/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -94,7 +94,7 @@ msgstr "Препараты"
 #: components/FormCommands/index.tsx:101
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "Препараты не подлежат возврату в данном контексте."
+msgstr "В этом контексте препараты не подлежат возврату."
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:75
@@ -125,7 +125,7 @@ msgstr "Решать"
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "Вернуть все препараты"
+msgstr "[X0X] Возврат"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
@@ -277,4 +277,4 @@ msgstr "Ни один из этих объектов не имеет подго�
 #: components/TreeView/AddRank.tsx:62
 #, fuzzy
 msgid "continue"
-msgstr "Продолжать"
+msgstr "Продолжить без подготовки"
