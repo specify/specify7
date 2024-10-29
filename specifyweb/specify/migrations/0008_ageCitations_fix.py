@@ -16,8 +16,8 @@ def update_fields(apps):
 
 def revert_update_fields(apps):
     # Remove absoluteAgeCitation -> absoluteAge and relativeAgeCitation -> relativeAge
-    revert_table_field_schema_config('AbsoluteAgeCitation', 'absoluteAge', apps)
-    revert_table_field_schema_config('RelativeAgeCitation', 'relativeAge', apps)
+    revert_table_field_schema_config('AbsoluteAge', 'absoluteAgeCitation', apps)
+    revert_table_field_schema_config('RelativeAge', 'relativeAgeCitation', apps)
 
 class Migration(migrations.Migration):
 
