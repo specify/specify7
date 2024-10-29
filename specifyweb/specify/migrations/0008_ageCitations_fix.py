@@ -11,13 +11,13 @@ def update_fields(apps):
 
     # Add absoluteAgeCitation -> absoluteAge & Add relativeAgeCitation -> relativeAge
     for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('AbsoluteAge', discipline.id, 'absoluteAgeCitation', apps)
-        update_table_field_schema_config_with_defaults('RelativeAge', discipline.id, 'relativeAgeCitation', apps)
+        update_table_field_schema_config_with_defaults('AbsoluteAge', discipline.id, 'absoluteAgeCitations', apps)
+        update_table_field_schema_config_with_defaults('RelativeAge', discipline.id, 'relativeAgeCitations', apps)
 
 def revert_update_fields(apps):
     # Remove absoluteAgeCitation -> absoluteAge and relativeAgeCitation -> relativeAge
-    revert_table_field_schema_config('AbsoluteAge', 'absoluteAgeCitation', apps)
-    revert_table_field_schema_config('RelativeAge', 'relativeAgeCitation', apps)
+    revert_table_field_schema_config('AbsoluteAge', 'absoluteAgeCitations', apps)
+    revert_table_field_schema_config('RelativeAge', 'relativeAgeCitations', apps)
 
 class Migration(migrations.Migration):
 
