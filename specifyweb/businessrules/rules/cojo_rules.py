@@ -25,7 +25,7 @@ def cojo_pre_save(cojo):
          .filter(parentcog=cojo.parentcog)
          .update(issubstrate=False))
 
-    if cojo.childcog.parentcojo is not None:
+    if  cojo.childcog is not None and cojo.childcog.parentcojo is not None and cojo.childcog.parentcojo.id is not cojo.id:
         raise BusinessRuleException('ChildCog is already in use as a child in another COG.')
         
 @orm_signal_handler('post_save', 'Collectionobjectgroupjoin')
