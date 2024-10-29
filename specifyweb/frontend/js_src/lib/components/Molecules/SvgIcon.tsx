@@ -241,7 +241,7 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ...startsWith('Workbench', colors.green),
   ...startsWith('AbsoluteAge', colors.blue),
   ...startsWith('RelativeAge', colors.lightBlue),
-  ...startsWith('TectonicUnit', colors.red),
+  ...startsWith('TectonicUnit', colors.yellowOrange),
   ...endsWith('Agent', colors.yellowOrange),
   ...endsWith('Citation', colors.red),
   ...endsWith('Authorization', colors.red),
