@@ -122,7 +122,7 @@ def revert_create_root_tectonic_node(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0007_schema_config_update'),
+        ('specify', '0008_ageCitations_fix'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
