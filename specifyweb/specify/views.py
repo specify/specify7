@@ -23,6 +23,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
+from specifyweb.specify.utils import get_spmodel_class
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
@@ -499,7 +500,7 @@ def record_merge(
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
-    record_version = getattr(spmodels, model_name.title()).objects.get(
+    record_version = get_spmodel_class(model_name.title()).objects.get(
         id=new_model_id).version
     get_version = request.GET.get('version', record_version)
     version = get_version if isinstance(get_version, int) else 0

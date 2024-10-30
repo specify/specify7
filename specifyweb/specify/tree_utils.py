@@ -2,6 +2,7 @@ from typing import Tuple, List
 from django.db.models import Q, Count, Model
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.utils import get_spmodel_class
 
 lookup = lambda tree: (tree.lower() + 'treedef')
 
@@ -32,7 +33,7 @@ def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple
 
     lookup_tree = lookup(tree_name)
     tree_table = datamodel.get_table_strict(lookup_tree)
-    tree_model: Model = getattr(spmodels, tree_table.django_name)
+    tree_model: Model = get_spmodel_class(tree_table.django_name)
 
     # Get all the treedefids, and the count of item in each, corresponding to our search predicates
     search_query = _limit(

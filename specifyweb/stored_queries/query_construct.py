@@ -7,6 +7,7 @@ from sqlalchemy import orm, sql
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tree_utils import get_treedefs
 
+from specifyweb.specify.utils import get_spmodel_class
 from specifyweb.stored_queries import models
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[(table, 'TreeRanks')] = (ancestors, treedefs)
 
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
+        item_model = get_spmodel_class(table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
         treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
