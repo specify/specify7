@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 from django.db import connection
 from django.db.models import Model
-from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table

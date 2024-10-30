@@ -14,8 +14,10 @@ import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type { CollectionFetchFilters } from './collection';
 import {
   DependentCollection,
+  IndependentCollection,
   LazyCollection,
   ToOneCollection,
 } from './collectionApi';
@@ -73,13 +75,13 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     >;
     readonly domainfilter?: boolean;
   },
-  tables?: RA<SpecifyResource<AnySchema>>
+  initalResources?: RA<SpecifyResource<AnySchema>>
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
-  readonly fetch: (filter?: {
-    readonly limit: number;
-  }) => Promise<Collection<SCHEMA>>;
+  readonly fetch: (
+    filter?: CollectionFetchFilters<AnySchema>
+  ) => Promise<Collection<SCHEMA>>;
 };
 
 export type Collection<SCHEMA extends AnySchema> = {
@@ -87,9 +89,12 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
   readonly models: RA<SpecifyResource<SCHEMA>>;
+  readonly length: number;
   readonly table: {
     readonly specifyTable: SpecifyTable<SCHEMA>;
   };
+  readonly updated?: IR<SpecifyResource<SCHEMA> | string>;
+  readonly removed?: ReadonlySet<string>;
   readonly constructor: CollectionConstructor<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
@@ -99,12 +104,19 @@ export type Collection<SCHEMA extends AnySchema> = {
   /* eslint-disable @typescript-eslint/method-signature-style */
   isComplete(): boolean;
   getTotalCount(): Promise<number>;
+  getFetchOffset(): number;
+  toApiJSON(): {
+    readonly update: RA<SpecifyResource<SCHEMA> | string>;
+    readonly remove: RA<string>;
+  };
   indexOf(resource: SpecifyResource<SCHEMA>): number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
   add(resource: RA<SpecifyResource<SCHEMA>> | SpecifyResource<SCHEMA>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
-  fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
+  fetch(
+    filters?: CollectionFetchFilters<AnySchema>
+  ): Promise<Collection<SCHEMA>>;
   trigger(eventName: string): void;
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
@@ -177,6 +189,8 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    */
   public readonly DependentCollection: CollectionConstructor<SCHEMA>;
 
+  public readonly IndependentCollection: CollectionConstructor<SCHEMA>;
+
   /**
    * A Backbone collection for loading a collection of items of this type as a
    * backwards -to-one collection of some other resource.
@@ -232,6 +246,11 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
 
     this.DependentCollection = DependentCollection.extend({
       __name__: `${this.name}DependentCollection`,
+      model: this.Resource,
+    });
+
+    this.IndependentCollection = IndependentCollection.extend({
+      __name__: `${this.name}IndependentCollection`,
       model: this.Resource,
     });
 

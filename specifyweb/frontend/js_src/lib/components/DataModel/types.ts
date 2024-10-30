@@ -1393,6 +1393,7 @@ export type CollectionObject = {
     readonly text2: string | null;
     readonly inventoryDate: string | null;
     readonly inventoryDatePrecision: number | null;
+    readonly isMemberOfCOG: boolean | null;
     readonly modifier: string | null;
     readonly name: string | null;
     readonly notifications: string | null;
@@ -6521,6 +6522,7 @@ export type CollectionObjectGroup = {
   };
   readonly toManyDependent: {
     readonly children: RA<CollectionObjectGroupJoin>;
+    readonly cojo: RA<CollectionObjectGroupJoin>;
   };
   readonly toManyIndependent: RR<never, never>;
 };

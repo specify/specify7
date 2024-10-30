@@ -1,6 +1,5 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
@@ -19,7 +18,8 @@ import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
@@ -31,9 +31,10 @@ import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { SearchDialog } from '../SearchDialog';
+import { useSearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
 
 const cellToLabel = (
@@ -73,6 +74,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onFetchMore: handleFetchMore,
   isCollapsed = false,
   preHeaderButtons,
+  collection,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -89,6 +91,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly isCollapsed: boolean | undefined;
   readonly preHeaderButtons?: JSX.Element;
+  readonly collection: Collection<AnySchema> | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -173,9 +176,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [isExpanded, setExpandedRecords] = React.useState<
     IR<boolean | undefined>
   >({});
-  const [state, setState] = React.useState<
-    State<'MainState'> | State<'SearchState'>
-  >({ type: 'MainState' });
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
@@ -198,13 +198,24 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
+  const { searchDialog, showSearchDialog } = useSearchDialog({
+    forceCollection: undefined,
+    extraFilters: undefined,
+    table: relationship.relatedTable,
+    multiple: !isToOne,
+    onSelected: handleAddResources,
+  });
+
   const children =
     collapsedViewDefinition === undefined ? (
       commonText.loading()
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
+      <div
+        className={isCollapsed ? 'hidden' : 'overflow-x-auto'}
+        onScroll={handleScroll}
+      >
         <DataEntry.Grid
           className="sticky w-fit"
           display="inline"
@@ -219,7 +230,6 @@ export function FormTable<SCHEMA extends AnySchema>({
             maxHeight: `${maxHeight}px`,
           }}
           viewDefinition={collapsedViewDefinition}
-          onScroll={handleScroll}
         >
           <div
             /*
@@ -387,7 +397,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                     </>
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] === true ? (
+                    {displayViewButton &&
+                    isExpanded[resource.cid] === true &&
+                    !resource.isNew() ? (
                       <Link.Small
                         aria-label={commonText.openInNewTab()}
                         className="flex-1"
@@ -441,56 +453,53 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
-  const addButton =
-    typeof handleAddResources === 'function' &&
+
+  const isCOJO =
+    relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
+    relationship.name === 'children';
+
+  const addButtons = isCOJO ? (
+    <COJODialog
+      collection={collection}
+      parentResource={
+        collection?.related as SpecifyResource<CollectionObjectGroup>
+      }
+    />
+  ) : typeof handleAddResources === 'function' &&
     mode !== 'view' &&
-    !disableAdding &&
-    hasTablePermission(
-      relationship.relatedTable.name,
-      isDependent ? 'create' : 'read'
-    ) ? (
-      <DataEntry.Add
-        onClick={
-          disableAdding
-            ? undefined
-            : isDependent
-            ? (): void => {
-                const resource = new relationship.relatedTable.Resource();
-                handleAddResources([resource]);
-              }
-            : (): void =>
-                setState({
-                  type: 'SearchState',
-                })
-        }
-      />
-    ) : undefined;
+    !disableAdding ? (
+    <>
+      {!isDependent &&
+      hasTablePermission(relationship.relatedTable.name, 'read') ? (
+        <DataEntry.Search disabled={isReadOnly} onClick={showSearchDialog} />
+      ) : undefined}
+      {hasTablePermission(relationship.relatedTable.name, 'create') ? (
+        <DataEntry.Add
+          onClick={(): void => {
+            const resource = new relationship.relatedTable.Resource();
+            handleAddResources([resource]);
+          }}
+        />
+      ) : undefined}
+    </>
+  ) : undefined;
+
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
         {preHeaderButtons}
         <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
-        {addButton}
+        {addButtons}
       </DataEntry.SubFormHeader>
       {children}
-      {state.type === 'SearchState' &&
-      typeof handleAddResources === 'function' ? (
-        <SearchDialog
-          extraFilters={undefined}
-          forceCollection={undefined}
-          multiple
-          table={relationship.relatedTable}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={handleAddResources}
-        />
-      ) : undefined}
+      {searchDialog}
     </DataEntry.SubForm>
   ) : (
     <Dialog
       buttons={commonText.close()}
       dimensionsKey={relationship.name}
       header={header}
-      headerButtons={addButton}
+      headerButtons={addButtons}
       modal={dialog === 'modal'}
       onClose={handleClose}
     >
