@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-30 18:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -559,7 +559,8 @@ msgstr ""
 #: components/QueryBuilder/Import.tsx:159
 #, fuzzy
 msgid "importHiddenFields"
-msgstr "In der importierten Abfrage sind folgende Felder ausgeblendet:"
+msgstr ""
+"In der von Ihnen importierten Abfrage sind die folgenden Felder ausgeblendet:"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
