@@ -6602,6 +6602,7 @@ export type AbsoluteAge = {
   };
   readonly toManyDependent: {
     readonly absoluteAgeAttachments: RA<AbsoluteAgeAttachment>;
+    readonly absoluteAgeCitations: RA<AbsoluteAgeCitation>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
@@ -6640,6 +6641,7 @@ export type RelativeAge = {
   };
   readonly toManyDependent: {
     readonly relativeAgeAttachments: RA<RelativeAgeAttachment>;
+    readonly relativeAgeCitations: RA<RelativeAgeCitation>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
