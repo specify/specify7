@@ -236,7 +236,7 @@ msgstr "Следующая запись"
 msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:390
+#: components/Forms/ResourceView.tsx:391
 #: components/Forms/Save.tsx:46
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
@@ -779,13 +779,13 @@ msgstr "Новый {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:213
+#: components/Forms/ResourceView.tsx:214
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ресурс удален"
 
-#: components/Forms/ResourceView.tsx:216
+#: components/Forms/ResourceView.tsx:217
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"

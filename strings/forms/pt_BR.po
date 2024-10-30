@@ -189,7 +189,7 @@ msgstr ""
 msgid "currentRecord"
 msgstr ""
 
-#: components/Forms/ResourceView.tsx:390
+#: components/Forms/ResourceView.tsx:391
 #: components/Forms/Save.tsx:46
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -641,12 +641,12 @@ msgstr ""
 msgid "resourceFormatter"
 msgstr ""
 
-#: components/Forms/ResourceView.tsx:213
+#: components/Forms/ResourceView.tsx:214
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr ""
 
-#: components/Forms/ResourceView.tsx:216
+#: components/Forms/ResourceView.tsx:217
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr ""

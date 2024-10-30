@@ -36,7 +36,7 @@ msgstr "Non"
 #: components/FormSliders/RecordSelectorFromIds.tsx:265
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
-#: components/Forms/ResourceView.tsx:347
+#: components/Forms/ResourceView.tsx:348
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:267
@@ -188,8 +188,8 @@ msgstr "Créer"
 #: components/Formatters/Element.tsx:88
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:161
-#: components/Forms/ResourceView.tsx:212
-#: components/Forms/ResourceView.tsx:350
+#: components/Forms/ResourceView.tsx:213
+#: components/Forms/ResourceView.tsx:351
 #: components/Forms/Save.tsx:337
 #: components/Forms/Save.tsx:372
 #: components/Header/UserTools.tsx:75
@@ -247,7 +247,7 @@ msgstr "Créer"
 #: components/Toolbar/Language.tsx:76
 #: components/Toolbar/MasterKey.tsx:97
 #: components/Toolbar/QueryTablesEdit.tsx:73
-#: components/Toolbar/QueryTablesWrapper.tsx:155
+#: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:402
 #: components/WbActions/WbNoUploadPlan.tsx:42
@@ -546,7 +546,7 @@ msgstr "Nouveau"
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:99
 #: components/FormMeta/index.tsx:101
-#: components/Forms/ResourceView.tsx:222
+#: components/Forms/ResourceView.tsx:223
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
@@ -796,7 +796,7 @@ msgstr "Exporter"
 #: components/Security/ImportExport.tsx:73
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
-#: components/Toolbar/QueryTablesWrapper.tsx:150
+#: components/Toolbar/QueryTablesWrapper.tsx:151
 #. Used in: Components > Attachments > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "import"
 msgstr "Importer"

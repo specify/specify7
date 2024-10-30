@@ -49,7 +49,7 @@ msgstr ""
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
-#: components/Toolbar/QueryTablesWrapper.tsx:162
+#: components/Toolbar/QueryTablesWrapper.tsx:163
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 #, fuzzy
 msgid "newQueryName"
