@@ -8296,8 +8296,8 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
-            Relationship(name='parentCojo', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',column='CollectionObjectGroupJoinID', otherSideName='collectionobjectgroup'),
-            # Relationship(name='cojo', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childCog', dependent=True),
+            # Relationship(name='parentCojo', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',column='CollectionObjectGroupJoinID', otherSideName='collectionobjectgroup'),
+            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childCog', dependent=True),
             Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
