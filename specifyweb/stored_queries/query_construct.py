@@ -4,7 +4,7 @@ from typing import Tuple, List
 
 from sqlalchemy import orm, sql
 
-import specifyweb.specify.models as spmodels
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.tree_utils import get_treedefs
 
 from specifyweb.specify.utils import get_spmodel_class
@@ -106,7 +106,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             if not field.is_relationship:
                 break
 
-            tables.append(spmodels.datamodel.get_table(field.relatedModelName, strict=True))
+            tables.append(datamodel.get_table(field.relatedModelName, strict=True))
         return tables
 
     def build_join(self, table, model, join_path):
@@ -120,7 +120,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
             if not field.is_relationship:
                 break
-            next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
+            next_table = datamodel.get_table(field.relatedModelName, strict=True)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:
                 aliased = query.join_cache[(model, field.name)]

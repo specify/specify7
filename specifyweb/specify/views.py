@@ -24,7 +24,8 @@ from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from specifyweb.specify.utils import get_spmodel_class
-from . import api, models as spmodels
+from specifyweb.specify import api
+from specifyweb.specify.models import Agent, Collection, Division, Specifyuser
 from .specify_jar import specify_jar
 
 
@@ -191,7 +192,7 @@ def set_password(request, userid):
     """
     check_permission_targets(None, request.specify_user.id, [
                              SetPasswordPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
@@ -305,23 +306,23 @@ class SetUserAgentsPT(PermissionTarget):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
-        spmodels.Agent.objects.filter(
+        Agent.objects.filter(
             specifyuser_id=userid).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = spmodels.Agent.objects.select_for_update().filter(
+        in_use = Agent.objects.select_for_update().filter(
             pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        spmodels.Agent.objects.filter(
+        Agent.objects.filter(
             pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
@@ -340,7 +341,7 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = spmodels.Collection.objects.filter(
+        collections = Collection.objects.filter(
             discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
@@ -357,7 +358,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
-    collections = spmodels.Collection.objects.filter(
+    collections = Collection.objects.filter(
         discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
     # make sure every collection the user is permitted to access has an assigned user.
@@ -374,7 +375,7 @@ def check_collection_access_against_agents(userid: int) -> None:
         if collection.id not in collections
     ]
     if missing_for_6 or missing_for_7:
-        all_divisions = spmodels.Division.objects.filter(
+        all_divisions = Division.objects.filter(
             disciplines__collections__id__in=[
                 cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
         ).values_list('id', flat=True).distinct()
@@ -427,7 +428,7 @@ def set_admin_status(request, userid):
     """
     check_permission_targets(
         None, request.specify_user.id, [Sp6AdminPT.update])
-    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user = Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
         return http.HttpResponse('true', content_type='text/plain')

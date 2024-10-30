@@ -7,7 +7,6 @@ from django.db.models import Count
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.utils import get_spmodel_class
 from . import tree_extras
-from . import models as spmodels
 from sys import maxsize
 
 import logging
