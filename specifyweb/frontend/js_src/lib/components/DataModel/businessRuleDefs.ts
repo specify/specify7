@@ -3,7 +3,6 @@ import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
   CURRENT_DETERMINATION_KEY,
-  DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
 } from './businessRuleUtils';
