@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:16+0000\n"
+"PO-Revision-Date: 2024-10-30 18:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -1128,4 +1128,4 @@ msgstr "Enviado"
 #: components/WbPlanView/MapperComponents.tsx:62
 #, fuzzy
 msgid "deleteUnmapped"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Selecione os arquivos ou arraste-os aqui"
