@@ -211,7 +211,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
         cog.rgetPromise('cogType').then((cogtype) => {
           if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
-            const cojos = cog.getDependentResource('cojo');
+            const cojos = cog.getDependentResource('children');
             // Set first CO in COG to primary
             cojos?.models
               .find((cojo) => cojo.get('childCo') !== null)
