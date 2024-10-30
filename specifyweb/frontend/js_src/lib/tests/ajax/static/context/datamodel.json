@@ -7568,6 +7568,22 @@
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
         "otherSideName": "childco"
+      },
+      {
+        "name": "absoluteAges",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "AbsoluteAge",
+        "otherSideName": "collectionObject"
+      },
+      {
+        "name": "relativeAges",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "RelativeAge",
+        "otherSideName": "collectionObject"
       }
     ],
     "fieldAliases": []
@@ -14836,6 +14852,15 @@
         "otherSideName": "disciplines"
       },
       {
+        "name": "tectonicUnitTreeDef",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDef",
+        "column": "TectonicUnitTreeDefID",
+        "otherSideName": "disciplines"
+      },
+      {
         "name": "modifiedByAgent",
         "type": "many-to-one",
         "required": false,
@@ -18265,7 +18290,7 @@
       {
         "name": "discipline",
         "type": "many-to-one",
-        "required": true,
+        "required": false,
         "dependent": false,
         "relatedModelName": "Discipline",
         "column": "DisciplineID",
@@ -18797,7 +18822,7 @@
       {
         "name": "discipline",
         "type": "many-to-one",
-        "required": true,
+        "required": false,
         "dependent": false,
         "relatedModelName": "Discipline",
         "column": "DisciplineID",
@@ -24422,6 +24447,15 @@
         "dependent": false,
         "relatedModelName": "LithoStrat",
         "column": "LithoStratID",
+        "otherSideName": "paleoContexts"
+      },
+      {
+        "name": "tectonicUnit",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "column": "TectonicUnitID",
         "otherSideName": "paleoContexts"
       },
       {
@@ -38394,12 +38428,13 @@
         "column": "COGTypeID"
       },
       {
-        "name": "parentCojos",
-        "type": "one-to-many",
+        "name": "parentCojo",
+        "type": "many-to-one",
         "required": false,
-        "dependent": true,
+        "dependent": false,
         "relatedModelName": "CollectionObjectGroupJoin",
-        "otherSideName": "parentCog"
+        "column": "CollectionObjectGroupJoinID",
+        "otherSideName": "collectionobjectgroup"
       },
       {
         "name": "cojo",
@@ -38408,6 +38443,14 @@
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
         "otherSideName": "childCog"
+      },
+      {
+        "name": "children",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "CollectionObjectGroupJoin",
+        "otherSideName": "parentCog"
       },
       {
         "name": "createdByAgent",
@@ -38568,7 +38611,7 @@
         "dependent": false,
         "relatedModelName": "CollectionObjectGroup",
         "column": "ParentCOGID",
-        "otherSideName": "parentcojos"
+        "otherSideName": "children"
       },
       {
         "name": "childCog",
@@ -38587,6 +38630,14 @@
         "relatedModelName": "CollectionObject",
         "column": "ChildCOID",
         "otherSideName": "cojo"
+      },
+      {
+        "name": "collectionobjectgroup",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "CollectionObjectGroup",
+        "otherSideName": "parentCojo"
       }
     ],
     "fieldAliases": []
@@ -38666,6 +38717,1338 @@
         "dependent": false,
         "relatedModelName": "Agent",
         "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.AbsoluteAge",
+    "table": "absoluteage",
+    "tableId": 1019,
+    "system": false,
+    "idColumn": "AbsoluteAgeID",
+    "idFieldName": "absoluteAgeId",
+    "fields": [
+      {
+        "name": "absoluteAge",
+        "column": "AbsoluteAge",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "ageType",
+        "column": "AgeType",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 64
+      },
+      {
+        "name": "ageUncertainty",
+        "column": "AgeUncertainty",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "collectionDate",
+        "column": "CollectionDate",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "date1",
+        "column": "Date1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "date2",
+        "column": "Date2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "datingMethod",
+        "column": "DatingMethod",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 64
+      },
+      {
+        "name": "datingMethodRemarks",
+        "column": "DatingMethodRemarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "number1",
+        "column": "Number1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number2",
+        "column": "Number2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "yesno1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "agent1",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent1ID"
+      },
+      {
+        "name": "absoluteAgeAttachments",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "AbsoluteAgeAttachment",
+        "otherSideName": "absoluteAge"
+      },
+      {
+        "name": "collectionObject",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObject",
+        "column": "CollectionObjectID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.RelativeAge",
+    "table": "relativeage",
+    "tableId": 1020,
+    "system": false,
+    "idColumn": "RelativeAgeID",
+    "idFieldName": "relativeAgeId",
+    "fields": [
+      {
+        "name": "ageType",
+        "column": "AgeType",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 64
+      },
+      {
+        "name": "ageUncertainty",
+        "column": "AgeUncertainty",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "collectionDate",
+        "column": "CollectionDate",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "date1",
+        "column": "Date1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "date2",
+        "column": "Date2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.util.Date"
+      },
+      {
+        "name": "datingMethod",
+        "column": "DatingMethod",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 64
+      },
+      {
+        "name": "datingMethodRemarks",
+        "column": "DatingMethodRemarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "number1",
+        "column": "Number1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number2",
+        "column": "Number2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "relativeAgePeriod",
+        "column": "RelativeAgePeriod",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "verbatimName",
+        "column": "VerbatimName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "verbatimPeriod",
+        "column": "VerbatimPeriod",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "yesno1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "ageName",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "GeologicTimePeriod",
+        "column": "AgeNameID"
+      },
+      {
+        "name": "ageNameEnd",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "GeologicTimePeriod",
+        "column": "AgeNameEndID"
+      },
+      {
+        "name": "agent1",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent1ID"
+      },
+      {
+        "name": "agent2",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "Agent2ID"
+      },
+      {
+        "name": "relativeAgeAttachments",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "RelativeAgeAttachment",
+        "otherSideName": "relativeAge"
+      },
+      {
+        "name": "collectionObject",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "CollectionObject",
+        "column": "CollectionObjectID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.AbsoluteAgeAttachment",
+    "table": "absoluteageattachment",
+    "tableId": 1021,
+    "system": false,
+    "idColumn": "AbsoluteAgeAttachmentID",
+    "idFieldName": "absoluteAgeAttachmentId",
+    "fields": [
+      {
+        "name": "ordinal",
+        "column": "Ordinal",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "attachment",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": true,
+        "relatedModelName": "Attachment",
+        "column": "AttachmentID",
+        "otherSideName": "absoluteAgeAttachments"
+      },
+      {
+        "name": "collectionMember",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionMemberID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "absoluteAge",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "AbsoluteAge",
+        "column": "AbsoluteAgeID",
+        "otherSideName": "absoluteAgeAttachments"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.RelativeAgeAttachment",
+    "table": "relativeageattachment",
+    "tableId": 1022,
+    "system": false,
+    "idColumn": "RelativeAgeAttachmentID",
+    "idFieldName": "relativeAgeAttachmentId",
+    "fields": [
+      {
+        "name": "ordinal",
+        "column": "Ordinal",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "attachment",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": true,
+        "relatedModelName": "Attachment",
+        "column": "AttachmentID",
+        "otherSideName": "relativeAgeAttachments"
+      },
+      {
+        "name": "collectionMember",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionMemberID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "relativeAge",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "RelativeAge",
+        "column": "RelativeAgeID",
+        "otherSideName": "relativeAgeAttachments"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.AbsoluteAgeCitation",
+    "table": "absoluteagecitation",
+    "tableId": 1023,
+    "system": false,
+    "idColumn": "AbsoluteAgeCitationID",
+    "idFieldName": "absoluteAgeCitationId",
+    "fields": [
+      {
+        "name": "figureNumber",
+        "column": "FigureNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "isFigured",
+        "column": "IsFigured",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "pageNumber",
+        "column": "PageNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "plateNumber",
+        "column": "PlateNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "absoluteAge",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "AbsoluteAge",
+        "column": "AbsoluteAgeID"
+      },
+      {
+        "name": "collectionMember",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionMemberID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "referenceWork",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "ReferenceWork",
+        "column": "ReferenceWorkID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.RelativeAgeCitation",
+    "table": "relativeagecitation",
+    "tableId": 1024,
+    "system": false,
+    "idColumn": "RelativeAgeCitationID",
+    "idFieldName": "relativeAgeCitationId",
+    "fields": [
+      {
+        "name": "figureNumber",
+        "column": "FigureNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "isFigured",
+        "column": "IsFigured",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "pageNumber",
+        "column": "PageNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "plateNumber",
+        "column": "PlateNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 50
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "collectionMember",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Collection",
+        "column": "CollectionMemberID"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "referenceWork",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "ReferenceWork",
+        "column": "ReferenceWorkID"
+      },
+      {
+        "name": "relativeAge",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "RelativeAge",
+        "column": "RelativeAgeID"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.TectonicUnitTreeDef",
+    "table": "tectonicunittreedef",
+    "tableId": 1025,
+    "system": false,
+    "idColumn": "TectonicUnitTreeDefID",
+    "idFieldName": "tectonicUnitTreeDefId",
+    "fields": [
+      {
+        "name": "fullNameDirection",
+        "column": "FullNameDirection",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "discipline",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Discipline",
+        "column": "DisciplineID",
+        "otherSideName": "tectonicUnitTreeDefs"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "treeDefItems",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "TectonicUnitTreeDefItem",
+        "otherSideName": "treeDef"
+      },
+      {
+        "name": "treeEntries",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "otherSideName": "definition"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem",
+    "table": "tectonicunittreedefitem",
+    "tableId": 1026,
+    "system": false,
+    "idColumn": "TectonicUnitTreeDefItemID",
+    "idFieldName": "tectonicUnitTreeDefItemId",
+    "fields": [
+      {
+        "name": "fullNameSeparator",
+        "column": "FullNameSeparator",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "isEnforced",
+        "column": "IsEnforced",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "isInFullName",
+        "column": "IsInFullName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "rankId",
+        "column": "RankID",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "textAfter",
+        "column": "TextAfter",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "textBefore",
+        "column": "TextBefore",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "title",
+        "column": "Title",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "children",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDefItem",
+        "otherSideName": "parent"
+      },
+      {
+        "name": "createdbyagent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "parent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDefItem",
+        "column": "ParentItemID",
+        "otherSideName": "children"
+      },
+      {
+        "name": "treeDef",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDef",
+        "column": "TectonicUnitTreeDefID",
+        "otherSideName": "treeDefItems"
+      },
+      {
+        "name": "treeEntries",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "otherSideName": "definitionItem"
+      }
+    ],
+    "fieldAliases": []
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.TectonicUnit",
+    "table": "tectonicunit",
+    "tableId": 1027,
+    "system": false,
+    "idColumn": "TectonicUnitID",
+    "idFieldName": "tectonicUnitId",
+    "fields": [
+      {
+        "name": "fullName",
+        "column": "FullName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "guid",
+        "column": "GUID",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 128
+      },
+      {
+        "name": "highestChildNodeNumber",
+        "column": "HighestChildNodeNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "isAccepted",
+        "column": "IsAccepted",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "name",
+        "column": "Name",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "nodeNumber",
+        "column": "NodeNumber",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "number1",
+        "column": "Number1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "number2",
+        "column": "Number2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.math.BigDecimal"
+      },
+      {
+        "name": "rankId",
+        "column": "RankID",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "text1",
+        "column": "Text1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "text2",
+        "column": "Text2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "yesno1",
+        "column": "YesNo1",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
+        "name": "yesno2",
+        "column": "YesNo2",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "acceptedChildren",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "otherSideName": "acceptedTectonicUnit"
+      },
+      {
+        "name": "acceptedTectonicUnit",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "column": "AcceptedID",
+        "otherSideName": "acceptedChildren"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "parent",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "TectonicUnit",
+        "column": "ParentID"
+      },
+      {
+        "name": "definition",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDef",
+        "column": "TectonicUnitTreeDefID",
+        "otherSideName": "treeEntries"
+      },
+      {
+        "name": "definitionItem",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "TectonicUnitTreeDefItem",
+        "column": "TectonicUnitTreeDefItemID",
+        "otherSideName": "treeEntries"
       }
     ],
     "fieldAliases": []
