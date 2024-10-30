@@ -61,7 +61,7 @@ export function UniquenessRuleScope({
             isDefault: false,
             isEnabled: true,
             isRelationship: true,
-            optionLabel: relationship.localization.name!,
+            optionLabel: relationship.localization.name ?? relationship.name,
             tableName: relationship.relatedTable.name,
           },
         ])

@@ -186,6 +186,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     undefined
   );
 
+  React.useEffect(() => {
+    setLastFocusedRow(undefined);
+  }, [treeDefinition]);
+
   const currentStates = states[lastFocusedTree];
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);

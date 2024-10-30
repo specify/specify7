@@ -14,12 +14,15 @@ from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
 from specifyweb.specify.views import login_maybe_required
 
 
+@require_POST
 @login_maybe_required
-@require_GET
 def preps_available_rs(request, recordset_id):
-    "Returns a list of preparations that are loanable? based on the CO recordset <recordset_id>."
+    "Returns a list of preparations that are loanable?(for loan) based on the CO recordset <recordset_id>."
     cursor = connection.cursor()
-    cursor.execute("""
+
+    isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
+
+    sql = """
     SELECT co.catalognumber,
            co.collectionobjectid AS co_id,
            t.fullname,
@@ -47,20 +50,22 @@ def preps_available_rs(request, recordset_id):
                   ON d.collectionobjectid = co.collectionobjectid
            LEFT JOIN taxon t
                   ON t.taxonid = d.taxonid
-    WHERE  pt.isloanable
-           AND p.collectionmemberid = %s
+    WHERE  p.collectionmemberid = %s
            AND ( d.iscurrent
                   OR d.determinationid IS NULL )
            AND p.collectionobjectid IN (SELECT recordid
                                         FROM   recordsetitem
                                         WHERE  recordsetid = %s)
-    GROUP  BY 1,
-              2,
-              3,
-              4,
-              5
-    ORDER  BY 1; 
-    """, [request.specify_collection.id, recordset_id])
+    """
+
+    # Add `pt.isloanable` if `isLoan`
+    if isLoan:
+        sql += " AND pt.isloanable"
+
+    sql += " GROUP BY 1,2,3,4,5 ORDER BY 1;"
+
+    cursor.execute(sql, [request.specify_collection.id, recordset_id])
+
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
@@ -68,7 +73,7 @@ def preps_available_rs(request, recordset_id):
 @require_POST
 @login_maybe_required
 def preps_available_ids(request):
-    """Returns a list of preparations that are loanable? based on
+    """Returns a list of preparations that are loanable? (for loans) based on
     a list of collection object ids passed in the 'co_ids' POST
     parameter as a JSON list.
     """
@@ -80,6 +85,8 @@ def preps_available_ids(request):
         raise http.Http404(e)
 
     co_ids = json.loads(request.POST['co_ids'])
+
+    isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
 
     sql = """
     select co.CatalogNumber, co.collectionObjectId, t.FullName, t.taxonId, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
@@ -93,11 +100,16 @@ def preps_available_ids(request):
     inner join preptype pt on pt.preptypeid = p.preptypeid
     left join determination d on d.CollectionObjectID = co.CollectionObjectID
     left join taxon t on t.TaxonID = d.TaxonID
-    where pt.isloanable and p.collectionmemberid = %s
+    where p.collectionmemberid = %s
     and (d.IsCurrent or d.DeterminationID is null)
     and co.{id_fld} in ({params})
-    group by 1,2,3,4,5 order by 1;
     """.format(id_fld=id_fld, params=",".join("%s" for __ in co_ids))
+
+    # Add `pt.isloanable` if `isLoan`
+    if isLoan:
+        sql += " and pt.isloanable"
+
+    sql += " group by 1,2,3,4,5 order by 1;"
 
     cursor = connection.cursor()
     cursor.execute(sql, [int(request.specify_collection.id)] + co_ids)

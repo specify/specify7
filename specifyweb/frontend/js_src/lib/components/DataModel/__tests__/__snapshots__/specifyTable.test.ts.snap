@@ -3,6 +3,7 @@
 exports[`fields are loaded 1`] = `
 [
   "[literalField CollectionObject.actualTotalCountAmt]",
+  "[literalField CollectionObject.age]",
   "[literalField CollectionObject.availability]",
   "[literalField CollectionObject.catalogNumber]",
   "[literalField CollectionObject.catalogedDate]",
@@ -104,6 +105,7 @@ exports[`fields are loaded 1`] = `
 exports[`literal fields are loaded 1`] = `
 [
   "[literalField CollectionObject.actualTotalCountAmt]",
+  "[literalField CollectionObject.age]",
   "[literalField CollectionObject.availability]",
   "[literalField CollectionObject.catalogNumber]",
   "[literalField CollectionObject.catalogedDate]",
