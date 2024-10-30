@@ -16,6 +16,10 @@ class CoJoTest(DefaultsSetup):
             collection=self.collection,
             cogtype=cog_type
         )
+        cog_4 = Collectionobjectgroup.objects.create(
+            collection=self.collection,
+            cogtype=cog_type
+        )
         cojo_1 = Collectionobjectgroupjoin.objects.create(
             parentcog=cog_1,
             childcog=cog_2,
@@ -23,7 +27,7 @@ class CoJoTest(DefaultsSetup):
             issubstrate=True
         )
         cojo_2 = Collectionobjectgroupjoin.objects.create(
-            parentcog=cog_1,
+            parentcog=cog_4,
             childcog=cog_3,
             isprimary=True,
             issubstrate=True
