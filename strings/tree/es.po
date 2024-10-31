@@ -201,7 +201,7 @@ msgstr "Preferido: {name:string}"
 msgid "synonyms"
 msgstr "Sinónimos: {names:string}"
 
-#: components/TreeView/index.tsx:150
+#: components/TreeView/index.tsx:154
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Árbol"
@@ -261,27 +261,27 @@ msgstr "Editar rangos"
 msgid "resourceToDelete"
 msgstr "Esto eliminará permanentemente el siguiente recurso."
 
-#: components/TreeView/index.tsx:378
+#: components/TreeView/index.tsx:386
 #. Used in: Components > Tree View > Index
 msgid "associatedNodesOnly"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:310
+#: components/TreeView/index.tsx:318
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Vista dividida"
 
-#: components/TreeView/index.tsx:316
+#: components/TreeView/index.tsx:324
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:316
+#: components/TreeView/index.tsx:324
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:325
+#: components/TreeView/index.tsx:333
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Sincronizar"
@@ -305,9 +305,91 @@ msgstr "Elija el rango de padres"
 msgid "moveItems"
 msgstr "Mover elementos"
 
-#: components/TreeView/index.tsx:266
-#: components/TreeView/index.tsx:268
+#: components/TreeView/CreateTree.tsx:64
+#: components/TreeView/CreateTree.tsx:77
+#. Used in: Components > Tree View > Create Tree
+msgid "addTree"
+msgstr ""
+
+#: components/TreeView/index.tsx:270
+#: components/TreeView/index.tsx:272
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"
+msgstr ""
+
+#: components/TreeView/defaults.ts:251
+#. Used in: Components > Tree View > Defaults
+msgid "botany"
+msgstr ""
+
+#: components/TreeView/defaults.ts:279
+#. Used in: Components > Tree View > Defaults
+msgid "entomology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:307
+#. Used in: Components > Tree View > Defaults
+msgid "herpetology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:329
+#. Used in: Components > Tree View > Defaults
+msgid "ichthyology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:353
+#. Used in: Components > Tree View > Defaults
+msgid "invertpaleo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:372
+#. Used in: Components > Tree View > Defaults
+msgid "invertzoo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:397
+#. Used in: Components > Tree View > Defaults
+msgid "mammalogy"
+msgstr ""
+
+#: components/TreeView/defaults.ts:416
+#. Used in: Components > Tree View > Defaults
+msgid "ornithology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:437
+#. Used in: Components > Tree View > Defaults
+msgid "paleobot"
+msgstr ""
+
+#: components/TreeView/defaults.ts:456
+#. Used in: Components > Tree View > Defaults
+msgid "vascplant"
+msgstr ""
+
+#: components/TreeView/defaults.ts:483
+#. Used in: Components > Tree View > Defaults
+msgid "vertpaleo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:252
+#: components/TreeView/defaults.ts:280
+#: components/TreeView/defaults.ts:308
+#: components/TreeView/defaults.ts:330
+#: components/TreeView/defaults.ts:354
+#: components/TreeView/defaults.ts:373
+#: components/TreeView/defaults.ts:398
+#: components/TreeView/defaults.ts:417
+#: components/TreeView/defaults.ts:438
+#: components/TreeView/defaults.ts:457
+#: components/TreeView/defaults.ts:484
+#: components/TreeView/defaults.ts:501
+#. Used in: Components > Tree View > Defaults
+msgid "defaultRemarks"
+msgstr ""
+
+#: components/TreeView/defaults.ts:500
+#. Used in: Components > Tree View > Defaults
+msgid "emptyTree"
 msgstr ""
