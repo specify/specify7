@@ -169,7 +169,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                          distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery['selectedrows'])
+                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
             message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
