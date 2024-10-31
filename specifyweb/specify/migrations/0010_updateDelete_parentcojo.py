@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         #change dep when merge with prod 
-        ('specify', '0007_schema_config_update'),
+        ('specify', '0009_tectonic_ranks'),
     ]
 
     operations = [
