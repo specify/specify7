@@ -1,8 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { tables } from '../../DataModel/tables';
+import { testingTrees } from '../../QueryBuilder/__tests__/fromTree.test';
 import {
-  allTrees,
   exportsForTests,
   getDisciplineTrees,
   getTreeDefinitionItems,
@@ -66,13 +66,14 @@ describe('strictGetTreeDefinitionItems', () => {
 });
 
 test('getTreeScope', () =>
-  expect(Object.fromEntries(allTrees.map((tree) => [tree, getTreeScope(tree)])))
-    .toMatchInlineSnapshot(`
-      {
-        "Geography": "discipline",
-        "GeologicTimePeriod": "discipline",
-        "LithoStrat": "discipline",
-        "Storage": "institution",
-        "Taxon": "discipline",
-      }
-    `));
+  expect(
+    Object.fromEntries(testingTrees.map((tree) => [tree, getTreeScope(tree)]))
+  ).toMatchInlineSnapshot(`
+    {
+      "Geography": "discipline",
+      "GeologicTimePeriod": "discipline",
+      "LithoStrat": "discipline",
+      "Storage": "institution",
+      "Taxon": "discipline",
+    }
+  `));

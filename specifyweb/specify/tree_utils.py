@@ -5,7 +5,7 @@ from specifyweb.specify.datamodel import datamodel
 
 lookup = lambda tree: (tree.lower() + 'treedef')
 
-SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat"}
+SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat", 'tectonicunit'}
 
 TREE_MODELS = {
     spmodels.Taxontreedef,

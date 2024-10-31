@@ -120,7 +120,7 @@ class TreeRank(NamedTuple):
             # Handle cases where multiple items are found
             def handle_multiple_items(treedefitems):
                 if treedefitems.count() > 1:
-                    return filter_by_treedef_id(treedefitems, rank_name, treedef_id)
+                    return filter_by_treedef_id(treedefitems, rank_name)
                 return treedefitems
 
             if treedef_id is None and treedef_name is not None:
