@@ -32,6 +32,9 @@ class CoJoTest(DefaultsSetup):
         cojo_1 = Collectionobjectgroupjoin.objects.get(id=cojo_1.id)
         cojo_2 = Collectionobjectgroupjoin.objects.get(id=cojo_2.id)
 
+        cojo_1.refresh_from_db()
+        cojo_2.refresh_from_db()
+
         self.assertFalse(cojo_1.isprimary)
         self.assertFalse(cojo_1.issubstrate)
         self.assertTrue(cojo_2.isprimary)
@@ -47,6 +50,10 @@ class CoJoTest(DefaultsSetup):
             isprimary=False,
             issubstrate=False
         )
+
+        cojo_1.refresh_from_db()
+        cojo_2.refresh_from_db()
+        cojo_3.refresh_from_db()
 
         cojo_1 = Collectionobjectgroupjoin.objects.get(id=cojo_1.id)
         cojo_2 = Collectionobjectgroupjoin.objects.get(id=cojo_2.id)
