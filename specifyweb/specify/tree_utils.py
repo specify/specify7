@@ -22,6 +22,18 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
         discipline_query |= Q(id=tree_at_discipline.id)
     return discipline_query
 
+def get_spmodel_class(model_name: str):
+    try:
+        return getattr(spmodels, model_name.capitalize())
+    except AttributeError:
+        pass
+    # Iterate over all attributes in the models module
+    for attr_name in dir(spmodels):
+        # Check if the attribute name matches the model name case-insensitively
+        if attr_name.lower() == model_name.lower():
+            return getattr(spmodels, attr_name)
+    raise AttributeError(f"Model '{model_name}' not found in models module.")
+
 def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
 
@@ -32,7 +44,7 @@ def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple
 
     lookup_tree = lookup(tree_name)
     tree_table = datamodel.get_table_strict(lookup_tree)
-    tree_model: Model = getattr(spmodels, tree_table.django_name)
+    tree_model: Model = get_spmodel_class(tree_table.django_name)
 
     # Get all the treedefids, and the count of item in each, corresponding to our search predicates
     search_query = _limit(

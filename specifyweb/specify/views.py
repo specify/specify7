@@ -499,7 +499,7 @@ def record_merge(
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
-    record_version = getattr(spmodels, model_name.title()).objects.get(
+    record_version = get_spmodel_class(model_name.title()).objects.get(
         id=new_model_id).version
     get_version = request.GET.get('version', record_version)
     version = get_version if isinstance(get_version, int) else 0
@@ -1367,3 +1367,15 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+def get_spmodel_class(model_name: str):
+    try:
+        return getattr(spmodels, model_name.capitalize())
+    except AttributeError:
+        pass
+    # Iterate over all attributes in the models module
+    for attr_name in dir(spmodels):
+        # Check if the attribute name matches the model name case-insensitively
+        if attr_name.lower() == model_name.lower():
+            return getattr(spmodels, attr_name)
+    raise AttributeError(f"Model '{model_name}' not found in models module.")

@@ -113,11 +113,23 @@ TREE_RANK_TO_ITEM_MAP = {
     'Tectonicunittreedefitem': 'Tectonicunit'
 }
 
+def get_spmodel_class(model_name: str):
+    try:
+        return getattr(spmodels, model_name.capitalize())
+    except AttributeError:
+        pass
+    # Iterate over all attributes in the models module
+    for attr_name in dir(spmodels):
+        # Check if the attribute name matches the model name case-insensitively
+        if attr_name.lower() == model_name.lower():
+            return getattr(spmodels, attr_name)
+    raise AttributeError(f"Model '{model_name}' not found in models module.")
+
 def get_tree_item_model(tree_rank_model_name):
     tree_item_model_name = TREE_RANK_TO_ITEM_MAP.get(tree_rank_model_name.title(), None)
     if not tree_item_model_name:
         return None
-    return getattr(spmodels, tree_item_model_name, None)
+    return get_spmodel_class(tree_item_model_name, None)
 
 def tree_rank_count(tree_rank_model_name, tree_rank_id) -> int:
     tree_item_model = get_tree_item_model(tree_rank_model_name)
@@ -186,14 +198,14 @@ def set_rank_id(new_rank):
 
     # Get tree def item model
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
-    tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+    tree_def_item_model = get_spmodel_class(tree_def_item_model_name)
 
     # Handle case where the parent rank is not given, and it is not the first rank added.
     # This is happening in the UI workflow of Treeview->Treedef->Treedefitems->Add
     if (
         new_rank.parent is None
         and new_rank.rankid is None
-        and getattr(spmodels, new_rank.specify_model.django_name).objects.filter(treedef=tree_def).count() > 1
+        and get_spmodel_class(new_rank.specify_model.django_name).objects.filter(treedef=tree_def).count() > 1
     ):
         new_rank.parent = tree_def_item_model.objects.filter(treedef=tree_def).order_by("rankid").last()
         parent_rank_name = new_rank.parent.name
@@ -308,7 +320,7 @@ def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
     """
     tree_def = rank.treedef
     tree_def_item_model_name = rank.specify_model.name.lower().title()
-    tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+    tree_def_item_model = get_spmodel_class(tree_def_item_model_name)
 
     # Get all the ranks and their parent ranks
     rank_id_to_parent_dict = {item.id: item.parent.id if item.parent is not None else None
