@@ -5,7 +5,7 @@ from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Collectionobjectgroupjoin
 
 def is_running_tests():
-    return 'pytest' in sys.modules or os.getenv('DJANGO_SETTINGS_MODULE') == 'specify7.settings'
+    return any(module in sys.modules for module in ('pytest', 'unittest'))
 
 @orm_signal_handler('pre_save', 'Collectionobjectgroupjoin')
 def cojo_pre_save(cojo):
