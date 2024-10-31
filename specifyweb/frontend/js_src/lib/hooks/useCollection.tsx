@@ -70,7 +70,7 @@ export function useCollection<SCHEMA extends AnySchema>({
               sortBy,
               filters,
             })
-          : fetchToOneCollection({ parentResource, relationship });
+          : fetchToOneCollection({ parentResource, relationship, filters });
 
       return fetchCollection.then((collection) => {
         if (
@@ -124,6 +124,7 @@ const fetchToManyCollection = async <SCHEMA extends AnySchema>({
 async function fetchToOneCollection<SCHEMA extends AnySchema>({
   parentResource,
   relationship,
+  filters,
 }: UseCollectionProps<SCHEMA>): Promise<
   Collection<SCHEMA> | false | undefined
 > {
@@ -131,6 +132,10 @@ async function fetchToOneCollection<SCHEMA extends AnySchema>({
    * If relationship is -to-one, create a collection for the related
    * resource. This allows to reuse most of the code from -to-many
    * relationships in components like Subview and RecordSelectorFromCollection
+   */
+  /**
+   * REFACTOR: Allow passing filters to rgetPromise
+   * or at least handle refetching of independent when rgetPromise is called
    */
   const resource = await parentResource.rgetPromise(relationship.name);
   const reverse = relationship.getReverse();
@@ -162,5 +167,7 @@ async function fetchToOneCollection<SCHEMA extends AnySchema>({
     'field',
     collection.field ?? relationship.getReverse()
   );
-  return collection;
+  return typeof filters === 'object'
+    ? collection.fetch(filters as CollectionFetchFilters<AnySchema>)
+    : collection;
 }

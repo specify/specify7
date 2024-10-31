@@ -88,9 +88,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       collection.related?.isNew() !== true &&
       collection.models[index] === undefined
     )
-      handleFetch({
-        offset: collection.getFetchOffset(),
-      });
+      handleFetch();
   }, [collection, isLazy, index, records.length, isToOne, handleFetch]);
 
   const state = useRecordSelector({

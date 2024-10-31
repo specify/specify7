@@ -229,7 +229,7 @@ export const IndependentCollection = LazyCollection.extend({
     this.on(
       'remove',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isNew()) {
+        if (!resource.isNew() && resource.get(this.field.name) !== null) {
           this.removed.add(resource.url());
         }
         this.updated = removeKey(this.updated, resource.cid);

@@ -136,6 +136,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
               const resource = resources[0];
               if (
                 typeof field?.otherSideName === 'string' &&
+                field.isDependent() &&
                 !relatedResource.isNew()
               )
                 resource.set(field.otherSideName, relatedResource.url() as any);
