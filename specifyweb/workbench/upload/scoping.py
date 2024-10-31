@@ -9,7 +9,7 @@ from specifyweb.stored_queries.format import get_date_format
 from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
-from .treerecord import TreeRecord, ScopedTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
@@ -186,10 +186,10 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
+    treedef = None
     if table.name == 'Taxon':
-        # TODO: Add scoping in the workbench via the Upload Plan
-        # treedef = get_taxon_treedef(collection)
-        treedef = collection.discipline.taxontreedef
+        if treedef is None:
+            treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
         treedef = collection.discipline.geographytreedef
@@ -203,22 +203,42 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     elif table.name == 'Storage':
         treedef = collection.discipline.division.institution.storagetreedef
 
+    elif table.name == 'TectonicUnit':
+        treedef = collection.discipline.division.institution.tectonicunittreedef
+
     else:
         raise Exception(f'unexpected tree type: {table.name}')
+
+    if treedef is None:
+        raise ValueError(f"Could not find treedef for table {table.name}")
 
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
-        if rank not in treedef_ranks:
+        if rank not in treedef_ranks and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
+    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+        (
+            TreeRank.create(
+                r, table.name, treedef.id if treedef else None
+            ).tree_rank_record()
+            if isinstance(r, str)
+            else r
+        ): {
+            f: extend_columnoptions(colopts, collection, table.name, f)
+            for f, colopts in cols.items()
+        }
+        for r, cols in tr.ranks.items()
+    }
+
     return ScopedTreeRecord(
         name=tr.name,
-        ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
+        ranks=scoped_ranks,
         treedef=treedef,
-        treedefitems=list(treedef.treedefitems.order_by('rankid')),
+        treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )

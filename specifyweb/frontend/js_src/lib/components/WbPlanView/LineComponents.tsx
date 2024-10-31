@@ -37,7 +37,6 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
-  readonly tableTreeDefName?: string;
 };
 
 type MappingLineBaseProps = {
@@ -228,8 +227,7 @@ export function MappingElement({
   fieldsData,
   ...props
 }: MappingElementProps): JSX.Element {
-  const { collectionObjectType, ...rest } = fieldsData;
-  const fieldGroups = Object.entries(rest).reduce<
+  const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, fieldData]) => {
     const groupName = getFieldGroupName(

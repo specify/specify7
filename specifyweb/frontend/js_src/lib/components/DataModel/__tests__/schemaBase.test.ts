@@ -14,6 +14,7 @@ test('domain data is fetched and parsed correctly', async () =>
     },
     embeddedCollectingEvent: false,
     embeddedPaleoContext: true,
+    defaultCollectionObjectType: '/api/specify/collectionobjecttype/1/',
     fieldPartSeparator: '-',
     orgHierarchy: [
       'CollectionObject',
@@ -24,5 +25,6 @@ test('domain data is fetched and parsed correctly', async () =>
     ],
     paleoContextChildTable: 'collectionobject',
     referenceSymbol: '#',
-    treeSymbol: '$',
+    treeRankSymbol: '$',
+    treeDefinitionSymbol: '%',
   }));
