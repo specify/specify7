@@ -201,6 +201,7 @@ export const getFrontEndPickLists = f.store<{
     },
     GeographyTreeDef: { fullNameDirection },
     GeologicTimePeriodTreeDef: { fullNameDirection },
+    TectonicUnitTreeDef: { fullNameDirection },
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
