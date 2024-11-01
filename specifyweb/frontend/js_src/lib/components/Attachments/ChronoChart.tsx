@@ -39,7 +39,6 @@ export function ChronoChart(): JSX.Element {
               <TransformComponent>
                 <img
                   alt="Chrono Chart"
-                  className="max-w-xs"
                   src="/static/img/chronostratChart2023-09.jpg"
                   width="100%"
                 />
