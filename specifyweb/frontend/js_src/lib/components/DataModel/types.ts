@@ -6521,6 +6521,7 @@ export type CollectionObjectGroup = {
   };
   readonly toManyDependent: {
     readonly children: RA<CollectionObjectGroupJoin>;
+    readonly cojo: RA<CollectionObjectGroupJoin>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
