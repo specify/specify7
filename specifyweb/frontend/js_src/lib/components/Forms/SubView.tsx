@@ -19,6 +19,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
@@ -176,7 +177,23 @@ export function SubView({
               value={
                 isReadOnly ||
                 relationship.isVirtual ||
-                isAttachmentMisconfigured
+                isAttachmentMisconfigured ||
+                /**
+                 * Render independent self-referential tree relationships
+                 * (children, synonyms, etc.) as readonly for now.
+                 *
+                 * While functional, there is often business logic
+                 * (renumbering trees, updating determinations, etc.) associated
+                 * with these changes that updating a single field via the API
+                 * allows.
+                 * Businessrules can likely be made to rememdy this.
+                 *
+                 * FEATURE: Allow independent self-referential tree
+                 * relationships to be editable
+                 */
+                (!relationship.isDependent() &&
+                  isTreeTable(relationship.table.name) &&
+                  relationship.relatedTable === relationship.table)
               }
             >
               <IntegratedRecordSelector
