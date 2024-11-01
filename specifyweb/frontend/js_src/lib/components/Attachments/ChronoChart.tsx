@@ -33,7 +33,6 @@ export function ChronoChart(): JSX.Element {
           header={headerText.chronostratigraphicChart()}
           onClose={handleHideChronoChart}
         >
-          {/* TODO: Replace with chrono image */}
           <TransformWrapper>
             <div className="flex items-center justify-between">
               <TransformComponent>
