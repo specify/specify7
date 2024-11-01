@@ -213,7 +213,11 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             const cojos = cog.getDependentResource('children');
             // Set first CO in COG to primary
             cojos?.models
-              .find((cojo) => cojo.get('childCo') !== null)
+              .find(
+                (cojo) =>
+                  cojo.get('childCo') !== null &&
+                  cojo.get('childCo') !== undefined
+              )
               ?.set('isPrimary', true);
           }
         });
