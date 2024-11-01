@@ -2828,6 +2828,7 @@
 					<cell type="label" labelfor="13"/>
 					<cell type="field" id="13" name="preferredTaxon" uitype="text" readonly="true" colspan="9"/>
 				</row>
+        <row>
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" uitype="plugin" name="this" initialize="name=PartialDateUI;df=determinedDate;tp=determinedDatePrecision" uifieldformatter="Date"/>
 					<cell type="label" labelfor="5"/>
