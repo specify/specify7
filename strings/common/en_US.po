@@ -31,6 +31,7 @@ msgstr "No"
 #: components/DataEntryTables/Edit.tsx:46
 #: components/DataEntryTables/index.tsx:42
 #: components/ExportFeed/ForceUpdate.tsx:33
+#: components/FormCells/COJODialog.tsx:91
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
 #: components/FormSliders/RecordSelectorFromIds.tsx:265
@@ -93,7 +94,7 @@ msgstr "No"
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:151
 #: components/WorkBench/Disambiguation.tsx:40
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 msgid "cancel"
 msgstr "Cancel"
 
@@ -160,7 +161,7 @@ msgstr "Create"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:490
+#: components/FormCells/FormTable.tsx:506
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -401,7 +402,7 @@ msgstr "Tools"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:203
+#: components/FormCells/FormTable.tsx:207
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:82
@@ -472,8 +473,8 @@ msgstr "Uploaded"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:155
 #: components/ExportFeed/Editor.tsx:157
-#: components/FormCells/FormTable.tsx:407
-#: components/FormCells/FormTable.tsx:416
+#: components/FormCells/FormTable.tsx:411
+#: components/FormCells/FormTable.tsx:420
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
@@ -633,8 +634,8 @@ msgstr "(opens in a new tab)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:209
-#: components/FormCells/FormTable.tsx:392
-#: components/FormCells/FormTable.tsx:395
+#: components/FormCells/FormTable.tsx:396
+#: components/FormCells/FormTable.tsx:399
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 msgid "openInNewTab"
 msgstr "Open in New Tab"
@@ -647,7 +648,7 @@ msgstr "Open in New Tab"
 msgid "goToHomepage"
 msgstr "Go to Home Page"
 
-#: components/FormCells/FormTable.tsx:278
+#: components/FormCells/FormTable.tsx:282
 #: components/QueryBuilder/Edit.tsx:94
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -852,10 +853,10 @@ msgstr "Copy to clipboard"
 msgid "selected"
 msgstr "Selected"
 
-#: components/FormCells/FormTable.tsx:233
-#: components/FormCells/FormTable.tsx:321
-#: components/FormCells/FormTable.tsx:323
-#: components/FormSliders/IntegratedRecordSelector.tsx:87
+#: components/FormCells/FormTable.tsx:237
+#: components/FormCells/FormTable.tsx:325
+#: components/FormCells/FormTable.tsx:327
+#: components/FormSliders/IntegratedRecordSelector.tsx:89
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
@@ -868,9 +869,9 @@ msgstr "Expand"
 msgid "expandAll"
 msgstr "Expand All"
 
-#: components/FormCells/FormTable.tsx:289
-#: components/FormCells/FormTable.tsx:291
-#: components/FormSliders/IntegratedRecordSelector.tsx:87
+#: components/FormCells/FormTable.tsx:293
+#: components/FormCells/FormTable.tsx:295
+#: components/FormSliders/IntegratedRecordSelector.tsx:89
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 msgid "collapse"
@@ -919,7 +920,7 @@ msgstr "None available"
 #: components/Attachments/RecordSetAttachment.tsx:122
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
-#: components/FormCells/FormTable.tsx:150
+#: components/FormCells/FormTable.tsx:154
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
 #: components/Forms/DeleteBlocked.tsx:93

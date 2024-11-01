@@ -139,8 +139,8 @@ msgid "invalidNumericPicklistValue"
 msgstr ""
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:205
-#: components/FormCells/FormTable.tsx:519
+#: components/FormCells/FormTable.tsx:209
+#: components/FormCells/FormTable.tsx:535
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -659,4 +659,9 @@ msgstr ""
 #: components/FieldFormatters/index.ts:282
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
+msgstr ""
+
+#: components/FormCells/COJODialog.tsx:93
+#. Used in: Components > Form Cells > COJODialog
+msgid "addCOGChildren"
 msgstr ""

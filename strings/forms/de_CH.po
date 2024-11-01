@@ -181,8 +181,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Es werden nur numerische Werte unterstützt {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:205
-#: components/FormCells/FormTable.tsx:519
+#: components/FormCells/FormTable.tsx:209
+#: components/FormCells/FormTable.tsx:535
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
@@ -809,3 +809,8 @@ msgstr "(Bereich: {from:string} – {to:string})"
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Katalognummer Numerisch"
+
+#: components/FormCells/COJODialog.tsx:93
+#. Used in: Components > Form Cells > COJODialog
+msgid "addCOGChildren"
+msgstr ""
