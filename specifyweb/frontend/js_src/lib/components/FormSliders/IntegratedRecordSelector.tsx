@@ -16,6 +16,8 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
+import { COJODialog } from '../FormCells/COJODialog';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
@@ -111,8 +113,15 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
+  const isTaxonTreeDefItemTable =
+    collection.table.specifyTable.name === 'TaxonTreeDefItem';
+
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
+
+  const isCOJO =
+    relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
+    relationship.name === 'children';
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -182,18 +191,27 @@ export function IntegratedRecordSelector({
                       relationship.relatedTable.name,
                       isDependent ? 'create' : 'read'
                     ) && typeof handleAdd === 'function' ? (
-                      <DataEntry.Add
-                        disabled={
-                          isReadOnly ||
-                          (isToOne && collection.models.length > 0)
-                        }
-                        onClick={(): void => {
-                          focusFirstField();
-                          const resource =
-                            new collection.table.specifyTable.Resource();
-                          handleAdd([resource]);
-                        }}
-                      />
+                      isCOJO ? (
+                        <COJODialog
+                          collection={collection}
+                          parentResource={
+                            collection?.related as SpecifyResource<CollectionObjectGroup>
+                          }
+                        />
+                      ) : (
+                        <DataEntry.Add
+                          disabled={
+                            isReadOnly ||
+                            (isToOne && collection.models.length > 0)
+                          }
+                          onClick={(): void => {
+                            focusFirstField();
+                            const resource =
+                              new collection.table.specifyTable.Resource();
+                            handleAdd([resource]);
+                          }}
+                        />
+                      )
                     ) : undefined}
                     {hasTablePermission(
                       relationship.relatedTable.name,
@@ -252,10 +270,14 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(resources): void => {
-                  if (!isInteraction) collection.add(resources);
-                  handleAdd?.(resources);
-                }}
+                onAdd={
+                  isTaxonTreeDefItemTable
+                    ? undefined
+                    : (resources): void => {
+                        if (!isInteraction) collection.add(resources);
+                        handleAdd?.(resources);
+                      }
+                }
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {
                   if (isCollapsed) handleExpand();
