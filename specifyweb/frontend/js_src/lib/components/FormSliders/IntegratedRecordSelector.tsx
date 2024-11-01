@@ -113,6 +113,9 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
+  const isTaxonTreeDefItemTable =
+    collection.table.specifyTable.name === 'TaxonTreeDefItem';
+
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
@@ -267,10 +270,14 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(resources): void => {
-                  if (!isInteraction) collection.add(resources);
-                  handleAdd?.(resources);
-                }}
+                onAdd={
+                  isTaxonTreeDefItemTable
+                    ? undefined
+                    : (resources): void => {
+                        if (!isInteraction) collection.add(resources);
+                        handleAdd?.(resources);
+                      }
+                }
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {
                   if (isCollapsed) handleExpand();

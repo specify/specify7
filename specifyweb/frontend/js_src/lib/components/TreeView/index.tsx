@@ -40,6 +40,7 @@ import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
+import { CreateTree } from './CreateTree';
 import type { Row } from './helpers';
 import {
   deserializeConformation,
@@ -100,6 +101,7 @@ function TreeViewFromDefinitions<TREE_NAME extends AnyTree['tableName']>({
         <TreeView
           currentTreeInformation={currentTreeInformation}
           definitions={definitionsForTree.map(({ definition }) => definition)}
+          definitionsForTree={definitionsForTree}
           setNewDefinition={setCurrentDefinition}
           tableName={treeName}
         />
@@ -116,6 +118,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     ranks: treeDefinitionItems,
   },
   definitions,
+  definitionsForTree,
   setNewDefinition,
 }: {
   readonly tableName: TREE_NAME;
@@ -123,6 +126,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   readonly definitions: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
   >;
+  readonly definitionsForTree: TreeInformation[TREE_NAME];
   readonly setNewDefinition: (newDefinitionId: number) => void;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
@@ -285,6 +289,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         <ResourceEdit
           resource={deserializedResource}
           onSaved={(): void => globalThis.location.reload()}
+        />
+        <CreateTree
+          tableName={tableName}
+          treeDefinitions={definitionsForTree}
         />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
