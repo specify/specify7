@@ -42,6 +42,7 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'StorageTreeDef',
   'GeologicTimePeriodTreeDef',
   'GeologicTimePeriodTreeDefItem',
+  'TectonicUnitTreeDef',
   'LithoStratTreeDef',
   'Institution',
   'Division',

@@ -11,6 +11,8 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
 
+from specifyweb.specify.tree_utils import TREE_MODELS
+
 logger = logging.getLogger(__name__)
 
 from django import forms
@@ -36,7 +38,7 @@ ReadPermChecker = Callable[[Any], None]
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-def get_model(name: str):
+def strict_get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
@@ -50,6 +52,12 @@ def get_model(name: str):
                 if model._meta.model_name == name:
                     return model
         raise e
+    
+def get_model(name: str): 
+    try: 
+        return strict_get_model(name)
+    except AttributeError: 
+        return None
 
 def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
     """Return the correct field name for a model given a case insensitive
@@ -301,7 +309,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
     try:
-        return get_model(name)
+        return strict_get_model(name)
     except AttributeError as e:
         raise Http404(e)
 
@@ -484,7 +492,11 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
-    handle_to_many(collection, agent, obj, data)
+    if model in TREE_MODELS:
+        # handle_new_tree_creation(collection, agent, obj, data)
+        handle_to_many(collection, agent, obj, data, is_new_tree=True)
+    else:
+        handle_to_many(collection, agent, obj, data)
     return obj
 
 FieldChangeInfo = TypedDict('FieldChangeInfo', {'field_name': str, 'old_value': Any, 'new_value': Any})
@@ -574,7 +586,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
     dirty: List[FieldChangeInfo] = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
-        if not field.many_to_one: continue
+        if not field.many_to_one and not field.one_to_one: continue
 
         old_related = get_related_or_none(obj, field_name)
         dependent = is_dependent_field(obj, field_name)
@@ -629,7 +641,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
     return dependents_to_delete, dirty
 
-def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
+def handle_to_many(collection, agent, obj, data: Dict[str, Any], is_new_tree: bool = False) -> None:
     """For every key in the dict 'data' which is a *-to-many field in the
     Django model instance 'obj', if nested data is provided, use it to
     update the set of related objects.
@@ -655,8 +667,13 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
 
         rel_model = field.related_model
         ids = [] # Ids not in this list will be deleted at the end.
+        parent_treedefitem_id = None
         for rel_data in val:
             rel_data[field.field.name] = obj
+
+            if is_new_tree and parent_treedefitem_id is not None:
+                rel_data['parent'] = parent_treedefitem_id
+
             if 'id' in rel_data:
                 # Update an existing related object.
                 rel_obj = update_obj(collection, agent,
@@ -666,6 +683,10 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
             else:
                 # Create a new related object.
                 rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
+
+            if is_new_tree:
+                parent_treedefitem_id = uri_for_model(rel_obj.__class__, rel_obj.id)
+
             ids.append(rel_obj.id) # Record the id as one to keep.
 
         # Delete related objects not in the ids list.

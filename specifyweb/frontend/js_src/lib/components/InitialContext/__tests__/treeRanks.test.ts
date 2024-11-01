@@ -65,14 +65,18 @@ describe('strictGetTreeDefinitionItems', () => {
     ).toThrow(/Unable to get tree ranks for a/u));
 });
 
-test('getTreeScope', () =>
-  expect(Object.fromEntries(allTrees.map((tree) => [tree, getTreeScope(tree)])))
-    .toMatchInlineSnapshot(`
+describe('tree scopes', () => {
+  test('getTreeScope', () =>
+    expect(
+      Object.fromEntries(allTrees.map((tree) => [tree, getTreeScope(tree)]))
+    ).toMatchInlineSnapshot(`
       {
         "Geography": "discipline",
         "GeologicTimePeriod": "discipline",
         "LithoStrat": "discipline",
         "Storage": "institution",
         "Taxon": "discipline",
+        "TectonicUnit": "discipline",
       }
     `));
+});

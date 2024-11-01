@@ -5,7 +5,15 @@ from specifyweb.specify.datamodel import datamodel
 
 lookup = lambda tree: (tree.lower() + 'treedef')
 
-SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat"}
+SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat", 'tectonicunit'}
+
+TREE_MODELS = {
+    spmodels.Taxontreedef,
+    spmodels.Geographytreedef,
+    spmodels.Storagetreedef,
+    spmodels.Geologictimeperiodtreedef,
+    spmodels.Lithostrattreedef
+}
 
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()

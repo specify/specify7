@@ -145,10 +145,17 @@ class Preparation(models.Model):
         abstract = True
 
 PALEO_DISCIPLINES = {'paleobotany', 'invertpaleo', 'vertpaleo'}
+GEOLOGY_DISCIPLINES = {'geology'}
 
 class Discipline(models.Model):
     def is_paleo(self):
          return self.type.lower() in PALEO_DISCIPLINES
+    
+    def is_geo(self):
+         return self.type.lower() in GEOLOGY_DISCIPLINES
+    
+    def is_paleo_geo(self): 
+        return self.is_paleo() or self.is_geo()
     
     class Meta:
         abstract = True
@@ -173,6 +180,10 @@ class Lithostrat(Tree):
     class Meta:
         abstract = True
 
+class Tectonicunit(Tree):
+    class Meta:
+        abstract = True
+
 class Geographytreedefitem(TreeRank):
     class Meta:
         abstract = True
@@ -190,5 +201,9 @@ class Storagetreedefitem(TreeRank):
         abstract = True
 
 class Taxontreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True

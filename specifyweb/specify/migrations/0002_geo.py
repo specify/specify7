@@ -5,15 +5,7 @@ from django.db.models import F
 import django.utils.timezone
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
-    protect_with_blockers,
-    Collectionobject,
-    Collectionobjecttype,
-    Collection,
-    Discipline,
-    Institution,
-    Picklist,
-    Picklistitem,
-    Taxontreedef
+    protect_with_blockers
 )
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
@@ -57,7 +49,10 @@ DEFAULT_COG_TYPES = [
     'Drill Core',
 ]
 
-def create_default_collection_types():
+def create_default_collection_types(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Collectionobject = apps.get_model('specify', 'Collectionobject')
+    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
     # Create default collection types for each collection, named after the discipline
     for collection in Collection.objects.all():
         discipline = collection.discipline
@@ -84,15 +79,18 @@ def create_default_collection_types():
                 collection.save()
             continue
 
-def revert_default_collection_types():
+def revert_default_collection_types(apps):
     # Reverse handeled by table deletion.
     pass
 
-def revert_default_cog_types():
+def revert_default_cog_types(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_default_discipline_for_tree_defs():
+def create_default_discipline_for_tree_defs(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    Institution = apps.get_model('specify', 'Institution')
+
     for discipline in Discipline.objects.all():
         geography_tree_def = discipline.geographytreedef
         geography_tree_def.discipline = discipline
@@ -115,26 +113,30 @@ def create_default_discipline_for_tree_defs():
         storage_tree_def.institution = institution
         storage_tree_def.save()
 
-def revert_default_discipline_for_tree_defs():
+def revert_default_discipline_for_tree_defs(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_table_schema_config_with_defaults():
+def create_table_schema_config_with_defaults(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
 
-def revert_table_schema_config_with_defaults():
+def revert_table_schema_config_with_defaults(apps):
     for table, _ in SCHEMA_CONFIG_TABLES:
-        revert_table_schema_config(table)
+        revert_table_schema_config(table, apps)
 
-def create_default_collection_object_types():
+def create_default_collection_object_types(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
     for collection in Collection.objects.all():
         cog_type_picklist = Picklist.objects.create(
             name='Default Collection Object Group Types',
-            tablename='Collectionobjectgrouptype',
             issystem=False,
-            type=1,
+            type=0,
             readonly=False,
             collection=collection
         )
@@ -145,11 +147,14 @@ def create_default_collection_object_types():
                 picklist=cog_type_picklist
             )
 
-def revert_default_collection_object_types():
+def revert_default_collection_object_types(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
     for collection in Collection.objects.all():
         cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
-            tablename='Collectionobjectgrouptype',
             collection=collection
         )
         if cog_type_picklist_qs.exists():
@@ -157,7 +162,10 @@ def revert_default_collection_object_types():
             Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
             cog_type_picklist.delete()
 
-def set_discipline_for_taxon_treedefs():
+def set_discipline_for_taxon_treedefs(apps):
+    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
+    Taxontreedef = apps.get_model('specify', 'Taxontreedef')
+
     collection_object_types = Collectionobjecttype.objects.filter(
         taxontreedef__discipline__isnull=True
     ).annotate(
@@ -176,17 +184,17 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_default_collection_types()
-        create_default_discipline_for_tree_defs()
-        create_table_schema_config_with_defaults()
-        create_default_collection_object_types()
-        set_discipline_for_taxon_treedefs()
+        create_default_collection_types(apps)
+        create_default_discipline_for_tree_defs(apps)
+        create_table_schema_config_with_defaults(apps)
+        create_default_collection_object_types(apps)
+        set_discipline_for_taxon_treedefs(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_default_collection_object_types()
-        revert_table_schema_config_with_defaults()
-        revert_default_discipline_for_tree_defs()
-        revert_default_collection_types()
+        revert_default_collection_object_types(apps)
+        revert_table_schema_config_with_defaults(apps)
+        revert_default_discipline_for_tree_defs(apps)
+        revert_default_collection_types(apps)
 
     operations = [
         migrations.CreateModel(

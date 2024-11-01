@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icons type="plugins">
+    
+    <!--  Plugins -->
+    <icon name="FishBase"         file="fblogootw32.png" sizes="all"/>
+    <!-- <icon name="BioGeoMancer"     file="biogeomancer.png" sizes="all"/> -->
+    <icon name="BioGeoMancer"     file="biogeomancer20x20.png" sizes="NonStd"/>
+    <icon name="BioGeoMancer32"   file="biogeomancer.png" sizes="32"/>
+    <icon name="ConvertGeoRef"	  file="LatLong20x20.png" sizes="NonStd"/>
+    <icon name="GoogleEarth"      file="GoogleEarth20x20.png" sizes="NonStd"/>
+    <icon name="GoogleEarth16"    file="GoogleEarth16x16.png" sizes="16"/>
+    <icon name="DefaultPlacemark" file="specify32White.png" sizes="32"/>
+    <icon name="GEOLocate"        file="geolocate.png" sizes="32"/>
+    <icon name="GEOLocate20"      file="geolocate20.png" sizes="20"/>
+    <icon name="GEOLocate16"      file="geolocate16.png" sizes="16"/>
+    <icon name="WorldWind"        file="worldwind32x32.png" sizes="32"/>
+    <icon name="SGR"              file="sgr_32.png" sizes="32"/>
+    <icon name="SGRGEAR"          file="system.png" sizes="32" />
+    <icon name="SGRMatchers"      file="matchers_32.png" sizes="32" />
+    <icon name="ColorPalette"     file="colorpalette.png" sizes="32"/>
+    <icon name="Weightings"       file="weightings.png" sizes="32"/>
+    
+    <icon name="SearchBoxMac"      file="SearchBoxMac.gif"  sizes="NonStd"/>
+    <icon name="SearchBoxLinux"    file="Search32x32.png" sizes="all"/>
+    <icon name="SearchTriangle"    file="SearchTriangle.gif" sizes="NonStd"/>
+    
+    <icon name="DiGIR"             file="DigirShovel.png"/>
+ 
+    <icon name="Symbiota"          file="symbiota_32.png"/>
+    
+</icons>
