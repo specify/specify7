@@ -65,6 +65,7 @@ exports[`fields are loaded 1`] = `
   "[literalField CollectionObject.yesNo4]",
   "[literalField CollectionObject.yesNo5]",
   "[literalField CollectionObject.yesNo6]",
+  "[relationship CollectionObject.absoluteAges]",
   "[relationship CollectionObject.accession]",
   "[relationship CollectionObject.agent1]",
   "[relationship CollectionObject.appraisal]",
@@ -95,6 +96,7 @@ exports[`fields are loaded 1`] = `
   "[relationship CollectionObject.paleoContext]",
   "[relationship CollectionObject.preparations]",
   "[relationship CollectionObject.projects]",
+  "[relationship CollectionObject.relativeAges]",
   "[relationship CollectionObject.rightSideRels]",
   "[relationship CollectionObject.treatmentEvents]",
   "[relationship CollectionObject.visibilitySetBy]",
@@ -1214,6 +1216,7 @@ exports[`localization is loaded 1`] = `
 
 exports[`relationships are loaded 1`] = `
 [
+  "[relationship CollectionObject.absoluteAges]",
   "[relationship CollectionObject.accession]",
   "[relationship CollectionObject.agent1]",
   "[relationship CollectionObject.appraisal]",
@@ -1244,6 +1247,7 @@ exports[`relationships are loaded 1`] = `
   "[relationship CollectionObject.paleoContext]",
   "[relationship CollectionObject.preparations]",
   "[relationship CollectionObject.projects]",
+  "[relationship CollectionObject.relativeAges]",
   "[relationship CollectionObject.rightSideRels]",
   "[relationship CollectionObject.treatmentEvents]",
   "[relationship CollectionObject.visibilitySetBy]",
@@ -1253,6 +1257,9 @@ exports[`relationships are loaded 1`] = `
 
 exports[`tableScoping 1`] = `
 {
+  "AbsoluteAge": "collectionObject",
+  "AbsoluteAgeAttachment": "absoluteAge > collectionObject",
+  "AbsoluteAgeCitation": "absoluteAge > collectionObject",
   "Accession": "division",
   "AccessionAgent": "accession > division",
   "AccessionAttachment": "accession > division",
@@ -1400,6 +1407,9 @@ exports[`tableScoping 1`] = `
   "RecordSetItem": undefined,
   "ReferenceWork": undefined,
   "ReferenceWorkAttachment": undefined,
+  "RelativeAge": "collectionObject",
+  "RelativeAgeAttachment": "relativeAge > collectionObject",
+  "RelativeAgeCitation": "relativeAge > collectionObject",
   "RepositoryAgreement": "division",
   "RepositoryAgreementAttachment": "repositoryAgreement > division",
   "Role": "collection",
@@ -1443,6 +1453,9 @@ exports[`tableScoping 1`] = `
   "TaxonCitation": "taxon > definition > discipline",
   "TaxonTreeDef": "discipline",
   "TaxonTreeDefItem": "treeDef > discipline",
+  "TectonicUnit": "definition > discipline",
+  "TectonicUnitTreeDef": "discipline",
+  "TectonicUnitTreeDefItem": "treeDef > discipline",
   "TreatmentEvent": "collectionObject",
   "TreatmentEventAttachment": "treatmentEvent > collectionObject",
   "UniquenessRule": "discipline",
