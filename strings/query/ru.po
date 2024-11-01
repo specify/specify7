@@ -178,7 +178,7 @@ msgstr ""
 "Запрос: «{queryName:string}» на {recordSetTable:string}: "
 "«{recordSetName:string}»"
 
-#: components/QueryBuilder/fromTree.ts:214
+#: components/QueryBuilder/fromTree.ts:213
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #, fuzzy
 msgid "treeQueryName"
