@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  TransformComponent,
+  TransformWrapper,
+  useControls,
+} from 'react-zoom-pan-pinch';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -9,6 +14,28 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 export function ChronoChart(): JSX.Element {
   const [showChronoChart, handleShowChronoChart, handleHideChronoChart] =
     useBooleanState();
+
+  function Controls() {
+    const { zoomIn, zoomOut, resetTransform } = useControls();
+    return (
+      <div className="flex flex-col">
+        <Button.Icon
+          icon="plus"
+          title={commonText.add}
+          onClick={() => zoomIn()}
+        />
+
+        <Button.Icon
+          icon="minus"
+          title={commonText.add}
+          onClick={() => zoomOut()}
+        />
+
+        {/* <button onClick={() => resetTransform()}>Reset</button> */}
+      </div>
+    );
+  }
+
   return (
     <>
       <Button.Icon
@@ -28,12 +55,19 @@ export function ChronoChart(): JSX.Element {
           onClose={handleHideChronoChart}
         >
           {/* TODO: Replace with chrono image */}
-          <img
-            alt=""
-            className="hover:animate-hue-rotate max-w-xs"
-            src="/static/img/logo.svg"
-            style={{ filter: `hue-rotate(30deg)` }}
-          />
+          <TransformWrapper>
+            <div className="flex items-center justify-between">
+              <TransformComponent>
+                <img
+                  alt="Chrono Chart"
+                  className="max-w-xs"
+                  src="/static/img/logo.svg"
+                  width="100%"
+                />
+              </TransformComponent>
+              <Controls />
+            </div>
+          </TransformWrapper>
         </Dialog>
       )}
     </>
