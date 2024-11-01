@@ -40,7 +40,7 @@ export function ChronoChart(): JSX.Element {
                 <img
                   alt="Chrono Chart"
                   className="max-w-xs"
-                  src="/static/img/logo.svg"
+                  src="/static/img/chronostratChart2023-09.jpg"
                   width="100%"
                 />
               </TransformComponent>
@@ -54,18 +54,19 @@ export function ChronoChart(): JSX.Element {
 }
 
 function Controls(): JSX.Element {
-  const { zoomIn, zoomOut, resetTransform } = useControls();
+  const { zoomIn, zoomOut } = useControls();
+  // Const { zoomIn, zoomOut, resetTransform } = useControls();
   return (
     <div className="flex flex-col">
       <Button.Icon
         icon="plus"
-        title={commonText.zoom}
+        title={commonText.zoom()}
         onClick={() => zoomIn()}
       />
 
       <Button.Icon
         icon="minus"
-        title={commonText.unzoom}
+        title={commonText.unzoom()}
         onClick={() => zoomOut()}
       />
 
