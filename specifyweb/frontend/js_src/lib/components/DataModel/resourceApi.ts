@@ -10,7 +10,6 @@ import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
-import { CollectionFetchFilters } from './collection';
 import { isRelationshipCollection } from './collectionApi';
 import { backboneFieldSeparator } from './helpers';
 import type {

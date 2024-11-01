@@ -23,6 +23,7 @@ import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
+import { SubViewContext } from '../Forms/SubView';
 import type { InteractionWithPreps } from '../Interactions/helpers';
 import { interactionPrepTables } from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
@@ -133,6 +134,26 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
+  const subviewContext = React.useContext(SubViewContext);
+  const parentContext = React.useMemo(
+    () => subviewContext?.parentContext ?? [],
+    [subviewContext?.parentContext]
+  );
+
+  const renderedResourceId = React.useMemo(
+    () =>
+      parentContext.length === 0 || relationship.isDependent()
+        ? undefined
+        : f.maybe(
+            parentContext.find(
+              ({ relationship: parentRelationship }) =>
+                parentRelationship === relationship.getReverse()
+            ),
+            ({ parentResource: { id } }) => id
+          ),
+    [parentContext, relationship]
+  );
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -185,116 +206,126 @@ export function IntegratedRecordSelector({
               />
             ) : undefined}
             {formType === 'form' ? (
-              <ResourceView
-                containerRef={containerRef}
-                dialog={dialog}
-                headerButtons={(specifyNetworkBadge): JSX.Element => (
-                  <>
-                    <DataEntry.Visit
-                      /*
-                       * If dialog is not false, the visit button would be added
-                       * by ResourceView
-                       */
-                      resource={
-                        !isDependent && dialog === false ? resource : undefined
-                      }
-                    />
-                    {!isDependent &&
-                    hasTablePermission(
-                      relationship.relatedTable.name,
-                      'read'
-                    ) &&
-                    typeof handleAdd === 'function' ? (
-                      <DataEntry.Search
-                        disabled={
-                          isReadOnly ||
-                          (isToOne && collection.models.length > 0)
-                        }
-                        onClick={showSearchDialog}
-                      />
-                    ) : undefined}
-                    {hasTablePermission(
-                      relationship.relatedTable.name,
-                      'create'
-                    ) && typeof handleAdd === 'function' ? (
-                      <DataEntry.Add
-                        aria-pressed={state.type === 'AddResourceState'}
-                        disabled={
-                          isReadOnly ||
-                          (isToOne && collection.models.length > 0)
-                        }
-                        onClick={(): void => {
-                          const resource =
-                            new collection.table.specifyTable.Resource();
-
-                          if (
-                            isDependent ||
-                            viewName === relationship.relatedTable.view
-                          ) {
-                            focusFirstField();
-                            handleAdd([resource]);
-                            return;
-                          }
-
-                          if (state.type === 'AddResourceState')
-                            setState({ type: 'MainState' });
-                          else
-                            setState({
-                              type: 'AddResourceState',
-                              resource,
-                              handleAdd,
-                            });
-                        }}
-                      />
-                    ) : undefined}
-                    {hasTablePermission(
-                      relationship.relatedTable.name,
-                      isDependent ? 'delete' : 'read'
-                    ) && typeof handleRemove === 'function' ? (
-                      <DataEntry.Remove
-                        disabled={
-                          isReadOnly ||
-                          collection.models.length === 0 ||
-                          resource === undefined
-                        }
-                        onClick={(): void => {
-                          handleRemove('minusButton');
-                        }}
-                      />
-                    ) : undefined}
-                    <span
-                      className={`flex-1 ${
-                        dialog === false ? '-ml-2' : '-ml-4'
-                      }`}
-                    />
-
-                    {isAttachmentTable && (
-                      <AttachmentsCollection collection={collection} />
-                    )}
-                    {specifyNetworkBadge}
-                    {!isToOne && slider}
-                  </>
-                )}
-                isCollapsed={isCollapsed}
-                isDependent={isDependent}
-                isLoading={isLoading}
-                isSubForm={dialog === false}
-                key={resource?.cid}
-                preHeaderButtons={collapsibleButton}
-                resource={resource}
-                title={relationship.label}
-                onAdd={undefined}
-                onDeleted={
-                  collection.models.length <= 1 ? handleClose : undefined
+              <ReadOnlyContext.Provider
+                value={
+                  isReadOnly ||
+                  (renderedResourceId !== undefined &&
+                    resource?.id === renderedResourceId)
                 }
-                onSaved={handleClose}
-                viewName={viewName}
-                /*
-                 * Don't save the resource on save button click if it is a dependent
-                 * resource
-                 */
-                onClose={handleClose}
-              />
+              >
+                <ResourceView
+                  containerRef={containerRef}
+                  dialog={dialog}
+                  headerButtons={(specifyNetworkBadge): JSX.Element => (
+                    <>
+                      <DataEntry.Visit
+                        /*
+                         * If dialog is not false, the visit button would be added
+                         * by ResourceView
+                         */
+                        resource={
+                          !isDependent && dialog === false
+                            ? resource
+                            : undefined
+                        }
+                      />
+                      {!isDependent &&
+                      hasTablePermission(
+                        relationship.relatedTable.name,
+                        'read'
+                      ) &&
+                      typeof handleAdd === 'function' ? (
+                        <DataEntry.Search
+                          disabled={
+                            isReadOnly ||
+                            (isToOne && collection.models.length > 0)
+                          }
+                          onClick={showSearchDialog}
+                        />
+                      ) : undefined}
+                      {hasTablePermission(
+                        relationship.relatedTable.name,
+                        'create'
+                      ) && typeof handleAdd === 'function' ? (
+                        <DataEntry.Add
+                          aria-pressed={state.type === 'AddResourceState'}
+                          disabled={
+                            isReadOnly ||
+                            (isToOne && collection.models.length > 0)
+                          }
+                          onClick={(): void => {
+                            const resource =
+                              new collection.table.specifyTable.Resource();
+
+                            if (
+                              isDependent ||
+                              viewName === relationship.relatedTable.view
+                            ) {
+                              focusFirstField();
+                              handleAdd([resource]);
+                              return;
+                            }
+
+                            if (state.type === 'AddResourceState')
+                              setState({ type: 'MainState' });
+                            else
+                              setState({
+                                type: 'AddResourceState',
+                                resource,
+                                handleAdd,
+                              });
+                          }}
+                        />
+                      ) : undefined}
+                      {hasTablePermission(
+                        relationship.relatedTable.name,
+                        isDependent ? 'delete' : 'read'
+                      ) && typeof handleRemove === 'function' ? (
+                        <DataEntry.Remove
+                          disabled={
+                            isReadOnly ||
+                            collection.models.length === 0 ||
+                            resource === undefined
+                          }
+                          onClick={(): void => {
+                            handleRemove('minusButton');
+                          }}
+                        />
+                      ) : undefined}
+                      <span
+                        className={`flex-1 ${
+                          dialog === false ? '-ml-2' : '-ml-4'
+                        }`}
+                      />
+
+                      {isAttachmentTable && (
+                        <AttachmentsCollection collection={collection} />
+                      )}
+                      {specifyNetworkBadge}
+                      {!isToOne && slider}
+                    </>
+                  )}
+                  isCollapsed={isCollapsed}
+                  isDependent={isDependent}
+                  isLoading={isLoading}
+                  isSubForm={dialog === false}
+                  key={resource?.cid}
+                  preHeaderButtons={collapsibleButton}
+                  resource={resource}
+                  title={relationship.label}
+                  onAdd={undefined}
+                  onDeleted={
+                    collection.models.length <= 1 ? handleClose : undefined
+                  }
+                  onSaved={handleClose}
+                  viewName={viewName}
+                  /*
+                   * Don't save the resource on save button click if it is a dependent
+                   * resource
+                   */
+                  onClose={handleClose}
+                />
+              </ReadOnlyContext.Provider>
             ) : null}
             {formType === 'formTable' ? (
               <FormTableCollection

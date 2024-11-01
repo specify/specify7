@@ -23,7 +23,7 @@ export function useCollection<SCHEMA extends AnySchema>({
   parentResource,
   relationship,
   sortBy,
-}: UseCollectionProps<SCHEMA>): readonly [
+}: Omit<UseCollectionProps<SCHEMA>, 'filters'>): readonly [
   ...GetOrSet<Collection<SCHEMA> | false | undefined>,
   (
     filters?: CollectionFetchFilters<SCHEMA>
@@ -45,7 +45,7 @@ export function useCollection<SCHEMA extends AnySchema>({
               parentResource,
               relationship,
             }),
-      [sortBy, parentResource, relationship]
+      [relationship, parentResource, sortBy]
     ),
     false
   );

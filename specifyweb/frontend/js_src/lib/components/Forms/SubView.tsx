@@ -32,7 +32,12 @@ type SubViewContextType =
        * parent subview.
        * Avoids infinite cycles in rendering forms
        */
-      readonly parentContext: RA<Relationship> | undefined;
+      readonly parentContext:
+        | RA<{
+            readonly relationship: Relationship;
+            readonly parentResource: SpecifyResource<AnySchema>;
+          }>
+        | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
       readonly handleChangeSortField: (
         sortField: SubViewSortField | undefined
@@ -66,6 +71,11 @@ export function SubView({
   readonly isCollapsed?: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
+  const subviewContext = React.useContext(SubViewContext);
+  const parentContext = React.useMemo(
+    () => subviewContext?.parentContext ?? [],
+    [subviewContext?.parentContext]
+  );
 
   const [collection, _setCollection, handleFetch] = useCollection({
     parentResource,
@@ -89,20 +99,14 @@ export function SubView({
     [parentResource, relationship, handleFetch]
   );
 
-  const subviewContext = React.useContext(SubViewContext);
-
   const [formType, setFormType] = useTriggerState(initialFormType);
-  const parentContext = React.useMemo(
-    () => subviewContext?.parentContext ?? [],
-    [subviewContext?.parentContext]
-  );
 
   const contextValue = React.useMemo<SubViewContextType>(
     () => ({
       relationship,
       formType,
       sortField,
-      parentContext: [...parentContext, relationship],
+      parentContext: [...parentContext, { relationship, parentResource }],
       handleChangeFormType: setFormType,
       handleChangeSortField: setSortField,
     }),
@@ -111,6 +115,7 @@ export function SubView({
       formType,
       sortField,
       parentContext,
+      parentResource,
       setFormType,
       setSortField,
     ]
@@ -131,8 +136,9 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {parentContext.includes(relationship) ||
-      collection === false ? undefined : (
+      {parentContext
+        .map(({ relationship }) => relationship)
+        .includes(relationship) || collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray

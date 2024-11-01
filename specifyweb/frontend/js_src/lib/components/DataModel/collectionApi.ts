@@ -51,6 +51,7 @@ async function lazyFetch(options) {
   options.silent = true;
   assert(options.at == null);
 
+  // REFACTOR: make passing filters directly to fetch easier
   options.data =
     options.data || _.extend({ domainfilter: this.domainfilter }, this.filters);
   options.data.offset = options.offset ?? this.length;
