@@ -53,7 +53,6 @@ export function ChronoChart(): JSX.Element {
 
 function Controls(): JSX.Element {
   const { zoomIn, zoomOut } = useControls();
-  // Const { zoomIn, zoomOut, resetTransform } = useControls();
   return (
     <div className="flex flex-col">
       <Button.Icon
@@ -61,14 +60,11 @@ function Controls(): JSX.Element {
         title={commonText.zoom()}
         onClick={() => zoomIn()}
       />
-
       <Button.Icon
         icon="minus"
         title={commonText.unzoom()}
         onClick={() => zoomOut()}
       />
-
-      {/* <button onClick={() => resetTransform()}>Reset</button> */}
     </div>
   );
 }
