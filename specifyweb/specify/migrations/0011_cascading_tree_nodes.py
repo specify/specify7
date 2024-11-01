@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0009_tectonic_ranks'),
+        ('specify', '0010_updateDelete_parentcojo'),
     ]
 
     operations = [
