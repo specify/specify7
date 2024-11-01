@@ -15,27 +15,6 @@ export function ChronoChart(): JSX.Element {
   const [showChronoChart, handleShowChronoChart, handleHideChronoChart] =
     useBooleanState();
 
-  function Controls() {
-    const { zoomIn, zoomOut, resetTransform } = useControls();
-    return (
-      <div className="flex flex-col">
-        <Button.Icon
-          icon="plus"
-          title={commonText.add}
-          onClick={() => zoomIn()}
-        />
-
-        <Button.Icon
-          icon="minus"
-          title={commonText.add}
-          onClick={() => zoomOut()}
-        />
-
-        {/* <button onClick={() => resetTransform()}>Reset</button> */}
-      </div>
-    );
-  }
-
   return (
     <>
       <Button.Icon
@@ -71,5 +50,26 @@ export function ChronoChart(): JSX.Element {
         </Dialog>
       )}
     </>
+  );
+}
+
+function Controls(): JSX.Element {
+  const { zoomIn, zoomOut, resetTransform } = useControls();
+  return (
+    <div className="flex flex-col">
+      <Button.Icon
+        icon="plus"
+        title={commonText.zoom}
+        onClick={() => zoomIn()}
+      />
+
+      <Button.Icon
+        icon="minus"
+        title={commonText.unzoom}
+        onClick={() => zoomOut()}
+      />
+
+      {/* <button onClick={() => resetTransform()}>Reset</button> */}
+    </div>
   );
 }
