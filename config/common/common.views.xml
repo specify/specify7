@@ -1930,7 +1930,7 @@
 					<cell type="field" id="name" name="name" uitype="text"/>
 					<cell type="label" labelfor="cogType"/>
 					<cell type="field" id="cogType" name="cogType" uitype="combobox" picklist="COGTypes"/>
-			   		<!--<cell type="label" labelfor="parentCojo"/>
+					<!--<cell type="label" labelfor="parentCojo"/>
 					<cell type="field" id="parentCojo" name="parentCojo" uitype="querycbx" isrequired="false"/> -->
 					<cell type="subview" id="cojo" name="childCojos" uitype="subview" initialize="btn=true"/>
 				</row>
@@ -2828,7 +2828,7 @@
 					<cell type="label" labelfor="13"/>
 					<cell type="field" id="13" name="preferredTaxon" uitype="text" readonly="true" colspan="9"/>
 				</row>
-        <row>
+				<row>
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" uitype="plugin" name="this" initialize="name=PartialDateUI;df=determinedDate;tp=determinedDatePrecision" uifieldformatter="Date"/>
 					<cell type="label" labelfor="5"/>
@@ -6992,8 +6992,8 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
-					<cell type="label" label="Object Type"/>
-					<cell type="field" id="collectionObjectTypeName" name="collectionObjectType" uitype="combobox" colspan="3" default="Mineral"/>
+					<cell type="label" labelfor="cot"/>
+					<cell type="field" id="cot" name="collectionObjectType" uitype="combobox" colspan="3"/>
 					<cell type="label" labelfor="14"/>
 					<cell type="field" id="14" name="altCatalogNumber" uitype="text"/>
 				</row>
