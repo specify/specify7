@@ -373,8 +373,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   ),
                   ...(isSelected ? ids : []),
                 ];
+                const uniqueSelectedRows = Array.from(new Set(newSelectedRows));
                 setSelectedRows(new Set(newSelectedRows));
-                handleSelected?.(newSelectedRows);
+                handleSelected?.(uniqueSelectedRows);
 
                 lastSelectedRow.current = rowIndex;
               }}

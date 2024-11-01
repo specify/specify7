@@ -7573,7 +7573,7 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parentcojo = models.ForeignKey('CollectionObjectGroupJoin', db_column='CollectionObjectGroupJoinID', related_name='collectionobjectgroup', null=True, on_delete=protect_with_blockers)
+    parentcojo = models.ForeignKey('CollectionObjectGroupJoin', db_column='CollectionObjectGroupJoinID', related_name='collectionobjectgroup', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'collectionobjectgroup'
@@ -7617,7 +7617,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
 
     save = partialmethod(custom_save)
 
-class AbsoluteAge(models.Model):
+class Absoluteage(models.Model):
     specify_model = datamodel.get_table('absoluteage')
 
     # ID Field
@@ -7656,7 +7656,7 @@ class AbsoluteAge(models.Model):
 
     save = partialmethod(custom_save)
 
-class RelativeAge(models.Model):
+class Relativeage(models.Model):
     specify_model = datamodel.get_table('relativeage')
 
     # ID Field
@@ -7700,7 +7700,7 @@ class RelativeAge(models.Model):
 
     save = partialmethod(custom_save)
 
-class AbsoluteAgeAttachment(models.Model):
+class Absoluteageattachment(models.Model):
     specify_model = datamodel.get_table('absoluteageattachment')
 
     # ID Field
@@ -7726,7 +7726,7 @@ class AbsoluteAgeAttachment(models.Model):
 
     save = partialmethod(custom_save)
 
-class RelativeAgeAttachment(models.Model):
+class Relativeageattachment(models.Model):
     specify_model = datamodel.get_table('relativeageattachment')
 
     # ID Field
@@ -7752,7 +7752,7 @@ class RelativeAgeAttachment(models.Model):
 
     save = partialmethod(custom_save)
 
-class AbsoluteAgeCitation(models.Model):
+class Absoluteagecitation(models.Model):
     specify_model = datamodel.get_table('absoluteagecitation')
 
     # ID Field
@@ -7781,7 +7781,7 @@ class AbsoluteAgeCitation(models.Model):
 
     save = partialmethod(custom_save)
 
-class RelativeAgeCitation(models.Model):
+class Relativeagecitation(models.Model):
     specify_model = datamodel.get_table('relativeagecitation')
 
     # ID Field
