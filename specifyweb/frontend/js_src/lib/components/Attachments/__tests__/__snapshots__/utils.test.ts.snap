@@ -29,8 +29,6 @@ exports[`allTablesWithAttachments 1`] = `
   "[table Storage]",
   "[table Taxon]",
   "[table TreatmentEvent]",
-  "[table AbsoluteAge]",
-  "[table RelativeAge]",
 ]
 `;
 
@@ -64,7 +62,5 @@ exports[`attachmentRelatedTables 1`] = `
   "StorageAttachment",
   "TaxonAttachment",
   "TreatmentEventAttachment",
-  "AbsoluteAgeAttachment",
-  "RelativeAgeAttachment",
 ]
 `;

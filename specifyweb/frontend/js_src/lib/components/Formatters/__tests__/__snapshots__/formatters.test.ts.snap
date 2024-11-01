@@ -2032,16 +2032,6 @@ exports[`Formatters are fetched and parsed correctly 1`] = `
 
 exports[`getMainTableFields 1`] = `
 {
-  "AbsoluteAge": [
-    "ageType",
-    "datingMethod",
-  ],
-  "AbsoluteAgeAttachment": [],
-  "AbsoluteAgeCitation": [
-    "figureNumber",
-    "pageNumber",
-    "plateNumber",
-  ],
   "Accession": [
     "accessionNumber",
     "status",
@@ -2614,16 +2604,6 @@ exports[`getMainTableFields 1`] = `
     "volume",
   ],
   "ReferenceWorkAttachment": [],
-  "RelativeAge": [
-    "ageType",
-    "datingMethod",
-  ],
-  "RelativeAgeAttachment": [],
-  "RelativeAgeCitation": [
-    "figureNumber",
-    "pageNumber",
-    "plateNumber",
-  ],
   "RepositoryAgreement": [
     "repositoryAgreementNumber",
     "status",
@@ -2757,23 +2737,6 @@ exports[`getMainTableFields 1`] = `
     "remarks",
   ],
   "TaxonTreeDefItem": [
-    "name",
-    "fullNameSeparator",
-    "textAfter",
-    "textBefore",
-    "title",
-  ],
-  "TectonicUnit": [
-    "name",
-    "fullName",
-    "guid",
-    "text1",
-    "text2",
-  ],
-  "TectonicUnitTreeDef": [
-    "name",
-  ],
-  "TectonicUnitTreeDefItem": [
     "name",
     "fullNameSeparator",
     "textAfter",

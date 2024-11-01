@@ -6,8 +6,6 @@ requireContext();
 test('Parent table relationships are calculated properly', () =>
   expect(parentTableRelationship()).toMatchInlineSnapshot(`
     {
-      "AbsoluteAgeAttachment": "[relationship AbsoluteAgeAttachment.absoluteAge]",
-      "AbsoluteAgeCitation": "[relationship AbsoluteAgeCitation.absoluteAge]",
       "AccessionAgent": "[relationship AccessionAgent.accession]",
       "AccessionAttachment": "[relationship AccessionAttachment.accession]",
       "AccessionAuthorization": "[relationship AccessionAuthorization.accession]",
@@ -88,8 +86,6 @@ test('Parent table relationships are calculated properly', () =>
       "PreparationProperty": "[relationship PreparationProperty.preparation]",
       "RecordSetItem": "[relationship RecordSetItem.recordSet]",
       "ReferenceWorkAttachment": "[relationship ReferenceWorkAttachment.referenceWork]",
-      "RelativeAgeAttachment": "[relationship RelativeAgeAttachment.relativeAge]",
-      "RelativeAgeCitation": "[relationship RelativeAgeCitation.relativeAge]",
       "RepositoryAgreementAttachment": "[relationship RepositoryAgreementAttachment.repositoryAgreement]",
       "RolePolicy": "[relationship RolePolicy.role]",
       "SpAppResourceData": "[relationship SpAppResourceData.spAppResource]",
@@ -103,7 +99,6 @@ test('Parent table relationships are calculated properly', () =>
       "TaxonAttachment": "[relationship TaxonAttachment.taxon]",
       "TaxonCitation": "[relationship TaxonCitation.taxon]",
       "TaxonTreeDefItem": "[relationship TaxonTreeDefItem.treeDef]",
-      "TectonicUnitTreeDefItem": "[relationship TectonicUnitTreeDefItem.treeDef]",
       "TreatmentEventAttachment": "[relationship TreatmentEventAttachment.treatmentEvent]",
       "UniquenessRuleField": "[relationship UniquenessRuleField.uniquenessrule]",
       "WorkbenchRow": "[relationship WorkbenchRow.workbench]",
