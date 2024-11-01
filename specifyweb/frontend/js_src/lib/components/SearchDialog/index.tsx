@@ -1,6 +1,5 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
@@ -50,7 +49,10 @@ const viewNameExceptions: Partial<RR<keyof Tables, string>> = {
   GeologicTimePeriod: 'ChronosStratSearch',
 };
 
-type SearchDialogProps<SCHEMA extends AnySchema> = {
+/**
+ * Display a resource search dialog
+ */
+export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly table: SpecifyTable<SCHEMA>;
@@ -59,14 +61,7 @@ type SearchDialogProps<SCHEMA extends AnySchema> = {
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onlyUseQueryBuilder?: boolean;
-};
-
-/**
- * Display a resource search dialog
- */
-export function SearchDialog<SCHEMA extends AnySchema>(
-  props: SearchDialogProps<SCHEMA>
-): JSX.Element | null {
+}): JSX.Element | null {
   const [alwaysUseQueryBuilder] = userPreferences.use(
     'form',
     'queryComboBox',
@@ -87,41 +82,6 @@ export function SearchDialog<SCHEMA extends AnySchema>(
   ) : (
     <SearchForm {...props} onUseQueryBuilder={handleUseQueryBuilder} />
   );
-}
-
-/**
- * Displays a SearchDialog whenever `showSearchDialog` is invoked
- */
-export function useSearchDialog<SCHEMA extends AnySchema>({
-  onSelected: handleSelected,
-  onClose: handleClosed,
-  ...rest
-}: Omit<SearchDialogProps<SCHEMA>, 'onClose' | 'onSelected'> &
-  Partial<Pick<SearchDialogProps<SCHEMA>, 'onClose' | 'onSelected'>>): {
-  readonly searchDialog: JSX.Element | null;
-  readonly showSearchDialog: () => void;
-} {
-  const [state, setState] = React.useState<State<'Main'> | State<'Search'>>({
-    type: 'Main',
-  });
-
-  return {
-    searchDialog:
-      state.type === 'Search' && typeof handleSelected === 'function' ? (
-        <SearchDialog
-          {...rest}
-          onClose={(): void => {
-            handleClosed?.();
-            setState({ type: 'Main' });
-          }}
-          onSelected={handleSelected}
-        />
-      ) : null,
-    showSearchDialog: () =>
-      typeof handleSelected === 'function'
-        ? setState({ type: 'Search' })
-        : undefined,
-  };
 }
 
 const filterResults = <SCHEMA extends AnySchema>(

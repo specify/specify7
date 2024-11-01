@@ -538,6 +538,7 @@
                 "version": 8,
                 "createdbyagent": null,
                 "modifiedbyagent": "/api/specify/agent/1514/",
+                "institutions": "/api/specify/institution/?storagetreedef=1",
                 "treeentries": "/api/specify/storage/?definition=1",
                 "treedefitems": [
                     {
@@ -735,6 +736,7 @@
                 "version": 3,
                 "createdbyagent": null,
                 "modifiedbyagent": "/api/specify/agent/1514/",
+                "disciplines": "/api/specify/discipline/?geographytreedef=1",
                 "treeentries": "/api/specify/geography/?definition=1",
                 "treedefitems": [
                     {

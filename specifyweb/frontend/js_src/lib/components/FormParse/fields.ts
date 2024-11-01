@@ -24,7 +24,6 @@ import {
   getBooleanAttribute,
   getParsedAttribute,
 } from '../Syncer/xmlUtils';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 
@@ -222,15 +221,6 @@ const processFieldType: {
   QueryComboBox({ getProperty, fields }) {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
-      return { type: 'Blank' };
-    } else if (
-      fields.some(
-        (field) => field.isRelationship && relationshipIsToMany(field)
-      )
-    ) {
-      console.error(
-        'Unable to render a to-many relationship as a querycbx. Use a Subview instead'
-      );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
       return {

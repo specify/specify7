@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useSerializedCollection } from '../../hooks/useSerializedCollection';
+import { useCollection } from '../../hooks/useCollection';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
@@ -125,7 +125,7 @@ function Attachments({
     'scale'
   );
 
-  const [collection, setCollection, fetchMore] = useSerializedCollection(
+  const [collection, setCollection, fetchMore] = useCollection(
     React.useCallback(
       async (offset) =>
         fetchCollection(

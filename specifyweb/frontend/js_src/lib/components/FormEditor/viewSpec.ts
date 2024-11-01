@@ -17,7 +17,6 @@ import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -367,14 +366,6 @@ const subViewSpec = (
           const field = fields?.at(-1);
           if (field?.isRelationship === false) {
             console.error('SubView can only be used to display a relationship');
-            return undefined;
-          }
-          if (field !== undefined && field.getReverse() === undefined) {
-            console.error(
-              `No reverse relationship exists${
-                relationshipIsToMany(field) ? '' : '. Use a querycbx instead'
-              }`
-            );
             return undefined;
           }
           if (field?.type === 'many-to-many') {
@@ -808,32 +799,8 @@ const textAreaSpec = (
     ),
   });
 
-const queryComboBoxSpec = (
-  _spec: SpecToJson<ReturnType<typeof rawFieldSpec>>,
-  {
-    table,
-  }: {
-    readonly table: SpecifyTable | undefined;
-  }
-) =>
+const queryComboBoxSpec = f.store(() =>
   createXmlSpec({
-    field: pipe(
-      rawFieldSpec(table).field,
-      syncer(
-        ({ parsed, ...rest }) => {
-          if (
-            parsed?.some(
-              (field) => field.isRelationship && relationshipIsToMany(field)
-            )
-          )
-            console.error(
-              'Unable to render a to-many relationship as a querycbx. Use a Subview instead'
-            );
-          return { parsed, ...rest };
-        },
-        (value) => value
-      )
-    ),
     // Customize view name
     dialogViewName: syncers.xmlAttribute('initialize displayDlg', 'skip'),
     searchDialogViewName: syncers.xmlAttribute('initialize searchDlg', 'skip'),
@@ -869,7 +836,8 @@ const queryComboBoxSpec = (
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(true)
     ),
-  });
+  })
+);
 
 const checkBoxSpec = f.store(() =>
   createXmlSpec({

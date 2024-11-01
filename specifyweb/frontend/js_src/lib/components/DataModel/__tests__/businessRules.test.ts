@@ -306,11 +306,6 @@ describe('uniqueness rules', () => {
     ]);
   });
 
-  overrideAjax(getResourceApiUrl('Agent', 1), {
-    id: 1,
-    resource_uri: getResourceApiUrl('Agent', 1),
-  });
-
   test('rule with local collection', async () => {
     const accessionId = 1;
     const accession = new tables.Accession.Resource({

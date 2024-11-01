@@ -9,7 +9,6 @@ import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import type { SET } from '../../utils/utils';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
@@ -112,7 +111,7 @@ export function useSaveBlockers(
 export function setSaveBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
-  errors: Parameters<GetOrSet<RA<string>>[typeof SET]>[0],
+  errors: Parameters<GetOrSet<RA<string>>[1]>[0],
   blockerKey: string
 ): void {
   const resolvedErrors =
@@ -201,25 +200,28 @@ const getAllBlockers = (
       resources: [resource],
     })) ?? []),
   ...filterArray(
-    Object.entries({
-      ...resource.dependentResources,
-      ...resource.independentResources,
-    }).flatMap(([fieldName, collectionOrResource]) =>
-      (filterBlockers !== undefined &&
-        fieldName.toLowerCase() !== filterBlockers?.name.toLowerCase()) ||
-      collectionOrResource === undefined ||
-      collectionOrResource === null
-        ? undefined
-        : (collectionOrResource instanceof ResourceBase
-            ? getAllBlockers(collectionOrResource as SpecifyResource<AnySchema>)
-            : (collectionOrResource as Collection<AnySchema>).models.flatMap(
-                f.unary(getAllBlockers)
-              )
-          ).map(({ field, resources, message }) => ({
-            field: [resource.specifyTable.strictGetField(fieldName), ...field],
-            resources: [...resources, resource],
-            message,
-          }))
+    Object.entries(resource.dependentResources).flatMap(
+      ([fieldName, collectionOrResource]) =>
+        (filterBlockers !== undefined &&
+          fieldName.toLowerCase() !== filterBlockers?.name.toLowerCase()) ||
+        collectionOrResource === undefined ||
+        collectionOrResource === null
+          ? undefined
+          : (collectionOrResource instanceof ResourceBase
+              ? getAllBlockers(
+                  collectionOrResource as SpecifyResource<AnySchema>
+                )
+              : (collectionOrResource as Collection<AnySchema>).models.flatMap(
+                  f.unary(getAllBlockers)
+                )
+            ).map(({ field, resources, message }) => ({
+              field: [
+                resource.specifyTable.strictGetField(fieldName),
+                ...field,
+              ],
+              resources: [...resources, resource],
+              message,
+            }))
     )
   ),
 ];

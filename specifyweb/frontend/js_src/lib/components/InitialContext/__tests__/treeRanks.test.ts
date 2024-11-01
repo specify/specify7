@@ -69,11 +69,11 @@ test('getTreeScope', () =>
   expect(
     Object.fromEntries(testingTrees.map((tree) => [tree, getTreeScope(tree)]))
   ).toMatchInlineSnapshot(`
-    {
-      "Geography": "discipline",
-      "GeologicTimePeriod": "discipline",
-      "LithoStrat": "discipline",
-      "Storage": "institution",
-      "Taxon": "discipline",
-    }
-  `));
+      {
+        "Geography": "discipline",
+        "GeologicTimePeriod": "discipline",
+        "LithoStrat": "discipline",
+        "Storage": "institution",
+        "Taxon": "discipline",
+      }
+    `));

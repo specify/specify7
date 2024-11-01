@@ -6,7 +6,6 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { type RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
-import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
@@ -77,7 +76,7 @@ export function useDisambiguationDialog({
     );
     const table = strictGetTable(tableName);
     const resources = new table.LazyCollection({
-      filters: backendFilter('id').isIn(matches.ids),
+      filters: { id__in: matches.ids.join(',') },
     }) as Collection<AnySchema>;
 
     loading(

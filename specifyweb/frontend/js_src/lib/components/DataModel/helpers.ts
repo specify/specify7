@@ -1,6 +1,5 @@
 import { f } from '../../utils/functools';
 import type { RA, ValueOf } from '../../utils/types';
-import { caseInsensitiveHash } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -41,7 +40,7 @@ const weekDayMap = {
   Thursday: 5,
   Friday: 6,
   Saturday: 7,
-} as const;
+};
 
 /**
  * Use this to construct a query using a lookup for Django.
@@ -100,7 +99,7 @@ export const backendFilter = (field: string) => ({
     [[field, 'day'].join(djangoLookupSeparator)]: value,
   }),
   monthEquals: (value: number) => ({
-    [[field, 'month'].join(djangoLookupSeparator)]: value,
+    [[field, 'lte'].join(djangoLookupSeparator)]: value,
   }),
   yearEquals: (value: number) => ({
     [[field, 'year'].join(djangoLookupSeparator)]: value,
@@ -108,13 +107,8 @@ export const backendFilter = (field: string) => ({
   weekEquals: (value: number) => ({
     [[field, 'week'].join(djangoLookupSeparator)]: value,
   }),
-  weekDayEquals: (
-    value: ValueOf<typeof weekDayMap> | keyof typeof weekDayMap
-  ) => ({
-    [[field, 'week_day'].join(djangoLookupSeparator)]:
-      typeof value === 'number'
-        ? value
-        : caseInsensitiveHash(weekDayMap, value),
+  weekDayEquals: (value: keyof typeof weekDayMap) => ({
+    [[field, 'week_day'].join(djangoLookupSeparator)]: weekDayMap[value],
   }),
 });
 

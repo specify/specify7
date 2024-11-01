@@ -1159,7 +1159,4 @@ export const formsText = createDictionary({
     'ru-ru': 'Номер по каталогу Числовой',
     'uk-ua': 'Каталожний номер Числовий',
   },
-  addCOGChildren: {
-    'en-us': 'Add COG Children',
-  },
 } as const);

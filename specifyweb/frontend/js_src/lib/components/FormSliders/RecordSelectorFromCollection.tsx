@@ -3,10 +3,8 @@ import React from 'react';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import type { CollectionFetchFilters } from '../DataModel/collection';
 import {
   DependentCollection,
-  isRelationshipCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -14,6 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
+import { raise } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   RecordSelectorProps,
@@ -27,7 +26,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onDelete: handleDelete,
   onSlide: handleSlide,
-  onFetch: handleFetch,
   children,
   defaultIndex = 0,
   ...rest
@@ -46,7 +44,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     readonly relationship: Relationship;
     readonly defaultIndex?: number;
     readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
-    readonly onFetch?: (filters?: CollectionFetchFilters<AnySchema>) => void;
   }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -66,7 +63,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     () =>
       resourceOn(
         collection,
-        'add remove destroy sync',
+        'add remove destroy',
         (): void => setRecords(getRecords),
         true
       ),
@@ -82,26 +79,23 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
      *   don't need to fetch all records in between)
      */
     if (
-      typeof handleFetch === 'function' &&
-      !isToOne &&
       isLazy &&
       collection.related?.isNew() !== true &&
+      !collection.isComplete() &&
       collection.models[index] === undefined
     )
-      handleFetch({
-        offset: collection.getFetchOffset(),
-      });
-  }, [collection, isLazy, index, records.length, isToOne, handleFetch]);
+      collection
+        .fetch()
+        .then(() => setRecords(getRecords))
+        .catch(raise);
+  }, [collection, isLazy, getRecords, index, records.length]);
 
   const state = useRecordSelector({
     ...rest,
     index,
     table: collection.table.specifyTable,
-    field: relationship,
     records,
-    relatedResource: isRelationshipCollection(collection)
-      ? collection.related
-      : undefined,
+    relatedResource: isDependent ? collection.related : undefined,
     totalCount: collection._totalCount ?? records.length,
     onAdd: (rawResources): void => {
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;

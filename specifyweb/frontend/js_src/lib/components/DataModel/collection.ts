@@ -10,7 +10,6 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import type { Collection } from './specifyTable';
 import { genericTables, tables } from './tables';
 import type { Tables } from './types';
 
@@ -24,16 +23,14 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
       number
     >
 > & {
-  readonly limit?: number;
-  readonly reset?: boolean;
+  readonly limit: number;
   readonly offset?: number;
-  readonly domainFilter?: boolean;
+  readonly domainFilter: boolean;
   readonly orderBy?:
     | keyof CommonFields
     | keyof SCHEMA['fields']
     | `-${string & keyof CommonFields}`
     | `-${string & keyof SCHEMA['fields']}`;
-  readonly success?: (collection: Collection<SCHEMA>) => void;
 };
 
 export const DEFAULT_FETCH_LIMIT = 20;
