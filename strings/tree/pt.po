@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-24 09:15+0000\n"
+"PO-Revision-Date: 2024-11-01 04:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -78,7 +78,7 @@ msgstr "Mover nó"
 #: components/TreeView/Actions.tsx:153
 #, fuzzy
 msgid "addChild"
-msgstr "Adicionar criança"
+msgstr "Dessinonimizar nó"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
@@ -118,7 +118,7 @@ msgstr "Não é possível mover este nó da árvore aqui"
 #: components/TreeView/Actions.tsx:365
 #, fuzzy
 msgid "cantMergeHere"
-msgstr "Não é possível mesclar este nó de árvore aqui"
+msgstr "Preferido: [X11X]"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:359
@@ -136,7 +136,7 @@ msgstr "Não é possível mesclar em sinônimos"
 #: components/TreeView/Actions.tsx:369
 #, fuzzy
 msgid "cantSynonymizeSynonym"
-msgstr "Não é possível sinonimizar com um sinônimo"
+msgstr "Estrutura de árvore ruim."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:340
@@ -364,3 +364,99 @@ msgstr "Mover itens"
 #, fuzzy
 msgid "treePicker"
 msgstr "Colhedor de árvores"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:456
+#, fuzzy
+msgid "vascplant"
+msgstr "Plantas Vasculares"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:483
+#, fuzzy
+msgid "vertpaleo"
+msgstr "Paleontologia de vertebrados"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:500
+#, fuzzy
+msgid "emptyTree"
+msgstr "Árvore vazia"
+
+#. Used in: Components > Tree View > Create Tree
+#: components/TreeView/CreateTree.tsx:64
+#: components/TreeView/CreateTree.tsx:77
+#, fuzzy
+msgid "addTree"
+msgstr "Adicionar árvore"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:251
+#, fuzzy
+msgid "botany"
+msgstr "Botânica"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:279
+#, fuzzy
+msgid "entomology"
+msgstr "Entomologia"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:307
+#, fuzzy
+msgid "herpetology"
+msgstr "Herpetologia"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:329
+#, fuzzy
+msgid "ichthyology"
+msgstr "Ictiologia"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:353
+#, fuzzy
+msgid "invertpaleo"
+msgstr "Paleontologia de Invertebrados"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:372
+#, fuzzy
+msgid "invertzoo"
+msgstr "Zoologia de Invertebrados"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:397
+#, fuzzy
+msgid "mammalogy"
+msgstr "Mammalogia"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:416
+#, fuzzy
+msgid "ornithology"
+msgstr "Ornitologia"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:437
+#, fuzzy
+msgid "paleobot"
+msgstr "Paleobotânica"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:252
+#: components/TreeView/defaults.ts:280
+#: components/TreeView/defaults.ts:308
+#: components/TreeView/defaults.ts:330
+#: components/TreeView/defaults.ts:354
+#: components/TreeView/defaults.ts:373
+#: components/TreeView/defaults.ts:398
+#: components/TreeView/defaults.ts:417
+#: components/TreeView/defaults.ts:438
+#: components/TreeView/defaults.ts:457
+#: components/TreeView/defaults.ts:484
+#: components/TreeView/defaults.ts:501
+#, fuzzy
+msgid "defaultRemarks"
+msgstr "Uma árvore de táxons padrão"
