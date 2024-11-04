@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 18:15+0000\n"
+"PO-Revision-Date: 2024-11-04 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "header/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:63
@@ -309,3 +309,9 @@ msgstr ""
 #, fuzzy
 msgid "tableApi"
 msgstr "API de tabelas"
+
+#. Used in: Components > Attachments > Chrono Chart
+#: components/Attachments/ChronoChart.tsx:33
+#, fuzzy
+msgid "chronostratigraphicChart"
+msgstr "Carta Cronoestratigráfica"
