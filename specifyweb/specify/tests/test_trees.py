@@ -416,4 +416,3 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test deleting a rank at the head of the heirarchy
         with self.assertRaises(TreeBusinessRuleException):
             api.delete_resource(self.collection, self.agent, 'Geologictimeperiodtreedefitem', era_rank.id, era_rank.version)
-            
