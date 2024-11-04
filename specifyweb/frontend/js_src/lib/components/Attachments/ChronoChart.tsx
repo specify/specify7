@@ -19,7 +19,7 @@ export function ChronoChart(): JSX.Element {
     <>
       <Button.Icon
         icon="clock"
-        title="chronoChart"
+        title="Chronostratigraphic Chart"
         onClick={handleShowChronoChart}
       />
       {showChronoChart && (
