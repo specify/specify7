@@ -689,10 +689,10 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     to_remove = value.get('remove', [])
 
     ids_to_fetch = []
-    cached_objs = dict()
+    cached_objs: Dict[int, Dict[str, Any]] = dict()
     fk_model = None
 
-    to_fetch = [*to_update, *to_remove]
+    to_fetch: List[Optional[Dict[str, Any]]] = [*to_update, *to_remove]
 
     # Fetch the related records which are provided as strings
     for rel_data in to_fetch: 
@@ -701,12 +701,12 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
         ids_to_fetch.append(fk_id)
 
     if fk_model is not None: 
-        cached_objs: Dict[int, Dict[str, Any]] = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
+        cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
 
     for rel_data in to_update: 
         if isinstance(rel_data, str): 
             fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
-            rel_data: Optional[Dict[str, Any]] = cached_objs.get(fk_id)
+            rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
             if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
@@ -721,7 +721,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
         assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
         for rel_obj in to_remove: 
             fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
-            rel_data: Optional[Dict[str, Any]] = cached_objs.get(fk_id)
+            rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
             assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {rel_obj}"
