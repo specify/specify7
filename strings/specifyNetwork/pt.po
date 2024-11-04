@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-02 09:01+0000\n"
+"PO-Revision-Date: 2024-11-04 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/pt/>\n"
@@ -32,7 +32,7 @@ msgstr "O nome da espécie ou GUID deve ser fornecido para exibir esta página"
 #: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
-msgstr "Não foi possível encontrar nenhum dado para esta solicitação"
+msgstr "Não foi possível encontrar dados para esta solicitação"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
@@ -64,7 +64,7 @@ msgstr "Data de coleta"
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"Este mapa mostra ocorrências deste táxon dos agregadores iDigBio e GBIF."
+"Este mapa mostra ocorrências deste táxon nos agregadores iDigBio e GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
