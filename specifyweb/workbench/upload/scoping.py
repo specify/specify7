@@ -204,7 +204,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         treedef = collection.discipline.division.institution.storagetreedef
 
     elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.division.institution.tectonicunittreedef
+        treedef = collection.discipline.tectonicunittreedef
 
     else:
         raise Exception(f'unexpected tree type: {table.name}')
