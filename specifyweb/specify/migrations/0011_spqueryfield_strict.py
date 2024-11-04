@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0005_stratigraphy_age'),
+        ('specify', '0010_updateDelete_parentcojo'),
     ]
 
     operations = [
