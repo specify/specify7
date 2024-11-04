@@ -204,7 +204,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         treedef = collection.discipline.division.institution.storagetreedef
 
     elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.division.institution.tectonicunittreedef
+        treedef = collection.discipline.tectonicunittreedef
 
     else:
         raise Exception(f'unexpected tree type: {table.name}')
@@ -215,7 +215,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
-        if rank not in treedef_ranks and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
+        is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
+        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
