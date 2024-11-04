@@ -454,19 +454,19 @@ msgstr "Неподдерживаемый тип ячейки"
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:278
+#: components/FormSliders/RecordSelectorFromIds.tsx:282
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Продолжить без сохранения?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:281
+#: components/FormSliders/RecordSelectorFromIds.tsx:285
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Возможно, вы захотите сохранить эту запись, прежде чем уйти."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:226
+#: components/FormSliders/RecordSelectorFromIds.tsx:227
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "creatingNewRecord"
@@ -508,13 +508,13 @@ msgstr "Дополнительные результаты опущены"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Эта запись уже присутствует в текущем {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:175
+#: components/FormSliders/RecordSelectorFromIds.tsx:176
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Добавить в {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:181
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "removeFromRecordSet"

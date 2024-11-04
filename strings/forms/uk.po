@@ -454,19 +454,19 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати пропущено"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:278
+#: components/FormSliders/RecordSelectorFromIds.tsx:282
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:281
+#: components/FormSliders/RecordSelectorFromIds.tsx:285
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви захочете зберегти цей запис, перш ніж перейти."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:226
+#: components/FormSliders/RecordSelectorFromIds.tsx:227
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "creatingNewRecord"
@@ -508,13 +508,13 @@ msgstr "Додаткові результати пропущено"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис уже присутній у поточному {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:175
+#: components/FormSliders/RecordSelectorFromIds.tsx:176
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Додати до {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:181
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "removeFromRecordSet"
