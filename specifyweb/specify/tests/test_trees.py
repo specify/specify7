@@ -348,7 +348,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         data = {
             'name': 'Taxonomy Root',
             'parent': None,
-            'treedef': treedef_taxon
+            'treedef': api.uri_for_model('Taxontreedef', treedef_taxon.id)
         }
         taxon_root_rank = api.create_obj(
             self.collection, self.agent, 'taxontreedefitem', data)
@@ -359,7 +359,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         data = {
             'name': 'Invalid',
             'parent': None,
-            'treedef': treedef_taxon
+            'treedef': api.uri_for_model('Taxontreedef', treedef_taxon.id)
         }
         with self.assertRaises(TreeBusinessRuleException):
             api.create_obj(self.collection, self.agent,
@@ -466,3 +466,80 @@ class AddDeleteRankResourcesTest(ApiTests):
         with self.assertRaises(TreeBusinessRuleException):
             api.delete_resource(self.collection, self.agent,
                                 'Geologictimeperiodtreedefitem', era_rank.id, era_rank.version)
+
+    def test_parents_inferred_treedef_inline(self):
+        default_taxon_tree = {
+            "name": "Default Taxon Tree",
+            "remarks": "A default taxon tree",
+            "fullnamedirection": 1,
+            "discipline": api.uri_for_model("Discipline", self.discipline.id),
+            "treedefitems": [
+                {
+                    "name": "Life",
+                    "title": "Life",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 0,
+                },
+                {
+                    "name": "Kingdom",
+                    "title": "Kingdom",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 10,
+                },
+                {
+                    "name": "Phylum",
+                    "title": "Phylum",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 30,
+                },
+                {
+                    "name": "Class",
+                    "title": "Class",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 60,
+                },
+                {
+                    "name": "Order",
+                    "title": "Order",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 100,
+                },
+                {
+                    "name": "Family",
+                    "title": "Family",
+                    "isenforced": True,
+                    "isinfullname": False,
+                    "rankid": 140,
+                },
+                {
+                    "name": "Genus",
+                    "title": "Genus",
+                    "isenforced": True,
+                    "isinfullname": True,
+                    "rankid": 180,
+                },
+                {
+                    "name": "Species",
+                    "title": "Species",
+                    "isenforced": True,
+                    "isinfullname": True,
+                    "rankid": 220,
+                },
+            ],
+        }
+
+        created_treedef = api.create_obj(self.collection, self.agent, "Taxontreedef", default_taxon_tree)
+        root = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=0)
+        self.assertEqual(root.name, "Life")
+        self.assertIsNone(root.parent)
+        family = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=140)
+        self.assertEqual(family.name, "Family")
+        self.assertEqual(family.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=100))
+        species = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=220)
+        self.assertEqual(species.name, "Species")
+        self.assertEqual(species.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=180))
