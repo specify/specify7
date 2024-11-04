@@ -688,11 +688,11 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     to_update = value.get('update', [])
     to_remove = value.get('remove', [])
 
-    ids_to_fetch = []
+    ids_to_fetch: List[int] = []
     cached_objs: Dict[int, Dict[str, Any]] = dict()
     fk_model = None
 
-    to_fetch: List[Optional[Dict[str, Any]]] = [*to_update, *to_remove]
+    to_fetch: List[Union[Dict[str, Any], str]] = [*to_update, *to_remove]
 
     # Fetch the related records which are provided as strings
     for rel_data in to_fetch: 
