@@ -16,6 +16,7 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
+import { ChronoChart } from '../Attachments/ChronoChart';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -310,7 +311,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           treeDefinitionItems={treeDefinitionItems}
           onFocusPath={currentStates.focusPath[1]}
         />
-
+        {tableName === 'GeologicTimePeriod' ? <ChronoChart /> : undefined}
         <Button.Icon
           aria-pressed={isSplit}
           disabled={!canSplit}
