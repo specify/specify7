@@ -442,7 +442,7 @@ msgstr "Ціла таблиця"
 msgid "fieldFromTable"
 msgstr "Поле з табл"
 
-#: components/FormCells/index.tsx:315
+#: components/FormCells/index.tsx:319
 #. Used in: Components > Form Cells > Index
 #, fuzzy
 msgid "unsupportedCellType"

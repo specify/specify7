@@ -454,7 +454,7 @@ msgstr "Table entière"
 msgid "fieldFromTable"
 msgstr "Champ de la table"
 
-#: components/FormCells/index.tsx:315
+#: components/FormCells/index.tsx:319
 #. Used in: Components > Form Cells > Index
 #, fuzzy
 msgid "unsupportedCellType"
