@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 15:32+0000\n"
+"PO-Revision-Date: 2024-11-05 16:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -366,7 +366,7 @@ msgstr "Expandir tudo"
 #: components/TreeView/Actions.tsx:122
 #, fuzzy
 msgid "view"
-msgstr "Visualizar"
+msgstr "Colapso"
 
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #: components/Atoms/DataEntry.tsx:175
@@ -1114,7 +1114,7 @@ msgstr "Ferramentas"
 #: components/WorkBench/Disambiguation.tsx:123
 #, fuzzy
 msgid "loading"
-msgstr "Carregando…"
+msgstr "Não mostrar isso novamente"
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Upload.tsx:270
