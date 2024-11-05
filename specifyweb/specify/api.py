@@ -635,7 +635,6 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
             new_related_id = rel_obj.id
             data[field_name] = _obj_to_data(rel_obj, read_checker)
         else:
-            # raise Exception('bad foreign key field in data')
             raise Exception(f'bad foreign key field in data: {field_name}')
         if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})

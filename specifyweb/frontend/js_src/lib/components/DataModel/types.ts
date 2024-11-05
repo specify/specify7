@@ -6546,7 +6546,7 @@ export type CollectionObjectGroupJoin = {
   readonly toOneIndependent: {
     readonly childCo: CollectionObject | null;
     readonly childCog: CollectionObjectGroup | null;
-    readonly parentCog: CollectionObjectGroup;
+    readonly parentCog: CollectionObjectGroup | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
