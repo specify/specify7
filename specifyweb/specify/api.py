@@ -6,7 +6,7 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    Callable, TypedDict
+    Callable, TypedDict, cast
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
@@ -692,25 +692,26 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     cached_objs: Dict[int, Dict[str, Any]] = dict()
     fk_model = None
 
-    to_fetch: List[Union[Dict[str, Any], str]] = [*to_update, *to_remove]
+    to_fetch: Tuple[str, ...] = tuple(string_or_data for string_or_data in tuple(*to_update, *to_remove) if isinstance(string_or_data, str))
 
     # Fetch the related records which are provided as strings
-    for rel_data in to_fetch: 
-        if not isinstance(rel_data, str): continue
-        fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+    for resource_uri in to_fetch: 
+        fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
         ids_to_fetch.append(fk_id)
 
     if fk_model is not None: 
         cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
 
-    for rel_data in to_update: 
-        if isinstance(rel_data, str): 
+    for raw_rel_data in to_update: 
+        if isinstance(raw_rel_data, str): 
             fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
             rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
             if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
                 continue
+        else: 
+            rel_data = raw_rel_data
 
         rel_data[field.field.name] = obj
         update_or_create_resource(collection, agent, rel_model, rel_data, None)
@@ -719,8 +720,8 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
         assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
         related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field.name))
         assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
-        for rel_obj in to_remove: 
-            fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
+        for resource_uri in to_remove: 
+            fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
             rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
