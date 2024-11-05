@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-04 20:01+0000\n"
+"PO-Revision-Date: 2024-11-05 15:32+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "header/pt/>\n"
@@ -271,7 +271,7 @@ msgstr "Ferramentas do usuário ({userName:string})"
 #: components/Toolbar/Language.tsx:155
 #, fuzzy
 msgid "helpLocalizeSpecify"
-msgstr "Ajudar a localizar especificar 7"
+msgstr "Recursos para desenvolvedores"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
@@ -292,7 +292,7 @@ msgstr "(incompleto)"
 #: components/Toolbar/Language.tsx:115
 #, fuzzy
 msgid "incompleteLocalization"
-msgstr "Localização incompleta"
+msgstr "Atualizar Feed RSS"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
