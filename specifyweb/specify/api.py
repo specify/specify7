@@ -692,7 +692,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     cached_objs: Dict[int, Dict[str, Any]] = dict()
     fk_model = None
 
-    to_fetch: Tuple[str, ...] = tuple(string_or_data for string_or_data in tuple(*to_update, *to_remove) if isinstance(string_or_data, str))
+    to_fetch: Tuple[str, ...] = tuple(string_or_data for string_or_data in tuple((*to_update, *to_remove)) if isinstance(string_or_data, str))
 
     # Fetch the related records which are provided as strings
     for resource_uri in to_fetch: 
