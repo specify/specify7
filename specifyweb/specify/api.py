@@ -725,7 +725,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
-            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {rel_obj}"
+            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
             rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
