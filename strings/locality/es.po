@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 17:13+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-05 21:00+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
 "Language: es\n"
@@ -59,9 +59,8 @@ msgstr "DD MM SS.SS N/S/E/O (32 45 42,84 N)"
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WbToolkit/WbLeafletMap.tsx:65
-#, fuzzy
 msgid "geoMap"
-msgstr "Mapa geográfico"
+msgstr "GeoMap"
 
 #. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:90
@@ -272,7 +271,6 @@ msgstr "Identificación de la tarea"
 
 #. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:254
-#, fuzzy
 msgid "queryMapAll"
 msgstr "GeoMap - Registros graficados {plotted:number|formatted}"
 
@@ -285,13 +283,11 @@ msgstr "Esquina SE"
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
 #: components/QueryBuilder/QueryLineTools.tsx:47
-#, fuzzy
 msgid "openMap"
 msgstr "Abrir mapa"
 
 #. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:91
-#, fuzzy
 msgid "polygonBoundaries"
 msgstr "Límites del polígono"
 
@@ -310,7 +306,6 @@ msgstr "Sin coordenadas"
 
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:257
-#, fuzzy
 msgid "queryMapSubset"
 msgstr ""
 "GeoMap - Representación gráfica de {plotted:number|formatted} de "
