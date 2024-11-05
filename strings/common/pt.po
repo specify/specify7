@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-04 20:01+0000\n"
+"PO-Revision-Date: 2024-11-05 15:32+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -40,7 +40,7 @@ msgstr "Não mostrar isso novamente"
 #: components/Molecules/FilePicker.tsx:106
 #, fuzzy
 msgid "multipleFilePickerMessage"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Selecione os arquivos ou arraste-os aqui"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
@@ -385,7 +385,7 @@ msgstr "Abrir em nova aba"
 #: components/RouterCommands/CacheBuster.tsx:34
 #, fuzzy
 msgid "goToHomepage"
-msgstr "Ir para a página inicial"
+msgstr "Não mostrar isso novamente"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
 #: components/ChooseCollection/index.tsx:138
@@ -396,7 +396,7 @@ msgstr "Ir para a página inicial"
 #: components/Router/OverlayRoutes.tsx:62
 #, fuzzy
 msgid "chooseCollection"
-msgstr "Escolha a coleção"
+msgstr "Não"
 
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:30
@@ -476,13 +476,13 @@ msgstr "Visualizar"
 #: components/FormPlugins/index.tsx:190
 #, fuzzy
 msgid "nullInline"
-msgstr "(nulo)"
+msgstr "Ordinal"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
 #, fuzzy
 msgid "filePickerMessage"
-msgstr "Escolha um arquivo ou arraste-o aqui"
+msgstr "Selecione um arquivo ou arraste-o aqui"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
@@ -505,7 +505,7 @@ msgstr "Todos"
 #: components/Attachments/index.tsx:192
 #, fuzzy
 msgid "unused"
-msgstr "Não utilizado"
+msgstr "Colapso"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:53
