@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-01 04:00+0000\n"
+"PO-Revision-Date: 2024-11-05 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -206,8 +206,8 @@ msgstr "Selecione um alvo para \"{nodeName:string}\" para ser sinonimizado"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"O nó {treeName:string} \"{nodeName:string}\" será transformado em sinônimo "
-"de \"{synonymName:string}\"."
+"O nó {treeName:string} \"{nodeName:string}\" se tornará sinônimo de \""
+"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:395
