@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 15:32+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-05 15:39+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
 "Language: es\n"
@@ -18,7 +18,6 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1874
 #: components/Router/Routes.tsx:243
 #: components/Security/registry.ts:218
-#, fuzzy
 msgid "appResources"
 msgstr "Recursos de la aplicación"
 
@@ -28,29 +27,25 @@ msgstr "Recursos de la aplicación"
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:54
 #: components/Preferences/UserDefinitions.tsx:803
-#, fuzzy
 msgid "formDefinition"
-msgstr "Definición de formulario"
+msgstr "Definición del formulario"
 
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:35
-#, fuzzy
 msgid "formDefinitions"
-msgstr "Definición de formulario"
+msgstr "Definición del formulario"
 
 #. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
-#, fuzzy
 msgid "loadFile"
 msgstr "Cargar archivo"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
-#, fuzzy
 msgid "globalResources"
 msgstr "Recursos globales"
 
