@@ -3,8 +3,8 @@
  * Afterward, some manual edits have been made. Those are marked with
  * "NOTE:" comments
  *
- * Schema version: 2.11
- * Date generated: July 17, 2024
+ * Schema version: 2.12
+ * Date generated: September 16, 2024
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
