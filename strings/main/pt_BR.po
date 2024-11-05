@@ -1,154 +1,170 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-04 20:01+0000\n"
+"PO-Revision-Date: 2024-11-05 15:32+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) "
-"<https://hosted.weblate.org/projects/specify-7/main/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/main/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.8.2\n"
 
-#: components/Molecules/AppTitle.tsx:65
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:65
 #, fuzzy
 msgid "appTitle"
-msgstr ""
+msgstr "{baseTitle:string} | Especifique 7"
 
-#: components/Molecules/AppTitle.tsx:64
 #. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:64
 msgid "baseAppTitle"
 msgstr ""
 
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 #: components/Formatters/Element.tsx:67
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
 #: components/Router/RouterUtils.tsx:194
-#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 #, fuzzy
 msgid "pageNotFound"
-msgstr ""
+msgstr "Página não encontrada"
 
-#: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
 #, fuzzy
 msgid "nothingWasFound"
-msgstr ""
+msgstr "Opa! Nada foi encontrado"
 
-#: components/Router/NotFoundView.tsx:26
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
 #, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
+"A página que você está procurando pode ter sido removida, teve seu nome "
+"alterado ou está temporariamente indisponível."
 
-#: components/Router/NotFoundView.tsx:29
 #. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
 #, fuzzy
 msgid "returnToHomepage"
-msgstr ""
+msgstr "Retornar à página inicial"
 
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:62
 #: components/Errors/FormatError.tsx:197
 #: components/Errors/FormatError.tsx:227
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #, fuzzy
 msgid "errorOccurred"
-msgstr ""
+msgstr "Lamentamos, algo deu errado"
 
-#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
+#: components/Errors/Toasts.tsx:97
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr ""
+msgstr "Clique para ver detalhes"
 
-#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:187
 #, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
+"Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez "
+"não estejamos cientes."
 
-#: components/Errors/ErrorDialog.tsx:188
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:188
 #, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
+"A versão Especificar [X20X] não corresponde à versão do banco de dados "
+"[X83X]."
 
-#: components/Errors/ErrorDialog.tsx:39
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:39
 #, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
+"Se o problema persistir, entre em contato com o suporte de TI. Se for um "
+"banco de dados do Specify Cloud, baixe a mensagem de erro e envie para "
+"<email />."
 
-#: components/Errors/ErrorDialog.tsx:56
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:56
 #, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
+"Usuários de <memberLink>instituições membros</memberLink> podem procurar "
+"respostas para perguntas e pedir ajuda em nosso <discourseLink>Fórum da "
+"Comunidade</discourseLink>."
 
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
 #: components/Errors/ErrorDialog.tsx:196
 #: components/LocalityUpdate/Status.tsx:375
 #: components/LocalityUpdate/Status.tsx:422
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #, fuzzy
 msgid "errorMessage"
-msgstr ""
+msgstr "Mensagem de erro"
 
-#: components/Router/UnloadProtect.tsx:33
 #. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:33
 #, fuzzy
 msgid "leavePageConfirmation"
-msgstr ""
+msgstr "Tem certeza de que deseja sair desta página?"
 
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89
-#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 #, fuzzy
 msgid "leavePageConfirmationDescription"
-msgstr ""
+msgstr "As alterações não salvas serão perdidas se você sair desta página."
 
-#: components/Router/UnloadProtect.tsx:28
 #. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:28
 #, fuzzy
 msgid "leave"
-msgstr ""
+msgstr "Deixar"
 
-#: components/Core/VersionMismatch.tsx:22
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:22
 #, fuzzy
 msgid "versionMismatch"
-msgstr ""
+msgstr "A versão especificada não corresponde à versão do banco de dados"
 
-#: components/Core/VersionMismatch.tsx:26
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:26
 #, fuzzy
 msgid "versionMismatchDescription"
 msgstr ""
+"A versão Especificar {specifySixVersion:string} não corresponde à versão do "
+"banco de dados {databaseVersion:string}."
 
-#: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:31
 #, fuzzy
 msgid "versionMismatchSecondDescription"
 msgstr ""
+"Alguns recursos do Specify 7 podem, portanto, não funcionar corretamente."
 
-#: components/Core/VersionMismatch.tsx:34
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:34
 #, fuzzy
 msgid "versionMismatchInstructions"
 msgstr ""
+"Instruções para resolver a incompatibilidade do esquema de especificação"
 
-#: components/Core/OnlineStatus.tsx:38
 #. Used in: Components > Core > Online Status
+#: components/Core/OnlineStatus.tsx:38
 #, fuzzy
 msgid "online"
-msgstr ""
+msgstr "on-line"
 
-#: components/Core/OnlineStatus.tsx:44
 #. Used in: Components > Core > Online Status
+#: components/Core/OnlineStatus.tsx:44
 #, fuzzy
 msgid "offline"
-msgstr ""
+msgstr "desconectado"
