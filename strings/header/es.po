@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 16:11+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-05 21:00+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/header/"
 "es/>\n"
 "Language: es\n"
@@ -111,7 +111,7 @@ msgstr "Crear nuevo informe"
 #: components/Router/OverlayRoutes.tsx:165
 #: components/Toolbar/TreeRepair.tsx:173
 msgid "repairTree"
-msgstr "Se ha borrado la caché. Por favor recarga la página."
+msgstr "Reparar árbol"
 
 #. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
@@ -269,6 +269,5 @@ msgstr "Documentos técnicos"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:33
-#, fuzzy
 msgid "chronostratigraphicChart"
-msgstr "Carta cronoestratigráfica"
+msgstr "Tabla cronoestratigráfica"
