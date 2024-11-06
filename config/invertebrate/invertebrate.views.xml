@@ -804,9 +804,6 @@
                     <cell type="label" labelfor="4"/>
                     <cell type="field" id="4" name="storage" uitype="querycbx" initialize="name=Storage" colspan="3"/>
                 </row>
-                <row>
-                    <cell type="subview" viewname="DeaccessionPreparation2" id="deaccprep" name="deaccessionPreparations" colspan="12"/>
-                </row>
                 <!--<row>
                     <cell type="label" labelfor="desc"/>
                     <cell type="field" id="desc" name="description" uitype="text"/>
