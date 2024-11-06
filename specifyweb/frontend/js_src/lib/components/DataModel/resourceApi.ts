@@ -684,10 +684,8 @@ export const ResourceBase = Backbone.Model.extend({
         // A foreign key field.
         if (!value) return value; // No related object
 
-        // Is the related resource cached?
-        let toOne =
-          this.dependentResources[fieldName] ??
-          this.independentResources[fieldName];
+        // Is the related resource a cached dependent?
+        let toOne = this.dependentResources[fieldName];
 
         if (!toOne) {
           _(value).isString() || softFail('expected URI, got', value);
@@ -699,6 +697,7 @@ export const ResourceBase = Backbone.Model.extend({
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
           } else {
+            // Always store and refetch independent related resources
             this.storeIndependent(field, toOne);
           }
         }
