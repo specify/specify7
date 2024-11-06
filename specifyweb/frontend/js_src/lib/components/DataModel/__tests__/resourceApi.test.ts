@@ -181,14 +181,14 @@ describe('rgetCollection', () => {
     expect(agents.models).toHaveLength(0);
   });
 
-  test('repeated calls for independent return same object', async () => {
+  test('repeated calls for independent return different object', async () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
     const secondCollectingEvent = await resource.rgetPromise('collectingEvent');
     expect(firstCollectingEvent?.toJSON()).toEqual(collectingEventResponse);
-    expect(firstCollectingEvent).toBe(secondCollectingEvent);
+    expect(firstCollectingEvent).not.toBe(secondCollectingEvent);
   });
 
   test('call for independent refetches related', async () => {
