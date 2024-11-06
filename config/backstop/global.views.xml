@@ -180,11 +180,11 @@
 				<altview name="Taxon Edit" viewdef="Taxon" mode="edit" default="true"/>
 			</altviews>
 		</view>
-		<view name="TaxonAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false">
+		<view name="TaxonAttribute" class="edu.ku.brc.specify.datamodel.TaxonAttribute" resourcelabels="false">
 			<desc>Subform within the Collection Object form.</desc>
 			<altviews>
-				<altview name="TaxonAttributes View" viewdef="TaxonAttributes" mode="view"/>
-				<altview name="TaxonAttributes Edit" viewdef="TaxonAttributes" mode="edit" default="true"/>
+				<altview name="TaxonAttribute View" viewdef="TaxonAttribute" mode="view"/>
+				<altview name="TaxonAttribute Edit" viewdef="TaxonAttribute" mode="edit" default="true"/>
 			</altviews>
 		</view>
 		<view name="TaxonSubform" class="edu.ku.brc.specify.datamodel.Taxon" busrules="edu.ku.brc.specify.datamodel.busrules.TaxonBusRules" resourcelabels="false">
@@ -1281,7 +1281,7 @@
                     <cell type="field" id="cols" name="colStatus" uitype="text"/>
                 </row>
                 <row>
-                    <cell type="subview" id="ta" viewname="TaxonAttributes" name="taxonAttribute" colspan="10"/>
+                    <cell type="subview" id="ta" viewname="TaxonAttribute" name="taxonAttribute" colspan="10"/>
                 </row>
 				<row>						
                     <cell type="label" labelfor="t1"/>
@@ -1403,7 +1403,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="TaxonAttributes" class="edu.ku.brc.specify.datamodel.TaxonAttribute" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef type="form" name="TaxonAttribute" class="edu.ku.brc.specify.datamodel.TaxonAttribute" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Form For taxon Attribute</desc>
 			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
