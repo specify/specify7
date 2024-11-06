@@ -1304,13 +1304,6 @@ expected_errors = {
       ]
     }
   },
-  "CollectionObjectGroup": {
-    "incorrect_direction": {
-      "cojo": [
-        "onetoone"
-      ],
-    }
-  },
   "Project": {
     "not_found": [
       "collectionObjects"
@@ -1371,12 +1364,12 @@ expected_errors = {
       ]
     }
   },
-  "CollectionObjectGroup": {
-    "incorrect_direction": {
-      "cojo": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
-  },
+  # "CollectionObjectGroup": {
+  #   "incorrect_direction": {
+  #     "cojo": [
+  #       "onetomany",
+  #       "onetoone"
+  #     ]
+  #   }
+  # },
 }
