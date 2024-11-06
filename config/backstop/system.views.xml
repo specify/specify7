@@ -117,7 +117,7 @@
 					<cell type="field" id="readOnly" name="readOnly" label="Read Only" uitype="checkbox" initialize="align=left"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="tablesCBX" label="Table Name"/>
+					<cell type="label" labelfor="tablesCBX"/>
 					<cell type="field" id="tablesCBX" name="tablesCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
@@ -125,11 +125,11 @@
 					<cell type="field" id="formatterCBX" name="formatterCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="fieldsCBX" label="Field Name"/>
+					<cell type="label" labelfor="fieldsCBX"/>
 					<cell type="field" id="fieldsCBX" name="fieldsCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="sizeLimit" label="Size Limit"/>
+					<cell type="label" labelfor="sizeLimit"/>
 					<cell type="field" id="sizeLimit" name="sizeLimit" uitype="spinner" initialize="min=-1" isrequired="true"/>
 				</row>
 				<row>
