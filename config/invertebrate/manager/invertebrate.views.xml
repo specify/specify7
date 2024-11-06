@@ -251,7 +251,7 @@
                     <cell type="label" labelfor="cdv"/>
                     <cell type="field" id="cdv" name="catalogedDateVerbatim" uitype="text"/>
                     <cell type="label" labelfor="ca"/>
-                    <cell type="field" id="ca" name="countAmt" uitype="text"/>
+                    <cell type="field" id="ca" name="countAmt" initialize="min=0" uitype="text"/>
                 </row>
                 <row>
                     <cell type="subview" id="7" name="collectionObjectCitations" viewname="CollectionObjectCitation" colspan="15"/>                    
