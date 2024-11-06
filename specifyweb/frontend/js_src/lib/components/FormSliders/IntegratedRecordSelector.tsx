@@ -120,6 +120,9 @@ export function IntegratedRecordSelector({
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
     relationship.name === 'children';
 
+  const isTaxonTreeDefItemTable =
+    collection.table.specifyTable.name === 'TaxonTreeDefItem';
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -199,7 +202,8 @@ export function IntegratedRecordSelector({
                         <DataEntry.Add
                           disabled={
                             isReadOnly ||
-                            (isToOne && collection.models.length > 0)
+                            (isToOne && collection.models.length > 0) ||
+                            isTaxonTreeDefItemTable
                           }
                           onClick={(): void => {
                             focusFirstField();
@@ -267,10 +271,14 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(resources): void => {
-                  if (!isInteraction) collection.add(resources);
-                  handleAdd?.(resources);
-                }}
+                onAdd={
+                  isTaxonTreeDefItemTable
+                    ? undefined
+                    : (resources): void => {
+                        if (!isInteraction) collection.add(resources);
+                        handleAdd?.(resources);
+                      }
+                }
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {
                   if (isCollapsed) handleExpand();
