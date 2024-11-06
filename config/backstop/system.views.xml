@@ -130,7 +130,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="sizeLimit" label="Size Limit"/>
-					<cell type="field" id="sizeLimit" name="sizeLimit" uitype="spinner" initialize="max=500;min=-1" isrequired="true"/>
+					<cell type="field" id="sizeLimit" name="sizeLimit" uitype="spinner" initialize="min=-1" isrequired="true"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="PickListItem" id="5" name="pickListItems" colspan="6"/>
@@ -186,7 +186,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="PrepType" class="edu.ku.brc.specify.datamodel.PrepType" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="PrepType" class="edu.ku.brc.specify.datamodel.PrepType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>PrepType Data Entry Form</desc>
 			<columnDef>p,3dlu,p,6dlu,p</columnDef>
 			<rowDef>p,2dlu,p</rowDef>
@@ -194,7 +194,7 @@
 				<row>
 					<cell type="label" labelfor="1" label="Name"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
-					<cell type="field" id="2" name="isLoanable" label="Is Loanable" uitype="checkbox"/>
+					<cell type="field" id="2" name="isLoanable" uitype="checkbox"/>
 				</row>
 			</rows>
 		</viewdef>
