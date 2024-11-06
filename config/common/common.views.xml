@@ -783,13 +783,13 @@
 				<altview name="OtherIdentifiers Edit" viewdef="OtherIdentifiers" mode="edit" default="true"/>
 			</altviews>
 		</view>
-		<view name="AgentIdentifiers" class="edu.ku.brc.specify.datamodel.AgentIdentifier">
+		<view name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier">
 			<desc>Subform within the agent form.</desc>
 			<altviews>
-				<altview name="AgentIdentifiers Table View" viewdef="AgentIdentifiers Table" mode="view"/>
-				<altview name="AgentIdentifiers Table Edit" viewdef="AgentIdentifiers Table" mode="edit"/>
-				<altview name="AgentIdentifiers View" viewdef="AgentIdentifiers" mode="view"/>
-				<altview name="AgentIdentifiers Edit" viewdef="AgentIdentifiers" mode="edit" default="true"/>
+				<altview name="AgentIdentifier Table View" viewdef="AgentIdentifier Table" mode="view"/>
+				<altview name="AgentIdentifier Table Edit" viewdef="AgentIdentifier Table" mode="edit"/>
+				<altview name="AgentIdentifier View" viewdef="AgentIdentifier" mode="view"/>
+				<altview name="AgentIdentifier Edit" viewdef="AgentIdentifier" mode="edit" default="true"/>
 			</altviews>
 		</view>
 		<view name="RepositoryAgreement" class="edu.ku.brc.specify.datamodel.RepositoryAgreement" isinternal="false">
@@ -5337,9 +5337,9 @@
 			<desc>OtherIdentifiers subform table for Collection Object form.</desc>
 			<definition>OtherIdentifiers</definition>
 		</viewdef>
-		<viewdef type="formtable" name="AgentIdentifiers Table" class="edu.ku.brc.specify.datamodel.AgentIdentifier" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>AgentIdentifiers subform table for Agent form.</desc>
-			<definition>AgentIdentifiers</definition>
+		<viewdef type="formtable" name="AgentIdentifier Table" class="edu.ku.brc.specify.datamodel.AgentIdentifier" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>AgentIdentifier subform table for Agent form.</desc>
+			<definition>AgentIdentifier</definition>
 		</viewdef>
 		<viewdef type="form" name="OtherIdentifiers" class="edu.ku.brc.specify.datamodel.OtherIdentifier" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>subform on the Collection Object form.</desc>
@@ -5374,7 +5374,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="AgentIdentifiers" class="edu.ku.brc.specify.datamodel.AgentIdentifier" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>subform on the Agent form.</desc>
 			<enableRules/>
 			<columnDef>100px,2px,473px,5px,120px,2px,125px,0px,15px,p:g</columnDef>

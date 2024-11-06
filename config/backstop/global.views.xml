@@ -575,7 +575,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="Agent" class="edu.ku.brc.specify.datamodel.Agent" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="Agent" class="edu.ku.brc.specify.datamodel.Agent" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Agent subform for Acessions.</desc>
 			<columnDef>100px,2px,125px,5px,75px,2px,128px,5px,80px,2px,140px,5px,90px,2px,29px,2px,35px,0px,15px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,146px,5px,85px,2px,140px,5px,90px,2px,149px,5px,100px,2px,35px,2px,35px,0px,15px,p:g</columnDef>
@@ -585,7 +585,7 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="0"/>
-					<cell type="field" id="0" name="agentType" uitype="combobox" ignore="true"/>
+					<cell type="field" id="0" name="agentType" uitype="combobox" default="Person"/>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="title" uitype="combobox"/>
 				</row>
@@ -605,17 +605,29 @@
 					<cell type="field" id="mailto" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=MailTo;icon=EMail;watch=7"/>
 				</row>
 				<row>
-					<cell type="subview" viewname="Address" id="9" name="addresses" colspan="19"/>
+					<cell type="panel" colspan="19">
+						<rows>
+							<row><!-- Show nothing if the Agent is not a group --></row>
+						</rows>
+						<rows condition="agentType=Group">
+							<!-- Show members if the Agent is a group -->
+							<row>
+								<cell type="subview" viewname="GroupPersons" id="31" name="groups" defaulttype="table" colspan="19"/>
+							</row>
+						</rows>
+					</cell>
 				</row>
 				<row>
-					<cell type="subview" viewname="GroupPersons" id="31" name="groups" defaulttype="table" colspan="19"/>
-					<!-- initialize="addsearch=true"/> -->
+					<cell type="subview" viewname="Address" id="9" name="addresses" colspan="19"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="AgentVariant" id="10" name="variants" colspan="19"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="AgentSpecialty" id="50" name="agentSpecialties" colspan="19" rows="3"/>
+				</row>
+				<row>
+					<cell type="subview" viewname="AgentIdentifier" id="ai" name="identifiers" colspan="19" rows="3"/>
 				</row>
 				<row>
 					<cell type="separator" label="Attachments" colspan="19"/>
