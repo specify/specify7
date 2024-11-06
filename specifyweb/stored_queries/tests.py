@@ -1304,6 +1304,13 @@ expected_errors = {
       ]
     }
   },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetoone"
+      ],
+    }
+  },
   "Project": {
     "not_found": [
       "collectionObjects"
