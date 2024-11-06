@@ -805,7 +805,7 @@ class SQLAlchemyModelTest(TestCase):
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
             if table_errors:
-                self.assertDictEqual(table_errors, expected_errors[table.name])
+                self.assertDictEqual(table_errors, expected_errors[table.name], table.name)
 
 STRINGID_LIST = [
     # (stringid, isrelfld)
@@ -1260,6 +1260,12 @@ expected_errors = {
       "projects", 
       "relativeAges", 
     ],
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
   },
   "DNASequencingRun": {
     "incorrect_table": {
@@ -1364,12 +1370,12 @@ expected_errors = {
       ]
     }
   },
-  # "CollectionObjectGroup": {
-  #   "incorrect_direction": {
-  #     "cojo": [
-  #       "onetomany",
-  #       "onetoone"
-  #     ]
-  #   }
-  # },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
 }
