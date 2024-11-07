@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  
-	NOTE: This HQL and if you add in your own query you must prefix all the field names with the table abbreviations.
-	Also, you should/must use the table abbreviations that are defined in the specify_schema.xml
-	
-	PLEASE KEEP THEM IN ALPHABETICAL ORDER!
+  Table IDs are defined in this list: https://github.com/specify/specify7/blob/production/specifyweb/specify/models_by_table_id.py
+  The `displaycols` attribute is ignored and the Table Format is used instead.
+  The HQL queries cannot be custom defined in this file and will be ignored.
+
  -->
 <typesearches>
     <typesearch tableid="7"   name="AccessionCO"              searchfield="accessionNumber" displaycols="accessionNumber"    format="%s"     dataobjformatter="">
@@ -44,6 +44,7 @@
     </typesearch>
     <typesearch tableid="3"   name="Geography"              searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter="Geography"/>
     <typesearch tableid="46"  name="GeologicTimePeriod"     searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="94"  name="Institution"            searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="51"  name="Journal"                searchfield="journalName"     displaycols="journalName"        format="%s"     dataobjformatter=""/>
     <typesearch tableid="163" name="Deaccession"            searchfield="deaccessionNumber"    displaycols="deaccessionNumber"       format="%s" dataobjformatter="Deaccession"/>
     <typesearch tableid="100" name="LithoStrat"             searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
