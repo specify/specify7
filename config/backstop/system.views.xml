@@ -86,7 +86,6 @@
 			</altviews>
 		</view>
 		<view name="SpAppResource" objtitle="SpAppResource" class="edu.ku.brc.specify.datamodel.SpAppResource">
-			<desc/>
 			<altviews>
 				<altview name="SpAppResource View" viewdef="SpAppResource" mode="view" validated="false"/>
 				<altview name="SpAppResource Edit" viewdef="SpAppResource" mode="edit" default="true" validated="false"/>
@@ -429,6 +428,29 @@
 					<cell type="label" labelfor="version"/>
 					<cell type="field" id="version" name="version" uitype="text" readonly="true"/>
 				</row>
+				<!-- 		<row>
+			<cell type="panel" colspan="7">
+				<rows>
+					<row>
+						<cell type="separator" label="Database Metadata" colspan="23"/>
+					</row>
+					<row>
+						<cell type="label" labelfor="level"/>
+						<cell type="field" id="level" name="level" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="OPL"/>
+						<cell type="field" id="OPL" name="ownerPermissionLevel" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="group"/>
+						<cell type="field" id="group" name="group" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="spAppResourceDir"/>
+						<cell type="field" id="spAppResourceDir" name="spAppResourceDir" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="spAppResourceDatas"/>
+						<cell type="field" id="spAppResourceDatas" name="spAppResourceDatas" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="spReports"/>
+						<cell type="field" id="spReports" name="spReports" uitype="text" readonly="true"/>
+					</row>
+				</rows>
+			</cell>
+		</row> -->
 			</rows>
 		</viewdef>
 	</viewdefs>
