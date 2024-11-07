@@ -889,19 +889,23 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="CollectionRelType" class="edu.ku.brc.specify.datamodel.CollectionRelType" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The Journal form - unknown use in schema</desc>
-			<columnDef>100px,2px,473px,5px,120px,2px,125px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,460px,5px,150px,2px,183px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,518px,5px,180px,2px,195px,p:g</columnDef>
-			<columnDef os="exp">p,2px,p:g(4),5px:g,p,2px,p:g(2)</columnDef>
-			<rowDef auto="true" cell="p" sep="2dlu"/>
+		<viewdef name="CollectionRelType" class="edu.ku.brc.specify.datamodel.CollectionRelType" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Relationship Type form</desc>
+			<columnDef>60px,2px,120px,2px,120px,2px,120px,2px,120px,2px,120px,p:g</columnDef>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="name" uitype="text"/>
+					<cell type="field" id="1" name="name" uitype="text" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="4"/>
+					<cell type="field" id="4" name="leftSideCollection" uitype="querycbx" initialize="name=CollectionRelationship" isrequired="true" colspan="3"/>
+					<cell type="label" labelfor="5"/>
+					<cell type="field" id="5" name="rightSideCollection" uitype="querycbx" initialize="name=CollectionRelationship" isrequired="true" colspan="3"/>
+				</row>
+				<row>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="remarks" uitype="text"/>
+					<cell type="field" id="2" name="remarks" uitype="textareabrief" colspan="9" rows="2"/>
 				</row>
 			</rows>
 		</viewdef>
