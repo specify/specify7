@@ -85,6 +85,13 @@
 				<altview name="AddObjPrefs Edit" viewdef="AddObjPrefs" mode="edit" validated="true"/>
 			</altviews>
 		</view>
+		<view name="SpAppResource" objtitle="SpAppResource" class="edu.ku.brc.specify.datamodel.SpAppResource">
+			<desc/>
+			<altviews>
+				<altview name="SpAppResource View" viewdef="SpAppResource" mode="view" validated="false"/>
+				<altview name="SpAppResource Edit" viewdef="SpAppResource" mode="edit" default="true" validated="false"/>
+			</altviews>
+		</view>
 	</views>
 	<!--  *************************************************************************************************************************** -->
 	<!--  *************************************************************************************************************************** -->
@@ -230,49 +237,17 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="User" class="edu.ku.brc.specify.datamodel.SpecifyUser" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="User" class="edu.ku.brc.specify.datamodel.SpecifyUser" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>User Data Entry Form</desc>
-			<columnDef>p,3dlu,p,6px,p,6px,p,p:g</columnDef>
+			<columnDef>30px,2px,100px,2px,30px,2px,100px,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
-					<cell type="separator" label="User" colspan="8"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="userType" uitype="dsptextfield" readonly="true"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="name" uitype="text" cols="40" isrequired="true" initialize="editoncreate=true"/>
-				</row>
-				<row>
+					<cell type="field" id="1" name="name" uitype="text"/>
 					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="password" uitype="password" cols="15"/>
-					<cell type="command" id="ShowPwd" name="ShowPwd" label="Show Password" ignore="true"/>
+					<cell type="field" id="3" name="password" uitype="text"/>
 				</row>
-				<row>
-					<cell type="label" labelfor="6" label="Password Strength"/>
-					<cell type="field" id="6" uitype="plugin" name="this" initialize="name=PasswordStrengthUI"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="email" uitype="text" cols="40" isrequired="false"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="4" label="Agent"/>
-					<cell type="field" id="4" name="agent" uitype="textfieldinfo" initialize="name=AgentSSPU;title=Agent;" isrequired="false" ignore="true"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="key" label="Key"/>
-					<cell type="field" id="key" name="key" uitype="text" ignore="true" readonly="true"/>
-					<cell type="command" id="GenerateKey" name="GenerateKey" label="Generate Master Key" ignore="true"/>
-					<cell type="command" id="CopyToCB" name="CopyToCB" label="" initialize="icon=ClipboardCopy;size=24;tooltip=CPY_TO_CB_TT" ignore="true"/>
-				</row>
-				<!--row>
-                    <cell type="label" labelfor="4" label="Retype Password"/>
-                    <cell type="field" id="4" name="password" uitype="text" cols="15"/>
-                    </row-->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="CatalogNumberingScheme" class="edu.ku.brc.specify.datamodel.CatalogNumberingScheme" gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap" settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
@@ -427,6 +402,32 @@
 				</row>
 				<row>
 					<cell type="field" id="CO_CREATE_DET" name="CO_CREATE_DET" label="Create Determination" uitype="checkbox"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="SpAppResource" class="edu.ku.brc.specify.datamodel.SpAppResource" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The SpAppResource Table</desc>
+			<enableRules/>
+			<columnDef>20px,2px,100px,2px,20px,2px,50px,2px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="mimeType"/>
+					<cell type="field" id="mimeType" name="MimeType" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="md"/>
+					<cell type="field" id="md" name="metadata" uitype="text"/>
+					<cell type="label" labelfor="timestampCreated"/>
+					<cell type="field" id="timestampCreated" name="timestampCreated" uitype="text" readonly="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="desc"/>
+					<cell type="field" id="desc" name="description" uitype="text"/>
+					<cell type="label" labelfor="version"/>
+					<cell type="field" id="version" name="version" uitype="text" readonly="true"/>
 				</row>
 			</rows>
 		</viewdef>
