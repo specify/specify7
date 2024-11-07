@@ -1,6 +1,12 @@
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
+import {
+  CURRENT_DETERMINATION_KEY,
+  ensureSingleCollectionObjectCheck,
+  hasNoCurrentDetermination,
+} from './businessRuleUtils';
+import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -20,6 +26,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroupJoin,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -48,14 +55,6 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
-
-const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
-
-const hasNoCurrentDetermination = (collection: Collection<Determination>) =>
-  collection.models.length > 0 &&
-  !collection.models.some((determination: SpecifyResource<Determination>) =>
-    determination.get('isCurrent')
-  );
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -201,6 +200,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               console.error('Error fetching resources:', error);
             });
         return undefined;
+      },
+    },
+  },
+
+  CollectionObjectGroup: {
+    fieldChecks: {
+      cogType: (cog): void => {
+        // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
+        cog.rgetPromise('cogType').then((cogtype) => {
+          if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
+            const cojos = cog.getDependentResource('children');
+            // Set first CO in COG to primary
+            cojos?.models
+              .find(
+                (cojo) =>
+                  cojo.get('childCo') !== null &&
+                  cojo.get('childCo') !== undefined
+              )
+              ?.set('isPrimary', true);
+          }
+        });
+      },
+    },
+  },
+
+  CollectionObjectGroupJoin: {
+    fieldChecks: {
+      /*
+       * Only a single CO in a COG can be set as primary.
+       * When checking a CO as primary, other COs in that COG will get unchecked.
+       */
+      isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
+        ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
+      },
+      /*
+       * Only a single CO in a COG can be set as substrate.
+       * When checking a CO as substrate, other COs in that COG will get unchecked.
+       */
+      isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
+        ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
     },
   },
