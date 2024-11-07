@@ -2,7 +2,7 @@ import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { tables } from '../DataModel/tables';
-import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
+import { autoGenerateViewDefinition, getFieldsForAutoView } from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
 
 /**
@@ -33,6 +33,35 @@ export const webOnlyViews = f.store(() =>
         ],
       ],
     },
+    SpecifyUser: autoGenerateViewDefinition(
+      tables.SpecifyUser,
+      'form',
+      'edit',
+      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType'])
+    ),
+    SpAppResource: autoGenerateViewDefinition(
+      tables.SpAppResource,
+      'form',
+      'edit',
+      getFieldsForAutoView(tables.SpAppResource, [
+        'allPermissionLevel',
+        'groupPermissionLevel',
+        'level',
+        'ownerPermissionLevel',
+        'version',
+        'group',
+        'spAppResourceDir',
+        'spAppResourceDatas',
+        'spReports',
+      ])
+    ),
+    // Hide non-name fields
+    CollectionRelType: autoGenerateViewDefinition(
+      tables.CollectionRelType,
+      'form',
+      'edit',
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+    ),
     CollectionRelationship: autoGenerateViewDefinition(
       tables.CollectionRelationship,
       'form',
@@ -44,6 +73,19 @@ export const webOnlyViews = f.store(() =>
       'form',
       'edit',
       ['name']
+    ),
+    // Hide non-name fields
+    [spViewSetNameView]: autoGenerateViewDefinition(
+      tables.SpViewSetObj,
+      'form',
+      'edit',
+      ['name']
+    ),
+    [recordSetView]: autoGenerateViewDefinition(
+      tables.RecordSet,
+      'form',
+      'edit',
+      ['name', 'remarks']
     ),
   } as const)
 );
