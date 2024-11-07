@@ -1844,7 +1844,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef name="GeologicTimePeriod" type="form" class="edu.ku.brc.specify.datamodel.GeologicTimePeriod" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="GeologicTimePeriod" class="edu.ku.brc.specify.datamodel.GeologicTimePeriod" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>New GeologicTimePeriod Node Form</desc>
 			<enableRules>
 				<rule id="definitionItem">parent.getValue() != null</rule>
@@ -1869,6 +1869,11 @@
 					<cell type="field" id="name" uitype="text" name="name" isrequired="true"/>
 					<cell type="label" labelfor="definitionItem"/>
 					<cell type="field" id="definitionItem" uitype="combobox" name="definitionItem"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="acceptedParent"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
+					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="startPeriod"/>
@@ -1922,7 +1927,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="GeologicTimePeriodSpecial" type="form" class="edu.ku.brc.specify.datamodel.GeologicTimePeriod" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="GeologicTimePeriodSpecial" class="edu.ku.brc.specify.datamodel.GeologicTimePeriod" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>New GeologicTimePeriod Node Form</desc>
 			<enableRules>
 				<rule id="definitionItem">parent.getValue() != null</rule>
@@ -1947,6 +1952,11 @@
 					<cell type="field" id="name" uitype="text" name="name" isrequired="true"/>
 					<cell type="label" labelfor="definitionItem"/>
 					<cell type="field" id="definitionItem" uitype="combobox" name="definitionItem"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="acceptedParent"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="editbtn=false;newbtn=false" name="acceptedParent" colspan="4"/>
+					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="startPeriod"/>
@@ -1984,7 +1994,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef name="LithoStrat" type="form" class="edu.ku.brc.specify.datamodel.LithoStrat" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="LithoStrat" class="edu.ku.brc.specify.datamodel.LithoStrat" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>New LithoStrat Node Form</desc>
 			<enableRules>
 				<rule id="definitionItem">parent.getValue() != null</rule>
@@ -2005,6 +2015,11 @@
 					<cell type="field" id="name" uitype="text" name="name"/>
 					<cell type="label" labelfor="definitionItem"/>
 					<cell type="field" id="definitionItem" uitype="combobox" name="definitionItem" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="acceptedParent"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="editbtn=false;newbtn=false" name="acceptedParent" colspan="3"/>
+					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="remarks"/>
