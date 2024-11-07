@@ -113,15 +113,15 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
-  const isTaxonTreeDefItemTable =
-    collection.table.specifyTable.name === 'TaxonTreeDefItem';
-
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
     relationship.name === 'children';
+
+  const isTaxonTreeDefItemTable =
+    collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -202,7 +202,8 @@ export function IntegratedRecordSelector({
                         <DataEntry.Add
                           disabled={
                             isReadOnly ||
-                            (isToOne && collection.models.length > 0)
+                            (isToOne && collection.models.length > 0) ||
+                            isTaxonTreeDefItemTable
                           }
                           onClick={(): void => {
                             focusFirstField();
