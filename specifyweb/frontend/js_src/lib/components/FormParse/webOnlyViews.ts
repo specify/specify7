@@ -48,12 +48,6 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['name']
     ),
-    [recordSetView]: autoGenerateViewDefinition(
-      tables.RecordSet,
-      'form',
-      'edit',
-      ['name', 'remarks']
-    ),
   } as const)
 );
 
