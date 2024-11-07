@@ -389,7 +389,6 @@
 			</altviews>
 		</view>
 		<view name="TaxonTreeDef" objtitle="TaxonTreeDef" class="edu.ku.brc.specify.datamodel.TaxonTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="TaxonTreeDef View" viewdef="TaxonTreeDef" mode="view" validated="false"/>
 				<altview name="TaxonTreeDef Edit" viewdef="TaxonTreeDef" mode="edit" default="true" validated="false"/>
@@ -398,7 +397,6 @@
 			</altviews>
 		</view>
 		<view name="GeographyTreeDef" objtitle="GeographyTreeDef" class="edu.ku.brc.specify.datamodel.GeographyTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="GeographyTreeDef View" viewdef="GeographyTreeDef" mode="view" validated="false"/>
 				<altview name="GeographyTreeDef Edit" viewdef="GeographyTreeDef" mode="edit" default="true" validated="false"/>
@@ -407,7 +405,6 @@
 			</altviews>
 		</view>
 		<view name="StorageTreeDef" objtitle="StorageTreeDef" class="edu.ku.brc.specify.datamodel.StorageTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="StorageTreeDef View" viewdef="StorageTreeDef" mode="view" validated="false"/>
 				<altview name="StorageTreeDef Edit" viewdef="StorageTreeDef" mode="edit" default="true" validated="false"/>
@@ -416,7 +413,6 @@
 			</altviews>
 		</view>
 		<view name="TectonicUnitTreeDef" objtitle="TectonicUnitTreeDef" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="TectonicUnitTreeDef View" viewdef="TectonicUnitTreeDef" mode="view" validated="false"/>
 				<altview name="TectonicUnitTreeDef Edit" viewdef="TectonicUnitTreeDef" mode="edit" default="true" validated="false"/>
@@ -425,7 +421,6 @@
 			</altviews>
 		</view>
 		<view name="GeologicTimePeriodTreeDef" objtitle="GeologicTimePeriodTreeDef" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="GeologicTimePeriodTreeDef View" viewdef="GeologicTimePeriodTreeDef" mode="view" validated="false"/>
 				<altview name="GeologicTimePeriodTreeDef Edit" viewdef="GeologicTimePeriodTreeDef" mode="edit" default="true" validated="false"/>
@@ -434,7 +429,6 @@
 			</altviews>
 		</view>
 		<view name="LithoStratTreeDef" objtitle="LithoStratTreeDef" class="edu.ku.brc.specify.datamodel.LithoStratTreeDef">
-			<desc/>
 			<altviews>
 				<altview name="LithoStratTreeDef View" viewdef="LithoStratTreeDef" mode="view" validated="false"/>
 				<altview name="LithoStratTreeDef Edit" viewdef="LithoStratTreeDef" mode="edit" default="true" validated="false"/>
@@ -1215,17 +1209,18 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="Query" class="edu.ku.brc.specify.datamodel.SpQuery" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="Query" class="edu.ku.brc.specify.datamodel.SpQuery" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Query form</desc>
-			<!-- <enableRules>
-                <rule id="AddItem"><![CDATA[name.isNotEmpty() && name.length < 64]]></rule>
-            </enableRules>-->
-			<columnDef>p,2px,p:g</columnDef>
+			<columnDef>25px,2px,200px,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" label="Owner"/>
+					<cell type="field" id="owner" name="specifyUser" uitype="querycbx" isrequired="true" initialize="editbtn=false;newbtn=false"/>
 				</row>
 			</rows>
 		</viewdef>
