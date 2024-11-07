@@ -91,6 +91,12 @@
 				<altview name="SpAppResource Edit" viewdef="SpAppResource" mode="edit" default="true" validated="false"/>
 			</altviews>
 		</view>
+		<view name="SpViewSetObj" objtitle="SpViewSetObj" class="edu.ku.brc.specify.datamodel.SpViewSetObj">
+			<altviews>
+				<altview name="SpViewSetObj View" viewdef="SpViewSetObj" mode="view" validated="false"/>
+				<altview name="SpViewSetObj Edit" viewdef="SpViewSetObj" mode="edit" default="true" validated="false"/>
+			</altviews>
+		</view>
 	</views>
 	<!--  *************************************************************************************************************************** -->
 	<!--  *************************************************************************************************************************** -->
@@ -447,6 +453,51 @@
 						<cell type="field" id="spAppResourceDatas" name="spAppResourceDatas" uitype="text" readonly="true"/>
 						<cell type="label" labelfor="spReports"/>
 						<cell type="field" id="spReports" name="spReports" uitype="text" readonly="true"/>
+					</row>
+				</rows>
+			</cell>
+		</row> -->
+			</rows>
+		</viewdef>
+		<viewdef name="SpViewSetObj" class="edu.ku.brc.specify.datamodel.SpViewSetObj" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The SpViewSetObj Table</desc>
+			<enableRules/>
+			<columnDef>20px,2px,50px,2px,20px,2px,50px,2px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="version"/>
+					<cell type="field" id="version" name="version" uitype="text" readonly="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="timestampModified"/>
+					<cell type="field" id="timestampModified" name="timestampModified" uitype="text" readonly="true"/>
+					<cell type="label" labelfor="mba"/>
+					<cell type="field" id="mba" name="modifiedByAgent" uitype="text" readonly="true"/>
+				</row>
+				<row>
+					<!-- 			<cell type="label" labelfor="md"/>
+			<cell type="field" id="md" name="metadata" uitype="text"/> -->
+					<cell type="label" labelfor="timestampCreated"/>
+					<cell type="field" id="timestampCreated" name="timestampCreated" uitype="text" readonly="true"/>
+					<cell type="label" labelfor="cba"/>
+					<cell type="field" id="cba" name="createdByAgent" uitype="text" readonly="true"/>
+				</row>
+				<!-- 		<row>
+			<cell type="panel" colspan="7">
+				<rows>
+					<row>
+						<cell type="separator" label="Database Metadata" colspan="23"/>
+					</row>
+					<row>
+						<cell type="label" labelfor="level"/>
+						<cell type="field" id="level" name="level" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="spAppResourceDir"/>
+						<cell type="field" id="spAppResourceDir" name="spAppResourceDir" uitype="text" readonly="true"/>
+						<cell type="label" labelfor="spAppResourceDatas"/>
+						<cell type="field" id="spAppResourceDatas" name="spAppResourceDatas" uitype="text" readonly="true"/>
 					</row>
 				</rows>
 			</cell>
