@@ -36,35 +36,6 @@ export const webOnlyViews = f.store(() =>
         ],
       ],
     },
-    SpecifyUser: autoGenerateViewDefinition(
-      tables.SpecifyUser,
-      'form',
-      'edit',
-      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType'])
-    ),
-    SpAppResource: autoGenerateViewDefinition(
-      tables.SpAppResource,
-      'form',
-      'edit',
-      getFieldsForAutoView(tables.SpAppResource, [
-        'allPermissionLevel',
-        'groupPermissionLevel',
-        'level',
-        'ownerPermissionLevel',
-        'version',
-        'group',
-        'spAppResourceDir',
-        'spAppResourceDatas',
-        'spReports',
-      ])
-    ),
-    // Hide non-name fields
-    CollectionRelType: autoGenerateViewDefinition(
-      tables.CollectionRelType,
-      'form',
-      'edit',
-      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
-    ),
     CollectionRelationship: autoGenerateViewDefinition(
       tables.CollectionRelationship,
       'form',
@@ -73,13 +44,6 @@ export const webOnlyViews = f.store(() =>
     ),
     [spAppResourceView]: autoGenerateViewDefinition(
       tables.SpAppResource,
-      'form',
-      'edit',
-      ['name']
-    ),
-    // Hide non-name fields
-    [spViewSetNameView]: autoGenerateViewDefinition(
-      tables.SpViewSetObj,
       'form',
       'edit',
       ['name']
