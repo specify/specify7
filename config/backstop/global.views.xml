@@ -612,7 +612,7 @@
 						<rows condition="agentType=Group">
 							<!-- Show members if the Agent is a group -->
 							<row>
-								<cell type="subview" viewname="GroupPersons" id="31" name="groups" defaulttype="table" colspan="19"/>
+								<cell type="subview" viewname="GroupPersons" id="groups" name="groups" defaulttype="table" colspan="19"/>
 							</row>
 						</rows>
 					</cell>
@@ -621,7 +621,7 @@
 					<cell type="subview" viewname="Address" id="9" name="addresses" colspan="19"/>
 				</row>
 				<row>
-					<cell type="subview" viewname="AgentVariant" id="10" name="variants" colspan="19"/>
+					<cell type="subview" viewname="AgentVariant" id="variants" name="variants" colspan="19"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="AgentSpecialty" id="50" name="agentSpecialties" colspan="19" rows="3"/>
