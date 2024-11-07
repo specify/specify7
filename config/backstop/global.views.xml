@@ -388,6 +388,60 @@
 				<altview name="MorphBankView Edit" viewdef="MorphBankView" mode="edit" default="true"/>
 			</altviews>
 		</view>
+		<view name="TaxonTreeDef" objtitle="TaxonTreeDef" class="edu.ku.brc.specify.datamodel.TaxonTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="TaxonTreeDef View" viewdef="TaxonTreeDef" mode="view" validated="false"/>
+				<altview name="TaxonTreeDef Edit" viewdef="TaxonTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="TaxonTreeDef Table View" viewdef="TaxonTreeDef Table" mode="view" validated="false"/>
+				<altview name="TaxonTreeDef Table Edit" viewdef="TaxonTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="GeographyTreeDef" objtitle="GeographyTreeDef" class="edu.ku.brc.specify.datamodel.GeographyTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="GeographyTreeDef View" viewdef="GeographyTreeDef" mode="view" validated="false"/>
+				<altview name="GeographyTreeDef Edit" viewdef="GeographyTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="GeographyTreeDef Table View" viewdef="GeographyTreeDef Table" mode="view" validated="false"/>
+				<altview name="GeographyTreeDef Table Edit" viewdef="GeographyTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="StorageTreeDef" objtitle="StorageTreeDef" class="edu.ku.brc.specify.datamodel.StorageTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="StorageTreeDef View" viewdef="StorageTreeDef" mode="view" validated="false"/>
+				<altview name="StorageTreeDef Edit" viewdef="StorageTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="StorageTreeDef Table View" viewdef="StorageTreeDef Table" mode="view" validated="false"/>
+				<altview name="StorageTreeDef Table Edit" viewdef="StorageTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="TectonicUnitTreeDef" objtitle="TectonicUnitTreeDef" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="TectonicUnitTreeDef View" viewdef="TectonicUnitTreeDef" mode="view" validated="false"/>
+				<altview name="TectonicUnitTreeDef Edit" viewdef="TectonicUnitTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="TectonicUnitTreeDef Table View" viewdef="TectonicUnitTreeDef Table" mode="view" validated="false"/>
+				<altview name="TectonicUnitTreeDef Table Edit" viewdef="TectonicUnitTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="GeologicTimePeriodTreeDef" objtitle="GeologicTimePeriodTreeDef" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="GeologicTimePeriodTreeDef View" viewdef="GeologicTimePeriodTreeDef" mode="view" validated="false"/>
+				<altview name="GeologicTimePeriodTreeDef Edit" viewdef="GeologicTimePeriodTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="GeologicTimePeriodTreeDef Table View" viewdef="GeologicTimePeriodTreeDef Table" mode="view" validated="false"/>
+				<altview name="GeologicTimePeriodTreeDef Table Edit" viewdef="GeologicTimePeriodTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="LithoStratTreeDef" objtitle="LithoStratTreeDef" class="edu.ku.brc.specify.datamodel.LithoStratTreeDef">
+			<desc/>
+			<altviews>
+				<altview name="LithoStratTreeDef View" viewdef="LithoStratTreeDef" mode="view" validated="false"/>
+				<altview name="LithoStratTreeDef Edit" viewdef="LithoStratTreeDef" mode="edit" default="true" validated="false"/>
+				<altview name="LithoStratTreeDef Table View" viewdef="LithoStratTreeDef Table" mode="view" validated="false"/>
+				<altview name="LithoStratTreeDef Table Edit" viewdef="LithoStratTreeDef Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
 	</views>
 	<!--
 ######################################################################################################
@@ -2606,6 +2660,156 @@
 					<cell type="field" id="morphBankExternalViewID" name="morphBankExternalViewID" uitype="text" readonly="true"/>
 				</row>
 			</rows>
+		</viewdef>
+		<viewdef name="TaxonTreeDef" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TaxonTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="TaxonTreeDef Table" class="edu.ku.brc.specify.datamodel.TaxonTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TaxonTreeDef Table</desc>
+			<definition>TaxonTreeDef</definition>
+		</viewdef>
+		<viewdef name="GeographyTreeDef" class="edu.ku.brc.specify.datamodel.GeographyTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The GeographyTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="GeographyTreeDef Table" class="edu.ku.brc.specify.datamodel.GeographyTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The GeographyTreeDef Table</desc>
+			<definition>GeographyTreeDef</definition>
+		</viewdef>
+		<viewdef name="StorageTreeDef" class="edu.ku.brc.specify.datamodel.StorageTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The StorageTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="StorageTreeDef Table" class="edu.ku.brc.specify.datamodel.StorageTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The StorageTreeDef Table</desc>
+			<definition>StorageTreeDef</definition>
+		</viewdef>
+		<viewdef name="TectonicUnitTreeDef" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnitTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="TectonicUnitTreeDef Table" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnitTreeDef Table</desc>
+			<definition>TectonicUnitTreeDef</definition>
+		</viewdef>
+		<viewdef name="GeologicTimePeriodTreeDef" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The GeologicTimePeriodTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="GeologicTimePeriodTreeDef Table" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The GeologicTimePeriodTreeDef Table</desc>
+			<definition>GeologicTimePeriodTreeDef</definition>
+		</viewdef>
+		<viewdef name="LithoStratTreeDef" class="edu.ku.brc.specify.datamodel.LithoStratTreeDef" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The LithoStratTreeDef Table</desc>
+			<enableRules/>
+			<columnDef>30px,2px,100px,2px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" name="name" uitype="text"/>
+					<cell type="label" labelfor="fullNameDir"/>
+					<cell type="field" id="fullNameDir" name="fullNameDirection" default="1" uitype="combobox"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="remarks"/>
+					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
+				</row>
+				<row>
+					<cell type="subview" id="items" name="treeDefItems" colspan="8" defaulttype="table" initialize="sortField=rankId"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="LithoStratTreeDef Table" class="edu.ku.brc.specify.datamodel.LithoStratTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The LithoStratTreeDef Table</desc>
+			<definition>LithoStratTreeDef</definition>
 		</viewdef>
 	</viewdefs>
 </viewset>
