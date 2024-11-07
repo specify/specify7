@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 16:11+0000\n"
+"PO-Revision-Date: 2024-11-07 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/specifyNetwork/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/specifyNetwork/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -12,62 +12,62 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.8.2\n"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 msgid "specifyNetwork"
 msgstr "Specify Network"
 
-#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:84
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Zur Anzeige dieser Seite muss der Artenname oder die GUID angegeben werden"
 
-#: components/SpecifyNetwork/Overlay.tsx:119
 #. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
 msgstr "Zu dieser Anfrage konnten keine Daten gefunden werden"
 
-#: components/SpecifyNetwork/Overlay.tsx:122
 #. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:122
 #, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Bitte versuchen Sie, nach einem anderen Datensatz zu suchen"
 
-#: components/SpecifyNetwork/Table.tsx:51
 #. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:51
 #, fuzzy
 msgid "dataQuality"
 msgstr "Datenqualität"
 
-#: components/SpecifyNetwork/Table.tsx:64
 #. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:64
 #, fuzzy
 msgid "reportedBy"
 msgstr "Gemeldet von {provider:string}"
 
+#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
-#. Used in: Components > Specify Network > Field Mapper
 #, fuzzy
 msgid "collectionDate"
-msgstr "Abholtermin"
+msgstr "Abholdatum"
 
-#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
+#: components/SpecifyNetwork/Map.tsx:221
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
 "Diese Karte zeigt Vorkommen dieses Taxons aus den Aggregatoren iDigBio und "
 "GBIF."
 
-#: components/SpecifyNetwork/overlays.ts:140
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:140
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
@@ -79,50 +79,50 @@ msgstr ""
 "der aktuellen Specify-Datenbank anzeigt, die an diesem Standort gesammelt "
 "wurden."
 
-#: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:31
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in "
+"Bei GBIF-Daten werden einzelne Punkte und Punktgruppen als Sechsecke in "
 "unterschiedlichen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote "
-"Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare "
-"dieser Art."
+"Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser "
+"Art."
 
-#: components/SpecifyNetworkCollection/Setup.tsx:59
 #. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:59
 #, fuzzy
 msgid "connectToGbif"
 msgstr "Mit GBIF verbinden"
 
-#: components/SpecifyNetworkCollection/Setup.tsx:62
 #. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:62
 #, fuzzy
 msgid "searchForInstitution"
 msgstr "Mit GBIF verbinden"
 
-#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:75
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
 "Verbreitungskarte aller digitalisierten Exemplare, die in Ihrer Institution "
 "kuratiert werden"
 
-#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:149
 #, fuzzy
 msgid "collectionDistributionMap"
 msgstr "Verbreitungskarte aller digitalisierten Exemplare Ihrer Sammlung"
 
-#: components/Molecules/Range.tsx:23
 #. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:23
 #, fuzzy
 msgid "startYear"
 msgstr "Startjahr"
 
-#: components/Molecules/Range.tsx:44
 #. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:44
 #, fuzzy
 msgid "endYear"
 msgstr "Ende des Jahres"
