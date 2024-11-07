@@ -3,63 +3,63 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-11-05 21:00+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"specifyNetwork/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/specifyNetwork/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.8.2\n"
 
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 msgid "specifyNetwork"
 msgstr "Specify red"
 
-#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:84
+#. Used in: Components > Specify Network > Index
 msgid "occurrenceOrGuidRequired"
 msgstr "Se debe proporcionar el nombre de especie o el GUID para mostrar esta página"
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
+#. Used in: Components > Specify Network > Overlay
 msgid "noDataError"
 msgstr "No se encuentran datos para esta solicitud"
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
+#. Used in: Components > Specify Network > Overlay
 msgid "noDataErrorDescription"
 msgstr "Intente buscar un registro diferente"
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
+#. Used in: Components > Specify Network > Table
 msgid "dataQuality"
 msgstr "Calidad de datos"
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:64
+#. Used in: Components > Specify Network > Table
 msgid "reportedBy"
 msgstr "Reportado por {provider:string}"
 
-#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
+#. Used in: Components > Specify Network > Field Mapper
 msgid "collectionDate"
 msgstr "Fecha de colecta"
 
-#. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:221
+#. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr ""
 "Este mapa muestra los registros de este taxón en los agregadores iDigBio y "
 "GBIF."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
+#. Used in: Components > Specify Network > Overlays
 msgid "iDigBioDescription"
 msgstr ""
 "Los registros recogidos en iDigBio se muestran como puntos verdes redondos, "
@@ -69,8 +69,8 @@ msgstr ""
 "localidad en Specify que muestra todas las especies en la base de datos "
 "actual de Specify colectadas en esa localización."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
+#. Used in: Components > Specify Network > Overlays
 msgid "gbifDescription"
 msgstr ""
 "Para los datos de GBIF, los puntos individuales y los grupos de puntos se "
@@ -78,36 +78,36 @@ msgstr ""
 "naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las "
 "distribuciones más densas de especímenes colectados de esa especie."
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
+#. Used in: Components > Specify Network Collection > Setup
 msgid "connectToGbif"
 msgstr "Conectarse a GBIF"
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
+#. Used in: Components > Specify Network Collection > Setup
 msgid "searchForInstitution"
-msgstr "Buscar tu institución::"
+msgstr "Busque su institución:"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:75
+#. Used in: Components > Specify Network Collection > Index
 msgid "institutionDistributionMap"
 msgstr ""
 "Mapa de distribución de todos los ejemplares digitalizados conservados en "
 "su Institución"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:149
+#. Used in: Components > Specify Network Collection > Index
 msgid "collectionDistributionMap"
 msgstr ""
 "Mapa de distribución de todos los ejemplares digitalizados conservados en "
 "su Colección"
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
+#. Used in: Components > Molecules > Range
 msgid "startYear"
 msgstr "Año de inicio"
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:44
+#. Used in: Components > Molecules > Range
 msgid "endYear"
 msgstr "Año final"

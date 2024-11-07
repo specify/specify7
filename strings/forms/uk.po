@@ -19,14 +19,14 @@ msgid "forms"
 msgstr "Форми"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:309
+#: components/Forms/Save.tsx:318
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:310
+#: components/Forms/Save.tsx:319
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
@@ -244,13 +244,13 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Ця форма не збережена."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:340
+#: components/Forms/Save.tsx:350
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:343
+#: components/Forms/Save.tsx:353
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -259,13 +259,13 @@ msgstr ""
 "іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
-#: components/Forms/Save.tsx:373
+#: components/Forms/Save.tsx:383
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Запис інформації"
 
-#: components/Forms/Save.tsx:376
+#: components/Forms/Save.tsx:386
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -527,7 +527,7 @@ msgstr "Видалити з {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/Save.tsx:256
+#: components/Forms/Save.tsx:261
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
@@ -545,13 +545,13 @@ msgstr "Показати кнопку «Перенести вперед»."
 msgid "bulkCarryForwardEnabled"
 msgstr ""
 
-#: components/Forms/Save.tsx:242
+#: components/Forms/Save.tsx:247
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr ""
 
-#: components/Forms/Save.tsx:257
+#: components/Forms/Save.tsx:262
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
@@ -600,7 +600,7 @@ msgstr "Показати кнопку клонування"
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»."
 
-#: components/Forms/Save.tsx:316
+#: components/Forms/Save.tsx:326
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"
