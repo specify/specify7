@@ -33,6 +33,7 @@
         SELECT %s1 FROM Container con WHERE %s2 AND con.collectionObjects.size = 0 ORDER BY name
     </typesearch>
     <typesearch tableid="87"  name="CollectingTrip"         searchfield="collectingTripName" displaycols="collectingTripName" format="%s"  dataobjformatter=""/>
+    <typesearch tableid="23"  name="Collection"             searchfield="collectionName" displaycols="collectionName" format="%s"  dataobjformatter=""/>
     <typesearch tableid="34"  name="Disposal"               searchfield="disposalNumber"  displaycols="disposalNumber"     format="%s"     dataobjformatter="Disposal"/>
     <typesearch tableid="26"  name="Discipline"             searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="96"  name="Division"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
@@ -53,6 +54,7 @@
     <typesearch tableid="69"  name="ReferenceWork"          searchfield="title"           displaycols="title"              format="%s"     dataobjformatter=""/>
     <typesearch tableid="70"  name="RepositoryAgreement"    searchfield="repositoryAgreementNumber" displaycols="repositoryAgreementNumber" format="%s"     dataobjformatter=""/>
     <typesearch tableid="58"  name="Storage"                searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="72"  name="SpecifyUser"            searchfield="name"            displaycols="name"           format="%s"     dataobjformatter=""/>
     <typesearch tableid="32"  name="PaleoContext"           searchfield="paleoContextName,cs.fullName,ls.fullName" displaycols="paleoContextName,cs.fullName,cse.fullName,ls.fullName" format="%s, %s, %s, %s"     
     	dataobjformatter="PaleoContext">
     	SELECT %s1 FROM PaleoContext pc LEFT JOIN pc.chronosStrat cs LEFT JOIN cs.definition csd LEFT JOIN pc.chronosStratEnd cse LEFT JOIN cse.definition csed LEFT JOIN pc.lithoStrat ls LEFT JOIN ls.definition lsd WHERE pc.discipline.disciplineId = DSPLNID AND (pc.chronosStrat IS NULL OR csd.geologicTimePeriodTreeDefId=GTPTREEDEFID) AND (pc.chronosStratEnd IS NULL OR csed.geologicTimePeriodTreeDefId=GTPTREEDEFID) AND (pc.lithoStrat IS NULL OR lsd.lithoStratTreeDefId=LITHOTREEDEFID) AND %s2 ORDER BY pc.paleoContextName,cs.fullName,cse.fullName,ls.fullName
