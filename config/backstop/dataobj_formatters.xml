@@ -445,7 +445,7 @@
 	<format name="SpecifyUser" title="Specify User" class="edu.ku.brc.specify.datamodel.SpecifyUser" default="true">
 		<switch single="true">
 			<fields>
-				<field sep=" ">name</field>
+				<field>name</field>
 			</fields>
 		</switch>
 	</format>
