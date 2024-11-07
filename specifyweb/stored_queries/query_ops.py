@@ -132,7 +132,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
 
     def op_age_range(self, field, value, query, is_strict=False):
         # Choose implementation of age range filtering
-        return self.op_age_range_simple(field, value, is_strict)
+        return self.op_age_range_set(field, value, is_strict)
         # return self.op_age_range_query(field, value, query, is_strict)
         # return self.op_age_range_query_joins(field, value, query=query, is_strict=is_strict)
 

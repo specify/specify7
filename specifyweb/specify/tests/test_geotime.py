@@ -288,3 +288,14 @@ class GeoTimeTests(ApiTests):
 
         result_co_ids = geo_time.search_co_ids_in_time_range(200, 100)
         self.assertTrue(co_8.id in result_co_ids)
+
+    def test_geotime_period(self):
+        # Test relative age
+        co_1 = Collectionobject.objects.create(collection=self.collection)
+        relative_age = Relativeage.objects.create(
+            agename=self.geo_time_period_dict['paleocene'], # 66-56
+            collectionobject=co_1
+        )
+
+        result_co_ids = geo_time.search_co_ids_in_time_period('paleocene')
+        self.assertTrue(co_1.id in result_co_ids)
