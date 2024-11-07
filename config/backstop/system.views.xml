@@ -103,6 +103,12 @@
 				<altview name="RecordSet Edit" viewdef="RecordSet" mode="edit" default="true" validated="false"/>
 			</altviews>
 		</view>
+		<view name="SpReport" objtitle="SpReport" class="edu.ku.brc.specify.datamodel.SpReport">
+			<altviews>
+				<altview name="SpReport View" viewdef="SpReport" mode="view" validated="false"/>
+				<altview name="SpReport Edit" viewdef="SpReport" mode="edit" default="true" validated="false"/>
+			</altviews>
+		</view>
 	</views>
 	<!--  *************************************************************************************************************************** -->
 	<!--  *************************************************************************************************************************** -->
@@ -440,6 +446,17 @@
 					<cell type="label" labelfor="version"/>
 					<cell type="field" id="version" name="version" uitype="text" readonly="true"/>
 				</row>
+				<row>
+					<cell type="panel" colspan="7" coldef="20px,2px,100px,2px,20px,2px,50px,2px,p:g">
+						<rows/>
+						<rows condition="mimeType=jrxml/label">
+							<row>
+								<cell type="label" label="Reports"/>
+								<cell type="subview" id="spReports" name="spReports" uitype="subview" readonly="true" initialize="btn=true"/>
+							</row>
+						</rows>
+					</cell>
+				</row>
 				<!-- 		<row>
 			<cell type="panel" colspan="7">
 				<rows>
@@ -525,6 +542,26 @@
 				<row>
 					<cell type="label" labelfor="rem"/>
 					<cell type="field" id="rem" name="remarks" uitype="textarea" colspan="5"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="SpReport" class="edu.ku.brc.specify.datamodel.SpReport" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The SpReport Table</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="nm"/>
+					<cell type="field" id="nm" name="name" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="q"/>
+					<cell type="field" id="q" name="query" uitype="querycbx"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="aR"/>
+					<cell type="field" id="aR" name="appResource" uitype="querycbx" initialize="editbtn=false;newbtn=false;viewBtn=false"/>
 				</row>
 			</rows>
 		</viewdef>
