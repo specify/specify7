@@ -12,7 +12,8 @@ TREE_MODELS = {
     spmodels.Geographytreedef,
     spmodels.Storagetreedef,
     spmodels.Geologictimeperiodtreedef,
-    spmodels.Lithostrattreedef
+    spmodels.Lithostrattreedef,
+    spmodels.Tectonictreedef
 }
 
 def get_search_filters(collection: spmodels.Collection, tree: str):
