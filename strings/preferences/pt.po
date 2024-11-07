@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-05 15:39+0000\n"
+"PO-Revision-Date: 2024-11-07 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "preferences/pt/>\n"
@@ -555,7 +555,7 @@ msgstr "Permite consultar dados de qualquer campo em qualquer tabela."
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "AVISO: habilitar isso pode levar à perda de dados ou corrupção do banco de "
-"dados. Certifique-se de que você sabe o que está fazendo."
+"dados. Por favor, certifique-se de que você sabe o que está fazendo."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
@@ -871,7 +871,7 @@ msgstr "Especificar emblema de rede"
 #: components/Preferences/UserDefinitions.tsx:872
 #, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr "Use um seletor de data completo acessível"
+msgstr "Use o seletor de data completo acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:879
