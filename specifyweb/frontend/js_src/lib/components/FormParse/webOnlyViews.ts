@@ -2,7 +2,10 @@ import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { tables } from '../DataModel/tables';
-import { autoGenerateViewDefinition, getFieldsForAutoView } from '../Forms/generateFormDefinition';
+import {
+  autoGenerateViewDefinition,
+  getFieldsForAutoView,
+} from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
 
 /**
