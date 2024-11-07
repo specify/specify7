@@ -449,6 +449,35 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="CollectionObjectType" title="Collection Object Type" class="edu.ku.brc.specify.datamodel.CollectionObjectType" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="CollectionObjectGroup" title="Collection Object Group" class="edu.ku.brc.specify.datamodel.CollectionObjectGroup" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="CollectionObjectGroupType" title="Collection Object Group Type" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">childCo.catalogNumber</field>
+				<field sep=" ">childCog.name</field>
+			</fields>
+		</switch>
+	</format>
 	<aggregators>
 		<aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" format="AccessionAgent"/>
 		<aggregator name="AccessionAttachment" title="AccessionAttachment" class="edu.ku.brc.specify.datamodel.AccessionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
