@@ -116,14 +116,14 @@
 				<altview name="CollectingEventSubform Edit" viewdef="CollectingEventSubform" mode="edit"/>
 			</altviews>
 		</view>
-		<view name="CollectingTrip" class="edu.ku.brc.specify.datamodel.CollectingTrip" busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" resourelabels="false">
+		<view name="CollectingTrip" class="edu.ku.brc.specify.datamodel.CollectingTrip" busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" resourcelabels="false">
 			<desc>CollectingTrip Form</desc>
 			<altviews>
 				<altview name="CollectingTrip View" viewdef="CollectingTrip" mode="view" default="true"/>
 				<altview name="CollectingTrip Edit" viewdef="CollectingTrip" mode="edit"/>
 			</altviews>
 		</view>
-		<view name="CollectingTripForm" class="edu.ku.brc.specify.datamodel.CollectingTrip" busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" isinternal="false" resourelabels="false">
+		<view name="CollectingTripForm" class="edu.ku.brc.specify.datamodel.CollectingTrip" busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" isinternal="false" resourcelabels="false">
 			<desc>CollectingTrip Form</desc>
 			<altviews>
 				<altview name="CollectingTripForm View" viewdef="CollectingTripForm" mode="view" default="true"/>
@@ -2479,7 +2479,7 @@
                     <cell type="field" id="ldtext2" name="text2" uitype="formattedtext" />
                 </row-->
 		</viewdef>
-		<viewdef type="formtable" name="DeaccessionAccession Table" class="edu.ku.brc.specify.datamodel.Deccession" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef type="formtable" name="DeaccessionAccession Table" class="edu.ku.brc.specify.datamodel.Deaccession" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Horizontal interpretation of the Deaccession form from inside the Accession form.</desc>
 			<definition>DeaccessionAccession</definition>
 		</viewdef>
@@ -4641,7 +4641,7 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="catalogedDate" uitype="formattedtext" uifieldformatter="Date"/>
-					<cell type="label" labelfor="2" uitype="text"/>
+					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="catalogNumber" uitype="formattedtext"/>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="fieldNumber" uitype="text"/>

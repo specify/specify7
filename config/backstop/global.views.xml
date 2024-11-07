@@ -367,7 +367,7 @@
 				<altview name="AttachmentImageAttribute Form Edit" viewdef="AttachmentImageAttribute Form" label="Form" mode="edit"/>
 			</altviews>
 		</view>
-		<view name="AttachmentMetadata" class="edu.ku.brc.specify.datamodel.AttachmentMetadata" resourecelabels="false">
+		<view name="AttachmentMetadata" class="edu.ku.brc.specify.datamodel.AttachmentMetadata" resourcelabels="false">
 			<desc>The AttachmentMetadata subform.</desc>
 			<altviews>
 				<altview name="AttachmentMetadata View" viewdef="AttachmentMetadata" label="Form" mode="view" default="true"/>
@@ -1190,7 +1190,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="ReportProperties" class="java.util.prefs.Preferences" gettable="edu.ku.brc.af.prefs.PrefsGettableImpl" settable="edu.ku.brc.af.prefs.PrefsSettableImpl" useresourcelabels="true">
+		<viewdef type="form" name="ReportProperties" class="java.util.prefs.Preferences" gettable="edu.ku.brc.af.prefs.PrefsGettableImpl" settable="edu.ku.brc.af.prefs.PrefsSettableImpl" resourcelabels="true">
 			<desc>Report Properties Form.</desc>
 			<columnDef>p,2px,p</columnDef>
 			<rowDef auto="true" cell="p" sep="4dlu"/>
