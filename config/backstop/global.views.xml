@@ -2264,7 +2264,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="TaxonTreeDefItem" class="edu.ku.brc.specify.datamodel.TaxonTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="TaxonTreeDefItem" class="edu.ku.brc.specify.datamodel.TaxonTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>TaxonTreeDefItem Form</desc>
 			<columnDef>p,3dlu,p,6dlu,p</columnDef>
 			<rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p</rowDef>
@@ -2291,15 +2291,15 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="textBefore"/>
+					<cell type="field" uitype="text" id="6" name="textBefore"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
-					<cell type="field" id="7" name="textAfter"/>
+					<cell type="field" uitype="text" id="7" name="textAfter"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" uitype="text" name="fullNameSeparator"/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
 				</row>
 			</rows>
 		</viewdef>
