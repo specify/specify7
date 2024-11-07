@@ -471,7 +471,7 @@
 					<cell type="label" label="Name"/>
 					<cell type="field" id="3" name="name" uitype="text" cols="25"/>
 					<!--cell type="label" labelfor="6"/>
-                    <cell type="field" id="6" name="addresses.State" uitype="text" cols="15"/-->
+                    <cell type="field" id="6" name="addresses.State" uitype="text" cols="15"/>-->
 				</row>
 				<!--row>
                     <cell type="label" label="Country"/>

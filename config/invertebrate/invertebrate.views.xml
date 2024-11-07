@@ -131,9 +131,9 @@
             <desc><![CDATA[Subform within the CollectionObject form.]]></desc>
             <altviews>
                 <altview name="CollectionRelRight Table View" viewdef="CollectionRelRight Table" mode="view"/>
-                <!--altview name="CollectionRelRight Table Edit" viewdef="CollectionRelRight Table" mode="edit"/-->
+                <!--<altview name="CollectionRelRight Table Edit" viewdef="CollectionRelRight Table" mode="edit"/>-->
                 <altview name="CollectionRelRight View" viewdef="CollectionRelRight" mode="view"/>
-                <!--altview name="CollectionRelRight Edit" viewdef="CollectionRelRight" mode="edit" default="true"/-->
+                <!--<altview name="CollectionRelRight Edit" viewdef="CollectionRelRight" mode="edit" default="true"/>-->
             </altviews>
         </view>
         

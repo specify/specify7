@@ -2517,7 +2517,7 @@
 				<row>
 					<cell type="label" labelfor="rem"/>
 					<cell type="field" id="rem" name="remarks" uitype="textareabrief" rows="2" colspan="14"/>
-					<!--cell type="subview" id="attachments" viewname="ObjectAttachment" name="deaccessionAttachments" initialize="btn=true;icon=AccessionAttachment;align=right"/-->
+					<!--cell type="subview" id="attachments" viewname="ObjectAttachment" name="deaccessionAttachments" initialize="btn=true;icon=AccessionAttachment;align=right"/>-->
 				</row>
 				<!--row>
                     <cell type="subview" viewname="DeaccessionAgent" id="8" name="deaccessionAgents" desc="Agents" colspan="12" rows="2"/>
@@ -4295,7 +4295,7 @@
 					<cell type="field" id="1" name="preparation.barCode" uitype="formattedtext"/>
 					<!--<cell type="label" labelfor="3"/>
                     <cell type="field" id="3" name="giftDate" uitype="formattedtext" uifieldformatter="Date"  default="today"/>
-                    <cell type="label" labelfor="4"/-->
+                    <cell type="label" labelfor="4"/>-->
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="5"/>
