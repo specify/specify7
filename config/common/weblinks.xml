@@ -32,7 +32,8 @@
 		</args>
 		<usedByList>
 			<usedby>
-				<tableName>Agent</tableName>
+				<tableName>AgentIdentifier</tableName>
+				<fieldName>identifier</fieldName>
 			</usedby>
 		</usedByList>
 	</weblinkdef>
@@ -49,7 +50,8 @@
 		</args>
 		<usedByList>
 			<usedby>
-				<tableName>Agent</tableName>
+				<tableName>AgentIdentifier</tableName>
+				<fieldName>identifier</fieldName>
 			</usedby>
 		</usedByList>
 	</weblinkdef>
@@ -66,7 +68,8 @@
 		</args>
 		<usedByList>
 			<usedby>
-				<tableName>Agent</tableName>
+				<tableName>AgentIdentifier</tableName>
+				<fieldName>identifier</fieldName>
 			</usedby>
 		</usedByList>
 	</weblinkdef>
