@@ -478,6 +478,13 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">identifier</field>
+			</fields>
+		</switch>
+	</format>
 	<aggregators>
 		<aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" format="AccessionAgent"/>
 		<aggregator name="AccessionAttachment" title="AccessionAttachment" class="edu.ku.brc.specify.datamodel.AccessionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
@@ -513,5 +520,7 @@
 		<aggregator name="RepositoryAgreementAttachment" title="RepositoryAgreementAttachment" class="edu.ku.brc.specify.datamodel.RepositoryAgreementAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="PcrPerson" title="PcrPerson" class="edu.ku.brc.specify.datamodel.PcrPerson" default="true" separator="; " ending="" format="PcrPerson" orderfieldname="orderNumber"/>
 		<aggregator name="TaxonAttachment" title="TaxonAttachment" class="edu.ku.brc.specify.datamodel.TaxonAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
+		<aggregator name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true" separator="; " ending="" format=""/>
+		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
 	</aggregators>
 </formatters>
