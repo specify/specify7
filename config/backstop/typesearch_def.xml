@@ -24,6 +24,8 @@
     <typesearch tableid="97"  name="CatAutoNumberingScheme" searchfield="schemeName"      displaycols="schemeName"         format="%s"     dataobjformatter=""/>
     <typesearch tableid="46"  name="ChronosStrat"           searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
     <typesearch tableid="1"   name="CollectionObject"       searchfield="catalogNumber"   displaycols="catalogNumber"      uifieldformatter="CatalogNumber" dataobjformatter="CollectionObject"/>
+    <typesearch tableid="1016"   name="CollectionObjectGroup" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
+    <typesearch tableid="1018"   name="CollectionObjectGroupType" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
     <typesearch tableid="98" name="CollectionRelType"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>  
     <typesearch tableid="10"  name="CollectingEvent"        searchfield="stationFieldNumber" displaycols="stationFieldNumber,startDate,loc.localityName,geo.fullName" format="%s; %s; %s; %s" dataobjformatter="">
         SELECT %s1 FROM CollectingEvent ce LEFT JOIN ce.locality loc LEFT JOIN loc.geography geo JOIN ce.discipline as dsp WHERE dsp.disciplineId = DSPLNID AND %s2 ORDER BY stationFieldNumber
@@ -67,7 +69,6 @@
     <typesearch tableid="65"  name="PrepType"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="4"   name="Taxon"                  searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="Taxon"/>
     <typesearch tableid="77"  name="TaxonTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
-    <typesearch tableid="1025"  name="TectonicUnitTreeDef"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="1026"  name="TectonicUnitTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="1027"  name="TectonicUnit"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
 </typesearches>
