@@ -44,36 +44,39 @@ def search_co_ids_in_time_range(
 
     assert_valid_time_range(start_time, end_time)
 
+    def get_uncertainty_value(uncertainty_field_name):
+        return Coalesce(F(uncertainty_field_name), Value(0.0))
+
     # Define the filters
-    absolute_start_filter = Q(absoluteage__lte=start_time + Coalesce(F("ageuncertainty"), Value(0)))
-    absolute_end_filter = Q(absoluteage__gte=end_time - Coalesce(F("ageuncertainty"), Value(0)))
-    chrono_start_filter = Q(startperiod__lte=start_time + Coalesce(F("startuncertainty"), Value(0)))
-    chrono_end_filter = Q(endperiod__gte=end_time - Coalesce(F("enduncertainty"), Value(0)))
+    absolute_start_filter = Q(absoluteage__lte=start_time + get_uncertainty_value("ageuncertainty"))
+    absolute_end_filter = Q(absoluteage__gte=end_time - get_uncertainty_value("ageuncertainty"))
+    chrono_start_filter = Q(startperiod__lte=start_time + get_uncertainty_value("startuncertainty"))
+    chrono_end_filter = Q(endperiod__gte=end_time - get_uncertainty_value("enduncertainty"))
     relative_start_filter = Q(
         agename__startperiod__lte=start_time 
-        + Greatest(Coalesce(F("agename__startuncertainty"), Value(0)),
-                   Coalesce(F("ageuncertainty"), Value(0))))
+        + Greatest(get_uncertainty_value("agename__startuncertainty"),
+                   get_uncertainty_value("ageuncertainty")))
     relative_start_end_filter = Q(
         agename__endperiod__gte=end_time 
-        - Greatest(Coalesce(F("agename__enduncertainty"), Value(0)),
-                   Coalesce(F("ageuncertainty"), Value(0))))
+        - Greatest(get_uncertainty_value("agename__enduncertainty"),
+                   get_uncertainty_value("ageuncertainty")))
     relative_end_end_filter = Q(
         agenameend__endperiod__gte=end_time 
-        - Greatest(Coalesce(F("agename__enduncertainty"), Value(0)),
-                   Coalesce(F("ageuncertainty"), Value(0))))
+        - Greatest(get_uncertainty_value("agename__enduncertainty"),
+                   get_uncertainty_value("ageuncertainty")))
     paleocontext_start_filter = Q(
         chronosstrat__startperiod__lte=start_time
-        + Coalesce(F("chronosstrat__startuncertainty"), Value(0))
+        + get_uncertainty_value("chronosstrat__startuncertainty")
     ) | Q(
         chronosstratend__startperiod__lte=start_time
-        + Coalesce(F("chronosstratend__startuncertainty"), Value(0))
+        + get_uncertainty_value("chronosstratend__startuncertainty")
     )
     paleocontext_end_filter = Q(
         chronosstrat__endperiod__gte=end_time
-        - Coalesce(F("chronosstrat__enduncertainty"), Value(0))
+        - get_uncertainty_value("chronosstrat__enduncertainty")
     ) | Q(
         chronosstratend__endperiod__gte=end_time
-        - Coalesce(F("chronosstratend__enduncertainty"), Value(0))
+        - get_uncertainty_value("chronosstratend__enduncertainty")
     )
 
     # Combine the filters
