@@ -2103,7 +2103,7 @@
 		<viewdef name="StorageTreeDefItem" class="edu.ku.brc.specify.datamodel.StorageTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Storage Tree Definition Item Form</desc>
 			<enableRules/>
-			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<columnDef>p,px,p,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
@@ -2228,7 +2228,7 @@
 		<viewdef name="GeographyTreeDefItem" class="edu.ku.brc.specify.datamodel.GeographyTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>GeographyTreeDefItem Form</desc>
 			<enableRules/>
-			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<columnDef>p,px,p,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
@@ -2291,7 +2291,7 @@
 		<viewdef name="GeologicTimePeriodTreeDefItem" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>GeologicTimePeriodTreeDefItem Form</desc>
 			<enableRules/>
-			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<columnDef>p,px,p,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
@@ -2881,7 +2881,7 @@
 		<viewdef name="TectonicUnitTreeDefItem" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The TectonicUnitTreeDefItem Table</desc>
 			<enableRules/>
-			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<columnDef>p,px,p,2px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
