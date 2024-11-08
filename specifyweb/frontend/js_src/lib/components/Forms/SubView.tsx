@@ -4,6 +4,7 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -41,7 +42,7 @@ export function SubView({
   parentResource,
   parentFormType,
   formType: initialFormType,
-  isButton,
+  isButton: rawIsButton,
   viewName = relationship.relatedTable.view,
   icon = relationship.relatedTable.name,
   sortField: initialSortField,
@@ -188,6 +189,10 @@ export function SubView({
     [relationship, formType, sortField, setFormType, setSortField]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  // See https://github.com/specify/specify7/issues/3127
+  const isButton = rawIsButton || (!isReadOnly && !relationship.isDependent());
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
@@ -196,10 +201,37 @@ export function SubView({
     relationship.relatedTable.name
   );
 
+  const handleAdd = React.useCallback(
+    (resources: RA<SpecifyResource<AnySchema>>): void => {
+      const [resource] = resources;
+      const isToMany =
+        relationshipIsToMany(relationship) &&
+        relationship.type !== 'zero-to-one';
+
+      if (isToMany && !relationship.isDependent())
+        parentResource.addIndependentResources(relationship.name, resources);
+      else if (!isToMany && !relationship.isDependent()) {
+        parentResource.setIndependentResource(relationship.name, resource);
+      } else if (!isToMany)
+        parentResource.set(relationship.name, resource as never);
+    },
+    [parentResource, relationship]
+  );
+
+  const handleRemove = React.useCallback(
+    (_index: number, _source: 'deleteButton' | 'minusButton'): void => {
+      const isToMany =
+        relationshipIsToMany(relationship) &&
+        relationship.type !== 'zero-to-one';
+
+      if (!isToMany) parentResource.set(relationship.name, null as never);
+    },
+    [parentResource, relationship]
+  );
+
   const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -238,7 +270,7 @@ export function SubView({
           value={
             isReadOnly ||
             isAttachmentMisconfigured ||
-            !relationship.isDependent()
+            (!relationship.isDependent() && !isButton)
           }
         >
           <IntegratedRecordSelector
@@ -249,24 +281,9 @@ export function SubView({
             relationship={relationship}
             sortField={sortField}
             viewName={viewName}
-            onAdd={
-              relationshipIsToMany(relationship) &&
-              relationship.type !== 'zero-to-one'
-                ? undefined
-                : ([resource]): void =>
-                    void parentResource.set(
-                      relationship.name,
-                      resource as never
-                    )
-            }
+            onAdd={handleAdd}
             onClose={handleClose}
-            onDelete={
-              relationshipIsToMany(relationship) &&
-              relationship.type !== 'zero-to-one'
-                ? undefined
-                : (): void =>
-                    void parentResource.set(relationship.name, null as never)
-            }
+            onDelete={handleRemove}
           />
         </ReadOnlyContext.Provider>
       ) : undefined}

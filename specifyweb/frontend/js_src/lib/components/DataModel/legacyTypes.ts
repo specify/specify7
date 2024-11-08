@@ -168,6 +168,28 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
+  addIndependentResources<FIELD_NAME extends keyof SCHEMA['toManyIndependent']>(
+    fieldName: FIELD_NAME,
+    resources: RA<
+      SpecifyResource<SCHEMA['toManyDependent'][FIELD_NAME][number]>
+    >
+  ): RA<SpecifyResource<SCHEMA['toManyDependent'][FIELD_NAME][number]>>;
+  removeIndependentResources<
+    FIELD_NAME extends keyof SCHEMA['toManyIndependent']
+  >(
+    fieldName: FIELD_NAME,
+    resources: RA<
+      SpecifyResource<SCHEMA['toManyDependent'][FIELD_NAME][number]>
+    >
+  ): RA<SpecifyResource<SCHEMA['toManyDependent'][FIELD_NAME][number]>>;
+  setIndependentResource<FIELD_NAME extends keyof SCHEMA['toOneIndependent']>(
+    fieldName: FIELD_NAME,
+    resource: SpecifyResource<
+      Exclude<SCHEMA['toOneIndependent'][FIELD_NAME], null>
+    > | null
+  ): SpecifyResource<
+    Exclude<SCHEMA['toOneIndependent'][FIELD_NAME], null>
+  > | null;
   save(props?: {
     readonly onSaveConflict?: () => void;
     readonly errorOnAlreadySaving?: boolean;
