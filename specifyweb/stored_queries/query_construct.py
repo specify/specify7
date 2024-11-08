@@ -60,7 +60,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[(table, 'TreeRanks')] = (ancestors, treedefs)
 
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
+        item_model = get_spmodel_class(table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
         treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
@@ -140,6 +140,18 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
     def get_internal_filters(self):
         return sql.or_(*self.internal_filters)
+
+def get_spmodel_class(model_name: str):
+    try:
+        return getattr(spmodels, model_name.capitalize())
+    except AttributeError:
+        pass
+    # Iterate over all attributes in the models module
+    for attr_name in dir(spmodels):
+        # Check if the attribute name matches the model name case-insensitively
+        if attr_name.lower() == model_name.lower():
+            return getattr(spmodels, attr_name)
+    raise AttributeError(f"Model '{model_name}' not found in models module.")
 
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):
