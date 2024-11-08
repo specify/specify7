@@ -304,7 +304,9 @@ export function IntegratedRecordSelector({
                           disabled={
                             isReadOnly ||
                             collection.models.length === 0 ||
-                            resource === undefined
+                            resource === undefined ||
+                            (renderedResourceId !== undefined &&
+                              resource?.id === renderedResourceId)
                           }
                           onClick={(): void => {
                             handleRemove('minusButton');

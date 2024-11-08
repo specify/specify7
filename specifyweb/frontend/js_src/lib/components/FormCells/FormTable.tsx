@@ -446,17 +446,19 @@ export function FormTable<SCHEMA extends AnySchema>({
                     (!resource.isNew() ||
                       hasTablePermission(
                         relationship.relatedTable.name,
-                        'delete'
+                        isDependent ? 'delete' : 'update'
                       )) ? (
                       <Button.Small
                         aria-label={commonText.remove()}
                         className="h-full"
                         disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyTable.name,
-                            'delete'
-                          )
+                          (!resource.isNew() &&
+                            !hasTablePermission(
+                              resource.specifyTable.name,
+                              isDependent ? 'delete' : 'update'
+                            )) ||
+                          (renderedResourceId !== undefined &&
+                            resource.id === renderedResourceId)
                         }
                         title={commonText.remove()}
                         onClick={(): void => handleDelete(resource)}
