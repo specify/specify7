@@ -633,6 +633,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     Nested data items with ids will be updated. Those without ids will be
     created as new resources.
     """
+    
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
