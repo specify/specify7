@@ -11,7 +11,8 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
 
-from specifyweb.specify.tree_utils import TREE_MODELS
+from specifyweb.specify.tree_utils import TREE_MODELS, TREE_RANK_MODELS, TREE_ITEM_MODELS
+from specifyweb.specify.tree_extras import is_treedefitem, is_treedef
 
 logger = logging.getLogger(__name__)
 
@@ -495,6 +496,8 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     if model in TREE_MODELS:
         # handle_new_tree_creation(collection, agent, obj, data)
         handle_to_many(collection, agent, obj, data, is_new_tree=True)
+    elif model in TREE_RANK_MODELS:
+        handle_to_many(collection, agent, obj, data, is_tree=True)
     else:
         handle_to_many(collection, agent, obj, data)
     return obj
@@ -641,7 +644,14 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
     return dependents_to_delete, dirty
 
-def handle_to_many(collection, agent, obj, data: Dict[str, Any], is_new_tree: bool = False) -> None:
+def handle_to_many(
+    collection,
+    agent,
+    obj,
+    data: Dict[str, Any],
+    is_tree: bool = False,
+    is_new_tree: bool = False,
+) -> None:
     """For every key in the dict 'data' which is a *-to-many field in the
     Django model instance 'obj', if nested data is provided, use it to
     update the set of related objects.
@@ -651,6 +661,9 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any], is_new_tree: bo
     Nested data items with ids will be updated. Those without ids will be
     created as new resources.
     """
+    if is_treedef(obj) or is_treedefitem(obj):
+        is_tree = True
+    
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
@@ -671,7 +684,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any], is_new_tree: bo
         for rel_data in val:
             rel_data[field.field.name] = obj
 
-            if is_new_tree and parent_treedefitem_id is not None:
+            if (is_new_tree or is_tree) and parent_treedefitem_id is not None:
                 rel_data['parent'] = parent_treedefitem_id
 
             if 'id' in rel_data:
@@ -684,7 +697,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any], is_new_tree: bo
                 # Create a new related object.
                 rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
 
-            if is_new_tree:
+            if is_new_tree or is_tree:
                 parent_treedefitem_id = uri_for_model(rel_obj.__class__, rel_obj.id)
 
             ids.append(rel_obj.id) # Record the id as one to keep.
