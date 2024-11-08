@@ -159,6 +159,15 @@
 			<cell type="label" labelfor="remarks"/>
 			<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="12" rows="2"/>
 		</row> -->
+				<!-- When PaleoContext is "shared", use a query combo box (querycbx) -->
+				<row>
+					<cell type="label" labelfor="9"/>
+					<cell type="field" viewname="PaleoContext" id="9" name="paleoContext" uitype="querycbx" colspan="11"/>
+				</row>
+				<!-- When PaleoContext is "embedded", use a subview -->
+				<!-- 		<row>
+			<cell type="subview" viewname="PaleoContext" id="9" name="paleoContext" defaulttype="form" colspan="14"/>
+		</row> -->
 				<row>
 					<cell type="panel" id="leftSide" colspan="5" initialize="verticalAlign=start">
 						<rows>
@@ -177,9 +186,6 @@
 				</row>
 				<row>
 					<cell type="subview" viewname="CollectingEventSub" id="21" name="collectingEvent" colspan="14" rows="5"/>
-				</row>
-				<row>
-					<cell type="subview" viewname="PaleoContext" id="9" name="paleoContext" defaulttype="form" colspan="14"/>
 				</row>
 				<row>
 					<cell type="panel" id="leftSideAge" colspan="7" initialize="verticalAlign=start">
