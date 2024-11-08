@@ -436,6 +436,22 @@
 				<altview name="LithoStratTreeDef Table Edit" viewdef="LithoStratTreeDef Table" mode="edit" validated="false"/>
 			</altviews>
 		</view>
+		<view name="TectonicUnit" objtitle="TectonicUnit" class="edu.ku.brc.specify.datamodel.TectonicUnit">
+			<altviews>
+				<altview name="TectonicUnit View" viewdef="TectonicUnit" mode="view" validated="false"/>
+				<altview name="TectonicUnit Edit" viewdef="TectonicUnit" mode="edit" default="true" validated="false"/>
+				<altview name="TectonicUnit Table View" viewdef="TectonicUnit Table" mode="view" validated="false"/>
+				<altview name="TectonicUnit Table Edit" viewdef="TectonicUnit Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="TectonicUnitTreeDefItem" objtitle="TectonicUnitTreeDefItem" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem">
+			<altviews>
+				<altview name="TectonicUnitTreeDefItem View" viewdef="TectonicUnitTreeDefItem" mode="view" validated="false"/>
+				<altview name="TectonicUnitTreeDefItem Edit" viewdef="TectonicUnitTreeDefItem" mode="edit" default="true" validated="false"/>
+				<altview name="TectonicUnitTreeDefItem Table View" viewdef="TectonicUnitTreeDefItem Table" mode="view" validated="false"/>
+				<altview name="TectonicUnitTreeDefItem Table Edit" viewdef="TectonicUnitTreeDefItem Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
 	</views>
 	<!--
 ######################################################################################################
@@ -2084,42 +2100,43 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="StorageTreeDefItem" class="edu.ku.brc.specify.datamodel.StorageTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="StorageTreeDefItem" class="edu.ku.brc.specify.datamodel.StorageTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Storage Tree Definition Item Form</desc>
-			<columnDef>p,3dlu,p,6dlu,p</columnDef>
-			<rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p</rowDef>
+			<enableRules/>
+			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" name="title" uitype="text" isrequired="true"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="remarks" uitype="textareabrief" rows="2"/>
+					<cell type="field" id="2" name="title" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="remarks" uitype="textareabrief" rows="2"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="3" uitype="checkbox" name="isInFullName"/>
+					<cell type="field" id="4" uitype="checkbox" name="isInFullName"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="4" uitype="checkbox" name="isEnforced"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="textBefore"/>
+					<cell type="field" id="5" uitype="checkbox" name="isEnforced"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="textAfter"/>
+					<cell type="field" uitype="text" id="6" name="textBefore"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
-					<cell type="field" id="7" name="fullNameSeparator"/>
+					<cell type="field" uitype="text" id="7" name="textAfter"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="8"/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
 				</row>
 			</rows>
 		</viewdef>
@@ -2208,42 +2225,43 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="GeographyTreeDefItem" class="edu.ku.brc.specify.datamodel.GeographyTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="GeographyTreeDefItem" class="edu.ku.brc.specify.datamodel.GeographyTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>GeographyTreeDefItem Form</desc>
-			<columnDef>p,3dlu,p,6dlu,p</columnDef>
-			<rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p</rowDef>
+			<enableRules/>
+			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" name="title" uitype="text" isrequired="true"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="remarks" uitype="textareabrief" rows="2"/>
+					<cell type="field" id="2" name="title" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="remarks" uitype="textareabrief" rows="2"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="3" uitype="checkbox" name="isInFullName"/>
+					<cell type="field" id="4" uitype="checkbox" name="isInFullName"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="4" uitype="checkbox" name="isEnforced"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="textBefore"/>
+					<cell type="field" id="5" uitype="checkbox" name="isEnforced"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="textAfter"/>
+					<cell type="field" uitype="text" id="6" name="textBefore"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
-					<cell type="field" id="7" name="fullNameSeparator"/>
+					<cell type="field" uitype="text" id="7" name="textAfter"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="8"/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
 				</row>
 			</rows>
 		</viewdef>
@@ -2270,42 +2288,43 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="form" name="GeologicTimePeriodTreeDefItem" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDefItem" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="GeologicTimePeriodTreeDefItem" class="edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>GeologicTimePeriodTreeDefItem Form</desc>
-			<columnDef>p,3dlu,p,6dlu,p</columnDef>
-			<rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p</rowDef>
+			<enableRules/>
+			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" name="title" uitype="text" isrequired="true"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="remarks" uitype="textareabrief" rows="2"/>
+					<cell type="field" id="2" name="title" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="remarks" uitype="textareabrief" rows="2"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="3" uitype="checkbox" name="isInFullName"/>
+					<cell type="field" id="4" uitype="checkbox" name="isInFullName"/>
 				</row>
 				<row>
 					<cell type="label" label=" "/>
-					<cell type="field" id="4" uitype="checkbox" name="isEnforced"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="textBefore"/>
+					<cell type="field" id="5" uitype="checkbox" name="isEnforced"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="textAfter"/>
+					<cell type="field" uitype="text" id="6" name="textBefore"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
-					<cell type="field" id="7" name="fullNameSeparator"/>
+					<cell type="field" uitype="text" id="7" name="textAfter"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="8"/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
 				</row>
 			</rows>
 		</viewdef>
@@ -2820,6 +2839,88 @@
 		<viewdef name="LithoStratTreeDef Table" class="edu.ku.brc.specify.datamodel.LithoStratTreeDef" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The LithoStratTreeDef Table</desc>
 			<definition>LithoStratTreeDef</definition>
+		</viewdef>
+		<viewdef name="TectonicUnit" class="edu.ku.brc.specify.datamodel.TectonicUnit" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnit Table</desc>
+			<enableRules/>
+			<columnDef>100px,2px,325px,5px,133px,2px,155px,10px,95px,15px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="parent"/>
+					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="editbtn=false;newbtn=false" name="parent"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="name"/>
+					<cell type="field" id="name" uitype="text" name="name"/>
+					<cell type="label" labelfor="definitionItem"/>
+					<cell type="field" id="definitionItem" uitype="combobox" name="definitionItem" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="fullName"/>
+					<cell type="field" id="fullName" uitype="text" name="fullName" colspan="3" readonly="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="acceptedParent"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false" name="acceptedParent" colspan="5"/>
+					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" uitype="text" name="guid" colspan="7" readonly="true"/>
+				</row>
+				<row>
+					<cell type="subview" id="acceptedChildren" name="acceptedChildren" colspan="10"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="TectonicUnit Table" class="edu.ku.brc.specify.datamodel.TectonicUnit" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnit Table</desc>
+			<definition>TectonicUnit</definition>
+		</viewdef>
+		<viewdef name="TectonicUnitTreeDefItem" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnitTreeDefItem Table</desc>
+			<enableRules/>
+			<columnDef>p,px,p,2px,p,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="title" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="remarks" uitype="textareabrief" rows="2"/>
+				</row>
+				<row>
+					<cell type="label" label=" "/>
+					<cell type="field" id="4" uitype="checkbox" name="isInFullName"/>
+				</row>
+				<row>
+					<cell type="label" label=" "/>
+					<cell type="field" id="5" uitype="checkbox" name="isEnforced"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="6"/>
+					<cell type="field" uitype="text" id="6" name="textBefore"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="7"/>
+					<cell type="field" uitype="text" id="7" name="textAfter"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="8"/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="TectonicUnitTreeDefItem Table" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The TectonicUnitTreeDefItem Table</desc>
+			<definition>TectonicUnitTreeDefItem</definition>
 		</viewdef>
 	</viewdefs>
 </viewset>
