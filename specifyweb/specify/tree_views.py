@@ -1,4 +1,5 @@
 from functools import wraps
+import http
 from typing import Literal, Tuple
 from django.db import transaction
 from django.http import HttpResponse
@@ -395,6 +396,35 @@ def repair_tree(request, tree: TREE_TABLE):
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
 
+@tree_mutation
+def add_root(request, tree, treeid): 
+    "Creates a root node in a specific tree."
+
+    tree_name = tree.title()
+    tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
+    tree_def_item = getattr(models, f"{tree_name}treedefitem")
+    item = getattr(models, tree_name)
+
+    filter_kwargs = {
+        'rankid': 0,
+        'definition_id': treeid
+        # f"{tree}treedefid": treeid
+    }
+
+    if item.objects.filter(**filter_kwargs).count() > 0:
+        raise Exception("Root node already exists.") 
+
+    root = item.objects.create(
+        name="Root",
+        isaccepted=1,
+        nodenumber=1,
+        rankid=0,
+        parent=None,
+        definition=tree_target,
+        definitionitem=tree_def_item
+    )
+
+    return http.HttpResponse('', status=204)
 
 @login_maybe_required
 @require_GET
