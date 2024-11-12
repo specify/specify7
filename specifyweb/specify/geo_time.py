@@ -47,49 +47,67 @@ def search_co_ids_in_time_range(
     def get_uncertainty_value(uncertainty_field_name):
         return Coalesce(F(uncertainty_field_name), Value(0.0))
 
-    # Define the filters
-    absolute_start_filter = Q(absoluteage__lte=start_time + get_uncertainty_value("ageuncertainty"))
-    absolute_end_filter = Q(absoluteage__gte=end_time - get_uncertainty_value("ageuncertainty"))
-    chrono_start_filter = Q(startperiod__lte=start_time + get_uncertainty_value("startuncertainty"))
-    chrono_end_filter = Q(endperiod__gte=end_time - get_uncertainty_value("enduncertainty"))
+    # Define the filters for absolute ages and chronostratigraphic time periods
+    absolute_start_filter = Q(absoluteage__gte=end_time - get_uncertainty_value("ageuncertainty"))
+    absolute_end_filter = Q(absoluteage__lte=start_time + get_uncertainty_value("ageuncertainty"))
+    chrono_start_filter = Q(startperiod__gte=end_time - get_uncertainty_value("startuncertainty"))
+    chrono_end_filter = Q(endperiod__lte=start_time + get_uncertainty_value("enduncertainty"))
+    
+    # Define the filters for relative ages
     relative_start_filter = Q(
-        agename__startperiod__lte=start_time 
-        + Greatest(get_uncertainty_value("agename__startuncertainty"),
-                   get_uncertainty_value("ageuncertainty")))
-    relative_start_end_filter = Q(
-        agename__endperiod__gte=end_time 
-        - Greatest(get_uncertainty_value("agename__enduncertainty"),
-                   get_uncertainty_value("ageuncertainty")))
+        agename__startperiod__gte=end_time
+        - Greatest(
+            get_uncertainty_value("agename__startuncertainty"),
+            get_uncertainty_value("ageuncertainty"),
+        )
+    )
+    relative_end_filter = Q(
+        agename__endperiod__lte=start_time
+        + Greatest(
+            get_uncertainty_value("agename__enduncertainty"),
+            get_uncertainty_value("ageuncertainty"),
+        )
+    )
     relative_end_end_filter = Q(
-        agenameend__endperiod__gte=end_time 
-        - Greatest(get_uncertainty_value("agename__enduncertainty"),
-                   get_uncertainty_value("ageuncertainty")))
+        agenameend__endperiod__lte=start_time
+        + Greatest(
+            get_uncertainty_value("agenameend__enduncertainty"),
+            get_uncertainty_value("ageuncertainty"),
+        )
+    )
+
+    # Define the filters for paleocontexts
     paleocontext_start_filter = Q(
-        chronosstrat__startperiod__lte=start_time
-        + get_uncertainty_value("chronosstrat__startuncertainty")
+        chronosstrat__startperiod__gte=end_time
+        - get_uncertainty_value("chronosstrat__startuncertainty")
     ) | Q(
-        chronosstratend__startperiod__lte=start_time
-        + get_uncertainty_value("chronosstratend__startuncertainty")
+        chronosstratend__startperiod__gte=end_time
+        - get_uncertainty_value("chronosstratend__startuncertainty")
     )
     paleocontext_end_filter = Q(
-        chronosstrat__endperiod__gte=end_time
-        - get_uncertainty_value("chronosstrat__enduncertainty")
+        chronosstrat__endperiod__lte=start_time
+        + get_uncertainty_value("chronosstrat__enduncertainty")
     ) | Q(
-        chronosstratend__endperiod__gte=end_time
-        - get_uncertainty_value("chronosstratend__enduncertainty")
+        chronosstratend__endperiod__lte=start_time
+        + get_uncertainty_value("chronosstratend__enduncertainty")
     )
 
     # Combine the filters
-    absolute_overlap_filter = absolute_start_filter | absolute_end_filter
-    chrono_overlap_filter = chrono_start_filter | chrono_end_filter
-    relative_overlap_filter = relative_start_filter | relative_start_end_filter
-    relative_overlap_filter_with_age_end = relative_start_filter | relative_end_end_filter
-    paleocontext_overlap_filter = paleocontext_start_filter | paleocontext_end_filter
     if require_full_overlap:
         absolute_overlap_filter = absolute_start_filter & absolute_end_filter
         chrono_overlap_filter = chrono_start_filter & chrono_end_filter
-        relative_overlap_filter = relative_start_filter & relative_start_end_filter
-        relative_overlap_filter_with_age_end = relative_start_filter & relative_end_end_filter
+        relative_overlap_filter = relative_start_filter & relative_end_filter
+        relative_overlap_filter_with_age_end = (
+            relative_start_filter & relative_end_end_filter
+        )
+        paleocontext_overlap_filter = paleocontext_start_filter & paleocontext_end_filter
+    else:
+        absolute_overlap_filter = absolute_start_filter & absolute_end_filter
+        chrono_overlap_filter = chrono_start_filter & chrono_end_filter
+        relative_overlap_filter = relative_start_filter & relative_end_filter
+        relative_overlap_filter_with_age_end = (
+            relative_start_filter & relative_end_end_filter
+        )
         paleocontext_overlap_filter = paleocontext_start_filter & paleocontext_end_filter
 
     # Fetch the Collection Object IDs from absolute ages
@@ -119,8 +137,6 @@ def search_co_ids_in_time_range(
     co_ids = absolute_co_ids.union(relative_age_co_ids, paleocontext_co_ids)
     co_ids.discard(None)
     return co_ids
-
-
 def search_co_ids_in_time_margin(
     time: float, uncertainty: float, require_full_overlap: bool = False
 ) -> Set[int]:

@@ -80,6 +80,16 @@ class GeoTimeTests(ApiTests):
             endperiod=245,
             enduncertainty=20,
         )
+        null_erathem_chronostrat = Geologictimeperiod.objects.create(
+            name='Null',
+            rankid=100,
+            definitionitem=erathem_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=None,
+            startuncertainty=None,
+            endperiod=None,
+            enduncertainty=None,
+        )
         paleogene_period_chronostrat = Geologictimeperiod.objects.create(
             name='Paleogene',
             rankid=200,
@@ -243,7 +253,9 @@ class GeoTimeTests(ApiTests):
         )
 
         result_co_ids = geo_time.search_co_ids_in_time_range(200, 100)
-        self.assertFalse(co_4.id in result_co_ids)
+        self.assertTrue(co_4.id in result_co_ids)
+        result_co_ids = geo_time.search_co_ids_in_time_range(200, 10)
+        self.assertTrue(co_4.id in result_co_ids)
 
         # Test collection object paleo context
         co_paleo_context = Paleocontext.objects.create(
