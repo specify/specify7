@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-07 17:01+0000\n"
+"PO-Revision-Date: 2024-11-12 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -64,7 +64,7 @@ msgstr "Data de coleta"
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"Este mapa mostra ocorrências deste táxon dos agregadores iDigBio e GBIF."
+"Este mapa mostra ocorrências deste táxon nos agregadores iDigBio e GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
@@ -73,10 +73,10 @@ msgid "iDigBioDescription"
 msgstr ""
 "As ocorrências registradas no iDigBio são mostradas como pontos verdes "
 "redondos, exceto aquelas da coleção atual registrada no iDigBio que são "
-"pontos vermelhos redondos. Aumentar o zoom nos pontos vermelhos exibe um "
-"alfinete azul em forma de lágrima, clicar no alfinete executa uma consulta "
-"de localidade no Specify que mostra todas as espécies no banco de dados "
-"atual do Specify coletadas daquele local."
+"pontos vermelhos redondos. Aumentar o zoom nos pontos vermelhos faz aparecer "
+"um alfinete azul em forma de lágrima, clicar no alfinete executa uma "
+"consulta de localidade no Specify que mostra todas as espécies no banco de "
+"dados atual do Specify coletadas daquele local."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
