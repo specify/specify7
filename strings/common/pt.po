@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-07 17:00+0000\n"
+"PO-Revision-Date: 2024-11-12 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:129
@@ -40,7 +40,7 @@ msgstr "Não mostrar isso novamente"
 #: components/Molecules/FilePicker.tsx:106
 #, fuzzy
 msgid "multipleFilePickerMessage"
-msgstr "Escolha os arquivos ou arraste-os aqui"
+msgstr "Selecione os arquivos ou arraste-os aqui"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
