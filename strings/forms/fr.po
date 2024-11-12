@@ -55,21 +55,21 @@ msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:strin
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Les valeurs de {values:string} doivent être uniques à la base de données"
 
-#: components/Forms/DeleteButton.tsx:112
+#: components/Forms/DeleteButton.tsx:126
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Vérification de si la ressource peut être supprimée…"
 
-#: components/Forms/DeleteButton.tsx:86
-#: components/Forms/DeleteButton.tsx:94
-#: components/Forms/DeleteButton.tsx:165
+#: components/Forms/DeleteButton.tsx:100
+#: components/Forms/DeleteButton.tsx:108
+#: components/Forms/DeleteButton.tsx:179
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
 msgstr "Suppression refusée"
 
-#: components/Forms/DeleteButton.tsx:168
+#: components/Forms/DeleteButton.tsx:182
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
@@ -113,7 +113,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Date invalide"
 
-#: components/Forms/DeleteButton.tsx:137
+#: components/Forms/DeleteButton.tsx:151
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
@@ -121,7 +121,7 @@ msgstr ""
 "Êtes-vous sûr de vouloir supprimer définitivement {tableName:string} de la "
 "base de données ?"
 
-#: components/Forms/DeleteButton.tsx:44
+#: components/Forms/DeleteButton.tsx:45
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmationDescription"
@@ -186,8 +186,8 @@ msgstr ""
 "{pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:209
-#: components/FormCells/FormTable.tsx:535
+#: components/FormCells/FormTable.tsx:235
+#: components/FormCells/FormTable.tsx:560
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
@@ -460,7 +460,7 @@ msgstr "Champ de la table"
 msgid "unsupportedCellType"
 msgstr "Type de cellule non pris en charge"
 
-#: components/SearchDialog/index.tsx:253
+#: components/SearchDialog/index.tsx:293
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #, fuzzy
 msgid "additionalResultsOmitted"
@@ -815,7 +815,7 @@ msgstr "(Plage : {from:string} - {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue Numérique"
 
-#: components/FormCells/COJODialog.tsx:93
+#: components/FormCells/COJODialog.tsx:94
 #. Used in: Components > Form Cells > COJODialog
 msgid "addCOGChildren"
 msgstr ""

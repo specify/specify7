@@ -182,12 +182,12 @@ msgstr "Celdas con Error"
 msgid "dataEditor"
 msgstr "Editor de Datos"
 
-#: components/WorkBench/useDisambiguationDialog.tsx:104
+#: components/WorkBench/useDisambiguationDialog.tsx:105
 #. Used in: Components > Work Bench > Use Disambiguation Dialog
 msgid "noDisambiguationResults"
 msgstr "No se puede desambiguar"
 
-#: components/WorkBench/useDisambiguationDialog.tsx:107
+#: components/WorkBench/useDisambiguationDialog.tsx:108
 #. Used in: Components > Work Bench > Use Disambiguation Dialog
 msgid "noDisambiguationResultsDescription"
 msgstr ""
