@@ -1,6 +1,6 @@
 from typing import List, Set
-from django.db.models import Q, F, Value
-from django.db.models.functions import Coalesce, Greatest
+from django.db.models import Case, FloatField, F, Q, Value, When
+from django.db.models.functions import Coalesce, Greatest, Least, Cast
 from sqlalchemy import func, literal, or_, and_, exists
 from sqlalchemy.orm import aliased
 
@@ -45,91 +45,142 @@ def search_co_ids_in_time_range(
     assert_valid_time_range(start_time, end_time)
 
     def get_uncertainty_value(uncertainty_field_name):
-        return Coalesce(F(uncertainty_field_name), Value(0.0))
+        return Coalesce(
+            Cast(F(uncertainty_field_name), FloatField()),
+            Value(0.0),
+            output_field=FloatField()
+        )
 
-    # Define the filters for absolute ages and chronostratigraphic time periods
-    absolute_start_filter = Q(absoluteage__gte=end_time - get_uncertainty_value("ageuncertainty"))
-    absolute_end_filter = Q(absoluteage__lte=start_time + get_uncertainty_value("ageuncertainty"))
-    chrono_start_filter = Q(startperiod__gte=end_time - get_uncertainty_value("startuncertainty"))
-    chrono_end_filter = Q(endperiod__lte=start_time + get_uncertainty_value("enduncertainty"))
-    
-    # Define the filters for relative ages
-    relative_start_filter = Q(
-        agename__startperiod__gte=end_time
-        - Greatest(
-            get_uncertainty_value("agename__startuncertainty"),
-            get_uncertainty_value("ageuncertainty"),
-        )
-    )
-    relative_end_filter = Q(
-        agename__endperiod__lte=start_time
-        + Greatest(
-            get_uncertainty_value("agename__enduncertainty"),
-            get_uncertainty_value("ageuncertainty"),
-        )
-    )
-    relative_end_end_filter = Q(
-        agenameend__endperiod__lte=start_time
-        + Greatest(
-            get_uncertainty_value("agenameend__enduncertainty"),
-            get_uncertainty_value("ageuncertainty"),
-        )
+    # Adjusted absolute ages
+    absolute_ages = Absoluteage.objects.annotate(
+        co_start_time=Cast(F('absoluteage'), FloatField()) - get_uncertainty_value('ageuncertainty'),
+        co_end_time=Cast(F('absoluteage'), FloatField()) + get_uncertainty_value('ageuncertainty'),
     )
 
-    # Define the filters for paleocontexts
-    paleocontext_start_filter = Q(
-        chronosstrat__startperiod__gte=end_time
-        - get_uncertainty_value("chronosstrat__startuncertainty")
-    ) | Q(
-        chronosstratend__startperiod__gte=end_time
-        - get_uncertainty_value("chronosstratend__startuncertainty")
-    )
-    paleocontext_end_filter = Q(
-        chronosstrat__endperiod__lte=start_time
-        + get_uncertainty_value("chronosstrat__enduncertainty")
-    ) | Q(
-        chronosstratend__endperiod__lte=start_time
-        + get_uncertainty_value("chronosstratend__enduncertainty")
-    )
-
-    # Combine the filters
+    # Overlap conditions
     if require_full_overlap:
-        absolute_overlap_filter = absolute_start_filter & absolute_end_filter
-        chrono_overlap_filter = chrono_start_filter & chrono_end_filter
-        relative_overlap_filter = relative_start_filter & relative_end_filter
-        relative_overlap_filter_with_age_end = (
-            relative_start_filter & relative_end_end_filter
+        # Full overlap: co_start_time <= start_time and co_end_time >= end_time
+        absolute_overlap_filter = Q(
+            co_start_time__lte=start_time,
+            co_end_time__gte=end_time
         )
-        paleocontext_overlap_filter = paleocontext_start_filter & paleocontext_end_filter
     else:
-        absolute_overlap_filter = absolute_start_filter & absolute_end_filter
-        chrono_overlap_filter = chrono_start_filter & chrono_end_filter
-        relative_overlap_filter = relative_start_filter & relative_end_filter
-        relative_overlap_filter_with_age_end = (
-            relative_start_filter & relative_end_end_filter
+        # Partial overlap: max(co_end_time, end_time) <= min(co_start_time, start_time)
+        absolute_overlap_filter = Q(
+            co_end_time__lte=start_time,
+            co_start_time__gte=end_time
         )
-        paleocontext_overlap_filter = paleocontext_start_filter & paleocontext_end_filter
 
-    # Fetch the Collection Object IDs from absolute ages
     absolute_co_ids = set(
-        Absoluteage.objects.filter(absolute_overlap_filter)
+        absolute_ages.filter(absolute_overlap_filter)
         .values_list("collectionobject_id", flat=True)
     )
 
-    # Fetch the Collection Object IDs from relative ages
-    relative_age_co_ids = set(
-        Relativeage.objects.filter(
-            (Q(agenameend__isnull=True) & relative_overlap_filter) |
-            (Q(agenameend__isnull=False) & relative_overlap_filter_with_age_end)
-        ).values_list("collectionobject_id", flat=True)
+    # Adjusted relative ages
+    relative_ages = Relativeage.objects.annotate(
+        co_start_time=Cast(F("agename__startperiod"), FloatField())
+        - get_uncertainty_value("agename__startuncertainty")
+        - get_uncertainty_value("ageuncertainty"),
+        co_end_time=Cast(F("agename__endperiod"), FloatField())
+        + get_uncertainty_value("agename__enduncertainty")
+        + get_uncertainty_value("ageuncertainty"),
     )
+
+    # Handle agenameend
+    relative_ages = relative_ages.annotate(
+        co_start_time_end=Cast(F("agenameend__startperiod"), FloatField())
+        - get_uncertainty_value("agenameend__startuncertainty")
+        - get_uncertainty_value("ageuncertainty"),
+        co_end_time_end=Cast(F("agenameend__endperiod"), FloatField())
+        + get_uncertainty_value("agenameend__enduncertainty")
+        + get_uncertainty_value("ageuncertainty"),
+    )
+
+    relative_ages = relative_ages.annotate(
+        co_start_time=Case(
+            When(agenameend__isnull=False,
+                 then=Greatest(F('co_start_time'), F('co_start_time_end'))),
+            default=F('co_start_time'),
+            output_field=FloatField()
+        ),
+        co_end_time=Case(
+            When(agenameend__isnull=False,
+                 then=Least(F('co_end_time'), F('co_end_time_end'))),
+            default=F('co_end_time'),
+            output_field=FloatField()
+        ),
+    )
+
+    # Overlap conditions
+    if require_full_overlap:
+        # Full overlap: co_start_time <= start_time and co_end_time >= end_time
+        relative_overlap_filter = Q(
+            co_start_time__lte=start_time,
+            co_end_time__gte=end_time
+        )
+    else:
+        # Partial overlap: max(co_end_time, end_time) <= min(co_start_time, start_time)
+        relative_overlap_filter = Q(
+            co_end_time__lte=start_time,
+            co_start_time__gte=end_time
+        )
+
+    relative_age_co_ids = set(
+        relative_ages.filter(relative_overlap_filter)
+        .values_list("collectionobject_id", flat=True)
+    )
+
+    # Adjusted paleocontexts
+    paleocontexts = Paleocontext.objects.annotate(
+        co_start_time=Cast(F("chronosstrat__startperiod"), FloatField())
+        - get_uncertainty_value("chronosstrat__startuncertainty"),
+        co_end_time=Cast(F("chronosstrat__endperiod"), FloatField())
+        + get_uncertainty_value("chronosstrat__enduncertainty"),
+    )
+
+    # Handle chronosstratend
+    paleocontexts = paleocontexts.annotate(
+        co_start_time_end=Cast(F("chronosstratend__startperiod"), FloatField())
+        - get_uncertainty_value("chronosstratend__startuncertainty"),
+        co_end_time_end=Cast(F("chronosstratend__endperiod"), FloatField())
+        + get_uncertainty_value("chronosstratend__enduncertainty"),
+    )
+
+    paleocontexts = paleocontexts.annotate(
+        co_start_time=Case(
+            When(chronosstratend__isnull=False,
+                 then=Greatest(F('co_start_time'), F('co_start_time_end'))),
+            default=F('co_start_time'),
+            output_field=FloatField()
+        ),
+        co_end_time=Case(
+            When(chronosstratend__isnull=False,
+                 then=Least(F('co_end_time'), F('co_end_time_end'))),
+            default=F('co_end_time'),
+            output_field=FloatField()
+        ),
+    )
+
+    # Overlap conditions
+    if require_full_overlap:
+        paleocontext_overlap_filter = Q(
+            co_start_time__lte=start_time,
+            co_end_time__gte=end_time
+        )
+    else:
+        paleocontext_overlap_filter = Q(
+            co_end_time__lte=start_time,
+            co_start_time__gte=end_time
+        )
+
+    paleocontext_ids = paleocontexts.filter(paleocontext_overlap_filter).values_list('id', flat=True)
 
     # Fetch the Collection Object IDs from paleocontexts
     paleocontext_co_ids = set(
         Collectionobject.objects.filter(
-            Q(paleocontext__in=Paleocontext.objects.filter(paleocontext_overlap_filter)) |
-            Q(collectingevent__paleocontext__in=Paleocontext.objects.filter(paleocontext_overlap_filter)) |
-            Q(collectingevent__locality__paleocontext__in=Paleocontext.objects.filter(paleocontext_overlap_filter))
+            Q(paleocontext__in=paleocontext_ids) |
+            Q(collectingevent__paleocontext__in=paleocontext_ids) |
+            Q(collectingevent__locality__paleocontext__in=paleocontext_ids)
         ).values_list("id", flat=True)
     )
 
@@ -137,6 +188,7 @@ def search_co_ids_in_time_range(
     co_ids = absolute_co_ids.union(relative_age_co_ids, paleocontext_co_ids)
     co_ids.discard(None)
     return co_ids
+
 def search_co_ids_in_time_margin(
     time: float, uncertainty: float, require_full_overlap: bool = False
 ) -> Set[int]:
@@ -151,7 +203,6 @@ def search_co_ids_in_time_margin(
     start_time = time + uncertainty
     end_time = time - uncertainty
     return search_co_ids_in_time_range(start_time, end_time, require_full_overlap)
-
 
 def search_co_ids_in_time_period(
     time_period_name: str, require_full_overlap: bool = False
@@ -169,7 +220,6 @@ def search_co_ids_in_time_period(
     start_time = time_period.startperiod
     end_time = time_period.endperiod
     return search_co_ids_in_time_range(start_time, end_time, require_full_overlap)
-
 
 def query_co_in_time_range_with_joins(
     query,
@@ -278,7 +328,6 @@ def query_co_in_time_range_with_joins(
 
     return combined_query.distinct()
 
-
 def query_co_in_time_margin(
     query, time: float, uncertainty: float, require_full_overlap: bool = False
 ):
@@ -295,7 +344,6 @@ def query_co_in_time_margin(
     start_time = time + uncertainty
     end_time = time - uncertainty
     return query_co_in_time_range_with_joins(query, start_time, end_time, require_full_overlap)
-
 
 def query_co_in_time_period(
     query, time_period_name: str, require_full_overlap: bool = False
