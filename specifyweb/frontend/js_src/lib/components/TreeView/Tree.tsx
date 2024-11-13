@@ -120,7 +120,13 @@ export function Tree<
           method: 'POST',
           headers: { Accept: 'application/json' },
         }
-      );
+      )
+        .then(() => {
+          globalThis.location.reload();
+        })
+        .catch((error) => {
+          console.error('Error creating root node:', error);
+        });
     }
   };
 

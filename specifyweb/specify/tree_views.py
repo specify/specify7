@@ -1,5 +1,5 @@
 from functools import wraps
-import http
+from django import http
 from typing import Literal, Tuple
 from django.db import transaction
 from django.http import HttpResponse
@@ -402,13 +402,17 @@ def add_root(request, tree, treeid):
 
     tree_name = tree.title()
     tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
-    tree_def_item = getattr(models, f"{tree_name}treedefitem")
+    tree_def_item_model = getattr(models, f"{tree_name}treedefitem")
     item = getattr(models, tree_name)
+
+    tree_def_item, create = tree_def_item_model.objects.get_or_create(
+            treedef=tree_target,
+            rankid=0
+        )
 
     filter_kwargs = {
         'rankid': 0,
         'definition_id': treeid
-        # f"{tree}treedefid": treeid
     }
 
     if item.objects.filter(**filter_kwargs).count() > 0:
@@ -424,7 +428,7 @@ def add_root(request, tree, treeid):
         definitionitem=tree_def_item
     )
 
-    return http.HttpResponse('', status=204)
+    return http.HttpResponse(status=204)
 
 @login_maybe_required
 @require_GET
