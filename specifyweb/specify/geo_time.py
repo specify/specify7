@@ -53,12 +53,17 @@ def search_co_ids_in_time_range(
         )
 
     # Adjusted absolute ages
-    absolute_ages = Absoluteage.objects.annotate(
-        co_start_time_low=Cast(F('absoluteage'), FloatField()) - get_uncertainty_value('ageuncertainty'),
-        co_start_time_high=Cast(F('absoluteage'), FloatField()) + get_uncertainty_value('ageuncertainty'),
-        co_end_time_high=Cast(F('absoluteage'), FloatField()) + get_uncertainty_value('ageuncertainty'),
-        co_end_time_low=Cast(F('absoluteage'), FloatField()) - get_uncertainty_value('ageuncertainty')
-    )
+    uncertainty_value = get_uncertainty_value('ageuncertainty')
+    if require_full_overlap:
+        absolute_ages = Absoluteage.objects.annotate(
+            co_start_time_low=Cast(F('absoluteage'), FloatField()) - uncertainty_value,
+            co_end_time_high=Cast(F('absoluteage'), FloatField()) + uncertainty_value
+        )
+    else:
+        absolute_ages = Absoluteage.objects.annotate(
+            co_start_time_high=Cast(F('absoluteage'), FloatField()) + uncertainty_value,
+            co_end_time_low=Cast(F('absoluteage'), FloatField()) - uncertainty_value
+        )
 
     # Overlap conditions
     if require_full_overlap:
@@ -80,61 +85,65 @@ def search_co_ids_in_time_range(
     )
 
     # Adjusted relative ages
-    relative_ages = Relativeage.objects.annotate(
-        co_start_time_low=Cast(F("agename__startperiod"), FloatField())
-        - get_uncertainty_value("agename__startuncertainty")
-        - get_uncertainty_value("ageuncertainty"),
-        co_start_time_high=Cast(F("agename__startperiod"), FloatField())
-        + get_uncertainty_value("agename__startuncertainty")
-        + get_uncertainty_value("ageuncertainty"),
-        co_end_time_high=Cast(F("agename__endperiod"), FloatField())
-        + get_uncertainty_value("agename__enduncertainty")
-        + get_uncertainty_value("ageuncertainty"),
-        co_end_time_low=Cast(F("agename__endperiod"), FloatField())
-        - get_uncertainty_value("agename__enduncertainty")
-        - get_uncertainty_value("ageuncertainty")
-    ).annotate( # Handle agenameend
-        co_start_time_end_low=Cast(F("agenameend__startperiod"), FloatField())
-        - get_uncertainty_value("agenameend__startuncertainty")
-        - get_uncertainty_value("ageuncertainty"),
-        co_start_time_end_high=Cast(F("agenameend__startperiod"), FloatField())
-        + get_uncertainty_value("agenameend__startuncertainty")
-        + get_uncertainty_value("ageuncertainty"),
-        co_end_time_end_high=Cast(F("agenameend__endperiod"), FloatField())
-        + get_uncertainty_value("agenameend__enduncertainty")
-        + get_uncertainty_value("ageuncertainty"),
-        co_end_time_end_low=Cast(F("agenameend__endperiod"), FloatField())
-        - get_uncertainty_value("agenameend__enduncertainty")
-        - get_uncertainty_value("ageuncertainty"),
-    ).annotate(
-        co_start_time_low=Case(
-            When(agenameend__isnull=False,
-                 then=Greatest(F('co_start_time_low'), F('co_start_time_end_low'))),
-            default=F('co_start_time_low'),
-            output_field=FloatField()
-        ),
-        co_start_time_high=Case(
-            When(agenameend__isnull=False,
-                 then=Greatest(F('co_start_time_high'), F('co_start_time_end_high'))),
-            default=F('co_start_time_high'),
-            output_field=FloatField()
-        ),
-        co_end_time_high=Case(
-            When(agenameend__isnull=False,
-                 then=Least(F('co_end_time_high'), F('co_end_time_end_high'))),
-            default=F('co_end_time_high'),
-            output_field=FloatField()
-        ),
-        co_end_time_low=Case(
-            When(agenameend__isnull=False,
-                 then=Least(F('co_end_time_low'), F('co_end_time_end_low'))),
-            default=F('co_end_time_low'),
-            output_field=FloatField()
-        ),
-    )
+    if require_full_overlap:
+        relative_ages = Relativeage.objects.annotate(
+            co_start_time_low=Cast(F("agename__startperiod"), FloatField())
+            - get_uncertainty_value("agename__startuncertainty")
+            - get_uncertainty_value("ageuncertainty"),
+            co_end_time_high=Cast(F("agename__endperiod"), FloatField())
+            + get_uncertainty_value("agename__enduncertainty")
+            + get_uncertainty_value("ageuncertainty")
+        ).annotate( # Handle agenameend
+            co_start_time_end_low=Cast(F("agenameend__startperiod"), FloatField())
+            - get_uncertainty_value("agenameend__startuncertainty")
+            - get_uncertainty_value("ageuncertainty"),
+            co_end_time_end_high=Cast(F("agenameend__endperiod"), FloatField())
+            + get_uncertainty_value("agenameend__enduncertainty")
+            + get_uncertainty_value("ageuncertainty")
+        ).annotate(
+            co_start_time_low=Case(
+                When(agenameend__isnull=False,
+                    then=Greatest(F('co_start_time_low'), F('co_start_time_end_low'))),
+                default=F('co_start_time_low'),
+                output_field=FloatField()
+            ),
+            co_end_time_high=Case(
+                When(agenameend__isnull=False,
+                    then=Least(F('co_end_time_high'), F('co_end_time_end_high'))),
+                default=F('co_end_time_high'),
+                output_field=FloatField()
+            )
+        )
+    else:
+        relative_ages = Relativeage.objects.annotate(
+            co_start_time_high=Cast(F("agename__startperiod"), FloatField())
+            + get_uncertainty_value("agename__startuncertainty")
+            + get_uncertainty_value("ageuncertainty"),
+            co_end_time_low=Cast(F("agename__endperiod"), FloatField())
+            - get_uncertainty_value("agename__enduncertainty")
+            - get_uncertainty_value("ageuncertainty")
+        ).annotate( # Handle agenameend
+            co_start_time_end_high=Cast(F("agenameend__startperiod"), FloatField())
+            + get_uncertainty_value("agenameend__startuncertainty")
+            + get_uncertainty_value("ageuncertainty"),
+            co_end_time_end_low=Cast(F("agenameend__endperiod"), FloatField())
+            - get_uncertainty_value("agenameend__enduncertainty")
+            - get_uncertainty_value("ageuncertainty"),
+        ).annotate(
+            co_start_time_high=Case(
+                When(agenameend__isnull=False,
+                    then=Greatest(F('co_start_time_high'), F('co_start_time_end_high'))),
+                default=F('co_start_time_high'),
+                output_field=FloatField()
+            ),
+            co_end_time_low=Case(
+                When(agenameend__isnull=False,
+                    then=Least(F('co_end_time_low'), F('co_end_time_end_low'))),
+                default=F('co_end_time_low'),
+                output_field=FloatField()
+            ),
+        )
     
-    # relative_ages.all().values_list('collectionobject_id', 'co_start_time', 'co_end_time')
-
     # Overlap conditions
     if require_full_overlap:
         # Full overlap: co_start_time <= start_time and co_end_time >= end_time
