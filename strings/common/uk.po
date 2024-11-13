@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-12 20:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-13 20:00+0000\n"
+"Last-Translator: Vitalii <stopchan@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -98,20 +98,17 @@ msgstr "немає"
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:151
 #: components/WorkBench/Disambiguation.tsx:40
-#, fuzzy
 msgid "cancel"
 msgstr "Скасувати"
 
 #. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
-#, fuzzy
 msgid "back"
 msgstr "Назад"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
-#, fuzzy
 msgid "skip"
 msgstr "Пропустити"
 
@@ -124,7 +121,6 @@ msgstr "Пропустити"
 #: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:66
 #: components/WbActions/WbNoUploadPlan.tsx:44
-#, fuzzy
 msgid "create"
 msgstr "Створити"
 
@@ -276,7 +272,6 @@ msgstr "Створити"
 #: components/WorkBench/Results.tsx:76
 #: components/WorkBench/Status.tsx:88
 #: components/WorkBench/useDisambiguationDialog.tsx:104
-#, fuzzy
 msgid "close"
 msgstr "Закрити"
 
@@ -288,30 +283,26 @@ msgstr "Закрити"
 #: components/WbPlanView/MapperComponents.tsx:423
 #: components/WbToolkit/CoordinateConverter.tsx:228
 #: components/WorkBench/Disambiguation.tsx:48
-#, fuzzy
 msgid "apply"
 msgstr "Застосувати"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:276
 #: components/WorkBench/Disambiguation.tsx:64
-#, fuzzy
 msgid "applyAll"
-msgstr "Застосувати все"
+msgstr "Застосувати усе"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 #: components/Interactions/LoanReturn.tsx:180
 #: components/Interactions/PrepDialog.tsx:105
 #: components/Notifications/Notifications.tsx:85
-#, fuzzy
 msgid "clearAll"
-msgstr "Очистити все"
+msgstr "Очистити усе"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:62
-#, fuzzy
 msgid "deleteUnmapped"
-msgstr "Виберіть файли або перетягніть їх сюди"
+msgstr "Видалити нерозміщені стовпці"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:266
@@ -333,9 +324,8 @@ msgstr "Виберіть файли або перетягніть їх сюди"
 #: components/WbPlanView/Mapper.tsx:405
 #: components/WbToolkit/DevShowPlan.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:179
-#, fuzzy
 msgid "save"
-msgstr "зберегти"
+msgstr "Зберегти"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #: components/Atoms/DataEntry.tsx:148
@@ -361,15 +351,13 @@ msgstr "зберегти"
 #: components/WbPlanView/navigator.ts:334
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
-#, fuzzy
 msgid "add"
-msgstr "додати"
+msgstr "Додати"
 
 #. Used in: Components > Choose Collection > Index
 #: components/ChooseCollection/index.tsx:164
-#, fuzzy
 msgid "open"
-msgstr "ВІДЧИНЕНО"
+msgstr "Відкрити"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 #: components/FormSliders/RecordSelectorFromIds.tsx:184
@@ -387,7 +375,6 @@ msgstr "ВІДЧИНЕНО"
 #: components/TreeView/Actions.tsx:503
 #: components/WorkBench/DataSetMeta.tsx:147
 #: components/WorkBench/DataSetMeta.tsx:173
-#, fuzzy
 msgid "delete"
 msgstr "Видалити"
 
@@ -395,27 +382,23 @@ msgstr "Видалити"
 #: components/Attachments/Dialog.tsx:113
 #: components/Interactions/InteractionDialog.tsx:370
 #: components/WbToolkit/GeoLocate.tsx:154
-#, fuzzy
 msgid "next"
-msgstr "Далі"
+msgstr "Наступний"
 
 #. Used in: Components > Attachments > Dialog ⬤ Components > Wb Toolkit > Geo Locate
 #: components/Attachments/Dialog.tsx:99
 #: components/WbToolkit/GeoLocate.tsx:148
-#, fuzzy
 msgid "previous"
 msgstr "Попередній"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:86
-#, fuzzy
 msgid "tool"
-msgstr "Завантаження…"
+msgstr "Інструмент"
 
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 #: components/WbToolkit/index.tsx:62
 #: components/WorkBench/WbView.tsx:187
-#, fuzzy
 msgid "tools"
 msgstr "Інструменти"
 
@@ -482,7 +465,6 @@ msgstr "Інструменти"
 #: components/Toolbar/Language.tsx:258
 #: components/TreeView/Row.tsx:206
 #: components/WorkBench/Disambiguation.tsx:123
-#, fuzzy
 msgid "loading"
 msgstr "Завантаження…"
 
@@ -490,9 +472,8 @@ msgstr "Завантаження…"
 #: components/AttachmentsBulkImport/Upload.tsx:270
 #: components/AttachmentsBulkImport/utils.ts:468
 #: components/WorkBench/DataSetMeta.tsx:289
-#, fuzzy
 msgid "uploaded"
-msgstr "Завантажено"
+msgstr "Вивантажено"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 #: components/Atoms/DataEntry.tsx:163
@@ -515,9 +496,8 @@ msgstr "Завантажено"
 #: components/Statistics/StatsPageEditing.tsx:37
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:151
-#, fuzzy
 msgid "remove"
-msgstr "видалити"
+msgstr "Вилучити"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 #: components/Atoms/DataEntry.tsx:158
@@ -532,7 +512,6 @@ msgstr "видалити"
 #: components/SearchDialog/index.tsx:226
 #: components/SearchDialog/index.tsx:325
 #: components/WbUtils/index.tsx:58
-#, fuzzy
 msgid "search"
 msgstr "Пошук"
 
@@ -540,9 +519,8 @@ msgstr "Пошук"
 #: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
 #: components/SearchDialog/index.tsx:273
-#, fuzzy
 msgid "noResults"
-msgstr "Немає результатів"
+msgstr "Не знайдено результатів"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
@@ -553,9 +531,8 @@ msgstr "Немає результатів"
 #: components/Merging/Header.tsx:122
 #: components/Merging/Usages.tsx:23
 #: components/WorkBench/DataSetMeta.tsx:320
-#, fuzzy
 msgid "notApplicable"
-msgstr "N/A"
+msgstr "н/д"
 
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 #: components/AppResources/Create.tsx:227
@@ -565,9 +542,8 @@ msgstr "N/A"
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
 #: components/Toolbar/RecordSets.tsx:181
-#, fuzzy
 msgid "new"
-msgstr "новий"
+msgstr "Новий"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:150
@@ -592,14 +568,12 @@ msgstr "новий"
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:121
-#, fuzzy
 msgid "edit"
 msgstr "Редагувати"
 
 #. Used in: Components > Reports > Report ⬤ Components > Security > User Components
 #: components/Reports/Report.tsx:202
 #: components/Security/UserComponents.tsx:188
-#, fuzzy
 msgid "ignore"
 msgstr "Ігнорувати"
 
@@ -607,19 +581,16 @@ msgstr "Ігнорувати"
 #: components/FormSliders/RecordSelectorFromIds.tsx:278
 #: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
-#, fuzzy
 msgid "proceed"
-msgstr "Продовжуйте"
+msgstr "Продовжити"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:280
-#, fuzzy
 msgid "start"
-msgstr "старт"
+msgstr "Початок"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:291
-#, fuzzy
 msgid "end"
 msgstr "Кінець"
 
@@ -628,16 +599,14 @@ msgstr "Кінець"
 #: components/Interactions/InteractionDialog.tsx:369
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
-#, fuzzy
 msgid "update"
-msgstr "оновлення"
+msgstr "Оновити"
 
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
 #: components/WbPlanView/navigator.ts:634
-#, fuzzy
 msgid "fullDate"
-msgstr "Розгорнути все"
+msgstr "Повна дата"
 
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:149
@@ -665,9 +634,8 @@ msgstr "Переглянути"
 #: components/Leaflet/index.ts:189
 #: components/WorkBench/WbSpreadsheet.tsx:120
 #: components/WorkBench/WbSpreadsheet.tsx:121
-#, fuzzy
 msgid "opensInNewTab"
-msgstr "(відкривається в новій вкладці)"
+msgstr "(відкривається у новій вкладці)"
 
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #: components/Atoms/DataEntry.tsx:175
@@ -675,23 +643,20 @@ msgstr "(відкривається в новій вкладці)"
 #: components/Attachments/Viewer.tsx:209
 #: components/FormCells/FormTable.tsx:437
 #: components/FormCells/FormTable.tsx:440
-#, fuzzy
 msgid "openInNewTab"
-msgstr "Відкрити в новій вкладці"
+msgstr "Відкрити у новій вкладці"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:164
 #: components/Header/Logo.tsx:77
 #: components/Permissions/PermissionDenied.tsx:214
 #: components/RouterCommands/CacheBuster.tsx:34
-#, fuzzy
 msgid "goToHomepage"
-msgstr "Не показувати це знову"
+msgstr "Перейти до домівки"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #: components/FormCells/FormTable.tsx:310
 #: components/QueryBuilder/Edit.tsx:94
-#, fuzzy
 msgid "actions"
 msgstr "Дії"
 
@@ -702,23 +667,20 @@ msgstr "Дії"
 #: components/Preferences/UserDefinitions.tsx:1270
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:62
-#, fuzzy
 msgid "chooseCollection"
-msgstr "немає"
+msgstr "Оберіть колекцію"
 
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:30
 #: components/Preferences/Renderers.tsx:159
-#, fuzzy
 msgid "ascending"
-msgstr "Висхідний"
+msgstr "За зростанням"
 
 #. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:31
 #: components/Preferences/Renderers.tsx:174
-#, fuzzy
 msgid "descending"
-msgstr "Спускається"
+msgstr "За спаданням"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 #: components/Header/menuItemDefinitions.ts:80
@@ -726,31 +688,26 @@ msgstr "Спускається"
 #: components/Security/registry.ts:214
 #: components/Toolbar/RecordSets.tsx:189
 #: components/Toolbar/RecordSets.tsx:216
-#, fuzzy
 msgid "recordSets"
-msgstr "Набори рекордів"
+msgstr "Набори записів"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:271
-#, fuzzy
 msgid "recordCount"
-msgstr "Підрахунок записів"
+msgstr "Кількість записів"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:137
-#, fuzzy
 msgid "size"
 msgstr "Розмір"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:166
-#, fuzzy
 msgid "running"
 msgstr "Виконується…"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:168
-#, fuzzy
 msgid "noMatches"
 msgstr "Немає збігів"
 
@@ -759,7 +716,6 @@ msgstr "Немає збігів"
 #: components/QueryBuilder/FieldFilter.tsx:239
 #: components/WbUtils/index.tsx:55
 #: components/WbUtils/index.tsx:60
-#, fuzzy
 msgid "searchQuery"
 msgstr "Пошуковий запит"
 
@@ -767,7 +723,6 @@ msgstr "Пошуковий запит"
 #: components/Attachments/attachments.ts:75
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
-#, fuzzy
 msgid "unknown"
 msgstr "Невідомий"
 
@@ -778,19 +733,16 @@ msgstr "Невідомий"
 #: components/Preferences/UserDefinitions.tsx:724
 #: components/SchemaConfig/Languages.tsx:39
 #: components/SchemaConfig/Languages.tsx:93
-#, fuzzy
 msgid "language"
-msgstr "Необмежений"
+msgstr "Мова"
 
 #. Used in: Components > Schema Config > Languages
 #: components/SchemaConfig/Languages.tsx:104
-#, fuzzy
 msgid "country"
-msgstr "Переглянути"
+msgstr "Країна"
 
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:186
-#, fuzzy
 msgid "viewRecord"
 msgstr "Переглянути запис"
 
@@ -799,20 +751,17 @@ msgstr "Переглянути запис"
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
-#, fuzzy
 msgid "nullInline"
-msgstr "Порядковий"
+msgstr "(немає)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
-#, fuzzy
 msgid "filePickerMessage"
 msgstr "Виберіть файл або перетягніть його сюди"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
 #: components/Molecules/FilePicker.tsx:114
-#, fuzzy
 msgid "selectedFileName"
 msgstr "Вибраний файл"
 
@@ -821,16 +770,14 @@ msgstr "Вибраний файл"
 #: components/Attachments/index.tsx:183
 #: components/Security/registry.ts:117
 #: components/Security/registry.ts:145
-#, fuzzy
 msgid "all"
-msgstr "все"
+msgstr "Усі"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:189
 #: components/Attachments/index.tsx:192
-#, fuzzy
 msgid "unused"
-msgstr "Згорнути"
+msgstr "Невикористані"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:53
@@ -845,7 +792,6 @@ msgstr "Порядковий"
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:85
 #: components/WbToolkit/index.tsx:87
-#, fuzzy
 msgid "export"
 msgstr "Експорт"
 
@@ -860,15 +806,13 @@ msgstr "Експорт"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
-#, fuzzy
 msgid "import"
-msgstr "Масове вирішення"
+msgstr "Імпорт"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
 msgstr "Відхилити"
 
@@ -876,7 +820,6 @@ msgstr "Відхилити"
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/navigator.ts:525
-#, fuzzy
 msgid "id"
 msgstr "ID"
 
@@ -884,14 +827,12 @@ msgstr "ID"
 #: components/Attachments/index.tsx:163
 #: components/QueryBuilder/Line.tsx:495
 #: components/QueryBuilder/Line.tsx:503
-#, fuzzy
 msgid "filter"
-msgstr "фільтр"
+msgstr "Фільтр"
 
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:79
 #: components/WbActions/index.tsx:113
-#, fuzzy
 msgid "results"
 msgstr "Результати"
 
@@ -900,26 +841,22 @@ msgstr "Результати"
 #: components/LocalityUpdate/Status.tsx:461
 #: components/LocalityUpdate/Status.tsx:502
 #: components/Merging/Status.tsx:100
-#, fuzzy
 msgid "downloadErrorMessage"
 msgstr "Завантажити повідомлення про помилку"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
-#, fuzzy
 msgid "copied"
 msgstr "Скопійовано!"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:13
-#, fuzzy
 msgid "copyToClipboard"
 msgstr "Копіювати в буфер обміну"
 
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #: components/Interactions/PrepDialog.tsx:207
 #: components/WbPlanView/CustomSelectElement.tsx:296
-#, fuzzy
 msgid "selected"
 msgstr "Вибране"
 
@@ -931,46 +868,40 @@ msgstr "Вибране"
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
-#, fuzzy
 msgid "expand"
 msgstr "Розгорнути"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:186
-#, fuzzy
 msgid "expandAll"
-msgstr "Розгорнути все"
+msgstr "Розгорнути усе"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 #: components/FormCells/FormTable.tsx:321
 #: components/FormCells/FormTable.tsx:323
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Header/index.tsx:158
-#, fuzzy
 msgid "collapse"
 msgstr "Згорнути"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:301
-#, fuzzy
 msgid "collapseAll"
-msgstr "Згорнути все"
+msgstr "Згорнути усе"
 
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
-#, fuzzy
 msgid "reset"
 msgstr "Скинути"
 
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 #: components/FormEditor/Create.tsx:210
 #: components/SearchDialog/index.tsx:346
-#, fuzzy
 msgid "select"
-msgstr "Виберіть"
+msgstr "Обрати"
 
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template
 #: components/PickLists/definitions.ts:51
@@ -982,13 +913,11 @@ msgstr "Виберіть"
 #: components/Security/PreviewComponents.tsx:133
 #: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
-#, fuzzy
 msgid "none"
 msgstr "Жодного"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
-#, fuzzy
 msgid "noneAvailable"
 msgstr "Немає доступних"
 
@@ -1009,13 +938,11 @@ msgstr "Немає доступних"
 #: components/Toolbar/RecordSets.tsx:188
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
-#, fuzzy
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
-#, fuzzy
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
@@ -1028,7 +955,6 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/RoleTemplate.tsx:182
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:218
-#, fuzzy
 msgid "colonHeader"
 msgstr "{header:string}:"
 
@@ -1069,7 +995,6 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:369
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:127
-#, fuzzy
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
@@ -1082,67 +1007,56 @@ msgstr "{label:string}: {value:string}"
 #: components/WorkBench/DataSetMeta.tsx:305
 #: components/WorkBench/DataSetMeta.tsx:325
 #: components/WorkBench/DataSetMeta.tsx:335
-#, fuzzy
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:129
-#, fuzzy
 msgid "bulkSelect"
 msgstr "Масовий вибір"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:258
-#, fuzzy
 msgid "bulkReturn"
 msgstr "Масове повернення"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:272
-#, fuzzy
 msgid "bulkResolve"
 msgstr "Масове вирішення"
 
 #. Used in: Components > Work Bench > Remaining Loading Time
 #: components/WorkBench/RemainingLoadingTime.tsx:45
-#, fuzzy
 msgid "timeRemaining"
-msgstr "Залишився час"
+msgstr "Залишилося часу"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
-#, fuzzy
 msgid "unlimited"
 msgstr "Необмежений"
 
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #: components/Molecules/SyncAttachmentPicker.tsx:59
 #: components/SpecifyNetworkCollection/index.tsx:71
-#, fuzzy
 msgid "change"
-msgstr "Зміна"
+msgstr "Змінити"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:389
-#, fuzzy
 msgid "dontShowAgain"
 msgstr "Не показувати це знову"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:106
-#, fuzzy
 msgid "multipleFilePickerMessage"
 msgstr "Виберіть файли або перетягніть їх сюди"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:61
-#, fuzzy
 msgid "zoom"
 msgstr "Збільшити"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:66
-#, fuzzy
 msgid "unzoom"
-msgstr "Зменшити масштаб"
+msgstr "Зменшити"
