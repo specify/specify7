@@ -6874,7 +6874,7 @@
 				</row>
 				<row>
 					<cell type="label" label="Catalog Number Format Name" initialize="align=right"/>
-					<cell type="field" id="4" name="catalogNumFormatName" uitype="text"/>
+					<cell type="field" id="4" name="catalogNumFormatName" uitype="text" readonly="true"/>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="code" uitype="text" isrequired="false"/>
 				</row>
