@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-12 20:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-13 20:00+0000\n"
+"Last-Translator: Vitalii <stopchan@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "locality/uk/>\n"
 "Language: uk\n"
@@ -184,33 +184,28 @@ msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:140
-#, fuzzy
 msgid "localityUpdateHeaderError"
 msgstr "Знайдено помилки в заголовках стовпців"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:151
-#, fuzzy
 msgid "localityUpdateMissingHeader"
 msgstr "Наступні стовпці є обов’язковими, але відсутні в наборі даних"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:161
-#, fuzzy
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
-"Наступні стовпці в наборі даних не розпізнаються та ігноруватимуться під "
-"час імпорту"
+"Наступні стовпці в наборі даних не розпізнаються та ігноруватимуться під час "
+"імпорту"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:169
-#, fuzzy
 msgid "localityUpdateAcceptedHeaders"
 msgstr "Приймаються лише такі заголовки"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
-#, fuzzy
 msgid "localityUpdateStarting"
 msgstr "Початок оновлення місцевості"
 
@@ -278,13 +273,11 @@ msgstr "Помилки оновлення місцевості - {date:string}"
 #. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:453
 #: components/LocalityUpdate/Status.tsx:494
-#, fuzzy
 msgid "localityUpdateCrashFileName"
 msgstr "Оновлення місцевості {taskId: string} Звіт про збій - {date: string}"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:53
-#, fuzzy
 msgid "guidHeaderNotProvided"
 msgstr "Набір даних має містити заголовок «guid»."
 
