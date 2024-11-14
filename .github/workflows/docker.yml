@@ -82,6 +82,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: ${{ matrix.platform }}
+          build-args: |
+            BUILD_VERSION=${{ steps.prep.outputs.version }}
+            GIT_SHA=${{ github.sha }}
           tags: ${{ steps.prep.outputs.tags }}
           push: true
 

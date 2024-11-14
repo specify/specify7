@@ -1,6 +1,5 @@
 import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
-import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getTablePermissions } from '../Permissions';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -10,11 +9,11 @@ import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
+import { serializeResource } from './serializers';
 import type { Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
 import { strictGetTable, tables } from './tables';
-import type { CollectionObject } from './types';
-import type { Tables } from './types';
+import type { CollectionObject, Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -51,27 +50,26 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) &&
     hasTablePermission('Preparation', 'create') &&
     resource.createdBy !== 'clone'
-  )
-    collectionObject
-      .rgetCollection('preparations')
-      .then((preparations) => {
-        if (preparations.models.length === 0)
-          preparations.add(new tables.Preparation.Resource());
-      })
-      .catch(raise);
+  ) {
+    const preps = collectionObject.getDependentResource('preparations') ?? [];
+    if (preps.length === 0)
+      collectionObject.set('preparations', [
+        serializeResource(new tables.Preparation.Resource()),
+      ]);
+  }
 
   if (
     getCollectionPref('CO_CREATE_DET', schema.domainLevelIds.collection) &&
     hasTablePermission('Determination', 'create') &&
     resource.createdBy !== 'clone'
-  )
-    collectionObject
-      .rgetCollection('determinations')
-      .then((determinations) => {
-        if (determinations.models.length === 0)
-          determinations.add(new tables.Determination.Resource());
-      })
-      .catch(raise);
+  ) {
+    const determinations =
+      collectionObject.getDependentResource('determinations') ?? [];
+    if (determinations.length === 0)
+      collectionObject.set('determinations', [
+        serializeResource(new tables.Determination.Resource()),
+      ]);
+  }
 }
 
 export function getDomainResource<

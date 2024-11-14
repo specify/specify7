@@ -29,6 +29,7 @@ export function COJODialog({
     tables.CollectionObject,
     tables.CollectionObjectGroup,
   ];
+  // REFACTOR: use the useSearchDialog hook here
   const [state, setState] = React.useState<'Add' | 'Search' | undefined>(
     undefined
   );
