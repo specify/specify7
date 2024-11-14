@@ -26,6 +26,8 @@ def update_fields(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
+    # Revert COG -> children before adding to avoid duplicates
+    revert_table_field_schema_config('CollectionObjectGroup', 'children', apps)
     # Add StorageTreeDef -> institution and COG -> children
     for discipline in Discipline.objects.all():
         update_table_field_schema_config_with_defaults('StorageTreeDef', discipline.id, 'institution', apps)
