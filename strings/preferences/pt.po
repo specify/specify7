@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-12 20:01+0000\n"
+"PO-Revision-Date: 2024-11-15 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "preferences/pt/>\n"
@@ -1318,7 +1318,7 @@ msgstr "Visão detalhada"
 #: components/Preferences/UserDefinitions.tsx:1311
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr "Modo de visualização de anexo"
+msgstr "Modo de pré-visualização de anexos"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1318
