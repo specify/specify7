@@ -28,6 +28,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.specify.models import Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
 from specifyweb.specify.schema import base_schema
+from specifyweb.specify.api import uri_for_model
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -77,7 +78,8 @@ def set_users_collections_for_sp6(cursor, user, collectionids):
         cursor.execute("delete specifyuser_spprincipal "
                        "from specifyuser_spprincipal "
                        "join spprincipal using (spprincipalid) "
-                       "where specifyuserid = %s and usergroupscopeid not in %s",
+                       "where specifyuserid = %s and usergroupscopeid not in %s"
+                       "and spprincipal.Name != 'Administrator'",
                        [user.id, collectionids])
 
         # Next delete the joins from the principals to any permissions.
@@ -339,7 +341,8 @@ def domain(request):
         'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         'catalogNumFormatName': collection.catalognumformatname,
-        }
+        'defaultCollectionObjectType': uri_for_model(collection.collectionobjecttype.__class__, collection.collectionobjecttype.id) if collection.collectionobjecttype is not None else None
+    }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
 

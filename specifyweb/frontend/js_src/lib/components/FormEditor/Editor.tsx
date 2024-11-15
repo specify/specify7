@@ -295,39 +295,37 @@ function FormPreview({
     ViewDescription | undefined
   >(undefined);
   React.useEffect(() => {
-    try {
-      const parsed = parseViewDefinition(
-        {
-          altviews: {
-            [table.name]: {
-              default: 'true',
-              mode: 'edit',
-              name: '',
-              viewdef: table.name,
-            },
+    parseViewDefinition(
+      {
+        altviews: {
+          [table.name]: {
+            default: 'true',
+            mode: 'edit',
+            name: '',
+            viewdef: table.name,
           },
-          busrules: '',
-          class: table.longName,
-          name: localized(table.name),
-          view: '',
-          resourcelabels: 'true',
-          viewdefs: {
-            [table.name]: xml,
-          },
-          viewsetLevel: '',
-          viewsetName: '',
-          viewsetSource: '',
-          viewsetFile: null,
-          viewsetId: null,
         },
-        'form',
-        'edit',
-        table
-      );
-      setViewDefinition(parsed);
-    } catch {
+        busrules: '',
+        class: table.longName,
+        name: localized(table.name),
+        view: '',
+        resourcelabels: 'true',
+        viewdefs: {
+          [table.name]: xml,
+        },
+        viewsetLevel: '',
+        viewsetName: '',
+        viewsetSource: '',
+        viewsetFile: null,
+        viewsetId: null,
+      },
+      'form',
+      'edit',
+      table
+    )
+      .then((definition) => setViewDefinition(definition))
       // Ignore errors, as they would already be reported by the editor
-    }
+      .catch(() => undefined);
   }, [xml, table]);
   const resource = React.useMemo(() => new table.Resource(), [table]);
   const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');

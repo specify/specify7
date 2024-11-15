@@ -129,12 +129,13 @@ export abstract class FieldBase {
     const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
 
     this.isReadOnly =
-      globalFieldOverride === 'readOnly' || fieldDefinition.readOnly === true;
+      globalFieldOverride?.visibility === 'readOnly' ||
+      fieldDefinition.readOnly === true;
 
     this.isRequired =
-      globalFieldOverride === 'required'
+      globalFieldOverride?.visibility === 'required'
         ? true
-        : globalFieldOverride === 'optional'
+        : globalFieldOverride?.visibility === 'optional'
         ? false
         : fieldDefinition.required;
     this.type = fieldDefinition.type;
@@ -151,18 +152,21 @@ export abstract class FieldBase {
         : camelToHuman(this.name);
 
     this.isHidden =
-      globalFieldOverride === 'hidden' || (this.localization.ishidden ?? false);
+      globalFieldOverride?.visibility === 'hidden' ||
+      (this.localization.ishidden ?? false);
 
     // Apply overrides
     const fieldOverwrite = getFieldOverwrite(this.table.name, this.name);
 
-    let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
+    let isRequired =
+      fieldOverwrite?.visibility !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
 
-    const isReadOnly = this.isReadOnly || fieldOverwrite === 'readOnly';
+    const isReadOnly =
+      this.isReadOnly || fieldOverwrite?.visibility === 'readOnly';
 
     // Overwritten hidden fields are made not required
-    if (fieldOverwrite === 'hidden') {
+    if (fieldOverwrite?.visibility === 'hidden') {
       isRequired = false;
       isHidden = true;
     }
@@ -250,9 +254,22 @@ export class LiteralField extends FieldBase {
 
   public readonly isRelationship: false = false;
 
+  // Indicates white space should not be ignored in the field
+  public readonly whiteSpaceSensitive: boolean;
+
+  public readonly datamodelDefinition: FieldDefinition;
+
   public constructor(table: SpecifyTable, fieldDefinition: FieldDefinition) {
     super(table, fieldDefinition);
+    this.datamodelDefinition = fieldDefinition;
     this.type = fieldDefinition.type;
+
+    const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
+    const fieldOverwrite = getFieldOverwrite(table.name, this.name);
+
+    this.whiteSpaceSensitive =
+      (globalFieldOverride?.whiteSpaceSensitive ?? false) ||
+      (fieldOverwrite?.whiteSpaceSensitive ?? false);
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.
@@ -274,6 +291,8 @@ export class Relationship extends FieldBase {
 
   public readonly type: RelationshipType;
 
+  public readonly datamodelDefinition: RelationshipDefinition;
+
   private readonly dependent: boolean;
 
   public readonly isRelationship: true = true;
@@ -287,6 +306,7 @@ export class Relationship extends FieldBase {
       indexed: false,
       unique: false,
     });
+    this.datamodelDefinition = relationshipDefinition;
 
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;

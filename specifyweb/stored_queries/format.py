@@ -49,11 +49,24 @@ class ObjectFormatter(object):
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
 
-    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[
-        Element]:
+    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
                 'format[@%s=%s]' % (attr, quoteattr(val)))
+
+        def lookup_default(attr: str, val: str) -> Optional[Element]:
+            elements = self.formattersDom.findall('format[@%s=%s]' % (attr, quoteattr(val)))
+            for element in elements:
+                if element.get('default') == 'true':
+                    return element
+            return None
+        
+        def lookup_name(name: str) -> Optional[Element]:
+            elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
+            for element in elements:
+                if element.get('class') == specify_model.classname:
+                    return element
+            return None
 
         def getFormatterFromSchema() -> Element:
             try:
@@ -65,20 +78,52 @@ class ObjectFormatter(object):
             except Splocalecontainer.DoesNotExist:
                 return None
 
-            return formatter_name and lookup('name', formatter_name)
+            if formatter_name:
+                return lookup_name(formatter_name)
+            else:
+                return None
 
-        return (formatter_name and lookup('name', formatter_name)) \
-               or getFormatterFromSchema() \
-               or lookup('class', specify_model.classname)
+        result = None
+        if formatter_name:
+            result = lookup_name(formatter_name)
 
-    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> \
-    Optional[Element]:
+        if result is not None:
+            return result
+
+        result = lookup_default('class', specify_model.classname)
+        if result is not None:
+            return result
+
+        result = getFormatterFromSchema()
+        if result is not None:
+            return result
+
+        return lookup('class', specify_model.classname)
+
+    def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
+        if formatter_name is None:
+            return False
+        elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(formatter_name))
+        for element in elements:
+            if element.get('class') == specify_model.classname:
+                return True
+        return False
+
+    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
-            return self.formattersDom.find(
-                'aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            return self.formattersDom.find('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
 
-        return (aggregator_name and lookup('name', aggregator_name)) \
-               or lookup('class', specify_model.classname)
+        def lookup_default(attr: str, val: str) -> Optional[Element]:
+            elements = self.formattersDom.findall('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            for element in elements:
+                if element.get('default') == 'true':
+                    return element
+            return None
+
+        result = None
+        if aggregator_name:
+            result = lookup('name', aggregator_name)
+        return result if result is not None else lookup_default('class', specify_model.classname)
 
     def catalog_number_is_numeric(self):
         return self.collection.catalognumformatname == 'CatalogNumberNumeric'
@@ -201,13 +246,13 @@ class ObjectFormatter(object):
 
     def aggregate(self, query: QueryConstruct,
                   field: Union[Field, Relationship], rel_table: SQLTable,
-                  aggregator_name,
+                  aggregator_formatter_name,
                   cycle_detector=[]) -> Label:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
-                    aggregator_name)
+                    aggregator_formatter_name)
         specify_model = datamodel.get_table(field.relatedModelName, strict=True)
-        aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
+        aggregatorNode = self.getAggregatorDef(specify_model, aggregator_formatter_name)
         cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')] if (
                 cycle_detector is not None) else None
         if aggregatorNode is None:
@@ -215,8 +260,10 @@ class ObjectFormatter(object):
             return literal(_text("<Aggregator not defined.>"))
         logger.debug("using aggregator: %s",
                      ElementTree.tostring(aggregatorNode))
-        formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', ',')
+        formatter_name = aggregator_formatter_name
+        if not self.hasFormatterDef(specify_model, aggregator_formatter_name):
+            formatter_name = aggregatorNode.attrib.get('format', None)
+        separator = aggregatorNode.attrib.get('separator', '; ')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
         limit = aggregatorNode.attrib.get('count', '')
         limit = None if limit == '' or int(limit) == 0 else limit
@@ -292,6 +339,9 @@ class ObjectFormatter(object):
                 and self.catalog_number_is_numeric():
             return cast(field,
                         types.Numeric(65))  # 65 is the mysql max precision
+
+        if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
+            return cast(field, types.Text)
 
         return field
 

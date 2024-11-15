@@ -1,6 +1,29 @@
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
-import type { RA } from '../../utils/types';
+import type { RA, RestrictedTuple } from '../../utils/types';
+import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
+import type { Tables } from '../DataModel/types';
+
+export const interactionPrepTables: RestrictedTuple<
+  AnyInteractionPreparation['tableName']
+> = [
+  'DisposalPreparation',
+  'ExchangeInPrep',
+  'ExchangeOutPrep',
+  'GiftPreparation',
+  'LoanPreparation',
+];
+
+type ExtractInteraction<T extends string> =
+  T extends `${infer Prefix}Prep${string}` ? Prefix : never;
+
+export type InteractionWithPreps = Tables[ExtractInteraction<
+  AnyInteractionPreparation['tableName']
+>];
+
+export const interactionsWithPrepTables: RestrictedTuple<
+  InteractionWithPreps['tableName']
+> = ['Disposal', 'ExchangeIn', 'ExchangeOut', 'Gift', 'Loan'];
 
 export type PreparationData = {
   readonly catalogNumber: string;
@@ -17,29 +40,36 @@ export type PreparationData = {
 };
 
 export type PreparationRow = readonly [
-  string,
-  number,
-  string,
-  number,
-  number,
-  string,
-  number,
-  string | null,
-  string | null,
-  string | null,
-  string
+  catalogNumber: string,
+  collectionObjectId: number,
+  taxonFullName: string,
+  taxonId: number,
+  preparationId: number,
+  prepType: string,
+  preparationCountAmt: number,
+  amountLoaned: string | null,
+  amountedGifted: string | null,
+  amountExchanged: string | null,
+  amountAvailable: string
 ];
-export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
+
+export const getPrepsAvailableForLoanRs = async (
+  recordSetId: number,
+  isLoan: boolean
+) =>
   ajax<RA<PreparationRow>>(
     `/interactions/preparations_available_rs/${recordSetId}/`,
     {
+      method: 'POST',
       headers: { Accept: 'application/json' },
+      body: formData({ isLoan }),
     }
   ).then(({ data }) => data);
 
 export const getPrepsAvailableForLoanCoIds = async (
   idField: string,
-  collectionObjectIds: RA<string>
+  collectionObjectIds: RA<string>,
+  isLoan: boolean
 ) =>
   ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
@@ -47,6 +77,7 @@ export const getPrepsAvailableForLoanCoIds = async (
     body: formData({
       id_fld: idField,
       co_ids: collectionObjectIds,
+      isLoan,
     }),
   }).then(({ data }) => data);
 

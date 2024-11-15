@@ -9,7 +9,7 @@ from specifyweb.stored_queries.format import get_date_format
 from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
-from .treerecord import TreeRecord, ScopedTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
@@ -86,7 +86,7 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
 
 
 def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str) -> ExtendedColumnOptions:
-    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
+    schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
         container__name=tablename.lower(),
@@ -94,12 +94,11 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 
     schemaitem = schema_items and schema_items[0]
     picklistname = schemaitem and schemaitem.picklistname
-    picklist_model = getattr(models, 'Picklist')
 
     if not isinstance(picklistname, str):
         picklist = None
     else:
-        picklists = picklist_model.objects.filter(name=picklistname)
+        picklists = models.Picklist.objects.filter(name=picklistname)
         collection_picklists = picklists.filter(collection=collection)
         
         picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
@@ -121,7 +120,7 @@ def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable
     adjust_to_ones = to_one_adjustments(collection, table)
     
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
+        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
     
 
     return ScopedUploadTable(
@@ -187,8 +186,10 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
+    treedef = None
     if table.name == 'Taxon':
-        treedef = collection.discipline.taxontreedef
+        if treedef is None:
+            treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
         treedef = collection.discipline.geographytreedef
@@ -202,22 +203,43 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     elif table.name == 'Storage':
         treedef = collection.discipline.division.institution.storagetreedef
 
+    elif table.name == 'TectonicUnit':
+        treedef = collection.discipline.tectonicunittreedef
+
     else:
         raise Exception(f'unexpected tree type: {table.name}')
+
+    if treedef is None:
+        raise ValueError(f"Could not find treedef for table {table.name}")
 
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
-        if rank not in treedef_ranks:
+        is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
+        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
+    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+        (
+            TreeRank.create(
+                r, table.name, treedef.id if treedef else None
+            ).tree_rank_record()
+            if isinstance(r, str)
+            else r
+        ): {
+            f: extend_columnoptions(colopts, collection, table.name, f)
+            for f, colopts in cols.items()
+        }
+        for r, cols in tr.ranks.items()
+    }
+
     return ScopedTreeRecord(
         name=tr.name,
-        ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
+        ranks=scoped_ranks,
         treedef=treedef,
-        treedefitems=list(treedef.treedefitems.order_by('rankid')),
+        treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )

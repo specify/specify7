@@ -16,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -85,7 +86,9 @@ export function tablesFilter(
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
 
-  const isRestricted = overrides.isHidden || overrides.isSystem;
+  const isRestricted = userInformation.isadmin
+    ? overrides.isHidden
+    : overrides.isHidden || overrides.isSystem;
   if (!showHiddenTables && isRestricted) return false;
   const hasAccess = hasTablePermission(name, 'read');
   if (!showNoAccessTables && !hasAccess) return false;

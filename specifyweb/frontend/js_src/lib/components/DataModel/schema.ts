@@ -21,6 +21,7 @@ type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
+  readonly defaultCollectionObjectType: string | null;
   readonly orgHierarchy: readonly [
     'CollectionObject',
     'Collection',
@@ -29,7 +30,8 @@ type Schema = {
     'Institution'
   ];
   readonly referenceSymbol: string;
-  readonly treeSymbol: string;
+  readonly treeDefinitionSymbol: string;
+  readonly treeRankSymbol: string;
   readonly fieldPartSeparator: string;
 };
 
@@ -49,6 +51,9 @@ const schemaBase: Writable<Schema> = {
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
 
+  // Default collectionObjectType for the collection
+  defaultCollectionObjectType: undefined!,
+
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [
     'CollectionObject',
@@ -60,8 +65,10 @@ const schemaBase: Writable<Schema> = {
 
   // Prefix for -to-many indexes
   referenceSymbol: '#',
+  // Prefix for Tree Definitions
+  treeDefinitionSymbol: '%',
   // Prefix for tree ranks
-  treeSymbol: '$',
+  treeRankSymbol: '$',
   // Separator for partial fields (date parts in Query Builder)
   fieldPartSeparator: '-',
 };
@@ -87,6 +94,7 @@ export const fetchContext = load<
   schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
   schemaBase.paleoContextChildTable = data.paleoContextChildTable;
   schemaBase.catalogNumFormatName = data.catalogNumFormatName;
+  schemaBase.defaultCollectionObjectType = data.defaultCollectionObjectType;
   return schemaBase;
 });
 

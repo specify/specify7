@@ -236,6 +236,7 @@ export function MappingElement({
     );
     fieldGroups[groupName] ??= {};
     fieldGroups[groupName][fieldName] = fieldData;
+
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 

@@ -1,19 +1,18 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  TableFields,
-} from './helperTypes';
+import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
+import type { Tables } from './types';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
-  FilterTablesByEndsWith<`${TREE['tableName']}TreeDefItem`>;
+  Tables[`${TREE['tableName']}TreeDefItem`];
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -35,11 +34,21 @@ export const treeBusinessRules = async (
     const possibleRanks =
       parentDefItem === undefined
         ? undefined
-        : await fetchPossibleRanks(resource, parentDefItem.get('rankId'));
+        : await fetchPossibleRanks(
+            resource,
+            parentDefItem.get('rankId'),
+            idFromUrl(parentDefItem.get('treeDef'))!
+          );
+
+    const doExpandSynonymActionsPref = getPref(
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    );
+    const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
+      (isParentSynonym && !doExpandSynonymActionsPref) ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
@@ -60,6 +69,7 @@ export const treeBusinessRules = async (
       };
 
     if (
+      hasBadTreeStrcuture ||
       (resource.get('name')?.length ?? 0) === 0 ||
       definitionItem === undefined
     )

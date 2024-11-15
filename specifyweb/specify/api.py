@@ -6,7 +6,7 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    Callable
+    Callable, TypedDict, cast
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
@@ -15,18 +15,21 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
+from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
+from specifyweb.specify.models_by_table_id import get_model_by_table_id
 
 from . import models
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
+from .datamodel import datamodel
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
@@ -34,11 +37,51 @@ ReadPermChecker = Callable[[Any], None]
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-def get_model(name: str):
+def strict_get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
-    return getattr(models, name.capitalize())
+    model_name = name.capitalize()
+    name = name.lower()
+    try:
+        return getattr(models, model_name)
+    except AttributeError as e:
+        for app in apps.get_app_configs():
+            for model in app.get_models():
+                if model._meta.model_name == name:
+                    return model
+        raise e
+    
+def get_model(name: str): 
+    try: 
+        return strict_get_model(name)
+    except AttributeError: 
+        return None
+
+def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
+    """Return the correct field name for a model given a case insensitive
+    field name. If the field is not found, raise FieldDoesNotExist.
+    """
+    if not ignore_properties:
+        try:
+            getattr(model, field_name) # Able to retrieve model @property
+            return field_name
+        except AttributeError as e:
+            pass
+    
+    try:
+        model._meta.get_field(field_name) # Retrieve field from model by proper name
+        return field_name
+    except FieldDoesNotExist:
+        pass
+
+    # Retrieve field from model by case insensitive name
+    field_name = field_name.lower()
+    for field in model._meta.get_fields():
+        if field.name.lower() == field_name:
+            return field.name
+    
+    raise FieldDoesNotExist(f"field '{field_name}' not found in {model}")
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
@@ -205,7 +248,7 @@ def collection_dispatch(request, model) -> HttpResponse:
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.load(request),
+                            model, json.loads(request.body),
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -216,10 +259,56 @@ def collection_dispatch(request, model) -> HttpResponse:
 
     return resp
 
+def collection_dispatch_bulk(request, model) -> HttpResponse:
+    """
+    Do the same as collection_dispatch, but for bulk POST operations.
+    Call this endpoint with a list of objects of the same type to create.
+    This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
+    """
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+        
+    data = json.loads(request.body)
+    resp_objs = []
+    for obj_data in data:
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            obj_data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+
+def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    data = json.loads(request.body)
+    data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
+    resp_objs = []
+    for _ in range(int(copies)):
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
     try:
-        return get_model(name)
+        return strict_get_model(name)
     except AttributeError as e:
         raise Http404(e)
 
@@ -258,7 +347,7 @@ def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
     """
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
-    Recordsetitem = get_model('Recordsetitem')
+    Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
 
@@ -305,7 +394,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
 
     if recordsetid is not None:
         # add the resource to the record set
-        Recordset = get_model('Recordset')
+        Recordset = models.Recordset
         try:
             recordset = Recordset.objects.get(id=recordsetid)
         except Recordset.DoesNotExist as e:
@@ -315,7 +404,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
-                (models.models_by_tableid[recordset.dbtableid], obj.__class__))
+                (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
         recordset.recordsetitems.create(recordid=obj.id)
     return obj
@@ -332,6 +421,10 @@ def set_field_if_exists(obj, field: str, value) -> None:
     if f.concrete:
         setattr(obj, field, value)
 
+def _maybe_delete(data: Dict[str, Any], to_delete: str):
+    if to_delete in data:
+        del data[to_delete]
+
 def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
@@ -341,11 +434,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             # These fields are meta data, not part of the resource.
             continue
         try:
-            model._meta.get_field(field_name)
+            db_field_name = correct_field_name(model, field_name)
         except FieldDoesNotExist:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
-            cleaned[field_name] = data[field_name]
+            cleaned[db_field_name] = data[field_name]
 
         # Unset date precision if date is not set, but precision is
         # Set date precision if date is set, but precision is not
@@ -362,29 +455,20 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
                 elif not has_date and has_precision:
                     cleaned[precision_field_name] = None
         
-    if model is get_model('Agent'):
+    if model is models.Agent:
         # setting user agents is part of the user management system.
-        try:
-            del cleaned['specifyuser']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'specifyuser')
 
     # guid should only be updatable for taxon and geography
-    if model not in (get_model('Taxon'), get_model('Geography')):
-        try:
-            del cleaned['guid']
-        except KeyError:
-            pass
+    if model not in (models.Taxon, models.Geography):
+        _maybe_delete(cleaned, 'guid')
 
     # timestampcreated should never be updated.
-    try:
-        del cleaned['timestampcreated']
-    except KeyError:
-        pass
+    #  _maybe_delete(cleaned, 'timestampcreated')
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is get_model('Specifyuser') and 'password' in cleaned:
-        del cleaned['password']
+    if model is models.Specifyuser: 
+        _maybe_delete(cleaned, 'password')
 
     return cleaned
 
@@ -437,24 +521,27 @@ def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      return dirty_flds
 
 def is_dependent_field(obj, field_name: str) -> bool:
+    if obj.specify_model.get_field(field_name) is None:
+        return False
+
     return (
         obj.specify_model.get_field(field_name).dependent
 
-        or (obj.__class__ is get_model('Collectionobject') and
+        or (obj.__class__ is models.Collectionobject and
             field_name == 'collectingevent' and
             obj.collection.isembeddedcollectingevent)
 
         or (field_name == 'paleocontext' and (
 
-            (obj.__class__ is get_model('Collectionobject') and
+            (obj.__class__ is models.Collectionobject and
              obj.collection.discipline.paleocontextchildtable == "collectionobject" and
              obj.collection.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Collectingevent') and
+            or (obj.__class__ is models.Collectingevent and
                 obj.discipline.paleocontextchildtable == "collectingevent" and
                 obj.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Locality') and
+            or (obj.__class__ is models.Locality and
                 obj.discipline.paleocontextchildtable == "locality" and
                 obj.discipline.ispaleocontextembedded))))
 
@@ -470,9 +557,9 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
     first so that is_dependent_field will work.
     """
     put_first = {
-        get_model('Collectionobject'): 'collection',
-        get_model('Collectingevent'): 'discipline',
-        get_model('Locality'): 'discipline',
+        models.Collectionobject: 'collection',
+        models.Collectingevent: 'discipline',
+        models.Locality: 'discipline',
     }.get(cls, None)
 
     if put_first in data:
@@ -494,7 +581,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
     dirty: List[FieldChangeInfo] = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
-        if not field.many_to_one: continue
+        if not field.many_to_one and not field.one_to_one: continue
 
         old_related = get_related_or_none(obj, field_name)
         dependent = is_dependent_field(obj, field_name)
@@ -514,28 +601,15 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         elif isinstance(val, str):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
-            fk_model, fk_id = parse_uri(val)
-            assert fk_model == field.related_model.__name__.lower()
-            assert fk_id is not None
+            fk_model, fk_id = strict_uri_to_model(val, field.related_model.__name__)
             setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
             new_related_id = fk_id
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
-            assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
             rel_model = field.related_model
-            if 'id' in val:
-                # The related object is an existing resource with an id.
-                # This should never happen.
-                rel_obj = update_obj(collection, agent,
-                                     rel_model, val['id'],
-                                     val['version'], val,
-                                     parent_obj=obj)
-            else:
-                # The related object is to be created.
-                rel_obj = create_obj(collection, agent,
-                                     rel_model, val,
-                                     parent_obj=obj)
+
+            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None)
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
@@ -543,7 +617,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
             new_related_id = rel_obj.id
             data[field_name] = _obj_to_data(rel_obj, read_checker)
         else:
-            raise Exception('bad foreign key field in data')
+            raise Exception(f'bad foreign key field in data: {field_name}')
         if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
 
@@ -559,42 +633,111 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     Nested data items with ids will be updated. Those without ids will be
     created as new resources.
     """
+    
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
+        dependent = is_dependent_field(obj, field_name)
 
-        if isinstance(val, list):
-            assert isinstance(obj, getattr(models, 'Recordset')) or obj.specify_model.get_field(field_name).dependent, \
-                   "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
-        else:
-            # The field contains something other than nested data.
-            # Probably the URI of the collection of objects.
-            assert not obj.specify_model.get_field(field_name).dependent, \
-                "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
+        if isinstance(val, list): 
+            assert dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'), \
+                "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
+        elif hasattr(val, "items"): 
+            assert not dependent, "got inline dictionary data for dependent field %s in %s: %r" % (field_name, obj, val)
+        else: 
+            # The field contains something other than nested data. 
+            # Probably the URI of the collection
             continue
 
-        rel_model = field.related_model
-        ids = [] # Ids not in this list will be deleted at the end.
-        for rel_data in val:
-            rel_data[field.field.name] = obj
-            if 'id' in rel_data:
-                # Update an existing related object.
-                rel_obj = update_obj(collection, agent,
-                                     rel_model, rel_data['id'],
-                                     rel_data['version'], rel_data,
-                                     parent_obj=obj)
-            else:
-                # Create a new related object.
-                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
-            ids.append(rel_obj.id) # Record the id as one to keep.
+        if dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'): 
+            _handle_dependent_to_many(collection, agent, obj, field, val)
+        else: 
+            _handle_independent_to_many(collection, agent, obj, field, val)
 
-        # Delete related objects not in the ids list.
-        # TODO: Check versions for optimistic locking.
-        to_delete = getattr(obj, field_name).exclude(id__in=ids)
-        for rel_obj in to_delete:
-            check_table_permissions(collection, agent, rel_obj, "delete")
-            auditlog.remove(rel_obj, agent, obj)
-        to_delete.delete()
+def _handle_dependent_to_many(collection, agent, obj, field, value):
+    if not isinstance(value, list): 
+        assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
+        
+    rel_model = field.related_model
+    ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+
+    for rel_data in value:
+        rel_data[field.field.name] = obj
+
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
+
+        ids.append(rel_obj.id) # Record the id as one to keep.
+
+    # Delete related objects not in the ids list.
+    # TODO: Check versions for optimistic locking.
+    to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
+    for rel_obj in to_remove:
+        check_table_permissions(collection, agent, rel_obj, "delete")
+        auditlog.remove(rel_obj, agent, obj)
+    
+    to_remove.delete()
+
+class IndependentInline(TypedDict): 
+    update: List[Union[str, Dict[str, Any]]]
+    remove: List[str]
+
+def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline): 
+    logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
+    
+    rel_model = field.related_model
+
+    to_update = value.get('update', [])
+    to_remove = value.get('remove', [])
+
+    ids_to_fetch: List[int] = []
+    cached_objs: Dict[int, Dict[str, Any]] = dict()
+    fk_model = None
+
+    to_fetch: Tuple[str, ...] = tuple(string_or_data for string_or_data in tuple((*to_update, *to_remove)) if isinstance(string_or_data, str))
+
+    # Fetch the related records which are provided as strings
+    for resource_uri in to_fetch: 
+        fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
+        ids_to_fetch.append(fk_id)
+
+    if fk_model is not None: 
+        cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
+
+    for raw_rel_data in to_update: 
+        if isinstance(raw_rel_data, str): 
+            fk_model, fk_id = strict_uri_to_model(raw_rel_data, rel_model.__name__)
+            rel_data = cached_objs.get(fk_id)
+            if rel_data is None: 
+                raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
+            if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
+                continue
+        else: 
+            rel_data = raw_rel_data
+
+        rel_data[field.field.name] = obj
+        update_or_create_resource(collection, agent, rel_model, rel_data, None)
+    
+    if len(to_remove) > 0:
+        assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
+        related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field.name))
+        assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
+        for resource_uri in to_remove: 
+            fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
+            rel_data = cached_objs.get(fk_id)
+            if rel_data is None: 
+                raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
+            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
+            rel_data[field.field.name] = None
+            update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
+
+def update_or_create_resource(collection, agent, model, data, parent_obj): 
+    if 'id' in data: 
+        return update_obj(collection, agent, 
+                          model, data['id'], 
+                          data['version'], data, 
+                          parent_obj=parent_obj)
+    else: 
+        return create_obj(collection, agent, model, data, parent_obj=parent_obj)
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:
@@ -602,9 +745,9 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(collection, agent, obj, version)
+    return delete_obj(obj, version, collection=collection, agent=agent)
 
-def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
+def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -614,14 +757,19 @@ def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
-    check_table_permissions(collection, agent, obj, "delete")
-    auditlog.remove(obj, agent, parent_obj)
+    if collection and agent:
+        check_table_permissions(collection, agent, obj, "delete")
+        auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+    if clean_predelete:
+        clean_predelete(obj)
+    if hasattr(obj, 'pre_constraints_delete'):
+        obj.pre_constraints_delete()
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(collection, agent, dep, parent_obj=obj)
+      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent, clean_predelete=clean_predelete)
 
 
 @transaction.atomic
@@ -652,7 +800,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
-        delete_obj(collection, agent, dep, parent_obj=obj)
+        delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -696,6 +844,12 @@ def parse_uri(uri: str) -> Tuple[str, str]:
     groups = match.groups()
     return groups[0], groups[2]
 
+def strict_uri_to_model(uri: str, model: str) -> Tuple[str, int]:
+    uri_model, uri_id = parse_uri(uri)
+    assert model.lower() == uri_model.lower(), f"{model} does not match model in uri: {uri_model}"
+    assert uri_id is not None
+    return uri_model, int(uri_id)
+
 def obj_to_data(obj) -> Dict[str, Any]:
     "Wrapper for backwards compat w/ other modules that use this function."
     # TODO: Such functions should be audited for whether they should apply
@@ -710,7 +864,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
 
     # Get regular and *-to-one fields.
     fields = obj._meta.get_fields()
-    if isinstance(obj, get_model('Specifyuser')):
+    if isinstance(obj, models.Specifyuser):
         # block out password field from users table
         fields = [f for f in fields if f.name != 'password']
 
@@ -790,7 +944,7 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             # filter out control parameters
             continue
 
-        if param.endswith('__in'):
+        if param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
 

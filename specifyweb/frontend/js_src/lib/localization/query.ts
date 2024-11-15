@@ -37,7 +37,7 @@ export const queryText = createDictionary({
     'en-us': 'New Query',
     'es-es': 'Nueva consulta',
     'uk-ua': 'Новий запит',
-    'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
+    'de-ch': 'Neue Abfrage',
     'fr-fr': 'Nouvelle requête',
     'ru-ru': 'Новый запрос',
   },
@@ -201,9 +201,9 @@ export const queryText = createDictionary({
   },
   queryExportStarted: {
     'en-us': 'Export File Being Created',
-    'ru-ru': 'Между',
+    'ru-ru': 'Создаваемый файл экспорта',
     'es-es': 'Archivo de exportación en proceso de creación',
-    'fr-fr': 'Entre',
+    'fr-fr': 'Exporter le fichier en cours de création',
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
   },
@@ -220,7 +220,10 @@ export const queryText = createDictionary({
       Коли файл експорту буде завершено та готовий до завантаження, з’явиться
       сповіщення.
     `,
-    'de-ch': 'in der Zukunft',
+    'de-ch': `
+      Wenn die Exportdatei vollständig ist und zum Download bereit steht, wird
+      eine Benachrichtigung angezeigt.
+    `,
     'fr-fr': `
       Une notification apparaîtra lorsque le fichier d'exportation sera terminé
       et prêt à être téléchargé.
@@ -277,9 +280,9 @@ export const queryText = createDictionary({
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
-    'ru-ru': 'Добавить новое поле',
+    'ru-ru': 'Настройка видимых таблиц запросов',
     'es-es': 'Agregar nuevo campo',
-    'fr-fr': 'Ajouter un nouveau champ',
+    'fr-fr': 'Configurer les tables de requêtes visibles',
     'uk-ua': 'Додати нове поле',
     'de-ch': 'Neues Feld hinzufügen',
   },
@@ -306,7 +309,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear CSV',
     'fr-fr': 'Créer un CSV',
     'uk-ua': 'Створити CSV',
-    'de-ch': 'In den Ergebnissen anzeigen',
+    'de-ch': 'CSV erstellen',
   },
   createKml: {
     'en-us': 'Create KML',
@@ -318,9 +321,9 @@ export const queryText = createDictionary({
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
-    'ru-ru': 'Добавить новое поле',
+    'ru-ru': 'Создать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
-    'fr-fr': 'Ajouter un nouveau champ',
+    'fr-fr': 'Créer {recordSetTable:string}',
     'uk-ua': 'Створити {modelName:string}',
     'de-ch': 'Erstellen {recordSetTable:string}',
   },
@@ -340,12 +343,15 @@ export const queryText = createDictionary({
     'uk-ua': '(будь-який ранг)',
     'de-ch': '(jeder Rang)',
   },
+  anyTree: {
+    'en-us': '(any tree)',
+  },
   moveUp: {
     comment: 'As in move it up',
     'en-us': 'Move Up',
-    'ru-ru': 'Двигаться вверх',
+    'ru-ru': 'Выберите форматтер',
     'es-es': 'Mover hacia arriba',
-    'fr-fr': 'Déplacer vers le haut',
+    'fr-fr': 'Choisir le formateur',
     'uk-ua': 'Рухатися вгору',
     'de-ch': 'Nach oben',
   },
@@ -395,7 +401,7 @@ export const queryText = createDictionary({
     'en-us': 'Show in results',
     'es-es': 'Mostrar en resultados',
     'uk-ua': 'Показати в результатах',
-    'de-ch': 'In den Ergebnissen anzeigen',
+    'de-ch': '(formatiert)',
     'fr-fr': 'Afficher dans les résultats',
     'ru-ru': 'Показать в результатах',
   },
@@ -458,9 +464,9 @@ export const queryText = createDictionary({
   },
   equal: {
     'en-us': 'Equal',
-    'ru-ru': 'Равный',
+    'ru-ru': 'Результаты запроса',
     'es-es': 'Igual',
-    'fr-fr': 'Égal',
+    'fr-fr': 'Résultats de la requête',
     'uk-ua': 'Рівні',
     'de-ch': 'Gleich',
   },
@@ -522,17 +528,17 @@ export const queryText = createDictionary({
   },
   falseOrNull: {
     'en-us': 'False or Empty',
-    'ru-ru': 'Двигаться вверх',
+    'ru-ru': 'Ложь или пусто',
     'es-es': 'Falso o vacío',
-    'fr-fr': 'Déplacer vers le haut',
+    'fr-fr': 'Faux ou vide',
     'uk-ua': 'False або Empty',
-    'de-ch': 'Falsch oder leer',
+    'de-ch': 'Nach oben',
   },
   between: {
     'en-us': 'Between',
-    'ru-ru': 'Между',
+    'ru-ru': 'Десинонимизация дерева',
     'es-es': 'Entre',
-    'fr-fr': 'Entre',
+    'fr-fr': 'Désynonymisation des arbres',
     'uk-ua': 'Між',
     'de-ch': 'Zwischen',
   },
@@ -550,7 +556,7 @@ export const queryText = createDictionary({
     'es-es': 'Una lista de valores separados por comas',
     'fr-fr': 'Une liste de valeurs séparées par des virgules',
     'uk-ua': 'Список значень, розділених комами',
-    'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
+    'de-ch': 'Datensätze anzeigen',
   },
   contains: {
     'en-us': 'Contains',
@@ -701,6 +707,15 @@ export const queryText = createDictionary({
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum Desynonymisieren',
   },
+  treeBulkMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Bulk Move',
+    'de-ch': 'Massenverschiebung von Bäumen',
+    'es-es': 'Movimiento masivo de árboles',
+    'fr-fr': "Déplacement groupé d'arbres",
+    'ru-ru': 'Массовое перемещение дерева',
+    'uk-ua': 'Масове переміщення дерева',
+  },
   tooLongErrorMessage: {
     'en-us': `
       Field value is too long. Max allowed length is
@@ -729,7 +744,7 @@ export const queryText = createDictionary({
   },
   future: {
     'en-us': 'in the future',
-    'de-ch': 'in der Zukunft',
+    'de-ch': 'Exportdatei wird erstellt',
     'es-es': 'en el futuro',
     'fr-fr': "à l'avenir",
     'ru-ru': 'в будущем',
@@ -873,7 +888,7 @@ export const queryText = createDictionary({
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
-    'de-ch': 'Falsch oder leer',
+    'de-ch': 'Zum Editor scrollen',
     'es-es': 'Desplazarse al editor',
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Faites défiler jusqu'à l'éditeur",
@@ -883,8 +898,8 @@ export const queryText = createDictionary({
     'en-us': 'View records',
     'de-ch': 'Datensätze anzeigen',
     'es-es': 'Elige el formateador',
-    'fr-fr': 'Égal',
-    'ru-ru': 'Равный',
+    'fr-fr': 'Afficher les enregistrements',
+    'ru-ru': 'Просмотр записей',
     'uk-ua': 'Переглянути записи',
   },
   chooseFormatter: {

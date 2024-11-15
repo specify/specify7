@@ -91,13 +91,13 @@ export function PickAppResource({
       buttons={
         skippable ? (
           <>
-            <Button.DialogClose>{commonText.back()}</Button.DialogClose>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Button.Info onClick={(): void => handleSelected(undefined)}>
               {commonText.skip()}
             </Button.Info>
           </>
         ) : (
-          commonText.back()
+          commonText.close()
         )
       }
       header={header}
@@ -109,9 +109,9 @@ export function PickAppResource({
           filters={filters}
           isEmbedded
           resources={resources}
-          onOpen={(selected): void =>
-            f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
-          }
+          onOpen={(selected): void => {
+            f.maybe(toResource(selected, 'SpAppResource'), handleSelected);
+          }}
         />
       </ReadOnlyContext.Provider>
     </Dialog>

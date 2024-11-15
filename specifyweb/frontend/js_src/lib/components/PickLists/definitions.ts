@@ -44,6 +44,7 @@ const auditLogActions = [
   queryText.treeMove(),
   queryText.treeSynonymize(),
   queryText.treeDesynonymize(),
+  queryText.treeBulkMove(),
 ] as const;
 
 const pickListSortTypes = f.store(() => [
@@ -57,6 +58,12 @@ export const userTypes = [
   'FullAccess',
   'LimitedAccess',
   'Guest',
+] as const;
+
+export const collectionObjectGroupTypeTypes = [
+  'Discrete',
+  'Consolidated',
+  'Drill Core',
 ] as const;
 
 export const PickListTypes = {
@@ -194,6 +201,7 @@ export const getFrontEndPickLists = f.store<{
     },
     GeographyTreeDef: { fullNameDirection },
     GeologicTimePeriodTreeDef: { fullNameDirection },
+    TectonicUnitTreeDef: { fullNameDirection },
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
@@ -202,6 +210,24 @@ export const getFrontEndPickLists = f.store<{
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
+    },
+    CollectionObjectType: {
+      name: definePicklist('_CollectionObjectType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjecttype')
+        .set('fieldName', 'name'),
+    },
+    CollectionObjectGroupType: {
+      name: definePicklist('_CollectionObjectGroupType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjectgrouptype')
+        .set('fieldName', 'name'),
+      type: definePicklist(
+        '_CollectionObjectGroupTypeType',
+        collectionObjectGroupTypeTypes.map((title) =>
+          createPickListItem(title, title)
+        )
+      ),
     },
     CollectionRelType: {
       name: definePicklist('_CollectionRelType', [])

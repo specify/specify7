@@ -24,6 +24,7 @@ import {
   getBooleanAttribute,
   getParsedAttribute,
 } from '../Syncer/xmlUtils';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 
@@ -79,6 +80,7 @@ export type FieldTypes = {
       readonly step: number | 'any' | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
+      readonly whiteSpaceSensitive: boolean | undefined;
     }
   >;
   readonly Plugin: State<
@@ -202,6 +204,10 @@ const processFieldType: {
     if (defaults.defaultValue === undefined && field === undefined)
       return { type: 'Blank' };
 
+    const whiteSpaceSensitive =
+      getProperty('whiteSpaceSensitive')?.toLowerCase() === 'true' ||
+      (field?.isRelationship ? undefined : field?.whiteSpaceSensitive);
+
     return {
       type: 'Text',
       ...defaults,
@@ -210,11 +216,21 @@ const processFieldType: {
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
       maxLength: f.parseInt(getProperty('maxLength')),
+      whiteSpaceSensitive,
     };
   },
   QueryComboBox({ getProperty, fields }) {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
+      return { type: 'Blank' };
+    } else if (
+      fields.some(
+        (field) => field.isRelationship && relationshipIsToMany(field)
+      )
+    ) {
+      console.error(
+        'Unable to render a to-many relationship as a querycbx. Use a Subview instead'
+      );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
       return {
@@ -223,7 +239,11 @@ const processFieldType: {
         hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
         hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
         hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
-        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
+        hasViewButton:
+          getProperty('viewBtn') === undefined &&
+          getProperty('editBtn')?.toLowerCase() === 'false'
+            ? true
+            : getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };

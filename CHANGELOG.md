@@ -9,6 +9,163 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.7](https://github.com/specify/specify7/compare/v7.9.6.2...v7.9.7) (1 October 2024)
+
+### Added
+* Added an all-new **Bulk Carry Forward** feature to enable series data entry in Specify 7 ([#4804](https://github.com/specify/specify7/pull/4804), [#5120](https://github.com/specify/specify7/pull/5120) – _Requested by University of Minnesota Entomology, Bulgarian Academy of Sciences, KU Entomology, and many others_)
+* Added support for Geography Code at any rank when building a query ([#5094](https://github.com/specify/specify7/pull/5094) – _Requested by Museu de Ciències Naturals de Barcelona, KU Ichthyology, and many others_)
+* Added a preference (enabled by default) to insert a [UTF-8 BOM](https://en.wikipedia.org/wiki/Byte_order_mark#:~:text=%5B3%5D-,UTF%2D8,-%5Bedit%5D) to CSV exports ([#5204](https://github.com/specify/specify7/pull/5204))
+* When enabled, you should be able to open exported CSV files in Excel without using the import utility.
+
+### Changed
+* Removed the limit on the number of results returned when searching a tree in the tree viewer ([#5125](https://github.com/specify/specify7/pull/5125))
+* Descriptions for User Preferences have been improved ([#5064](https://github.com/specify/specify7/pull/5064))
+* Specify in Docker is now built for both `x64_86` and `arm64` architectures, enabling native deployment on ARM-based servers ([#5235](https://github.com/specify/specify7/pull/5235))
+* Collection, Discipline, Division, and the Audit Log are now visible in the list of query tables by default ([#5133](https://github.com/specify/specify7/pull/5133))
+
+### Fixed
+* Fixed an issue that caused table aggregation separators to be cleared when set to the default separator (`; `) ([#5240](https://github.com/specify/specify7/pull/5240))
+* Fixed an issue that allowed users to carry forward preparations in an interaction when cloning or using carry forward ([#4905](https://github.com/specify/specify7/pull/4905))
+* Fixed an issue that would cause a crash if an `ExportFeed` was configured with an invalid Specify user ID ([#5042](https://github.com/specify/specify7/pull/5042))
+* Fixed an issue where a border would not appear for query items in the report query dialog ([#5159](https://github.com/specify/specify7/pull/5159))
+
+## [7.9.6.2](https://github.com/specify/specify7/compare/v7.9.6.1...v7.9.6.2) (22 July 2024)
+
+- Fixed an issue that prevented `TimestampModified` from being captured upon saving a record since the `v7.9.6` release ([#5108](https://github.com/specify/specify7/issues/5108) – *Reported by the University of Kansas and Ohio State University*)
+- Fixed an issue that caused large trees to perform slowly or crash the browser due to using too much memory ([#5115](https://github.com/specify/specify7/pull/5115) – *Reported by The Hebrew University of Jerusalem and Royal Botanic Gardens Edinburgh*)
+
+## [7.9.6.1](https://github.com/specify/specify7/compare/v7.9.6...v7.9.6.1) (9 July 2024)
+
+- Fixes an issue that led to tree definition item separators being trimmed ([#5076](https://github.com/specify/specify7/pull/5076))
+- The form system now includes a `whiteSpaceSensitive` attribute, which allows any field to preserve whitespace upon saving
+
+## [7.9.6](https://github.com/specify/specify7/compare/v7.9.5...v7.9.6) (1 July 2024)
+
+
+### Added
+-  Added a **[tree rank editor](https://discourse.specifysoftware.org/t/editing-tree-definitions-ranks-in-specify-7/1783)** to add, edit, and remove tree ranks ([#4257](https://github.com/specify/specify7/pull/4257) – *Requested by University of Kansas, The University of Michigan, Commonwealth Scientific and Industrial Research Organisation, Natural Resources Canada, College of Idaho, New Mexico State Herbarium, and many others*)
+-  **[Extended record merging](https://discourse.specifysoftware.org/t/record-merging/1324#record-merging-1)** to several new tables ([#4606](https://github.com/specify/specify7/pull/4606) – *Requested by Calvert Marine Museum, Commonwealth Scientific and Industrial Research Organisation, Royal Botanic Garden Edinburgh, and many more*)
+   - Locality
+   - Paleo Context
+   - Collecting Event 
+- Added a new tool to [**bulk update Locality and Geo Coord Details records**](https://discourse.specifysoftware.org/t/locality-update-tool/1784) that were georeferenced in external applications such as [CoGe](https://coge.geo-locate.org/About.htm) ([#4548](https://github.com/specify/specify7/pull/4548) – *Requested by Specify users in the DigIn TCN, formalized by Dean Pentcheff and Nelson Rios*)
+- Added a new tool to **[bulk move preparations](https://discourse.specifysoftware.org/t/trees-in-specify-7/534/7?u=specify)** from one storage location to another ([#4682](https://github.com/specify/specify7/pull/4682) – *Requested by University of Kansas*)
+-  Added **[Deaccessions](https://discourse.specifysoftware.org/t/interactions-in-specify/961#deaccessions-16)** to the Interactions list ([#4806](https://github.com/specify/specify7/pull/4806))
+-  The name of the accepted node will now show when hovering over a synonymized node ([#4704](https://github.com/specify/specify7/pull/4704) – *Requested by University of Kansas*)
+-  Table aggregations can now be chosen explicitly in the Query Builder ([#4646](https://github.com/specify/specify7/pull/4646))
+-  Calculated fields for the total number of preparations and total items in Exchange Outs, Disposals, Gifts, and Deaccessions have been added ([#4824](https://github.com/specify/specify7/pull/4824) – *Requested by Royal Botanic Garden Edinburgh, Pioneer Trails Regional Museum, The University of Michigan, and Museu de Ciències Naturals de Barcelona*)
+-  Added support for the 'Group Number' field in Taxon queries ([#4724](https://github.com/specify/specify7/pull/4724) – *Requested by the Florida Museum of Natural History and others*)
+-  Added validation to the Locality form to prevent users from saving invalid latitude and longitude values ([#4939](https://github.com/specify/specify7/pull/4939))
+
+### Changed
+-  'Timestamp Modified' and 'Timestamp Created' field values can now be overridden when uploading data in the WorkBench ([#4618](https://github.com/specify/specify7/pull/4618) – *Requested by New Mexico State Herbarium*)
+-  Users can no longer save a Collection Object with a determination without a *current* determination ([#4901](https://github.com/specify/specify7/pull/4901))
+-  GeoMap in the WorkBench now displays only the selected rows when a row is selected, or all rows when no row is selected ([#4943](https://github.com/specify/specify7/pull/4943))
+-  Changed 'Transactions' dialog header to 'Interactions' and refactored dialog with new icons ([#4474](https://github.com/specify/specify7/pull/4474))
+-  The separator used in query results is now a hyphen (-) character instead of a dot (·) character. This change prevents encoding issues when opening query results directly in Excel ([#4678](https://github.com/specify/specify7/pull/4678) – *Requested by South African Institute for Aquatic Biodiversity*)
+-  When granting the Specify 6 "Admin" permission, access to all collections will now be granted by default  ([#4652](https://github.com/specify/specify7/pull/4652))
+-  Changed unavailable preparations wording to be more clear ([#4890](https://github.com/specify/specify7/pull/4890))
+-  Added a view button by default to `parent` query combo boxes ([#4903](https://github.com/specify/specify7/pull/4903))
+-  Removed the "Clone" option from certain app resources that are identified by name alone ([#4902](https://github.com/specify/specify7/pull/4902))
+-  A warning will now appear when deleting a category on the Statistics page ([#3732](https://github.com/specify/specify7/pull/3732))
+-  The 'Without Preparations' and 'Add Unassociated Item' buttons have been moved to the left of the "Add Items" dialog  ([#4577](https://github.com/specify/specify7/pull/4577))
+
+
+### Fixed
+-  Exchange Out 'Add Items' dialog is now triggered when adding Exchange Out Preps from the form ([#4805](https://github.com/specify/specify7/pull/4805))
+-  Fixed an issue where some subviews would not expand when new records are added ([#4899](https://github.com/specify/specify7/pull/4899))
+-  Fixed an issue that prevented some agent merges from completing successfully ([#4699](https://github.com/specify/specify7/pull/4699))
+-  Fixed an issue preventing suggested mappings from being selected in the WorkBench ([#4926](https://github.com/specify/specify7/pull/4926))
+-  Disabled the 'Save' and 'Delete' buttons when editing forms, table formats, and table aggregation ([#4891](https://github.com/specify/specify7/pull/4891))
+-  Fixed an issue that would show an error when attempting to add children to a synonymized node ([#4874](https://github.com/specify/specify7/pull/4874))
+-  Fixed the `condition="always"` attribute being unrecognized when defining conditional forms ([#4879](https://github.com/specify/specify7/pull/4879))
+-  When updating the RSS feed, notifications will now be sent to the user specified in the `ExportFeed` app resource in addition to the current user ([#4956](https://github.com/specify/specify7/pull/4956))
+- The new record set and gallery icons now only appear within a record set containing records from the same table ([#4904](https://github.com/specify/specify7/pull/4904))
+
+## [7.9.5](https://github.com/specify/specify7/compare/v7.9.4...v7.9.5) (20 May 2024)
+
+This release has for objective to migrated Workbench to React to align it with the rest of the application to ensure consistency and modernising the codebase.
+Workbench functionalities remain unchanged but this release helps improve internal development and maintenance of the workbench going forward. 
+[Workbench Conversion](https://github.com/specify/specify7/pull/4637)
+
+### Added
+
+- **Live Search feature in Workbench**
+
+## [7.9.4](https://github.com/specify/specify7/compare/v7.9.3.1...v7.9.4) (13 May 2024)
+
+### Added
+
+- **Added a visual editor for some app resources**  ([#2796](https://github.com/specify/specify7/pull/2796))
+   - The initial release supports
+      - [Form Definitions](https://discourse.specifysoftware.org/t/editing-forms-in-specify-7/1557)
+      - [Table Formats](https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
+      - [Table Aggregation](https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
+   - Visual editors for additional app resources will be added in the future.
+   - Enforce uniqueness requirements for name ([#4164](https://github.com/specify/specify7/pull/4164))
+   - Added query combo box for Specify Users in Export Feed ([#4345](https://github.com/specify/specify7/pull/4345))
+   - Added support for [conditional forms](https://discourse.specifysoftware.org/t/editing-forms-in-specify-7/1557#conditional-rendering-22)
+   - Added a preview for web links, table formats, and table aggregations ([#4343](https://github.com/specify/specify7/pull/4343))
+- Added numerous improvements to distinct queries ([#4596](https://github.com/specify/specify7/pull/4596) – *Requested by University of Kansas, University of Michigan, Commonwealth Scientific and Industrial Research Organisation*)
+   - Added links to records in distinct queries where all columns returned are the same
+   -  Introduced the option to view groups of grouped records in distinct query results 
+   -  Distinct queries can now be exported to CSV
+- Added the ability to display only nodes with associated records in the tree viewer ([#4023](https://github.com/specify/specify7/pull/4023) – Commonwealth Scientific and Industrial Research Organisation)
+- Added the ability to set default values for boolean/checkbox fields in the form definition (#4585 – *Requested by University of Michigan, Commonwealth Scientific and Industrial Research Organisation*
+- Added the ability to import and export WorkBench data set upload plans ([#1363](https://github.com/specify/specify7/issues/1363) – *Requested by Commonwealth Scientific and Industrial Research Organisation and others*)
+- Subforms can now be collapsed ([#3642](https://github.com/specify/specify7/pull/3642) – *Requested by Commonwealth Scientific and Industrial Research Organisation and Agriculture and Agri-Food Canada*)
+- Added a new form element to show a view button next to a query combo box ([#4199](https://github.com/specify/specify7/pull/4199) – *Requested by South African Institute for Aquatic Biodiversity*)
+- Fields in the Schema Config can now be sorted by their visibility status ([#3516](https://github.com/specify/specify7/pull/3516))
+- Added the ability to switch to 'Basic View' and 'Hide Field Mapper' in embedded query dialogs ([#2863](https://github.com/specify/specify7/pull/2863))
+- Added pagination when viewing large lists of resources (record sets, queries, etc.) to improve performance ([#3195](https://github.com/specify/specify7/pull/3195))
+- Added a preference to have records in read-only mode by default requiring the user to press an edit button before changes can be made ([#3553](https://github.com/specify/specify7/pull/3553))
+- Added the ability to hide the plus button in forms ([#3669](https://github.com/specify/specify7/pull/3669) – *Requested by Commonwealth Scientific and Industrial Research Organisation*)
+- Added bulk resolve and bulk return when returning loans ([#4224](https://github.com/specify/specify7/pull/4224) – *Requested by Commonwealth Scientific and Industrial Research Organisation*)
+- Kept the search panel open when modifying XML form ([#4260](https://github.com/specify/specify7/pull/4260))
+- A warning is now displayed if there are no available preparations associated with a catalog number when making an interaction ([#4195](https://github.com/specify/specify7/pull/4195))
+- Added table icons to the WorkBench data sets dialog based on base table in the upload plan ([#4475](https://github.com/specify/specify7/pull/4475))
+- Added frontend business rules for Address `isPrimary` so that it is set by default when adding a new address ([#4443](https://github.com/specify/specify7/pull/4443))
+
+
+### Changed
+- Differentiated list of tables for interactions and data entry ([#4198](https://github.com/specify/specify7/pull/4198))
+- Removed table name before app resource titles ([#4132](https://github.com/specify/specify7/pull/4132))
+- Numeric inputs no longer change on scroll ([#4249](https://github.com/specify/specify7/pull/4249))
+- Disabled gallery icon when there are no attachments on forms ([#4220](https://github.com/specify/specify7/pull/4220))
+- Search preview dialogs no longer display subviews ([#4254](https://github.com/specify/specify7/pull/4254))
+- Improved logic for selecting main tables fields when creating new records from query combo boxes ([#4293](https://github.com/specify/specify7/pull/4293))
+   - Correctly detected main table fields in formatters ([#4516](https://github.com/specify/specify7/pull/4516))
+- Sidebar color preference has been moved and renamed ([#4355](https://github.com/specify/specify7/pull/4355))
+- Displayed disable icon add button instead of link when lowest tree rank ([#4351](https://github.com/specify/specify7/pull/4351))
+- "Use Localized Field Labels" checkbox is now a button ([#4344](https://github.com/specify/specify7/pull/4344))
+- Renamed record merging policy to `/record/merge` ([#4329](https://github.com/specify/specify7/pull/4329))
+- Switched to muted colors for taxon tiles ([#4476](https://github.com/specify/specify7/pull/4476) – *Requested by Virginia Institute of Marine Science*)
+- Miscellaneous Reports dialog improvements ([#4396](https://github.com/specify/specify7/pull/4396))
+- Backend query exports now have user-friendly names  ([#3590](https://github.com/specify/specify7/pull/3590))
+
+### Fixed
+- Fixed an issue where the WorkBench did not always check for  custom uniqueness rules ([#4593](https://github.com/specify/specify7/pull/4593) – *Reported by Commonwealth Scientific and Industrial Research Organisation*)
+- Fixed bug causing incorrect disambiguation behavior in the WorkBench ([#4777](https://github.com/specify/specify7/pull/4777))
+- Made behavior consistent for Reports/Labels across forms and reports dialog, enhanced Report preferences. ([#4299](https://github.com/specify/specify7/pull/4299) – *Reported by Florida Fish and Wildlife Research Institute and Commonwealth Scientific and Industrial Research Organisation*)
+- Fixed an issue that prevented new reports or labels from being created when there was a formatted table in the query ([#4427](https://github.com/specify/specify7/pull/4427) – *Reported by The Hebrew University of Jerusalem, Florida Fish and Wildlife Research Institute, Gothenburg Museum of Natural History, and Oranim College of Education*)
+- Make taxonomic rank properly recompute when the parent changes ([#4462](https://github.com/specify/specify7/pull/4462) – *Reported by Agriculture and Agri-Food Canada*)
+- Added a prompt for a user to define a record set name when creating one ([#4346](https://github.com/specify/specify7/pull/4346))
+- Improved home page load performance ([#4240](https://github.com/specify/specify7/pull/4240))
+- Makes 'Save' button style consistent in Schema Config and Mapper ([#3527](https://github.com/specify/specify7/pull/3527))
+- Make preferences visually read-only for users without proper permissions ([#3551](https://github.com/specify/specify7/pull/3551))
+- Fixed an issue preventing preparations from being added on the Loan form when displayed it was displayed in "form view" ([#3659](https://github.com/specify/specify7/pull/3659))
+- Fixed an issue where a cell or row could be selected multiple times in the WorkBench ([#3675](https://github.com/specify/specify7/pull/3675))
+- Fixed an issue where the WorkBench could not import certain spreadsheets ([#4223](https://github.com/specify/specify7/pull/4223) – *Reported by Royal Botanic Garden Edinburgh*)
+- Refactored date picker and added tests ([#4276](https://github.com/specify/specify7/pull/4276))
+- Fixed spelling mistake in new record set text ([#4317](https://github.com/specify/specify7/pull/4317))
+- The cache is cleared when form edits are made, allowing you to see the latest version ([#4290](https://github.com/specify/specify7/pull/4290))
+- Fixed issues when parsing remote preferences ([#4251](https://github.com/specify/specify7/pull/4251) – *Reported by Museu de Ciències Naturals de Barcelona*)
+- Fix inconsistency with hidden tables in schema and new query lists ([#4357](https://github.com/specify/specify7/pull/4357) – *Reported by Commonwealth Scientific and Industrial Research Organisation*)
+- Made `usertype` get ignored when searching for Common directory app resources to ensure global app resources are applied appropriately ([#4332](https://github.com/specify/specify7/pull/4332))
+- Made minor accessibility improvements ([#4449](https://github.com/specify/specify7/pull/4449))
+- Scoped all front-end requests where needed to prevent resources from returning records from other collections ([#3304](https://github.com/specify/specify7/pull/3304))
+- Fixed WorkBench dialog heading so it displays "Timestamp Uploaded" instead of "Timestamp Modified" ([#4472](https://github.com/specify/specify7/pull/4472))
+
 ## [7.9.3.1](https://github.com/specify/specify7/compare/v7.9.3...v7.9.3.1) (29 January 2024)
 
 This release fixes an issue that could cause an error when viewing an Accession or Repository Agreement form with interaction agents present.

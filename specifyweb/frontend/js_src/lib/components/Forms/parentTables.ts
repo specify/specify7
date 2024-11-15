@@ -71,6 +71,7 @@ const overrides: {
   CommonNameTx: 'taxon',
   BorrowReturnMaterial: 'borrowMaterial',
   CollectionObject: undefined,
+  CollectionObjectGroupJoin: 'parentCog',
   CollectionRelationship: undefined,
   Collector: 'collectingEvent',
   DNASequencingRun: 'dnaSequence',

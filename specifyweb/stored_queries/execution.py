@@ -14,6 +14,7 @@ from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter
@@ -24,18 +25,18 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 
 logger = logging.getLogger(__name__)
 
 SORT_TYPES = [None, asc, desc]
 
-def set_group_concat_max_len(session):
+def set_group_concat_max_len(connection):
     """The default limit on MySQL group concat function is quite
     small. This function increases it for the database connection for
     the given session.
     """
-    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
+    connection.execute('SET group_concat_max_len = 1024 * 1024 * 1024')
 
 def filter_by_collection(model, query, collection):
     """Add predicates to the given query to filter result to items scoped
@@ -52,11 +53,13 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
@@ -81,6 +84,14 @@ def filter_by_collection(model, query, collection):
     if model is models.GeologicTimePeriodTreeDefItem:
         logger.info("filtering geologic time period rank to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+
+    if model is models.TectonicUnit:
+        logger.info("filtering tectonic unit to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+
+    if model is models.TectonicUnitTreeDefItem:
+        logger.info("filtering tectonic unit rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
 
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
@@ -155,7 +166,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
                          captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'],)
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, strip_id=False)
@@ -183,19 +194,23 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False, delimiter=','):
+                 distinct=False, delimiter=',', bom=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True, distinct=distinct)
 
     logger.debug('query_to_csv starting')
 
-    with open(path, 'w', newline='', encoding='utf-8') as f:
+    encoding = 'utf-8'
+    if bom:
+        encoding = 'utf-8-sig'
+
+    with open(path, 'w', newline='', encoding=encoding) as f:
         csv_writer = csv.writer(f, delimiter=delimiter)
         if captions:
             header = captions
@@ -227,7 +242,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
     logger.debug('query_to_kml starting')
@@ -529,7 +544,7 @@ def return_loan_preps(collection, user, agent, data):
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
     if count_only:
@@ -640,5 +655,8 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    internal_predicate = query.get_internal_filters()
+    query = query.filter(internal_predicate)
+
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs

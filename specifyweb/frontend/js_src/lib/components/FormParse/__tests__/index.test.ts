@@ -30,6 +30,7 @@ const {
   parseFormTableColumns,
   getColumnDefinitions,
   getColumnDefinition,
+  parseRows,
 } = exportsForTests;
 
 requireContext();
@@ -105,6 +106,7 @@ const parsedFormView = {
           step: undefined,
           isReadOnly: false,
           defaultValue: undefined,
+          whiteSpaceSensitive: false,
         },
         fieldNames: ['catalogNumber'],
         isRequired: false,
@@ -284,6 +286,7 @@ describe('fetchView', () => {
   const expectedCollectorsView = {
     name: localized('Collectors'),
     class: 'edu.ku.brc.specify.datamodel.Collector',
+    defaultSubviewFormType: 'formTable',
     busrules: 'edu.ku.brc.specify.datamodel.busrules.CollectorBusRules',
     altviews: {
       'Collectors Table View': {
@@ -331,9 +334,9 @@ describe('fetchView', () => {
     ));
 });
 
-test('parseViewDefinition', () => {
+test('parseViewDefinition', async () => {
   jest.spyOn(console, 'warn').mockImplementation();
-  const result = parseViewDefinition(
+  const result = await parseViewDefinition(
     {
       ...viewDefinition,
       viewdefs: {
@@ -345,8 +348,8 @@ test('parseViewDefinition', () => {
     tables.CollectionObject
   )!;
   expect(result).toBeDefined();
-  expect(result.table?.name).toBe(tables.CollectionObject.name);
-  expect(removeKey(result, 'table')).toEqual({
+  expect(result!.table?.name).toBe(tables.CollectionObject.name);
+  expect(removeKey(result!, 'table')).toEqual({
     ...parsedTinyView,
     errors: [],
     name: '',
@@ -390,10 +393,10 @@ theories(resolveAltView, [
   },
 ]);
 
-test('parseFormTableDefinition', () =>
+test('parseFormTableDefinition', async () =>
   expect(
     parseFormTableDefinition(simpleFormView, tables.CollectionObject)
-  ).toEqual(parsedFormView));
+  ).resolves.toEqual(parsedFormView));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -416,14 +419,14 @@ theories(parseFormTableColumns, {
 });
 
 describe('parseFormDefinition', () => {
-  test('single view definition', () => {
+  test('single view definition', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
+    await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(strictParseXml(tinyFormView))),
         tables.CollectionObject
       )
-    ).toEqual([
+    ).resolves.toEqual([
       {
         condition: undefined,
         definition: parsedTinyView,
@@ -431,23 +434,25 @@ describe('parseFormDefinition', () => {
     ]);
   });
 
-  test('conditional view definitions', () => {
+  test('conditional view definitions', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
+    await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(conditionalTinyFormView)),
         tables.CollectionObject
-      ).map(({ condition, ...rest }) => ({
-        ...rest,
-        condition:
-          condition === undefined || condition.type !== 'Value'
-            ? condition
-            : {
-                ...condition,
-                field: condition.field.map((field) => field.name),
-              },
-      }))
-    ).toEqual([
+      ).then((formDefinition) =>
+        formDefinition.map(({ condition, ...rest }) => ({
+          ...rest,
+          condition:
+            condition === undefined || condition.type !== 'Value'
+              ? condition
+              : {
+                  ...condition,
+                  field: condition.field.map((field) => field.name),
+                },
+        }))
+      )
+    ).resolves.toEqual([
       {
         condition: undefined,
         definition: parsedTinyView,
@@ -526,3 +531,106 @@ theories(getColumnDefinition, [
     out: 'B',
   },
 ]);
+
+const testRows = `
+<viewdef>
+<rows>
+  <row>
+    <cell type="label" labelFor="tt" label="test" />
+  </row> 
+  <row>
+    <cell type="field" name=" stationFieldNumber " uiType="text" colSpan="4" align="right" id="tt" />
+    <cell type="field" name="collectingTrip.text1" uiType="checkbox" label="2" colSpan="1" align="right" />
+  </row> 
+  <row>
+  </row>
+  <row>
+    <cell type="subview" id="dt" viewname="Collectors" name="collectors"/>
+  </row>
+</rows>
+</viewdef>`;
+
+test('parseRows', async () => {
+  const viewDef = xml(testRows);
+  const rowsContainer = viewDef.children.rows[0];
+  const rawRows = rowsContainer?.children?.row ?? [];
+
+  await expect(parseRows(rawRows, tables.CollectingEvent)).resolves.toEqual([
+    [
+      {
+        align: 'right',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldNames: undefined,
+        id: undefined,
+        labelForCellId: 'tt',
+        text: 'test',
+        title: undefined,
+        type: 'Label',
+        verticalAlign: 'center',
+        visible: true,
+      },
+    ],
+    [
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 2,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+          whiteSpaceSensitive: false,
+        },
+        fieldNames: ['stationFieldNumber'],
+        id: 'tt',
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      },
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          label: '2',
+          printOnSave: false,
+          type: 'Checkbox',
+        },
+        fieldNames: ['collectingTrip', 'text1'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      },
+    ],
+    [],
+    [
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldNames: ['collectors'],
+        formType: 'formTable',
+        icon: undefined,
+        id: 'dt',
+        isButton: false,
+        isCollapsed: false,
+        sortField: undefined,
+        type: 'SubView',
+        verticalAlign: 'stretch',
+        viewName: 'Collectors',
+        visible: true,
+      },
+    ],
+  ]);
+});

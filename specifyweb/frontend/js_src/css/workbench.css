@@ -77,6 +77,16 @@
   --accent-color: var(--search-result);
 }
 
+/* 
+ * Override default font properties: required for handsontable 10 and above
+ * See: https://github.com/handsontable/handsontable/pull/8681
+ */
+.handsontable {
+  @apply text-inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
 /* Handsontable dark mode */
 .handsontable td,
 .htContextMenu table tbody tr td {

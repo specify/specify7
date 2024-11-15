@@ -26,12 +26,12 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formular Definition',
   },
   formDefinitions: {
-    'en-us': 'Form Definitions',
-    'ru-ru': 'Определения форм',
-    'es-es': 'Definiciones de formulario',
-    'fr-fr': 'Définitions de formulaire',
-    'uk-ua': 'Визначення форм',
-    'de-ch': 'Formular Definitionen',
+    'en-us': 'Form Definition',
+    'ru-ru': 'Определение формы',
+    'es-es': 'Definición de formulario',
+    'fr-fr': 'Définition du formulaire',
+    'uk-ua': 'Визначення форми',
+    'de-ch': 'Formulardefinition',
   },
   loadFile: {
     'en-us': 'Load File',
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -501,7 +501,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Formatvorschau',
+    'de-ch': '(Standard)',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -666,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -730,31 +730,31 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекцію',
+    'uk-ua': 'Запустити в колекції',
   },
   createNewForm: {
-    'en-us': 'Create new form',
+    'en-us': 'Create a new view definition',
     'de-ch': 'Definition',
-    'es-es': 'Crear nuevo formulario',
-    'fr-fr': 'Créer un nouveau formulaire',
-    'ru-ru': 'Создать новую форму',
-    'uk-ua': 'Створити нову форму',
+    'es-es': 'Crear una nueva definición de vista',
+    'fr-fr': 'Créer une nouvelle définition de vue',
+    'ru-ru': 'Создайте новое определение представления',
+    'uk-ua': 'Створіть нове визначення подання',
   },
   copyFromExistingForm: {
-    'en-us': 'Copy from existing form',
-    'de-ch': 'Aus vorhandenem Formular kopieren',
-    'es-es': 'Copiar del formulario existente',
-    'fr-fr': "Copier à partir d'un formulaire existant",
-    'ru-ru': 'Копировать из существующей формы',
-    'uk-ua': 'Копіювати з існуючої форми',
+    'en-us': 'Copy existing view definition',
+    'de-ch': 'Vorhandene Ansichtsdefinition kopieren',
+    'es-es': 'Copiar la definición de vista existente',
+    'fr-fr': 'Copier la définition de vue existante',
+    'ru-ru': 'Копировать существующее определение представления',
+    'uk-ua': 'Копіювати існуюче визначення перегляду',
   },
   copyDefaultForm: {
-    'en-us': 'Copy default form',
-    'de-ch': 'Standardformular kopieren',
+    'en-us': 'Copy default view definition',
+    'de-ch': 'Standardansichtsdefinition kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записей',
-    'uk-ua': 'Форматувальники записів',
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Формати записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -825,10 +825,18 @@ export const resourcesText = createDictionary({
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': 'Formatvorschau',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Vista previa de formato',
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
+  },
+  currentDeterminationRequired: {
+    'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
   },
 } as const);
