@@ -657,14 +657,6 @@ export const vertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   ],
 };
 
-export const emptyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
-  _tableName: 'TaxonTreeDef',
-  name: treeText.emptyTree(),
-  remarks: treeText.defaultRemarks(),
-  fullNameDirection: 1,
-  treeDefItems: [life],
-};
-
 export const mineralsTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.minerals(),
@@ -703,6 +695,14 @@ export const rocksTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   ],
 };
 
+export const emptyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: 'TaxonTreeDef',
+  name: treeText.emptyTree(),
+  remarks: treeText.defaultRemarks(),
+  fullNameDirection: 1,
+  treeDefItems: [life],
+};
+
 export const defaultTreeDefs: RA<
   DeepPartial<SerializedResource<TaxonTreeDef>>
 > = [
@@ -717,8 +717,8 @@ export const defaultTreeDefs: RA<
   paleobotTreeDef,
   vascplantTreeDef,
   vertpaleoTreeDef,
-  emptyTreeDef,
   mineralsTreeDef,
   rocksTreeDef,
   meteoritesTreeDef,
+  emptyTreeDef,
 ];
