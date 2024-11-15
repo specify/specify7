@@ -305,78 +305,96 @@ msgstr "Add Tree"
 msgid "treePicker"
 msgstr "Tree Picker"
 
-#: components/TreeView/defaults.ts:251
+#: components/TreeView/defaults.ts:413
 #. Used in: Components > Tree View > Defaults
 msgid "botany"
 msgstr "Botany"
 
-#: components/TreeView/defaults.ts:279
+#: components/TreeView/defaults.ts:441
 #. Used in: Components > Tree View > Defaults
 msgid "entomology"
 msgstr "Entomology"
 
-#: components/TreeView/defaults.ts:307
+#: components/TreeView/defaults.ts:469
 #. Used in: Components > Tree View > Defaults
 msgid "herpetology"
 msgstr "Herpetology"
 
-#: components/TreeView/defaults.ts:329
+#: components/TreeView/defaults.ts:491
 #. Used in: Components > Tree View > Defaults
 msgid "ichthyology"
 msgstr "Ichthyology"
 
-#: components/TreeView/defaults.ts:353
+#: components/TreeView/defaults.ts:515
 #. Used in: Components > Tree View > Defaults
 msgid "invertpaleo"
 msgstr "Invertebrate Paleontology"
 
-#: components/TreeView/defaults.ts:372
+#: components/TreeView/defaults.ts:534
 #. Used in: Components > Tree View > Defaults
 msgid "invertzoo"
 msgstr "Invertebrate Zoology"
 
-#: components/TreeView/defaults.ts:397
+#: components/TreeView/defaults.ts:559
 #. Used in: Components > Tree View > Defaults
 msgid "mammalogy"
 msgstr "Mammalogy"
 
-#: components/TreeView/defaults.ts:416
+#: components/TreeView/defaults.ts:578
 #. Used in: Components > Tree View > Defaults
 msgid "ornithology"
 msgstr "Ornithology"
 
-#: components/TreeView/defaults.ts:437
+#: components/TreeView/defaults.ts:599
 #. Used in: Components > Tree View > Defaults
 msgid "paleobot"
 msgstr "Paleobotany"
 
-#: components/TreeView/defaults.ts:456
+#: components/TreeView/defaults.ts:618
 #. Used in: Components > Tree View > Defaults
 msgid "vascplant"
 msgstr "Vascular Plants"
 
-#: components/TreeView/defaults.ts:483
+#: components/TreeView/defaults.ts:645
 #. Used in: Components > Tree View > Defaults
 msgid "vertpaleo"
 msgstr "Vertebrate Paleontology"
 
-#: components/TreeView/defaults.ts:252
-#: components/TreeView/defaults.ts:280
-#: components/TreeView/defaults.ts:308
-#: components/TreeView/defaults.ts:330
-#: components/TreeView/defaults.ts:354
-#: components/TreeView/defaults.ts:373
-#: components/TreeView/defaults.ts:398
-#: components/TreeView/defaults.ts:417
-#: components/TreeView/defaults.ts:438
-#: components/TreeView/defaults.ts:457
-#: components/TreeView/defaults.ts:484
-#: components/TreeView/defaults.ts:501
+#: components/TreeView/defaults.ts:414
+#: components/TreeView/defaults.ts:442
+#: components/TreeView/defaults.ts:470
+#: components/TreeView/defaults.ts:492
+#: components/TreeView/defaults.ts:516
+#: components/TreeView/defaults.ts:535
+#: components/TreeView/defaults.ts:560
+#: components/TreeView/defaults.ts:579
+#: components/TreeView/defaults.ts:600
+#: components/TreeView/defaults.ts:619
+#: components/TreeView/defaults.ts:646
+#: components/TreeView/defaults.ts:663
+#: components/TreeView/defaults.ts:672
+#: components/TreeView/defaults.ts:680
+#: components/TreeView/defaults.ts:701
 #. Used in: Components > Tree View > Defaults
 msgid "defaultRemarks"
 msgstr "A default taxon tree"
 
-#: components/TreeView/defaults.ts:500
+#: components/TreeView/defaults.ts:700
 #. Used in: Components > Tree View > Defaults
 msgid "emptyTree"
 msgstr "Empty Tree"
+
+#: components/TreeView/defaults.ts:662
+#. Used in: Components > Tree View > Defaults
+msgid "minerals"
+msgstr "Minerals"
+
+#: components/TreeView/defaults.ts:679
+#. Used in: Components > Tree View > Defaults
+msgid "rocks"
+msgstr "Rocks"
+
+#: components/TreeView/defaults.ts:671
+#. Used in: Components > Tree View > Defaults
+msgid "meteorites"
+msgstr "Meteorites"
