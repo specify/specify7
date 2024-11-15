@@ -722,4 +722,11 @@ def renumber_tree(table):
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
 def is_treedefitem(obj):
-    return issubclass(obj.__class__, TreeRank)
+    return issubclass(obj.__class__, TreeRank) or bool(
+        re.search(r"treedefitem'>$", str(obj.__class__), re.IGNORECASE)
+    )
+
+def is_treedef(obj):
+    return issubclass(obj.__class__, Tree) or bool(
+        re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
+    )
