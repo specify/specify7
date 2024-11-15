@@ -4,6 +4,7 @@
 
 import type { IR, RA } from '../../utils/types';
 import type { BusinessRuleManager } from './businessRules';
+import type { CollectionFetchFilters } from './collection';
 import type {
   AnySchema,
   CommonFields,
@@ -113,7 +114,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     VALUE extends (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'])[FIELD_NAME]
   >(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
+    filters?: CollectionFetchFilters<VALUE[number]>
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
@@ -156,6 +158,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): SpecifyResource<SCHEMA>;
   // Not type safe
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
+  // Unsafe
+  readonly independentResources: IR<
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
+  >;
   // Unsafe. Use getDependentResource instead whenever possible
   readonly dependentResources: IR<
     Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
