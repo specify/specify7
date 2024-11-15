@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-12 20:01+0000\n"
+"PO-Revision-Date: 2024-11-15 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "workbench/pt/>\n"
@@ -476,7 +476,7 @@ msgstr ""
 #: components/WbActions/index.tsx:213
 #, fuzzy
 msgid "validationCanceled"
-msgstr "Validação cancelada"
+msgstr "Validação Cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:221
@@ -684,7 +684,7 @@ msgstr "Carimbo de data e hora carregado"
 #: components/WorkBench/AdvancedSearch.tsx:158
 #, fuzzy
 msgid "useRegularExpression"
-msgstr "Usar expressão regular"
+msgstr "Use expressão regular"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:165
