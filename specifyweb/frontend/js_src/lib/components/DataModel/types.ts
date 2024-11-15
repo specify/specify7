@@ -1371,7 +1371,7 @@ export type CollectionObject = {
     readonly catalogedDate: string | null;
     readonly projectNumber: string | null;
     readonly actualTotalCountAmt: number | null;
-    readonly age: number | null;
+    readonly age: string | null;
     readonly availability: string | null;
     readonly catalogedDatePrecision: number | null;
     readonly catalogedDateVerbatim: string | null;
@@ -1432,7 +1432,6 @@ export type CollectionObject = {
     readonly yesNo6: boolean | null;
   };
   readonly toOneDependent: {
-    readonly cojo: CollectionObjectGroupJoin | null;
     readonly collectionObjectAttribute: CollectionObjectAttribute | null;
   };
   readonly toOneIndependent: {
@@ -1456,6 +1455,7 @@ export type CollectionObject = {
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
+    readonly cojo: RA<CollectionObjectGroupJoin>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
@@ -5319,7 +5319,6 @@ export type SpQueryField = {
     readonly formatName: string | null;
     readonly isDisplay: boolean;
     readonly isNot: boolean;
-    readonly isStrict: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
     readonly operEnd: number | null;
@@ -6511,7 +6510,7 @@ export type CollectionObjectGroup = {
     readonly yesno2: boolean | null;
     readonly yesno3: boolean | null;
   };
-  readonly toOneDependent: { readonly cojo: CollectionObjectGroupJoin | null };
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly cogType: CollectionObjectGroupType;
     readonly collection: Collection | null;
@@ -6521,6 +6520,7 @@ export type CollectionObjectGroup = {
   };
   readonly toManyDependent: {
     readonly children: RA<CollectionObjectGroupJoin>;
+    readonly cojo: RA<CollectionObjectGroupJoin>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
@@ -6547,7 +6547,7 @@ export type CollectionObjectGroupJoin = {
   readonly toOneIndependent: {
     readonly childCo: CollectionObject | null;
     readonly childCog: CollectionObjectGroup | null;
-    readonly parentCog: CollectionObjectGroup | null;
+    readonly parentCog: CollectionObjectGroup;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
