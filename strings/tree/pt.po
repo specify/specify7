@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-12 20:00+0000\n"
+"PO-Revision-Date: 2024-11-15 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -206,8 +206,8 @@ msgstr "Selecione um alvo para \"{nodeName:string}\" para ser sinonimizado"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"O nó {treeName:string} \"{nodeName:string}\" se tornará sinônimo de \""
-"{synonymName:string}\"."
+"O nó {treeName:string} \"{nodeName:string}\" será transformado em sinônimo "
+"de \"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:395
@@ -460,3 +460,21 @@ msgstr "Paleobotânica"
 #, fuzzy
 msgid "defaultRemarks"
 msgstr "Uma árvore de táxons padrão"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:662
+#, fuzzy
+msgid "minerals"
+msgstr "Minerais"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:679
+#, fuzzy
+msgid "rocks"
+msgstr "Rochas"
+
+#. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:671
+#, fuzzy
+msgid "meteorites"
+msgstr "Meteoritos"
