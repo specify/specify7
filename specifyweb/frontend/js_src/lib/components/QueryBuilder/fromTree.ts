@@ -152,6 +152,29 @@ const defaultFields: RR<
         : []),
     ];
   },
+  TectonicUnit: async (nodeId, rankName) => {
+    const paleoPath = await fetchPaleoPath();
+    return [
+      makeField('catalogNumber', {}),
+      makeField('determinations.taxon.fullName', {
+        sortType: flippedSortTypes.ascending,
+      }),
+      makeField('determinations.isCurrent', {
+        isDisplay: false,
+        operStart: queryFieldFilters.trueOrNull.id,
+      }),
+      ...(typeof paleoPath === 'string'
+        ? [
+            makeField(`${paleoPath}.tectonicUnit.fullName`, {}),
+            makeField(`${paleoPath}.tectonicUnit.${rankName}.tectonicUnitId`, {
+              operStart: queryFieldFilters.equal.id,
+              startValue: nodeId.toString(),
+              isDisplay: false,
+            }),
+          ]
+        : []),
+    ];
+  },
 };
 
 async function fetchPaleoPath(): Promise<string | undefined> {

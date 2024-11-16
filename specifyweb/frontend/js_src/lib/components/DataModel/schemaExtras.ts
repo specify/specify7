@@ -83,6 +83,23 @@ export const schemaExtras: {
         indexed: false,
         unique: false,
       }),
+      new LiteralField(table, {
+        name: 'isMemberOfCOG',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        // TODO: LiteralField or Relationship?
+        name: 'age',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
     ],
     (): void => {
       const collection = getField(table, 'collection');

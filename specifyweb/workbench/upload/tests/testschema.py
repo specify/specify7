@@ -14,10 +14,19 @@ from ..upload_plan_schema import schema, parse_plan, parse_column_options
 from .base import UploadTestsBase
 from . import example_plan
 
+def set_plan_treeId():
+    # Set the treeId in example_plan.json dynamically, so that the unit test doesn't depend on the static treeId to always be the same.
+    from specifyweb.specify.models import Taxontreedefitem
+    tree_id = Taxontreedefitem.objects.filter(name='Species').first().treedef_id
+    example_plan_ranks = example_plan.json['uploadable']['uploadTable']['toMany']['determinations'][0]['toOne']['taxon']['treeRecord']['ranks']
+    for rank in ['Species', 'Subspecies']:
+        example_plan_ranks[rank]['treeId'] = tree_id
+
 class SchemaTests(UploadTestsBase):
     maxDiff = None
 
     def test_schema_parsing(self) -> None:
+        set_plan_treeId()
         Draft7Validator.check_schema(schema)
         validate(example_plan.json, schema)
         plan = parse_plan(self.collection, example_plan.json).apply_scoping(self.collection)
@@ -26,6 +35,7 @@ class SchemaTests(UploadTestsBase):
         self.assertEqual(repr(plan), repr(self.example_plan))
 
     def test_unparsing(self) -> None:
+        set_plan_treeId()
         self.assertEqual(example_plan.json, parse_plan(self.collection, example_plan.json).unparse())
 
     def test_reject_internal_tree_columns(self) -> None:

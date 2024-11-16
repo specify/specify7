@@ -39,7 +39,12 @@ let treeDefinitions: TreeInformation = undefined!;
  */
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
-export const allTrees = [...commonTrees, ...treesForPaleo] as const;
+const treesForGeo = ['TectonicUnit'] as const;
+export const allTrees = [
+  ...commonTrees,
+  ...treesForPaleo,
+  ...treesForGeo,
+] as const;
 /*
  * Until discipline information is loaded, assume all trees are appropriate in
  * this discipline
@@ -118,11 +123,14 @@ export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
     tableName
   );
 
-  return typeof treeDefinitionId === 'number'
-    ? specificTreeDefinitions.filter(
-        ({ definition }) => definition.id === treeDefinitionId
-      )
-    : specificTreeDefinitions;
+  if (typeof treeDefinitionId === 'number') {
+    const resolvedDefinition = specificTreeDefinitions.find(
+      ({ definition }) => definition.id === treeDefinitionId
+    );
+    return resolvedDefinition === undefined
+      ? specificTreeDefinitions
+      : [resolvedDefinition];
+  } else return specificTreeDefinitions;
 }
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(

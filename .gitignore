@@ -34,3 +34,5 @@ node_modules
 /local_specifyweb_apache.conf
 /specifyweb/frontend/js_src/stats.json
 /specifyweb/frontend/js_src/dist
+.env
+docker-compose.yml
