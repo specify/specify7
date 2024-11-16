@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-15 23:00+0000\n"
+"PO-Revision-Date: 2024-11-16 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -233,7 +233,7 @@ msgstr "Definido por el usuario"
 #: components/SchemaConfig/Languages.tsx:78
 #, fuzzy
 msgid "addLanguage"
-msgstr "Recuento de relaciones"
+msgstr "Campos únicos"
 
 #. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:65
