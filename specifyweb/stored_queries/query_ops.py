@@ -116,18 +116,18 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
 
     def op_age_range_set(self, field, value, is_strict=False):
         values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
+        start_time, end_time = float(values[0]), float(values[1])
         co_ids = search_co_ids_in_time_range(start_time, end_time, require_full_overlap=is_strict)
         return field.in_(co_ids)
 
     def op_age_range_query(self, field, value, query, is_strict=False):
         values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
+        start_time, end_time = float(values[0]), float(values[1])
         return query_co_in_time_range(query.query, start_time, end_time, session=None, require_full_overlap=is_strict)
 
     def op_age_range_query_joins(self, field, value, query, is_strict=False):
         values = [self.format(v.strip()) for v in value.split(',')[:2]]
-        start_time, end_time = values
+        start_time, end_time = float(values[0]), float(values[1])
         return query_co_in_time_range_with_joins(query.query, start_time, end_time, session=None, require_full_overlap=is_strict)
 
     def op_age_range(self, field, value, query, is_strict=False):
