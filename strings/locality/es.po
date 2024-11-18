@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-15 23:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-18 13:00+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
 "Language: es\n"
@@ -387,9 +387,5 @@ msgstr "La latitud debe tener un valor entre -90° y 90°"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:93
-#, fuzzy
 msgid "validLongitude"
-msgstr ""
-"La siguiente cantidad de registros {localityTabelLabel: string} se verá "
-"afectada por la actualización y se crearán registros "
-"{geoCoordDetailTableLabel: string}:"
+msgstr "La Longitud necesita tener un valor entre -180º y 180º"
