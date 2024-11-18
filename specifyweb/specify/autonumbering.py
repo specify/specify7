@@ -59,7 +59,7 @@ def get_tables_to_read_lock(collection, obj, field_names: List[str]) -> Set[str]
     tables = set([scope_table._meta.db_table, *get_uniqueness_rule_tables(collection, obj_table, field_names)])
 
     if is_treetable(obj): 
-        tables.update(get_tree_tables_to_lock())
+        tables.update(get_tree_tables_to_lock(obj_table))
 
     return tables
 
