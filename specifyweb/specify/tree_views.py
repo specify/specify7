@@ -425,7 +425,8 @@ def add_root(request, tree, treeid):
         rankid=0,
         parent=None,
         definition=tree_target,
-        definitionitem=tree_def_item
+        definitionitem=tree_def_item,
+        fullname="Root"
     )
 
     return http.HttpResponse(status=204)
