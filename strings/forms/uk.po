@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-21 05:15+0000\n"
+"PO-Revision-Date: 2024-11-18 15:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.8-rc\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -263,7 +263,7 @@ msgstr "Зберегти конфлікт"
 msgid "saveConflictDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
-"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
+"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Forms > Save
@@ -449,7 +449,7 @@ msgstr "Поле з табл"
 #: components/FormCells/index.tsx:315
 #, fuzzy
 msgid "unsupportedCellType"
-msgstr "Непідтримуваний тип комірки"
+msgstr "Непідтримуваний тип клітинки"
 
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #: components/SearchDialog/index.tsx:253
@@ -558,7 +558,7 @@ msgstr "Підрахунок масового переносу"
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із певними перенесеними полями"
+msgstr "Створіть новий запис із перенесеними певними полями"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:120
@@ -583,7 +583,7 @@ msgstr "Налаштувати поля для перенесення ({tableNam
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Налаштувати поля для масового перенесення ({tableName:string})"
+msgstr "Налаштувати масове перенесення полів ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
