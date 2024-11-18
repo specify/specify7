@@ -47,6 +47,8 @@ export type QueryFieldType =
   | 'number'
   | 'text';
 export type QueryFieldFilter =
+  | 'ageName'
+  | 'ageRange'
   | 'any'
   | 'between'
   | 'contains'
@@ -60,8 +62,6 @@ export type QueryFieldFilter =
   | 'less'
   | 'lessOrEqual'
   | 'like'
-  | 'name'
-  | 'range'
   | 'startsWith'
   | 'true'
   | 'trueOrNull';
@@ -565,7 +565,7 @@ export const queryFieldFilters: RR<
     types: ['checkbox'],
     hasParser: true,
   },
-  name: {
+  ageName: {
     id: 17,
     label: resourcesText.name(),
     description: undefined,
@@ -574,7 +574,7 @@ export const queryFieldFilters: RR<
     hasParser: true,
     component: In,
   },
-  range: {
+  ageRange: {
     id: 16,
     label: queryText.range(),
     description: undefined,

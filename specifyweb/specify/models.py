@@ -7859,7 +7859,7 @@ class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treedefitems', null=True, on_delete=protect_with_blockers)
     
     class Meta:

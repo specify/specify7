@@ -12,20 +12,13 @@ import {
 } from '../WbPlanView/LineComponents';
 import type { QueryFieldFilter } from './FieldFilter';
 import type { QueryField } from './helpers';
-export function FieldFilterTool({
-  fieldFilters,
-  index,
-  isBasic,
-  hasAny,
-  isFieldComplete,
-  fieldName,
-  handleChange,
-  handleFilterChange,
-}: {
+
+type FieldFilterToolProps = {
   readonly fieldFilters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
+    // Returns the data contained in the limits of the range
     readonly isStrict: boolean;
   }>;
   readonly index: number;
@@ -38,7 +31,18 @@ export function FieldFilterTool({
     index: number,
     filter: QueryField['filters'][number] | undefined
   ) => void;
-}): JSX.Element {
+};
+
+export function FieldFilterTool({
+  fieldFilters,
+  index,
+  isBasic,
+  hasAny,
+  isFieldComplete,
+  fieldName,
+  handleChange,
+  handleFilterChange,
+}: FieldFilterToolProps): JSX.Element {
   return (
     <>
       {index === 0 ? (

@@ -7,44 +7,44 @@ def create_default_tectonic_ranks(apps):
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.create(name="Tectonic Unit", discipline=discipline)
+        tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
 
-        root = TectonicUnitTreeDefItem.objects.create(
+        root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Root",
             title="Root",
             rankid=0,
             parent=None,
             treedef=tectonic_tree_def,
         )
-        superstructure = TectonicUnitTreeDefItem.objects.create(
+        superstructure, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Superstructure",
             title="Superstructure",
             rankid=10,
             parent=root,
             treedef=tectonic_tree_def,
         )
-        tectonic_domain = TectonicUnitTreeDefItem.objects.create(
+        tectonic_domain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Tectonic Domain",
             title="Tectonic Domain",
             rankid=20,
             parent=superstructure,
             treedef=tectonic_tree_def,
         )
-        tectonic_subdomain = TectonicUnitTreeDefItem.objects.create(
+        tectonic_subdomain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Tectonic Subdomain",
             title="Tectonic Subdomain",
             rankid=30,
             parent=tectonic_domain,
             treedef=tectonic_tree_def,
         )
-        tectonic_unit = TectonicUnitTreeDefItem.objects.create(
+        tectonic_unit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Tectonic Unit",
             title="Tectonic Unit",
             rankid=40,
             parent=tectonic_subdomain,
             treedef=tectonic_tree_def,
         )
-        tectonic_subunit = TectonicUnitTreeDefItem.objects.create(
+        tectonic_subunit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Tectonic Subunit",
             title="Tectonic Subunit",
             rankid=50,
@@ -94,7 +94,7 @@ def create_root_tectonic_node(apps):
             treedef=tectonic_tree_def
         )
 
-        root = TectonicUnit.objects.create(
+        root, _ = TectonicUnit.objects.get_or_create(
             name="Root",
             isaccepted=1,
             nodenumber=1,
