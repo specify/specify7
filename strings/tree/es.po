@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-15 23:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-18 13:00+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
 "es/>\n"
 "Language: es\n"
@@ -56,7 +56,7 @@ msgstr "Operación fallida"
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:406
 msgid "actionFailedDescription"
-msgstr "Conteo directo [X7X]"
+msgstr "La operación no ha podido completarse debido a los siguientes errores:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:425
