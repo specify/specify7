@@ -3,10 +3,12 @@ import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
@@ -31,6 +33,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { MergeRecordSets } from './MergeRecordSets';
 import { EditRecordSet } from './RecordSetEdit';
 
 export function RecordSetsOverlay(): JSX.Element {
@@ -173,6 +176,10 @@ export function RecordSetsDialog({
         <Dialog
           buttons={
             <>
+              {!isReadOnly && hasToolPermission('recordSets', 'create') && (
+                <MergeRecordSets recordSets={data?.records} />
+              )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                 <Button.Info
