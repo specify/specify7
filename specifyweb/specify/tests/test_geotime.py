@@ -110,6 +110,16 @@ class GeoTimeTests(ApiTests):
             endperiod=358.9,
             enduncertainty=None,
         )
+        jurassic_period_chronostrat = Geologictimeperiod.objects.create(
+            name='Jurassic',
+            rankid=200,
+            definitionitem=period_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=208,
+            startuncertainty=18,
+            endperiod=144,
+            enduncertainty=5,
+        )
         paleocene_epoch_chronostrat = Geologictimeperiod.objects.create(
             name='Paleocene',
             rankid=300,
@@ -140,6 +150,16 @@ class GeoTimeTests(ApiTests):
             endperiod=50,
             enduncertainty=6,
         )
+        late_jurassic_epoch_chronostrat = Geologictimeperiod.objects.create(
+            name='Late Jurassic',
+            rankid=300,
+            definitionitem=epoch_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=163,
+            startuncertainty=15,
+            endperiod=144,
+            enduncertainty=5,
+        )
         selandian_stage_chronostrat = Geologictimeperiod.objects.create(
             name='Selandian',
             rankid=400,
@@ -149,6 +169,26 @@ class GeoTimeTests(ApiTests):
             startuncertainty=None,
             endperiod=59.2,
             enduncertainty=None,
+        )
+        franconian_stage_chronostrat = Geologictimeperiod.objects.create(
+            name='Franconian',
+            rankid=400,
+            definitionitem=stage_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=523,
+            startuncertainty=36,
+            endperiod=505,
+            enduncertainty=32,
+        )
+        oxfordian_stage_chronostrat = Geologictimeperiod.objects.create(
+            name='Oxfordian',
+            rankid=400,
+            definitionitem=stage_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=163,
+            startuncertainty=15,
+            endperiod=156,
+            enduncertainty=6,
         )
 
         self.geo_time_period_dict = {
@@ -161,6 +201,10 @@ class GeoTimeTests(ApiTests):
             'eocene': eocene_epoch_chronostrat,
             'test': test_epoch_chronostrat,
             'selandian': selandian_stage_chronostrat,
+            'franconian': franconian_stage_chronostrat,
+            'oxfordian': oxfordian_stage_chronostrat,
+            'jurassic': jurassic_period_chronostrat,
+            'late_jurassic': late_jurassic_epoch_chronostrat,
         }
 
     def test_geotime_range_all_paths(self):
@@ -305,6 +349,79 @@ class GeoTimeTests(ApiTests):
         )
 
         self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_period('paleocene'))
+
+    def test_geotime_simple(self):
+        co_1 = Collectionobject.objects.create(collection=self.collection)
+        absolute_age_200 = Absoluteage.objects.create(absoluteage=200, ageuncertainty=10.0, collectionobject=co_1)
+
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 100))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 200))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 201))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(199, 100))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 199))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(201, 100))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(201, 199, require_full_overlap=True))
+        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(300, 250))
+        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(150, 100))
+        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
+        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(150, 100, require_full_overlap=True))
+
+        co_2 = Collectionobject.objects.create(collection=self.collection)
+        relative_age_1 = Relativeage.objects.create(
+            agename=self.geo_time_period_dict['jurassic'], # 208-144
+            collectionobject=co_2
+        )
+
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(220, 140))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(180, 160))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(220, 100))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 140))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(180, 100))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 160))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 100))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(300, 100, require_full_overlap=True))
+        self.assertTrue(co_2.id in geo_time.search_co_ids_in_time_range(195, 145, require_full_overlap=True))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 250))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(120, 100))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 250, require_full_overlap=True))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(120, 100, require_full_overlap=True))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(180, 160, require_full_overlap=True))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(180, 100, require_full_overlap=True))
+        self.assertFalse(co_2.id in geo_time.search_co_ids_in_time_range(300, 160, require_full_overlap=True))
+
+        co_3 = Collectionobject.objects.create(collection=self.collection)
+        relative_age_2 = Relativeage.objects.create(
+            agename=self.geo_time_period_dict['devonian'], # 419.2-358.9
+            agenameend=self.geo_time_period_dict['paleogene'], # 66-23
+            collectionobject=co_3
+        )
+
+        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 100))
+        self.assertTrue(co_3.id in geo_time.search_co_ids_in_time_range(200, 10))
+
+        ce_paleo_context_1 = Paleocontext.objects.create(
+            chronosstrat=self.geo_time_period_dict['late_jurassic'], # 163-144
+            discipline=self.discipline
+        )
+        co_4 = Collectionobject.objects.create(collection=self.collection, paleocontext=ce_paleo_context_1)
+
+
+        ce_paleo_context_2 = Paleocontext.objects.create(
+            chronosstrat=self.geo_time_period_dict['franconian'], # 523-505
+            discipline=self.discipline
+        )
+        collecting_event_1 = Collectingevent.objects.create(paleocontext=ce_paleo_context_2, discipline=self.discipline)
+        co_5 = Collectionobject.objects.create(collection=self.collection, collectingevent=collecting_event_1)
+
+        loc_paleo_context = Paleocontext.objects.create(
+            chronosstrat=self.geo_time_period_dict['oxfordian'], # 163-156
+            discipline=self.discipline
+        )
+        locality_1 = Locality.objects.create(paleocontext=loc_paleo_context, discipline=self.discipline)
+        collecting_event_2 = Collectingevent.objects.create(locality=locality_1, discipline=self.discipline)
+        co_6 = Collectionobject.objects.create(collection=self.collection, collectingevent=collecting_event_2)
 
     @skip('Fix API test call')
     def test_geotime_any(self):
