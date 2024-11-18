@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0011_cascading_tree_nodes'),
+        ('specify', '0012_add_cojo_to_schema_config'),
     ]
 
     operations = [
