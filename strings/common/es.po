@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-15 23:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-18 13:00+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
 "Language: es\n"
@@ -298,9 +298,8 @@ msgstr "Borrar todo"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:62
-#, fuzzy
 msgid "deleteUnmapped"
-msgstr "Zoom"
+msgstr "Borrar columnas no asignadas"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:266
@@ -1049,12 +1048,10 @@ msgstr "Seleccione los archivos o arrástrelos hasta aquí"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:61
-#, fuzzy
 msgid "zoom"
-msgstr "Zoom"
+msgstr "Zum"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:66
-#, fuzzy
 msgid "unzoom"
-msgstr "Dejar de hacer zoom"
+msgstr "Dejar de hacer zum"
