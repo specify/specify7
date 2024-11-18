@@ -18,7 +18,14 @@ type FieldFilterToolProps = {
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
-    // Returns the data contained in the limits of the range
+    /**
+     * When 'isStrict' is True
+     * each CO's age_range must be fully contained by
+     * the age range provided by start_time and end_time filter (complete overlap).
+     * When 'isStrict' is False, only a partial overlap
+     * between a CO's age range and the provided
+     * start_time and end_time filter are needed.
+     */
     readonly isStrict: boolean;
   }>;
   readonly index: number;
