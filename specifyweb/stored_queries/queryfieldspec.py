@@ -279,7 +279,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
-        return self.apply_filter(query, orm_field, field, table, value, op_num, negate)
+        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict)
 
     def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=[]):
 
