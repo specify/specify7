@@ -22,13 +22,13 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
         discipline_query |= Q(id=tree_at_discipline.id)
     return discipline_query
 
-def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int]]:
+def get_treedefs(collection: spmodels.Collection, tree_name: str, treedef_id=None) ->  List[Tuple[int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
 
     # Mimic the old behavior of limiting the query to the first item for trees other than taxon.
     # Even though the queryconstruct can handle trees with multiple types.
     _limit = lambda query: (query if tree_name.lower() == 'taxon' else query[:1])
-    search_filters = get_search_filters(collection, tree_name)
+    search_filters = get_search_filters(collection, tree_name) if treedef_id is None else Q(id=treedef_id)
 
     lookup_tree = lookup(tree_name)
     tree_table = datamodel.get_table_strict(lookup_tree)
@@ -47,4 +47,3 @@ def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple
     assert len(result) > 0, "No definition to query on"
 
     return result
-

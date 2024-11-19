@@ -24,6 +24,11 @@ DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 # Pull out author or groupnumber field from taxon query fields.
 TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
 
+# MOTs tree query for a specify taxon tree.
+# Schema: <table_id>.<table_name>.<treedef_id>,<rank>,<field>
+# ex. 4.taxon.1,Kingdom,Author
+TAXON_MOT_FIELD_RE = re.compile(r'^(\d*),([^,]*),(.*)$')
+
 # Pull out geographyCode field from geography query fields.
 GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
 
@@ -61,7 +66,12 @@ def make_stringid(fs, table_list):
     return table_list, fs.table.name.lower(), field_name
 
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
+class QueryFieldSpec(
+    namedtuple(
+        "QueryFieldSpec",
+        "root_table root_sql_table join_path table date_part tree_rank tree_field treedef_id",
+    )
+):
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -88,8 +98,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                    table=node,
                    date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
                    tree_rank=None,
-                   tree_field=None)
-
+                   tree_field=None,
+                   treedef_id=None)
 
     @classmethod
     def from_stringid(cls, stringid, is_relation):
@@ -114,15 +124,27 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
 
         extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
-        tree_rank = tree_field = None
+        treedef_id = tree_rank = tree_field = None
         if field is None:
             tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
             if tree_id_match:
                 tree_rank = tree_id_match.group(1)
                 tree_field = 'ID'
             else:
-                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Taxon') else GEOGRAPHY_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Geography') else None
-                if tree_field_match:
+                tree_mot_field_match = tree_field_match = None
+                if node is datamodel.get_table("Taxon"):
+                    tree_mot_field_match = TAXON_MOT_FIELD_RE.match(extracted_fieldname)
+                    tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname)
+                elif node is datamodel.get_table("Geography"):
+                    tree_field_match = GEOGRAPHY_FIELD_RE.match(extracted_fieldname)
+                else:
+                    tree_field_match = None
+
+                if tree_mot_field_match:
+                    treedef_id = tree_mot_field_match.group(1)
+                    tree_rank = tree_mot_field_match.group(2)
+                    tree_field = tree_mot_field_match.group(3)
+                elif tree_field_match:
                     tree_rank = tree_field_match.group(1)
                     tree_field = tree_field_match.group(2)
                 else:
@@ -138,7 +160,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                      table=node,
                      date_part=date_part,
                      tree_rank=tree_rank,
-                     tree_field=tree_field)
+                     tree_field=tree_field,
+                     treedef_id=treedef_id)
 
         logger.debug('parsed %s (is_relation %s) to %s. extracted_fieldname = %s',
                      stringid, is_relation, result, extracted_fieldname)
@@ -195,7 +218,12 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             return self.get_field().name.lower() in ['oldvalue','newvalue']
 
     def is_specify_username_end(self):
-       return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
+        return (
+            len(self.join_path) > 2
+            and self.join_path[-1].name == "name"
+            and self.join_path[-2].is_relationship
+            and self.join_path[-2].relatedModelName == "SpecifyUser"
+        )
 
     def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
@@ -241,11 +269,19 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 query, orm_field = query.objectformatter.objformat(query, orm_model, formatter, cycle_detector)
             else:
                 query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
-                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter, cycle_detector)
+                orm_field = query.objectformatter.aggregate(
+                    query,
+                    self.get_field(),
+                    orm_model,
+                    aggregator or formatter,
+                    cycle_detector,
+                )
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
             if self.tree_rank is not None:
-                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
+                query, orm_field = query.handle_tree_field(
+                    orm_model, table, self.tree_rank, self.tree_field, self.treedef_id
+                )
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
 
