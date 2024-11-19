@@ -353,11 +353,11 @@ class ScopedTreeRecord(NamedTuple):
 
         # Handle cases where there are multiple or no treedefs
         def handle_multiple_or_no_treedefs(
-            targeted_treedefids: Set[int], ranks_columns: List[TreeRankCell]
+            unique_treedef_ids: Set[int], targeted_treedefids: Set[int], ranks_columns: List[TreeRankCell]
         ) -> Optional[Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]]:
             if not targeted_treedefids:
                 return self, None
-            elif len(targeted_treedefids) > 1:
+            elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
                 logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
                 error_col_name = ranks_columns[0].column_fullname
                 return self, WorkBenchParseFailure('multipleRanksInRow', {}, error_col_name)
@@ -368,7 +368,7 @@ class ScopedTreeRecord(NamedTuple):
 
             # Check if any treedef_id has more than one rank
             multiple_ranks = any(len(columns) > 1 for columns in grouped_by_treedef_id.values())
-            if multiple_ranks:
+            if multiple_ranks and len(unique_treedef_ids) > 1:
                 treedef_id = next(
                     treedef_id
                     for treedef_id, columns in grouped_by_treedef_id.items()
@@ -413,13 +413,11 @@ class ScopedTreeRecord(NamedTuple):
         tree_def_model, tree_rank_model, tree_node_model = get_models(self.name)
 
         unique_treedef_ids = {tr.treedef_id for tr in self.ranks.keys()}
-        if len(unique_treedef_ids) == 1:
-            return self, None
 
         ranks_columns_in_row_not_null = get_not_null_ranks_columns(row)
         targeted_treedefids = get_targeted_treedefids(ranks_columns_in_row_not_null)
 
-        result = handle_multiple_or_no_treedefs(targeted_treedefids, ranks_columns_in_row_not_null)
+        result = handle_multiple_or_no_treedefs(unique_treedef_ids, targeted_treedefids, ranks_columns_in_row_not_null)
         if result:
             return result
 
@@ -428,7 +426,7 @@ class ScopedTreeRecord(NamedTuple):
         if not targeted_treedefids:
             # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
             return self, None
-        elif len(targeted_treedefids) > 1:
+        elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
             error_col_name = list(ranks_columns_in_row_not_null)[0].column_fullname
             return self, WorkBenchParseFailure("multipleRanksInRow", {}, error_col_name)
