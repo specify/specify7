@@ -5,6 +5,7 @@ import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -18,11 +19,13 @@ import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
+import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -33,6 +36,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { useSearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
 
 const cellToLabel = (
@@ -72,6 +76,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onFetchMore: handleFetchMore,
   isCollapsed = false,
   preHeaderButtons,
+  collection,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -88,6 +93,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly isCollapsed: boolean | undefined;
   readonly preHeaderButtons?: JSX.Element;
+  readonly collection: Collection<AnySchema> | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -202,13 +208,36 @@ export function FormTable<SCHEMA extends AnySchema>({
     onSelected: handleAddResources,
   });
 
+  const subviewContext = React.useContext(SubViewContext);
+  const parentContext = React.useMemo(
+    () => subviewContext?.parentContext ?? [],
+    [subviewContext?.parentContext]
+  );
+
+  const renderedResourceId = React.useMemo(
+    () =>
+      parentContext.length === 0 || relationship.isDependent()
+        ? undefined
+        : f.maybe(
+            parentContext.find(
+              ({ relationship: parentRelationship }) =>
+                parentRelationship === relationship.getReverse()
+            ),
+            ({ parentResource: { id } }) => id
+          ),
+    [parentContext, relationship]
+  );
+
   const children =
     collapsedViewDefinition === undefined ? (
       commonText.loading()
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
+      <div
+        className={isCollapsed ? 'hidden' : 'overflow-x-auto'}
+        onScroll={handleScroll}
+      >
         <DataEntry.Grid
           className="sticky w-fit"
           display="inline"
@@ -223,7 +252,6 @@ export function FormTable<SCHEMA extends AnySchema>({
             maxHeight: `${maxHeight}px`,
           }}
           viewDefinition={collapsedViewDefinition}
-          onScroll={handleScroll}
         >
           <div
             /*
@@ -311,11 +339,19 @@ export function FormTable<SCHEMA extends AnySchema>({
                         verticalAlign="stretch"
                         visible
                       >
-                        <SpecifyForm
-                          display="inline"
-                          resource={resource}
-                          viewDefinition={expandedViewDefinition}
-                        />
+                        <ReadOnlyContext.Provider
+                          value={
+                            isReadOnly ||
+                            (renderedResourceId !== undefined &&
+                              resource.id === renderedResourceId)
+                          }
+                        >
+                          <SpecifyForm
+                            display="inline"
+                            resource={resource}
+                            viewDefinition={expandedViewDefinition}
+                          />
+                        </ReadOnlyContext.Provider>
                       </DataEntry.Cell>
                     </>
                   ) : (
@@ -337,7 +373,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <ReadOnlyContext.Provider
                         value={
-                          isReadOnly || collapsedViewDefinition.mode === 'view'
+                          isReadOnly ||
+                          collapsedViewDefinition.mode === 'view' ||
+                          (renderedResourceId !== undefined &&
+                            resource.id === renderedResourceId)
                         }
                       >
                         <SearchDialogContext.Provider
@@ -407,17 +446,19 @@ export function FormTable<SCHEMA extends AnySchema>({
                     (!resource.isNew() ||
                       hasTablePermission(
                         relationship.relatedTable.name,
-                        'delete'
+                        isDependent ? 'delete' : 'update'
                       )) ? (
                       <Button.Small
                         aria-label={commonText.remove()}
                         className="h-full"
                         disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyTable.name,
-                            'delete'
-                          )
+                          (!resource.isNew() &&
+                            !hasTablePermission(
+                              resource.specifyTable.name,
+                              isDependent ? 'delete' : 'update'
+                            )) ||
+                          (renderedResourceId !== undefined &&
+                            resource.id === renderedResourceId)
                         }
                         title={commonText.remove()}
                         onClick={(): void => handleDelete(resource)}
@@ -448,9 +489,18 @@ export function FormTable<SCHEMA extends AnySchema>({
       </div>
     );
   const addButtons =
-    typeof handleAddResources === 'function' &&
-    mode !== 'view' &&
-    !disableAdding ? (
+    mode === 'view' || disableAdding ? undefined : relationship.relatedTable
+        .name === 'CollectionObjectGroupJoin' &&
+      relationship.name === 'children' ? (
+      <COJODialog
+        collection={collection}
+        parentResource={
+          collection?.related as
+            | SpecifyResource<CollectionObjectGroup>
+            | undefined
+        }
+      />
+    ) : typeof handleAddResources === 'function' ? (
       <>
         {!isDependent &&
         hasTablePermission(relationship.relatedTable.name, 'read') ? (

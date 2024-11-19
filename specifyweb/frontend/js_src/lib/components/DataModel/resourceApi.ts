@@ -7,6 +7,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { isRelationshipCollection } from './collectionApi';
@@ -39,7 +40,6 @@ function eventHandlerForToOne(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
-        this.trigger.apply(this, args);
         return;
       }
       case 'change:id': {
@@ -61,7 +61,7 @@ function eventHandlerForToOne(related, field) {
   };
 }
 
-function eventHandlerForToMany(_related, field) {
+function eventHandlerForToMany(related, field) {
   return function (event) {
     const args = _.toArray(arguments);
     switch (event) {
@@ -71,14 +71,15 @@ function eventHandlerForToMany(_related, field) {
       }
       case 'saverequired': {
         this.handleChanged();
-        this.trigger.apply(this, args);
         break;
       }
+      case 'change':
       case 'add':
       case 'remove': {
         // Annotate add and remove events with the field in which they occurred
         args[0] = `${event}:${field.name.toLowerCase()}`;
         this.trigger.apply(this, args);
+        Reflect.apply(this.trigger, this, ['change', this, related]);
         break;
       }
     }
@@ -301,7 +302,7 @@ export const ResourceBase = Backbone.Model.extend({
   ) {
     assert(!field.isDependent());
 
-    if (field.type === 'one-to-many')
+    if (relationshipIsToMany(field))
       this._storeIndependentToMany(field, related);
     else this._storeIndependentToOne(field, related);
   },
@@ -338,7 +339,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
       default: {
         throw new Error(
-          `setDependentToOne: unhandled field type: ${field.type}`
+          `storeIndependentToOne: unhandled field type: ${field.type} for  ${this.specifyTable.name}.${field.name}`
         );
       }
     }
@@ -605,8 +606,12 @@ export const ResourceBase = Backbone.Model.extend({
     );
   },
   // Duplicate definition for purposes of better typing:
-  async rgetCollection(fieldName) {
-    return this.getRelated(fieldName, { prePop: true });
+  async rgetCollection(fieldName, rawOptions) {
+    const options = {
+      ...rawOptions,
+      prePop: true,
+    };
+    return this.getRelated(fieldName, options);
   },
   async getRelated(fieldName, options) {
     options ||= {
@@ -640,7 +645,7 @@ export const ResourceBase = Backbone.Model.extend({
         return value;
       });
   },
-  async _rget<OPTIONS extends { noBusinessRules: boolean }>(
+  async _rget<OPTIONS extends { readonly noBusinessRules: boolean }>(
     path: RA<string>,
     options: OPTIONS
   ) {
@@ -679,17 +684,20 @@ export const ResourceBase = Backbone.Model.extend({
         // A foreign key field.
         if (!value) return value; // No related object
 
-        // Is the related resource cached?
+        // Is the related resource a cached dependent?
         let toOne = this.dependentResources[fieldName];
+
         if (!toOne) {
           _(value).isString() || softFail('expected URI, got', value);
           toOne = resourceFromUrl(value, {
             noBusinessRules: options.noBusinessRules,
           });
+
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
           } else {
+            // Always store and refetch independent related resources
             this.storeIndependent(field, toOne);
           }
         }
@@ -702,8 +710,8 @@ export const ResourceBase = Backbone.Model.extend({
         }
 
         return field.isDependent()
-          ? this.getDependentToMany(field)
-          : this.getIndependentToMany(field);
+          ? this.getDependentToMany(field, options)
+          : this.getIndependentToMany(field, options);
       }
       case 'zero-to-one': {
         /*
@@ -746,7 +754,8 @@ export const ResourceBase = Backbone.Model.extend({
     }
   },
   async getDependentToMany(
-    field: Relationship
+    field: Relationship,
+    filters
   ): Promise<Collection<AnySchema>> {
     assert(field.isDependent());
 
@@ -766,27 +775,28 @@ export const ResourceBase = Backbone.Model.extend({
       console.warn('expected dependent resource to be in cache');
 
     const collection =
-      existingToMany !== undefined
-        ? existingToMany
-        : this.isNew()
-        ? new relatedTable.DependentCollection(collectionOptions, [])
-        : await new relatedTable.ToOneCollection(collectionOptions)
-            .fetch({ limit: 0 })
-            .then(
-              (collection) =>
-                new relatedTable.DependentCollection(
-                  collectionOptions,
-                  collection.models
-                )
-            );
+      existingToMany === undefined
+        ? this.isNew()
+          ? new relatedTable.DependentCollection(collectionOptions, [])
+          : await new relatedTable.ToOneCollection(collectionOptions)
+              .fetch({ ...filters, limit: 0 })
+              .then(
+                (collection) =>
+                  new relatedTable.DependentCollection(
+                    collectionOptions,
+                    collection.models
+                  )
+              )
+        : existingToMany;
 
-    return collection.fetch({ limit: 0 }).then((collection) => {
+    await collection.fetch({ ...filters, limit: 0 }).then((collection) => {
       self.storeDependent(field, collection);
-      return collection;
     });
+    return this.getDependentResource(field.name);
   },
   async getIndependentToMany(
-    field: Relationship
+    field: Relationship,
+    filters
   ): Promise<Collection<AnySchema>> {
     assert(!field.isDependent());
 
@@ -806,10 +816,14 @@ export const ResourceBase = Backbone.Model.extend({
         ? new relatedTable.IndependentCollection(collectionOptions)
         : existingToMany;
 
-    return collection.fetch().then((fetchedCollection) => {
-      this.storeIndependent(field, fetchedCollection);
-      return fetchedCollection;
+    await collection.fetch({
+      ...filters,
+      // Only store the collection if fetch is successful (doesn't return undefined)
+      success: (collection) => {
+        this.storeIndependent(field, collection);
+      },
     });
+    return this.independentResources[field.name.toLowerCase()];
   },
   async save({
     onSaveConflict: handleSaveConflict,

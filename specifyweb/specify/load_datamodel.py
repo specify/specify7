@@ -77,13 +77,14 @@ class Table(object):
     fieldAliases: List[Dict[str, str]]
     sp7_only: bool = False
     django_app: str = 'specify'
+    virtual_fiels: List['Field'] = []
 
     def __init__(self, classname: str = None, table: str = None, tableId: int = None, 
                 idColumn: str = None, idFieldName: str = None, idField: 'Field' = None, 
                 view: Optional[str] = None, searchDialog: Optional[str] = None, fields: List['Field'] = None,
                 indexes: List['Index'] = None, relationships: List['Relationship'] = None, 
                 fieldAliases: List[Dict[str, str]] = None, system: bool = False,
-                sp7_only: bool = False, django_app: str = 'specify'):
+                sp7_only: bool = False, django_app: str = 'specify', virtual_fields: List['Field'] = None):
         if not classname:
             raise ValueError("classname is required")
         if not table:
@@ -111,6 +112,7 @@ class Table(object):
         self.fieldAliases = fieldAliases if fieldAliases is not None else []
         self.sp7_only = sp7_only
         self.django_app = django_app
+        self.virtual_fields = virtual_fields if virtual_fields is not None else []
 
     @property
     def name(self) -> str:
@@ -132,6 +134,9 @@ class Table(object):
         return list(af())
 
 
+    def is_virtual_field(self, fieldname: str) -> bool:
+        return fieldname in [f.name for f in self.virtual_fields]
+   
     def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
         return strict_to_optional(self.get_field_strict, fieldname, strict)
 
@@ -140,6 +145,11 @@ class Table(object):
         for field in self.all_fields:
             if field.name.lower() == fieldname:
                 return field
+        for field in self.virtual_fields:
+            if field.name.lower() == fieldname:
+                return field
+        # if self.table == 'collectionobject' and fieldname == 'age': # TODO: This is temporary for testing, more conprehensive solution to come.
+        #     return Field(name='age', column='age', indexed=False, unique=False, required=False, type='java.lang.Integer', length=0)
         raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
                                      _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 

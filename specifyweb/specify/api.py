@@ -6,7 +6,7 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    Callable, TypedDict
+    Callable, TypedDict, cast
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
@@ -37,7 +37,7 @@ ReadPermChecker = Callable[[Any], None]
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-def get_model(name: str):
+def strict_get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
@@ -51,6 +51,12 @@ def get_model(name: str):
                 if model._meta.model_name == name:
                     return model
         raise e
+    
+def get_model(name: str): 
+    try: 
+        return strict_get_model(name)
+    except AttributeError: 
+        return None
 
 def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
     """Return the correct field name for a model given a case insensitive
@@ -302,7 +308,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
     try:
-        return get_model(name)
+        return strict_get_model(name)
     except AttributeError as e:
         raise Http404(e)
 
@@ -575,7 +581,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
     dirty: List[FieldChangeInfo] = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
-        if not field.many_to_one: continue
+        if not field.many_to_one and not field.one_to_one: continue
 
         old_related = get_related_or_none(obj, field_name)
         dependent = is_dependent_field(obj, field_name)
@@ -611,7 +617,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
             new_related_id = rel_obj.id
             data[field_name] = _obj_to_data(rel_obj, read_checker)
         else:
-            raise Exception('bad foreign key field in data')
+            raise Exception(f'bad foreign key field in data: {field_name}')
         if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
 
@@ -627,6 +633,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     Nested data items with ids will be updated. Those without ids will be
     created as new resources.
     """
+    
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
@@ -651,24 +658,24 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     if not isinstance(value, list): 
         assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
         
-        rel_model = field.related_model
-        ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+    rel_model = field.related_model
+    ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
 
-        for rel_data in value:
-            rel_data[field.field.name] = obj
+    for rel_data in value:
+        rel_data[field.field.name] = obj
 
-            rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
 
-            ids.append(rel_obj.id) # Record the id as one to keep.
+        ids.append(rel_obj.id) # Record the id as one to keep.
 
-        # Delete related objects not in the ids list.
-        # TODO: Check versions for optimistic locking.
-        to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
-        for rel_obj in to_remove:
-            check_table_permissions(collection, agent, rel_obj, "delete")
-            auditlog.remove(rel_obj, agent, obj)
-        
-        to_remove.delete()
+    # Delete related objects not in the ids list.
+    # TODO: Check versions for optimistic locking.
+    to_remove = getattr(obj, field.name).exclude(id__in=ids).select_for_update()
+    for rel_obj in to_remove:
+        check_table_permissions(collection, agent, rel_obj, "delete")
+        auditlog.remove(rel_obj, agent, obj)
+    
+    to_remove.delete()
 
 class IndependentInline(TypedDict): 
     update: List[Union[str, Dict[str, Any]]]
@@ -682,37 +689,45 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
     to_update = value.get('update', [])
     to_remove = value.get('remove', [])
 
-    ids_to_fetch = []
-    cached_objs = dict()
+    ids_to_fetch: List[int] = []
+    cached_objs: Dict[int, Dict[str, Any]] = dict()
     fk_model = None
 
+    to_fetch: Tuple[str, ...] = tuple(string_or_data for string_or_data in tuple((*to_update, *to_remove)) if isinstance(string_or_data, str))
+
     # Fetch the related records which are provided as strings
-    for rel_data in [*to_update, *to_remove]: 
-        if not isinstance(rel_data, str): continue
-        fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
+    for resource_uri in to_fetch: 
+        fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
         ids_to_fetch.append(fk_id)
 
     if fk_model is not None: 
         cached_objs = {item.id: obj_to_data(item) for item in get_model(fk_model).objects.filter(id__in=ids_to_fetch).select_for_update()}
-    
-    for rel_data in to_update: 
-        if isinstance(rel_data, str): 
-            fk_model, fk_id = strict_uri_to_model(rel_data, rel_model.__name__)
-            rel_data = cached_objs[fk_id]
+
+    for raw_rel_data in to_update: 
+        if isinstance(raw_rel_data, str): 
+            fk_model, fk_id = strict_uri_to_model(raw_rel_data, rel_model.__name__)
+            rel_data = cached_objs.get(fk_id)
+            if rel_data is None: 
+                raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
             if rel_data[field.field.name] == uri_for_model(obj.__class__, obj.id): 
                 continue
-        
+        else: 
+            rel_data = raw_rel_data
+
         rel_data[field.field.name] = obj
         update_or_create_resource(collection, agent, rel_model, rel_data, None)
     
     if len(to_remove) > 0:
-        check_table_permissions(collection, agent, rel_model, 'update')
+        assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
         related_field = datamodel.reverse_relationship(obj.specify_model.get_field_strict(field.name))
         assert related_field is not None, f"no reverse relationship for {obj.__class__.__name__}.{field.field.name}" 
-        for rel_obj in to_remove: 
-            fk_model, fk_id = strict_uri_to_model(rel_obj, rel_model.__name__)
-            rel_data = cached_objs[fk_id]
-            rel_data[related_field.name] = None
+        for resource_uri in to_remove: 
+            fk_model, fk_id = strict_uri_to_model(resource_uri, rel_model.__name__)
+            rel_data = cached_objs.get(fk_id)
+            if rel_data is None: 
+                raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
+            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
+            rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj): 
@@ -929,7 +944,7 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             # filter out control parameters
             continue
 
-        if param.endswith('__in'):
+        if param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
 

@@ -2,25 +2,24 @@ import React from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCollection } from '../../hooks/useCollection';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { attachmentRelatedTables } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { CollectionFetchFilters } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyTable';
-import { raise, softFail } from '../Errors/Crash';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
@@ -34,7 +33,12 @@ type SubViewContextType =
        * parent subview.
        * Avoids infinite cycles in rendering forms
        */
-      readonly parentContext: RA<Relationship> | undefined;
+      readonly parentContext:
+        | RA<{
+            readonly relationship: Relationship;
+            readonly parentResource: SpecifyResource<AnySchema>;
+          }>
+        | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
       readonly handleChangeSortField: (
         sortField: SubViewSortField | undefined
@@ -68,137 +72,42 @@ export function SubView({
   readonly isCollapsed?: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
-
-  const fetchCollection = React.useCallback(
-    // If false is returned, then the Subview should not be rendered
-    async function fetchCollection(): Promise<
-      Collection<AnySchema> | false | undefined
-    > {
-      if (
-        relationshipIsToMany(relationship) &&
-        relationship.type !== 'zero-to-one'
-      )
-        return parentResource
-          .rgetCollection(relationship.name)
-          .then((collection) => {
-            // TEST: check if this can ever happen
-            if (collection === null || collection === undefined)
-              return new relationship.relatedTable.DependentCollection({
-                related: parentResource,
-                field: relationship.getReverse(),
-              }) as Collection<AnySchema>;
-            if (sortField === undefined) return collection;
-            // BUG: this does not look into related tables
-            const field = sortField.fieldNames[0];
-            // Overwriting the tables on the collection
-            overwriteReadOnly(
-              collection,
-              'models',
-              Array.from(collection.models).sort(
-                sortFunction(
-                  (resource) => resource.get(field),
-                  sortField.direction === 'desc'
-                )
-              )
-            );
-            return collection;
-          });
-      else {
-        /**
-         * If relationship is -to-one, create a collection for the related
-         * resource. This allows to reuse most of the code from the -to-many
-         * relationships. RecordSelector handles collections with -to-one
-         * related field by removing the "+" button after first record is added
-         * and not rendering record count or record slider.
-         */
-        const resource = await parentResource.rgetPromise(relationship.name);
-        const reverse = relationship.getReverse();
-        if (reverse === undefined) {
-          softFail(
-            new Error(
-              `Can't render a SubView for ` +
-                `${relationship.table.name}.${relationship.name} because ` +
-                `reverse relationship does not exist`
-            )
-          );
-          return false;
-        }
-        const collection = (
-          relationship.isDependent()
-            ? new relationship.relatedTable.DependentCollection({
-                related: parentResource,
-                field: reverse,
-              })
-            : new relationship.relatedTable.IndependentCollection({
-                related: parentResource,
-                field: reverse,
-              })
-        ) as Collection<AnySchema>;
-        if (relationship.isDependent() && parentResource.isNew())
-          // Prevent fetching related for newly created parent
-          overwriteReadOnly(collection, '_totalCount', 0);
-
-        if (typeof resource === 'object' && resource !== null)
-          collection.add(resource);
-        overwriteReadOnly(
-          collection,
-          'related',
-          collection.related ?? parentResource
-        );
-        overwriteReadOnly(
-          collection,
-          'field',
-          collection.field ?? relationship.getReverse()
-        );
-        return collection;
-      }
-    },
-    [parentResource, relationship, sortField]
-  );
-
-  const [collection, setCollection] = React.useState<
-    Collection<AnySchema> | false | undefined
-  >(undefined);
-  const versionRef = React.useRef<number>(0);
-  React.useEffect(
-    () =>
-      resourceOn(
-        parentResource,
-        `change:${relationship.name} saved`,
-        (): void => {
-          versionRef.current += 1;
-          const localVersionRef = versionRef.current;
-          fetchCollection()
-            .then((collection) =>
-              /*
-               * If value changed since begun fetching, don't update the
-               * collection to prevent a race condition.
-               * REFACTOR: simplify this
-               */
-              versionRef.current === localVersionRef
-                ? setCollection(collection)
-                : undefined
-            )
-            .catch(raise);
-        },
-        true
-      ),
-    [parentResource, relationship, fetchCollection]
-  );
   const subviewContext = React.useContext(SubViewContext);
-
-  const [formType, setFormType] = useTriggerState(initialFormType);
   const parentContext = React.useMemo(
     () => subviewContext?.parentContext ?? [],
     [subviewContext?.parentContext]
   );
+
+  const [collection, _setCollection, handleFetch] = useCollection({
+    parentResource,
+    relationship,
+    sortBy: sortField,
+  });
+
+  React.useEffect(
+    () =>
+      resourceOn(
+        parentResource,
+        'saved',
+        (): void => {
+          handleFetch({
+            offset: 0,
+            reset: true,
+          } as CollectionFetchFilters<AnySchema>);
+        },
+        false
+      ),
+    [parentResource, relationship, handleFetch]
+  );
+
+  const [formType, setFormType] = useTriggerState(initialFormType);
 
   const contextValue = React.useMemo<SubViewContextType>(
     () => ({
       relationship,
       formType,
       sortField,
-      parentContext: [...parentContext, relationship],
+      parentContext: [...parentContext, { relationship, parentResource }],
       handleChangeFormType: setFormType,
       handleChangeSortField: setSortField,
     }),
@@ -207,6 +116,7 @@ export function SubView({
       formType,
       sortField,
       parentContext,
+      parentResource,
       setFormType,
       setSortField,
     ]
@@ -227,8 +137,9 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {parentContext.includes(relationship) ||
-      collection === false ? undefined : (
+      {parentContext
+        .map(({ relationship }) => relationship)
+        .includes(relationship) || collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray
@@ -266,7 +177,23 @@ export function SubView({
               value={
                 isReadOnly ||
                 relationship.isVirtual ||
-                isAttachmentMisconfigured
+                isAttachmentMisconfigured ||
+                /**
+                 * Render independent self-referential tree relationships
+                 * (children, synonyms, etc.) as readonly for now.
+                 *
+                 * While functional, there is often business logic
+                 * (renumbering trees, updating determinations, etc.) associated
+                 * with these changes that updating a single field via the API
+                 * allows.
+                 * Businessrules can likely be made to rememdy this.
+                 *
+                 * FEATURE: Allow independent self-referential tree
+                 * relationships to be editable
+                 */
+                (!relationship.isDependent() &&
+                  isTreeTable(relationship.table.name) &&
+                  relationship.relatedTable === relationship.table)
               }
             >
               <IntegratedRecordSelector
@@ -298,6 +225,7 @@ export function SubView({
                           null as never
                         )
                 }
+                onFetch={handleFetch}
               />
             </ReadOnlyContext.Provider>
           ) : isButton ? undefined : (

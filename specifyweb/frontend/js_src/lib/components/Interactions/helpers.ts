@@ -54,17 +54,23 @@ export type PreparationRow = readonly [
   amountAvailable: string
 ];
 
-export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
+export const getPrepsAvailableForLoanRs = async (
+  recordSetId: number,
+  isLoan: boolean
+) =>
   ajax<RA<PreparationRow>>(
     `/interactions/preparations_available_rs/${recordSetId}/`,
     {
+      method: 'POST',
       headers: { Accept: 'application/json' },
+      body: formData({ isLoan }),
     }
   ).then(({ data }) => data);
 
 export const getPrepsAvailableForLoanCoIds = async (
   idField: string,
-  collectionObjectIds: RA<string>
+  collectionObjectIds: RA<string>,
+  isLoan: boolean
 ) =>
   ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
@@ -72,6 +78,7 @@ export const getPrepsAvailableForLoanCoIds = async (
     body: formData({
       id_fld: idField,
       co_ids: collectionObjectIds,
+      isLoan,
     }),
   }).then(({ data }) => data);
 

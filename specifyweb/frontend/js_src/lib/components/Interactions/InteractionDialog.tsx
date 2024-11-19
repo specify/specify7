@@ -115,6 +115,8 @@ export function InteractionDialog({
 
   const loading = React.useContext(LoadingContext);
 
+  const isLoan = actionTable.name === 'Loan';
+
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
@@ -142,7 +144,7 @@ export function InteractionDialog({
       );
     else if (typeof recordSet === 'object')
       loading(
-        getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
+        getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
           availablePrepsReady(undefined, data)
         )
       );
@@ -150,7 +152,11 @@ export function InteractionDialog({
       loading(
         (catalogNumbers.length === 0
           ? Promise.resolve([])
-          : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
+          : getPrepsAvailableForLoanCoIds(
+              'CatalogNumber',
+              catalogNumbers,
+              isLoan
+            )
         ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
   }

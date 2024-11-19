@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from .scoping import ScopeType
 from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, \
-    Attachment
+    Attachment, Tectonicunit
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 
@@ -24,7 +24,7 @@ def filter_by_collection(queryset, collection, strict=True):
             Q(scopetype=ScopeType.DIVISION, scopeid=collection.discipline.division.id) |
             Q(scopetype=ScopeType.INSTITUTION, scopeid=collection.discipline.division.institution.id))
 
-    if queryset.model in (Geography, Geologictimeperiod, Lithostrat):
+    if queryset.model in (Geography, Geologictimeperiod, Lithostrat, Tectonicunit):
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:
