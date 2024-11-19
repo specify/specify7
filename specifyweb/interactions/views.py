@@ -116,6 +116,45 @@ def preps_available_ids(request):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
+@require_POST
+@login_maybe_required
+def cat_number_available(request):
+    """Returns a list of all the available CO ids that can be used for accession
+    """
+
+    try:
+        id_fld = Collectionobject._meta.get_field(request.POST['id_fld'].lower()).db_column
+    except FieldDoesNotExist as e:
+        raise http.Http404(e)
+
+    co_catNums = json.loads(request.POST['co_catNums'])
+
+    # sql = """
+    #     SELECT co.CatalogNumber, co.CollectionObjectID
+    #     FROM collectionobject co
+    #     WHERE co.accessionid IS NULL
+    #     AND co.{id_fld} IN ({params})
+    #     GROUP BY co.CatalogNumber, co.CollectionObjectID
+    #     ORDER BY co.CatalogNumber;
+    # """.format(id_fld=id_fld, params=",".join("%s" for __ in co_catNums))
+
+    queryset = Collectionobject.objects.filter(
+        accession_id__isnull=True,
+        **{f"{id_fld.lower()}__in": co_catNums},
+        collection_id=request.specify_collection.id
+        ).values(
+        'catalognumber',
+        'id'
+        ).order_by('catalognumber')
+
+    # cursor = connection.cursor()
+    # cursor.execute(sql, [int(request.specify_collection.id)] + co_catNums)
+    # rows = cursor.fetchall()
+
+    return queryset
+
+    # return http.HttpResponse(toJson(rows), content_type='application/json')
+
 
 def record_set_or_loan_nos(record_set_id=None, loan_nos=None, by_id=True):
     if record_set_id is not None:

@@ -264,7 +264,7 @@ export function InteractionDialog({
         : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
       ).then((data) =>
         /*
-         * Compare available data
+         * Compare data with catalogNumbers and assign available and unavaible
          * Data returns available ids
          */
         setAvailableCatNumbers(data)
@@ -278,7 +278,7 @@ export function InteractionDialog({
     else {
       const interaction = new actionTable.Resource();
       /*
-       * Set COs on accession using availableCOs
+       * Set COs on accession using availableCatNums
        * Const COs = map over availableCOS new table.Resource({id});
        * collection.add(COs);
        * need this ? ([resource]): void =>

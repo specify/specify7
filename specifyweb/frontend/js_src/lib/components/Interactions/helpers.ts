@@ -84,15 +84,15 @@ export const getPrepsAvailableForLoanCoIds = async (
 
 export const getCatNumberAvailableForAccession = async (
   idField: string,
-  collectionObjectCatNumber: RA<string>
+  collectionObjectCatNumbers: RA<string>
 ) =>
   // Returns available CO ids
-  ajax<RA<number>>('/interactions/catNumber_available/', {
+  ajax<RA<number>>('/interactions/cat_number_available/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
     body: formData({
       id_fld: idField,
-      co_catNum: collectionObjectCatNumber,
+      co_catNums: collectionObjectCatNumbers,
     }),
   }).then(({ data }) => data);
 
