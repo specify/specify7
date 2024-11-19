@@ -7574,7 +7574,6 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCogID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parentcojo = models.ForeignKey('CollectionObjectGroupJoin', db_column='CollectionObjectGroupJoinID', related_name='collectionobjectgroup', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'collectionobjectgroup'
