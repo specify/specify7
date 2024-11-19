@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:46+0000\n"
+"PO-Revision-Date: 2024-11-19 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "resources/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -589,3 +589,9 @@ msgstr "Copiar definição de visualização existente"
 #, fuzzy
 msgid "copyDefaultForm"
 msgstr "Formatadores de Registros"
+
+#. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:230
+#, fuzzy
+msgid "parentCogSameAsChild"
+msgstr "Um grupo de objetos de coleção não pode ser pai de si mesmo"
