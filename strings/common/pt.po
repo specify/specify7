@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-15 23:00+0000\n"
+"PO-Revision-Date: 2024-11-19 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -482,7 +482,7 @@ msgstr "Ordinal"
 #: components/Molecules/FilePicker.tsx:107
 #, fuzzy
 msgid "filePickerMessage"
-msgstr "Escolha um arquivo ou arraste-o aqui"
+msgstr "Selecione um arquivo ou arraste-o aqui"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
