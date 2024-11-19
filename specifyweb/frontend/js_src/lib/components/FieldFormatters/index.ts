@@ -10,6 +10,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
+import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
@@ -46,7 +47,8 @@ export const fetchContext = Promise.all([
               formatter.isSystem,
               formatter.title ?? formatter.name,
               fields,
-              formatter.table
+              formatter.table,
+              formatter.field
             );
           }
 
@@ -66,7 +68,9 @@ export class UiFormatter {
     public readonly isSystem: boolean,
     public readonly title: LocalizedString,
     public readonly fields: RA<Field>,
-    public readonly table: SpecifyTable | undefined
+    public readonly table: SpecifyTable | undefined,
+    // The field which this formatter is formatting
+    public readonly field: LiteralField | undefined
   ) {}
 
   /**
@@ -275,6 +279,7 @@ class CatalogNumberNumericField extends NumericField {
   }
 }
 
+// REFACTOR: tables.CollectionObject is always undefined in the global scope
 export class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
     super(
@@ -287,7 +292,8 @@ export class CatalogNumberNumeric extends UiFormatter {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber')
     );
   }
 }

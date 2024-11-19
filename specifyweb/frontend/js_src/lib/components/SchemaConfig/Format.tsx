@@ -67,6 +67,10 @@ export function SchemaConfigFormat({
         value={item.format}
         values={{
           '': schemaData.uiFormatters
+            .filter(
+              ({ field: formatterField }) =>
+                formatterField === undefined || formatterField === field
+            )
             .map(
               ({ name, isSystem, value }) =>
                 [
