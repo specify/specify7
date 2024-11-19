@@ -5,6 +5,7 @@ import {
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PARENTCOG_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -221,6 +222,20 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               ?.set('isPrimary', true);
           }
         });
+      },
+      parentCog: async (cog): Promise<BusinessRuleResult> => {
+        if (cog.url() === cog.get('parentCog')) {
+          return {
+            isValid: false,
+            reason: resourcesText.parentCogSameAsChild(),
+            saveBlockerKey: PARENTCOG_KEY,
+          };
+        }
+
+        return {
+          isValid: true,
+          saveBlockerKey: PARENTCOG_KEY,
+        };
       },
     },
   },
