@@ -85,9 +85,9 @@ export const getPrepsAvailableForLoanCoIds = async (
 export const getCatNumberAvailableForAccession = async (
   idField: string,
   collectionObjectCatNumbers: RA<string>
-): Promise<RA<string>> =>
+): Promise<RA<{ readonly catalognumber: string; readonly id: number }>> =>
   // Returns available CO ids
-  ajax<RA<{ readonly catalognumber: string }>>(
+  ajax<RA<{ readonly catalognumber: string; readonly id: number }>>(
     '/interactions/cat_number_available/',
     {
       method: 'POST',
@@ -97,7 +97,7 @@ export const getCatNumberAvailableForAccession = async (
         co_catNums: collectionObjectCatNumbers,
       }),
     }
-  ).then(({ data }) => data.map((item) => item.catalognumber));
+  ).then(({ data }) => data);
 
 export const getInteractionsForPrepId = async (prepId: number) =>
   ajax<RA<readonly [number, string | null, string | null, string | null]>>(

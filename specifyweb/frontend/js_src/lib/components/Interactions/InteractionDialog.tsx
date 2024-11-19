@@ -253,6 +253,13 @@ export function InteractionDialog({
     React.useState<RA<string>>();
   const [availableCatNumbers, setAvailableCatNumbers] =
     React.useState<RA<string>>();
+  const [availableData, setAvailableData] = React.useState<
+    | RA<{
+        readonly catalognumber: string;
+        readonly id: number;
+      }>
+    | undefined
+  >();
 
   const hanleAvailableCatNumber = (): void => {
     const catalogNumbers = handleParse();
@@ -262,13 +269,22 @@ export function InteractionDialog({
       (catalogNumbers.length === 0
         ? Promise.resolve([])
         : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
-      ).then((data) =>
-        /*
-         * Compare data with catalogNumbers and assign available and unavaible
-         * Data returns available ids
-         */
-        setAvailableCatNumbers(data)
-      )
+      ).then((data) => {
+        setAvailableData(data);
+
+        const returnCOCatNumber = new Set(
+          data.map((item) => item.catalognumber)
+        );
+
+        const availableCOs = catalogNumbers.filter((catNumber) =>
+          returnCOCatNumber.has(catNumber)
+        );
+        const unavailableCOs = catalogNumbers.filter(
+          (catNumber) => !returnCOCatNumber.has(catNumber)
+        );
+        setAvailableCatNumbers(availableCOs);
+        setUnavailableCatNumbers(unavailableCOs);
+      })
     );
     if (unavailableCatNumbers !== undefined && unavailableCatNumbers.length > 0)
       setState({
@@ -277,6 +293,11 @@ export function InteractionDialog({
       });
     else {
       const interaction = new actionTable.Resource();
+      const COs = availableData?.map((available) => {
+        const id = available.id;
+        return new tables.CollectionObject.Resource({ id });
+      });
+      console.log(COs, interaction);
       /*
        * Set COs on accession using availableCatNums
        * Const COs = map over availableCOS new table.Resource({id});

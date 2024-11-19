@@ -134,7 +134,8 @@ def cat_number_available(request):
         **{f"{id_fld.lower()}__in": co_catNums},
         collection_id=request.specify_collection.id
         ).values(
-        'catalognumber'
+        'catalognumber',
+        'id'
         ).order_by('catalognumber')
 
     data = list(queryset)
