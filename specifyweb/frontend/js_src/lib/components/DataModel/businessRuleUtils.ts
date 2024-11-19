@@ -4,6 +4,7 @@ import type { CollectionObjectGroupJoin, Determination } from './types';
 
 // Save blocker keys used in businessRuleDefs.ts
 export const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
+export const PARENTCOG_KEY = "cog-parentCog";
 
 /**
  *
