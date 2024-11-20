@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"PO-Revision-Date: 2024-11-20 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "query/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -620,3 +620,23 @@ msgstr "e"
 #, fuzzy
 msgid "chooseFormatter"
 msgstr "Escolha o formatador"
+
+#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilter.tsx:579
+#, fuzzy
+msgid "range"
+msgstr "Faixa"
+
+#. Used in: Components > Query Builder > Field Filter Tool
+#: components/QueryBuilder/FieldFilterTool.tsx:137
+#: components/QueryBuilder/FieldFilterTool.tsx:145
+#, fuzzy
+msgid "strict"
+msgstr "Estrito"
+
+#. Used in: Components > Query Builder > Field Filter Tool
+#: components/QueryBuilder/FieldFilterTool.tsx:138
+#: components/QueryBuilder/FieldFilterTool.tsx:146
+#, fuzzy
+msgid "nonStrict"
+msgstr "Não rigoroso"
