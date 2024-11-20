@@ -24,15 +24,14 @@ def post_tree_rank_initiation_handler(sender, obj, created):
 @orm_signal_handler('pre_delete')
 def cannot_delete_root_treedefitem(sender, obj):
     if is_treedefitem(obj):  # is it a treedefitem?
-        pass
-#         if sender.objects.get(id=obj.id).parent is None:
-#             raise TreeBusinessRuleException(
-#                 "cannot delete root level tree definition item",
-#                 {"tree": obj.__class__.__name__,
-#                  "localizationKey": 'deletingTreeRoot',
-#                  "node": {
-#                      "id": obj.id
-#                  }})
+        if sender.objects.get(id=obj.id).parent is None:
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item",
+                {"tree": obj.__class__.__name__,
+                 "localizationKey": 'deletingTreeRoot',
+                 "node": {
+                     "id": obj.id
+                 }})
         # pre_tree_rank_deletion(sender, obj)
         # verify_rank_parent_chain_integrity(obj, RankOperation.DELETED)
 
