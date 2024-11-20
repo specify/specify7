@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-20 19:00+0000\n"
+"PO-Revision-Date: 2024-11-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -86,7 +86,7 @@ msgstr "Ресурси"
 #: components/AppResources/Aside.tsx:264
 #, fuzzy
 msgid "subCategories"
-msgstr "Підкатегорії"
+msgstr "Фільтри"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
@@ -141,7 +141,7 @@ msgstr "Форматувальники полів"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Форматувальники записів"
+msgstr "Умовне значення поля"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -235,7 +235,7 @@ msgstr "Виберіть тип ресурсу"
 #: components/AppResources/types.tsx:197
 #, fuzzy
 msgid "otherJsonResource"
-msgstr "Інший ресурс JSON"
+msgstr "Опублікувати"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -443,7 +443,9 @@ msgstr "Це поле"
 #: components/WebLinks/Definition.tsx:166
 #, fuzzy
 msgid "selectTableFirst"
-msgstr "Спочатку виберіть таблицю"
+msgstr ""
+"Виконайте пошук у записах колекції, щоб переглянути інструмент форматування "
+"записів"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
@@ -466,7 +468,7 @@ msgstr ""
 msgid "wrongScopeWarning"
 msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
-"перебуваєте. Рекомендується змінити колекцію перед редагуванням цього ресурсу"
+"перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -508,7 +510,7 @@ msgstr "Надіслати сповіщення про завершення ко
 #: components/ExportFeed/Editor.tsx:273
 #, fuzzy
 msgid "runInCollection"
-msgstr "Запустити в колекції"
+msgstr "Запустити в колекцію"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
@@ -520,7 +522,7 @@ msgstr "Створіть нове визначення подання"
 #: components/FormEditor/Create.tsx:78
 #, fuzzy
 msgid "copyFromExistingForm"
-msgstr "Копіювати існуюче визначення перегляду"
+msgstr "Скопіюйте існуюче визначення перегляду"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
@@ -593,4 +595,4 @@ msgstr "Потрібне поточне визначення."
 #: components/DataModel/businessRuleDefs.ts:230
 #, fuzzy
 msgid "parentCogSameAsChild"
-msgstr "Група об’єктів колекції не може бути батьківською для самої себе"
+msgstr "Група об’єктів колекції не може бути батьківською"
