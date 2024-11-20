@@ -7563,7 +7563,7 @@
       },
       {
         "name": "cojo",
-        "type": "one-to-many",
+        "type": "one-to-one",
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
@@ -38428,17 +38428,16 @@
         "column": "COGTypeID"
       },
       {
-        "name": "parentCojo",
+        "name": "parentCog",
         "type": "many-to-one",
         "required": false,
         "dependent": false,
-        "relatedModelName": "CollectionObjectGroupJoin",
-        "column": "CollectionObjectGroupJoinID",
-        "otherSideName": "collectionobjectgroup"
+        "relatedModelName": "CollectionObjectGroup",
+        "column": "ParentCogID"
       },
       {
         "name": "cojo",
-        "type": "one-to-many",
+        "type": "one-to-one",
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
@@ -38630,14 +38629,6 @@
         "relatedModelName": "CollectionObject",
         "column": "ChildCOID",
         "otherSideName": "cojo"
-      },
-      {
-        "name": "collectionobjectgroup",
-        "type": "one-to-many",
-        "required": false,
-        "dependent": false,
-        "relatedModelName": "CollectionObjectGroup",
-        "otherSideName": "parentCojo"
       }
     ],
     "fieldAliases": []
