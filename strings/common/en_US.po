@@ -332,7 +332,7 @@ msgstr "Save"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:462
+#: components/QueryBuilder/Wrapped.tsx:463
 #: components/SchemaConfig/Format.tsx:258
 #: components/SchemaConfig/Format.tsx:306
 #: components/SchemaConfig/Languages.tsx:75
@@ -430,7 +430,7 @@ msgstr "Tools"
 #: components/Permissions/FormatError.tsx:147
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:114
-#: components/QueryBuilder/FieldFilter.tsx:623
+#: components/QueryBuilder/FieldFilter.tsx:646
 #: components/QueryBuilder/Formatter.tsx:59
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
@@ -481,10 +481,10 @@ msgstr "Uploaded"
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/Components.tsx:167
-#: components/QueryBuilder/Line.tsx:293
-#: components/QueryBuilder/Line.tsx:297
-#: components/QueryBuilder/Line.tsx:456
-#: components/QueryBuilder/Line.tsx:459
+#: components/QueryBuilder/FieldFilterTool.tsx:100
+#: components/QueryBuilder/FieldFilterTool.tsx:103
+#: components/QueryBuilder/Line.tsx:296
+#: components/QueryBuilder/Line.tsx:300
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -492,7 +492,7 @@ msgstr "Uploaded"
 #: components/Statistics/StatsPageEditing.tsx:37
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:151
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 msgid "remove"
 msgstr "Remove"
 
@@ -600,7 +600,7 @@ msgid "update"
 msgstr "Update"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:634
+#: components/WbPlanView/navigator.ts:636
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
 msgstr "Full Date"
@@ -707,8 +707,8 @@ msgstr "Running…"
 msgid "noMatches"
 msgstr "No Matches"
 
-#: components/QueryBuilder/FieldFilter.tsx:74
-#: components/QueryBuilder/FieldFilter.tsx:239
+#: components/QueryBuilder/FieldFilter.tsx:78
+#: components/QueryBuilder/FieldFilter.tsx:243
 #: components/WbUtils/index.tsx:55
 #: components/WbUtils/index.tsx:60
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > Wb Utils > Index
@@ -819,8 +819,8 @@ msgid "id"
 msgstr "ID"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/Line.tsx:495
-#: components/QueryBuilder/Line.tsx:503
+#: components/QueryBuilder/Line.tsx:429
+#: components/QueryBuilder/Line.tsx:437
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 msgid "filter"
 msgstr "Filter"

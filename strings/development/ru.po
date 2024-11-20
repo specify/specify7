@@ -26,7 +26,7 @@ msgid "downloadAsHtml"
 msgstr "Скачать как HTML"
 
 #: components/Developer/CrashReportMapper.tsx:168
-#: components/SpecifyNetwork/Map.tsx:227
+#: components/SpecifyNetwork/Map.tsx:228
 #. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 #, fuzzy
 msgid "details"

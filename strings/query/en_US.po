@@ -46,18 +46,18 @@ msgstr "New Query"
 msgid "searchFields"
 msgstr "Searched fields"
 
-#: components/QueryBuilder/FieldFilter.tsx:415
+#: components/QueryBuilder/FieldFilter.tsx:419
 #. Used in: Components > Query Builder > Field Filter
 msgid "any"
 msgstr "Any"
 
-#: components/QueryBuilder/FieldFilter.tsx:339
-#: components/QueryBuilder/FieldFilter.tsx:389
+#: components/QueryBuilder/FieldFilter.tsx:343
+#: components/QueryBuilder/FieldFilter.tsx:393
 #. Used in: Components > Query Builder > Field Filter
 msgid "startValue"
 msgstr "Start Value"
 
-#: components/QueryBuilder/FieldFilter.tsx:350
+#: components/QueryBuilder/FieldFilter.tsx:354
 #. Used in: Components > Query Builder > Field Filter
 msgid "endValue"
 msgstr "End Value"
@@ -151,7 +151,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:465
+#: components/QueryBuilder/Wrapped.tsx:466
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -234,9 +234,9 @@ msgstr "Ascending Sort"
 msgid "descendingSort"
 msgstr "Descending Sort"
 
-#: components/QueryBuilder/Line.tsx:471
-#: components/QueryBuilder/Line.tsx:475
-#. 🟥as in negate query condition. Used in: Components > Query Builder > Line
+#: components/QueryBuilder/FieldFilterTool.tsx:113
+#: components/QueryBuilder/FieldFilterTool.tsx:117
+#. 🟥as in negate query condition. Used in: Components > Query Builder > Field Filter Tool
 msgid "negate"
 msgstr "Negate"
 
@@ -256,104 +256,104 @@ msgstr "(aggregated)"
 msgid "formattedInline"
 msgstr "(formatted)"
 
-#: components/QueryBuilder/FieldFilter.tsx:431
+#: components/QueryBuilder/FieldFilter.tsx:436
 #. Used in: Components > Query Builder > Field Filter
 msgid "like"
 msgstr "Like"
 
-#: components/QueryBuilder/FieldFilter.tsx:432
+#: components/QueryBuilder/FieldFilter.tsx:437
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
 "Use \"%\" to match any number of characters.\n"
 "Use \"_\" to match a single character"
 
-#: components/QueryBuilder/FieldFilter.tsx:440
+#: components/QueryBuilder/FieldFilter.tsx:445
 #. Used in: Components > Query Builder > Field Filter
 msgid "equal"
 msgstr "Equal"
 
-#: components/QueryBuilder/FieldFilter.tsx:449
+#: components/QueryBuilder/FieldFilter.tsx:454
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterThan"
 msgstr "Greater than"
 
-#: components/QueryBuilder/FieldFilter.tsx:458
+#: components/QueryBuilder/FieldFilter.tsx:463
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessThan"
 msgstr "Less than"
 
-#: components/QueryBuilder/FieldFilter.tsx:467
+#: components/QueryBuilder/FieldFilter.tsx:472
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterOrEqualTo"
 msgstr "Greater or Equal to"
 
-#: components/QueryBuilder/FieldFilter.tsx:476
+#: components/QueryBuilder/FieldFilter.tsx:481
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessOrEqualTo"
 msgstr "Less or Equal to"
 
-#: components/QueryBuilder/FieldFilter.tsx:485
+#: components/QueryBuilder/FieldFilter.tsx:490
 #. Used in: Components > Query Builder > Field Filter
 msgid "true"
 msgstr "True"
 
-#: components/QueryBuilder/FieldFilter.tsx:493
+#: components/QueryBuilder/FieldFilter.tsx:498
 #. Used in: Components > Query Builder > Field Filter
 msgid "false"
 msgstr "False"
 
-#: components/QueryBuilder/FieldFilter.tsx:549
+#: components/QueryBuilder/FieldFilter.tsx:554
 #. Used in: Components > Query Builder > Field Filter
 msgid "trueOrNull"
 msgstr "True or Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:557
+#: components/QueryBuilder/FieldFilter.tsx:562
 #. Used in: Components > Query Builder > Field Filter
 msgid "falseOrNull"
 msgstr "False or Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:501
+#: components/QueryBuilder/FieldFilter.tsx:506
 #. Used in: Components > Query Builder > Field Filter
 msgid "between"
 msgstr "Between"
 
-#: components/QueryBuilder/FieldFilter.tsx:510
+#: components/QueryBuilder/FieldFilter.tsx:515
 #. Used in: Components > Query Builder > Field Filter
 msgid "in"
 msgstr "In"
 
-#: components/QueryBuilder/FieldFilter.tsx:511
+#: components/QueryBuilder/FieldFilter.tsx:516
 #. Used in: Components > Query Builder > Field Filter
 msgid "inDescription"
 msgstr "A comma-separated list of values"
 
 #: components/Preferences/UserDefinitions.tsx:1380
-#: components/QueryBuilder/FieldFilter.tsx:523
+#: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
 msgstr "Contains"
 
-#: components/QueryBuilder/FieldFilter.tsx:541
+#: components/QueryBuilder/FieldFilter.tsx:546
 #. Used in: Components > Query Builder > Field Filter
 msgid "empty"
 msgstr "Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:345
+#: components/QueryBuilder/FieldFilter.tsx:349
 #. Used in: Components > Query Builder > Field Filter
 msgid "and"
 msgstr "and"
 
 #: components/Preferences/UserDefinitions.tsx:1376
-#: components/QueryBuilder/FieldFilter.tsx:532
+#: components/QueryBuilder/FieldFilter.tsx:537
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
 msgstr "Starts With"
 
-#: components/QueryBuilder/Line.tsx:417
-#: components/QueryBuilder/Line.tsx:425
-#: components/QueryBuilder/Line.tsx:452
-#. Used in: Components > Query Builder > Line
+#: components/QueryBuilder/FieldFilterTool.tsx:60
+#: components/QueryBuilder/FieldFilterTool.tsx:68
+#: components/QueryBuilder/FieldFilterTool.tsx:96
+#. Used in: Components > Query Builder > Field Filter Tool
 msgid "or"
 msgstr "or"
 
@@ -431,7 +431,7 @@ msgstr "Tree Desynonymize"
 msgid "treeBulkMove"
 msgstr "Tree Bulk Move"
 
-#: components/QueryBuilder/FieldFilter.tsx:118
+#: components/QueryBuilder/FieldFilter.tsx:122
 #. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
@@ -515,3 +515,20 @@ msgstr "View records"
 #. Used in: Components > Query Builder > Formatter
 msgid "chooseFormatter"
 msgstr "Choose formatter"
+
+#: components/QueryBuilder/FieldFilter.tsx:579
+#. Used in: Components > Query Builder > Field Filter
+msgid "range"
+msgstr "Range"
+
+#: components/QueryBuilder/FieldFilterTool.tsx:137
+#: components/QueryBuilder/FieldFilterTool.tsx:145
+#. Used in: Components > Query Builder > Field Filter Tool
+msgid "strict"
+msgstr "Strict"
+
+#: components/QueryBuilder/FieldFilterTool.tsx:138
+#: components/QueryBuilder/FieldFilterTool.tsx:146
+#. Used in: Components > Query Builder > Field Filter Tool
+msgid "nonStrict"
+msgstr "Non strict"
