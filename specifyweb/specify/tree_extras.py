@@ -23,7 +23,7 @@ def validate_node_numbers(table, revalidate_after=True):
         validate_tree_numbering(table)
     except AssertionError:
         # TODO: need to pass tree id here
-        # renumber_tree(table)
+        renumber_tree(table)
         pass
     yield
     if revalidate_after:
@@ -49,7 +49,7 @@ class Tree(models.Model):
 
         if prev_self is None:
             #investigate why this removes the nodeNumber of root creation see add_root in tree_views.py
-            # self.nodenumber = None
+            self.nodenumber = None
             self.highestchildnodenumber = None
         else:
             self.nodenumber = prev_self.nodenumber

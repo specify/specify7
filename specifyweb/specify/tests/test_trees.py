@@ -543,3 +543,61 @@ class AddDeleteRankResourcesTest(ApiTests):
         species = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=220)
         self.assertEqual(species.name, "Species")
         self.assertEqual(species.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=180))
+
+    def test_add_root_taxon(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        tree = 'taxon'
+        tree_def = models.Taxontreedef.objects.create(name='New Blank Tree')
+        tree_def_id = tree_def.id
+        root_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        first_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=100, name='Test', parent=root_rank)
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+
+        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node.delete()
+        first_rank.delete()
+        root_rank.delete(allow_root_del=True)
+        tree_def.delete()
+
+    def test_add_root_geo(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        tree = 'geography'
+        tree_def = models.Geographytreedef.objects.create(name='New Blank Tree')
+        tree_def_id = tree_def.id
+        root_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        first_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=100, name='Continent')
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+
+        root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node.delete()
+        first_rank.delete()
+        root_rank.delete(allow_root_del=True)
+        tree_def.delete()
