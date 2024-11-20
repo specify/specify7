@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-19 21:01+0000\n"
+"PO-Revision-Date: 2024-11-20 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "workbench/pt/>\n"
@@ -476,7 +476,7 @@ msgstr ""
 #: components/WbActions/index.tsx:213
 #, fuzzy
 msgid "validationCanceled"
-msgstr "Validação cancelada"
+msgstr "Validação Cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:221
