@@ -485,6 +485,13 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="TectonicUnit" title="Tectonic Unit" class="edu.ku.brc.specify.datamodel.TectonicUnit" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">fullName</field>
+			</fields>
+		</switch>
+	</format>
 	<aggregators>
 		<aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" format="AccessionAgent"/>
 		<aggregator name="AccessionAttachment" title="AccessionAttachment" class="edu.ku.brc.specify.datamodel.AccessionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
