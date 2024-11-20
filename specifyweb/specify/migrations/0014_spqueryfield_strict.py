@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0012_add_cojo_to_schema_config'),
+        ('specify', '0013_collectionobjectgroup_parentcog'),
     ]
 
     operations = [
