@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-19 21:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-20 11:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -14,7 +14,6 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:26
-#, fuzzy
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
@@ -22,7 +21,6 @@ msgstr "Вкажіть 7"
 #: components/Preferences/UserDefinitions.tsx:1793
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:118
-#, fuzzy
 msgid "no"
 msgstr "немає"
 
@@ -301,9 +299,8 @@ msgstr "Очистити все"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:62
-#, fuzzy
 msgid "deleteUnmapped"
-msgstr "Виберіть файли або перетягніть їх сюди"
+msgstr "Видалити незіставлені стовпці"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:266
@@ -623,7 +620,6 @@ msgstr "Розгорнути все"
 #: components/Atoms/__tests__/index.test.tsx:15
 #: components/Molecules/ResourceLink.tsx:64
 #: components/TreeView/Actions.tsx:122
-#, fuzzy
 msgid "view"
 msgstr "Переглянути"
 
@@ -782,7 +778,6 @@ msgstr "Невикористаний"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:53
-#, fuzzy
 msgid "ordinal"
 msgstr "Порядковий"
 
@@ -1054,12 +1049,10 @@ msgstr "Виберіть файли або перетягніть їх сюди"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:61
-#, fuzzy
 msgid "zoom"
 msgstr "Збільшити"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:66
-#, fuzzy
 msgid "unzoom"
 msgstr "Зменшити масштаб"
