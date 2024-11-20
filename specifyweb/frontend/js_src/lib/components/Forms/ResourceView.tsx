@@ -365,7 +365,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       header={customTitle ?? title}
       headerButtons={
         <>
-          {headerButtons?.(specifyNetworkBadge) ?? (
+          {headerButtons?.(headerContent) ?? (
             <>
               <DataEntry.Visit resource={resource} />
               <span className="-ml-4 flex-1" />
