@@ -202,7 +202,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           })}
         </H3>
         {selectedRows.size > 0 && (
-          <Button.Small onClick={(): void => setSelectedRows(new Set())}>
+          <Button.Small
+            onClick={(): void => {
+              setSelectedRows(new Set());
+              handleSelected?.([]);
+            }}
+          >
             {interactionsText.deselectAll()}
           </Button.Small>
         )}
@@ -368,8 +373,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   ),
                   ...(isSelected ? ids : []),
                 ];
+                const uniqueSelectedRows = Array.from(new Set(newSelectedRows));
                 setSelectedRows(new Set(newSelectedRows));
-                handleSelected?.(newSelectedRows);
+                handleSelected?.(uniqueSelectedRows);
 
                 lastSelectedRow.current = rowIndex;
               }}

@@ -291,9 +291,11 @@ test('getFieldsToNotClone', () => {
   });
   expect(getFieldsToNotClone(tables.CollectionObject, true, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'timestampCreated',
     'totalCountAmt',
     'uniqueIdentifier',
@@ -304,9 +306,11 @@ test('getFieldsToNotClone', () => {
   ]);
   expect(getFieldsToNotClone(tables.CollectionObject, false, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'text1',
     'timestampCreated',
     'totalCountAmt',

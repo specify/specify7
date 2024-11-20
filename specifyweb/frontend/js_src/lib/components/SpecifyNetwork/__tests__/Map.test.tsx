@@ -72,6 +72,7 @@ test('getFields and extractQueryTaxonId', async () => {
         "filters": [
           {
             "isNot": false,
+            "isStrict": false,
             "startValue": "",
             "type": "any",
           },

@@ -1713,6 +1713,8 @@ class Collectionobjectcitation(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='collectionobjectcitations', null=False, on_delete=protect_with_blockers)
+    # absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='collectionobjectcitations', null=True, on_delete=protect_with_blockers)
+    # relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='collectionobjectcitations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectcitation'
@@ -2263,7 +2265,7 @@ class Container(models.Model):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='containers', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2823,6 +2825,7 @@ class Discipline(model_extras.Discipline):
     taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3592,7 +3595,7 @@ class Geography(model_extras.Geography):
     definition = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geography'
@@ -3665,7 +3668,7 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
     save = partialmethod(custom_save)
 
 class Geologictimeperiod(model_extras.Geologictimeperiod):
-    specify_model = datamodel.get_table('geologictimeperiod')
+    specify_model = datamodel.get_table('geologictimeperiod') # aka. Chronostratigraphy
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodid')
@@ -3697,7 +3700,7 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     definition = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geologictimeperiod'
@@ -4189,7 +4192,7 @@ class Lithostrat(model_extras.Lithostrat):
     definition = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'lithostrat'
@@ -4832,7 +4835,7 @@ class Otheridentifier(models.Model):
     save = partialmethod(custom_save)
 
 class Paleocontext(models.Model):
-    specify_model = datamodel.get_table('paleocontext')
+    specify_model = datamodel.get_table('paleocontext') # aka. GeoContext
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='paleocontextid')
@@ -4866,6 +4869,7 @@ class Paleocontext(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     lithostrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
+    tectonicunit = models.ForeignKey('TectonicUnit', db_column='TectonicUnitID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -6300,6 +6304,7 @@ class Spqueryfield(models.Model):
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    isstrict = models.BooleanField(db_column='IsStrict', blank=True, null=True)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6563,7 +6568,7 @@ class Storage(model_extras.Storage):
     definition = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'storage'
@@ -6762,7 +6767,7 @@ class Taxon(model_extras.Taxon):
     hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
     hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     taxonattribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7569,6 +7574,7 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCogID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectgroup'
@@ -7600,7 +7606,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
+    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='children', null=False, on_delete=models.CASCADE)
 
     # Relationships: One-to-One
     childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
@@ -7608,6 +7614,295 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteage(models.Model):
+    specify_model = datamodel.get_table('absoluteage')
+
+    # ID Field
+    id = models.AutoField(db_column='AbsoluteAgeID', primary_key=True)
+
+    # Fields
+    absoluteage = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AbsoluteAge', db_index=False)
+    agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False) # sedimentation, metamorphic, inclusion, original, fall, etc.
+    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
+    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
+    date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
+    date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+
+    # Relationships: Many-to-One
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='absoluteages', null=False, on_delete=models.CASCADE)
+    absoluteageattachment = models.ForeignKey(db_column='AbsoluteAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment')
+    absoluteagecitation = models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation')
+    createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+
+    class Meta:
+        db_table = 'absoluteage'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeage(models.Model):
+    specify_model = datamodel.get_table('relativeage')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeageid')
+
+    # Fields
+    agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False)
+    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
+    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
+    date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
+    date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    relativeageperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='RelativeAgePeriod', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    verbatimperiod = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimPeriod', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+
+    # Relationships: Many-to-One
+    agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='agename', null=True, on_delete=protect_with_blockers)
+    agenameend = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameEndID', related_name='agenameend', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
+    relativeageattachment = models.ForeignKey(db_column='RelativeAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment')
+    relativeagecitation = models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation')
+    createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+
+    class Meta:
+        db_table = 'relativeage'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteageattachment(models.Model):
+    specify_model = datamodel.get_table('absoluteageattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='absoluteageattachmentid')
+
+    # Fields
+    ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'absoluteageattachment'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeageattachment(models.Model):
+    specify_model = datamodel.get_table('relativeageattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeageattachmentid')
+
+    # Fields
+    ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'relativeageattachment'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteagecitation(models.Model):
+    specify_model = datamodel.get_table('absoluteagecitation')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='absoluteagecitationid')
+
+    # Fields
+    figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
+    pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
+    platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'absoluteagecitation'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeagecitation(models.Model):
+    specify_model = datamodel.get_table('relativeagecitation')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeagecitationid')
+
+    # Fields
+    figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
+    pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
+    platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'relativeagecitation'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunittreedef(models.Model):
+    specify_model = datamodel.get_table('tectonicunittreedef')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefid')
+
+    # Fields
+    fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False, default=0)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunittreedef'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
+    specify_model = datamodel.get_table('tectonicUnittreedefitem')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefitemid')
+
+    # Fields
+    fullnameseparator = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullNameSeparator', db_index=False)
+    isenforced = models.BooleanField(blank=True, null=True, unique=False, db_column='IsEnforced', db_index=False)
+    isinfullname = models.BooleanField(blank=True, null=True, unique=False, db_column='IsInFullName', db_index=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    rankid = models.IntegerField(blank=True, null=True, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    textafter = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextAfter', db_index=False)
+    textbefore = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextBefore', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
+    treedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treedefitems', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunittreedefitem'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunit(model_extras.Tectonicunit):
+    specify_model = datamodel.get_table('tectonicunit')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunitid')
+
+    # Fields
+    fullname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullName', db_index=False)
+    guid = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='GUID', db_index=False)
+    highestchildnodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='HighestChildNodeNumber', db_index=False)
+    isaccepted = models.BooleanField(blank=False, null=False, unique=False, db_column='IsAccepted', db_index=False, default=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    nodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='NodeNumber', db_index=False)   
+    number1 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    rankid = models.IntegerField(blank=False, null=False, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    
+    # Relationships: Many-to-One
+    acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
+    definition = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunit'
         ordering = ()
 
     save = partialmethod(custom_save)

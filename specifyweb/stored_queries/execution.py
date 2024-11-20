@@ -85,6 +85,14 @@ def filter_by_collection(model, query, collection):
         logger.info("filtering geologic time period rank to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
 
+    if model is models.TectonicUnit:
+        logger.info("filtering tectonic unit to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+
+    if model is models.TectonicUnitTreeDefItem:
+        logger.info("filtering tectonic unit rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
         return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
@@ -123,7 +131,7 @@ def filter_by_collection(model, query, collection):
 
 
 
-EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict")
 
 def field_specs_from_json(json_fields):
     """Given deserialized json data representing an array of SpQueryField

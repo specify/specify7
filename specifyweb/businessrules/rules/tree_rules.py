@@ -42,5 +42,6 @@ def post_tree_rank_deletion_handler(sender, obj):
 
 @orm_signal_handler('pre_save')
 def set_is_accepted_if_preferred(sender, obj):
-    if hasattr(obj, 'isaccepted'):
+    if hasattr(obj, 'isaccepted') and hasattr(obj, 'accepted_id') :
         obj.isaccepted = obj.accepted_id == None
+

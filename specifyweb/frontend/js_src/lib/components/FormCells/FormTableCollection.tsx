@@ -1,5 +1,6 @@
 import React from 'react';
 
+import type { CollectionFetchFilters } from '../DataModel/collection';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -12,6 +13,7 @@ export function FormTableCollection({
   collection,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  onFetchMore: handleFetch,
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
@@ -21,13 +23,16 @@ export function FormTableCollection({
   readonly onDelete:
     | ((resource: SpecifyResource<AnySchema>, index: number) => void)
     | undefined;
+  readonly onFetchMore?: (
+    filters?: CollectionFetchFilters<AnySchema>
+  ) => Promise<Collection<AnySchema> | undefined>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
     () =>
       resourceOn(
         collection,
-        'add remove sort',
+        'add remove sort sync',
         () => setRecords(Array.from(collection.models)),
         true
       ),
@@ -35,9 +40,11 @@ export function FormTableCollection({
   );
 
   const handleFetchMore = React.useCallback(async () => {
-    await collection.fetch();
+    await (typeof handleFetch === 'function'
+      ? handleFetch()
+      : collection.fetch());
     setRecords(Array.from(collection.models));
-  }, [collection]);
+  }, [collection, handleFetch]);
 
   const isDependent = collection instanceof DependentCollection;
   const relationship = collection.field?.getReverse();
@@ -56,6 +63,7 @@ export function FormTableCollection({
   const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
+      collection={collection}
       isDependent={isDependent}
       relationship={relationship}
       resources={records}

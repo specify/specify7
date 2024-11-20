@@ -56,6 +56,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
       initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
 
+    // REFACTOR: use the 'changed' event over 'change'
     this.resource.on('change', this.changed, this);
     this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);

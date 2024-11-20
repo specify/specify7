@@ -85,7 +85,6 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
-      collectionobjecttype: collectionObjectTypeUrl,
       determinations: [
         {
           taxon: getResourceApiUrl('Taxon', otherTaxonId),
@@ -116,25 +115,9 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
-  });
-
-  test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {
-    const collectionObject = getBaseCollectionObject();
-
-    const determination =
-      collectionObject.getDependentResource('determinations')?.models[0];
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(determination, tables.Determination.getField('taxon'))
+    expect(collectionObject.get('collectionObjectType')).toEqual(
+      schema.defaultCollectionObjectType
     );
-
-    await act(async () => {
-      await determination?.businessRuleManager?.checkField('taxon');
-    });
-
-    expect(result.current[0]).toStrictEqual([
-      'Taxon does not belong to the same tree as this Object Type',
-    ]);
   });
 
   const otherCollectionObjectTypeUrl = getResourceApiUrl(
@@ -210,6 +193,48 @@ describe('Collection Object business rules', () => {
   });
 });
 
+describe('CollectionObjectGroup business rules', () => {
+  const getBaseCog = () => {
+    const cog = new tables.CollectionObjectGroup.Resource({
+      id: 1,
+      cogType: getResourceApiUrl('CollectionObjectGroupType', 1),
+      resource_uri: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    const cojo1 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: false,
+      isSubstrate: true,
+      childCo: getResourceApiUrl('CollectionObject', 1),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+    const cojo2 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: true,
+      isSubstrate: false,
+      childCo: getResourceApiUrl('CollectionObject', 2),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    cog.set('children', [cojo1, cojo2]);
+    return { cog, cojo1, cojo2 };
+  };
+
+  test('Only one CO COJO can be primary', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo1.set('isPrimary', true);
+
+    expect(cojo1.get('isPrimary')).toBe(true);
+    expect(cojo2.get('isPrimary')).toBe(false);
+  });
+
+  test('Only one CO COJO can be substrate', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo2.set('isSubstrate', true);
+
+    expect(cojo1.get('isSubstrate')).toBe(false);
+    expect(cojo2.get('isSubstrate')).toBe(true);
+  });
+});
+
 describe('DNASequence business rules', () => {
   test('fieldCheck geneSequence', async () => {
     const dNASequence = new tables.DNASequence.Resource({
@@ -279,6 +304,11 @@ describe('uniqueness rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Value must be unique to Collection',
     ]);
+  });
+
+  overrideAjax(getResourceApiUrl('Agent', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Agent', 1),
   });
 
   test('rule with local collection', async () => {
