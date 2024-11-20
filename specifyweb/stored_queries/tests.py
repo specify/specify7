@@ -1256,9 +1256,7 @@ expected_errors = {
   },
   "CollectionObject": {
     "not_found": [
-      "absoluteAges",
       "projects", 
-      "relativeAges", 
     ],
     "incorrect_direction": {
       "cojo": [

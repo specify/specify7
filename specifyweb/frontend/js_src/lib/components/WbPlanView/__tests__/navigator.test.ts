@@ -488,6 +488,15 @@ theories(getMappingLineData, [
             optionLabel: 'Accession #',
             tableName: 'Accession',
           },
+          age: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Age',
+            tableName: undefined,
+          },
           altCatalogNumber: {
             isDefault: false,
             isEnabled: true,

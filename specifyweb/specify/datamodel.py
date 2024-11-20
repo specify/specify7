@@ -6637,7 +6637,8 @@ datamodel = Datamodel(tables=[
             Field(name='tableList', column='TableList', indexed=False, unique=False, required=True, type='java.lang.String', length=500),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
         indexes=[
 
@@ -8406,7 +8407,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
             Relationship(name='absoluteAgeAttachments', type='one-to-many', required=False, relatedModelName='AbsoluteAgeAttachment', otherSideName='absoluteAge', dependent=True),
-            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='absoluteAges'),
             Relationship(name='absoluteAgeCitations', type='one-to-many',required=False, relatedModelName='AbsoluteAgeCitation', otherSideName='absoluteAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -8454,7 +8455,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
             Relationship(name='agent2', type='many-to-one', required=False, relatedModelName='Agent', column='Agent2ID'),
             Relationship(name='relativeAgeAttachments', type='one-to-many', required=False, relatedModelName='RelativeAgeAttachment', otherSideName='relativeAge', dependent=True),
-            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID'),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='relativeAges'),
             Relationship(name='relativeAgeCitations', type='one-to-many',required=False, relatedModelName='RelativeAgeCitation', otherSideName='relativeAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
