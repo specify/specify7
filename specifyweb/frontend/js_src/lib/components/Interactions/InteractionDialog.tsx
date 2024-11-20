@@ -268,55 +268,55 @@ export function InteractionDialog({
     loading(
       (catalogNumbers.length === 0
         ? Promise.resolve([])
-        : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
-      ).then((data) => {
-        setAvailableData(data);
+        : // Add await for catNum promise
+          getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
+      )
+        .then((data) => {
+          setAvailableData(data);
 
-        const returnCOCatNumber = new Set(
-          data.map((item) => item.catalognumber)
-        );
+          const returnCOCatNumber = new Set(
+            data.map((item) => item.catalognumber)
+          );
 
-        const availableCOs = catalogNumbers.filter((catNumber) =>
-          returnCOCatNumber.has(catNumber)
-        );
-        const unavailableCOs = catalogNumbers.filter(
-          (catNumber) => !returnCOCatNumber.has(catNumber)
-        );
-        setAvailableCatNumbers(availableCOs);
-        setUnavailableCatNumbers(unavailableCOs);
-      })
+          const availableCOs = catalogNumbers.filter((catNumber) =>
+            returnCOCatNumber.has(catNumber)
+          );
+          const unavailableCOs = catalogNumbers.filter(
+            (catNumber) => !returnCOCatNumber.has(catNumber)
+          );
+          setAvailableCatNumbers(availableCOs);
+          setUnavailableCatNumbers(unavailableCOs);
+          // Or move the if else here
+          if (
+            unavailableCatNumbers !== undefined &&
+            unavailableCatNumbers.length > 0
+          )
+            setState({
+              type: 'UsedCatalogNumberState',
+              unavailable: unavailableCatNumbers,
+            });
+          else {
+            const interaction = new actionTable.Resource();
+            const COs = data?.map((available) => {
+              const id = available.id;
+              return new tables.CollectionObject.Resource({ id });
+            });
+            interaction.set('collectionObjects', COs as never);
+            console.log(COs, interaction);
+
+            navigate(getResourceViewUrl(actionTable.name, undefined), {
+              state: {
+                type: 'RecordSet',
+                resource: serializeResource(interaction),
+              },
+            });
+            // HandleClose();
+          }
+        })
+        .catch((error) => {
+          console.error('Error in handleAvailableCatNumber:', error);
+        })
     );
-    if (unavailableCatNumbers !== undefined && unavailableCatNumbers.length > 0)
-      setState({
-        type: 'UsedCatalogNumberState',
-        unavailable: unavailableCatNumbers,
-      });
-    else {
-      const interaction = new actionTable.Resource();
-      const COs = availableData?.map((available) => {
-        const id = available.id;
-        return new tables.CollectionObject.Resource({ id });
-      });
-      console.log(COs, interaction);
-      /*
-       * Set COs on accession using availableCatNums
-       * Const COs = map over availableCOS new table.Resource({id});
-       * collection.add(COs);
-       * need this ? ([resource]): void =>
-       *                void parentResource.set(
-       *                  relationship.name,
-       *                  resource as never
-       *                )
-       * see handleResourceSelected in RecordSelector.tsx
-       */
-      navigate(getResourceViewUrl(actionTable.name, undefined), {
-        state: {
-          type: 'RecordSet',
-          resource: serializeResource(interaction),
-        },
-      });
-      handleClose();
-    }
   };
 
   return state.type === 'LoanReturnDoneState' ? (
