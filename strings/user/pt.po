@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-19 21:01+0000\n"
+"PO-Revision-Date: 2024-11-20 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "user/pt/>\n"
@@ -174,7 +174,7 @@ msgstr "Você pode fazer login no {collectionTable:string}, para prosseguir:"
 #: components/Permissions/PermissionDenied.tsx:232
 #, fuzzy
 msgid "sessionTimeOut"
-msgstr "Privilégios insuficientes"
+msgstr "Privilégios Insuficientes"
 
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #: components/Formatters/formatters.ts:196
