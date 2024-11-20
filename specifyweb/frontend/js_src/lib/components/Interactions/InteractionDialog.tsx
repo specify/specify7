@@ -296,12 +296,18 @@ export function InteractionDialog({
               unavailable: unavailableCatNumbers,
             });
           else {
-            const interaction = new actionTable.Resource();
+            // Const interaction = new actionTable.Resource();
+            const interaction = new tables.Accession.Resource();
+
             const COs = data?.map((available) => {
               const id = available.id;
-              return new tables.CollectionObject.Resource({ id });
+              const co = new tables.CollectionObject.Resource({ id });
+              return co.set('accession', interaction);
             });
-            interaction.set('collectionObjects', COs as never);
+            COs.forEach((co) => {
+              interaction.set('collectionObjects', co as never);
+            });
+            // Interaction.set('collectionObjects', COs as never);
             console.log(COs, interaction);
 
             navigate(getResourceViewUrl(actionTable.name, undefined), {
