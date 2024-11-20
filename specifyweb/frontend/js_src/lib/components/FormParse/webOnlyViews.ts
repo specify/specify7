@@ -70,26 +70,7 @@ export const webOnlyViews = f.store(() =>
       'form',
       'edit',
       ['collectionRelType', 'leftSide', 'rightSide']
-    ),
-    [spAppResourceView]: autoGenerateViewDefinition(
-      tables.SpAppResource,
-      'form',
-      'edit',
-      ['name']
-    ),
-    // Hide non-name fields
-    [spViewSetNameView]: autoGenerateViewDefinition(
-      tables.SpViewSetObj,
-      'form',
-      'edit',
-      ['name']
-    ),
-    [recordSetView]: autoGenerateViewDefinition(
-      tables.RecordSet,
-      'form',
-      'edit',
-      ['name', 'remarks']
-    ),
+    )
   } as const)
 );
 
