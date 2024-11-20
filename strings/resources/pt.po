@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-19 21:01+0000\n"
+"PO-Revision-Date: 2024-11-20 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "resources/pt/>\n"
@@ -173,7 +173,7 @@ msgstr "Recursos"
 #: components/AppResources/Aside.tsx:264
 #, fuzzy
 msgid "subCategories"
-msgstr "Subcategorias"
+msgstr "Filtros"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
@@ -228,7 +228,7 @@ msgstr "Formatadores de campo"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Formatadores de Registros"
+msgstr "Valor do campo condicional"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
@@ -309,7 +309,7 @@ msgstr "Selecione o tipo de recurso"
 #: components/AppResources/types.tsx:197
 #, fuzzy
 msgid "otherJsonResource"
-msgstr "Outro recurso JSON"
+msgstr "Publicar"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -564,7 +564,9 @@ msgstr "Este campo"
 #: components/WebLinks/Definition.tsx:166
 #, fuzzy
 msgid "selectTableFirst"
-msgstr "Selecione a tabela primeiro"
+msgstr ""
+"Pesquise os registros da sua coleção para visualizar o formatador de "
+"registros"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
