@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-19 21:00+0000\n"
+"PO-Revision-Date: 2024-11-20 19:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian "
-"<https://hosted.weblate.org/projects/specify-7/resources/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
+"resources/ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,127 +12,127 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.9-dev\n"
 
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
 #: components/AppResources/Filters.tsx:117
 #: components/Header/userToolDefinitions.ts:59
 #: components/Preferences/UserDefinitions.tsx:1874
 #: components/Router/Routes.tsx:243
 #: components/Security/registry.ts:218
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
 msgstr "Ресурсы приложений"
 
+#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:284
 #: components/FormEditor/Create.tsx:265
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:54
 #: components/Preferences/UserDefinitions.tsx:803
-#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Определение формы"
 
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:35
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Определение формы"
 
+#. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
-#. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Загрузить файл"
 
-#: components/AppResources/tree.ts:41
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:41
 msgid "globalResources"
 msgstr "Глобальные ресурсы"
 
-#: components/AppResources/tree.ts:47
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:47
 msgid "disciplineResources"
 msgstr "Дисциплинарные ресурсы"
 
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:73
 #: components/WebLinks/Definition.tsx:49
-#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Тип"
 
-#: components/AppResources/tree.ts:235
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:235
 msgid "userTypes"
 msgstr "Типы пользователей"
 
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
-#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Ресурсы"
 
-#: components/AppResources/Aside.tsx:264
 #. Used in: Components > App Resources > Aside
+#: components/AppResources/Aside.tsx:264
 msgid "subCategories"
 msgstr "Подкатегории"
 
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:251
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Добавить ресурс"
 
-#: components/AppResources/types.tsx:30
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:30
 msgid "appResource"
 msgstr "Подкатегории"
 
-#: components/AppResources/types.tsx:127
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:127
 msgid "rssExportFeed"
 msgstr "RSS-канал экспорта"
 
-#: components/ExportFeed/Editor.tsx:102
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:102
 msgid "exports"
 msgstr "Экспорт"
 
-#: components/AppResources/types.tsx:135
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:135
 msgid "expressSearchConfig"
 msgstr "Конфигурация экспресс-поиска"
 
-#: components/AppResources/types.tsx:143
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:143
 msgid "typeSearches"
 msgstr "Тип поиска"
 
-#: components/AppResources/types.tsx:151
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:151
 msgid "webLinks"
 msgstr "Веб ссылки"
 
-#: components/AppResources/types.tsx:159
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:159
 msgid "uiFormatters"
 msgstr "Форматировщики полей"
 
-#: components/AppResources/types.tsx:167
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:167
 msgid "dataObjectFormatters"
 msgstr "Форматеры записи"
 
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Формат таблицы"
 
-#: components/Formatters/Table.tsx:31
 #. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:31
 msgid "formatterDescription"
 msgstr ""
 "«Формат таблицы» определяет, как данные из определенной таблицы "
@@ -140,13 +140,13 @@ msgstr ""
 "определяет поля для отображения и их порядок. Условное форматирование можно "
 "настроить на основе значения в записи."
 
-#: components/Formatters/Element.tsx:129
 #. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:129
 msgid "aggregator"
 msgstr "Агрегация таблиц"
 
-#: components/Formatters/Table.tsx:32
 #. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:32
 msgid "aggregatorDescription"
 msgstr ""
 "«Агрегация таблиц» управляет тем, как несколько записей таблицы "
@@ -154,358 +154,358 @@ msgstr ""
 "поле сортировки и ограничение предварительного просмотра записи можно "
 "настроить. Его можно отобразить в результатах запроса и в форматах таблиц."
 
-#: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:28
 msgid "formattedResource"
 msgstr "Форматированный ресурс"
 
-#: components/Formatters/List.tsx:66
 #. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:66
 msgid "availableFormatters"
 msgstr "Доступные форматы таблиц"
 
-#: components/Formatters/List.tsx:67
 #. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:67
 msgid "availableAggregators"
 msgstr "Доступные агрегаты таблиц"
 
-#: components/WebLinks/List.tsx:24
 #. Used in: Components > Web Links > List
+#: components/WebLinks/List.tsx:24
 msgid "availableWebLink"
 msgstr "Доступные веб-ссылки"
 
-#: components/Formatters/List.tsx:127
 #. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:127
 msgid "selectDefaultFormatter"
 msgstr "Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы."
 
-#: components/Formatters/Element.tsx:52
 #. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:52
 msgid "duplicateFormatters"
 msgstr "Имена средств форматирования записей должны быть уникальными."
 
-#: components/AppResources/types.tsx:175
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:175
 msgid "dataEntryTables"
 msgstr "Таблицы ввода данных"
 
-#: components/AppResources/types.tsx:183
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:183
 msgid "interactionsTables"
 msgstr "Таблицы взаимодействий"
 
-#: components/AppResources/types.tsx:190
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:190
 msgid "otherXmlResource"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/types.tsx:197
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:197
 msgid "otherJsonResource"
 msgstr "Другой ресурс JSON"
 
-#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:204
 msgid "otherPropertiesResource"
 msgstr "Ресурс «Другие свойства»"
 
-#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:211
 msgid "otherAppResource"
 msgstr "Другой ресурс"
 
-#: components/AppResources/Filters.tsx:48
 #. Used in: Components > App Resources > Filters
+#: components/AppResources/Filters.tsx:48
 msgid "filters"
 msgstr "Фильтры"
 
+#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:74
 #: components/AppResources/Filters.tsx:83
-#. Used in: Components > App Resources > Filters
 msgid "custom"
 msgstr "Обычай"
 
-#: components/AppResources/types.tsx:119
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:119
 msgid "leafletLayers"
 msgstr "Слои листовок"
 
-#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:144
 msgid "textEditor"
 msgstr "Текстовый редактор"
 
-#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:142
 msgid "xmlEditor"
 msgstr "XML-редактор"
 
-#: components/AppResources/Tabs.tsx:143
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:143
 msgid "jsonEditor"
 msgstr "Редактор JSON"
 
-#: components/AppResources/Tabs.tsx:141
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:141
 msgid "visualEditor"
 msgstr "Визуальный редактор"
 
+#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
-#. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/tree.ts:120
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:120
 msgid "globalPreferences"
 msgstr "Глобальные настройки"
 
-#: components/AppResources/tree.ts:122
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:122
 msgid "remotePreferences"
 msgstr "Удаленные настройки"
 
-#: components/Formatters/index.tsx:99
 #. Used in: Components > Formatters > Index
+#: components/Formatters/index.tsx:99
 msgid "failedParsingXml"
 msgstr "Не удалось разобрать XML"
 
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
 #: components/QueryBuilder/FieldFilter.tsx:570
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 msgid "name"
 msgstr "Имя"
 
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
-#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 msgid "title"
 msgstr "Заголовок"
 
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
-#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 msgid "default"
 msgstr "По умолчанию"
 
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
 #: components/Formatters/Fields.tsx:163
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Разделитель"
 
-#: components/Formatters/Aggregator.tsx:41
 #. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:41
 msgid "suffix"
 msgstr "Суффикс"
 
-#: components/Formatters/Aggregator.tsx:54
 #. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:54
 msgid "limit"
 msgstr "Лимит"
 
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
 #: components/QueryBuilder/Formatter.tsx:92
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 msgid "defaultInline"
 msgstr "(по умолчанию)"
 
-#: components/Formatters/Aggregator.tsx:85
 #. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:85
 msgid "sortField"
 msgstr "Сортировать поле"
 
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:70
 #: components/Merging/Header.tsx:164
-#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 msgid "preview"
 msgstr "Предварительный просмотр"
 
-#: components/Formatters/Preview.tsx:71
 #. Used in: Components > Formatters > Preview
+#: components/Formatters/Preview.tsx:71
 msgid "previewExplainer"
 msgstr ""
 "Выполните поиск в записях своей коллекции, чтобы просмотреть средство "
 "форматирования записей."
 
+#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
-#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 msgid "editorNotAvailable"
 msgstr "Визуальный редактор недоступен для этого ресурса."
 
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
-#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 msgid "definition"
 msgstr "Определение"
 
+#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
-#. Used in: Components > Formatters > Definitions
 msgid "addDefinition"
 msgstr "Добавить определение"
 
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:252
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Удалить определение"
 
-#: components/WebLinks/Definition.tsx:27
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:27
 msgid "urlPart"
 msgstr "Другой ресурс JSON"
 
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
 #: components/Formatters/Fields.tsx:118
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Добавить поле"
 
-#: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:26
 msgid "thisField"
 msgstr "Это поле"
 
+#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:152
 #: components/WebLinks/Definition.tsx:166
-#. Used in: Components > Web Links > Definition
 msgid "selectTableFirst"
 msgstr "Сначала выберите таблицу"
 
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 msgid "conditionFieldValue"
 msgstr "Значение поля условия"
 
-#: components/Formatters/Definitions.tsx:184
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:184
 msgid "conditionDescription"
 msgstr ""
 "Этот формат будет использоваться только в том случае, если значение поля "
 "условия равно этому условию и не равно нулю."
 
-#: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:164
 msgid "wrongScopeWarning"
 msgstr ""
 "Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в "
 "которой вы сейчас находитесь. Перед редактированием этого ресурса "
 "рекомендуется сменить коллекцию."
 
-#: components/WebLinks/Element.tsx:82
 #. Used in: Components > Web Links > Element
+#: components/WebLinks/Element.tsx:82
 msgid "thisFieldName"
 msgstr "Имя этого поля (только для целей предварительного просмотра)"
 
-#: components/ExportFeed/Editor.tsx:295
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:295
 msgid "publishEveryDays"
 msgstr "Публиковать каждые N дней"
 
-#: components/ExportFeed/Editor.tsx:292
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:292
 msgid "publish"
 msgstr "Публиковать"
 
-#: components/ExportFeed/Editor.tsx:184
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:184
 msgid "fileName"
 msgstr "Сначала выберите таблицу"
 
-#: components/ExportFeed/Editor.tsx:243
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:243
 msgid "runAsUser"
 msgstr "Запуск от имени пользователя"
 
-#: components/ExportFeed/Editor.tsx:258
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:258
 msgid "notifyUser"
 msgstr "Отправить уведомление о завершении пользователю"
 
-#: components/ExportFeed/Editor.tsx:273
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:273
 msgid "runInCollection"
 msgstr "Запустить в коллекцию"
 
-#: components/FormEditor/Create.tsx:73
 #. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:73
 msgid "createNewForm"
 msgstr "Создайте новое определение представления"
 
-#: components/FormEditor/Create.tsx:78
 #. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:78
 msgid "copyFromExistingForm"
 msgstr "Копировать существующее определение представления"
 
-#: components/FormEditor/Create.tsx:84
 #. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:84
 msgid "copyDefaultForm"
 msgstr "Форматеры записи"
 
-#: components/AppResources/Create.tsx:228
 #. Used in: Components > App Resources > Create
+#: components/AppResources/Create.tsx:228
 msgid "copyDefaultForms"
 msgstr "Копировать формы по умолчанию"
 
-#: components/FormMeta/index.tsx:113
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:113
 msgid "saveFormFirst"
 msgstr "Сначала сохраните форму"
 
-#: components/FormMeta/index.tsx:116
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:116
 msgid "saveFormFirstDescription"
 msgstr "Вам необходимо сохранить эту форму, прежде чем редактировать другую."
 
-#: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
+#: components/Formatters/Formatter.tsx:77
 msgid "conditionalFormatter"
 msgstr "Условный формат"
 
-#: components/Formatters/Fields.tsx:129
 #. Used in: Components > Formatters > Fields
+#: components/Formatters/Fields.tsx:129
 msgid "customizeFieldFormatters"
 msgstr "Настройте форматы полей"
 
-#: components/Formatters/Definitions.tsx:261
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:261
 msgid "expandConditionalField"
 msgstr "Развернуть условное поле"
 
-#: components/Formatters/Definitions.tsx:178
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:178
 msgid "collapseConditionalField"
 msgstr "Свернуть условное поле"
 
-#: components/Formatters/Definitions.tsx:147
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:147
 msgid "conditionalFieldValue"
 msgstr "Условное значение поля"
 
-#: components/Formatters/Definitions.tsx:218
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:218
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:319
 #: components/DataModel/businessRuleDefs.ts:337
-#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
-msgstr "Требуется текущее определение."
+msgstr "Группа объектов коллекции не может быть родительской для самой себя."
 
-#: components/DataModel/businessRuleDefs.ts:230
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:230
 #, fuzzy
 msgid "parentCogSameAsChild"
-msgstr ""
+msgstr "Группа объектов коллекции не может быть родительской для самой себя."
