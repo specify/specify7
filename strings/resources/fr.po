@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-20 19:00+0000\n"
+"PO-Revision-Date: 2024-11-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -85,7 +85,7 @@ msgstr "Ressources"
 #: components/AppResources/Aside.tsx:264
 #, fuzzy
 msgid "subCategories"
-msgstr "Sous-catégories"
+msgstr "Filtres"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
@@ -140,7 +140,7 @@ msgstr "Formateurs de champs"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Formateurs d'enregistrement"
+msgstr "Valeur du champ conditionnel"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -238,7 +238,7 @@ msgstr "Sélectionner le type de ressource"
 #: components/AppResources/types.tsx:197
 #, fuzzy
 msgid "otherJsonResource"
-msgstr "Autre ressource JSON"
+msgstr "Publier"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -319,7 +319,7 @@ msgstr "Préférences à distance"
 #: components/Formatters/index.tsx:99
 #, fuzzy
 msgid "failedParsingXml"
-msgstr "Échec de l'analyse du XML"
+msgstr "Impossible d'analyser le XML"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
@@ -446,7 +446,9 @@ msgstr "Ce champ"
 #: components/WebLinks/Definition.tsx:166
 #, fuzzy
 msgid "selectTableFirst"
-msgstr "Sélectionnez d'abord la table"
+msgstr ""
+"Recherchez dans vos enregistrements de collection pour prévisualiser le "
+"formateur d'enregistrements"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
