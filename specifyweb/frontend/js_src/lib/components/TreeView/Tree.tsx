@@ -17,6 +17,7 @@ import type {
 } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
+import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -112,7 +113,7 @@ export function Tree<
   const treeDefId = idFromUrl(treeDefinition);
   const createRootNode = async (): Promise<void> => {
     if (treeDefId === undefined) {
-      console.error('treeDefId is undefined');
+      softError('treeDefId is undefined');
     } else {
       await ping(
         `/api/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
@@ -125,7 +126,7 @@ export function Tree<
           globalThis.location.reload();
         })
         .catch((error) => {
-          console.error('Error creating root node:', error);
+          softError('Error creating root node:', error);
         });
     }
   };
