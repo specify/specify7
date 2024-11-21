@@ -253,13 +253,6 @@ export function InteractionDialog({
     React.useState<RA<string>>();
   const [availableCatNumbers, setAvailableCatNumbers] =
     React.useState<RA<string>>();
-  const [availableData, setAvailableData] = React.useState<
-    | RA<{
-        readonly catalognumber: string;
-        readonly id: number;
-      }>
-    | undefined
-  >();
 
   const hanleAvailableCatNumber = (): void => {
     const catalogNumbers = handleParse();
@@ -271,8 +264,6 @@ export function InteractionDialog({
         : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
       )
         .then(async (data) => {
-          setAvailableData(data);
-
           const returnCOCatNumber = new Set(
             data.map((item) => item.catalognumber)
           );
