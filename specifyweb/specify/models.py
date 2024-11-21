@@ -7504,7 +7504,7 @@ class Collectionobjecttype(models.Model):
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
-    catalognumformatname = models.CharField(blank=True, null=True, max_length=256, unique=False, db_column='CatalogFormatNumName', db_index=False)
+    catalognumberformatname = models.CharField(blank=True, null=True, max_length=255, unique=False, db_column='CatalogNumberFormatName', db_index=False)
     
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cotypes', null=False, on_delete=protect_with_blockers)

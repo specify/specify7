@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='collectionobjecttype',
-            name='catalognumformatname',
-            field=models.CharField(blank=True, db_column='CatalogFormatNumName', max_length=256, null=True),
+            name='catalognumberformatname',
+            field=models.CharField(blank=True, db_column='CatalogNumberFormatName', max_length=255, null=True),
         ),
     ]
