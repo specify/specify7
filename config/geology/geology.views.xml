@@ -305,7 +305,7 @@
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" name="prepType" uitype="combobox" picklist="PrepType"/>
 					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="countAmt" uitype="text" default="1"/>
+					<cell type="field" id="3" name="countAmt" uitype="text" initialize="min=0" default="1"/>
 					<cell type="label" label="Current Count:" initialize="align=right"/>
 					<cell type="field" id="ti" name="actualCountAmt" uitype="text" readonly="true"/>
 					<cell type="label" label="Attachments"/>
