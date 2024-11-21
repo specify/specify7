@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-20 17:43+0000\n"
+"PO-Revision-Date: 2024-11-21 20:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -262,7 +262,7 @@ msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 #: components/TreeView/index.tsx:387
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Nur Knoten mit verknüpften Objekten anzeigen"
+msgstr "Entomologie"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:319
@@ -306,28 +306,33 @@ msgstr "Elemente verschieben"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:64 components/TreeView/CreateTree.tsx:77
+#, fuzzy
 msgid "addTree"
-msgstr ""
+msgstr "Baum hinzufügen"
 
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:227
+#, fuzzy
 msgid "addRootNode"
-msgstr ""
+msgstr "Stammknoten hinzufügen"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:271 components/TreeView/index.tsx:273
+#, fuzzy
 msgid "treePicker"
-msgstr ""
+msgstr "Baumpflücker"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:413
+#, fuzzy
 msgid "botany"
-msgstr ""
+msgstr "Botanik"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:441
+#, fuzzy
 msgid "entomology"
-msgstr ""
+msgstr "Entomologie"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:469
@@ -337,13 +342,15 @@ msgstr "Herpetologie"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:491
+#, fuzzy
 msgid "ichthyology"
-msgstr ""
+msgstr "Fischkunde"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:515
+#, fuzzy
 msgid "invertpaleo"
-msgstr ""
+msgstr "Paläontologie der Wirbellosen"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:534
@@ -353,23 +360,27 @@ msgstr "Wirbellose Zoologie"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:559
+#, fuzzy
 msgid "mammalogy"
-msgstr ""
+msgstr "Mammalogie"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:578
+#, fuzzy
 msgid "ornithology"
-msgstr ""
+msgstr "Leerer Baum"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:599
+#, fuzzy
 msgid "paleobot"
-msgstr ""
+msgstr "Baumpflücker"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
+#, fuzzy
 msgid "vascplant"
-msgstr ""
+msgstr "Gefäßpflanzen"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:645
@@ -392,20 +403,24 @@ msgstr "Ein Standard-Taxonbaum"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:700
+#, fuzzy
 msgid "emptyTree"
-msgstr ""
+msgstr "Leerer Baum"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:662
+#, fuzzy
 msgid "minerals"
-msgstr ""
+msgstr "Mineralien"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:679
+#, fuzzy
 msgid "rocks"
-msgstr ""
+msgstr "Steiniger Boden"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:671
+#, fuzzy
 msgid "meteorites"
-msgstr ""
+msgstr "Meteoriten"
