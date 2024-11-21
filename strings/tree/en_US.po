@@ -239,7 +239,7 @@ msgstr "Direct {collectionObjectTable:string} Count"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
 
-#: components/TreeView/Tree.tsx:164
+#: components/TreeView/Tree.tsx:189
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Edit Ranks"
@@ -298,6 +298,11 @@ msgstr "Move Items"
 #. Used in: Components > Tree View > Create Tree
 msgid "addTree"
 msgstr "Add Tree"
+
+#: components/TreeView/Tree.tsx:227
+#. Used in: Components > Tree View > Tree
+msgid "addRootNode"
+msgstr "Add root node"
 
 #: components/TreeView/index.tsx:271
 #: components/TreeView/index.tsx:273

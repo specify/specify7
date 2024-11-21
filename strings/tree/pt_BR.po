@@ -279,7 +279,7 @@ msgstr ""
 msgid "indirectCollectionObjectCount"
 msgstr ""
 
-#: components/TreeView/Tree.tsx:164
+#: components/TreeView/Tree.tsx:189
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"
@@ -348,6 +348,11 @@ msgstr ""
 #. Used in: Components > Tree View > Create Tree
 #, fuzzy
 msgid "addTree"
+msgstr ""
+
+#: components/TreeView/Tree.tsx:227
+#. Used in: Components > Tree View > Tree
+msgid "addRootNode"
 msgstr ""
 
 #: components/TreeView/index.tsx:271
