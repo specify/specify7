@@ -114,6 +114,10 @@ export function MergeRecordSets({
                 <Label.Inline>
                   <Input.Checkbox
                     checked={selectedRecordSets.includes(recordSet.id)}
+                    disabled={
+                      selectedTable !== null &&
+                      recordSet._tableName !== selectedTable
+                    }
                     onValueChange={(): void => onSelected(recordSet)}
                   />
                   <TableIcon
