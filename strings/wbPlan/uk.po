@@ -33,8 +33,8 @@ msgstr "План завантаження не визначено"
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
 
-#: components/WorkBench/hotProps.tsx:155
-#: components/WorkBench/hotProps.tsx:157
+#: components/WorkBench/hotProps.tsx:144
+#: components/WorkBench/hotProps.tsx:146
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"

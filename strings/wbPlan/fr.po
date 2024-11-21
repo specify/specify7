@@ -34,8 +34,8 @@ msgstr ""
 "Aucun plan de téléchargement n'a été défini pour cet ensemble de données. "
 "En créer un maintenant ?"
 
-#: components/WorkBench/hotProps.tsx:155
-#: components/WorkBench/hotProps.tsx:157
+#: components/WorkBench/hotProps.tsx:144
+#: components/WorkBench/hotProps.tsx:146
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"

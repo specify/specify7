@@ -31,8 +31,8 @@ msgstr ""
 "No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear "
 "uno ahora?"
 
-#: components/WorkBench/hotProps.tsx:155
-#: components/WorkBench/hotProps.tsx:157
+#: components/WorkBench/hotProps.tsx:144
+#: components/WorkBench/hotProps.tsx:146
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Columna no asignada"
