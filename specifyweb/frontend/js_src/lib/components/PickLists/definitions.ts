@@ -16,6 +16,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { genericTables, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
+import { getUiFormatters } from '../FieldFormatters';
 import { hasToolPermission } from '../Permissions/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
@@ -159,6 +160,19 @@ export const getFrontEndPickLists = f.store<{
     )
   );
 
+  const catalogNumberFormatters = definePicklist(
+    '_CatalogNumberUIFormatters',
+    Object.entries(getUiFormatters())
+      .filter(
+        ([_, formatter]) =>
+          formatter.field ===
+          tables.CollectionObject.strictGetLiteralField('catalogNumber')
+      )
+      .map(([formatterName, _]) =>
+        createPickListItem(formatterName, formatterName)
+      )
+  );
+
   const frontEndPickLists = {
     Agent: {
       agentType: definePicklist(
@@ -216,6 +230,7 @@ export const getFrontEndPickLists = f.store<{
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'collectionobjecttype')
         .set('fieldName', 'name'),
+      catalogNumberFormatName: catalogNumberFormatters,
     },
     CollectionObjectGroupType: {
       name: definePicklist('_CollectionObjectGroupType', [])
@@ -242,6 +257,9 @@ export const getFrontEndPickLists = f.store<{
           (mimeType) => createPickListItem(mimeType, mimeType)
         )
       ).set('readOnly', false),
+    },
+    Collection: {
+      catalogNumFormatName: catalogNumberFormatters,
     },
   };
 

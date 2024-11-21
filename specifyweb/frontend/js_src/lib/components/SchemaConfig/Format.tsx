@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { appResourceIds } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
@@ -47,6 +48,16 @@ export function SchemaConfigFormat({
       .sort(sortFunction(f.id))
       .map((name) => [name, name] as const)
   );
+
+  const [otherFormatters, formattersForField] = React.useMemo(
+    () =>
+      split(
+        schemaData.uiFormatters,
+        ({ field: formatterField }) => formatterField === field
+      ),
+    [field, schemaData.uiFormatters]
+  );
+
   const id = useId('schema-config-field');
 
   const lineProps = { field, item, id, onFormatted: handleFormatted };
@@ -66,11 +77,27 @@ export function SchemaConfigFormat({
         name="formatted"
         value={item.format}
         values={{
-          '': schemaData.uiFormatters
-            .filter(
-              ({ field: formatterField }) =>
-                formatterField === undefined || formatterField === field
+          [`${
+            field === undefined
+              ? ''
+              : schemaText.uiFormattersForField({ fieldLabel: field.label })
+          }`]: formattersForField
+            .map(
+              ({ name, isSystem, value }) =>
+                [
+                  name,
+                  `${name} ${value}${
+                    isSystem
+                      ? ` (${
+                          getField(tables.SpLocaleContainerItem, 'isSystem')
+                            .label
+                        })`
+                      : ''
+                  }`,
+                ] as const
             )
+            .sort(sortFunction((value) => value[1])),
+          [resourcesText.uiFormatters()]: otherFormatters
             .map(
               ({ name, isSystem, value }) =>
                 [
