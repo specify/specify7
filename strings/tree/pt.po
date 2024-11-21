@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-17 10:00+0000\n"
+"PO-Revision-Date: 2024-11-21 20:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -478,3 +478,9 @@ msgstr "Rochas"
 #, fuzzy
 msgid "meteorites"
 msgstr "Meteoritos"
+
+#. Used in: Components > Tree View > Tree
+#: components/TreeView/Tree.tsx:227
+#, fuzzy
+msgid "addRootNode"
+msgstr "Adicionar nó raiz"
