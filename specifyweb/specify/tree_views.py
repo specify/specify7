@@ -1,7 +1,7 @@
 from functools import wraps
 from django import http
 from typing import Literal, Tuple
-from django.db import transaction
+from django.db import connection, transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql, distinct
@@ -428,6 +428,10 @@ def add_root(request, tree, treeid):
         definitionitem=tree_def_item,
         fullname="Root"
     )
+
+    # Override node number with raw sql execution
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE {tree_name.lower()} SET NodeNumber = 1 WHERE {tree}id = {root.id}")
 
     return http.HttpResponse(status=204)
 
