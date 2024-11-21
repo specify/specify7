@@ -570,7 +570,8 @@ class AddDeleteRankResourcesTest(ApiTests):
 
         root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
         response = c.post(
-            f'/api/specify/{tree}/{root_node.id}/',
+            # f'/api/specify/{tree}/{root_node.id}/',
+            f'/api/specify/{tree}/',
             data=json.dumps({
                 "isaccepted": True,
                 "parent": f"/api/specify/taxon/{root_node.id}/",
@@ -608,9 +609,8 @@ class AddDeleteRankResourcesTest(ApiTests):
             }),
             content_type='application/json'
         )
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
-        next_node = models.Taxon.objects.create(
+        self.assertEqual(response.status_code, 201)
+        next_node = models.Taxon.objects.filter(
             definition=tree_def,
             definitionitem=first_rank,
             rankid=100,
@@ -618,12 +618,11 @@ class AddDeleteRankResourcesTest(ApiTests):
             parent=models.Taxon.objects.filter(
                 definition=tree_def, rankid=0, name="Root"
             ).first(),
-        )
+        ).first()
+        self.assertIsNotNone(next_node)
 
         root_node.delete()
         first_rank.delete()
-        # root_rank.delete(allow_root_del=True)
-        # tree_def.delete()
 
     def test_add_root_geo(self):
         c = Client()
@@ -651,5 +650,3 @@ class AddDeleteRankResourcesTest(ApiTests):
         root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').first()
         root_node.delete()
         first_rank.delete()
-        # root_rank.delete(allow_root_del=True)
-        # tree_def.delete()
