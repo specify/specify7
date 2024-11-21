@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0013_collectionobjectgroup_parentcog'),
+        ('specify', '0014_spqueryfield_strict'),
     ]
 
     operations = [
