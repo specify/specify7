@@ -34,7 +34,7 @@ export function MergeRecordSets({
 
     if (selectedTable !== null && selectedTable !== dbTableId) {
       // How do we want to signal this to the user?
-      console.log('cannot merge record set that have different base table');
+      console.log('Cannot merge record set that have different base table');
       return;
     }
 
@@ -116,7 +116,7 @@ export function MergeRecordSets({
                     checked={selectedRecordSets.includes(recordSet.id)}
                     disabled={
                       selectedTable !== null &&
-                      recordSet._tableName !== selectedTable
+                      recordSet.dbTableId !== selectedTable
                     }
                     onValueChange={(): void => onSelected(recordSet)}
                   />
