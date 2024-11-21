@@ -1,3 +1,4 @@
+from email.policy import strict
 import logging
 from collections import namedtuple
 
@@ -13,7 +14,8 @@ class QueryField(namedtuple('QueryField', [
     'negate',
     'display',
     'format_name',
-    'sort_type'])):
+    'sort_type',
+    'strict'])):
 
     @classmethod
     def from_spqueryfield(cls, field, value=None):
@@ -30,7 +32,8 @@ class QueryField(namedtuple('QueryField', [
                    negate    = field.isNot,
                    display   = field.isDisplay,
                    format_name = field.formatName,
-                   sort_type = field.sortType)
+                   sort_type = field.sortType,
+                   strict = field.isStrict)
 
     def add_to_query(self, query, no_filter=False, formatauditobjs=False):
         logger.info("adding field %s", self)
@@ -46,4 +49,12 @@ class QueryField(namedtuple('QueryField', [
                                   and value_required_for_filter
                                   and not self.negate)
 
-        return self.fieldspec.add_to_query(query, value=self.value, op_num=None if no_filter else self.op_num, negate=self.negate, formatter=self.format_name, formatauditobjs=formatauditobjs)
+        return self.fieldspec.add_to_query(
+            query,
+            value=self.value,
+            op_num=None if no_filter else self.op_num,
+            negate=self.negate,
+            formatter=self.format_name,
+            formatauditobjs=formatauditobjs,
+            strict=self.strict,
+        )
