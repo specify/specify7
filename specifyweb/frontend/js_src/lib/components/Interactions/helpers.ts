@@ -2,8 +2,7 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import type { RA, RestrictedTuple } from '../../utils/types';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
-import type { CollectionObject, Tables } from '../DataModel/types';
-import type { CatalogNumberNumeric } from '../FieldFormatters';
+import type { Tables } from '../DataModel/types';
 
 export const interactionPrepTables: RestrictedTuple<
   AnyInteractionPreparation['tableName']

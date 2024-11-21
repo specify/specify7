@@ -268,10 +268,9 @@ export function InteractionDialog({
     loading(
       (catalogNumbers.length === 0
         ? Promise.resolve([])
-        : // Add await for catNum promise
-          getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
+        : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
       )
-        .then((data) => {
+        .then(async (data) => {
           setAvailableData(data);
 
           const returnCOCatNumber = new Set(
@@ -286,7 +285,6 @@ export function InteractionDialog({
           );
           setAvailableCatNumbers(availableCOs);
           setUnavailableCatNumbers(unavailableCOs);
-          // Or move the if else here
           if (
             unavailableCatNumbers !== undefined &&
             unavailableCatNumbers.length > 0
@@ -296,18 +294,18 @@ export function InteractionDialog({
               unavailable: unavailableCatNumbers,
             });
           else {
-            // Const interaction = new actionTable.Resource();
-            const interaction = new tables.Accession.Resource();
+            const interaction = new actionTable.Resource();
 
-            const COs = data?.map((available) => {
-              const id = available.id;
-              const co = new tables.CollectionObject.Resource({ id });
-              return co.set('accession', interaction);
-            });
-            COs.forEach((co) => {
-              interaction.set('collectionObjects', co as never);
-            });
-            // Interaction.set('collectionObjects', COs as never);
+            const COs = await Promise.all(
+              data.map(async (available) => {
+                const id = available.id;
+                const co = new tables.CollectionObject.Resource({ id });
+                co.set('accession', interaction);
+                await co.save();
+                return co;
+              })
+            );
+
             console.log(COs, interaction);
 
             navigate(getResourceViewUrl(actionTable.name, undefined), {
@@ -316,7 +314,6 @@ export function InteractionDialog({
                 resource: serializeResource(interaction),
               },
             });
-            // HandleClose();
           }
         })
         .catch((error) => {
