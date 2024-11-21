@@ -1,3 +1,4 @@
+import json
 from django.test import Client
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify import api, models
@@ -567,10 +568,46 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
         self.assertEqual(response.status_code, 500)
 
-        # response = c.post(
-        #     f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
-        #     content_type='application/json'
-        # )
+        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        response = c.post(
+            f'/api/specify/{tree}/{root_node.id}/',
+            data=json.dumps({
+                "isaccepted": True,
+                "parent": f"/api/specify/taxon/{root_node.id}/",
+                "name": "test",
+                "fullname": "test",
+                "commonname": None,
+                "ishybrid": False,
+                "author": None,
+                "source": None,
+                "guid": None,
+                "definitionitem": f"/api/specify/taxontreedefitem/{first_rank.id}/",
+                "taxoncitations": [
+                    
+                ],
+                "taxonattachments": [
+                    
+                ],
+                "acceptedchildren": {
+                    "update": [
+                    
+                    ],
+                    "remove": [
+                    
+                    ]
+                },
+                "children": {
+                    "update": [
+                    
+                    ],
+                    "remove": [
+                    
+                    ]
+                },
+                "_tableName": "Taxon"
+            }),
+            content_type='application/json'
+        )
         # self.assertEqual(response.status_code, 200)
         # self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
         next_node = models.Taxon.objects.create(
@@ -583,7 +620,6 @@ class AddDeleteRankResourcesTest(ApiTests):
             ).first(),
         )
 
-        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
         root_node.delete()
         first_rank.delete()
         # root_rank.delete(allow_root_del=True)

@@ -2,6 +2,12 @@ import re
 from contextlib import contextmanager
 import logging
 
+from django.db.models import F, Max
+from django.db import transaction
+# from .models import Sptasksemaphore
+import specifyweb.specify.models as spmodels
+from .datamodel import datamodel
+
 from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
 from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
@@ -633,96 +639,73 @@ def print_paths(table, depth):
         print(r)
     print(sql)
 
-def renumber_tree(table):
+def renumber_tree(table, treedef_id=1):
     logger.info('renumbering tree')
-    cursor = connection.cursor()
+
+    # Assuming `table` is the model class, not the table name
+    tree_model = datamodel.get_table(table)
+    treedefitem_model = datamodel.get_table(f'{table}treedefitem')
 
     # make sure rankids are set correctly
-    cursor.execute((
-        "update {table} t\n"
-        "join {table}treedefitem d on t.{table}treedefitemid = d.{table}treedefitemid\n"
-        "set t.rankid = d.rankid\n"
-    ).format(table=table))
+    tree_model.objects.update(rankid=F(f'{table}treedefitem__rankid'))
 
     # make sure there are no cycles
-    cursor.execute((
-        "select p.{table}id, p.fullname, t.{table}id, t.fullName, tdef.title\n"
-        "from {table} t\n"
-        "join {table} p on t.parentid = p.{table}id\n"
-        "join {table}treedefitem tdef on t.{table}treedefitemid=tdef.{table}treedefitemid\n"
-        "where t.rankid <= p.rankid\n"
-        "and t.acceptedid is null"
-    ).format(table=table))
-    results = cursor.fetchall()
+    results = tree_model.objects.filter(
+        parent__rankid__gte=F('rankid'),
+        acceptedid__isnull=True
+    ).select_related('parent', f'{table}treedefitem')
+
     formattedResults = {
-        "nodeData" : [
+        "nodeData": [
             {
-            "parent" : {
-              f"{table.capitalize()} ID" : parentID,
-              "Full Name" : parentName
-        },
-            "child" : {
-              f"{table.capitalize()} ID" : childID,
-              "Full Name" : childName,
-              "Bad Rank" : childRank
-        }} for parentID, parentName, childID, childName, childRank in results],
-        "localizationKey" : "badTreeStructureInvalidRanks",
+                "parent": {
+                    f"{table.capitalize()} ID": result.parent.id,
+                    "Full Name": result.parent.fullname
+                },
+                "child": {
+                    f"{table.capitalize()} ID": result.id,
+                    "Full Name": result.fullname,
+                    "Bad Rank": result.rankid
+                }
+            } for result in results
+        ],
+        "localizationKey": "badTreeStructureInvalidRanks",
     }
-    bad_ranks_count = cursor.rowcount
+    bad_ranks_count = results.count()
     formattedResults["badRanks"] = bad_ranks_count
-    if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
-        formattedResults)
+    if bad_ranks_count > 0:
+        raise AssertionError(
+            f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
+            formattedResults
+        )
 
     # Get the tree ranks in leaf -> root order.
-    cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
-    ranks = [rank for (rank,) in cursor.fetchall()]
+    ranks = tree_model.objects.values_list('rankid', flat=True).distinct().order_by('-rankid')
     depth = len(ranks)
 
     # Construct a path enumeration for each node and set the
-    # nodenumbers according to the lexical ordering of the paths. This
-    # ensures ancestor node numbers come before descendents and
-    # sibling nodes get consecutive ranges.
-    cursor.execute("set @rn := 0")
-    cursor.execute((
-        "update {table} t\n"
-        "join (select @rn := @rn + 1 as nn, p.id as id from \n"
-        "         (select t0.{table}id as id, {path} as path\n"
-        "          from {table} t0\n"
-        "          {parent_joins}\n"
-        "          order by path) p\n"
-        ") r on t.{table}id = r.id\n"
-        # Set the highestchildnodenumber to be the same as the
-        # nodenumber.  This is correct for leaves, and interior nodes
-        # will be adjusted in the next step.
-        "set t.nodenumber = r.nn, t.highestchildnodenumber = r.nn\n"
-    ).format(
-        table=table,
-        path=path_expr(table, depth),
-        parent_joins=parent_joins(table, depth),
-    ))
+    # nodenumbers according to the lexical ordering of the paths.
+    nodes = tree_model.objects.all().order_by('path')
+    with transaction.atomic():
+        for i, node in enumerate(nodes, start=1):
+            node.nodenumber = i
+            node.highestchildnodenumber = i
+            node.save()
 
     # Adjust the highestchildnodenumbers working from the penultimate
-    # rank downward towards the roots. The highest rank cannot have
-    # any children, so all nodes there correctly have
-    # highestchildnodenumber = nodenumber as set in the previous step.
-    # Interior nodes are updated by inner joining against their
-    # children so that nodes with no children are not updated leaving
-    # highestchildnodenumber = nodenumber.
+    # rank downward towards the roots.
     for rank in ranks[1:]:
-        cursor.execute((
-            "update {table} t join (\n"
-            "   select max(highestchildnodenumber) as hcnn, parentid\n"
-            "   from {table} where rankid > %(rank)s group by parentid\n"
-            ") as sub on sub.parentid = t.{table}id\n"
-            "set highestchildnodenumber = hcnn where rankid = %(rank)s\n"
-        ).format(table=table), {'rank': rank})
+        subquery = tree_model.objects.filter(rankid__gt=rank).values('parent_id').annotate(
+            hcnn=Max('highestchildnodenumber')
+        )
+        for sub in subquery:
+            tree_model.objects.filter(id=sub['parent_id'], rankid=rank).update(
+                highestchildnodenumber=sub['hcnn']
+            )
 
     # Clear the BadNodes and UpdateNodes flags.
-    from .models import datamodel, Sptasksemaphore
-    tree_model = datamodel.get_table(table)
-    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
-    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
+    tasknames = [name.format(tree_model._meta.model_name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    spmodels.Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
 def is_treedefitem(obj):
     return issubclass(obj.__class__, TreeRank) or bool(
