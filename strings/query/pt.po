@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-20 19:01+0000\n"
+"PO-Revision-Date: 2024-11-21 19:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "query/pt/>\n"
@@ -32,7 +32,7 @@ msgstr "Consulta"
 #: components/Toolbar/Query.tsx:221
 #, fuzzy
 msgid "queries"
-msgstr "Consultas"
+msgstr "Semanas"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #: components/Preferences/CollectionDefinitions.tsx:72
@@ -427,7 +427,7 @@ msgstr "Sim"
 #: components/QueryBuilder/LoanReturn.tsx:173
 #, fuzzy
 msgid "noPreparationsToReturn"
-msgstr "Não há itens não resolvidos para retornar"
+msgstr "Menor que"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
@@ -440,7 +440,7 @@ msgstr "Os itens foram devolvidos"
 #: components/QueryBuilder/ToForms.tsx:56
 #, fuzzy
 msgid "queryResults"
-msgstr "Resultados da consulta"
+msgstr "[X0X] Criado"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #: components/LocalityUpdate/Status.tsx:318
