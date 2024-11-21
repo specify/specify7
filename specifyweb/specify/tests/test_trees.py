@@ -1,3 +1,4 @@
+import json
 from django.test import Client
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify import api, models
@@ -543,3 +544,109 @@ class AddDeleteRankResourcesTest(ApiTests):
         species = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=220)
         self.assertEqual(species.name, "Species")
         self.assertEqual(species.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=180))
+
+    def test_add_root_taxon(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        tree = 'taxon'
+        tree_def = models.Taxontreedef.objects.create(name='New Blank Tree')
+        tree_def_id = tree_def.id
+        root_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        first_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=100, name='Test', parent=root_rank)
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+
+        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        response = c.post(
+            # f'/api/specify/{tree}/{root_node.id}/',
+            f'/api/specify/{tree}/',
+            data=json.dumps({
+                "isaccepted": True,
+                "parent": f"/api/specify/taxon/{root_node.id}/",
+                "name": "test",
+                "fullname": "test",
+                "commonname": None,
+                "ishybrid": False,
+                "author": None,
+                "source": None,
+                "guid": None,
+                "definitionitem": f"/api/specify/taxontreedefitem/{first_rank.id}/",
+                "taxoncitations": [
+                    
+                ],
+                "taxonattachments": [
+                    
+                ],
+                "acceptedchildren": {
+                    "update": [
+                    
+                    ],
+                    "remove": [
+                    
+                    ]
+                },
+                "children": {
+                    "update": [
+                    
+                    ],
+                    "remove": [
+                    
+                    ]
+                },
+                "_tableName": "Taxon"
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 201)
+        next_node = models.Taxon.objects.filter(
+            definition=tree_def,
+            definitionitem=first_rank,
+            rankid=100,
+            name="Test",
+            parent=models.Taxon.objects.filter(
+                definition=tree_def, rankid=0, name="Root"
+            ).first(),
+        ).first()
+        self.assertIsNotNone(next_node)
+
+        root_node.delete()
+        first_rank.delete()
+
+    def test_add_root_geo(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        tree = 'geography'
+        tree_def = models.Geographytreedef.objects.create(name='New Blank Tree')
+        tree_def_id = tree_def.id
+        root_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        first_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=100, name='Continent')
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+
+        response = c.post(
+            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+
+        root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node.delete()
+        first_rank.delete()

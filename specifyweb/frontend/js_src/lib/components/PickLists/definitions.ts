@@ -213,6 +213,12 @@ export const getFrontEndPickLists = f.store<{
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
+    CollectionObject: {
+      age: definePicklist('_GeologicTimePeriod', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'geologictimeperiod')
+        .set('fieldName', 'name'),
+    },
     GeographyTreeDef: { fullNameDirection },
     GeologicTimePeriodTreeDef: { fullNameDirection },
     TectonicUnitTreeDef: { fullNameDirection },
