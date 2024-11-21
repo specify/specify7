@@ -249,11 +249,6 @@ export function InteractionDialog({
     );
   };
 
-  const [unavailableCatNumbers, setUnavailableCatNumbers] =
-    React.useState<RA<string>>();
-  const [availableCatNumbers, setAvailableCatNumbers] =
-    React.useState<RA<string>>();
-
   const hanleAvailableCatNumber = (): void => {
     const catalogNumbers = handleParse();
     if (catalogNumbers === undefined) return undefined;
@@ -268,36 +263,27 @@ export function InteractionDialog({
             data.map((item) => item.catalognumber)
           );
 
-          const availableCOs = catalogNumbers.filter((catNumber) =>
-            returnCOCatNumber.has(catNumber)
-          );
           const unavailableCOs = catalogNumbers.filter(
             (catNumber) => !returnCOCatNumber.has(catNumber)
           );
-          setAvailableCatNumbers(availableCOs);
-          setUnavailableCatNumbers(unavailableCOs);
-          if (
-            unavailableCatNumbers !== undefined &&
-            unavailableCatNumbers.length > 0
-          )
+
+          if (unavailableCOs !== undefined && unavailableCOs.length > 0)
             setState({
               type: 'UsedCatalogNumberState',
-              unavailable: unavailableCatNumbers,
+              unavailable: unavailableCOs,
             });
           else {
             const interaction = new actionTable.Resource();
 
-            const COs = await Promise.all(
+            await Promise.all(
               data.map(async (available) => {
                 const id = available.id;
                 const co = new tables.CollectionObject.Resource({ id });
-                co.set('accession', interaction);
+                co.set('accession', interaction as never);
                 await co.save();
                 return co;
               })
             );
-
-            console.log(COs, interaction);
 
             navigate(getResourceViewUrl(actionTable.name, undefined), {
               state: {
