@@ -585,4 +585,13 @@ export const treeText = createDictionary({
   emptyTree: {
     'en-us': 'Empty Tree',
   },
+  minerals: {
+    'en-us': 'Minerals',
+  },
+  rocks: {
+    'en-us': 'Rocks',
+  },
+  meteorites: {
+    'en-us': 'Meteorites',
+  },
 } as const);

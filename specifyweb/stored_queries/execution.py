@@ -131,7 +131,7 @@ def filter_by_collection(model, query, collection):
 
 
 
-EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict")
 
 def field_specs_from_json(json_fields):
     """Given deserialized json data representing an array of SpQueryField

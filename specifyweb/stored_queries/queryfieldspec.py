@@ -1,11 +1,15 @@
+from dataclasses import fields
 import logging
 import re
 from collections import namedtuple, deque
+from typing import NamedTuple, Optional, Tuple
 
 from sqlalchemy import sql
 
+from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+# from specifyweb.specify.geo_time import query_co_in_time_range
 from . import models
 from .query_ops import QueryOps
 
@@ -29,6 +33,11 @@ GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
 
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
+
+# Precalculated fields that are not in the database. Map from table name to field name.
+PRECALCULATED_FIELDS = {
+    'CollectionObject': 'age',
+}
 
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
@@ -60,7 +69,40 @@ def make_stringid(fs, table_list):
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
 
+# class QueryFieldSpec(NamedTuple):
+#     root_table: 'Table'
+#     root_sql_table: 'SQLTable' # type: ignore
+#     join_path: Tuple['Field', ...]
+#     table: 'Table'
+#     date_part: Optional[str]
+#     tree_rank: Optional[str]
+#     tree_field: Optional[str]
 
+#     @classmethod
+#     def create(cls, root_table, root_sql_table, join_path, table, date_part=None, tree_rank=None, tree_field=None):
+#         # Create a new QueryFieldSpec instance
+#         instance = cls(
+#             root_table=root_table,
+#             root_sql_table=root_sql_table,
+#             join_path=join_path,
+#             table=table,
+#             date_part=date_part,
+#             tree_rank=tree_rank,
+#             tree_field=tree_field
+#         )
+#         # Validate the instance
+#         instance.validate()
+#         return instance
+
+#     def validate(self):
+#         valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
+#         assert self.is_temporal() or self.date_part is None
+#         if self.date_part not in valid_date_parts:
+#             raise AssertionError(
+#                 f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
+#                 {"datePart": self.date_part,
+#                  "validDateParts": str(valid_date_parts),
+#                  "localizationKey": "invalidDatePart"})
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
@@ -145,13 +187,17 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         return result
 
     def __init__(self, *args, **kwargs):
+        self.validate()
+
+    def validate(self):
         valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
         assert self.is_temporal() or self.date_part is None
-        if self.date_part not in valid_date_parts: raise AssertionError(
-            f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
-            {"datePart" : self.date_part,
-             "validDateParts" : str(valid_date_parts),
-             "localizationKey" : "invalidDatePart"})
+        if self.date_part not in valid_date_parts:
+            raise AssertionError(
+                f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
+                {"datePart": self.date_part,
+                 "validDateParts": str(valid_date_parts),
+                 "localizationKey": "invalidDatePart"})
 
     def to_spquery_attrs(self):
         table_list = make_table_list(self)
@@ -197,7 +243,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
     def is_specify_username_end(self):
        return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
 
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
+    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -208,9 +254,16 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 uiformatter = field and get_uiformatter(query.collection, table.name, field.name)
                 value = value
 
-            op = QueryOps(uiformatter).by_op_num(op_num)
-
-            f = op(orm_field, value)
+            query_op = QueryOps(uiformatter)
+            op = query_op.by_op_num(op_num)
+            if query_op.is_precalculated(op_num):
+                f = op(orm_field, value, query, is_strict=strict) # Needed if using op_age_range_simple
+                # Handle modifying query from op_age_range
+                # new_query = op(orm_field, value, query, is_strict=strict)
+                # query = query._replace(query=new_query)
+                # f = None
+            else:
+                f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -218,7 +271,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         query = query.reset_joinpoint()
         return query, orm_field, predicate
 
-    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
+    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False, strict=False):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
         # if self.get_field() is not None:
@@ -226,7 +279,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
-        return self.apply_filter(query, orm_field, field, table, value, op_num, negate)
+        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict)
 
     def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=[]):
 
@@ -247,7 +300,16 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             if self.tree_rank is not None:
                 query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
             else:
-                orm_field = getattr(orm_model, self.get_field().name)
+                try:
+                    field_name = self.get_field().name
+                    orm_field = getattr(orm_model, field_name)
+                except AttributeError:
+                    if table.name in PRECALCULATED_FIELDS:
+                        field_name = PRECALCULATED_FIELDS[table.name]
+                        # orm_field = getattr(orm_model, field_name)
+                        orm_field = getattr(orm_model, orm_model._id) # Replace with recordId, future just remove column from results
+                    else:
+                        raise
 
                 if field.type == "java.sql.Timestamp":
                     # Only consider the date portion of timestamp fields.

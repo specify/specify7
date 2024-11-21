@@ -269,7 +269,8 @@ export function IntegratedRecordSelector({
                             aria-pressed={state.type === 'AddResourceState'}
                             disabled={
                               isReadOnly ||
-                              (isToOne && collection.models.length > 0)
+                              (isToOne && collection.models.length > 0) ||
+                              isTaxonTreeDefItemTable
                             }
                             onClick={(): void => {
                               const resource =
