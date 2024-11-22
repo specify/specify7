@@ -1974,26 +1974,26 @@
 				<row>
 					<cell type="panel" colspan="20">
 						<rows>
-							<row/>
-							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
-						</rows>
-						<rows condition="childCo.collection.ID=4">
 							<row>
 								<cell type="subview" viewname="CollectionObjectMini" id="childCO" name="childCo" uitype="subview" colspan="20"/>
 							</row>
+						</rows>
+						<rows condition="childCo=_EMPTY">
+							<row/>
+							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
 						</rows>
 					</cell>
 				</row>
 				<row>
 					<cell type="panel" colspan="15">
 						<rows>
-							<row/>
-							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
-						</rows>
-						<rows condition="childCog.collection.ID=4">
 							<row>
 								<cell type="subview" viewname="CollectionObjectGroup" id="childCog" name="childCog" colspan="20"/>
 							</row>
+						</rows>
+						<rows condition="childcog=_EMPTY">
+							<row/>
+							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
 						</rows>
 					</cell>
 				</row>
