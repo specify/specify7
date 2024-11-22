@@ -15,6 +15,9 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { saveFormUnloadProtect } from '../Forms/Save';
+import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function Definition({
   table,
@@ -63,6 +66,15 @@ function FormDefinitionDialog({
     isChanged.current = useFieldLabels !== initialValue.current;
   }, [useFieldLabels]);
 
+  const unsetUnloadProtect = useUnloadProtect(
+    isChanged.current,
+    saveFormUnloadProtect
+  );
+  const [unloadProtect, setUnloadProtect] = React.useState<
+    (() => void) | undefined
+  >(undefined);
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
+
   return (
     <Dialog
       buttons={
@@ -73,7 +85,8 @@ function FormDefinitionDialog({
       header={resourcesText.formDefinition()}
       onClose={(): void => {
         if (isChanged.current) setShowUnloadProtect(true);
-        else handleClose();
+        else 
+        handleClose();
       }}
     >
       <UseAutoForm table={table} />
@@ -85,7 +98,7 @@ function FormDefinitionDialog({
           viewSetId={viewDescription.viewSetId}
         />
       )}
-      {showUnloadProtect && (
+      {typeof unloadProtect === 'function' && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}
           onConfirm={(): void => globalThis.location.reload()}
