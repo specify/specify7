@@ -99,13 +99,22 @@ def search_co_ids_in_time_range(
         """
         start_field = f'{field_name}__startperiod'
         end_field = f'{field_name}__endperiod'
-        end_isnull_field = f'{field_name}end__isnull'
         end_start_field = f'{field_name}end__startperiod'
         end_end_field = f'{field_name}end__endperiod'
         
-        return Q(**{f'{start_field}__gte': F(end_field)}) & (
-            Q(**{end_isnull_field: True}) | Q(**{f'{end_start_field}__gte': F(end_end_field)})
-        )
+        start_period_isnull = f'{field_name}__startperiod__isnull'
+        end_period_isnull = f'{field_name}__endperiod__isnull'
+        end_isnull_field = f'{field_name}end__isnull'
+        end_start_period_isnull = f'{field_name}end__startperiod__isnull'
+        end_end_period_isnull = f'{field_name}end__endperiod__isnull'
+        
+        return Q(**{start_period_isnull: False}) \
+            & Q(**{end_period_isnull: False}) \
+            & Q(**{f'{start_field}__gte': F(end_field)}) \
+            & (
+                (Q(**{end_isnull_field: True}) | Q(**{f'{end_start_field}__gte': F(end_end_field)})) | 
+                (Q(**{end_start_period_isnull: False}) & Q(**{end_end_period_isnull: False}))
+            )
 
     valid_relative_age_chronostrat_filter = get_valid_chronostrat_filter('agename')
     valid_paleocontext_chronostrat_filter = get_valid_chronostrat_filter('chronosstrat')
