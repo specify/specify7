@@ -15,12 +15,31 @@ from specifyweb.specify.models import (
 )
 from specifyweb.stored_queries import models as sq_models
 
-# Paths from CollectionObject to Absoluteage or GeologicTimePeriod:
+# Table paths from CollectionObject to Absoluteage or GeologicTimePeriod:
+# - collectionobject->absoluteage
+# - collectionobject->relativeage->chronostrat
 # - collectionobject->paleocontext->chronostrat
 # - collectionobject->collectionevent->paleocontext->chronostrat
 # - collectionobject->collectionevent->locality->paleocontext->chronostrat
-# - collectionobject->relativeage->chronostrat
-# - collectionobject->absoluteage
+
+# Field Paths from CollectionObject to Absoluteage or GeologicTimePeriod:
+# - collectionobject__absoluteage__absoluteage
+# - collectionobject__relativeage__agename__startperiod
+# - collectionobject__relativeage__agename__endperiod
+# - collectionobject__relativeage__agenameend__startperiod
+# - collectionobject__relativeage__agenameend__endperiod
+# - collectionobject__paleocontext__chronosstrat__startperiod
+# - collectionobject__paleocontext__chronosstrat__endperiod
+# - collectionobject__paleocontext__chronosstratend__startperiod
+# - collectionobject__paleocontext__chronosstratend__endperiod
+# - collectionobject__collectingevent__paleocontext__chronosstrat__startperiod
+# - collectionobject__collectingevent__paleocontext__chronosstrat__endperiod
+# - collectionobject__collectingevent__paleocontext__chronosstratend__startperiod
+# - collectionobject__collectingevent__paleocontext__chronosstratend__endperiod
+# - collectionobject__collectingevent__locality__paleocontext__chronosstrat__startperiod
+# - collectionobject__collectingevent__locality__paleocontext__chronosstrat__endperiod
+# - collectionobject__collectingevent__locality__paleocontext__chronosstratend__startperiod
+# - collectionobject__collectingevent__locality__paleocontext__chronosstratend__endperiod
 
 def assert_valid_time_range(start_time: float, end_time: float):
     """
@@ -71,6 +90,26 @@ def search_co_ids_in_time_range(
         else:
             return Q(co_end_time_low__lte=start_time, co_start_time_high__gte=end_time)
 
+    def get_valid_chronostrat_filter(field_name):
+        """
+        Generate a filter to exclude records with invalid Chronostrat records, where startperiod < endperiod.
+        
+        :param field_name: The base name of the field to filter on.
+        :return: A Q object representing the filter.
+        """
+        start_field = f'{field_name}__startperiod'
+        end_field = f'{field_name}__endperiod'
+        end_isnull_field = f'{field_name}end__isnull'
+        end_start_field = f'{field_name}end__startperiod'
+        end_end_field = f'{field_name}end__endperiod'
+        
+        return Q(**{f'{start_field}__gte': F(end_field)}) & (
+            Q(**{end_isnull_field: True}) | Q(**{f'{end_start_field}__gte': F(end_end_field)})
+        )
+
+    valid_relative_age_chronostrat_filter = get_valid_chronostrat_filter('agename')
+    valid_paleocontext_chronostrat_filter = get_valid_chronostrat_filter('chronosstrat')
+
     # Adjusted absolute ages
     absolute_ages = get_annotated_ages(Absoluteage, 'absoluteage', 'absoluteage', require_full_overlap)
     absolute_overlap_filter = get_overlap_filter(require_full_overlap, start_time, end_time)
@@ -81,7 +120,9 @@ def search_co_ids_in_time_range(
 
     # Adjusted relative ages
     if require_full_overlap:
-        relative_ages = Relativeage.objects.annotate(
+        relative_ages = Relativeage.objects.filter(
+            valid_relative_age_chronostrat_filter
+        ).annotate(
             co_start_time_low=Cast(F("agename__startperiod"), FloatField())
             - get_uncertainty_value("agename__startuncertainty")
             - get_uncertainty_value("ageuncertainty"),
@@ -110,7 +151,9 @@ def search_co_ids_in_time_range(
             )
         )
     else:
-        relative_ages = Relativeage.objects.annotate(
+        relative_ages = Relativeage.objects.filter(
+            valid_relative_age_chronostrat_filter
+        ).annotate(
             co_start_time_high=Cast(F("agename__startperiod"), FloatField())
             + get_uncertainty_value("agename__startuncertainty")
             + get_uncertainty_value("ageuncertainty"),
@@ -146,7 +189,9 @@ def search_co_ids_in_time_range(
     )
 
     if require_full_overlap:
-        paleocontexts = Paleocontext.objects.annotate(
+        paleocontexts = Paleocontext.objects.filter(
+            valid_paleocontext_chronostrat_filter
+        ).annotate(
             co_start_time_low=Cast(F("chronosstrat__startperiod"), FloatField())
             - get_uncertainty_value("chronosstrat__startuncertainty"),
             co_end_time_high=Cast(F("chronosstrat__endperiod"), FloatField())
@@ -171,7 +216,9 @@ def search_co_ids_in_time_range(
             )
         )
     else:
-        paleocontexts = Paleocontext.objects.annotate(
+        paleocontexts = Paleocontext.objects.filter(
+            valid_paleocontext_chronostrat_filter
+        ).annotate(
             co_start_time_high=Cast(F("chronosstrat__startperiod"), FloatField())
             + get_uncertainty_value("chronosstrat__startuncertainty"),
             co_end_time_low=Cast(F("chronosstrat__endperiod"), FloatField())
