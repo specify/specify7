@@ -1932,7 +1932,7 @@
 					<cell type="field" id="cogType" name="cogType" uitype="combobox" picklist="COGTypes"/>
 					<!--<cell type="label" labelfor="parentCojo"/>
 					<cell type="field" id="parentCojo" name="parentCojo" uitype="querycbx" isrequired="false"/> -->
-					<cell type="subview" id="cojo" name="childCojos" uitype="subview" initialize="btn=true"/>
+					<cell type="subview" id="cojo" name="children" uitype="subview" initialize="btn=true"/>
 				</row>
 			</rows>
 		</viewdef>
