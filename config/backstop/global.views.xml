@@ -1274,11 +1274,7 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false;editoncreate=true" name="parent"/>
-					<!-- <cell type="field" id="WebLink" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=FishBase;icon=FishBase"/> -->
-					<!-- <cell type="field" id="WebLink" name="this" uitype="plugin" initialize="name=WebLinkButton;url=http://www.ncbi.nlm.nih.gov/sites/gquery?term=$genusName$%20$speciesName$;label=NCBI"/> -->
-					<!-- <cell type="field" id="WebLink" name="this" uitype="plugin" initialize="name=WebLinkButton;url=[GBIF_Canada]?king=$kingdomName$AMPp_action=containingAMP;taxa=$genusName$%20$speciesName$AMPp_format=html;label=ITIS"/> -->
-					<!-- Put in remote prefs: URL_Prefix.GBIF_Canada = http://www.cbif.gc.ca/pls/itisca/taxastep -->
+					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="name=Taxon;title=Taxon;viewbtn=true;newbtn=false;editoncreate=true" name="parent"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="name"/>
