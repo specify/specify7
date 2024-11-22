@@ -1769,7 +1769,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef name="Storage" type="form" class="edu.ku.brc.specify.datamodel.Storage" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="Storage" class="edu.ku.brc.specify.datamodel.Storage" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>New Storage Node Form</desc>
 			<enableRules>
 				<rule id="definitionItem">parent.getValue() != null</rule>
@@ -1783,7 +1783,7 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Storage;title=Storage;editbtn=false;newbtn=false;editoncreate=true" name="parent"/>
+					<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Storage;title=Storage;viewbtn=true;newbtn=false;editoncreate=true" name="parent"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="name"/>
