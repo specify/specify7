@@ -179,6 +179,8 @@
 			<altviews>
 				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin" mode="view" default="true"/>
 				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin" mode="edit"/>
+				<altview name="CollectionObjectGroupJoin Table View" viewdef="CollectionObjectGroupJoin Table" mode="view" validated="false"/>
+				<altview name="CollectionObjectGroupJoin Table Edit" viewdef="CollectionObjectGroupJoin Table" mode="edit" validated="false"/>
 			</altviews>
 		</view>
 		<view name="CollectionObjectGroupType" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupType" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupTypeBusRules" resourcelabels="false">
@@ -945,6 +947,13 @@
 				<altview name="AbsoluteAge Edit" viewdef="AbsoluteAge" mode="edit" default="true" validated="false"/>
 				<altview name="AbsoluteAge Table View" viewdef="AbsoluteAge Table" mode="view" validated="false"/>
 				<altview name="AbsoluteAge Table Edit" viewdef="AbsoluteAge Table" mode="edit" validated="false"/>
+			</altviews>
+		</view>
+		<view name="CollectionObjectGroupJoin_GridView" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
+			<desc>The Collection Object Group Join form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin (2)" mode="view" default="true"/>
+				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin (2)" mode="edit"/>
 			</altviews>
 		</view>
 	</views>
@@ -1953,6 +1962,17 @@
 								<cell type="label" labelfor="5"/>
 								<cell type="field" id="5" name="childCo" uitype="querycbx" readonly="true" colspan="3"/>
 							</row>
+							<row>
+								<!-- Collection Object Details -->
+								<cell type="label" label="CO Type"/>
+								<cell type="field" id="objectType" name="childCo.collectionObjectType.Name" uitype="text" readonly="true"/>
+								<cell type="label" label="Name"/>
+								<cell type="field" id="currentDet" name="childCo.currentDetermination.preferredTaxon.fullName" uitype="text" readonly="true"/>
+								<cell type="label" label="Collecting Event"/>
+								<cell type="field" id="collectingEvent" name="childCo.collectingEvent.stationFieldNumber" uitype="text" readonly="true"/>
+								<cell type="label" label="Locality"/>
+								<cell type="field" id="locality" name="childCo.collectingEvent.locality.localityName" uitype="text" readonly="true"/>
+							</row>
 						</rows>
 						<rows condition="childCO=_EMPTY">
 							<row/>
@@ -1969,29 +1989,14 @@
 								<cell type="field" id="2" name="isSubstrate" uitype="checkbox" readonly="true" default="false"/>
 								<cell type="label" labelfor="6"/>
 								<cell type="field" id="6" name="childCog" uitype="querycbx" readonly="true" colspan="3"/>
+								<cell type="label" label="COG Type"/>
+								<cell type="field" id="typeOfGroup" name="childCog.COGType.Name" uitype="text" readonly="true"/>
 							</row>
 						</rows>
 						<rows condition="childCOG=_EMPTY">
 							<row/>
 						</rows>
 					</cell>
-				</row>
-				<row>
-					<cell type="separator" label="Child Attributes" colspan="20"/>
-				</row>
-				<row>
-					<!-- Collection Object Group Details -->
-					<cell type="label" label="COG Type"/>
-					<cell type="field" id="typeOfGroup" name="childCog.COGType.Name" uitype="text" readonly="true"/>
-					<!-- Collection Object Details -->
-					<cell type="label" label="CO Type"/>
-					<cell type="field" id="objectType" name="childCo.collectionObjectType.Name" uitype="text" readonly="true"/>
-					<cell type="label" label="Name"/>
-					<cell type="field" id="currentDet" name="childCo.currentDetermination.preferredTaxon.fullName" uitype="text" readonly="true"/>
-					<cell type="label" label="Collecting Event"/>
-					<cell type="field" id="collectingEvent" name="childCo.collectingEvent.stationFieldNumber" uitype="text" readonly="true"/>
-					<cell type="label" label="Locality"/>
-					<cell type="field" id="locality" name="childCo.collectingEvent.locality.localityName" uitype="text" readonly="true"/>
 				</row>
 				<row>
 					<cell type="panel" colspan="20">
@@ -7163,6 +7168,40 @@
 		<viewdef name="AbsoluteAge Table" class="edu.ku.brc.specify.datamodel.AbsoluteAge" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The AbsoluteAge Table</desc>
 			<definition>AbsoluteAge</definition>
+		</viewdef>
+		<viewdef name="CollectionObjectGroupJoin Table" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Join Form Grid View</desc>
+			<definition>CollectionObjectGroupJoin (2)</definition>
+		</viewdef>
+		<viewdef name="CollectionObjectGroupJoin (2)" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Join Form</desc>
+			<enableRules/>
+			<columnDef>50px,2px,30px,5px,50px,2px,30px,5px,50px,2px,100px,0px,50px,2px,100px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false"/>
+					<cell type="label" labelfor="5"/>
+					<cell type="field" id="5" name="childCo" uitype="querycbx" readonly="true" colspan="3"/>
+					<!-- Collection Object Details -->
+					<cell type="label" label="CO Type"/>
+					<cell type="field" id="objectType" name="childCo.collectionObjectType.Name" uitype="text" readonly="true"/>
+					<cell type="label" label="Name"/>
+					<cell type="field" id="currentDet" name="childCo.currentDetermination.preferredTaxon.fullName" uitype="text" readonly="true"/>
+					<cell type="label" label="Collecting Event"/>
+					<cell type="field" id="collectingEvent" name="childCo.collectingEvent.stationFieldNumber" uitype="text" readonly="true"/>
+					<cell type="label" label="Locality"/>
+					<cell type="field" id="locality" name="childCo.collectingEvent.locality.localityName" uitype="text" readonly="true"/>
+					<!-- Collection Object Group Details -->
+					<cell type="label" labelfor="6"/>
+					<cell type="field" id="6" name="childCog" uitype="querycbx" readonly="true" colspan="3"/>
+					<cell type="label" label="COG Type"/>
+					<cell type="field" id="typeOfGroup" name="childCog.COGType.Name" uitype="text" readonly="true"/>
+				</row>
+			</rows>
 		</viewdef>
 	</viewdefs>
 </viewset>
