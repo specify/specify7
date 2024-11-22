@@ -128,7 +128,7 @@
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="catalogNumber" uitype="text"/>
 					<cell type="label" labelfor="COT"/>
-					<cell type="field" id="COT" name="collectionObjectType" uitype="combobox" default="Fossil" colspan="3"/>
+					<cell type="field" id="COT" name="collectionObjectType" uitype="combobox" colspan="3"/>
 					<cell type="label" labelfor="14"/>
 					<cell type="field" id="14" name="altCatalogNumber" uitype="combobox" colspan="1"/>
 				</row>
