@@ -1912,7 +1912,7 @@
 					<cell type="label" labelfor="cogType"/>
 					<cell type="field" id="cogType" name="cogType" uitype="combobox"/>
 					<cell type="label" label="Parent COG"/>
-					<cell type="field" id="parentCojo" name="parentCojo" uitype="querycbx"/>
+					<cell type="field" id="parentCojo" name="parentCog" uitype="querycbx"/>
 				</row>
 				<row>
 					<cell type="subview" id="cojo" name="children" uitype="subview" defaulttype="table" colspan="13"/>
