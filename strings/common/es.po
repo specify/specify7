@@ -220,8 +220,8 @@ msgstr "Crear"
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
 #: components/QueryBuilder/Edit.tsx:145
-#: components/QueryBuilder/Export.tsx:140
-#: components/QueryBuilder/Export.tsx:148
+#: components/QueryBuilder/Export.tsx:144
+#: components/QueryBuilder/Export.tsx:152
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
