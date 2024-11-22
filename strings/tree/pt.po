@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-21 20:00+0000\n"
+"PO-Revision-Date: 2024-11-22 16:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -442,7 +442,7 @@ msgstr "Ornitologia"
 #: components/TreeView/defaults.ts:437
 #, fuzzy
 msgid "paleobot"
-msgstr "Paleobotânica"
+msgstr "Colhedor de árvores"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:252
