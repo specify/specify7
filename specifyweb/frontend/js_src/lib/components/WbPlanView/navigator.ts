@@ -565,9 +565,11 @@ export function getMappingLineData({
                 formatTreeRank(anyTreeRank) ||
               queryBuilderTreeFields.has(field.name);
 
-            isIncluded &&=
-              getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
-              true;
+            // Hide frontend only field
+            isIncluded &&= !(
+              getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
+                true && field.name !== 'age'
+            );
 
             if (field.isRelationship) {
               isIncluded &&=
