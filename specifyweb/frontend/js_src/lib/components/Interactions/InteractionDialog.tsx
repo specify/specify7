@@ -275,11 +275,23 @@ export function InteractionDialog({
           else {
             const interaction = new actionTable.Resource();
 
+            /*
+             * Const COs = data.map((available) => {
+             *   const id = available.id;
+             *   return new tables.CollectionObject.Resource({ id });
+             * });
+             * interaction.set('collectionObjects', COs);
+             * await interaction.save();
+             */
+
             await Promise.all(
               data.map(async (available) => {
                 const id = available.id;
                 const co = new tables.CollectionObject.Resource({ id });
+                await co.fetch();
+
                 co.set('accession', interaction as never);
+
                 await co.save();
                 return co;
               })
