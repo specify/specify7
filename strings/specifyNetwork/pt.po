@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-20 19:01+0000\n"
+"PO-Revision-Date: 2024-11-23 05:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/pt/>\n"
@@ -32,7 +32,7 @@ msgstr "O nome da espécie ou GUID deve ser fornecido para exibir esta página"
 #: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
-msgstr "Não foi possível encontrar nenhum dado para esta solicitação"
+msgstr "Não foi possível encontrar dados para esta solicitação"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
