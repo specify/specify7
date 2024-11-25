@@ -41,7 +41,6 @@ export function Definition({
   );
 }
 
-
 function FormDefinitionDialog({
   table,
   viewDescription,
@@ -52,11 +51,8 @@ function FormDefinitionDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
-  
-  const [useFieldLabels = true] = useCachedState(
-    'forms',
-    'useFieldLabels'
-  );
+
+  const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
 
   const initialValue = React.useRef(useFieldLabels);
 
@@ -68,15 +64,15 @@ function FormDefinitionDialog({
     } else {
       handleClose();
     }
-  }
+  };
 
   return (
     <Dialog
       buttons={
-        <>
-          <Button.DialogClose disabled={showUnloadProtect}
-          >{commonText.close()}</Button.DialogClose>
-        </>}
+        <Button.DialogClose disabled={showUnloadProtect}>
+          {commonText.close()}
+        </Button.DialogClose>
+      }
       header={resourcesText.formDefinition()}
       onClose={handleDialogClose}
     >
@@ -91,7 +87,9 @@ function FormDefinitionDialog({
       )}
       {showUnloadProtect && (
         <UnloadProtectDialog
-          onCancel={(): void => {setShowUnloadProtect(false)}}
+          onCancel={(): void => {
+            setShowUnloadProtect(false);
+          }}
           onConfirm={(): void => globalThis.location.reload()}
         >
           {formsText.unsavedFormUnloadProtect()}
