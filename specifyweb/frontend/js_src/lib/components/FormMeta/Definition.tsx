@@ -51,12 +51,10 @@ function FormDefinitionDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
-
-  const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
-
-  const initialValue = React.useRef(useFieldLabels);
-
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
+  
+  const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
+  const initialValue = React.useRef(useFieldLabels);
 
   const handleDialogClose = (): void => {
     if (useFieldLabels !== initialValue.current && unloadProtects.length > 0) {
@@ -68,11 +66,7 @@ function FormDefinitionDialog({
 
   return (
     <Dialog
-      buttons={
-        <Button.DialogClose disabled={showUnloadProtect}>
-          {commonText.close()}
-        </Button.DialogClose>
-      }
+      buttons={commonText.close()}
       header={resourcesText.formDefinition()}
       onClose={handleDialogClose}
     >
