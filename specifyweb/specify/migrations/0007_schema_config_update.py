@@ -15,7 +15,9 @@ Creates a picklist for COGType -> type and updates an existing incorrect picklis
 """
 from django.db import migrations, models
 import django.db.models.deletion
-from specifyweb.specify.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+
+from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0007_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
 
 PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
@@ -30,8 +32,10 @@ def update_fields(apps):
     revert_table_field_schema_config('CollectionObjectGroup', 'children', apps)
     # Add StorageTreeDef -> institution and COG -> children
     for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('StorageTreeDef', discipline.id, 'institution', apps)
-        update_table_field_schema_config_with_defaults('CollectionObjectGroup', discipline.id, 'children', apps)
+        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+            for field in fields: 
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
 
     # Remove COG -> cojo
     revert_table_field_schema_config('CollectionObjectGroup', 'cojo', apps)
@@ -46,8 +50,9 @@ def update_fields(apps):
 # NOTE: The reverse function will not re-add the duplicate CO -> coType or COG -> cojo as its unnecessary
 def revert_update_fields(apps):
     # Remove StorageTreeDef -> institution and COG -> children
-    revert_table_field_schema_config('StorageTreeDef', 'institution', apps)
-    revert_table_field_schema_config('CollectionObjectGroup', 'children', apps)
+    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+            for field in fields: 
+                revert_table_field_schema_config(table, field, apps)
         
 def create_cogtype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')

@@ -1,6 +1,6 @@
 import re
 
-from typing import NamedTuple
+from typing import NamedTuple, List
 
 from django.db.models import Q
 from django.apps import apps
@@ -13,6 +13,29 @@ from specifyweb.specify.models import (
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
 ]
+
+def datamodel_type_to_schematype(datamodel_type: str) -> str: 
+    """
+    Converts a string like `many-to-one` to `ManyToOne` by: 
+    - Splitting on hyphens
+      - e.g., ['many', 'to', 'one']
+    - Lowering then capitilizing each string in the split
+      - e.g., ['Many', 'To', 'One']
+    - Joining the split strings back together
+      - e.g., 'ManyToOne'
+    """
+    return "".join(map(lambda type_part: type_part.lower().capitalize(), datamodel_type.split('-')))
+
+def camel_to_spaced_title_case(camel_case: str) -> str: 
+    """
+    Given a camel case string, convert it to title case and add spaces
+
+    - `catalogNumber` -> `Catalog Number`
+    - `modifiedByAgent` -> `Modified By Agent`
+    - `yesNo6` -> `Yes No6`
+    - `cojo` -> `Cojo`
+    """
+    return re.sub(r"(?<!^)(?=[A-Z])", " ", camel_case).title()
 
 class TableSchemaConfig(NamedTuple):
     name: str
@@ -39,27 +62,13 @@ def update_table_schema_config_with_defaults(
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     table: Table = datamodel.get_table(table_name)
-    table_name = table.name
-    table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
     table_config = TableSchemaConfig(
-        name=table_name.lower(),
+        name=table.name.lower(),
         discipline_id=discipline_id,
         schema_type=0,
-        description=table_desc,
+        description=camel_to_spaced_title_case(table_name) if description is None else description,
         language="en"
     )
-
-    fields_config = []
-    for field in table.all_fields:
-        field_name=field.name
-        field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).title()
-        fields_config.append(FieldSchemaConfig(
-            name=field_name,
-            column=field.column,
-            java_type=field.type,
-            description=field_desc,
-            language="en"
-        ))
 
     # Create Splocalecontainer for the table
     sp_local_container = Splocalecontainer.objects.create(
@@ -72,7 +81,7 @@ def update_table_schema_config_with_defaults(
     )
 
     # Create a Splocaleitemstr for the table name and description
-    for k, text in {'containername': table_config.description, 'containerdesc': table_config.description}.items():
+    for k, text in {'containername': camel_to_spaced_title_case(table_config.name), 'containerdesc': table_config.description}.items():
         item_str = {
             'text': text,
             'language': 'en',
@@ -81,11 +90,12 @@ def update_table_schema_config_with_defaults(
         item_str[k] = sp_local_container
         Splocaleitemstr.objects.create(**item_str)
 
-    for field in fields_config:
+    for field in table.all_fields:
         # Create Splocalecontaineritem for each field
         sp_local_container_item = Splocalecontaineritem.objects.create(
             name=field.name,
             container=sp_local_container,
+            type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
             ishidden=field.name.lower() in HIDDEN_FIELDS,
             issystem=table.system,
             version=0,
@@ -93,8 +103,8 @@ def update_table_schema_config_with_defaults(
 
         # Splocaleitemstr for the field name and description
         for k, text in {
-            "itemname": re.sub(r"(?<!^)(?=[A-Z])", " ", field.name).title(),
-            "itemdesc": field.description,
+            "itemname": camel_to_spaced_title_case(field.name),
+            "itemdesc": camel_to_spaced_title_case(field.name),
         }.items():
             itm_str = {
                 "text": text,
@@ -127,7 +137,7 @@ def revert_table_schema_config(table_name, apps = apps):
 def update_table_field_schema_config_with_defaults(
     table_name,
     discipline_id: int,
-    field_name: str = None,
+    field_name: str,
     apps = apps
 ):
     table: Table = datamodel.get_table(table_name)
@@ -150,25 +160,26 @@ def update_table_field_schema_config_with_defaults(
     )
 
     field = table.get_field(field_name)
-    field_desc = re.sub(r'(?<!^)(?=[A-Z])', ' ', field.name).title()
+
     field_config = FieldSchemaConfig(
         name=field_name,
         column=field.column,
-        java_type=field.type,
-        description=field_desc,
+        java_type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
+        description=camel_to_spaced_title_case(field.name),
         language="en"
     )
 
     sp_local_container_item = Splocalecontaineritem.objects.create(
         name=field_config.name,
         container=sp_local_container,
+        type=field_config.java_type,
         ishidden=field_config.name.lower() in HIDDEN_FIELDS,
         issystem=table.system,
         version=0,
     )
 
     for k, text in {
-        "itemname": re.sub(r"(?<!^)(?=[A-Z])", " ", field_config.name).title(),
+        "itemname": field_config.description,
         "itemdesc": field_config.description,
     }.items():
         itm_str = {
