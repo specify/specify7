@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
+from django.db.models import F
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
@@ -51,7 +52,7 @@ def strict_get_model(name: str):
                 if model._meta.model_name == name:
                     return model
         raise e
-    
+
 def get_model(name: str): 
     try: 
         return strict_get_model(name)
@@ -949,6 +950,15 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             val = val.split(',')
 
         filters.update({param: val})
+
+    if model.__name__ == 'Geologictimeperiod':
+        # Filter out invalid chronostrats
+        filters.update({
+            'startperiod__isnull': False,
+            'endperiod__isnull': False,
+            'startperiod__gte': F('endperiod')
+        })
+
     try:
         objs = model.objects.filter(**filters)
     except (ValueError, FieldError) as e:

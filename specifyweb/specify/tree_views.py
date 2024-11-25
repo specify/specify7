@@ -16,7 +16,7 @@ from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import get_search_filters
-from specifyweb.specify import spmodels
+from specifyweb.specify import models as spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -516,33 +516,6 @@ def all_tree_information(request):
             })
 
     return HttpResponse(toJson(result), content_type='application/json')
-
-@login_maybe_required
-@require_GET
-def get_valid_chronostrat_ids(request):
-    """Returns a list of valid chronostrat names for a given geologictimeperiod node."""
-
-    # Filter goelogictimeperiod nodes where the startperiod and endperiod are not null,
-    # and the startperiod is greater than equal to the endperiod
-    valid_chronostrat_names = spmodels.Geologictimeperiod.objects.filter(
-        startperiod__isnull=False,
-        endperiod__isnull=False,
-        startperiod__gte=F("endperiod"),
-    ).values_list("id", flat=True)
-
-    return HttpResponse(toJson(valid_chronostrat_names), content_type='application/json')
-    
-@login_maybe_required
-@require_GET
-def get_invalid_chronostrat_ids(request):
-    """Returns a list of invalid chronostrat names for a given geologictimeperiod node."""
-
-    # Filter goelogictimeperiod nodes where the startperiod or endperiod are null
-    invalid_chronostrat_names = spmodels.Geologictimeperiod.objects.filter(
-        Q(startperiod__isnull=True) | Q(endperiod__isnull=True) | Q(startperiod__lt=F("endperiod"))
-    ).values_list("id", flat=True)
-
-    return HttpResponse(toJson(invalid_chronostrat_names), content_type='application/json')
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"

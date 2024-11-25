@@ -43,8 +43,6 @@ urlpatterns = [
         url(r'^(?P<treeid>\w+)/add_root/$', tree_views.add_root),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
-        url(r'^valid_chronostrats/$', tree_views.get_valid_chronostrat_ids),
-        url(r'^invalid_chronostrats/$', tree_views.get_valid_chronostrat_ids),
     ])),
 
     # locality set import endpoints
