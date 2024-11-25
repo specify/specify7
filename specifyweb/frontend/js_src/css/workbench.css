@@ -38,7 +38,10 @@
 }
 
 /* CONTENT styles */
-.wbs-form.wb-show-upload-results .wb-no-match-cell,
+.wbs-form.wb-show-upload-results .wb-no-match-cell
+.wbs-form.wb-show-upload-results .wb-updated-cell
+.wbs-form.wb-show-upload-results .wb-deleted-cell
+.wbs-form.wb-show-upload-results .wb-matched-and-changed-cell
 .wbs-form.wb-focus-coordinates .wb-coordinate-cell {
   @apply text-black dark:text-white;
 }
@@ -50,13 +53,28 @@
 /* Cell navigation */
 
 .wbs-form
-  :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
+  :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell, .wb-updated-cell, .wb-deleted-cell, .wb-matched-and-changed-cell),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states
  * From the lowest till the highest */
+.wbs-form:not(.wb-hide-new-cells) .wb-updated-cell,
+.wb-navigation-section[data-navigation-type='updatedCells'] {
+  --accent-color: var(--updated-cell);
+}
+
+.wbs-form:not(.wb-hide-new-cells) .wb-deleted-cell,
+.wb-navigation-section[data-navigation-type='deletedCells'] {
+  --accent-color: var(--deleted-cell);
+}
+
+.wbs-form:not(.wb-hide-new-cells) .wb-matched-and-changed-cell,
+.wb-navigation-section[data-navigation-type='matchedAndChangedCells'] {
+  --accent-color: var(--matched-and-changed-cell);
+}
+
 .wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
 .wb-navigation-section[data-navigation-type='newCells'] {
   --accent-color: var(--new-cell);

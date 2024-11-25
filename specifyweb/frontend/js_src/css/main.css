@@ -150,6 +150,7 @@
   /* Make spinner buttons larger */
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button !important;
     @apply absolute right-0 top-0 h-full w-2;
   }
 
@@ -253,10 +254,16 @@
     --invalid-cell: theme('colors.red.300');
     --modified-cell: theme('colors.yellow.250');
     --search-result: theme('colors.green.300');
-    @apply dark:[--invalid-cell:theme('colors.red.900')]
+    --updated-cell: theme('colors.cyan.200');
+    --deleted-cell: theme('colors.amber.500');
+    --matched-and-changed-cell: theme('colors.blue.200');
+    @apply dark:[--deleted-cell:theme('colors.amber.600')]
+      dark:[--invalid-cell:theme('colors.red.900')]
+      dark:[--matched-and-changed-cell:theme('colors.fuchsia.700')]
       dark:[--modified-cell:theme('colors.yellow.900')]
       dark:[--new-cell:theme('colors.indigo.900')]
-      dark:[--search-result:theme('colors.green.900')];
+      dark:[--search-result:theme('colors.green.900')]
+      dark:[--updated-cell:theme('colors.cyan.800')];
   }
 
   .custom-select {
