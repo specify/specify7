@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
+"PO-Revision-Date: 2024-11-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
@@ -98,7 +98,8 @@ msgstr "Зберегти запит як..."
 #: components/QueryBuilder/Save.tsx:76
 #, fuzzy
 msgid "saveClonedQueryDescription"
-msgstr "Запит буде збережено з новою назвою, а поточний запит залишиться без змін."
+msgstr ""
+"Запит буде збережено під новою назвою, а поточний запит залишиться без змін."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
@@ -305,7 +306,7 @@ msgstr "(узагальнено)"
 #: components/WbPlanView/navigator.ts:490
 #, fuzzy
 msgid "formattedInline"
-msgstr "(відформатований)"
+msgstr "(відформатовано)"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:436
@@ -501,7 +502,7 @@ msgstr "Переміщення дерева"
 #: components/PickLists/definitions.ts:45
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Синонімізувати дерево"
+msgstr "Дерево синонімізувати"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
