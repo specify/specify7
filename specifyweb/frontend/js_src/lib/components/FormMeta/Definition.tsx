@@ -78,20 +78,23 @@ function FormDefinitionDialog({
   const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
 
+  const handleDialogClose = (): void => {
+    if (useFieldLabels !== initialValue.current && unloadProtects.length > 0) {
+      setShowUnloadProtect(true);
+    } else {
+      handleClose();
+    }
+  }
+
   return (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose disabled={useFieldLabels !== initialValue.current && unloadProtects.length > 0}
+          <Button.DialogClose disabled={showUnloadProtect}
           >{commonText.close()}</Button.DialogClose>
         </>}
       header={resourcesText.formDefinition()}
-      onClose={(): void => {
-        if (useFieldLabels !== initialValue.current && unloadProtects.length > 0) setUnloadProtect(() => () => {return true});
-        else 
-        handleClose();
-      }}
-      onClose={handleClose}
+      onClose={handleDialogClose}
     >
       <UseAutoForm table={table} />
       <UseLabels />
@@ -102,38 +105,14 @@ function FormDefinitionDialog({
           viewSetId={viewDescription.viewSetId}
         />
       )}
-      {typeof unloadProtect === 'function' && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Warning
-                onClick={(): void => {
-                  unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
-                  setUnloadProtects([]);
-                  unloadProtect();
-                  setUnloadProtect(undefined);
-                  globalThis.location.reload();
-                }}
-              >
-                {commonText.proceed()}
-              </Button.Warning>
-            </>
-          }
-          header={formsText.unsavedFormUnloadProtect()}
-          onClose={(): void => setUnloadProtect(undefined)}
-        >
-          {formsText.unsavedFormUnloadProtect()}
-        </Dialog>
-      )}
-      {/* {typeof unloadProtect === 'function' && (
+      {showUnloadProtect && (
         <UnloadProtectDialog
-          onCancel={(): void => {}}
+          onCancel={(): void => {setShowUnloadProtect(false)}}
           onConfirm={(): void => globalThis.location.reload()}
         >
           {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
-      )} */}
+      )}
     </Dialog>
   );
 }
