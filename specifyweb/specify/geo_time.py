@@ -48,7 +48,6 @@ def assert_valid_time_range(start_time: float, end_time: float):
     """
     assert start_time >= end_time, "Start time must be greater than or equal to end time."
 
-
 def search_co_ids_in_time_range(
     start_time: float, end_time: float, require_full_overlap: bool = False
 ) -> Set[int]:
@@ -310,6 +309,10 @@ def search_co_ids_in_time_period(
         return set()
     start_time = time_period.startperiod
     end_time = time_period.endperiod
+    if start_time is None:
+        start_time = 13800
+    if end_time is None:
+        end_time = 0
     return search_co_ids_in_time_range(start_time, end_time, require_full_overlap)
 
 def query_co_in_time_range_with_joins(

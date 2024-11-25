@@ -2,6 +2,7 @@ from functools import wraps
 from django import http
 from typing import Literal, Tuple
 from django.db import connection, transaction
+from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql, distinct
@@ -15,7 +16,7 @@ from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import get_search_filters
-from specifyweb.specify import models
+from specifyweb.specify import spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -160,7 +161,7 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
 
 
 def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
-    tree_table = models.datamodel.get_table(tree)
+    tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
     node = getattr(sqlmodels, tree_table.name)
@@ -391,7 +392,7 @@ def repair_tree(request, tree: TREE_TABLE):
     check_permission_targets(request.specify_collection.id,
                              request.specify_user.id,
                              [perm_target(tree).repair])
-    tree_model = models.datamodel.get_table(tree)
+    tree_model = spmodels.datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
@@ -402,8 +403,8 @@ def add_root(request, tree, treeid):
 
     tree_name = tree.title()
     tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
-    tree_def_item_model = getattr(models, f"{tree_name}treedefitem")
-    item = getattr(models, tree_name)
+    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
+    item = getattr(spmodels, tree_name)
 
     tree_def_item, create = tree_def_item_model.objects.get_or_create(
             treedef=tree_target,
@@ -505,7 +506,7 @@ def all_tree_information(request):
     for tree in accessible_trees:
         result[tree] = []
 
-        treedef_model = getattr(models, f'{tree.lower().capitalize()}treedef')
+        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
         tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree)).distinct()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')            
@@ -516,6 +517,32 @@ def all_tree_information(request):
 
     return HttpResponse(toJson(result), content_type='application/json')
 
+@login_maybe_required
+@require_GET
+def get_valid_chronostrat_ids(request):
+    """Returns a list of valid chronostrat names for a given geologictimeperiod node."""
+
+    # Filter goelogictimeperiod nodes where the startperiod and endperiod are not null,
+    # and the startperiod is greater than equal to the endperiod
+    valid_chronostrat_names = spmodels.Geologictimeperiod.objects.filter(
+        startperiod__isnull=False,
+        endperiod__isnull=False,
+        startperiod__gte=F("endperiod"),
+    ).values_list("id", flat=True)
+
+    return HttpResponse(toJson(valid_chronostrat_names), content_type='application/json')
+    
+@login_maybe_required
+@require_GET
+def get_invalid_chronostrat_ids(request):
+    """Returns a list of invalid chronostrat names for a given geologictimeperiod node."""
+
+    # Filter goelogictimeperiod nodes where the startperiod or endperiod are null
+    invalid_chronostrat_names = spmodels.Geologictimeperiod.objects.filter(
+        Q(startperiod__isnull=True) | Q(endperiod__isnull=True) | Q(startperiod__lt=F("endperiod"))
+    ).values_list("id", flat=True)
+
+    return HttpResponse(toJson(invalid_chronostrat_names), content_type='application/json')
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
