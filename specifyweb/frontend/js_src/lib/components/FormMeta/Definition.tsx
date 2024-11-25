@@ -15,9 +15,10 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
+import { unsetUnloadProtect } from '../../hooks/navigation';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
-import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
+import { UnloadProtectsContext, SetUnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function Definition({
   table,
@@ -66,28 +67,31 @@ function FormDefinitionDialog({
     isChanged.current = useFieldLabels !== initialValue.current;
   }, [useFieldLabels]);
 
-  const unsetUnloadProtect = useUnloadProtect(
-    isChanged.current,
-    saveFormUnloadProtect
-  );
+  // const unsetUnloadProtect = useUnloadProtect(
+  //   isChanged.current,
+  //   saveFormUnloadProtect
+  // );
+  // Show a warning dialog if navigating away before saving the record
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
   const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
 
   return (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose disabled={showUnloadProtect}
+          <Button.DialogClose disabled={useFieldLabels !== initialValue.current && unloadProtects.length > 0}
           >{commonText.close()}</Button.DialogClose>
         </>}
       header={resourcesText.formDefinition()}
       onClose={(): void => {
-        if (isChanged.current) setShowUnloadProtect(true);
+        if (useFieldLabels !== initialValue.current && unloadProtects.length > 0) setUnloadProtect(() => () => {return true});
         else 
         handleClose();
       }}
+      onClose={handleClose}
     >
       <UseAutoForm table={table} />
       <UseLabels />
@@ -99,13 +103,37 @@ function FormDefinitionDialog({
         />
       )}
       {typeof unloadProtect === 'function' && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Warning
+                onClick={(): void => {
+                  unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
+                  setUnloadProtects([]);
+                  unloadProtect();
+                  setUnloadProtect(undefined);
+                  globalThis.location.reload();
+                }}
+              >
+                {commonText.proceed()}
+              </Button.Warning>
+            </>
+          }
+          header={formsText.unsavedFormUnloadProtect()}
+          onClose={(): void => setUnloadProtect(undefined)}
+        >
+          {formsText.unsavedFormUnloadProtect()}
+        </Dialog>
+      )}
+      {/* {typeof unloadProtect === 'function' && (
         <UnloadProtectDialog
-          onCancel={(): void => setShowUnloadProtect(false)}
+          onCancel={(): void => {}}
           onConfirm={(): void => globalThis.location.reload()}
         >
           {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
-      )}
+      )} */}
     </Dialog>
   );
 }
