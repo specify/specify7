@@ -52,7 +52,7 @@ function FormDefinitionDialog({
 }): JSX.Element {
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
-  
+
   const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
   const initialValue = React.useRef(useFieldLabels);
 
