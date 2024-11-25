@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
+"PO-Revision-Date: 2024-11-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -465,7 +465,7 @@ msgstr "In Formularen stöbern"
 #: components/Toolbar/QueryTablesEdit.tsx:32
 #, fuzzy
 msgid "configureQueryTables"
-msgstr "Konfigurieren sichtbarer Abfragetabellen"
+msgstr "(jeder Baum)"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:96
@@ -508,7 +508,7 @@ msgstr "Baum synonymisieren"
 #: components/PickLists/definitions.ts:46
 #, fuzzy
 msgid "treeDesynonymize"
-msgstr "Baum Desynonymisieren"
+msgstr "in der Vergangenheit"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
@@ -572,7 +572,8 @@ msgstr ""
 #: components/QueryBuilder/Import.tsx:159
 #, fuzzy
 msgid "importHiddenFields"
-msgstr "In der importierten Abfrage sind folgende Felder ausgeblendet:"
+msgstr ""
+"In der von Ihnen importierten Abfrage sind die folgenden Felder ausgeblendet:"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
@@ -611,7 +612,7 @@ msgstr "Zum Editor scrollen"
 #: components/QueryBuilder/ResultsTable.tsx:187
 #, fuzzy
 msgid "viewRecords"
-msgstr "Datensätze anzeigen"
+msgstr "Gleich"
 
 #. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:65
