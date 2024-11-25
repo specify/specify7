@@ -15,10 +15,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
-import { unsetUnloadProtect } from '../../hooks/navigation';
-import { useUnloadProtect } from '../../hooks/navigation';
-import { saveFormUnloadProtect } from '../Forms/Save';
-import { UnloadProtectsContext, SetUnloadProtectsContext } from '../Router/UnloadProtect';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function Definition({
   table,
@@ -56,26 +53,13 @@ function FormDefinitionDialog({
 }): JSX.Element {
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
   
-  const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
+  const [useFieldLabels = true] = useCachedState(
     'forms',
     'useFieldLabels'
   );
 
   const initialValue = React.useRef(useFieldLabels);
-  const isChanged = React.useRef(false);
-  React.useEffect(() => {
-    isChanged.current = useFieldLabels !== initialValue.current;
-  }, [useFieldLabels]);
 
-  // const unsetUnloadProtect = useUnloadProtect(
-  //   isChanged.current,
-  //   saveFormUnloadProtect
-  // );
-  // Show a warning dialog if navigating away before saving the record
-  const [unloadProtect, setUnloadProtect] = React.useState<
-    (() => void) | undefined
-  >(undefined);
-  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
 
   const handleDialogClose = (): void => {
