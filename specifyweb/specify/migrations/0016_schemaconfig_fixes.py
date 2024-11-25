@@ -25,7 +25,7 @@ from .update_schema_config.
 
 Specifically, this migration does the following: 
 
-- Adds the 'type' field to splocalecontaineritems
+- Adds the 'type' and 'isrequired' fields to splocalecontaineritems
 - The caption of tables was being set to their descriptions, this sets it to 
   the proper lables
 """
@@ -36,19 +36,20 @@ def fix_table_captions(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    for migration in CONTAINER_MIGRATIONS: 
+    for migration in CONTAINER_MIGRATIONS:
         for table_name, table_desc in migration:
             table = datamodel.get_table_strict(table_name)
             containers = Splocalecontainer.objects.filter(
                 name=table_name.lower(), schematype=0)
 
             # If needed, correct the label of the table in the schema config
-            if table_desc is not None: 
+            if table_desc is not None:
                 Splocaleitemstr.objects.filter(
                     containername__in=containers, text=table_desc).update(text=camel_to_spaced_title_case(table_name))
 
             # Update the types for the fields in the table
-            items = Splocalecontaineritem.objects.filter(container__in=containers)
+            items = Splocalecontaineritem.objects.filter(
+                container__in=containers)
             for item in items:
                 datamodel_field = table.get_field(item.name)
                 if not datamodel_field:
@@ -56,6 +57,7 @@ def fix_table_captions(apps):
 
                 item.type = datamodel_type_to_schematype(
                     datamodel_field.type) if datamodel_field.is_relationship else datamodel_field.type
+                item.isrequired = datamodel_field.required
 
                 item.save()
 
@@ -76,6 +78,7 @@ def fix_item_types(apps):
 
                 item.type = datamodel_type_to_schematype(
                     datamodel_field.type) if datamodel_field.is_relationship else datamodel_field.type
+                item.isrequired = datamodel_field.required
 
                 item.save()
 

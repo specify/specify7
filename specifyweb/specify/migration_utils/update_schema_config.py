@@ -97,6 +97,7 @@ def update_table_schema_config_with_defaults(
             container=sp_local_container,
             type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
             ishidden=field.name.lower() in HIDDEN_FIELDS,
+            isrequired=field.required,
             issystem=table.system,
             version=0,
         )
@@ -174,6 +175,7 @@ def update_table_field_schema_config_with_defaults(
         container=sp_local_container,
         type=field_config.java_type,
         ishidden=field_config.name.lower() in HIDDEN_FIELDS,
+        isrequired=field.required,
         issystem=table.system,
         version=0,
     )

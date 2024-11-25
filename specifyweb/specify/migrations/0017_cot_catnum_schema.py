@@ -6,44 +6,59 @@ from django.db.models import Q
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.migration_utils.update_schema_config import camel_to_spaced_title_case
 
-def add_cot_catnum_to_schema(apps, schema_editor): 
+
+def add_cot_catnum_to_schema(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    CollectionObjectType_Table  = datamodel.get_table_strict('collectionobjecttype')
-    catalognumber_format_field = CollectionObjectType_Table.get_field_strict('catalogNumberFormatName')
+    CollectionObjectType_Table = datamodel.get_table_strict(
+        'collectionobjecttype')
+    catalognumber_format_field = CollectionObjectType_Table.get_field_strict(
+        'catalogNumberFormatName')
+    
 
-    for container in Splocalecontainer.objects.filter(name='collectionobjecttype', schematype=0): 
-        schema_item, created = Splocalecontaineritem.objects.get_or_create(name=catalognumber_format_field.name, container=container)
-        schema_item.type = catalognumber_format_field.type
-        schema_item.isrequired = catalognumber_format_field.required
-        if created: 
+
+    for container in Splocalecontainer.objects.filter(name='collectionobjecttype', schematype=0):
+        schema_item, created = Splocalecontaineritem.objects.get_or_create(
+            name=catalognumber_format_field.name, type=catalognumber_format_field.type, container=container)
+        if created:
             schema_item.version = 0
+            schema_item.isrequired = catalognumber_format_field.required
 
         schema_item.save()
 
-        schema_name = camel_to_spaced_title_case(catalognumber_format_field.name)
-        Splocaleitemstr.objects.get_or_create(language='en', text=schema_name, itemname=schema_item)
-        Splocaleitemstr.objects.get_or_create(language='en', text=schema_name, itemdesc=schema_item)
+        schema_name = camel_to_spaced_title_case(
+            catalognumber_format_field.name)
+        Splocaleitemstr.objects.get_or_create(
+            language='en', text=schema_name, itemname=schema_item)
+        Splocaleitemstr.objects.get_or_create(
+            language='en', text=schema_name, itemdesc=schema_item)
 
-def remove_cot_catnum_from_schema(apps, schema_editor): 
+
+def remove_cot_catnum_from_schema(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    CollectionObjectType_Table  = datamodel.get_table_strict('collectionobjecttype')
-    catalognumber_format_field = CollectionObjectType_Table.get_field_strict('catalogNumberFormatName')
+    CollectionObjectType_Table = datamodel.get_table_strict(
+        'collectionobjecttype')
+    catalognumber_format_field = CollectionObjectType_Table.get_field_strict(
+        'catalogNumberFormatName')
 
-    containers = Splocalecontainer.objects.filter(name='collectionobjecttype', schematype=0)
-    items = Splocalecontaineritem.objects.filter(name='catalogNumberFormatName', container__in=containers)
+    containers = Splocalecontainer.objects.filter(
+        name='collectionobjecttype', schematype=0)
+    items = Splocalecontaineritem.objects.filter(
+        name='catalogNumberFormatName', container__in=containers)
 
     schema_name = camel_to_spaced_title_case(catalognumber_format_field.name)
-    filters = Q(language='en', text=schema_name) & (Q(itemname__in=items) | Q(itemdesc__in=items))
+    filters = Q(language='en', text=schema_name) & (
+        Q(itemname__in=items) | Q(itemdesc__in=items))
     locale_strings = Splocaleitemstr.objects.filter(filters)
 
     locale_strings.delete()
     items.delete()
+
 
 class Migration(migrations.Migration):
 
@@ -52,5 +67,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_cot_catnum_to_schema, remove_cot_catnum_from_schema, atomic=True)
+        migrations.RunPython(add_cot_catnum_to_schema,
+                             remove_cot_catnum_from_schema, atomic=True)
     ]
