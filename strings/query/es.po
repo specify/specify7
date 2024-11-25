@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
+"PO-Revision-Date: 2024-11-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -162,9 +162,7 @@ msgstr "Se está creando el archivo de exportación"
 #: components/QueryBuilder/Export.tsx:148
 #, fuzzy
 msgid "queryExportStartedDescription"
-msgstr ""
-"Aparecerá una notificación cuando el archivo de exportación esté completo y "
-"listo para descargar."
+msgstr "en el futuro"
 
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #: components/PickLists/index.tsx:188
@@ -524,7 +522,7 @@ msgstr "Meses"
 #: components/QueryBuilder/RelativeDate.tsx:172
 #, fuzzy
 msgid "year"
-msgstr "Años"
+msgstr "Rango"
 
 #. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:190
