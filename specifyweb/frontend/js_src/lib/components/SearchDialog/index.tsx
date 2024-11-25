@@ -36,6 +36,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryCbxExtendedSearch } from './helpers';
+import { SelectRecordSets } from './SelectRecordSet';
 
 const resourceLimit = 100;
 
@@ -220,6 +221,7 @@ function SearchForm<SCHEMA extends AnySchema>({
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>
+          <SelectRecordSets table={table} />
         </>
       }
       dimensionsKey={`SearchDialog-${table.name}`}

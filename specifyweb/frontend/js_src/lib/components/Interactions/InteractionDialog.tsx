@@ -71,9 +71,7 @@ export function InteractionDialog({
   interactionResource,
 }: {
   readonly onClose: () => void;
-  readonly actionTable:
-    | SpecifyTable<Accession>
-    | SpecifyTable<InteractionWithPreps>;
+  readonly actionTable: SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<AnyInteractionPreparation>;
   readonly interactionResource?: SpecifyResource<AnySchema>;
@@ -106,7 +104,6 @@ export function InteractionDialog({
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
     | State<'MainState'>
-    | State<'UsedCatalogNumberState', { readonly unavailable: RA<string> }>
   >({ type: 'MainState' });
 
   const { validationRef, inputRef, setValidation } =
@@ -239,75 +236,11 @@ export function InteractionDialog({
     return parsed;
   }
 
-  const navigate = useNavigate();
-
   const addInteractionResource = (): void => {
     itemCollection?.add(
       (interactionResource as SpecifyResource<
         DisposalPreparation | GiftPreparation | LoanPreparation
       >) ?? new itemCollection.table.specifyTable.Resource()
-    );
-  };
-
-  const hanleAvailableCatNumber = (): void => {
-    const catalogNumbers = handleParse();
-    if (catalogNumbers === undefined) return undefined;
-
-    loading(
-      (catalogNumbers.length === 0
-        ? Promise.resolve([])
-        : getCatNumberAvailableForAccession('CatalogNumber', catalogNumbers)
-      )
-        .then(async (data) => {
-          const returnCOCatNumber = new Set(
-            data.map((item) => item.catalognumber)
-          );
-
-          const unavailableCOs = catalogNumbers.filter(
-            (catNumber) => !returnCOCatNumber.has(catNumber)
-          );
-
-          if (unavailableCOs !== undefined && unavailableCOs.length > 0)
-            setState({
-              type: 'UsedCatalogNumberState',
-              unavailable: unavailableCOs,
-            });
-          else {
-            const interaction = new actionTable.Resource();
-
-            /*
-             * Const COs = data.map((available) => {
-             *   const id = available.id;
-             *   return new tables.CollectionObject.Resource({ id });
-             * });
-             * interaction.set('collectionObjects', COs);
-             * await interaction.save();
-             */
-
-            await Promise.all(
-              data.map(async (available) => {
-                const id = available.id;
-                const co = new tables.CollectionObject.Resource({ id });
-                await co.fetch();
-
-                co.set('accession', interaction as never);
-
-                await co.save();
-                return co;
-              })
-            );
-
-            navigate(getResourceViewUrl(actionTable.name, undefined), {
-              state: {
-                type: 'RecordSet',
-                resource: serializeResource(interaction),
-              },
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Error in handleAvailableCatNumber:', error);
-        })
     );
   };
 
@@ -324,8 +257,7 @@ export function InteractionDialog({
         tablePreparation: tables.Preparation.label,
       })}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' &&
-    actionTable.name !== 'Accession' ? (
+  ) : state.type === 'PreparationSelectState' ? (
     state.entries.length > 0 ? (
       <PrepDialog
         // BUG: make this readOnly if don't have necessary permissions
@@ -384,12 +316,9 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Secondary>
-                ) : interactionsWithPrepTables.includes(actionTable.name) ||
-                  actionTable.name === 'Accession' ? (
+                ) : interactionsWithPrepTables.includes(actionTable.name) ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
-                    {actionTable.name === 'Accession'
-                      ? interactionsText.continueWithoutCollectionObject()
-                      : interactionsText.withoutPreparations()}
+                    {interactionsText.withoutPreparations()}
                   </Link.Secondary>
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
@@ -439,17 +368,10 @@ export function InteractionDialog({
                 <div>
                   <Button.Info
                     disabled={catalogNumbers.length === 0}
-                    onClick={(): void => {
-                      if (actionTable.name === 'Accession') {
-                        hanleAvailableCatNumber();
-                      } else {
-                        handleProceed(undefined);
-                      }
-                    }}
+                    onClick={(): void => handleProceed(undefined)}
                   >
                     {state.type === 'MissingState' ||
-                    state.type === 'InvalidState' ||
-                    state.type === 'UsedCatalogNumberState'
+                    state.type === 'InvalidState'
                       ? commonText.update()
                       : commonText.next()}
                   </Button.Info>
@@ -482,14 +404,6 @@ export function InteractionDialog({
                         ))}
                       </>
                     )}
-                  </>
-                )}
-                {state.type === 'UsedCatalogNumberState' && (
-                  <>
-                    {interactionsText.catalogNumberAlreadyUsed()}
-                    {state.unavailable.map((error, index) => (
-                      <p key={index}>{error}</p>
-                    ))}
                   </>
                 )}
               </div>
