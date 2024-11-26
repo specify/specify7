@@ -7,7 +7,7 @@ from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_r
 def apply_default_rules(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
     for disp in Discipline.objects.all():
-        apply_default_uniqueness_rules(disp)
+        apply_default_uniqueness_rules(disp, registry=apps)
 
 
 def remove_default_rules(apps, schema_editor):
