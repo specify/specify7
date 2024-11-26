@@ -3,7 +3,7 @@
 from django.db import migrations
 from django.db.models import F
 
-from specifyweb.specify.migration_utils.update_schema_config import datamodel_type_to_schematype, camel_to_spaced_title_case
+from specifyweb.specify.migration_utils.update_schema_config import datamodel_type_to_schematype, uncapitilize, camel_to_spaced_title_case
 from specifyweb.specify.datamodel import datamodel
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
@@ -45,7 +45,7 @@ def fix_table_captions(apps):
             # If needed, correct the label of the table in the schema config
             if table_desc is not None:
                 Splocaleitemstr.objects.filter(
-                    containername__in=containers, text=table_desc).update(text=camel_to_spaced_title_case(table_name))
+                    containername__in=containers, text=table_desc).update(text=camel_to_spaced_title_case(uncapitilize(table.name)))
 
             # Update the types for the fields in the table
             items = Splocalecontaineritem.objects.filter(
@@ -57,7 +57,7 @@ def fix_table_captions(apps):
 
                 item.type = datamodel_type_to_schematype(
                     datamodel_field.type) if datamodel_field.is_relationship else datamodel_field.type
-                item.isrequired = datamodel_field.required
+                item.isrequired = datamodel_field.required if item.isrequired is None else item.isrequired
 
                 item.save()
 
@@ -78,7 +78,7 @@ def fix_item_types(apps):
 
                 item.type = datamodel_type_to_schematype(
                     datamodel_field.type) if datamodel_field.is_relationship else datamodel_field.type
-                item.isrequired = datamodel_field.required
+                item.isrequired = datamodel_field.required if item.isrequired is None else item.isrequired
 
                 item.save()
 

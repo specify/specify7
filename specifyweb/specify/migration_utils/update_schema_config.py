@@ -51,6 +51,9 @@ class FieldSchemaConfig(NamedTuple):
     description: str = ""
     language: str = "en"
 
+def uncapitilize(string: str) -> str: 
+    return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
+
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
@@ -63,16 +66,16 @@ def update_table_schema_config_with_defaults(
 
     table: Table = datamodel.get_table(table_name)
     table_config = TableSchemaConfig(
-        name=table.name.lower(),
+        name=table.name,
         discipline_id=discipline_id,
         schema_type=0,
-        description=camel_to_spaced_title_case(table_name) if description is None else description,
+        description=camel_to_spaced_title_case(uncapitilize(table.name)) if description is None else description,
         language="en"
     )
 
     # Create Splocalecontainer for the table
     sp_local_container = Splocalecontainer.objects.create(
-        name=table.name.lower(),
+        name=table_config.name.lower(),
         discipline_id=discipline_id,
         schematype=table_config.schema_type,
         ishidden=False,
@@ -81,7 +84,7 @@ def update_table_schema_config_with_defaults(
     )
 
     # Create a Splocaleitemstr for the table name and description
-    for k, text in {'containername': camel_to_spaced_title_case(table_config.name), 'containerdesc': table_config.description}.items():
+    for k, text in {'containername': camel_to_spaced_title_case(uncapitilize(table.name)), 'containerdesc': table_config.description}.items():
         item_str = {
             'text': text,
             'language': 'en',
