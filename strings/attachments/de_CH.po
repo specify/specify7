@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-26 13:15+0000\n"
+"PO-Revision-Date: 2024-11-26 13:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
@@ -153,7 +153,7 @@ msgstr "Übereinstimmungsfehler"
 #: components/AttachmentsBulkImport/utils.ts:481
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen."
+msgstr "Fehler beim Lesen der Datei"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:483
@@ -338,7 +338,9 @@ msgstr "Doppelte Dateien gefunden"
 #: components/AttachmentsBulkImport/Import.tsx:421
 #, fuzzy
 msgid "duplicateFilesDescription"
-msgstr "Abgesagt"
+msgstr ""
+"Die folgenden Dateien sind nicht ausgewählt, da sie in diesem Datensatz "
+"bereits vorhanden sind."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:490
@@ -356,7 +358,7 @@ msgstr "Fehler beim Speichern des Datensatzes"
 #: components/AttachmentsBulkImport/utils.ts:489
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Suchen Sie nach weiteren Anhängen"
+msgstr "Gestoppt wegen eines Fehlers beim Hochladen einer vorherigen Datei"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
