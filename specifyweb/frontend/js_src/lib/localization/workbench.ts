@@ -384,6 +384,11 @@ export const wbText = createDictionary({
   },
   startUpload: {
     'en-us': 'Begin Data Set Upload?',
+    'ru-ru': 'Начать загрузку набора данных?',
+    'es-es': '¿Comenzar carga de conjunto de datos?',
+    'fr-fr': "Commencer le téléchargement de l'ensemble de données ?",
+    'uk-ua': 'Почати завантаження набору даних?',
+    'de-ch': 'Hochladen des Datensatzes beginnen?',
   },
   startUploadDescription: {
     'en-us':
@@ -639,6 +644,11 @@ export const wbText = createDictionary({
   },
   uploadSuccessful: {
     'en-us': 'Upload Completed with No Errors',
+    'ru-ru': 'Загрузка завершена без ошибок',
+    'es-es': 'Carga completada sin errores',
+    'fr-fr': 'Téléchargement terminé sans erreur',
+    'uk-ua': 'Завантаження завершено без помилок',
+    'de-ch': 'Upload ohne Fehler abgeschlossen',
   },
   uploadSuccessfulDescription: {
     'en-us': `
@@ -668,14 +678,57 @@ export const wbText = createDictionary({
   },
   uploadErrors: {
     'en-us': 'Upload Failed due to Error Cells',
+    'ru-ru': 'Ошибка загрузки из-за ошибок',
+    'es-es': 'Carga fallida debido a celdas de error',
+    'fr-fr': "Échec du téléchargement en raison de cellules d'erreur",
+    'uk-ua': 'Помилка завантаження через клітинки помилок',
+    'de-ch': 'Der Upload ist aufgrund fehlerhafter Zellen fehlgeschlagen',
   },
   uploadErrorsDescription: {
-    'en-us': 'The Upload failed due to one or more cell value errors.',
+    'en-us': 'The upload failed due to one or more cell value errors.',
+    'ru-ru':
+      'Загрузка не удалась из-за одной или нескольких ошибок значений ячеек.',
+    'es-es': 'La carga falló debido a uno o más errores de valor de celda.',
+    'fr-fr': `
+      Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur
+      de cellule.
+    `,
+    'uk-ua':
+      'Помилка завантаження через одну або кілька помилок значення клітинки.',
+    'de-ch': `
+      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
+      fehlgeschlagen.
+    `,
   },
   uploadErrorsSecondDescription: {
     'en-us': `
       Validate the Data Set and review the mouseover hints for each error cell,
-      then make the appropriate corrections. Save and retry the {type:string}.
+      then make the appropriate corrections. Save and retry the Upload.
+    `,
+    'ru-ru': `
+      Проверте набор данных и наведите указатель мыши на каждую ячейку с
+      ошибкой, затем сделайте соответствующие исправления, сохраните и повторите
+      попытку.
+    `,
+    'es-es': `
+      Valide el conjunto de datos y revise las sugerencias del mouseover para
+      cada celda de error, luego haga las correcciones apropiadas. Guarde y
+      vuelva a intentar la carga.
+    `,
+    'fr-fr': `
+      Validez l'ensemble de données et examinez les conseils de passage de la
+      souris pour chaque cellule d'erreur, puis apportez les corrections
+      appropriées. Enregistrez et réessayez le téléchargement.
+    `,
+    'uk-ua': `
+      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
+      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      завантаження.
+    `,
+    'de-ch': `
+      Validieren Sie den Datensatz und überprüfen Sie die Mouseover-Hinweise für
+      jede Fehlerzelle. Nehmen Sie dann die entsprechenden Korrekturen vor.
+      Speichern Sie und versuchen Sie den Upload erneut.
     `,
   },
   dataSetRollback: {
@@ -744,9 +797,19 @@ export const wbText = createDictionary({
   },
   uploadCanceled: {
     'en-us': 'Upload Cancelled',
+    'ru-ru': 'Загрузка отменена',
+    'es-es': 'Subida cancelada',
+    'de-ch': 'Datensatzvalidierung abgebrochen.',
+    'fr-fr': 'Téléchargement annulé',
+    'uk-ua': 'Завантаження скасовано',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
+    'ru-ru': 'Загрузка набора данных отменена.',
+    'es-es': 'Carga de conjunto de datos cancelada.',
+    'fr-fr': "Téléchargement de l'ensemble de données annulé.",
+    'uk-ua': 'Завантаження набору даних скасовано.',
+    'de-ch': 'Der Upload des Datensatzes wurde abgebrochen.',
   },
   coordinateConverter: {
     'en-us': 'Geocoordinate Format',
@@ -908,6 +971,14 @@ export const wbText = createDictionary({
     'fr-fr': 'Télécharger le forfait',
     'uk-ua': 'План завантаження',
   },
+  potentialUploadResults: {
+    'en-us': 'Potential Upload Results',
+    'ru-ru': 'Возможные результаты загрузки',
+    'es-es': 'Resultados potenciales de la carga',
+    'fr-fr': 'Résultats potentiels du téléchargement',
+    'uk-ua': 'Потенційні результати завантаження',
+    'de-ch': 'Mögliche Upload-Ergebnisse',
+  },
   noUploadResultsAvailable: {
     'en-us': 'No upload results are available for this cell',
     'ru-ru': 'Для этой ячейки нет результатов загрузки',
@@ -915,7 +986,28 @@ export const wbText = createDictionary({
     'fr-fr':
       "Aucun résultat de téléchargement n'est disponible pour cette cellule",
     'uk-ua': 'Для цієї клітинки немає результатів завантаження',
-    'de-ch': 'Für diese Zelle sind keine Uploasd-Ergebnisse verfügbar',
+    'de-ch': 'Für diese Zelle sind keine Upload-Ergebnisse verfügbar',
+  },
+  wbUploadedDescription: {
+    'en-us': 'Number of new records created in each table:',
+    'ru-ru': 'Количество новых записей, созданных в каждой таблице:',
+    'es-es': 'Número de registros nuevos creados en cada tabla:',
+    'fr-fr': 'Nombre de nouveaux enregistrements créés dans chaque table :',
+    'uk-ua': 'Кількість нових записів, створених у кожній таблиці:',
+    'de-ch': 'Anzahl der in jeder Tabelle erstellten neuen Datensätze:',
+  },
+  wbUploadedPotentialDescription: {
+    'en-us': 'Number of new records that would be created in each table:',
+    'ru-ru':
+      'Количество новых записей, которые будут созданы в каждой таблице:',
+    'es-es': 'Número de registros nuevos que se crearían en cada tabla:',
+    'fr-fr': `
+      Nombre de nouveaux enregistrements qui seraient créés dans chaque table :
+    `,
+    'uk-ua': 'Кількість нових записів, які будуть створені в кожній таблиці:',
+    'de-ch': `
+      Anzahl der neuen Datensätze, die in jeder Tabelle erstellt werden würden:
+    `,
   },
   navigationOptions: {
     'en-us': 'Navigation Options',
@@ -1171,7 +1263,7 @@ export const wbText = createDictionary({
     'de-ch': 'Neuer Datensatz {date}',
   },
   dataSets: {
-    'en-us': '{variant:string} Data Sets',
+    'en-us': 'WorkBench Data Sets',
     'ru-ru': 'Наборы данных',
     'es-es': 'Conjuntos de datos de WorkBench',
     'fr-fr': 'Ensembles de données WorkBench',
