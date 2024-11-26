@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-24 04:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-26 15:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "header/uk/>\n"
 "Language: uk\n"
@@ -82,9 +82,8 @@ msgstr "Експорт розпочато. Коли експорт заверш�
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:104
 #: components/LocalityUpdate/index.tsx:83
-#, fuzzy
 msgid "localityUpdateTool"
-msgstr "Виберіть"
+msgstr "Інструмент оновлення місцевості"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:211
@@ -120,9 +119,8 @@ msgstr "Ремонт дерева завершено."
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
-#, fuzzy
 msgid "choose"
-msgstr "Виберіть"
+msgstr "виберіть"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
@@ -132,7 +130,6 @@ msgstr "Виберіть DwCA"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
-#, fuzzy
 msgid "dwcaResource"
 msgstr "Ресурс DwCA"
 
@@ -144,7 +141,6 @@ msgstr "Виберіть ресурс метаданих"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
-#, fuzzy
 msgid "metadataResource"
 msgstr "Ресурс метаданих"
 
@@ -271,6 +267,5 @@ msgstr "Технічні документи"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:33
-#, fuzzy
 msgid "chronostratigraphicChart"
 msgstr "Хроностратиграфічна діаграма"
