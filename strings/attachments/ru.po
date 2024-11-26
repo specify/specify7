@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-26 13:15+0000\n"
+"PO-Revision-Date: 2024-11-26 13:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
@@ -106,8 +106,7 @@ msgstr "Удалено"
 #: components/AttachmentsBulkImport/utils.ts:467
 #, fuzzy
 msgid "noFile"
-msgstr ""
-"Откат приведет к удалению вложений из базы данных Specify и Asset Server."
+msgstr "Нет файла"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:169
@@ -180,7 +179,7 @@ msgstr "Новый набор данных вложений {дата: стро�
 #: components/AttachmentsBulkImport/Datasets.tsx:269
 #, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Найдены дубликаты файлов"
+msgstr "Новый набор данных вложений"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:393
@@ -358,7 +357,7 @@ msgstr "Ошибка сохранения записи"
 #: components/AttachmentsBulkImport/utils.ts:489
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Ищите больше вложений"
+msgstr "Остановлено из-за ошибки загрузки предыдущего файла"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
