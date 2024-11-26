@@ -221,14 +221,14 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          <Submit.Success form={id('form')}>
-            {commonText.search()}
-          </Submit.Success>
           <SelectRecordSets
             collection={collection}
             handleParentClose={handleClose}
             table={table}
           />
+          <Submit.Success form={id('form')}>
+            {commonText.search()}
+          </Submit.Success>
         </>
       }
       dimensionsKey={`SearchDialog-${table.name}`}
