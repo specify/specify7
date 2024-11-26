@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-26 15:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "locality/uk/>\n"
 "Language: uk\n"
@@ -211,20 +211,17 @@ msgstr "Початок оновлення місцевості"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:35
-#, fuzzy
 msgid "localityUpdateParsing"
 msgstr "Розбір набору даних місцевості"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:37
-#, fuzzy
 msgid "localityUpdateProgressing"
 msgstr "Імпорт набору даних місцевості"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:285
-#, fuzzy
 msgid "localityUpdateParsed"
 msgstr "Проаналізовано набір даних оновлення місцевості"
 
@@ -232,41 +229,35 @@ msgstr "Проаналізовано набір даних оновлення м
 #: components/LocalityUpdate/Status.tsx:467
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:253
-#, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Помилка оновлення місцевості"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:229
-#, fuzzy
 msgid "localityUpdateParseFailure"
 msgstr "Помилка аналізу оновлення місцевості"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:274
-#, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Оновлення місцевості скасовано"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:297
-#, fuzzy
 msgid "localityUpdateSucceeded"
 msgstr "Місцезнаходження оновлено"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
 #: components/LocalityUpdate/Status.tsx:509
-#, fuzzy
 msgid "localityUpdateWentWrong"
 msgstr "Щось пішло не так під час процесу оновлення місцевості"
 
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:368
-#, fuzzy
 msgid "localityUpdateParseErrorFileName"
 msgstr "Помилки оновлення місцевості - {date:string}"
 
@@ -283,13 +274,11 @@ msgstr "Набір даних має містити заголовок «guid».
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:55
-#, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Розпочато процес оновлення місцевості"
+msgstr "Немає місцевості з guid: '{guid:string}'"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
-#, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
 "З guid: {guid:string} знайдено більше одного населеного пункту. "
@@ -297,15 +286,13 @@ msgstr ""
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:239
-#, fuzzy
 msgid "localityUpdateEffectCounts"
 msgstr ""
-"Оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
+"оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
 "буде створено записи {geoCoordDetailTableLabel: string}:"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:289
-#, fuzzy
 msgid "localityUploadedDescription"
 msgstr ""
 "Оновлено таку кількість записів {localityTabelLabel: string} і створено "
@@ -313,14 +300,12 @@ msgstr ""
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:217
-#, fuzzy
 msgid "localityUpdateStarted"
 msgstr "Розпочато процес оновлення місцевості"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:336
 #: components/Notifications/NotificationRenderers.tsx:299
-#, fuzzy
 msgid "localityUpdateResults"
 msgstr "Результати оновлення місцевості"
 
@@ -328,7 +313,6 @@ msgstr "Результати оновлення місцевості"
 #: components/LocalityUpdate/Status.tsx:397
 #: components/Notifications/NotificationRenderers.tsx:231
 #: components/Notifications/NotificationRenderers.tsx:255
-#, fuzzy
 msgid "localityUpdateFailureResults"
 msgstr "Результати помилки оновлення місцевості"
 
@@ -339,20 +323,15 @@ msgstr "Результати помилки оновлення місцевос�
 #: components/Notifications/NotificationRenderers.tsx:276
 #: components/Notifications/NotificationRenderers.tsx:287
 #: components/Notifications/NotificationRenderers.tsx:316
-#, fuzzy
 msgid "taskId"
 msgstr "ID завдання"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:92
-#, fuzzy
 msgid "validLatitude"
 msgstr "Значення широти має бути від -90° до 90°"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:93
-#, fuzzy
 msgid "validLongitude"
-msgstr ""
-"Оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
-"буде створено записи {geoCoordDetailTableLabel: string}:"
+msgstr "Довгота повинна мати значення від -180° до 180°"
