@@ -12,6 +12,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById } from '../DataModel/tables';
+import { softError } from '../Errors/assert';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
@@ -60,7 +61,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
         })
           .then(({ records }) => records.map((record) => record.recordId))
           .catch((error) => {
-            console.error('Error fetching RecordSetItem:', error);
+            softError('Error fetching RecordSetItem:', error);
             return [];
           })
       )
