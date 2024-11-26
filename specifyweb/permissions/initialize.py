@@ -8,12 +8,12 @@ from specifyweb.specify.model_extras import is_legacy_admin
 from .permissions import CollectionAccessPT
 
 def wipe_permissions(apps = apps) -> None:
-    RolePolicy = apps.get_model('specify', 'RolePolicy')
-    UserRole = apps.get_model('specify', 'UserRole')
-    Role = apps.get_model('specify', 'Role')
-    LibraryRolePolicy = apps.get_model('specify', 'LibraryRolePolicy')
-    LibraryRole = apps.get_model('specify', 'LibraryRole')
-    UserPolicy = apps.get_model('specify', 'UserPolicy')
+    RolePolicy = apps.get_model('permissions', 'RolePolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+    Role = apps.get_model('permissions', 'Role')
+    LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')
+    LibraryRole = apps.get_model('permissions', 'LibraryRole')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
 
     RolePolicy.objects.all().delete()
     UserRole.objects.all().delete()
@@ -31,7 +31,7 @@ def initialize(wipe: bool=False, apps=apps) -> None:
         assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
-    UserPolicy = apps.get_model('specify', 'UserPolicy')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
 
     if UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
@@ -51,8 +51,8 @@ def create_admins(apps=apps) -> None:
 def assign_users_to_roles(apps=apps) -> None:
     from specifyweb.context.views import users_collections_for_sp6
 
-    Role = apps.get_model('specify', 'Role')
-    UserPolicy = apps.get_model('specify', 'UserPolicy')
+    Role = apps.get_model('permissions', 'Role')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
     Collection = apps.get_model('specify', 'Collection')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
@@ -79,9 +79,9 @@ def assign_users_to_roles(apps=apps) -> None:
                 )
 
 def create_roles(apps = apps) -> None:
-    LibraryRole = apps.get_model('specify', 'LibraryRole')
+    LibraryRole = apps.get_model('permissions', 'LibraryRole')
+    Role = apps.get_model('permissions', 'Role')
     Collection = apps.get_model('specify', 'Collection')
-    Role = apps.get_model('specify', 'Role')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     
     role = LibraryRole.objects.create(name="Assign Roles", description="Gives ability to assign existing roles to existing users.")

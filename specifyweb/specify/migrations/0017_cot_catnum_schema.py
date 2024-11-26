@@ -16,15 +16,14 @@ def add_cot_catnum_to_schema(apps, schema_editor):
         'collectionobjecttype')
     catalognumber_format_field = CollectionObjectType_Table.get_field_strict(
         'catalogNumberFormatName')
-    
-
 
     for container in Splocalecontainer.objects.filter(name='collectionobjecttype', schematype=0):
         schema_item, created = Splocalecontaineritem.objects.get_or_create(
             name=catalognumber_format_field.name, type=catalognumber_format_field.type, container=container)
         if created:
             schema_item.version = 0
-            schema_item.isrequired = catalognumber_format_field.required
+        
+        schema_item.isrequired = catalognumber_format_field.required if schema_item.isrequired is None else schema_item.isrequired
 
         schema_item.save()
 
