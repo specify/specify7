@@ -53,6 +53,13 @@ export const operationPolicies = {
     'desynonymize',
     'repair',
   ],
+  '/tree/edit/tectonicunit': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
   '/querybuilder/query': [
     'execute',
     'export_csv',
