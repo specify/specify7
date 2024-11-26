@@ -75,9 +75,6 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Є проблеми з входом:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
   },
-  catalogNumberAlreadyUsed: {
-    'en-us': 'Catalog numbers already used:',
-  },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
@@ -120,9 +117,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжить без подготовки',
     'uk-ua': 'Продовжуйте без підготовки',
-  },
-  continueWithoutCollectionObject: {
-    'en-us': 'Continue without collection object',
   },
   addUnassociated: {
     'en-us': 'Add unassociated item',

@@ -3,28 +3,28 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { treeText } from '../../localization/tree';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTableById, tables } from '../DataModel/tables';
-import type { RecordSet } from '../DataModel/types';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { TableIcon } from '../Molecules/TableIcon';
 
 export function SelectRecordSets<SCHEMA extends AnySchema>({
   table,
+  collection,
+  handleParentClose,
 }: {
   readonly table: SpecifyTable<SCHEMA>;
+  readonly collection: Collection<AnySchema> | undefined;
+  readonly handleParentClose: () => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -51,20 +51,25 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     false
   );
 
-  const handleAdd = () => {
-    const recordSetId = selectedRecordSets[0];
+  const handleAdd = async () => {
+    const recordIds = await Promise.all(
+      selectedRecordSets.map(async (recordSet) =>
+        fetchCollection('RecordSetItem', {
+          recordSet,
+          domainFilter: false,
+        })
+          .then(({ records }) => records.map((record) => record.recordId))
+          .catch((error) => {
+            console.error('Error fetching RecordSetItem:', error);
+            return [];
+          })
+      )
+    ).then((results) => results.flat());
 
-    fetchCollection('RecordSetItem', {
-      recordSet: recordSetId,
-      limit: 1,
-      domainFilter: false,
-    })
-      .then(({ records }) => {
-        console.log('RecordSetItem:', records);
-      })
-      .catch((error) => {
-        console.error('Error fetching RecordSetItem:', error);
-      });
+    const newResources = recordIds.map((id) => new table.Resource({ id }));
+    collection?.add(newResources);
+    handleClose();
+    handleParentClose();
   };
 
   return (
@@ -83,6 +88,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
           header={commonText.add()}
           onClose={handleClose}
         >
+          {recordSets === undefined && <LoadingScreen />}
           <Ul>
             {recordSets?.records.map((recordSet) => (
               <li key={recordSet.id}>

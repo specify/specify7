@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { useValidation } from '../../hooks/useValidation';
@@ -33,12 +32,10 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
-  Accession,
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
@@ -53,10 +50,7 @@ import type {
   PreparationData,
   PreparationRow,
 } from './helpers';
-import {
-  getCatNumberAvailableForAccession,
-  interactionsWithPrepTables,
-} from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,

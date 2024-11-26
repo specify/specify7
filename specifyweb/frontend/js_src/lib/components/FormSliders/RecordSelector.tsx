@@ -6,7 +6,7 @@ import { clamp } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { useSearchDialog } from '../SearchDialog';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Slider } from './Slider';
@@ -35,6 +35,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
   readonly isCollapsed?: boolean;
+  readonly collection?: Collection<AnySchema> | undefined;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -71,6 +72,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
+  collection,
 }: RecordSelectorProps<SCHEMA> & {
   // Total number of elements in the collection
   readonly totalCount: number;
@@ -109,6 +111,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     multiple: !isToOne,
     table,
     onSelected: handleResourcesSelected,
+    collection,
   });
 
   return {
