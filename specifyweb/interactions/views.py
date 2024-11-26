@@ -116,32 +116,6 @@ def preps_available_ids(request):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-@require_POST
-@login_maybe_required
-def cat_number_available(request):
-    """Returns a list of all the available CO cat numbers that can be used for accession
-    """
-
-    try:
-        id_fld = Collectionobject._meta.get_field(request.POST['id_fld'].lower()).db_column
-    except FieldDoesNotExist as e:
-        raise http.Http404(e)
-
-    co_catNums = json.loads(request.POST['co_catNums'])
-
-    queryset = Collectionobject.objects.filter(
-        accession_id__isnull=True,
-        **{f"{id_fld.lower()}__in": co_catNums},
-        collection_id=request.specify_collection.id
-        ).values(
-        'catalognumber',
-        'id'
-        ).order_by('catalognumber')
-
-    data = list(queryset)
-
-    return http.JsonResponse(data, safe=False)
-
 def record_set_or_loan_nos(record_set_id=None, loan_nos=None, by_id=True):
     if record_set_id is not None:
         id_clause = "select RecordId from recordsetitem where RecordSetId = %s"
