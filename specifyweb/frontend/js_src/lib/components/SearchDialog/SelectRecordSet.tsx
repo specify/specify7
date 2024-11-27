@@ -9,8 +9,9 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
-import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById } from '../DataModel/tables';
 import { softError } from '../Errors/assert';
 import { userInformation } from '../InitialContext/userInformation';
@@ -20,12 +21,14 @@ import { TableIcon } from '../Molecules/TableIcon';
 
 export function SelectRecordSets<SCHEMA extends AnySchema>({
   table,
-  collection,
   handleParentClose,
+  onAdd: handleAdd,
 }: {
   readonly table: SpecifyTable<SCHEMA>;
-  readonly collection: Collection<AnySchema> | undefined;
   readonly handleParentClose: () => void;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -52,7 +55,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     false
   );
 
-  const handleAdd = async () => {
+  const handleAddResource = async () => {
     const recordIds = await Promise.all(
       selectedRecordSets.map(async (recordSet) =>
         fetchCollection('RecordSetItem', {
@@ -68,7 +71,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     ).then((results) => results.flat());
 
     const newResources = recordIds.map((id) => new table.Resource({ id }));
-    collection?.add(newResources);
+    handleAdd?.(newResources);
     handleClose();
     handleParentClose();
   };
@@ -83,7 +86,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Info
                 disabled={recordSets?.records.length === 0}
-                onClick={async () => handleAdd()}
+                onClick={async () => handleAddResource()}
               >
                 {commonText.add()}
               </Button.Info>

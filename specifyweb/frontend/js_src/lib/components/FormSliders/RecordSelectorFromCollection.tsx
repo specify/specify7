@@ -101,7 +101,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       ? collection.related
       : undefined,
     totalCount: collection._totalCount ?? records.length,
-    collection,
     onAdd: (rawResources): void => {
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)

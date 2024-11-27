@@ -20,7 +20,7 @@ import { SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
@@ -60,7 +60,9 @@ type SearchDialogProps<SCHEMA extends AnySchema> = {
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onlyUseQueryBuilder?: boolean;
-  readonly collection?: Collection<AnySchema> | undefined;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 };
 
 /**
@@ -168,7 +170,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onSelected: handleSelected,
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
-  collection,
+  onAdd: handleAdd,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -177,7 +179,9 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;
-  readonly collection?: Collection<AnySchema> | undefined;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -222,9 +226,9 @@ function SearchForm<SCHEMA extends AnySchema>({
             </Button.Info>
           </ProtectedAction>
           <SelectRecordSets
-            collection={collection}
             handleParentClose={handleClose}
             table={table}
+            onAdd={handleAdd}
           />
           <Submit.Success form={id('form')}>
             {commonText.search()}

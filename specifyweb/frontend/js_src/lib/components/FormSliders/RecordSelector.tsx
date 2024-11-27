@@ -72,7 +72,6 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
-  collection,
 }: RecordSelectorProps<SCHEMA> & {
   // Total number of elements in the collection
   readonly totalCount: number;
@@ -111,7 +110,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     multiple: !isToOne,
     table,
     onSelected: handleResourcesSelected,
-    collection,
+    onAdd: handleAdded,
   });
 
   return {
