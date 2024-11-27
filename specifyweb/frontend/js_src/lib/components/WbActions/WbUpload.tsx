@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import type { WbStatus } from '../WorkBench/WbView';
@@ -15,12 +16,14 @@ export function WbUpload({
   openNoUploadPlan,
   startUpload,
   cellCounts,
+  viewerLocalization,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping | undefined;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
   readonly cellCounts: WbCellCounts;
+  readonly viewerLocalization: WbVariantLocalization;
 }): JSX.Element {
   const [showUpload, openUpload, closeUpload] = useBooleanState();
 
@@ -51,7 +54,7 @@ export function WbUpload({
         }
         onClick={handleUpload}
       >
-        {wbText.upload()}
+        {viewerLocalization.do}
       </Button.Small>
       {showUpload && (
         <Dialog
@@ -59,14 +62,14 @@ export function WbUpload({
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Info onClick={handleConfirmUpload}>
-                {wbText.upload()}
+                {viewerLocalization.do}
               </Button.Info>
             </>
           }
-          header={wbText.startUpload()}
+          header={viewerLocalization.doStart}
           onClose={closeUpload}
         >
-          {wbText.startUploadDescription()}
+          {viewerLocalization.doStartDescription}
         </Dialog>
       )}
     </>
