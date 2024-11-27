@@ -35,8 +35,8 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import { RecordSetsDialog } from '../Toolbar/RecordSets';
 import { queryCbxExtendedSearch } from './helpers';
-import { SelectRecordSets } from './SelectRecordSet';
 
 const resourceLimit = 100;
 
@@ -215,6 +215,9 @@ function SearchForm<SCHEMA extends AnySchema>({
   >(undefined);
   const id = useId('search-dialog');
 
+  const [isOpenRecordSet, handleOpenRecordSet, handleCloseRecordSet] =
+    useBooleanState();
+
   return (
     <Dialog
       buttons={
@@ -225,11 +228,23 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          <SelectRecordSets
+          {/* <SelectRecordSets
             handleParentClose={handleClose}
             table={table}
             onAdd={handleAdd}
-          />
+          /> */}
+          <Button.Info onClick={handleOpenRecordSet}>
+            {commonText.recordSets()}
+          </Button.Info>
+          {isOpenRecordSet && (
+            <RecordSetsDialog
+              isAddResourceToParent
+              table={table}
+              onAdd={handleAdd}
+              onClose={handleCloseRecordSet}
+              onParentClose={handleClose}
+            />
+          )}
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>

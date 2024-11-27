@@ -7,6 +7,7 @@ import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
@@ -14,13 +15,14 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { FormsDialog } from '../DataEntryTables';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
+import { softError } from '../Errors/assert';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
@@ -51,24 +53,36 @@ type Renderer = (props: {
 const defaultRenderer: Renderer = ({ children, dialog }): JSX.Element =>
   dialog(children);
 
-export function RecordSetsDialog({
+export function RecordSetsDialog<SCHEMA extends AnySchema>({
   onClose: handleClose,
   table,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = defaultRenderer,
+  isAddResourceToParent,
+  onAdd: handleAdd,
+  onParentClose: handleParentClose,
 }: {
   readonly onClose: () => void;
   readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: Renderer;
+  readonly isAddResourceToParent?: boolean;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
+  readonly onParentClose?: () => void;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
     | State<'CreateState'>
     | State<'EditState', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'MainState'>
   >({ type: 'MainState' });
+
+  const [selectedRecordSets, setSelectedRecordSets] = React.useState<
+    RA<number>
+  >([]);
 
   const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
@@ -106,6 +120,27 @@ export function RecordSetsDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
+  const handleAddResource = async () => {
+    const recordIds = await Promise.all(
+      selectedRecordSets.map(async (recordSet) =>
+        fetchCollection('RecordSetItem', {
+          recordSet,
+          domainFilter: false,
+        })
+          .then(({ records }) => records.map((record) => record.recordId))
+          .catch((error) => {
+            softError('Error fetching RecordSetItem:', error);
+            return [];
+          })
+      )
+    ).then((results) => results.flat());
+    if (table === undefined) return;
+    const newResources = recordIds.map((id) => new table.Resource({ id }));
+    handleAdd?.(newResources);
+    handleClose();
+    handleParentClose?.();
+  };
+
   return totalCount === undefined ? (
     <LoadingScreen />
   ) : state.type === 'MainState' ? (
@@ -114,9 +149,10 @@ export function RecordSetsDialog({
       records: data?.records,
       children: (
         <>
-          <table className="grid-table grid-cols-[1fr_auto_min-content_min-content] gap-2">
+          <table className="grid-table grid-cols-[min-content_1fr_auto_min-content_min-content] gap-2">
             <thead>
               <tr>
+                <th scope="col" />
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
                     {tables.RecordSet.label}
@@ -140,25 +176,44 @@ export function RecordSetsDialog({
             </thead>
             <tbody>
               {data?.records.map((recordSet) => (
-                <Row
-                  key={recordSet.id}
-                  recordSet={recordSet}
-                  onConfigure={handleConfigure?.bind(undefined, recordSet)}
-                  onEdit={
-                    isReadOnly
-                      ? undefined
-                      : (): void =>
-                          setState({
-                            type: 'EditState',
-                            recordSet: deserializeResource(recordSet),
-                          })
-                  }
-                  onSelect={
-                    typeof handleSelect === 'function'
-                      ? (): void => handleSelect(recordSet)
-                      : undefined
-                  }
-                />
+                <tr key={recordSet.id}>
+                  <td>
+                    <Input.Checkbox
+                      checked={selectedRecordSets.includes(recordSet.id)}
+                      onValueChange={(): void =>
+                        setSelectedRecordSets((previousSelected) => {
+                          const isAlreadySelected = previousSelected.includes(
+                            recordSet.id
+                          );
+                          return isAlreadySelected
+                            ? previousSelected.filter(
+                                (item) => item !== recordSet.id
+                              )
+                            : [...previousSelected, recordSet.id];
+                        })
+                      }
+                    />
+                  </td>
+                  <Row
+                    key={recordSet.id}
+                    recordSet={recordSet}
+                    onConfigure={handleConfigure?.bind(undefined, recordSet)}
+                    onEdit={
+                      isReadOnly
+                        ? undefined
+                        : (): void =>
+                            setState({
+                              type: 'EditState',
+                              recordSet: deserializeResource(recordSet),
+                            })
+                    }
+                    onSelect={
+                      typeof handleSelect === 'function'
+                        ? (): void => handleSelect(recordSet)
+                        : undefined
+                    }
+                  />
+                </tr>
               ))}
             </tbody>
           </table>
@@ -179,6 +234,14 @@ export function RecordSetsDialog({
                   onClick={(): void => setState({ type: 'CreateState' })}
                 >
                   {commonText.new()}
+                </Button.Info>
+              )}
+              {isAddResourceToParent === true && (
+                <Button.Info
+                  disabled={data?.records.length === 0}
+                  onClick={async () => handleAddResource()}
+                >
+                  {commonText.add()}
                 </Button.Info>
               )}
               {buttons}
