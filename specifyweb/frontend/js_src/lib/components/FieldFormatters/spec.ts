@@ -135,6 +135,10 @@ const formatterSpec = f.store(() =>
               placeholder:
                 part.type === 'regex'
                   ? localized(trimRegexString(part.placeholder))
+                  : part.type === 'year'
+                  ? fieldFormatterTypeMapper.year.placeholder
+                  : part.type === 'numeric'
+                  ? fieldFormatterTypeMapper.numeric.buildPlaceholder(part.size)
                   : part.placeholder,
             }),
             (part) => ({
@@ -144,12 +148,29 @@ const formatterSpec = f.store(() =>
                   ? localized(normalizeRegexString(part.placeholder))
                   : part.placeholder,
             })
+          ),
+          syncer(
+            (part) => ({
+              ...part,
+              size: fieldFormatterTypesWithForcedSize.has(
+                part.type as 'constant'
+              )
+                ? part.placeholder.length
+                : part.size,
+            }),
+            (part) => part
           )
         )
       )
     ),
   })
 );
+
+export const fieldFormatterTypesWithForcedSize = new Set([
+  'constant',
+  'separator',
+  'year',
+] as const);
 
 /**
  * Specify 6 expects the regex pattern to start with "/^" and end with "$/"

@@ -227,7 +227,7 @@ class NumericPart extends Part {
     return localized(`\\d{${this.size}}`);
   }
 
-  public static buildPlaceholder(size: number): LocalizedString {
+  public static buildPlaceholder(size = 1): LocalizedString {
     return localized(''.padStart(size, '#'));
   }
 }

@@ -15,6 +15,7 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { fieldFormatterLocalization, fieldFormatterTypeMapper } from '.';
 import type { FieldFormatter, FieldFormatterPart } from './spec';
+import { fieldFormatterTypesWithForcedSize } from './spec';
 
 export function FieldFormatterParts({
   fieldFormatter: [fieldFormatter, setFieldFormatter],
@@ -98,40 +99,9 @@ function Part({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  React.useEffect(() => {
-    if (part.type === 'year')
-      handleChange({
-        ...part,
-        size: 4,
-        placeholder: fieldFormatterTypeMapper.year.placeholder,
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [part.type]);
-
-  React.useEffect(() => {
-    if (part.type === 'numeric')
-      handleChange({
-        ...part,
-        placeholder: fieldFormatterTypeMapper.numeric.buildPlaceholder(
-          part.size ?? 1
-        ),
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [part.size, part.type]);
-
-  const enforcePlaceholderSize =
-    part.type === 'constant' ||
-    part.type === 'separator' ||
-    part.type === 'year';
-
-  React.useEffect(() => {
-    if (enforcePlaceholderSize)
-      handleChange({
-        ...part,
-        size: part.placeholder.length,
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [part.placeholder, enforcePlaceholderSize]);
+  const enforcePlaceholderSize = fieldFormatterTypesWithForcedSize.has(
+    part.type as 'constant'
+  );
 
   return (
     <tr>
@@ -166,6 +136,10 @@ function Part({
             handleChange({
               ...part,
               size,
+              placeholder:
+                part.type === 'numeric'
+                  ? fieldFormatterTypeMapper.numeric.buildPlaceholder(size)
+                  : part.placeholder,
             })
           }
         />
