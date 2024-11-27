@@ -81,7 +81,10 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Info onClick={async () => handleAdd()}>
+              <Button.Info
+                disabled={recordSets?.records.length === 0}
+                onClick={async () => handleAdd()}
+              >
                 {commonText.add()}
               </Button.Info>
             </>
