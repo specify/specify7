@@ -238,7 +238,6 @@ function SearchForm<SCHEMA extends AnySchema>({
           </Button.Info>
           {isOpenRecordSet && (
             <RecordSetsDialog
-              isAddResourceToParent
               table={table}
               onAdd={handleAdd}
               onClose={handleCloseRecordSet}

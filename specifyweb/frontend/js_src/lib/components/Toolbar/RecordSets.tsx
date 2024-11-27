@@ -59,7 +59,6 @@ export function RecordSetsDialog<SCHEMA extends AnySchema>({
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = defaultRenderer,
-  isAddResourceToParent,
   onAdd: handleAdd,
   onParentClose: handleParentClose,
 }: {
@@ -68,7 +67,6 @@ export function RecordSetsDialog<SCHEMA extends AnySchema>({
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: Renderer;
-  readonly isAddResourceToParent?: boolean;
   readonly onAdd?:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
@@ -236,7 +234,7 @@ export function RecordSetsDialog<SCHEMA extends AnySchema>({
                   {commonText.new()}
                 </Button.Info>
               )}
-              {isAddResourceToParent === true && (
+              {handleAdd !== undefined && (
                 <Button.Info
                   disabled={data?.records.length === 0}
                   onClick={async () => handleAddResource()}
