@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-28 16:00+0000\n"
+"PO-Revision-Date: 2024-11-28 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -83,7 +83,7 @@ msgstr "Campos Ocultos"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Conjunto de dados vazio"
+msgstr "Revelar campos de formulário ocultos"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
@@ -135,7 +135,7 @@ msgstr "NENHUM SELECIONADO"
 #: components/WbPlanView/Mapper.tsx:470
 #, fuzzy
 msgid "map"
-msgstr "Mapeador Automático"
+msgstr "Mapa"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -147,10 +147,7 @@ msgstr "Desmapear"
 #: components/WbPlanView/Mapper.tsx:467
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr ""
-"Este mapeamento de dados está sem um ou mais campos de dados necessários "
-"para upload pela sua configuração Specify. Adicione os mapeamentos ausentes "
-"mostrados ou salve este Plano de Upload como inacabado."
+msgstr "Mapear campo selecionado para cabeçalho selecionado"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
@@ -197,7 +194,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:241
 #, fuzzy
 msgid "ignoreNever"
-msgstr "NENHUM SELECIONADO"
+msgstr "Nunca ignore"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:242
