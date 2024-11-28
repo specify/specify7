@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-28 16:00+0000\n"
+"PO-Revision-Date: 2024-11-28 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -104,7 +104,7 @@ msgstr "Champs cachés"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Ensemble de données vide"
+msgstr "Révéler les champs de formulaire cachés"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
@@ -149,7 +149,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:241
 #, fuzzy
 msgid "ignoreNever"
-msgstr "AUCUN SÉLECTIONNÉ"
+msgstr "Ne jamais ignorer"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:242
@@ -227,7 +227,7 @@ msgstr "Enregistrer inachevé"
 #: components/WbPlanView/Mapper.tsx:470
 #, fuzzy
 msgid "map"
-msgstr "AutoMapper"
+msgstr "Carte"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -239,11 +239,7 @@ msgstr "Démapper"
 #: components/WbPlanView/Mapper.tsx:467
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr ""
-"Ce mappage de données manque d'un ou de plusieurs champs de données requis "
-"pour le téléchargement par votre configuration Spécifier. Ajoutez les "
-"mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
-"inachevé."
+msgstr "Mapper le champ sélectionné à l'en-tête sélectionné"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
