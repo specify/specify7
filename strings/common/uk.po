@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-26 15:00+0000\n"
+"PO-Revision-Date: 2024-11-28 23:00+0000\n"
 "Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -22,7 +22,7 @@ msgstr "Вкажіть 7"
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:118
 msgid "no"
-msgstr "Немає"
+msgstr "Ні"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 #: components/AppResources/Create.tsx:67
@@ -103,7 +103,7 @@ msgstr "Скасувати"
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
 msgid "back"
-msgstr "Виберіть файли або перетягніть їх сюди"
+msgstr "Назад"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -392,13 +392,13 @@ msgstr "Попередній"
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:86
 msgid "tool"
-msgstr "Завантаження…"
+msgstr "Інструмент"
 
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 #: components/WbToolkit/index.tsx:62
 #: components/WorkBench/WbView.tsx:187
 msgid "tools"
-msgstr "Інструменти"
+msgstr "інструменти"
 
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 #: components/Core/ContextLoader.tsx:51
@@ -803,7 +803,7 @@ msgstr "Експорт"
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
 msgid "import"
-msgstr "Масове вирішення"
+msgstr "Імпорт"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
@@ -935,12 +935,12 @@ msgstr "Немає доступних"
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
 msgid "countLine"
-msgstr "{resource:string} ({count:number|formatted})"
+msgstr "{resource:string}({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
 msgid "jsxCountLine"
-msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
+msgstr "{resource:string} <wrap> ({count:number|formatted})</wrap>"
 
 #. 🟥Example usage: "Choose collection:". Used only if there is nothing else on this line after the colon heading. Used in: Components > Choose Collection > Index ⬤ Components > Formatters > List ⬤ Components > Home Page > About Specify ⬤ Components > Security > Role Template ⬤ Components > Web Links > Definition ⬤ Components > Work Bench > Data Set Meta
 #: components/ChooseCollection/index.tsx:138
@@ -952,7 +952,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:218
 msgid "colonHeader"
-msgstr "{header:string}:"
+msgstr "{header:string} :"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 #: components/AttachmentsBulkImport/ActionState.tsx:29
@@ -992,7 +992,7 @@ msgstr "{header:string}:"
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:127
 msgid "colonLine"
-msgstr "{label:string}: {value:string}"
+msgstr "{label:string}:{value:string}"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Statistics > Delete Category ⬤ Components > Work Bench > Data Set Meta
 #: components/Forms/DeleteButton.tsx:167
@@ -1009,7 +1009,7 @@ msgstr "{label:string}: <wrap />"
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:129
 msgid "bulkSelect"
-msgstr "Завантаження…"
+msgstr "Масовий вибір"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:258
