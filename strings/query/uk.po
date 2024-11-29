@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-25 21:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-29 21:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -20,7 +20,6 @@ msgstr ""
 #: components/TreeView/Actions.tsx:91
 #: components/TreeView/Actions.tsx:102
 #: components/TreeView/Actions.tsx:108
-#, fuzzy
 msgid "query"
 msgstr "Запит"
 
@@ -30,9 +29,8 @@ msgstr "Запит"
 #: components/Toolbar/Query.tsx:78
 #: components/Toolbar/Query.tsx:219
 #: components/Toolbar/Query.tsx:221
-#, fuzzy
 msgid "queries"
-msgstr "тижнів"
+msgstr "Запити"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #: components/Preferences/CollectionDefinitions.tsx:72
@@ -40,7 +38,6 @@ msgstr "тижнів"
 #: components/SearchDialog/index.tsx:217
 #: components/SearchDialog/index.tsx:354
 #: components/Security/registry.ts:210
-#, fuzzy
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
@@ -52,70 +49,59 @@ msgstr "Конструктор запитів"
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
 #: components/Toolbar/QueryTablesWrapper.tsx:163
-#, fuzzy
 msgid "newQueryName"
 msgstr "Новий запит"
 
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
 #: components/QueryComboBox/spec.ts:73
-#, fuzzy
 msgid "searchFields"
 msgstr "Пошукові поля"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:419
-#, fuzzy
 msgid "any"
 msgstr "Будь-який"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:343
 #: components/QueryBuilder/FieldFilter.tsx:393
-#, fuzzy
 msgid "startValue"
 msgstr "Початкове значення"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:354
-#, fuzzy
 msgid "endValue"
 msgstr "Кінцеве значення"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 #: components/QueryBuilder/Components.tsx:111
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveQuery"
 msgstr "Зберегти запит"
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveClonedQuery"
 msgstr "Зберегти запит як..."
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:76
-#, fuzzy
 msgid "saveClonedQueryDescription"
 msgstr ""
 "Запит буде збережено під новою назвою, а поточний запит залишиться без змін."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
-#, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "Визначення запиту містить незаповнені поля"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:173
-#, fuzzy
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:181
-#, fuzzy
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
 
