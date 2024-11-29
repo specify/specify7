@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-29 20:04+0000\n"
+"PO-Revision-Date: 2024-11-29 20:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "interactions/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -39,7 +39,7 @@ msgstr "{table:string} Повернення"
 #: components/Interactions/InteractionDialog.tsx:379
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "Не знайдено жодних препаратів для таких записів:"
+msgstr "Не було знайдено жодної підготовки для таких записів:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:388
@@ -125,7 +125,7 @@ msgstr "Розв'язати"
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "[X0X] Повернення"
+msgstr "Повернути всі препарати"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
@@ -277,4 +277,4 @@ msgstr "Жоден із цих об'єктів не має підготовки.
 #: components/TreeView/AddRank.tsx:62
 #, fuzzy
 msgid "continue"
-msgstr "Продовжуйте без підготовки"
+msgstr "Продовжити"
