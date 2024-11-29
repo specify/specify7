@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
+"PO-Revision-Date: 2024-11-29 07:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -229,7 +229,7 @@ msgstr ""
 #: components/WorkBench/Disambiguation.tsx:68
 #, fuzzy
 msgid "disambiguateMatches"
-msgstr "Aufdecken mehrerer Datensatzübereinstimmungen"
+msgstr "Mehrere Datensatzübereinstimmungen eindeutig machen"
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:57
@@ -333,8 +333,9 @@ msgstr "Kein passender Datensatz für die Must-Match-Tabelle."
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen überein "
-"und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt werden."
+"Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen "
+"überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt "
+"werden."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:301
