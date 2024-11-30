@@ -335,7 +335,7 @@ def synonymize(node, into, agent):
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonymizeToSynonymized",
              "node" : format_tree_node(to_save),
-             "parent" : format_tree_node(new_parent)})
+             "parent" : format_tree_node(into)})
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
@@ -350,7 +350,7 @@ def synonymize(node, into, agent):
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
              "node" : format_tree_node(to_save),
-             "parent" : format_tree_node(new_parent)})
+             "parent" : format_tree_node(into)})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,

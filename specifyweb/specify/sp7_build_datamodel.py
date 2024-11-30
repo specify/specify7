@@ -4,8 +4,6 @@ import logging
 from django.conf import settings # type: ignore
 from django.utils.translation import gettext as _
 
-from specifyweb.specify.config import sp6_dependent_fields, sp6_system_tables
-
 logger = logging.getLogger(__name__)
 
 TAB1 = '    '
