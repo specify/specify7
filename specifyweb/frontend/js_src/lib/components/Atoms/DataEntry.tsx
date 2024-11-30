@@ -97,9 +97,9 @@ export const DataEntry = {
     'div',
     {
       readonly colSpan: number;
-      readonly align: typeof cellAlign[number];
+      readonly align: (typeof cellAlign)[number];
       readonly visible: boolean;
-      readonly verticalAlign: typeof cellVerticalAlign[number];
+      readonly verticalAlign: (typeof cellVerticalAlign)[number];
     }
   >(
     'DataEntry.Cell',
@@ -115,18 +115,18 @@ export const DataEntry = {
           align === 'right'
             ? 'flex-end'
             : align === 'center'
-            ? 'center'
-            : undefined,
+              ? 'center'
+              : undefined,
         alignSelf:
           verticalAlign === 'stretch'
             ? 'stretch'
             : verticalAlign === 'center'
-            ? 'self-center'
-            : verticalAlign === 'start'
-            ? 'self-start'
-            : verticalAlign === 'end'
-            ? 'self-end'
-            : undefined,
+              ? 'self-center'
+              : verticalAlign === 'start'
+                ? 'self-start'
+                : verticalAlign === 'end'
+                  ? 'self-end'
+                  : undefined,
         ...props.style,
       },
     })

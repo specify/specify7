@@ -146,19 +146,19 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? // Cast numbers to strings
-        // eslint-disable-next-line eqeqeq
-        values.some((value) => value == resource.get(field))
-      : operation === 'less'
-      ? values.every((value) => (resource.get(field) ?? 0) < value)
-      : error('Invalid Query Combo Box search filter', {
-          filter: {
-            operation,
-            field,
-            values,
-          },
-          resource,
-        });
+        ? // Cast numbers to strings
+          // eslint-disable-next-line eqeqeq
+          values.some((value) => value == resource.get(field))
+        : operation === 'less'
+          ? values.every((value) => (resource.get(field) ?? 0) < value)
+          : error('Invalid Query Combo Box search filter', {
+              filter: {
+                operation,
+                field,
+                values,
+              },
+              resource,
+            });
   return isNot ? !result : result;
 }
 

@@ -50,7 +50,12 @@
 /* Cell navigation */
 
 .wbs-form
-  :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
+  :is(
+    .wb-no-match-cell,
+    .wb-modified-cell,
+    .htCommentCell,
+    .wb-search-match-cell
+  ),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }

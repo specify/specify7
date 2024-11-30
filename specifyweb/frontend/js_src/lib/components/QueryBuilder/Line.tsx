@@ -161,8 +161,8 @@ export function QueryLine({
           dataModelField.name === 'catalogNumber'
             ? 'id'
             : tableName === 'CollectionObject' && dataModelField.name === 'age'
-            ? 'age'
-            : parser.type ?? 'text';
+              ? 'age'
+              : (parser.type ?? 'text');
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
@@ -184,12 +184,12 @@ export function QueryLine({
                   startValue: '',
                 } as const)
               : filter.type === 'any' && filter.isNot
-              ? {
-                  ...filter,
-                  isNot: false,
-                  isStrict: false,
-                }
-              : filter;
+                ? {
+                    ...filter,
+                    isNot: false,
+                    isStrict: false,
+                  }
+                : filter;
           })
         : [];
       const anyFilter =
@@ -444,11 +444,11 @@ export function QueryLine({
                             queryFieldFilters[newFilter].component === undefined
                               ? ''
                               : filter.type === 'any' &&
-                                filtersWithDefaultValue.has(newFilter) &&
-                                filter.startValue === '' &&
-                                typeof fieldMeta.parser?.value === 'string'
-                              ? fieldMeta.parser.value
-                              : filter.startValue;
+                                  filtersWithDefaultValue.has(newFilter) &&
+                                  filter.startValue === '' &&
+                                  typeof fieldMeta.parser?.value === 'string'
+                                ? fieldMeta.parser.value
+                                : filter.startValue;
 
                           /*
                            * When going from "in" to another filter type, throw away

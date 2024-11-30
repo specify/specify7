@@ -115,8 +115,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? returned > quantity
               ? quantity
               : returned > resolved
-              ? resolved
-              : returned
+                ? resolved
+                : returned
             : undefined;
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
@@ -135,8 +135,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? resolved > quantity
               ? quantity
               : resolved < returned
-              ? returned
-              : resolved
+                ? returned
+                : resolved
             : undefined;
 
         if (typeof adjustedResolved === 'number')

@@ -172,12 +172,12 @@ export function useAllSaveBlockers(
       resource === undefined
         ? undefined
         : resource.noBusinessRules
-        ? setBlockers([])
-        : blockerEvents.on(
-            'change',
-            () => setBlockers(getAllBlockers(resource, filterBlockers)),
-            true
-          ),
+          ? setBlockers([])
+          : blockerEvents.on(
+              'change',
+              () => setBlockers(getAllBlockers(resource, filterBlockers)),
+              true
+            ),
     [resource]
   );
   return blockers;

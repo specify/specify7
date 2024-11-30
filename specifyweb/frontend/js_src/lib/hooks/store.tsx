@@ -42,7 +42,7 @@ type Store<
   BUCKETS extends Record<
     number | string,
     Record<number | string, boolean | number | object | string>
-  >
+  >,
 > = {
   readonly [BUCKET_NAME in keyof BUCKETS]: {
     readonly listeners: readonly (() => void)[];
@@ -63,7 +63,7 @@ const store: Store<Buckets> = {};
  */
 export function useStore<
   BUCKET_NAME extends keyof Buckets,
-  ID extends keyof Buckets[BUCKET_NAME]
+  ID extends keyof Buckets[BUCKET_NAME],
 >(
   callback: (id: ID) => Promise<Buckets[BUCKET_NAME][ID]>,
   deleteCallback: (

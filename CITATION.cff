@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software in your research, please cite it as:"
+message: 'If you use this software in your research, please cite it as:'
 authors:
   - name: Specify Collections Consortium & Contributors
     email: support@specifysoftware.org
@@ -9,11 +9,11 @@ keywords:
   - open source
 identifiers:
   - type: url
-    value: "https://www.specifysoftware.org/"
+    value: 'https://www.specifysoftware.org/'
     description: Specify Collections Consortium
 abstract: >-
   The Specify Collections Consortium research repositories produce software
   platforms that process species and specimen data.
 license: GPL-2.0-only
 repository-code: specify/specify7
-repository: "https://github.com/specify/specify7"
+repository: 'https://github.com/specify/specify7'
