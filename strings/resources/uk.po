@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-30 11:00+0000\n"
+"PO-Revision-Date: 2024-11-30 19:00+0000\n"
 "Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -76,7 +76,7 @@ msgstr "Ресурси"
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
 msgid "subCategories"
-msgstr "Підкатегорії"
+msgstr "підкатегорії"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
@@ -112,7 +112,7 @@ msgstr "Пошук типів"
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:151
 msgid "webLinks"
-msgstr "Веб-посилання"
+msgstr "веб-посилання"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:159
@@ -202,7 +202,7 @@ msgstr "Інший ресурс XML"
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
 msgid "otherJsonResource"
-msgstr "Інший ресурс JSON"
+msgstr "інший ресурс JSON"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -317,7 +317,6 @@ msgstr "(default)"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
-#, fuzzy
 msgid "sortField"
 msgstr "Поле сортування"
 
@@ -325,214 +324,181 @@ msgstr "Поле сортування"
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:70
 #: components/Merging/Header.tsx:164
-#, fuzzy
 msgid "preview"
 msgstr "Попередній перегляд"
 
 #. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:71
-#, fuzzy
 msgid "previewExplainer"
 msgstr ""
-"Виконайте пошук у своїх записах колекції, щоб переглянути інструмент "
-"форматування записів"
+"Виконайте пошук у записах колекції, щоб переглянути інструмент форматування "
+"записів"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
-#, fuzzy
 msgid "editorNotAvailable"
 msgstr "Візуальний редактор недоступний для цього ресурсу"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
-#, fuzzy
 msgid "definition"
 msgstr "Визначення"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
-#, fuzzy
 msgid "addDefinition"
-msgstr "Додайте визначення"
+msgstr "Додати визначення"
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:252
-#, fuzzy
 msgid "deleteDefinition"
 msgstr "Видалити визначення"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
-#, fuzzy
 msgid "urlPart"
-msgstr "Інший ресурс JSON"
+msgstr "частина URL"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
 #: components/Formatters/Fields.tsx:118
-#, fuzzy
 msgid "addField"
 msgstr "Додати поле"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:26
-#, fuzzy
 msgid "thisField"
 msgstr "Це поле"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:152
 #: components/WebLinks/Definition.tsx:166
-#, fuzzy
 msgid "selectTableFirst"
-msgstr "Спочатку виберіть таблицю"
+msgstr "спочатку виберіть таблицю"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
-#, fuzzy
 msgid "conditionFieldValue"
 msgstr "Умова Значення поля"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
-#, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Цей формат використовуватиметься, лише якщо значення поля умови дорівнює "
-"цій умові й не є нульовим."
+"Цей формат використовуватиметься, лише якщо значення поля умови дорівнює цій "
+"умові й не є нульовим."
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:164
-#, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
-"перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
+"перебуваєте. Рекомендується змінити колекцію перед редагуванням цього ресурсу"
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
-#, fuzzy
 msgid "thisFieldName"
 msgstr "Назва цього поля (лише для попереднього перегляду)"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
-#, fuzzy
 msgid "publishEveryDays"
 msgstr "Публікуйте кожні N днів"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
-#, fuzzy
 msgid "publish"
 msgstr "Опублікувати"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
-#, fuzzy
 msgid "fileName"
-msgstr "Спочатку виберіть таблицю"
+msgstr "Ім'я файлу"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
-#, fuzzy
 msgid "runAsUser"
 msgstr "Запуск від імені користувача"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
-#, fuzzy
 msgid "notifyUser"
 msgstr "Надіслати сповіщення про завершення користувачеві"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
-#, fuzzy
 msgid "runInCollection"
 msgstr "Запустити в колекції"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
-#, fuzzy
 msgid "createNewForm"
 msgstr "Створіть нове визначення подання"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
-#, fuzzy
 msgid "copyFromExistingForm"
-msgstr "Копіювати існуюче визначення перегляду"
+msgstr "Скопіюйте існуюче визначення перегляду"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
-#, fuzzy
 msgid "copyDefaultForm"
-msgstr "Формати записів"
+msgstr "Копіювати визначення перегляду за замовчуванням"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
-#, fuzzy
 msgid "copyDefaultForms"
 msgstr "Копіювати стандартні форми"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:113
-#, fuzzy
 msgid "saveFormFirst"
 msgstr "Спочатку збережіть форму"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:116
-#, fuzzy
 msgid "saveFormFirstDescription"
 msgstr "Вам потрібно зберегти цю форму, перш ніж редагувати іншу"
 
 #. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
-#, fuzzy
 msgid "conditionalFormatter"
 msgstr "Умовний формат"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:129
-#, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Налаштувати формати полів"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:261
-#, fuzzy
 msgid "expandConditionalField"
 msgstr "Розгорнути умовне поле"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
-#, fuzzy
 msgid "collapseConditionalField"
 msgstr "Згорнути умовне поле"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
-#, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Умовне значення поля"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:218
-#, fuzzy
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:319
 #: components/DataModel/businessRuleDefs.ts:337
-#, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Потрібне поточне визначення."
 
