@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-25 17:00+0000\n"
-"Last-Translator: Vitalii <stopchan@gmail.com>\n"
+"PO-Revision-Date: 2024-11-30 11:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
 "Language: uk\n"
@@ -28,7 +28,6 @@ msgstr "Ресурси програми"
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:54
 #: components/Preferences/UserDefinitions.tsx:803
-#, fuzzy
 msgid "formDefinition"
 msgstr "Визначення форми"
 
@@ -37,26 +36,22 @@ msgstr "Визначення форми"
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:35
-#, fuzzy
 msgid "formDefinitions"
 msgstr "Визначення форми"
 
 #. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
-#, fuzzy
 msgid "loadFile"
 msgstr "Завантажити файл"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
-#, fuzzy
 msgid "globalResources"
 msgstr "Глобальні ресурси"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
-#, fuzzy
 msgid "disciplineResources"
 msgstr "Дисциплінарні ресурси"
 
@@ -64,81 +59,68 @@ msgstr "Дисциплінарні ресурси"
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:73
 #: components/WebLinks/Definition.tsx:49
-#, fuzzy
 msgid "type"
 msgstr "Тип"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:235
-#, fuzzy
 msgid "userTypes"
 msgstr "Типи користувачів"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
-#, fuzzy
 msgid "resources"
 msgstr "Ресурси"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
-#, fuzzy
 msgid "subCategories"
 msgstr "Підкатегорії"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:251
-#, fuzzy
 msgid "addResource"
 msgstr "Додати ресурс"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
-#, fuzzy
 msgid "appResource"
-msgstr "Підкатегорії"
+msgstr "Ресурс програми"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:127
-#, fuzzy
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
-#, fuzzy
 msgid "exports"
-msgstr "Експорт"
+msgstr "експорт"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:135
-#, fuzzy
 msgid "expressSearchConfig"
 msgstr "Конфігурація експрес-пошуку"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:143
-#, fuzzy
 msgid "typeSearches"
 msgstr "Пошук типів"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:151
-#, fuzzy
 msgid "webLinks"
 msgstr "Веб-посилання"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:159
-#, fuzzy
 msgid "uiFormatters"
 msgstr "Форматувальники полів"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:167
-#, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Форматувальники записів"
 
@@ -146,111 +128,94 @@ msgstr "Форматувальники записів"
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
-#, fuzzy
 msgid "formatter"
 msgstr "Формат таблиці"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
-#, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"«Формат таблиці» керує тим, як дані з певної таблиці відображаються в "
-"результатах запитів, експорті та комбінованих полях запитів. Він визначає "
-"поля для відображення та їх порядок. Умовне форматування можна налаштувати "
-"на основі значення в записі."
+"\"Формат таблиці\" керує тим, як дані з певної таблиці відображаються в "
+"результатах запиту, експорті та комбінованих вікнах запиту. Він визначає "
+"поля для відображення та їхній порядок. Можна налаштувати умовне "
+"форматування на основі значення в записі."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
-#, fuzzy
 msgid "aggregator"
 msgstr "Агрегація таблиць"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
-#, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом "
-"в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування "
-"та ліміт попереднього перегляду запису можна налаштувати. Він може "
-"відображатися в результатах запитів і у форматах таблиць."
+"\"Об'єднання таблиць\" керує тим, як кілька записів таблиці об'єднуються в "
+"один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування та "
+"ліміт попереднього перегляду записів можна налаштувати. Дані можна "
+"відображати в результатах запитів і форматах таблиць."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
-#, fuzzy
 msgid "formattedResource"
 msgstr "Відформатований ресурс"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:66
-#, fuzzy
 msgid "availableFormatters"
 msgstr "Доступні формати таблиць"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:67
-#, fuzzy
 msgid "availableAggregators"
 msgstr "Доступні агрегації таблиць"
 
 #. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:24
-#, fuzzy
 msgid "availableWebLink"
 msgstr "Доступні веб-посилання"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:127
-#, fuzzy
 msgid "selectDefaultFormatter"
 msgstr "Виберіть стандартний формат запису для цієї таблиці"
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
-#, fuzzy
 msgid "duplicateFormatters"
 msgstr "Імена форматування записів мають бути унікальними"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:175
-#, fuzzy
 msgid "dataEntryTables"
 msgstr "Таблиці введення даних"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:183
-#, fuzzy
 msgid "interactionsTables"
 msgstr "Таблиці взаємодій"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:190
-#, fuzzy
 msgid "otherXmlResource"
-msgstr "Виберіть тип ресурсу"
+msgstr "Інший ресурс XML"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
-#, fuzzy
 msgid "otherJsonResource"
 msgstr "Інший ресурс JSON"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
-#, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Ресурс інших властивостей"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:211
-#, fuzzy
 msgid "otherAppResource"
 msgstr "Інший ресурс"
 
 #. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:48
-#, fuzzy
 msgid "filters"
 msgstr "Фільтри"
 
@@ -258,69 +223,58 @@ msgstr "Фільтри"
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:74
 #: components/AppResources/Filters.tsx:83
-#, fuzzy
 msgid "custom"
-msgstr "Custom"
+msgstr "Кастом"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:119
-#, fuzzy
 msgid "leafletLayers"
 msgstr "Шари листівок"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
-#, fuzzy
 msgid "textEditor"
 msgstr "Текстовий редактор"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:142
-#, fuzzy
 msgid "xmlEditor"
 msgstr "Редактор XML"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
-#, fuzzy
 msgid "jsonEditor"
 msgstr "Редактор JSON"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:141
-#, fuzzy
 msgid "visualEditor"
 msgstr "Візуальний редактор"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
-#, fuzzy
 msgid "selectResourceType"
 msgstr "Виберіть тип ресурсу"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:120
-#, fuzzy
 msgid "globalPreferences"
 msgstr "Глобальні налаштування"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:122
-#, fuzzy
 msgid "remotePreferences"
 msgstr "Віддалені параметри"
 
 #. Used in: Components > Formatters > Index
 #: components/Formatters/index.tsx:99
-#, fuzzy
 msgid "failedParsingXml"
 msgstr "Не вдалося проаналізувати XML"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
 #: components/QueryBuilder/FieldFilter.tsx:570
-#, fuzzy
 msgid "name"
 msgstr "Ім'я"
 
@@ -328,14 +282,12 @@ msgstr "Ім'я"
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
-#, fuzzy
 msgid "title"
 msgstr "Назва"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
-#, fuzzy
 msgid "default"
 msgstr "За замовчуванням"
 
@@ -343,19 +295,16 @@ msgstr "За замовчуванням"
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
 #: components/Formatters/Fields.tsx:163
-#, fuzzy
 msgid "separator"
 msgstr "Роздільник"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
-#, fuzzy
 msgid "suffix"
 msgstr "Суфікс"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:54
-#, fuzzy
 msgid "limit"
 msgstr "Ліміт"
 
@@ -363,9 +312,8 @@ msgstr "Ліміт"
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
 #: components/QueryBuilder/Formatter.tsx:92
-#, fuzzy
 msgid "defaultInline"
-msgstr "(за умовчанням)"
+msgstr "(default)"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
