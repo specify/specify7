@@ -1,10 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { f } from "../../utils/functools";
-import type { Relationship } from "../DataModel/specifyField";
-import { SubViewContext } from "../Forms/SubView";
+import { f } from '../../utils/functools';
+import type { Relationship } from '../DataModel/specifyField';
+import { SubViewContext } from '../Forms/SubView';
 
-export function useRenderedResourceId(relationship:Relationship): number | undefined {
+export function useRenderedResourceId(
+  relationship: Relationship
+): number | undefined {
   const subviewContext = React.useContext(SubViewContext);
   const parentContext = React.useMemo(
     () => subviewContext?.parentContext ?? [],
