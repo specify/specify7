@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-23 05:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-11-30 19:00+0000\n"
+"Last-Translator: Максим Горпиніч <mgorpinic2005@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
 "Language: uk\n"
@@ -23,50 +23,43 @@ msgstr "Specify Network"
 
 #. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:84
-#, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Щоб відобразити цю сторінку, необхідно вказати назву виду або GUID"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
-#, fuzzy
 msgid "noDataError"
 msgstr "Неможливо знайти дані для цього запиту"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
-#, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Будь ласка, спробуйте знайти інший запис"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
-#, fuzzy
 msgid "dataQuality"
 msgstr "Якість даних"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:64
-#, fuzzy
 msgid "reportedBy"
-msgstr "Повідомив {provider:string}"
+msgstr "Повідомлено {provider:string}"
 
 #. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
-#, fuzzy
 msgid "collectionDate"
 msgstr "Дата збору"
 
 #. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:222
-#, fuzzy
 msgid "mapDescription"
-msgstr "Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF."
+msgstr ""
+"Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
-#, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
 "Випадки, записані в iDigBio, відображаються круглими зеленими точками, за "
@@ -78,46 +71,40 @@ msgstr ""
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
-#, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Для даних GBIF окремі точки та кластери точок відображаються у вигляді "
-"шестикутників різних кольорів від жовтого до оранжевого та червоного. "
-"Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних "
-"зразків цього виду."
+"Для даних GBIF окремі точки та кластери точок відображаються як шестикутники "
+"різних кольорів від жовтого до оранжевого та червоного. Темно-червоні "
+"шестикутники відповідають найщільнішому розподілу зібраних зразків цього "
+"виду."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
-#, fuzzy
 msgid "connectToGbif"
 msgstr "Підключіться до GBIF"
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
-#, fuzzy
 msgid "searchForInstitution"
-msgstr "Підключіться до GBIF"
+msgstr "Шукайте свій заклад:"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:75
-#, fuzzy
 msgid "institutionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі"
+msgstr ""
+"Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:149
-#, fuzzy
 msgid "collectionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції"
+msgstr "Карта розповсюдження всіх оцифрованих зразків у вашій колекції"
 
 #. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
-#, fuzzy
 msgid "startYear"
 msgstr "Рік початку"
 
 #. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:44
-#, fuzzy
 msgid "endYear"
 msgstr "Кінцевий рік"
