@@ -7563,7 +7563,7 @@
       },
       {
         "name": "cojo",
-        "type": "one-to-many",
+        "type": "one-to-one",
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
@@ -18290,7 +18290,7 @@
       {
         "name": "discipline",
         "type": "many-to-one",
-        "required": true,
+        "required": false,
         "dependent": false,
         "relatedModelName": "Discipline",
         "column": "DisciplineID",
@@ -18822,7 +18822,7 @@
       {
         "name": "discipline",
         "type": "many-to-one",
-        "required": true,
+        "required": false,
         "dependent": false,
         "relatedModelName": "Discipline",
         "column": "DisciplineID",
@@ -38428,21 +38428,28 @@
         "column": "COGTypeID"
       },
       {
-        "name": "parentCojo",
+        "name": "parentCog",
         "type": "many-to-one",
         "required": false,
         "dependent": false,
-        "relatedModelName": "CollectionObjectGroupJoin",
-        "column": "CollectionObjectGroupJoinID",
-        "otherSideName": "collectionobjectgroup"
+        "relatedModelName": "CollectionObjectGroup",
+        "column": "ParentCogID"
       },
       {
         "name": "cojo",
-        "type": "one-to-many",
+        "type": "one-to-one",
         "required": false,
         "dependent": true,
         "relatedModelName": "CollectionObjectGroupJoin",
         "otherSideName": "childCog"
+      },
+      {
+        "name": "children",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "CollectionObjectGroupJoin",
+        "otherSideName": "parentCog"
       },
       {
         "name": "createdByAgent",
@@ -38603,7 +38610,7 @@
         "dependent": false,
         "relatedModelName": "CollectionObjectGroup",
         "column": "ParentCOGID",
-        "otherSideName": "parentcojos"
+        "otherSideName": "children"
       },
       {
         "name": "childCog",
@@ -38622,14 +38629,6 @@
         "relatedModelName": "CollectionObject",
         "column": "ChildCOID",
         "otherSideName": "cojo"
-      },
-      {
-        "name": "collectionobjectgroup",
-        "type": "one-to-many",
-        "required": false,
-        "dependent": false,
-        "relatedModelName": "CollectionObjectGroup",
-        "otherSideName": "parentCojo"
       }
     ],
     "fieldAliases": []
@@ -38886,6 +38885,14 @@
         "column": "CollectionObjectID"
       },
       {
+        "name": "absoluteAgeCitations",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "AbsoluteAgeCitation",
+        "otherSideName": "absoluteAge"
+      },
+      {
         "name": "createdByAgent",
         "type": "many-to-one",
         "required": false,
@@ -39115,6 +39122,14 @@
         "dependent": false,
         "relatedModelName": "CollectionObject",
         "column": "CollectionObjectID"
+      },
+      {
+        "name": "relativeAgeCitations",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "RelativeAgeCitation",
+        "otherSideName": "relativeAge"
       },
       {
         "name": "createdByAgent",
@@ -39408,7 +39423,8 @@
         "required": true,
         "dependent": false,
         "relatedModelName": "AbsoluteAge",
-        "column": "AbsoluteAgeID"
+        "column": "AbsoluteAgeID",
+        "otherSideName": "absoluteAgeCitations"
       },
       {
         "name": "collectionMember",
@@ -39560,7 +39576,8 @@
         "required": true,
         "dependent": false,
         "relatedModelName": "RelativeAge",
-        "column": "RelativeAgeID"
+        "column": "RelativeAgeID",
+        "otherSideName": "relativeAgeCitations"
       }
     ],
     "fieldAliases": []
@@ -40043,6 +40060,11 @@
         "otherSideName": "treeEntries"
       }
     ],
-    "fieldAliases": []
+    "fieldAliases": [
+      {
+        "vname": "acceptedParent",
+        "aname": "acceptedTectonicUnit"
+      }
+    ]
   }
 ]

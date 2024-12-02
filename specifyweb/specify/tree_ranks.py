@@ -1,13 +1,9 @@
-from functools import wraps
-from hmac import new
-from operator import ge
+from sys import maxsize
 from enum import Enum
-from django.db.models import Count
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
-from . import tree_extras
 from . import models as spmodels
-from sys import maxsize
+from . import tree_extras
 
 import logging
 logger = logging.getLogger(__name__)
@@ -131,17 +127,11 @@ def is_tree_rank_empty(tree_rank_model, tree_rank) -> bool:
         return False
     return tree_item_model.objects.filter(definitionitem=tree_rank).count() == 0
 
-def post_tree_rank_save(tree_def_item_model, new_rank):
+def post_tree_rank_save(tree_def_item_model, new_rank: "tree_extras.TreeRank"):
     tree_def = new_rank.treedef
     parent_rank = new_rank.parent
-    new_rank_id = new_rank.rankid
-
-    # Set the parent rank, that previously pointed to the target, to the new rank
-    child_ranks = (
-        tree_def_item_model.objects.filter(treedef=tree_def, parent=parent_rank)
-        .exclude(id=new_rank.id)
-        .update(parent=new_rank)
-    )
+    if parent_rank: 
+        parent_rank.children.exclude(id=new_rank.id).update(parent=new_rank)
 
     # Regenerate full names
     tree_extras.set_fullnames(tree_def, null_only=False, node_number_range=None)
@@ -159,17 +149,22 @@ def post_tree_rank_deletion(rank):
     # Regenerate full names
     tree_extras.set_fullnames(rank.treedef, null_only=False, node_number_range=None)
 
-def pre_tree_rank_init(new_rank):
+def pre_tree_rank_init(new_rank: "tree_extras.TreeRank"): 
     set_rank_id(new_rank)
+    _set_parent(new_rank)
 
-def set_rank_id(new_rank):
+def _set_parent(new_rank: "tree_extras.TreeRank"):
+    if new_rank.parent: return
+    new_rank.parent = new_rank._meta.model.objects.filter(treedef=new_rank.treedef, rankid__lt=new_rank.rankid).order_by("-rankid").first()
+
+def set_rank_id(new_rank: "tree_extras.TreeRank"):
     """
     Sets the new rank to the specified tree when adding a new rank.
     Expects at least the name, parent, and tree_def of the rank to be set.
     All the other parameters are optional.
     """
     # Get parameter values from data
-    tree = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
+    tree_name = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
     new_rank_name = new_rank.name
     parent_rank_name = new_rank.parent.name if new_rank.parent else 'root'
     tree_def = getattr(new_rank, 'treedef', None)
@@ -181,11 +176,11 @@ def set_rank_id(new_rank):
         raise TreeBusinessRuleException("Parent rank name is not given")
     if tree_def is None:
         raise TreeBusinessRuleException("Tree definition is not given")
-    if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
+    if tree_name is None or tree_name.lower() not in TREE_RANKS_MAPPING.keys():
         raise TreeBusinessRuleException("Invalid tree type")
 
     # Get tree def item model
-    tree_def_item_model_name = (tree + 'treedefitem').lower().title()
+    tree_def_item_model_name = (tree_name + 'treedefitem').lower().title()
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
 
     # Handle case where the parent rank is not given, and it is not the first rank added.
@@ -236,7 +231,7 @@ def set_rank_id(new_rank):
     is_new_rank_last = parent_rank_idx == len(rank_ids) - 1
     
     # Set the default ranks and increments depending on the tree type
-    default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower())
+    default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree_name.lower())
 
     # In the future, add this as a function parameter to allow for more flexibility.
     # use_default_rank_ids can be set to false if you do not want to use the default rank ids.

@@ -65,7 +65,6 @@ def preps_available_rs(request, recordset_id):
     sql += " GROUP BY 1,2,3,4,5 ORDER BY 1;"
 
     cursor.execute(sql, [request.specify_collection.id, recordset_id])
-
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
