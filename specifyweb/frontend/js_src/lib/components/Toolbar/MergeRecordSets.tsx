@@ -70,17 +70,14 @@ export function MergeRecordSets({
     const tableName = getTableById(selectedTable).name;
 
     await ajax(
-      `/api/specify/${tableName.toLowerCase()}/replace/${
-        selectedRecordSets[0]
-      }/`,
+      `/stored_query/merge_recordsets/`,
       {
         method: 'POST',
         headers: {
           Accept: 'application/json',
         },
         body: {
-          old_record_ids: selectedRecordSets,
-          // New_record_data: merged.toJSON(),
+          'recordsetids': selectedRecordSets,
         },
         expectedErrors: [Http.NOT_ALLOWED],
         errorMode: 'dismissible',
