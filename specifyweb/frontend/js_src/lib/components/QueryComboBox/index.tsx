@@ -103,11 +103,11 @@ export function QueryComboBox({
     if (field.name === 'specifyUser') {
       const record = toTable(resource, 'RecordSet');
       record?.set(
-      'specifyUser',
-      record?.get('specifyUser') ?? userInformation.resource_uri,
-      {
-        silent: true,
-      }
+        'specifyUser',
+        record?.get('specifyUser') ?? userInformation.resource_uri,
+        {
+          silent: true,
+        }
       );
     }
     if (field.name === 'receivedBy') {
