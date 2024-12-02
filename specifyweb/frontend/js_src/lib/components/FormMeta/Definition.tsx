@@ -54,11 +54,15 @@ function FormDefinitionDialog({
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
 
   const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
-  const initialValue = React.useRef(useFieldLabels);
+  const initialFieldLabelsValue = React.useRef(useFieldLabels);
 
   const handleDialogClose = (): void => {
-    if (useFieldLabels !== initialValue.current && unloadProtects.length > 0) {
-      setShowUnloadProtect(true);
+    if (useFieldLabels !== initialFieldLabelsValue.current) {
+      if (!showUnloadProtect && unloadProtects.length > 0) {
+        setShowUnloadProtect(true);
+        return;
+      }
+      globalThis.location.reload();
     } else {
       handleClose();
     }
@@ -84,7 +88,7 @@ function FormDefinitionDialog({
           onCancel={(): void => {
             setShowUnloadProtect(false);
           }}
-          onConfirm={(): void => globalThis.location.reload()}
+          onConfirm={(): void => handleDialogClose()}
         >
           {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
@@ -119,21 +123,6 @@ function UseLabels(): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
     'useFieldLabels'
-  );
-
-  const initialValue = React.useRef(useFieldLabels);
-  const isChanged = React.useRef(false);
-  React.useEffect(() => {
-    isChanged.current = useFieldLabels !== initialValue.current;
-  }, [useFieldLabels]);
-
-  React.useEffect(
-    () => () => {
-      if (isChanged.current) {
-        globalThis.location.reload();
-      }
-    },
-    []
   );
 
   return (
