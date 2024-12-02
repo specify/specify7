@@ -449,37 +449,20 @@
 				<row>
 					<cell type="panel" colspan="7" coldef="20px,2px,100px,2px,20px,2px,50px,2px,p:g">
 						<rows/>
-						<rows condition="mimeType=jrxml/label">
+						<rows condition="mimeType=jrxml/report">
 							<row>
 								<cell type="label" label="Reports"/>
 								<cell type="subview" id="spReports" name="spReports" uitype="subview" readonly="true" initialize="btn=true"/>
 							</row>
 						</rows>
+						<rows condition="mimeType=jrxml/label">
+							<row>
+								<cell type="label" label="Labels"/>
+								<cell type="subview" id="spReports" name="spReports" uitype="subview" readonly="true" initialize="btn=true"/>
+							</row>
+						</rows>
 					</cell>
 				</row>
-				<!-- 		<row>
-			<cell type="panel" colspan="7">
-				<rows>
-					<row>
-						<cell type="separator" label="Database Metadata" colspan="23"/>
-					</row>
-					<row>
-						<cell type="label" labelfor="level"/>
-						<cell type="field" id="level" name="level" uitype="text" readonly="true"/>
-						<cell type="label" labelfor="OPL"/>
-						<cell type="field" id="OPL" name="ownerPermissionLevel" uitype="text" readonly="true"/>
-						<cell type="label" labelfor="group"/>
-						<cell type="field" id="group" name="group" uitype="text" readonly="true"/>
-						<cell type="label" labelfor="spAppResourceDir"/>
-						<cell type="field" id="spAppResourceDir" name="spAppResourceDir" uitype="text" readonly="true"/>
-						<cell type="label" labelfor="spAppResourceDatas"/>
-						<cell type="field" id="spAppResourceDatas" name="spAppResourceDatas" uitype="text" readonly="true"/>
-						<cell type="label" labelfor="spReports"/>
-						<cell type="field" id="spReports" name="spReports" uitype="text" readonly="true"/>
-					</row>
-				</rows>
-			</cell>
-		</row> -->
 			</rows>
 		</viewdef>
 		<viewdef name="SpViewSetObj" class="edu.ku.brc.specify.datamodel.SpViewSetObj" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
