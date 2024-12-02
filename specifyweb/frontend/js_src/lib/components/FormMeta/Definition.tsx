@@ -57,14 +57,14 @@ function FormDefinitionDialog({
   const initialFieldLabelsValue = React.useRef(useFieldLabels);
 
   const handleDialogClose = (): void => {
-    if (useFieldLabels !== initialFieldLabelsValue.current) {
+    if (useFieldLabels === initialFieldLabelsValue.current) {
+      handleClose();
+    } else {
       if (!showUnloadProtect && unloadProtects.length > 0) {
         setShowUnloadProtect(true);
         return;
       }
       globalThis.location.reload();
-    } else {
-      handleClose();
     }
   };
 
