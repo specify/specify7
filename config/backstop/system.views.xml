@@ -132,11 +132,11 @@
 					<cell type="separator" label="Pick List" colspan="7"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="typesCBX" label="Type"/>
+					<cell type="label" labelfor="typesCBX"/>
 					<cell type="field" id="typesCBX" name="typesCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="name" label="Name"/>
+					<cell type="label" labelfor="name"/>
 					<cell type="field" id="name" name="name" uitype="text" isrequired="true" colspan="1" initialize="editoncreate=true"/>
 					<cell type="field" id="readOnly" name="readOnly" label="Read Only" uitype="checkbox" initialize="align=left"/>
 				</row>
@@ -145,7 +145,7 @@
 					<cell type="field" id="tablesCBX" name="tablesCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="formatterCBX" label="Formatter"/>
+					<cell type="label" labelfor="formatterCBX"/>
 					<cell type="field" id="formatterCBX" name="formatterCBX" uitype="combobox" ignore="true"/>
 				</row>
 				<row>
