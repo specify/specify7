@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { batchEditText } from '../../localization/batchEdit';
 import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
@@ -18,11 +19,13 @@ import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 export function CreateRecordSetButton({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClosed,
   small,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
   readonly small: boolean;
 }): JSX.Element {
@@ -40,6 +43,7 @@ export function CreateRecordSetButton({
           <CreateRecordSetDialog
             datasetId={datasetId}
             datasetName={datasetName}
+            isUpdate={isUpdate}
             onClose={(): void => {
               handleClose();
               handleClosed();
@@ -54,16 +58,20 @@ export function CreateRecordSetButton({
 function CreateRecordSetDialog({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClose,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const recordSet = React.useMemo(
     () =>
       new tables.RecordSet.Resource({
-        name: wbText.recordSetName({ dataSet: datasetName }),
+        name: isUpdate
+          ? batchEditText.batchEditRecordSetName({ dataSet: datasetName })
+          : wbText.recordSetName({ dataSet: datasetName }),
       }),
     [datasetId]
   );

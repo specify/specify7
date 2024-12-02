@@ -17,36 +17,40 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbView } from './WbView';
 
 export function WorkBench(): JSX.Element {
-  useMenuItem('workBench');
-
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   const { id } = useParams();
   const datasetId = f.parseInt(id);
 
   const [dataset, setDataset] = useDataset(datasetId);
+  return datasetId === undefined ?
+   <NotFoundView/> : 
+   dataset === undefined ? <LoadingScreen/> : <WorkBenchSafe getSetDataset={[dataset, setDataset]}/>;
+}
+
+export function WorkBenchSafe({getSetDataset}: {readonly getSetDataset: GetSet<Dataset>}): JSX.Element {
+  const [dataset, setDataset] = getSetDataset;
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+
   useErrorContext('dataSet', dataset);
 
-  const loading = React.useContext(LoadingContext);
+  useMenuItem(dataset.isupdate ? 'batchEdit' : 'workBench');
+
   const [isDeleted, handleDeleted] = useBooleanState();
 
-  if (dataset === undefined || !treeRanksLoaded || dataset.id !== datasetId)
-    return <LoadingScreen />;
+  const loading = React.useContext(LoadingContext);
 
   const triggerDatasetRefresh = () =>
     loading(fetchDataset(dataset.id).then(setDataset));
 
-  return datasetId === undefined ? (
-    <NotFoundView />
-  ) : isDeleted ? (
+  return isDeleted ? (
     <>{wbText.dataSetDeletedOrNotFound()}</>
-  ) : (
+  ) : treeRanksLoaded ? (
     <WbView
       dataset={dataset}
       key={dataset.id}
       triggerDatasetRefresh={triggerDatasetRefresh}
       onDatasetDeleted={handleDeleted}
     />
-  );
+  ) : <LoadingScreen/> ;
 }
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);

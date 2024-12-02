@@ -29,6 +29,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
@@ -43,7 +44,7 @@ const syncNameAndRemarks = async (
 
 type DataSetMetaProps = {
   readonly dataset: Dataset | EagerDataSet;
-  readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
+  readonly datasetVariant: keyof typeof datasetVariants;
   readonly getRowCount?: () => number;
   readonly permissionResource:
     | '/attachment_import/dataset'
@@ -65,7 +66,7 @@ type DataSetMetaProps = {
 export function WbDataSetMeta(
   props: Omit<
     DataSetMetaProps,
-    'datasetUrl' | 'deleteDescription' | 'onChange' | 'permissionResource'
+    'datasetVariant' | 'deleteDescription' | 'onChange' | 'permissionResource'
   > & {
     readonly onChange: ({
       name,
@@ -80,7 +81,7 @@ export function WbDataSetMeta(
   return (
     <DataSetMeta
       {...props}
-      datasetUrl="/api/workbench/dataset/"
+      datasetVariant="workbench"
       deleteDescription={wbText.deleteDataSetDescription()}
       permissionResource="/workbench/dataset"
       onChange={({ needsSaved, name, remarks }) =>
@@ -101,7 +102,7 @@ export const blueTable = <span className="text-blue-500"> {icons.table}</span>;
 export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,
-  datasetUrl,
+  datasetVariant,
   permissionResource,
   deleteDescription,
   onClose: handleClose,
@@ -117,6 +118,8 @@ export function DataSetMeta({
   const [isDeleted, setIsDeleted] = React.useState(false);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+
+  const datasetUrl = datasetVariants[datasetVariant];
 
   return isDeleted ? (
     <Dialog
@@ -134,7 +137,7 @@ export function DataSetMeta({
             <Button.Danger
               onClick={() => {
                 loading(
-                  ping(`${datasetUrl}${dataset.id}/`, {
+                  ping(`${datasetUrl.fetchUrl}${dataset.id}/`, {
                     method: 'DELETE',
                     errorMode: 'dismissible',
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
@@ -193,7 +196,7 @@ export function DataSetMeta({
                 name: dataset.name,
                 remarks: localized(dataset.remarks),
               })
-            : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
+            : uniquifyDataSetName(name.trim(), dataset.id, datasetVariant).then(
                 (uniqueName) => ({
                   needsSaved: true,
                   name: uniqueName,
