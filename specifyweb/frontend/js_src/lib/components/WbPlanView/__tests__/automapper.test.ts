@@ -216,5 +216,8 @@ test('circular tables are calculated correctly', () =>
       "[table StorageTreeDefItem]",
       "[table Taxon]",
       "[table TaxonTreeDefItem]",
+      "[table CollectionObjectGroup]",
+      "[table TectonicUnitTreeDefItem]",
+      "[table TectonicUnit]",
     ]
   `));

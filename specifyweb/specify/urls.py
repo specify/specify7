@@ -27,6 +27,8 @@ urlpatterns = [
     # this url always triggers a 500 for testing purposes
     url(r'^test_error/', views.raise_error),
 
+    url(r'^specify_trees/$', tree_views.all_tree_information),
+
     # special tree apis
     url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
@@ -38,6 +40,7 @@ urlpatterns = [
         url(r'^(?P<rankid>\d+)/tree_rank_item_count/$', tree_views.tree_rank_item_count),
         url(r'^(?P<parentid>\d+)/predict_fullname/$', tree_views.predict_fullname),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
+        url(r'^(?P<treeid>\w+)/add_root/$', tree_views.add_root),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
     ])),

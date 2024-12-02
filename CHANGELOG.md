@@ -9,6 +9,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.7](https://github.com/specify/specify7/compare/v7.9.6.2...v7.9.7) (1 October 2024)
+
+### Added
+* Added an all-new **Bulk Carry Forward** feature to enable series data entry in Specify 7 ([#4804](https://github.com/specify/specify7/pull/4804), [#5120](https://github.com/specify/specify7/pull/5120) – _Requested by University of Minnesota Entomology, Bulgarian Academy of Sciences, KU Entomology, and many others_)
+* Added support for Geography Code at any rank when building a query ([#5094](https://github.com/specify/specify7/pull/5094) – _Requested by Museu de Ciències Naturals de Barcelona, KU Ichthyology, and many others_)
+* Added a preference (enabled by default) to insert a [UTF-8 BOM](https://en.wikipedia.org/wiki/Byte_order_mark#:~:text=%5B3%5D-,UTF%2D8,-%5Bedit%5D) to CSV exports ([#5204](https://github.com/specify/specify7/pull/5204))
+* When enabled, you should be able to open exported CSV files in Excel without using the import utility.
+
+### Changed
+* Removed the limit on the number of results returned when searching a tree in the tree viewer ([#5125](https://github.com/specify/specify7/pull/5125))
+* Descriptions for User Preferences have been improved ([#5064](https://github.com/specify/specify7/pull/5064))
+* Specify in Docker is now built for both `x64_86` and `arm64` architectures, enabling native deployment on ARM-based servers ([#5235](https://github.com/specify/specify7/pull/5235))
+* Collection, Discipline, Division, and the Audit Log are now visible in the list of query tables by default ([#5133](https://github.com/specify/specify7/pull/5133))
+
+### Fixed
+* Fixed an issue that caused table aggregation separators to be cleared when set to the default separator (`; `) ([#5240](https://github.com/specify/specify7/pull/5240))
+* Fixed an issue that allowed users to carry forward preparations in an interaction when cloning or using carry forward ([#4905](https://github.com/specify/specify7/pull/4905))
+* Fixed an issue that would cause a crash if an `ExportFeed` was configured with an invalid Specify user ID ([#5042](https://github.com/specify/specify7/pull/5042))
+* Fixed an issue where a border would not appear for query items in the report query dialog ([#5159](https://github.com/specify/specify7/pull/5159))
+
+## [7.9.6.2](https://github.com/specify/specify7/compare/v7.9.6.1...v7.9.6.2) (22 July 2024)
+
+- Fixed an issue that prevented `TimestampModified` from being captured upon saving a record since the `v7.9.6` release ([#5108](https://github.com/specify/specify7/issues/5108) – *Reported by the University of Kansas and Ohio State University*)
+- Fixed an issue that caused large trees to perform slowly or crash the browser due to using too much memory ([#5115](https://github.com/specify/specify7/pull/5115) – *Reported by The Hebrew University of Jerusalem and Royal Botanic Gardens Edinburgh*)
+
 ## [7.9.6.1](https://github.com/specify/specify7/compare/v7.9.6...v7.9.6.1) (9 July 2024)
 
 - Fixes an issue that led to tree definition item separators being trimmed ([#5076](https://github.com/specify/specify7/pull/5076))

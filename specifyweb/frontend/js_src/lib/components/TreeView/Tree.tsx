@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { treeText } from '../../localization/tree';
+import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -14,7 +15,9 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
+import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -31,9 +34,13 @@ const treeToPref = {
   Storage: 'storage',
   GeologicTimePeriod: 'geologicTimePeriod',
   LithoStrat: 'lithoStrat',
+  TectonicUnit: 'tectonicUnit',
 } as const;
 
-export function Tree<SCHEMA extends AnyTree>({
+export function Tree<
+  SCHEMA extends AnyTree,
+  TREE_NAME extends SCHEMA['tableName']
+>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
@@ -54,7 +61,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly tableName: SCHEMA['tableName'];
+  readonly tableName: TREE_NAME;
   readonly isEditingRanks: boolean;
   readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;
@@ -101,6 +108,28 @@ export function Tree<SCHEMA extends AnyTree>({
         : Promise.resolve({}),
     [baseUrl, statsThreshold]
   );
+
+  const treeDefinition = treeDefinitionItems[0].treeDef;
+  const treeDefId = idFromUrl(treeDefinition);
+  const createRootNode = async (): Promise<void> => {
+    if (treeDefId === undefined) {
+      softError('treeDefId is undefined');
+    } else {
+      await ping(
+        `/api/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
+        {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+        }
+      )
+        .then(() => {
+          globalThis.location.reload();
+        })
+        .catch((error) => {
+          softError('Error creating root node:', error);
+        });
+    }
+  };
 
   return (
     <div
@@ -192,6 +221,13 @@ export function Tree<SCHEMA extends AnyTree>({
           })}
         </div>
       </div>
+      {rows.length === 0 ? (
+        <Button.Icon
+          icon="plus"
+          title={treeText.addRootNode()}
+          onClick={createRootNode}
+        />
+      ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
           <TreeRow

@@ -7,8 +7,9 @@
  * @module
  */
 
+import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
-import { VALUE } from '../../utils/utils';
+import { caseInsensitiveHash, VALUE } from '../../utils/utils';
 import type { TableFields } from './helperTypes';
 import type { Tables } from './types';
 
@@ -90,6 +91,8 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   StorageTreeDefItem: 'system',
   TaxonTreeDef: 'system',
   TaxonTreeDefItem: 'system',
+  TectonicUnitTreeDef: 'system',
+  TectonicUnitTreeDefItem: 'system',
 };
 
 // These field overrides apply to entire front-end
@@ -152,6 +155,12 @@ const globalFieldOverrides: {
     acceptedGeologicTimePeriod: { visibility: 'readOnly' },
     fullName: { visibility: 'readOnly' },
   },
+  TectonicUnit: {
+    parent: { visibility: 'required' },
+    isAccepted: { visibility: 'readOnly' },
+    acceptedTectonicUnit: { visibility: 'readOnly' },
+    fullName: { visibility: 'readOnly' },
+  },
   Storage: {
     parent: { visibility: 'required' },
     isAccepted: { visibility: 'readOnly' },
@@ -186,6 +195,12 @@ const globalFieldOverrides: {
   GeologicTimePeriodTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
   },
+  TectonicUnitTreeDef: {
+    fullNameDirection: { visibility: 'readOnly' },
+  },
+  TectonicUnitTreeDefItem: {
+    fullNameSeparator: { whiteSpaceSensitive: true },
+  },
   LithoStratTreeDef: {
     fullNameDirection: { visibility: 'readOnly' },
   },
@@ -218,6 +233,9 @@ const fieldOverwrites: typeof globalFieldOverrides = {
   },
   Agent: {
     agentType: { visibility: 'optional' },
+  },
+  CollectionObject: {
+    collectionObjectType: { visibility: 'optional' },
   },
   LoanPreparation: {
     isResolved: { visibility: 'optional' },
@@ -260,15 +278,18 @@ export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
-  globalFieldOverrides[tableName as 'Accession']?.[fieldName as 'text1'] ??
-  globalFieldOverrides.common?.[fieldName];
+  f.maybe(globalFieldOverrides[tableName], (fieldOverwrites) =>
+    caseInsensitiveHash(fieldOverwrites, fieldName)
+  ) ?? caseInsensitiveHash(globalFieldOverrides.common, fieldName);
 
 export const getFieldOverwrite = (
   tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
-  fieldOverwrites[tableName as 'Accession']?.[fieldName as 'text1'] ??
-  fieldOverwrites.common?.[fieldName] ??
+  f.maybe(fieldOverwrites[tableName], (overwrites) =>
+    caseInsensitiveHash(overwrites, fieldName)
+  ) ??
+  caseInsensitiveHash(fieldOverwrites.common, fieldName) ??
   Object.entries(endsWithFieldOverwrites[tableName] ?? {}).find(([key]) =>
     fieldName.endsWith(key)
   )?.[VALUE] ??

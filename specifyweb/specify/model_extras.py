@@ -5,7 +5,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
 from django.utils import timezone
 
-from .model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
+from .model_timestamp import save_auto_timestamp_field_with_override
 from .tree_extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
@@ -20,7 +20,7 @@ class SpecifyUserManager(BaseUserManager):
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
 
-class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel):
+class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
     is_active = True
@@ -117,15 +117,14 @@ class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel)
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        pre_save_auto_timestamp_field_with_override(self)
-        return super(Specifyuser, self).save(*args, **kwargs)
+        return save_auto_timestamp_field_with_override(super(Specifyuser, self).save, args, kwargs, self)
 
     class Meta:
         abstract = True
 
 
 
-class Preparation(models.Model): # FUTURE: class Preparation(SpTimestampedModel):
+class Preparation(models.Model):
     def isonloan(self):
         # TODO: needs unit tests
         from django.db import connection
@@ -145,7 +144,21 @@ class Preparation(models.Model): # FUTURE: class Preparation(SpTimestampedModel)
     class Meta:
         abstract = True
 
+PALEO_DISCIPLINES = {'paleobotany', 'invertpaleo', 'vertpaleo'}
+GEOLOGY_DISCIPLINES = {'geology'}
 
+class Discipline(models.Model):
+    def is_paleo(self):
+         return self.type.lower() in PALEO_DISCIPLINES
+    
+    def is_geo(self):
+         return self.type.lower() in GEOLOGY_DISCIPLINES
+    
+    def is_paleo_geo(self): 
+        return self.is_paleo() or self.is_geo()
+    
+    class Meta:
+        abstract = True
 
 class Taxon(Tree):
     class Meta:
@@ -167,6 +180,10 @@ class Lithostrat(Tree):
     class Meta:
         abstract = True
 
+class Tectonicunit(Tree):
+    class Meta:
+        abstract = True
+
 class Geographytreedefitem(TreeRank):
     class Meta:
         abstract = True
@@ -184,5 +201,9 @@ class Storagetreedefitem(TreeRank):
         abstract = True
 
 class Taxontreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True

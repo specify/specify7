@@ -860,6 +860,9 @@ export const formsText = createDictionary({
     'uk-ua': 'Налаштуйте поля для перенесення',
     'de-ch': 'Konfigurieren der zu übertragenden Felder',
   },
+  bulkCarryForwardSettingsDescription: {
+    'en-us': 'Configure fields to bulk carry forward',
+  },
   carryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для переноса ({tableName:string})',
@@ -868,6 +871,9 @@ export const formsText = createDictionary({
     'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
     'de-ch':
       'Konfigurieren Sie die zu übertragenden Felder ({tableName:string})',
+  },
+  bulkCarryForwardTableSettingsDescription: {
+    'en-us': 'Configure fields to bulk carry forward ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
@@ -1152,5 +1158,8 @@ export const formsText = createDictionary({
     'fr-fr': 'Numéro de catalogue Numérique',
     'ru-ru': 'Номер по каталогу Числовой',
     'uk-ua': 'Каталожний номер Числовий',
+  },
+  addCOGChildren: {
+    'en-us': 'Add COG Children',
   },
 } as const);

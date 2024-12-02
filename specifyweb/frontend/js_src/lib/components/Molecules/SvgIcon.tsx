@@ -60,6 +60,8 @@ export function SvgIcon({
       </g>
       <g>
         <text
+          alignmentBaseline="middle"
+          baselineShift="-10%"
           dominantBaseline="central"
           fill="#FFFFFF"
           fontFamily="Francois One,sans-serif"
@@ -239,6 +241,9 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ...startsWith('DNA', colors.purple),
   ...startsWith('Sp', colors.lightBlue),
   ...startsWith('Workbench', colors.green),
+  ...startsWith('AbsoluteAge', colors.blue),
+  ...startsWith('RelativeAge', colors.lightBlue),
+  ...startsWith('TectonicUnit', colors.yellowOrange),
   ...endsWith('Agent', colors.yellowOrange),
   ...endsWith('Citation', colors.red),
   ...endsWith('Authorization', colors.red),
@@ -306,6 +311,8 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   Journal: colors.brown,
   LatLonPolygon: colors.green,
   LatLonPolygonPnt: colors.green,
+  LibraryRole: colors.blue,
+  LibraryRolePolicy: colors.lightBlue,
   LithoStrat: colors.red,
   LithoStratTreeDef: colors.red,
   LithoStratTreeDefItem: colors.red,
@@ -316,7 +323,10 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   LocalityAttachment: colors.green,
   LocalityDetail: colors.green,
   LocalityNameAlias: colors.purple,
+  LocalityUpdate: colors.purple,
+  LocalityUpdateRowResult: colors.purple,
   MaterialSample: colors.blue,
+  Message: colors.yellowOrange,
   MorphBankView: colors.blue,
   OtherIdentifier: colors.purple,
   PcrPerson: colors.blue,
@@ -337,6 +347,8 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ReferenceWorkAttachment: colors.purple,
   RepositoryAgreement: colors.purple,
   RepositoryAgreementAttachment: colors.purple,
+  Role: colors.blue,
+  RolePolicy: colors.lightBlue,
   Shipment: colors.brown,
   SpSymbiotaInstance: colors.green,
   Storage: colors.blue,
@@ -350,6 +362,10 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   TaxonAttribute: colors.purple,
   TreatmentEvent: colors.red,
   TreatmentEventAttachment: colors.red,
+  UniquenessRule: colors.purple,
+  UniquenessRuleField: colors.purple,
+  UserPolicy: colors.lightBlue,
+  UserRole: colors.blue,
   VoucherRelationship: colors.red,
 }));
 

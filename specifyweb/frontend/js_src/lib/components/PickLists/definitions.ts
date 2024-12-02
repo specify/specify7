@@ -60,6 +60,12 @@ export const userTypes = [
   'Guest',
 ] as const;
 
+export const collectionObjectGroupTypeTypes = [
+  'Discrete',
+  'Consolidated',
+  'Drill Core',
+] as const;
+
 export const PickListTypes = {
   // Items are defined in the PickListItems table
   ITEMS: 0,
@@ -193,8 +199,15 @@ export const getFrontEndPickLists = f.store<{
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
+    CollectionObject: {
+      age: definePicklist('_GeologicTimePeriod', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'geologictimeperiod')
+        .set('fieldName', 'name'),
+    },
     GeographyTreeDef: { fullNameDirection },
     GeologicTimePeriodTreeDef: { fullNameDirection },
+    TectonicUnitTreeDef: { fullNameDirection },
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
@@ -203,6 +216,24 @@ export const getFrontEndPickLists = f.store<{
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
+    },
+    CollectionObjectType: {
+      name: definePicklist('_CollectionObjectType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjecttype')
+        .set('fieldName', 'name'),
+    },
+    CollectionObjectGroupType: {
+      name: definePicklist('_CollectionObjectGroupType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjectgrouptype')
+        .set('fieldName', 'name'),
+      type: definePicklist(
+        '_CollectionObjectGroupTypeType',
+        collectionObjectGroupTypeTypes.map((title) =>
+          createPickListItem(title, title)
+        )
+      ),
     },
     CollectionRelType: {
       name: definePicklist('_CollectionRelType', [])
