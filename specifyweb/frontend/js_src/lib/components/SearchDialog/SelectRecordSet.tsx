@@ -3,16 +3,18 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById } from '../DataModel/tables';
+import type { RecordSet } from '../DataModel/types';
 import { softError } from '../Errors/assert';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
@@ -55,8 +57,8 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     false
   );
 
-  const handleAddResource = async () => {
-    const recordIds = await Promise.all(
+  const handleAddResource = (): void => {
+    Promise.all(
       selectedRecordSets.map(async (recordSet) =>
         fetchCollection('RecordSetItem', {
           recordSet,
@@ -69,64 +71,98 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
             return [];
           })
       )
-    ).then((results) => results.flat());
+    )
+      .then((results) => results.flat())
+      .then((recordIds) => {
+        const newResources = recordIds.map((id) => new table.Resource({ id }));
+        handleAdd?.(newResources);
+        handleClose();
+        handleParentClose();
+      })
+      .catch((error) => {
+        softError('Unexpected error in handleAddResource:', error);
+      });
+  };
 
-    const newResources = recordIds.map((id) => new table.Resource({ id }));
-    handleAdd?.(newResources);
-    handleClose();
-    handleParentClose();
+  const onSelected = (recordSetId: number): void => {
+    setSelectedRecordSets((previousSelected) => {
+      const isAlreadySelected = previousSelected.includes(recordSetId);
+      return isAlreadySelected
+        ? previousSelected.filter((item) => item !== recordSetId)
+        : [...previousSelected, recordSetId];
+    });
   };
 
   return (
     <>
       <Button.Info onClick={handleOpen}>{commonText.recordSets()}</Button.Info>
       {isOpen && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Info
-                disabled={recordSets?.records.length === 0}
-                onClick={async () => handleAddResource()}
-              >
-                {commonText.add()}
-              </Button.Info>
-            </>
-          }
-          header={commonText.add()}
+        <RecordSetSelection
+          recordSets={recordSets?.records}
+          selectedRecordSets={selectedRecordSets}
           onClose={handleClose}
-        >
-          {recordSets === undefined && <LoadingScreen />}
-          <Ul>
-            {recordSets?.records.map((recordSet) => (
-              <li key={recordSet.id}>
-                <Label.Inline>
-                  <Input.Checkbox
-                    checked={selectedRecordSets.includes(recordSet.id)}
-                    onValueChange={(): void =>
-                      setSelectedRecordSets((previousSelected) => {
-                        const isAlreadySelected = previousSelected.includes(
-                          recordSet.id
-                        );
-                        return isAlreadySelected
-                          ? previousSelected.filter(
-                              (item) => item !== recordSet.id
-                            )
-                          : [...previousSelected, recordSet.id];
-                      })
-                    }
-                  />
-                  <TableIcon
-                    label
-                    name={getTableById(recordSet.dbTableId).name}
-                  />
-                  {recordSet.name}
-                </Label.Inline>
-              </li>
-            ))}
-          </Ul>
-        </Dialog>
+          onProceed={handleAddResource}
+          onValueChange={onSelected}
+        />
       )}
     </>
+  );
+}
+
+export function RecordSetSelection<T>({
+  recordSets,
+  onProceed: handleProceed,
+  onClose: handleClose,
+  selectedRecordSets,
+  selectedTable,
+  onValueChange: handleValueChange,
+  isMerge,
+}: {
+  readonly recordSets: RA<SerializedResource<RecordSet>> | undefined;
+  readonly onProceed: () => void;
+  readonly onClose: () => void;
+  readonly selectedRecordSets: RA<number>;
+  readonly selectedTable?: number | null;
+  readonly onValueChange: (recordSet: T) => void;
+  readonly isMerge?: boolean;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Info onClick={handleProceed}>
+            {isMerge === true ? treeText.merge() : commonText.add()}
+          </Button.Info>
+        </>
+      }
+      header={isMerge === true ? treeText.merge() : commonText.add()}
+      onClose={handleClose}
+    >
+      <Ul>
+        {recordSets === undefined && <LoadingScreen />}
+        {recordSets?.map((recordSet) => (
+          <li key={recordSet.id}>
+            <Label.Inline>
+              <Input.Checkbox
+                checked={selectedRecordSets.includes(recordSet.id)}
+                disabled={
+                  selectedTable !== null &&
+                  recordSet.dbTableId !== selectedTable &&
+                  isMerge === true
+                }
+                onValueChange={(): void =>
+                  handleValueChange(
+                    (isMerge === true ? recordSet : recordSet.id) as T
+                  )
+                }
+              />
+              <TableIcon label name={getTableById(recordSet.dbTableId).name} />
+              {recordSet.name}
+            </Label.Inline>
+          </li>
+        ))}
+      </Ul>
+    </Dialog>
   );
 }
