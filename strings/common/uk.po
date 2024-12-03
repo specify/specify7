@@ -74,10 +74,11 @@ msgstr "Немає"
 #: components/Statistics/index.tsx:592
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
+#: components/Toolbar/MergeRecordSets.tsx:87
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
-#: components/Toolbar/RecordSets.tsx:176
-#: components/Toolbar/RecordSets.tsx:215
+#: components/Toolbar/RecordSets.tsx:181
+#: components/Toolbar/RecordSets.tsx:220
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:398
@@ -95,7 +96,7 @@ msgstr "Немає"
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:151
 #: components/WorkBench/Disambiguation.tsx:40
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 msgid "cancel"
 msgstr "Скасувати"
 
@@ -538,7 +539,7 @@ msgstr "N/A"
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
-#: components/Toolbar/RecordSets.tsx:181
+#: components/Toolbar/RecordSets.tsx:186
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "новий"
@@ -561,7 +562,7 @@ msgstr "новий"
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:609
-#: components/Toolbar/RecordSets.tsx:281
+#: components/Toolbar/RecordSets.tsx:286
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:121
@@ -682,18 +683,18 @@ msgstr "Спускається"
 #: components/Header/menuItemDefinitions.ts:80
 #: components/Router/OverlayRoutes.tsx:136
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:189
-#: components/Toolbar/RecordSets.tsx:216
+#: components/Toolbar/RecordSets.tsx:194
+#: components/Toolbar/RecordSets.tsx:221
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 msgid "recordSets"
 msgstr "Набори рекордів"
 
-#: components/Toolbar/RecordSets.tsx:271
+#: components/Toolbar/RecordSets.tsx:276
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Підрахунок записів"
 
-#: components/Toolbar/RecordSets.tsx:137
+#: components/Toolbar/RecordSets.tsx:138
 #. Used in: Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Розмір"
@@ -930,7 +931,7 @@ msgstr "Немає доступних"
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:220
-#: components/Toolbar/RecordSets.tsx:188
+#: components/Toolbar/RecordSets.tsx:193
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Actions > Wb Validate
