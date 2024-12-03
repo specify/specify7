@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 16:00+0000\n"
+"PO-Revision-Date: 2024-12-03 18:48+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "tree/pt/>\n"
@@ -47,7 +47,7 @@ msgstr "Mesclar"
 #: components/TreeView/Actions.tsx:205
 #, fuzzy
 msgid "undoSynonymy"
-msgstr "Nó Folha"
+msgstr "Desfazer Sinonímia"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:205
@@ -310,7 +310,7 @@ msgstr "Isso excluirá permanentemente o seguinte recurso"
 #: components/TreeView/index.tsx:378
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Vertical"
+msgstr "Mostrar apenas nós com objetos associados"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:310
