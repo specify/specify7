@@ -213,6 +213,8 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 
         if not recordsets.exists():
             return JsonResponse({'error': 'No valid recordsets found'}, status=404)
+        
+        first_recordset_name = recordsets.first().name
 
         # Verify that the 'tableid' field in all the recordsets is the same
         tableid = recordsets.first().dbtableid
@@ -234,7 +236,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
             # Create a new recordsset record
             new_recordset = Recordset.objects.create(
                 dbtableid=tableid,
-                name=f'{model_name} Merged Recordset {current_date}',
+                name=first_recordset_name,
                 type=0,
                 collectionmemberid=request.specify_collection.id,
                 specifyuser=request.specify_user,
