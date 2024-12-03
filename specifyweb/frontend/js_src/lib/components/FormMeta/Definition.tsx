@@ -88,7 +88,7 @@ function FormDefinitionDialog({
           onCancel={(): void => {
             setShowUnloadProtect(false);
           }}
-          onConfirm={(): void => handleDialogClose()}
+          onConfirm={handleDialogClose}
         >
           {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
