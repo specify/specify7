@@ -226,7 +226,7 @@ msgstr "Create"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:547
+#: components/QueryComboBox/index.tsx:557
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -434,7 +434,7 @@ msgstr "Tools"
 #: components/QueryBuilder/Formatter.tsx:59
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
-#: components/QueryComboBox/index.tsx:403
+#: components/QueryComboBox/index.tsx:413
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
