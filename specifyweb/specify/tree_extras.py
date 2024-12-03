@@ -165,7 +165,6 @@ class TreeRank(models.Model):
         post_tree_rank_deletion(self)
 
 
-
 def open_interval(model, parent_node_number, size):
     """Open a space of given size in a tree model under the given parent.
     The insertion point will be directly after the parent_node_number.
@@ -667,9 +666,12 @@ def renumber_tree(table):
     }
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
-    if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
-        formattedResults)
+    if bad_ranks_count > 0:
+        # raise AssertionError( # Phasing out node numbering, logging as warning instead of raising an exception
+        logger.warning(
+            f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
+            formattedResults,
+        )
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
