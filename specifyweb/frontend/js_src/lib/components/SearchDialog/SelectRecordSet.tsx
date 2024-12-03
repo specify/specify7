@@ -61,6 +61,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
         fetchCollection('RecordSetItem', {
           recordSet,
           domainFilter: false,
+          limit: 1000,
         })
           .then(({ records }) => records.map((record) => record.recordId))
           .catch((error) => {
