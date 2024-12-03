@@ -121,9 +121,14 @@ export function useDistantRelated(
 
 export function useParser(
   field: LiteralField | Relationship | undefined,
+  resource?: SpecifyResource<AnySchema> | undefined,
   defaultParser?: Parser
 ): Parser {
   const isInSearchDialog = React.useContext(SearchDialogContext);
+  const formatter =
+    field?.isRelationship === false
+      ? field.getUiFormatter(resource)
+      : undefined;
   return useLiveState<Parser>(
     React.useCallback(() => {
       /*
@@ -134,10 +139,11 @@ export function useParser(
       const parser =
         isInSearchDialog || field === undefined
           ? { type: 'text' as const }
-          : resolveParser(field);
+          : resolveParser(field, undefined, resource);
+
       return typeof defaultParser === 'object'
         ? mergeParsers(parser, defaultParser)
         : parser;
-    }, [field, isInSearchDialog, defaultParser])
+    }, [isInSearchDialog, field, resource, formatter, defaultParser])
   )[0];
 }

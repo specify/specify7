@@ -62,7 +62,7 @@ export function useResourceValue<
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
-  const parser = useParser(field, defaultParser);
+  const parser = useParser(field, resource, defaultParser);
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
@@ -191,6 +191,13 @@ export function useResourceValue<
         parser.value !== false ||
         defaultParser?.value === false);
 
+    const fieldValue = resource.get(field.name);
+    const parsedValue = parseValue(
+      parser,
+      inputRef.current ?? undefined,
+      fieldValue?.toString() ?? '',
+      trim
+    );
     if (
       hasDefault &&
       /*
@@ -199,14 +206,14 @@ export function useResourceValue<
        * should overwrite that of the resource
        */
       resource.isNew() &&
-      (parser.type !== 'number' ||
-        typeof resource.get(field.name) !== 'number' ||
-        resource.get(field.name) === 0) &&
-      ((parser.type !== 'text' && parser.type !== 'date') ||
-        typeof resource.get(field.name) !== 'string' ||
-        resource.get(field.name) === '') &&
-      (parser.type !== 'checkbox' ||
-        typeof resource.get(field.name) !== 'boolean')
+      (!parsedValue.isValid ||
+        ((parser.type !== 'number' ||
+          typeof fieldValue !== 'number' ||
+          fieldValue === 0) &&
+          ((parser.type !== 'text' && parser.type !== 'date') ||
+            typeof fieldValue !== 'string' ||
+            fieldValue === '') &&
+          (parser.type !== 'checkbox' || typeof fieldValue !== 'boolean')))
     )
       resource.set(
         field.name,
