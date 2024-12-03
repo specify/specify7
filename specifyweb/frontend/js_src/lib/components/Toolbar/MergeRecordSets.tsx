@@ -13,6 +13,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
+import { softError } from '../Errors/assert';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 
@@ -21,7 +22,6 @@ export function MergeRecordSets({
 }: {
   readonly recordSets: RA<SerializedResource<RecordSet>> | undefined;
 }): JSX.Element {
-  // Think of having the checkbox in the recordsSets view rather then creating a new dialog
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
   const [selectedRecordSets, setSelectedRecordSets] = React.useState<
@@ -34,8 +34,7 @@ export function MergeRecordSets({
     const { id, dbTableId } = recordSet;
 
     if (selectedTable !== null && selectedTable !== dbTableId) {
-      // How do we want to signal this to the user?
-      console.log('Cannot merge record set that have different base table');
+      softError('Cannot merge record set that have different base table');
       return;
     }
 
