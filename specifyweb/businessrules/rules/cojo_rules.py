@@ -60,13 +60,13 @@ def cog_post_save(cog):
             parentcog=cog.parentcog
         )
 
-@orm_signal_handler('post_save', 'Collectionobject')
-def cog_post_save(co):
-    # Delete cojos that point to this CO to ensure we avoid multiple COs having the same child co
-    Collectionobjectgroupjoin.objects.filter(childco=co).delete()
-    if co.coparentcog is not None:
-        Collectionobjectgroupjoin.objects.get_or_create(
-            childco=co,
-            childcog=None,
-            coparentcog=co.coparentcog
-        )
+# @orm_signal_handler('post_save', 'Collectionobjectgroup')
+# def cog_post_save(cog):
+#     # Delete cojos that point to this CO to ensure we avoid multiple COs having the same child co
+#     Collectionobjectgroupjoin.objects.filter(childcog=cog).delete()
+#     if cog.coparentcog is not None:
+#         Collectionobjectgroupjoin.objects.get_or_create(
+#             childco=co,
+#             childcog=None,
+#             coparentcog=cog.coparentcog
+#         )
