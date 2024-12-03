@@ -5322,7 +5322,7 @@ export type SpQueryField = {
     readonly isNot: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
-    readonly isStrict: boolean | null;
+    readonly isStrict: boolean;
     readonly operEnd: number | null;
     readonly operStart: number;
     readonly position: number;
