@@ -27,10 +27,10 @@ class Migration(migrations.Migration):
         revert_update(apps)
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='collectionobject',
             name='coparentcog',
-            field=models.ForeignKey(db_column='CoParentCogID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobject'),
+            field=models.ForeignKey(db_column='CoParentCogID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobjectgroup'),
         ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]
