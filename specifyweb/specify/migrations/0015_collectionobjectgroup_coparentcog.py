@@ -2,7 +2,10 @@
 
 from django.db import migrations, models
 import specifyweb.specify.models
-from specifyweb.specify.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.update_schema_config import (
+    revert_table_field_schema_config,
+    update_table_field_schema_config_with_defaults,
+)
 
 def update_schema_config(apps):
     revert_table_field_schema_config('CollectionObject', 'coParentCog', apps)
@@ -27,10 +30,16 @@ class Migration(migrations.Migration):
         revert_update(apps)
 
     operations = [
-        migrations.AlterField(
-            model_name='collectionobject',
-            name='coparentcog',
-            field=models.ForeignKey(db_column='CoParentCogID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobjectgroup'),
+        migrations.AddField(
+            model_name="collectionobject",
+            name="coparentcog",
+            field=models.ForeignKey(
+                db_column="CoParentCogID",
+                null=True,
+                on_delete=specifyweb.specify.models.protect_with_blockers,
+                related_name="+",
+                to="specify.collectionobjectgroup",
+            ),
         ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]
