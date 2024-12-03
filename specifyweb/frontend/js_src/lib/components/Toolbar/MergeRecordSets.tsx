@@ -9,6 +9,7 @@ import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
@@ -53,40 +54,28 @@ export function MergeRecordSets({
       return updatedSelected;
     });
   };
+  const loading = React.useContext(LoadingContext);
 
-  const handleMerge = async (selectedRecordSets: RA<number>): Promise<void> => {
-    /*
-     * Add check to verify rs are the same table
-     * create a new RS with all the records
-     * delete all the RS that were selected
-     */
-    /*
-     * Send to the backend RS ids and backend merges the records
-     * need to filter the ids to not have duplicate
-     *
-     */
+  const handleMerge = (): void => {
     if (selectedTable === null) return;
 
-    const tableName = getTableById(selectedTable).name;
-
-    await ajax(
-      `/stored_query/merge_recordsets/`,
-      {
+    loading(
+      ajax(`/stored_query/merge_recordsets/`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
         },
         body: {
-          'recordsetids': selectedRecordSets,
+          recordsetids: selectedRecordSets,
         },
         expectedErrors: [Http.NOT_ALLOWED],
         errorMode: 'dismissible',
-      }
-    ).then(({ response }) => {
-      if (!response.ok) return;
-      handleClose();
-    });
-    console.log('merge');
+      }).then(({ response }) => {
+        if (!response.ok) return;
+        handleClose();
+      })
+    );
+    globalThis.location.assign('/specify/overlay/record-sets/');
   };
 
   return (
