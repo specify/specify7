@@ -31347,6 +31347,14 @@
         "unique": false,
         "required": false,
         "type": "java.lang.Integer"
+      },
+      {
+        "name": "isStrict",
+        "column": "IsStrict",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Boolean"
       }
     ],
     "relationships": [
@@ -38205,6 +38213,15 @@
         "required": false,
         "type": "java.lang.String",
         "length": 255
+      },
+      {
+        "name": "catalogNumberFormatName",
+        "column": "CatalogNumberFormatName",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.String",
+        "length": 255
       }
     ],
     "relationships": [
@@ -38857,6 +38874,14 @@
         "unique": false,
         "required": false,
         "type": "java.lang.Boolean"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
       }
     ],
     "relationships": [
@@ -38882,7 +38907,8 @@
         "required": true,
         "dependent": false,
         "relatedModelName": "CollectionObject",
-        "column": "CollectionObjectID"
+        "column": "CollectionObjectID",
+        "otherSideName": "absoluteAges"
       },
       {
         "name": "absoluteAgeCitations",
@@ -39072,6 +39098,14 @@
         "unique": false,
         "required": false,
         "type": "java.lang.Boolean"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
       }
     ],
     "relationships": [
@@ -39121,7 +39155,8 @@
         "required": true,
         "dependent": false,
         "relatedModelName": "CollectionObject",
-        "column": "CollectionObjectID"
+        "column": "CollectionObjectID",
+        "otherSideName": "relativeAges"
       },
       {
         "name": "relativeAgeCitations",

@@ -6,6 +6,9 @@ requireContext();
 test('domain data is fetched and parsed correctly', async () =>
   expect(fetchContext).resolves.toEqual({
     catalogNumFormatName: 'CatalogNumberNumeric',
+    collectionObjectTypeCatalogNumberFormats: {
+      '/api/specify/collectionobjecttype/1/': null,
+    },
     domainLevelIds: {
       collection: 4,
       discipline: 3,

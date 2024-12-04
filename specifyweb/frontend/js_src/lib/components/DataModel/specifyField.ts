@@ -274,7 +274,7 @@ export class LiteralField extends FieldBase {
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.
-  public getFormat(resource?: SpecifyResource<AnySchema>): string | undefined {
+  public getFormat(_resource?: SpecifyResource<AnySchema>): string | undefined {
     return this.localization.format ?? undefined;
   }
 

@@ -191,7 +191,12 @@ export function useResourceValue<
         parser.value !== false ||
         defaultParser?.value === false);
 
-    const fieldValue = resource.get(field.name);
+    const fieldValue = resource.get(field.name) as
+      | boolean
+      | number
+      | string
+      | null
+      | undefined;
     const parsedValue = parseValue(
       parser,
       inputRef.current ?? undefined,
