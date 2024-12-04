@@ -62,7 +62,7 @@ def remove_cot_catnum_from_schema(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0016_schemaconfig_fixes'),
+        ('specify', '0017_schemaconfig_fixes'),
     ]
 
     operations = [

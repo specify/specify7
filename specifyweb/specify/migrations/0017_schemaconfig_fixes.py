@@ -90,7 +90,7 @@ def schemaconfig_fixes(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0015_collectionobjecttype_catalognumformatname'),
+        ('specify', '0016_collectionobjecttype_catalognumformatname'),
     ]
 
     operations = [
