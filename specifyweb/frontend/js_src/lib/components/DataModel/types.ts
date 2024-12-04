@@ -1438,7 +1438,7 @@ export type CollectionObject = {
     readonly accession: Accession | null;
     readonly agent1: Agent | null;
     readonly appraisal: Appraisal | null;
-    readonly coParentCog: CollectionObjectGroup | null;
+    readonly parentCog: CollectionObjectGroup | null;
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
@@ -6513,7 +6513,6 @@ export type CollectionObjectGroup = {
   };
   readonly toOneDependent: { readonly cojo: CollectionObjectGroupJoin | null };
   readonly toOneIndependent: {
-    readonly coParentCog: CollectionObject | null;
     readonly cogType: CollectionObjectGroupType;
     readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;

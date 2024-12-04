@@ -8,14 +8,14 @@ from specifyweb.specify.update_schema_config import (
 )
 
 def update_schema_config(apps):
-    revert_table_field_schema_config('CollectionObject', 'coParentCog', apps)
+    revert_table_field_schema_config('CollectionObject', 'parentCog', apps)
 
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('CollectionObject', discipline.id, 'coParentCog', apps)
+        update_table_field_schema_config_with_defaults('CollectionObject', discipline.id, 'parentCog', apps)
 
 def revert_update(apps):
-    revert_table_field_schema_config('CollectionObject', 'coParentCog', apps)
+    revert_table_field_schema_config('CollectionObject', 'parentCog', apps)
 
 class Migration(migrations.Migration):
 
@@ -32,9 +32,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="collectionobject",
-            name="coparentcog",
+            name="parentcog",
             field=models.ForeignKey(
-                db_column="CoParentCogID",
+                db_column="ParentCogID",
                 null=True,
                 on_delete=specifyweb.specify.models.protect_with_blockers,
                 related_name="+",
