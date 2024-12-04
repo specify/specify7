@@ -324,7 +324,8 @@ def get_uiformatters(collection, obj, user) -> List[UIFormatter]:
         if f is not None
     ]
     if tablename.lower() == 'collectionobject':
-        uiformatters.append(get_catalognumber_format(collection, obj, user))
+        cat_num_format = get_catalognumber_format(collection, obj, user)
+        if cat_num_format: uiformatters.append(cat_num_format)
 
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
