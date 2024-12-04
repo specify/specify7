@@ -4,7 +4,7 @@ import { localized, overwriteReadOnly } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
-import { CatalogNumberNumeric, UiFormatter } from '../../FieldFormatters';
+import { CatalogNumberNumeric } from '../../FieldFormatters';
 import {
   exportsForTests,
   fetchFormatters,
