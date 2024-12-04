@@ -202,20 +202,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             });
         return undefined;
       },
-      parentCog: async (cog): Promise<BusinessRuleResult> => {
-        if (cog.url() === cog.get('parentCog')) {
-          return {
-            isValid: false,
-            reason: resourcesText.parentCogSameAsChild(),
-            saveBlockerKey: PARENTCOG_KEY,
-          };
-        }
-
-        return {
-          isValid: true,
-          saveBlockerKey: PARENTCOG_KEY,
-        };
-      },
     },
   },
 
@@ -255,6 +241,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   CollectionObjectGroupJoin: {
+    customInit: (
+      CollectionObjectGroupJoin: SpecifyResource<CollectionObjectGroupJoin>
+    ): void => {
+      if (
+        CollectionObjectGroupJoin.get('childCog') ===
+          CollectionObjectGroupJoin.get('parentCog') &&
+        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
+        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
+      ) {
+        setSaveBlockers(
+          CollectionObjectGroupJoin,
+          CollectionObjectGroupJoin.specifyTable.field.childCog,
+          ['Cog added to itself'],
+          'Cog to COG'
+        );
+      }
+    },
     fieldChecks: {
       /*
        * Only a single CO in a COG can be set as primary.
