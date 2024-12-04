@@ -21,7 +21,7 @@ CONTAINER_ITEM_MIGRATIONS = [
 
 """
 This migration fixes two bugs introduced in other migrations by the functions 
-from .update_schema_config.
+from .migration_utils.update_schema_config.
 
 Specifically, this migration does the following: 
 
