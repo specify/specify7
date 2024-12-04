@@ -63,7 +63,8 @@ msgstr ""
 #: components/Reports/Report.tsx:312
 #: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
-#: components/SearchDialog/index.tsx:214
+#: components/SearchDialog/SelectRecordSet.tsx:133
+#: components/SearchDialog/index.tsx:222
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:91
 #: components/Security/Role.tsx:195
@@ -74,7 +75,6 @@ msgstr ""
 #: components/Statistics/index.tsx:592
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
-#: components/Toolbar/MergeRecordSets.tsx:87
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
 #: components/Toolbar/RecordSets.tsx:181
@@ -96,7 +96,7 @@ msgstr ""
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:151
 #: components/WorkBench/Disambiguation.tsx:40
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "cancel"
 msgstr ""
@@ -239,7 +239,7 @@ msgstr ""
 #: components/SchemaConfig/Languages.tsx:33
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
-#: components/SearchDialog/index.tsx:337
+#: components/SearchDialog/index.tsx:350
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:456
@@ -350,6 +350,8 @@ msgstr ""
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
+#: components/SearchDialog/SelectRecordSet.tsx:135
+#: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Security/CollectionRole.tsx:207
 #: components/Security/Policies.tsx:184
 #: components/Statistics/Categories.tsx:285
@@ -359,7 +361,7 @@ msgstr ""
 #: components/WbPlanView/navigator.ts:334
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #, fuzzy
 msgid "add"
 msgstr ""
@@ -457,7 +459,7 @@ msgstr ""
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
-#: components/SearchDialog/index.tsx:271
+#: components/SearchDialog/index.tsx:284
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
 #: components/Security/CollectionRole.tsx:232
@@ -526,9 +528,9 @@ msgstr ""
 #: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:138
 #: components/HomePage/index.tsx:33
-#: components/SearchDialog/index.tsx:221
-#: components/SearchDialog/index.tsx:226
-#: components/SearchDialog/index.tsx:325
+#: components/SearchDialog/index.tsx:234
+#: components/SearchDialog/index.tsx:239
+#: components/SearchDialog/index.tsx:338
 #: components/WbUtils/index.tsx:58
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 #, fuzzy
@@ -537,7 +539,7 @@ msgstr ""
 
 #: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
-#: components/SearchDialog/index.tsx:273
+#: components/SearchDialog/index.tsx:286
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 #, fuzzy
 msgid "noResults"
@@ -721,10 +723,11 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:80
 #: components/Router/OverlayRoutes.tsx:136
+#: components/SearchDialog/SelectRecordSet.tsx:98
 #: components/Security/registry.ts:214
 #: components/Toolbar/RecordSets.tsx:194
 #: components/Toolbar/RecordSets.tsx:221
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "recordSets"
 msgstr ""
@@ -965,7 +968,7 @@ msgid "reset"
 msgstr ""
 
 #: components/FormEditor/Create.tsx:210
-#: components/SearchDialog/index.tsx:346
+#: components/SearchDialog/index.tsx:359
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 #, fuzzy
 msgid "select"

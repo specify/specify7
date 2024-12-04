@@ -36,11 +36,11 @@ msgstr "Se déplacer"
 #: components/Merging/index.tsx:362
 #: components/Merging/index.tsx:367
 #: components/Merging/index.tsx:370
-#: components/Toolbar/MergeRecordSets.tsx:82
-#: components/Toolbar/MergeRecordSets.tsx:89
-#: components/Toolbar/MergeRecordSets.tsx:93
+#: components/SearchDialog/SelectRecordSet.tsx:135
+#: components/SearchDialog/SelectRecordSet.tsx:139
+#: components/Toolbar/MergeRecordSets.tsx:77
 #: components/TreeView/Actions.tsx:186
-#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
+#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "merge"
 msgstr "Fusionner"

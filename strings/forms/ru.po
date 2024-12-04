@@ -448,7 +448,7 @@ msgstr "Поле из таблицы"
 msgid "unsupportedCellType"
 msgstr "Неподдерживаемый тип ячейки"
 
-#: components/SearchDialog/index.tsx:293
+#: components/SearchDialog/index.tsx:306
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #, fuzzy
 msgid "additionalResultsOmitted"

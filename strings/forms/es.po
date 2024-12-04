@@ -403,7 +403,7 @@ msgstr "Campo de la tabla"
 msgid "unsupportedCellType"
 msgstr "Tipo de celda no compatible"
 
-#: components/SearchDialog/index.tsx:293
+#: components/SearchDialog/index.tsx:306
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #, fuzzy
 msgid "additionalResultsOmitted"
