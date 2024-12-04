@@ -68,5 +68,5 @@ def cog_post_save(co):
         Collectionobjectgroupjoin.objects.get_or_create(
             childco=co,
             childcog=None,
-            coparentcog=co.coparentcog
+            parentcog=co.coparentcog
         )
