@@ -109,6 +109,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     multiple: !isToOne,
     table,
     onSelected: handleResourcesSelected,
+    onAdd: handleAdded,
   });
 
   return {

@@ -1,21 +1,16 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getTableById } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { softError } from '../Errors/assert';
-import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
+import { RecordSetSelection } from '../SearchDialog/SelectRecordSet';
 
 export function MergeRecordSets({
   recordSets,
@@ -81,40 +76,15 @@ export function MergeRecordSets({
     <>
       <Button.Info onClick={handleOpen}>{treeText.merge()}</Button.Info>
       {isOpen && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Info onClick={handleMerge}>
-                {treeText.merge()}
-              </Button.Info>
-            </>
-          }
-          header={treeText.merge()}
+        <RecordSetSelection
+          isMerge
+          recordSets={recordSets}
+          selectedRecordSets={selectedRecordSets}
+          selectedTable={selectedTable}
           onClose={handleClose}
-        >
-          <Ul>
-            {recordSets?.map((recordSet) => (
-              <li key={recordSet.id}>
-                <Label.Inline>
-                  <Input.Checkbox
-                    checked={selectedRecordSets.includes(recordSet.id)}
-                    disabled={
-                      selectedTable !== null &&
-                      recordSet.dbTableId !== selectedTable
-                    }
-                    onValueChange={(): void => onSelected(recordSet)}
-                  />
-                  <TableIcon
-                    label
-                    name={getTableById(recordSet.dbTableId).name}
-                  />
-                  {recordSet.name}
-                </Label.Inline>
-              </li>
-            ))}
-          </Ul>
-        </Dialog>
+          onProceed={handleMerge}
+          onValueChange={onSelected}
+        />
       )}
     </>
   );

@@ -116,7 +116,6 @@ def preps_available_ids(request):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-
 def record_set_or_loan_nos(record_set_id=None, loan_nos=None, by_id=True):
     if record_set_id is not None:
         id_clause = "select RecordId from recordsetitem where RecordSetId = %s"

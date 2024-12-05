@@ -6639,7 +6639,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=True, type='java.lang.Boolean')
         ],
         indexes=[
 
@@ -8400,7 +8400,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8445,7 +8446,8 @@ datamodel = Datamodel(tables=[
             Field(name='verbatimName', column='VerbatimName', indexed=False, unique=False, required=False, type='text'),
             Field(name='verbatimPeriod', column='VerbatimPeriod', indexed=False, unique=False, required=False, type='text'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
         ],
         indexes=[
 
