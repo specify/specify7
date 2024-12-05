@@ -53,6 +53,8 @@ def cojo_pre_save(cojo):
 def cog_post_save(cog):
     # Delete cojos that point to this COG to ensure we avoid multiple COGs having the same child cog
     cojo = Collectionobjectgroupjoin.objects.filter(childcog=cog).first()
+    if cog.parentcog is None: 
+        return
     if cojo and cojo.parentcog != cog.parentcog:
         Collectionobjectgroupjoin.objects.filter(childcog=cog).delete()
     if cog.parentcog is not None:
@@ -89,6 +91,10 @@ def cojo_post_save(cojo):
 
 @orm_signal_handler('pre_delete', 'Collectionobjectgroupjoin')
 def cojo_post_delete(cojo):
-    if (cojo.childco.parentcog is not None): 
+    if (cojo.childco and cojo.childco.parentcog is not None): 
         cojo.childco.parentcog = None
         cojo.childco.save()
+
+    if (cojo.childcog and cojo.childcog.parentcog is not None): 
+        cojo.childcog.parentcog = None
+        cojo.childcog.save()
