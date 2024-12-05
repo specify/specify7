@@ -842,4 +842,7 @@ export const resourcesText = createDictionary({
   parentCogSameAsChild: {
     'en-us': 'A Collection Object Group cannot be a parent to itself',
   },
+  primaryCogChildRequired: {
+    'en-us': 'A Consolidated Collection Object Group must have a primary Collection Object child'
+  }
 } as const);

@@ -2,6 +2,7 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  COG_PRIMARY_KEY,
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
@@ -208,19 +209,34 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   CollectionObjectGroup: {
     fieldChecks: {
       cogType: (cog): void => {
-        // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
+        // Consolidated COGs need to have a primary CO child. If not, save will be blocked
         cog.rgetPromise('cogType').then((cogtype) => {
           if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
-            const cojos = cog.getDependentResource('children');
-            // Set first CO in COG to primary
-            cojos?.models
-              .find(
-                (cojo) =>
-                  cojo.get('childCo') !== null &&
-                  cojo.get('childCo') !== undefined
-              )
-              ?.set('isPrimary', true);
+            const children = cog.getDependentResource('children');
+            const collectionObjectChildren =
+              children?.models.filter(
+                (child) => typeof child.get('childCo') === 'string'
+              ) ?? [];
+
+            if (
+              collectionObjectChildren.length > 0 &&
+              !collectionObjectChildren.some((cojo) => cojo.get('isPrimary'))
+            ) {
+              setSaveBlockers(
+                cog,
+                tables.CollectionObjectGroupJoin.field.isPrimary,
+                [resourcesText.primaryCogChildRequired()],
+                COG_PRIMARY_KEY
+              );
+              return;
+            }
           }
+          setSaveBlockers(
+            cog,
+            tables.CollectionObjectGroupJoin.field.isPrimary,
+            [],
+            COG_PRIMARY_KEY
+          );
         });
       },
       parentCog: async (cog): Promise<BusinessRuleResult> => {
