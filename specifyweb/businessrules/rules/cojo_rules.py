@@ -37,7 +37,7 @@ def cojo_pre_save(cojo):
         and not is_running_tests()
     ):
         raise BusinessRuleException('ChildCog is already in use as a child in another COG.')
-    
+
     if (
         cojo.childco is not None
         and cojo.childco.cojo is not None
@@ -66,6 +66,8 @@ def cog_post_save(cog):
 def co_post_save(co):
     # Delete cojos that point to this CO to ensure we avoid multiple COGs having the same child co
     cojo = Collectionobjectgroupjoin.objects.filter(childco=co).first()
+    if co.parentcog is None: 
+        return
     if cojo and cojo.parentcog != co.parentcog:
         Collectionobjectgroupjoin.objects.filter(childcog=co).delete()
     if co.parentcog is not None:
@@ -84,3 +86,12 @@ def cojo_post_save(cojo):
     if (cojo.childco is not None): 
         cojo.childco.parentcog = cojo.parentcog
         cojo.childco.save()
+
+@orm_signal_handler('pre_delete', 'Collectionobjectgroupjoin')
+def cojo_post_delete(cojo):
+    cojo.childco.parentcog
+    cojo.parentcog
+    if (cojo.childco.parentcog is not None): 
+        cojo.childco.parentcog = None
+        cojo.childco.save()
+    cojo.childco.parentcog
