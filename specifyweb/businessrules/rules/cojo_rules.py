@@ -89,9 +89,6 @@ def cojo_post_save(cojo):
 
 @orm_signal_handler('pre_delete', 'Collectionobjectgroupjoin')
 def cojo_post_delete(cojo):
-    cojo.childco.parentcog
-    cojo.parentcog
     if (cojo.childco.parentcog is not None): 
         cojo.childco.parentcog = None
         cojo.childco.save()
-    cojo.childco.parentcog
