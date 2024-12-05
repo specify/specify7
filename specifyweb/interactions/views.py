@@ -6,13 +6,77 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db import connection, transaction
 from django.views.decorators.http import require_POST
 
+from specifyweb.interactions.cog_preps import get_cog_consolidated_preps, remove_all_cog_sibling_preps_from_loan
 from specifyweb.middleware.general import require_GET
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
-from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
-    Loanreturnpreparation
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Loan, Loanpreparation, \
+    Loanreturnpreparation, Preparation, Recordsetitem
 from specifyweb.specify.views import login_maybe_required
 
+from django.db.models import F, Q, Sum
+from django.db.models.functions import Coalesce
+from django.http import JsonResponse
+
+def preps_available_rs_django(request, recordset_id):
+    # Determine if isLoan is true
+    isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
+
+    # Base queryset from Preparation
+    queryset = (
+        Preparation.objects
+        .filter(
+            # The determination condition: (d.iscurrent OR d.determinationid IS NULL)
+            # If there are no determinations, __isnull=True covers the NULL case.
+            # If there is a current determination, iscurrent=True covers that case.
+            Q(collectionobject__determinations__iscurrent=True) | Q(collectionobject__determinations__isnull=True),
+            # Filter by collectionmemberid
+            collectionmemberid=request.specify_collection.id,
+            # Filter by recordset
+            collectionobject_id__in=Recordsetitem.objects.filter(recordsetid=recordset_id).values('recordid')
+        )
+        # If isLoan is true, filter by preptype__isloanable
+        .filter(preptype__isloanable=True if isLoan else Q())
+        # Select related to reduce queries and ensure we have needed fields
+        .select_related('collectionobject', 'preptype')
+        .prefetch_related('collectionobject__determinations__taxon')  # If needed, to access taxon fullname
+        # Grouping fields: 
+        # co.catalognumber, co.collectionobjectid, t.fullname, t.taxonid, p.preparationid, pt.name, p.countamt
+        .values(
+            catalognumber=F('collectionobject__catalognumber'),
+            co_id=F('collectionobject__id'),
+            fullname=F('collectionobject__determinations__taxon__fullname'),
+            t_id=F('collectionobject__determinations__taxon__id'),
+            preparationid=F('id'),
+            preptype_name=F('preptype__name'),
+            countamt=F('countamt')
+        )
+        # Annotate sums. Use related_name based on your models:
+        # According to provided models:
+        # loanpreparations -> preparation = FK
+        # giftpreparations -> preparation = FK
+        # exchangeoutpreps -> preparation = FK
+        .annotate(
+            Loaned=Sum(F('loanpreparations__quantity') - F('loanpreparations__quantityreturned')),
+            Gifted=Sum('giftpreparations__quantity'),
+            Exchanged=Sum('exchangeoutpreps__quantity'),
+            LoanQtyResolved=Sum(F('loanpreparations__quantity') - F('loanpreparations__quantityresolved'))
+        )
+        # Compute Available
+        .annotate(
+            Available=F('countamt')
+                      - Coalesce(F('LoanQtyResolved'), 0)
+                      - Coalesce(F('Gifted'), 0)
+                      - Coalesce(F('Exchanged'), 0)
+        )
+        # Order by catalognumber (equivalent to ORDER BY 1)
+        .order_by('catalognumber')
+    )
+
+    # Convert to list of dicts for JSON response
+    rows = list(queryset)
+
+    return JsonResponse(rows, safe=False)
 
 @require_POST
 @login_maybe_required
@@ -306,3 +370,22 @@ def prep_interactions(request):
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
+
+@require_GET
+@login_maybe_required
+def cog_consolidated_preps(request: http.HttpRequest, cog_id: int) -> http.JsonResponse:
+    """
+    Returns a list of all the consolidated preparations for a given collection
+    """
+    cog = Collectionobjectgroup.objects.get(id=cog_id)
+
+    consolidated_preps = get_cog_consolidated_preps(cog)
+
+    return http.JsonResponse(consolidated_preps, safe=False)
+
+@require_POST
+@login_maybe_required
+def remove_cog_consolidated_preps(request: http.HttpRequest, prep_id: int, loan_id: int):
+    prep = Preparation.objects.get(id=prep_id)
+    loan = Loan.objects.get(id=loan_id)
+    remove_all_cog_sibling_preps_from_loan(prep, loan)
