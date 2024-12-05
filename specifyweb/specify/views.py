@@ -1367,4 +1367,42 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
-    
+
+def get_cog_consolidated_preps(cog: spmodels.Collectionobjectgroup) -> List[int]:
+    # Recursively get all the child CollectionObjectGroups, then get the leaf CollectionObjects,
+    # and then reuturn all the preparation ids if the CollectionObjectGroup to CollectionObject is consolidated
+
+    # Don't continue if the cog is not consolidated
+    if cog.cogtype.type != 'Consolidated':
+        return []
+
+    # For each child cog, recursively get the consolidated preparations
+    child_cogs = spmodels.Collectionobjectgroupjoin.objects.filter(
+        parentcog=cog, childcog__isnull=False
+    ).values_list("childcog", flat=True)
+    consolidated_preps = []
+    for child_cog in child_cogs:
+        child_preps = get_cog_consolidated_preps(child_cog)
+        consolidated_preps.extend(child_preps)
+
+    # Get the child CollectionObjects
+    collection_objects = spmodels.Collectionobjectgroupjoin.objects.filter(
+        parentcog=cog, childco__isnull=False
+    ).values_list("childco", flat=True)
+
+    # For each CollectionObject, get the preparations
+    for co in collection_objects:
+        consolidated_preps.extend(spmodels.Preparation.objects.filter(collectionobject=co).values_list('id', flat=True))
+
+    return consolidated_preps
+
+def cog_consolidated_preps(request: http.HttpRequest, cog_id: int) -> http.JsonResponse:
+    """Returns a list of all the consolidated preparations for a given collection
+    """
+    cog = spmodels.Collectionobjectgroup.objects.get(id=cog_id)
+    if not request.specify_user.has_permission(SetUserAgentsPT.update, cog.collection.discipline.division):
+        return http.HttpResponseForbidden('User does not have permission to view consolidated preparations')
+
+    consolidated_preps = get_cog_consolidated_preps(cog)
+
+    return http.JsonResponse(consolidated_preps, safe=False)
