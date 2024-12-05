@@ -1409,6 +1409,7 @@ export type CollectionObject = {
     readonly reservedText3: string | null;
     readonly restrictions: string | null;
     readonly sgrStatus: number | null;
+    readonly catalogNumber: string | null;
     readonly description: string | null;
     readonly text2: string | null;
     readonly text4: string | null;

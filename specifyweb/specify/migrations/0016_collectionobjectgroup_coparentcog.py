@@ -20,7 +20,7 @@ def revert_update(apps):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0014_spqueryfield_strict'),
+        ('specify', '0015_add_version_to_ages'),
     ]
 
     def apply_migration(apps, schema_editor):
