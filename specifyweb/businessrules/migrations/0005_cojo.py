@@ -7,13 +7,16 @@ from specifyweb.businessrules.uniqueness_rules import create_uniqueness_rule, DE
 """
 def apply_migration(apps, schema_editor):
     cojo_rules = DEFAULT_UNIQUENESS_RULES["CollectionObjectGroupJoin"]
+    Discipline = apps.get_model('specify', 'Discipline')
 
     for rule in cojo_rules:
         fields, scopes = rule["rule"]
         isDatabaseConstraint = rule["isDatabaseConstraint"]
-        create_uniqueness_rule(
-            'Collectionobjectgroupjoin', None, isDatabaseConstraint, fields, scopes, apps
-        )
+
+        for discipline in Discipline.objects.all():
+            create_uniqueness_rule(
+                'Collectionobjectgroupjoin', discipline, isDatabaseConstraint, fields, scopes, apps
+            )
 
 """
     Revert is skipped as this rule should ideally have been applied through the 0002_default_unique_rules migration.
