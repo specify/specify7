@@ -7181,9 +7181,9 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false"/>
+					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false" readonly="true"/>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false"/>
+					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false" readonly="true"/>
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" name="childCo" uitype="querycbx" readonly="true" colspan="3"/>
 					<!-- Collection Object Details -->
