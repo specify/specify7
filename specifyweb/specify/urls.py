@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
     
-    url(r'^cog_consolidated_preps/(?P<model>\w+)$', views.cog_consolidated_preps)
+    url(r'^cog_consolidated_preps/(?P<model>\w+)/$', views.cog_consolidated_preps),
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 

@@ -1400,8 +1400,6 @@ def cog_consolidated_preps(request: http.HttpRequest, cog_id: int) -> http.JsonR
     """Returns a list of all the consolidated preparations for a given collection
     """
     cog = spmodels.Collectionobjectgroup.objects.get(id=cog_id)
-    if not request.specify_user.has_permission(SetUserAgentsPT.update, cog.collection.discipline.division):
-        return http.HttpResponseForbidden('User does not have permission to view consolidated preparations')
 
     consolidated_preps = get_cog_consolidated_preps(cog)
 
