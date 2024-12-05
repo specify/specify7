@@ -25,6 +25,7 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
 import type {
   AnyInteractionPreparation,
   AnySchema,
@@ -34,15 +35,14 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { getTableById, tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { CollectionObjectGroup } from '../DataModel/types';
+import { softError } from '../Errors/assert';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -114,8 +114,43 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const catalogNumbers = handleParse();
-    if (catalogNumbers === undefined) return undefined;
-    if (isLoanReturn)
+    const recordSetTable =
+      typeof recordSet?.dbTableId === 'number'
+        ? getTableById(recordSet.dbTableId)
+        : null;
+
+    const rsId = recordSet?.id;
+
+    if (recordSetTable?.name === 'CollectionObjectGroup') {
+      fetchCollection('RecordSetItem', {
+        recordSet: rsId,
+        domainFilter: false,
+        limit: 2000,
+      })
+        .then(({ records }) => {
+          const catIdsFromRS = records.map((record) =>
+            record.recordId.toString()
+          );
+
+          handleProceedWithCatalogNumbers(catIdsFromRS, recordSet);
+        })
+        .catch((error) => {
+          softError(
+            'Error fetching catalog numbers from RecordSetItem:',
+            error
+          );
+        });
+    } else {
+      handleProceedWithCatalogNumbers(catalogNumbers, recordSet);
+    }
+  }
+
+  function handleProceedWithCatalogNumbers(
+    catalogNumbers: RA<string> | undefined,
+    recordSet: SerializedResource<RecordSet> | undefined
+  ): void {
+    if (catalogNumbers === undefined) return;
+    if (isLoanReturn) {
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
@@ -135,13 +170,13 @@ export function InteractionDialog({
           })
         )
       );
-    else if (typeof recordSet === 'object')
+    } else if (typeof recordSet === 'object') {
       loading(
         getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
           availablePrepsReady(undefined, data)
         )
       );
-    else
+    } else {
       loading(
         (catalogNumbers.length === 0
           ? Promise.resolve([])
@@ -152,6 +187,7 @@ export function InteractionDialog({
             )
         ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
+    }
   }
 
   const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
