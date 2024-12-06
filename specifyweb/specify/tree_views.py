@@ -1,6 +1,8 @@
 from functools import wraps
+from django import http
 from typing import Literal, Tuple
-from django.db import transaction
+from django.db import connection, transaction
+from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql, distinct
@@ -14,7 +16,7 @@ from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import get_search_filters
-from specifyweb.specify import models
+from specifyweb.specify import models as spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -26,13 +28,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
-                     'Geography', 'Geologictimeperiod', 'Lithostrat']
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
+
+GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
 ALL_TRESS: Tuple[TREE_TABLE, ...] = [
-    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat']
+    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 
 def tree_mutation(mutation):
@@ -157,7 +161,7 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
 
 
 def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
-    tree_table = models.datamodel.get_table(tree)
+    tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
     node = getattr(sqlmodels, tree_table.name)
@@ -388,11 +392,49 @@ def repair_tree(request, tree: TREE_TABLE):
     check_permission_targets(request.specify_collection.id,
                              request.specify_user.id,
                              [perm_target(tree).repair])
-    tree_model = models.datamodel.get_table(tree)
+    tree_model = spmodels.datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
 
+@tree_mutation
+def add_root(request, tree, treeid): 
+    "Creates a root node in a specific tree."
+
+    tree_name = tree.title()
+    tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
+    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
+    item = getattr(spmodels, tree_name)
+
+    tree_def_item, create = tree_def_item_model.objects.get_or_create(
+            treedef=tree_target,
+            rankid=0
+        )
+
+    filter_kwargs = {
+        'rankid': 0,
+        'definition_id': treeid
+    }
+
+    if item.objects.filter(**filter_kwargs).count() > 0:
+        raise Exception("Root node already exists.") 
+
+    root = item.objects.create(
+        name="Root",
+        isaccepted=1,
+        nodenumber=1,
+        rankid=0,
+        parent=None,
+        definition=tree_target,
+        definitionitem=tree_def_item,
+        fullname="Root"
+    )
+
+    # Override node number with raw sql execution
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE {tree_name.lower()} SET NodeNumber = 1 WHERE {tree}id = {root.id}")
+
+    return http.HttpResponse(status=204)
 
 @login_maybe_required
 @require_GET
@@ -454,17 +496,17 @@ def all_tree_information(request):
         return has_table_permission(
             request.specify_collection.id, request.specify_user.id, tree, 'read')
 
-    is_paleo_discipline = request.specify_collection.discipline.is_paleo()
+    is_paleo_or_geo_discipline = request.specify_collection.discipline.is_paleo_geo()
 
     accessible_trees = tuple(filter(
-        has_tree_read_permission, ALL_TRESS if is_paleo_discipline else COMMON_TREES))
+        has_tree_read_permission, ALL_TRESS if is_paleo_or_geo_discipline else COMMON_TREES))
 
     result = {}
 
     for tree in accessible_trees:
         result[tree] = []
 
-        treedef_model = getattr(models, f'{tree.lower().capitalize()}treedef')
+        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
         tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree)).distinct()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')            
@@ -474,7 +516,6 @@ def all_tree_information(request):
             })
 
     return HttpResponse(toJson(result), content_type='application/json')
-
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
@@ -521,6 +562,13 @@ class LithostratMutationPT(PermissionTarget):
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
+class TectonicunitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
 
 def perm_target(tree):
     return {
@@ -529,4 +577,5 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
+        'tectonicunit':TectonicunitMutationPT
     }[tree]

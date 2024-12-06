@@ -255,7 +255,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [nodeId, tableName, addNew])
+    }, [nodeId, addNew])
   );
 
   const isViewMode = !hasTablePermission(tableName, 'update');

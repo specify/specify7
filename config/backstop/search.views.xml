@@ -1,0 +1,1271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<viewset name="Search" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <views>
+        <view 
+            name="AgentSearch"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <altviews>
+                <altview name="AgentSearch" viewdef="AgentSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="UserAgentSearch"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <altviews>
+                <altview name="AgentSearch" viewdef="AgentSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="AgentNameSearch"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <altviews>
+                <altview name="AgentNameSearch" viewdef="AgentNameSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+            name="AppraisalSearch"
+            class="edu.ku.brc.specify.datamodel.Appraisal"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <altviews>
+                <altview name="AppraisalSearch" viewdef="AppraisalSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="AttachmentSearch"
+            class="edu.ku.brc.specify.datamodel.Attachment"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Attachment Search Form]]></desc>
+            <altviews>
+                <altview name="AttachmentSearch" viewdef="AttachmentSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="PermitSearch"
+            class="edu.ku.brc.specify.datamodel.Permit"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Permit Search Form]]></desc>
+            <altviews>
+                <altview name="PermitSearch" viewdef="PermitSearch" mode="edit" validated="false" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="AccessionSearch"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Accession Search Form]]></desc>
+            <altviews>
+                <altview name="AccessionSearch" viewdef="AccessionSearch" mode="edit" validated="false" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="CollectionObjectSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionObject"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The CollectionObject Search Form]]></desc>
+            <altviews>
+                <altview name="CollectionObjectSearch" viewdef="CollectionObjectSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="CollectingEventSearch"
+            class="edu.ku.brc.specify.datamodel.CollectingEvent"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The CollectingEvent Search Form]]></desc>
+            <altviews>
+                <altview name="CollectingEventSearch" viewdef="CollectingEventSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="CollectingTripSearch"
+            class="edu.ku.brc.specify.datamodel.CollectingTrip"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Collecting Trip Search Form]]></desc>
+            <altviews>
+                <altview name="CollectingTripSearch" viewdef="CollectingTripSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="CollectionRelTypeSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionRelType"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The CollectionRelType Search Form]]></desc>
+            <altviews>
+                <altview name="CollectionRelTypeSearch" viewdef="CollectionRelTypeSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="ContainerSearch"
+            class="edu.ku.brc.specify.datamodel.Container"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Container Search Form]]></desc>
+            <altviews>
+                <altview name="ContainerSearch" viewdef="ContainerSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view
+                name="DisposalSearch"
+                class="edu.ku.brc.specify.datamodel.DisposalSearch"
+                usedefbusrule="false"
+                resourcelabels="false">
+            <desc><![CDATA[The Disposal Search Form]]></desc>
+            <altviews>
+                <altview name="DisposalSearch" viewdef="DisposalSearch" mode="edit" validated="false" default="true"/>
+            </altviews>
+        </view>
+
+        <view
+            name="DivisionSearch"
+            class="edu.ku.brc.specify.datamodel.Division"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Division Search Form]]></desc>
+            <altviews>
+                <altview name="DivisionSearch" viewdef="DivisionSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="DNAPrimerSearch"
+            class="edu.ku.brc.specify.datamodel.DNAPrimer"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Division Search Form]]></desc>
+            <altviews>
+                <altview name="DNAPrimerSearch" viewdef="DNAPrimerSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+            name="FieldNotebookPageSearch"
+            class="edu.ku.brc.specify.datamodel.FieldNotebookPage"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The FieldNotebookPage Search Form]]></desc>
+            <altviews>
+                <altview name="FieldNotebookPageSearch" viewdef="FieldNotebookPageSearch" label="Edit" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="JournalSearch"
+            class="edu.ku.brc.specify.datamodel.Journal"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Journal Search Form]]></desc>
+            <altviews>
+                <altview name="JournalSearch" viewdef="JournalSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view
+                name="DeaccessionSearch"
+                class="edu.ku.brc.specify.datamodel.Deaccession"
+                usedefbusrule="false"
+                resourcelabels="false">
+            <desc><![CDATA[The Deaccession Search Form]]></desc>
+            <altviews>
+                <altview name="DeaccessionSearch" viewdef="DeaccessionSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+            name="LocalitySearch"
+            class="edu.ku.brc.specify.datamodel.Locality"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Locality Search Form]]></desc>
+            <altviews>
+                <altview name="LocalitySearch" viewdef="LocalitySearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+            name="MorphBankViewSearch"
+            class="edu.ku.brc.specify.datamodel.MorphBankView"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The MorphBankView Search Form]]></desc>
+            <altviews>
+                <altview name="MorphBankViewSearch" viewdef="MorphBankViewSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="PrepTypeSearch"
+            class="edu.ku.brc.specify.datamodel.PrepType"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The PrepType Search Form]]></desc>
+            <altviews>
+                <altview name="PrepTypeSearch" viewdef="PrepTypeSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="ProjectSearch"
+            class="edu.ku.brc.specify.datamodel.Project"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Project Form]]></desc>
+            <altviews>
+                <altview name="ProjectSearch" viewdef="ProjectSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="BioStratSearch"
+            class="edu.ku.brc.specify.datamodel.GeologicTimePeriod"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The GeologicTimePeriod Search Form]]></desc>
+            <altviews>
+                <altview name="BioStratSearch" viewdef="BioStratSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+                
+        <view 
+            name="DisciplineSearch"
+            class="edu.ku.brc.specify.datamodel.Discipline"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Discipline Search Form]]></desc>
+            <altviews>
+                <altview name="DisciplineSearch" viewdef="DisciplineSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="AutoNumberingScheme"
+            class="edu.ku.brc.specify.datamodel.AutoNumberingScheme"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The AutoNumberingScheme Search Form]]></desc>
+            <altviews>
+                <altview name="AutoNumberingSchemeSearch" viewdef="AutoNumberingSchemeSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+          name="ReferenceWorkSearch"
+          class="edu.ku.brc.specify.datamodel.ReferenceWork"
+          usedefbusrule="false"
+          resourcelabels="false">
+          <desc><![CDATA[The ReferenceWork Search Form]]></desc>
+          <altviews>
+             <altview name="ReferenceWorkSearch" viewdef="ReferenceWorkSearch" mode="edit" validated="true" default="true"/>
+          </altviews>
+        </view>
+        
+        <view 
+            name="RepositoryAgreementSearch"
+            class="edu.ku.brc.specify.datamodel.RepositoryAgreement"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The RepositoryAgreement Search Form]]></desc>
+            <altviews>
+                <altview name="RepositoryAgreementSearch" viewdef="RepositoryAgreementSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view name="TaxonSearch"
+            class="edu.ku.brc.specify.datamodel.Taxon"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Taxon Search Form]]></desc>
+            <altviews>
+                <altview name="TaxonSearch" viewdef="TaxonSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view 
+            name="GeographySearch"
+            class="edu.ku.brc.specify.datamodel.Geography"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Geography Search Form]]></desc>
+            <altviews>
+                <altview name="GeographySearch" viewdef="GeographySearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="ChronosStratSearch"
+            class="edu.ku.brc.specify.datamodel.GeologicTimePeriod"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The GeologicTimePeriod Search Form]]></desc>
+            <altviews>
+                <altview name="ChronosStratSearch" viewdef="ChronosStratSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+
+        <view
+            name="LithoStratSearch"
+            class="edu.ku.brc.specify.datamodel.LithoStrat"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The LithoStrat Search Form]]></desc>
+            <altviews>
+                <altview name="LithoStratSearch" viewdef="LithoStratSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="StorageSearch"
+            class="edu.ku.brc.specify.datamodel.Storage"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Storage Search Form]]></desc>
+            <altviews>
+                <altview name="StorageSearch" viewdef="StorageSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+        <view 
+            name="PaleoContextSearch"
+            class="edu.ku.brc.specify.datamodel.PaleoContext"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The PaleoContext Search Form]]></desc>
+            <altviews>
+                <altview name="PaleoContextSearch" viewdef="PaleoContextSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        <view 
+            name="COImageSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionObject"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The CollectionObject Search Form]]></desc>
+            <altviews>
+                <altview name="COImageSearch" viewdef="COImageSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        <view 
+            name="ExsiccataSearch"
+            class="edu.ku.brc.specify.datamodel.Exsiccata"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The CollectionObject Search Form]]></desc>
+            <altviews>
+                <altview name="ExsiccataSearch" viewdef="ExsiccataSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+         <view 
+            name="ImageDateSearch"
+            class="edu.ku.brc.specify.datamodel.Attachment"
+            usedefbusrule="false"
+            resourcelabels="false">
+            <desc><![CDATA[The Image Date Search Form]]></desc>
+            <altviews>
+                <altview name="ImageDateSearch" viewdef="ImageDateSearch" mode="edit" validated="true" default="true"/>
+            </altviews>
+        </view>
+        
+    </views>
+
+
+<!--
+////////////////////////////////////////////////////////
+IMPORTANT NOTE:
+
+Values inside the "name" attribute of any "field" cell must
+have COLUMN names, not Java object field names.
+
+Example:
+Bad:  <cell type="field" name="fieldNum" ...>
+Good: <cell type="field" name="FieldNum" ...>
+
+////////////////////////////////////////////////////////
+-->
+    
+    <viewdefs>
+        <viewdef type="form"
+            name="AgentSearch"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Agent Info" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="LastName" uitype="text" cols="20"/>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="FirstName" uitype="text" cols="20"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="4"/>
+                    <cell type="field" id="4" name="Addresses" uitype="text" colspan="6"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="5"/>
+                    <cell type="field" id="5" name="addresses.City" uitype="text" cols="20"/>
+                    <cell type="label" labelfor="6"/>
+                    <cell type="field" id="6" name="addresses.State" uitype="text" cols="15"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="7"/>
+                    <cell type="field" id="7" name="addresses.Postalcode" uitype="text" cols="11"/>
+                    <cell type="label" labelfor="8"/>
+                    <cell type="field" id="8" name="addresses.Country" uitype="text" cols="20"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="AgentNameSearch"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Agent Name Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Agent Info" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="LastName" uitype="text"/>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="FirstName" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef> 
+
+        <viewdef type="form"
+            name="AppraisalSearch"
+            class="edu.ku.brc.specify.datamodel.Appraisal"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Agent Name Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Appraisal" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="appraisalDate" uitype="formattedtext" isrequired="true" uifieldformatter="SearchDate" default="today"/>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="appraisalNumber" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>              
+        
+        <viewdef type="form"
+            name="CollectionObjectSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionObject"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectionObject Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Collection Object" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1" />
+                    <cell type="field" id="1" name="CatalogNumber" uitype="formattedtext" formatter="CatalogNumber" initialize="ispartial=true"/>
+                </row>
+            </rows>
+        </viewdef>        
+        
+        <viewdef type="form"
+            name="CollectingEventSearch"
+            class="edu.ku.brc.specify.datamodel.CollectingEvent"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectingEvent Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Collecting Event" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="StartDate" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+               <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="StationFieldNumber" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="CollectingTripSearch"
+            class="edu.ku.brc.specify.datamodel.CollectingTrip"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Collecting Trip Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Collecting Trip" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="CollectingTripName" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="StartDate" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+                
+            </rows>
+        </viewdef> 
+        
+        <viewdef type="form"
+            name="CollectionRelTypeSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionRelType"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectionRelType Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1" label="Name"/>
+                    <cell type="field" id="1" name="Name" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="ContainerSearch"
+            class="edu.ku.brc.specify.datamodel.Container"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Container Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Container" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="Name" uitype="text" initialize="ispartial=true"/>
+                </row>
+            </rows>
+        </viewdef>        
+        
+        <viewdef type="form"
+            name="DNAPrimerSearch"
+            class="edu.ku.brc.specify.datamodel.DNAPrimer"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Division Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,2px,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="DNA Primer" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="primerDesignator" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef> 
+        
+        <viewdef type="form"
+            name="DivisionSearch"
+            class="edu.ku.brc.specify.datamodel.Division"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Division Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Division" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="Name" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef> 
+
+        <viewdef type="form"
+            name="FieldNotebookPageSearch"
+            class="edu.ku.brc.specify.datamodel.FieldNotebookPage"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectingEvent Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Field Notebook Page" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="PageNumber" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3"/>
+                    <cell type="field" id="3" name="ScanDate" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+            </rows>
+        </viewdef>
+       
+        <viewdef type="form"
+            name="JournalSearch"
+            class="edu.ku.brc.specify.datamodel.Journal"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectingEvent Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,f:p:g</columnDef>
+            <rowDef auto="true" cell="p" sep="2dlu"/>
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="JournalName" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="JournalAbbreviation" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3"/>
+                    <cell type="field" id="3" name="ISSN" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="4"/>
+                    <cell type="field" id="4" name="GUID" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>      
+        
+        <viewdef type="form"
+            name="PermitSearch"
+            class="edu.ku.brc.specify.datamodel.Permit"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Agent Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p,3dlu,p,p:g</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="PermitNumber" uitype="text" isrequired="false"/>
+                    
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="Type" uitype="combobox"/>
+                </row>
+                <row>
+                    <cell type="label" label="Issued By Last Name"/>
+                    <cell type="field" id="3" name="LastName" uitype="text"/>
+                    
+                    <!-- this field is currently not searched in the search_config.xml permit query >
+                    <cell type="label" label="Issued To Last Name"/>
+                    <cell type="field" id="4" name="issuedTo.LastName" uitype="text"/>
+                    -->
+                </row>
+                
+                <row>
+                    <cell type="label" labelfor="5"/>
+                    <cell type="field" id="5" name="IssuedDate" uitype="formattedtext" uifieldformatter="SearchDate"/>
+
+                    <cell type="label" labelfor="6"/>
+                    <cell type="field" id="6" name="RenewalDate" uitype="formattedtext" uifieldformatter="SearchDate"/>
+                </row>
+                
+                <row>
+                    <cell type="label" labelfor="7"/>
+                    <cell type="field" id="7" name="StartDate" uitype="formattedtext" uifieldformatter="SearchDate"/>
+                    
+                    <cell type="label" labelfor="8"/>
+                    <cell type="field" id="8" name="EndDate" uitype="formattedtext" uifieldformatter="SearchDate"/>
+                </row>
+               
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="ProjectSearch"
+            class="edu.ku.brc.specify.datamodel.Project"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Project Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="ProjectName" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="ProjectNumber" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+         <viewdef type="form"
+            name="AccessionSearch"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Accession Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>100px,3dlu,p,3dlu,100px,3dlu,p,3dlu,p,3dlu,p,p:g</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="AccessionNumber" initialize="ispartial=true;alledit=true;"/>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="Status"  uitype="combobox"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="3"/>
+                    <cell type="field" id="3" name="Type" uitype="combobox"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="5"/>
+                    <cell type="field" id="5" name="DateAccessioned" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                    <cell type="label" labelfor="6"/>
+                    <cell type="field" id="6" name="DateReceived" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+            </rows>
+        </viewdef>
+
+        <viewdef type="form"
+                 name="DeaccessionSearch"
+                 class="edu.ku.brc.specify.datamodel.Deaccession"
+                 gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+                 settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+
+            <desc><![CDATA[The Deaccession Search Form]]></desc>
+            <enableRules/>
+
+            <columnDef>100px,3dlu,p,3dlu,100px,3dlu,p,3dlu,p,3dlu,p,p:g</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="deaccessionNumber" initialize="ispartial=true;alledit=true;"/>
+                </row>
+            </rows>
+        </viewdef>
+
+        <viewdef type="form"
+                 name="DisposalSearch"
+                 class="edu.ku.brc.specify.datamodel.Disposal"
+                 gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+                 settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+
+            <desc><![CDATA[The Disposal Search Form]]></desc>
+            <enableRules/>
+
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="disposalNumber" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+
+        <viewdef type="form"
+            name="LocalitySearch"
+            class="edu.ku.brc.specify.datamodel.Locality"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Locality Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="LocalityName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+
+        <viewdef type="form"
+            name="MorphBankViewSearch"
+            class="edu.ku.brc.specify.datamodel.MorphBankView"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The MorphBankView Search Form]]></desc>
+            <!--<enableRules/>-->
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="ViewName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="PrepTypeSearch"
+            class="edu.ku.brc.specify.datamodel.PrepType"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The PrepType Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="Name" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="DisciplineSearch"
+            class="edu.ku.brc.specify.datamodel.Discipline"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Discipline Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="Name" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="AutoNumberingSchemeSearch"
+            class="edu.ku.brc.specify.datamodel.AutoNumberingScheme"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The AutoNumberingScheme Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="SchemeName" isrequired="true" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="IsNumericOnly" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+
+        <viewdef type="form"
+            name="ReferenceWorkSearch"
+            class="edu.ku.brc.specify.datamodel.ReferenceWork"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Taxon Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="Title" isrequired="false" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="RepositoryAgreementSearch"
+            class="edu.ku.brc.specify.datamodel.RepositoryAgreement"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The RepositoryAgreement Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="RepositoryAgreementNumber" isrequired="false" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" id="2" name="StartDate" isrequired="false" uitype="formattedtext" uifieldformatter="SearchDate"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="TaxonSearch"
+            class="edu.ku.brc.specify.datamodel.Taxon"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Taxon Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="FullName"/>
+                    <cell type="field" id="FullName" name="taxon.FullName" isrequired="false" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="CommonName"/>
+                    <cell type="field" id="CommonName" name="taxon.CommonName" isrequired="false" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="GeographySearch"
+            class="edu.ku.brc.specify.datamodel.Geography"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Geography Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="FullName"/>
+                    <cell type="field" id="FullName" name="geography.FullName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="StorageSearch"
+            class="edu.ku.brc.specify.datamodel.Storage"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Storage Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="Name"/>
+                    <cell type="field" id="Name" name="Name" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="ChronosStratSearch"
+            class="edu.ku.brc.specify.datamodel.GeologicTimePeriod"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The GeologicTimePeriod Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="FullName"/>
+                    <cell type="field" id="FullName" name="FullName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="BioStratSearch"
+            class="edu.ku.brc.specify.datamodel.GeologicTimePeriod"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The BioStrat Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="FullName"/>
+                    <cell type="field" id="FullName" name="FullName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="LithoStratSearch"
+            class="edu.ku.brc.specify.datamodel.LithoStrat"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The LithoStrat Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="FullName"/>
+                    <cell type="field" id="FullName" name="FullName" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="PaleoContextSearch"
+            class="edu.ku.brc.specify.datamodel.PaleoContext"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The PaleoContext Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p, 2dlu, p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" label="Paleo Context Name"/>
+                    <cell type="field" id="pcn" name="pc.PaleoContextName" isrequired="false" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="cs"/>
+                    <cell type="field" id="cs" name="chronosStrat.FullName" isrequired="false" uitype="text"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="ls"/>
+                    <cell type="field" id="ls" name="lithostrat.FullName" isrequired="false" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="AttachmentSearch"
+            class="edu.ku.brc.specify.datamodel.Attachment"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Attachment Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="OrigFilename"/>
+                    <cell type="field" id="OrigFilename" name="OrigFilename" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="COImageSearch"
+            class="edu.ku.brc.specify.datamodel.CollectionObject"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The CollectionObject Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p,3dlu,p,3dlu,p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Collection Object" colspan="7"/>
+                </row>
+                <row>
+                    <cell type="label" labelfor="1"/>
+                    <cell type="field" id="1" name="CatalogNumber" uitype="formattedtext" formatter="CatalogNumber" initialize="ispartial=true"/>
+                    <cell type="label" labelfor="2"/>
+                    <cell type="field" uitype="button" ignore="true" id="2" name="doSearch" initialize="title=Search"/>
+                </row>
+            </rows>
+        </viewdef>  
+        <viewdef type="form"
+            name="ExsiccataSearch"
+            class="edu.ku.brc.specify.datamodel.Exsiccata"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Exsiccata Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="label" labelfor="Title"/>
+                    <cell type="field" id="Title" name="Title" isrequired="true" uitype="text"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        <viewdef type="form"
+            name="ImageDateSearch"
+            class="edu.ku.brc.specify.datamodel.Attachment"
+            gettable="edu.ku.brc.af.ui.forms.DataGetterForHashMap"
+            settable="edu.ku.brc.af.ui.forms.DataSetterForHashMap">
+            
+            <desc><![CDATA[The Image Date Search Form]]></desc>
+            <enableRules/>
+            
+            <columnDef>p,3dlu,p</columnDef>
+            <rowDef>p,2dlu,p,2dlu,p</rowDef>
+            
+            <rows>
+                <row>
+                    <cell type="separator" label="Dates" colspan="3"/>
+                </row>
+                <row>
+                    <cell type="label" label="Start Date"/>
+                    <cell type="field" id="1" name="StartDate" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+               <row>
+                    <cell type="label" label="End Date"/>
+                    <cell type="field" id="2" name="EndDate" uitype="formattedtext" uifieldformatter="SearchDate" initialize="ispartial=true;"/>
+                </row>
+            </rows>
+        </viewdef>
+        
+        
+    </viewdefs>
+</viewset>

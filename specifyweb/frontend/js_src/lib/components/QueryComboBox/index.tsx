@@ -23,6 +23,11 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
+import type {
+  CollectionObject,
+  CollectionObjectType,
+} from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -90,6 +95,16 @@ export function QueryComboBox({
       record?.set(
         'cataloger',
         record?.get('cataloger') ?? userInformation.agent.resource_uri,
+        {
+          silent: true,
+        }
+      );
+    }
+    if (field.name === 'specifyUser') {
+      const record = toTable(resource, 'RecordSet');
+      record?.set(
+        'specifyUser',
+        record?.get('specifyUser') ?? userInformation.resource_uri,
         {
           silent: true,
         }
@@ -247,6 +262,26 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  const [treeDefinition] = useAsyncState(
+    React.useCallback(
+      async () =>
+        resource?.specifyTable === tables.Determination &&
+        resource.collection?.related?.specifyTable === tables.CollectionObject
+          ? (resource.collection?.related as SpecifyResource<CollectionObject>)
+              .rgetPromise('collectionObjectType')
+              .then(
+                (
+                  collectionObjectType:
+                    | SpecifyResource<CollectionObjectType>
+                    | undefined
+                ) => collectionObjectType?.get('taxonTreeDef')
+              )
+          : undefined,
+      [resource, resource?.collection?.related?.get('collectionObjectType')]
+    ),
+    false
+  );
+
   // FEATURE: use main table field if type search is not defined
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
@@ -274,6 +309,7 @@ export function QueryComboBox({
                       typeof treeData === 'object' ? treeData : undefined,
                     relatedTable,
                     subViewRelationship,
+                    treeDefinition,
                   }),
                 })
               )
@@ -322,6 +358,7 @@ export function QueryComboBox({
       relatedCollectionId,
       resource,
       treeData,
+      treeDefinition,
     ]
   );
 
@@ -473,6 +510,7 @@ export function QueryComboBox({
                                   : undefined,
                               relatedTable,
                               subViewRelationship,
+                              treeDefinition,
                             })
                               .map(serializeResource)
                               .map(({ fieldName, startValue }) =>
@@ -508,7 +546,7 @@ export function QueryComboBox({
                 }
               />
             )}
-            {hasViewButton && hasTablePermission(relatedTable.name, 'create')
+            {hasViewButton && hasTablePermission(relatedTable.name, 'read')
               ? viewButton
               : undefined}
           </>

@@ -44,7 +44,7 @@
             </altviews>
         </view>
         
-        <view busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" class="edu.ku.brc.specify.datamodel.CollectingTrip" isinternal="false" name="CollectingTripForm" resourelabels="false">
+        <view busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" class="edu.ku.brc.specify.datamodel.CollectingTrip" isinternal="false" name="CollectingTripForm" resourcelabels="false">
             <desc>CollectingTrip Form</desc>
             <altviews>
                 <altview default="true" mode="view" name="CollectingTripForm View" viewdef="CollectingTripForm" />
@@ -52,7 +52,7 @@
             </altviews>
         </view>
         
-        <view busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" class="edu.ku.brc.specify.datamodel.CollectingTrip" name="CollectingTrip" resourelabels="false">
+        <view busrules="edu.ku.brc.specify.datamodel.busrules.CollectingTripBusRules" class="edu.ku.brc.specify.datamodel.CollectingTrip" name="CollectingTrip" resourcelabels="false">
             <desc>CollectingTrip Form</desc>
             <altviews>
                 <altview default="true" mode="view" name="CollectingTrip View" viewdef="CollectingTrip" />

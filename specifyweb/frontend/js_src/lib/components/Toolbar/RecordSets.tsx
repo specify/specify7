@@ -31,6 +31,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { MergeRecordSets } from './MergeRecordSets';
 import { EditRecordSet } from './RecordSetEdit';
 
 export function RecordSetsOverlay(): JSX.Element {
@@ -173,6 +174,10 @@ export function RecordSetsDialog({
         <Dialog
           buttons={
             <>
+              {!isReadOnly && hasToolPermission('recordSets', 'create') && (
+                <MergeRecordSets recordSets={data?.records} />
+              )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                 <Button.Info
