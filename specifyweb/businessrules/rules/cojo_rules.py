@@ -46,9 +46,6 @@ def cojo_pre_save(cojo):
     ):
         raise BusinessRuleException('ChildCo is already in use as a child in another COG.')
 
-    if (cojo.childcog_id == cojo.parentcog_id): 
-        raise BusinessRuleException(f"Cannot add a COG to itself. COG name: {cojo.childcog.name}")
-
 @orm_signal_handler('post_save', 'Collectionobjectgroup')
 def cog_post_save(cog):
     # Delete cojos that point to this COG to ensure we avoid multiple COGs having the same child cog
