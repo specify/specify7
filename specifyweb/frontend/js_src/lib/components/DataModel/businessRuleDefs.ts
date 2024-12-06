@@ -242,23 +242,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   CollectionObjectGroupJoin: {
-    customInit: (
-      CollectionObjectGroupJoin: SpecifyResource<CollectionObjectGroupJoin>
-    ): void => {
-      if (
-        CollectionObjectGroupJoin.get('childCog') ===
-          CollectionObjectGroupJoin.get('parentCog') &&
-        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
-        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
-      ) {
-        setSaveBlockers(
-          CollectionObjectGroupJoin,
-          CollectionObjectGroupJoin.specifyTable.field.childCog,
-          [resourcesText.cogAddedToItself()],
-          COG_TOITSELF
-        );
-      }
-    },
     fieldChecks: {
       /*
        * Only a single CO in a COG can be set as primary.
@@ -274,6 +257,21 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
+    },
+    onAdded: (CollectionObjectGroupJoin) => {
+      if (
+        CollectionObjectGroupJoin.get('childCog') ===
+          CollectionObjectGroupJoin.get('parentCog') &&
+        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
+        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
+      ) {
+        setSaveBlockers(
+          CollectionObjectGroupJoin,
+          CollectionObjectGroupJoin.specifyTable.field.childCog,
+          [resourcesText.cogAddedToItself()],
+          COG_TOITSELF
+        );
+      }
     },
   },
 
