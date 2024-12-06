@@ -28,6 +28,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Determination,
   DNASequence,
@@ -264,6 +265,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        */
       isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
+
+        // Trigger Consolidated COGs field check when isPrimary changes
+        if (
+          cojo.collection?.related?.specifyTable ===
+          tables.CollectionObjectGroup
+        ) {
+          const cog = cojo.collection
+            .related as SpecifyResource<CollectionObjectGroup>;
+          cog.businessRuleManager?.checkField('cogType');
+        }
       },
       /*
        * Only a single CO in a COG can be set as substrate.
