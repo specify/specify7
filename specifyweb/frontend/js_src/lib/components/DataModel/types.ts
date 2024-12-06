@@ -1439,6 +1439,7 @@ export type CollectionObject = {
     readonly appraisal: Appraisal | null;
     readonly cataloger: Agent | null;
     readonly collectingEvent: CollectingEvent | null;
+    readonly parentCog: CollectionObjectGroup | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
     readonly container: Container | null;
