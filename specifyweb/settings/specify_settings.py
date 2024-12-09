@@ -2,7 +2,7 @@
 # Specify 7 requires the files from a Specify 6 install.
 # This setting should point to a directory containing an installation
 # of Specify 6 of the same version as the Specify database.
-THICK_CLIENT_LOCATION = '/opt/Specify'
+THICK_CLIENT_LOCATION = os.environ.get('THICK_CLIENT_LOCATION', '/opt/Specify')
 
 # Set the database name to the MySQL database you
 # want to access which must be a Specify database already
