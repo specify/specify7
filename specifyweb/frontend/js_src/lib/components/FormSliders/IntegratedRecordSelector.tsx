@@ -300,7 +300,10 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) && typeof handleRemove === 'function' ? (
+                      ) &&
+                      typeof handleRemove === 'function' &&
+                      relationship.relatedTable.name !==
+                        'CollectionObjectGroupJoin' ? (
                         <DataEntry.Remove
                           disabled={
                             isReadOnly ||
