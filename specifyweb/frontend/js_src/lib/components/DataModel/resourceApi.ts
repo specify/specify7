@@ -688,10 +688,13 @@ export const ResourceBase = Backbone.Model.extend({
         let toOne = this.dependentResources[fieldName];
 
         if (!toOne) {
-          _(value).isString() || softFail('expected URI, got', value);
-          toOne = resourceFromUrl(value, {
-            noBusinessRules: options.noBusinessRules,
-          });
+          if (typeof value === 'string')
+            toOne = resourceFromUrl(value, {
+              noBusinessRules: options.noBusinessRules,
+            });
+          else if (field.isDependent() && typeof value === 'object') {
+            toOne = new field.relatedTable.Resource({ ...value });
+          } else _(value).isString() || softFail('expected URI, got', value);
 
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
