@@ -284,6 +284,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
     },
+    onRemoved(_, collection) {
+      // Trigger Consolidated COGs field check when a child is deleted
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
+    },
   },
 
   Determination: {
