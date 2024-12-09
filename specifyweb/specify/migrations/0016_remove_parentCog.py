@@ -6,14 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0016_collectionobjectgroup_coparentcog'),
+        ('specify', '0015_add_version_to_ages'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='collectionobject',
-            name='parentcog',
-        ),
         migrations.RemoveField(
             model_name='collectionobjectgroup',
             name='parentcog',
