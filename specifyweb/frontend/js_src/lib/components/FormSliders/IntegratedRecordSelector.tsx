@@ -163,6 +163,12 @@ export function IntegratedRecordSelector({
   const isTaxonTreeDefItemTable =
     collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
+  const isCOJOFull =
+    relationship.relatedTable.name === 'CollectionObjectGroupJoin'
+      ? typeof collection.models[0] === 'object' &&
+        typeof collection.models[0].get('parentCog') === 'string'
+      : false;
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -302,8 +308,7 @@ export function IntegratedRecordSelector({
                         isDependent ? 'delete' : 'read'
                       ) &&
                       typeof handleRemove === 'function' &&
-                      relationship.relatedTable.name !==
-                        'CollectionObjectGroupJoin' ? (
+                      !isCOJOFull ? (
                         <DataEntry.Remove
                           disabled={
                             isReadOnly ||
