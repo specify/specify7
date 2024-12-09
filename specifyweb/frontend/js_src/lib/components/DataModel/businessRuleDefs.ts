@@ -27,7 +27,6 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
-  CollectionObjectGroupJoin,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -35,6 +34,7 @@ import type {
   Tables,
   Taxon,
 } from './types';
+import type { CollectionObjectGroupJoin } from './types';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly onAdded?: (
@@ -241,6 +241,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        */
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
+      },
+      parentCog: async (cojo): Promise<BusinessRuleResult> => {
+        if (
+          cojo.get('childCog') === cojo.get('parentCog') &&
+          typeof cojo.get('childCog') === 'string' &&
+          typeof cojo.get('parentCog') === 'string'
+        ) {
+          return {
+            isValid: false,
+            reason: resourcesText.cogAddedToItself(),
+            saveBlockerKey: COG_TOITSELF,
+          };
+        }
+        return {
+          isValid: true,
+          saveBlockerKey: COG_TOITSELF,
+        };
       },
     },
     onAdded: (CollectionObjectGroupJoin) => {
