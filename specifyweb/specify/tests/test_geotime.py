@@ -22,32 +22,32 @@ class GeoTimeTests(ApiTests):
     def setUp(self):
         super().setUp()
 
-        root_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
+        self.root_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
             name='Root',
             rankid=0,
             treedef=self.geologictimeperiodtreedef,
         )
-        erathem_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
+        self.erathem_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
             name='Erathem',
-            parent=root_rank,
+            parent=self.root_rank,
             rankid=100,
             treedef=self.geologictimeperiodtreedef,
         )
-        period_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
+        self.period_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
             name='Period',
-            parent=erathem_rank,
+            parent=self.erathem_rank,
             rankid=200,
             treedef=self.geologictimeperiodtreedef,
         )
-        epoch_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
+        self.epoch_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
             name='Series/Epoch',
-            parent=period_rank,
+            parent=self.period_rank,
             rankid=300,
             treedef=self.geologictimeperiodtreedef,
         )
-        stage_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
+        self.stage_rank, _ = Geologictimeperiodtreedefitem.objects.get_or_create(
             name='Stage/Age',
-            parent=epoch_rank,
+            parent=self.epoch_rank,
             rankid=400,
             treedef=self.geologictimeperiodtreedef,
         )
@@ -55,7 +55,7 @@ class GeoTimeTests(ApiTests):
         root_chronostrat = Geologictimeperiod.objects.create(
             name='Root',
             rankid=0,
-            definitionitem=root_rank,
+            definitionitem=self.root_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=100000,
             endperiod=0,
@@ -63,7 +63,7 @@ class GeoTimeTests(ApiTests):
         cenozoic_erathem_chronostrat = Geologictimeperiod.objects.create(
             name='Cenozoic',
             rankid=100,
-            definitionitem=erathem_rank,
+            definitionitem=self.erathem_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=None,
             startuncertainty=None,
@@ -73,7 +73,7 @@ class GeoTimeTests(ApiTests):
         paelozoic_erathem_chronostrat = Geologictimeperiod.objects.create(
             name='Paleozoic',
             rankid=100,
-            definitionitem=erathem_rank,
+            definitionitem=self.erathem_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=570,
             startuncertainty=None,
@@ -83,7 +83,7 @@ class GeoTimeTests(ApiTests):
         null_erathem_chronostrat = Geologictimeperiod.objects.create(
             name='Null',
             rankid=100,
-            definitionitem=erathem_rank,
+            definitionitem=self.erathem_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=None,
             startuncertainty=None,
@@ -93,7 +93,7 @@ class GeoTimeTests(ApiTests):
         paleogene_period_chronostrat = Geologictimeperiod.objects.create(
             name='Paleogene',
             rankid=200,
-            definitionitem=period_rank,
+            definitionitem=self.period_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=66,
             startuncertainty=None,
@@ -103,7 +103,7 @@ class GeoTimeTests(ApiTests):
         devonian_period_chronostrat = Geologictimeperiod.objects.create(
             name='Devonian',
             rankid=200,
-            definitionitem=period_rank,
+            definitionitem=self.period_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=419.2,
             startuncertainty=None,
@@ -113,7 +113,7 @@ class GeoTimeTests(ApiTests):
         jurassic_period_chronostrat = Geologictimeperiod.objects.create(
             name='Jurassic',
             rankid=200,
-            definitionitem=period_rank,
+            definitionitem=self.period_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=208,
             startuncertainty=18,
@@ -123,7 +123,7 @@ class GeoTimeTests(ApiTests):
         paleocene_epoch_chronostrat = Geologictimeperiod.objects.create(
             name='Paleocene',
             rankid=300,
-            definitionitem=epoch_rank,
+            definitionitem=self.epoch_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=66,
             startuncertainty=None,
@@ -133,7 +133,7 @@ class GeoTimeTests(ApiTests):
         eocene_epoch_chronostrat = Geologictimeperiod.objects.create(
             name='Eocene',
             rankid=300,
-            definitionitem=epoch_rank,
+            definitionitem=self.epoch_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=56,
             startuncertainty=None,
@@ -143,7 +143,7 @@ class GeoTimeTests(ApiTests):
         test_epoch_chronostrat = Geologictimeperiod.objects.create(
             name='Test Epoch',
             rankid=300,
-            definitionitem=epoch_rank,
+            definitionitem=self.epoch_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=100,
             startuncertainty=11,
@@ -153,7 +153,7 @@ class GeoTimeTests(ApiTests):
         late_jurassic_epoch_chronostrat = Geologictimeperiod.objects.create(
             name='Late Jurassic',
             rankid=300,
-            definitionitem=epoch_rank,
+            definitionitem=self.epoch_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=163,
             startuncertainty=15,
@@ -163,7 +163,7 @@ class GeoTimeTests(ApiTests):
         selandian_stage_chronostrat = Geologictimeperiod.objects.create(
             name='Selandian',
             rankid=400,
-            definitionitem=stage_rank,
+            definitionitem=self.stage_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=61.6,
             startuncertainty=None,
@@ -173,7 +173,7 @@ class GeoTimeTests(ApiTests):
         franconian_stage_chronostrat = Geologictimeperiod.objects.create(
             name='Franconian',
             rankid=400,
-            definitionitem=stage_rank,
+            definitionitem=self.stage_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=523,
             startuncertainty=36,
@@ -183,7 +183,7 @@ class GeoTimeTests(ApiTests):
         oxfordian_stage_chronostrat = Geologictimeperiod.objects.create(
             name='Oxfordian',
             rankid=400,
-            definitionitem=stage_rank,
+            definitionitem=self.stage_rank,
             definition=self.geologictimeperiodtreedef,
             startperiod=163,
             startuncertainty=15,
@@ -423,6 +423,30 @@ class GeoTimeTests(ApiTests):
         collecting_event_2 = Collectingevent.objects.create(locality=locality_1, discipline=self.discipline)
         co_6 = Collectionobject.objects.create(collection=self.collection, collectingevent=collecting_event_2)
 
+    def test_invalid_chronostrat(self):
+        bad_chronostrat = Geologictimeperiod.objects.create(
+            name='BadBoyz',
+            rankid=100,
+            definitionitem=self.erathem_rank,
+            definition=self.geologictimeperiodtreedef,
+            startperiod=10,
+            endperiod=90,
+            parent=self.geo_time_period_dict['root']
+        )
+        co_1 = Collectionobject.objects.create(collection=self.collection)
+        relative_age = Relativeage.objects.create(
+            agename=bad_chronostrat,
+            collectionobject=co_1
+        )
+
+        self.assertFalse(co_1.id in geo_time.search_co_ids_in_time_range(200, 10))
+
+        bad_chronostrat.startperiod = 100
+        bad_chronostrat.name = 'GoodBoyz' # important, don't change this :)
+        bad_chronostrat.save()
+
+        self.assertTrue(co_1.id in geo_time.search_co_ids_in_time_range(200, 10))
+    
     @skip('Fix API test call')
     def test_geotime_any(self):
         c = Client()

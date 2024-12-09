@@ -5,12 +5,15 @@ from datetime import datetime
 from threading import Thread
 
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, JsonResponse
+    HttpResponseRedirect, JsonResponse, HttpRequest
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
+from django.db import transaction
+from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.stored_queries.batch_edit import run_batch_edit
+from specifyweb.specify.models_by_table_id import model_names_by_table_id
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
     return_loan_preps as rlp
@@ -18,8 +21,8 @@ from .queryfield import QueryField
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from ..specify.api import toJson, uri_for_model
-from ..specify.models import Collection, Recordset, Loanreturnpreparation, \
-    Loanpreparation, Loan
+from ..specify.models import Collection, Recordset, Recordsetitem, \
+    Loanreturnpreparation, Loanpreparation, Loan
 from ..specify.views import login_maybe_required
 
 logger = logging.getLogger(__name__)
@@ -203,6 +206,76 @@ def make_recordset(request):
                           request.specify_user_agent, recordset_info)
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
+
+@login_maybe_required
+@require_POST
+def merge_recordsets(request: HttpRequest) -> JsonResponse:
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
+    check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
+    
+    try:
+        # The request body should be a JSON object with a 'recordsetids' key, that has a list of recordset IDs to merge
+        request_data = json.loads(request.body)
+        recordset_ids = request_data.get('recordsetids', [])
+
+        if not recordset_ids:
+            return JsonResponse({'error': 'No recordset IDs provided'}, status=400)
+
+        # Get the recordset records for the given IDs from the RecordSet table
+        recordsets = Recordset.objects.filter(id__in=recordset_ids)
+
+        if not recordsets.exists():
+            return JsonResponse({'error': 'No valid recordsets found'}, status=404)
+        
+        first_recordset_name = recordsets.first().name
+
+        # Verify that the 'tableid' field in all the recordsets is the same
+        tableid = recordsets.first().dbtableid
+        if not all(recordset.dbtableid == tableid for recordset in recordsets):
+            return JsonResponse({'error': 'All recordsets must have the same tableid'}, status=400)
+
+        model_name = model_names_by_table_id[tableid] if tableid in model_names_by_table_id else None
+        current_date = timezone.now().strftime('%Y-%m-%d')
+        if not model_name:
+            return JsonResponse({'error': 'Model not found for tableid'}, status=400)
+
+        # Get all the recordsetitems for the given recordsets
+        recordsetitems = Recordsetitem.objects.filter(recordset__in=recordsets)
+
+        # Get a list of record IDs from the recordsetitems
+        records_ids = recordsetitems.values_list('recordid', flat=True).distinct()
+
+        with transaction.atomic():
+            # Create a new recordsset record
+            new_recordset = Recordset.objects.create(
+                dbtableid=tableid,
+                name=first_recordset_name,
+                type=0,
+                collectionmemberid=request.specify_collection.id,
+                specifyuser=request.specify_user,
+                createdbyagent=request.specify_user_agent,
+                modifiedbyagent=request.specify_user_agent,
+            )
+
+            # Create a new recordsetitem record for each record ID in the list
+            Recordsetitem.objects.bulk_create([
+                Recordsetitem(
+                    recordset=new_recordset,
+                    recordid=record_id,
+                ) for record_id in records_ids
+            ])
+
+            # Delete the old recordsetitem and recordset records
+            recordsetitems.delete()
+            recordsets.delete()
+
+        return JsonResponse({'message': 'Recordset merge successful'}, status=200)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @require_POST
 @login_maybe_required
