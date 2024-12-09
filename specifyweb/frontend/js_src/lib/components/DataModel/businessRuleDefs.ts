@@ -224,20 +224,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           }
         });
       },
-      parentCog: async (cog): Promise<BusinessRuleResult> => {
-        if (cog.url() === cog.get('parentCog')) {
-          return {
-            isValid: false,
-            reason: resourcesText.parentCogSameAsChild(),
-            saveBlockerKey: PARENTCOG_KEY,
-          };
-        }
-
-        return {
-          isValid: true,
-          saveBlockerKey: PARENTCOG_KEY,
-        };
-      },
     },
   },
 
