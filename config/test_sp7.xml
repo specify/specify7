@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is to test that the sp7_only config files are beind used in the static files api -->
+<!-- Root element representing the main container -->
+<test_sp7>
+    <!-- Comment explaining the purpose of this section -->
+    <section1>
+        <!-- Placeholder for a title -->
+        <title>Enter Title Here</title>
+        
+        <!-- Placeholder for a description -->
+        <description>Enter Description Here</description>
+        
+        <!-- Placeholder for a date -->
+        <date>YYYY-MM-DD</date>
+    </section1>
+
+    <!-- Another section for demonstration purposes -->
+    <section2>
+        <!-- Placeholder for a name -->
+        <name>John Doe</name>
+        
+        <!-- Placeholder for an email -->
+        <email>john@example.com</email>
+    </section2>
+    
+    <!-- Comment indicating where additional sections could go -->
+    <!-- Add more sections here as needed -->
+</test_sp7>
