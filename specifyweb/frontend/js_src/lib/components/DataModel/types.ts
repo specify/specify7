@@ -6511,7 +6511,6 @@ export type CollectionObjectGroup = {
     readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly parentCog: CollectionObjectGroup | null;
   };
   readonly toManyDependent: {
     readonly children: RA<CollectionObjectGroupJoin>;
@@ -6541,7 +6540,6 @@ export type CollectionObjectGroupJoin = {
   readonly toOneIndependent: {
     readonly childCo: CollectionObject | null;
     readonly childCog: CollectionObjectGroup | null;
-    readonly parentCog: CollectionObjectGroup;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
