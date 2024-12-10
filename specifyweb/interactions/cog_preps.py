@@ -1,5 +1,5 @@
-from typing import List, Optional
-from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset
+from typing import List, Optional, Set
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 
 def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
@@ -108,3 +108,9 @@ def prep_cog_recordset(rs: Recordset) -> Optional[List[Preparation]]:
     cogs = Collectionobjectgroup.objects.filter(id__in=recordset_items)
 
     # TODO
+
+def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collectionobject]:
+    preps = get_cog_consolidated_preps(cog)
+    
+    # Return list of distinct CollectionObjectIDs associated with the preparations
+    return {prep.collectionobject for prep in preps}

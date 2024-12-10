@@ -6,7 +6,12 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db import connection, transaction
 from django.views.decorators.http import require_POST
 
-from specifyweb.interactions.cog_preps import get_cog_consolidated_preps, remove_all_cog_sibling_preps_from_loan
+from specifyweb.interactions.cog_preps import (
+    get_cog_consolidated_preps,
+    get_cog_consolidated_preps_co_ids,
+    is_cog_recordset,
+    remove_all_cog_sibling_preps_from_loan,
+)
 from specifyweb.middleware.general import require_GET
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
@@ -19,6 +24,13 @@ from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 
 def preps_available_rs_django(request, recordset_id):
+    # Get consolidated CO ids if the recordset is a COG
+    rs = Recordsetitem.objects.filter(recordsetid=recordset_id).first()
+    cog_co_ids = set()
+    if is_cog_recordset(rs):
+        cog = Collectionobjectgroup.objects.get(id=recordset_id)
+        cog_co_ids = get_cog_consolidated_preps_co_ids(cog) - set(rs.recordsetitems.values_list('recordid', flat=True))
+
     # Determine if isLoan is true
     isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
 
@@ -30,10 +42,11 @@ def preps_available_rs_django(request, recordset_id):
             # If there are no determinations, __isnull=True covers the NULL case.
             # If there is a current determination, iscurrent=True covers that case.
             Q(collectionobject__determinations__iscurrent=True) | Q(collectionobject__determinations__isnull=True),
+            # Filter by recordset or cog_co_ids
+            Q(collectionobject_id__in=Recordsetitem.objects.filter(recordsetid=recordset_id).values('recordid')) |
+            Q(collectionobject_id__in=cog_co_ids),
             # Filter by collectionmemberid
-            collectionmemberid=request.specify_collection.id,
-            # Filter by recordset
-            collectionobject_id__in=Recordsetitem.objects.filter(recordsetid=recordset_id).values('recordid')
+            collectionmemberid=request.specify_collection.id
         )
         # If isLoan is true, filter by preptype__isloanable
         .filter(preptype__isloanable=True if isLoan else Q())
@@ -82,11 +95,20 @@ def preps_available_rs_django(request, recordset_id):
 @login_maybe_required
 def preps_available_rs(request, recordset_id):
     "Returns a list of preparations that are loanable?(for loan) based on the CO recordset <recordset_id>."
+    
+    # Get consolidated CO ids if the recordset is a COG
+    rs = Recordsetitem.objects.filter(recordsetid=recordset_id).first()
+    cog_co_ids = set()
+    if is_cog_recordset(rs):
+        cog = Collectionobjectgroup.objects.get(id=recordset_id)
+        cog_co_ids = get_cog_consolidated_preps_co_ids(cog) - set(rs.recordsetitems.values_list('recordid', flat=True))
+    cog_co_ids_str = ','.join(map(str, cog_co_ids))
+
     cursor = connection.cursor()
 
     isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
 
-    sql = """
+    sql = f"""
     SELECT co.catalognumber,
            co.collectionobjectid AS co_id,
            t.fullname,
@@ -117,9 +139,10 @@ def preps_available_rs(request, recordset_id):
     WHERE  p.collectionmemberid = %s
            AND ( d.iscurrent
                   OR d.determinationid IS NULL )
-           AND p.collectionobjectid IN (SELECT recordid
+           AND (p.collectionobjectid IN (SELECT recordid
                                         FROM   recordsetitem
                                         WHERE  recordsetid = %s)
+                OR p.collectionobjectid IN ({cog_co_ids_str}))
     """
 
     # Add `pt.isloanable` if `isLoan`
@@ -344,7 +367,7 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     row = cursor.fetchone()
 
     return http.HttpResponse(toJson(row), content_type='application/json')
-    
+
 
 @require_POST
 @login_maybe_required
