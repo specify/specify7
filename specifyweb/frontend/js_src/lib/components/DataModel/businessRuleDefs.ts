@@ -2,6 +2,7 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  COG_PRIMARY_KEY,
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
@@ -27,6 +28,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Determination,
   DNASequence,
@@ -208,19 +210,34 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   CollectionObjectGroup: {
     fieldChecks: {
       cogType: (cog): void => {
-        // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
+        // Consolidated COGs need to have a primary CO child. If not, save will be blocked
         cog.rgetPromise('cogType').then((cogtype) => {
           if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
-            const cojos = cog.getDependentResource('children');
-            // Set first CO in COG to primary
-            cojos?.models
-              .find(
-                (cojo) =>
-                  cojo.get('childCo') !== null &&
-                  cojo.get('childCo') !== undefined
-              )
-              ?.set('isPrimary', true);
+            const children = cog.getDependentResource('children');
+            const collectionObjectChildren =
+              children?.models.filter(
+                (child) => typeof child.get('childCo') === 'string'
+              ) ?? [];
+
+            if (
+              collectionObjectChildren.length > 0 &&
+              !collectionObjectChildren.some((cojo) => cojo.get('isPrimary'))
+            ) {
+              setSaveBlockers(
+                cog,
+                tables.CollectionObjectGroupJoin.field.isPrimary,
+                [resourcesText.primaryCogChildRequired()],
+                COG_PRIMARY_KEY
+              );
+              return;
+            }
           }
+          setSaveBlockers(
+            cog,
+            tables.CollectionObjectGroupJoin.field.isPrimary,
+            [],
+            COG_PRIMARY_KEY
+          );
         });
       },
       parentCog: async (cog): Promise<BusinessRuleResult> => {
@@ -248,6 +265,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        */
       isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
+
+        // Trigger Consolidated COGs field check when isPrimary changes
+        if (
+          cojo.collection?.related?.specifyTable ===
+          tables.CollectionObjectGroup
+        ) {
+          const cog = cojo.collection
+            .related as SpecifyResource<CollectionObjectGroup>;
+          cog.businessRuleManager?.checkField('cogType');
+        }
       },
       /*
        * Only a single CO in a COG can be set as substrate.
@@ -256,6 +283,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
+    },
+    onRemoved(_, collection) {
+      // Trigger Consolidated COGs field check when a child is deleted
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
     },
   },
 
