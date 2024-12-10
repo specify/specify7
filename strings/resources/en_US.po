@@ -484,13 +484,21 @@ msgstr "Conditional Field Value"
 msgid "formatPreview"
 msgstr "Format Preview"
 
-#: components/DataModel/businessRuleDefs.ts:319
-#: components/DataModel/businessRuleDefs.ts:337
+#: components/DataModel/businessRuleDefs.ts:354
+#: components/DataModel/businessRuleDefs.ts:372
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "A current determination is required."
 
-#: components/DataModel/businessRuleDefs.ts:230
+#: components/DataModel/businessRuleDefs.ts:247
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "parentCogSameAsChild"
 msgstr "A Collection Object Group cannot be a parent to itself"
+
+#: components/DataModel/businessRuleDefs.ts:229
+#: components/DataModel/__tests__/businessRules.test.ts:271
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
+msgid "primaryCogChildRequired"
+msgstr ""
+"A Consolidated Collection Object Group must have a primary Collection "
+"Object child"
