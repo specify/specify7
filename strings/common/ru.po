@@ -20,7 +20,7 @@ msgstr "Specify 7"
 
 #: components/Preferences/UserDefinitions.tsx:1793
 #: components/WorkBench/DataSetMeta.tsx:282
-#: utils/parser/definitions.ts:118
+#: utils/parser/definitions.ts:120
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #, fuzzy
 msgid "no"
@@ -118,7 +118,7 @@ msgstr "Пропустить"
 
 #: components/FormEditor/Create.tsx:60
 #: components/FormEditor/Create.tsx:262
-#: components/PickLists/definitions.ts:40
+#: components/PickLists/definitions.ts:41
 #: components/QueryBuilder/Edit.tsx:176
 #: components/Security/Institution.tsx:104
 #: components/Security/Institution.tsx:185
@@ -347,8 +347,8 @@ msgstr "Сохранить"
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:463
-#: components/SchemaConfig/Format.tsx:258
-#: components/SchemaConfig/Format.tsx:306
+#: components/SchemaConfig/Format.tsx:289
+#: components/SchemaConfig/Format.tsx:337
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
@@ -381,7 +381,7 @@ msgstr "Открыть"
 #: components/Forms/DeleteButton.tsx:142
 #: components/Molecules/SyncAttachmentPicker.tsx:70
 #: components/Notifications/Notifications.tsx:166
-#: components/PickLists/definitions.ts:42
+#: components/PickLists/definitions.ts:43
 #: components/SchemaConfig/UniquenessRuleRow.tsx:188
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
@@ -583,8 +583,8 @@ msgstr "Новый"
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
-#: components/SchemaConfig/Format.tsx:237
-#: components/SchemaConfig/Format.tsx:293
+#: components/SchemaConfig/Format.tsx:268
+#: components/SchemaConfig/Format.tsx:324
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:154
 #: components/Security/UserComponents.tsx:158
@@ -628,7 +628,7 @@ msgstr "Конец"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
 #: components/Interactions/InteractionDialog.tsx:369
-#: components/PickLists/definitions.ts:41
+#: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
 #, fuzzy
@@ -836,7 +836,7 @@ msgstr "Все"
 msgid "unused"
 msgstr "Неиспользованный"
 
-#: components/PickLists/definitions.ts:53
+#: components/PickLists/definitions.ts:54
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "ordinal"
@@ -976,10 +976,10 @@ msgstr "Перезагрузить"
 msgid "select"
 msgstr "Нет совпадений"
 
-#: components/PickLists/definitions.ts:51
+#: components/PickLists/definitions.ts:52
 #: components/Preferences/Renderers.tsx:158
 #: components/SchemaConfig/Components.tsx:77
-#: components/SchemaConfig/Format.tsx:58
+#: components/SchemaConfig/Format.tsx:69
 #: components/Security/Collection.tsx:157
 #: components/Security/ImportExport.tsx:120
 #: components/Security/PreviewComponents.tsx:133

@@ -180,23 +180,28 @@ msgstr "Länge"
 msgid "readOnly"
 msgstr "Nur-Lesen"
 
-#: components/SchemaConfig/Format.tsx:55
+#: components/SchemaConfig/Format.tsx:66
 #. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Feldformat"
 
-#: components/SchemaConfig/Format.tsx:65
+#: components/SchemaConfig/Format.tsx:83
+#. Used in: Components > Schema Config > Format
+msgid "uiFormattersForField"
+msgstr ""
+
+#: components/SchemaConfig/Format.tsx:76
 #. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Formatiert"
 
-#: components/SchemaConfig/Format.tsx:92
+#: components/SchemaConfig/Format.tsx:123
 #: components/WebLinks/Element.tsx:26
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 msgid "webLink"
 msgstr "Web-Link"
 
-#: components/SchemaConfig/Format.tsx:120
+#: components/SchemaConfig/Format.tsx:151
 #. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "Benutzerdefiniert"

@@ -131,7 +131,8 @@ msgid "webLinks"
 msgstr "Liens web"
 
 #: components/AppResources/types.tsx:159
-#. Used in: Components > App Resources > Types
+#: components/SchemaConfig/Format.tsx:100
+#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Formateurs de champs"

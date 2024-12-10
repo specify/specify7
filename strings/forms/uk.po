@@ -350,9 +350,9 @@ msgstr ""
 msgid "pluginName"
 msgstr "Назва плагіна"
 
-#: utils/parser/definitions.ts:110
-#: utils/parser/__tests__/definitions.test.ts:184
-#: utils/parser/__tests__/definitions.test.ts:186
+#: utils/parser/definitions.ts:112
+#: utils/parser/__tests__/definitions.test.ts:185
+#: utils/parser/__tests__/definitions.test.ts:187
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "illegalBool"
@@ -370,10 +370,10 @@ msgstr "Поле обов'язкове."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: utils/parser/__tests__/definitions.test.ts:203
-#: utils/parser/__tests__/definitions.test.ts:205
-#: utils/parser/__tests__/definitions.test.ts:221
-#: utils/parser/__tests__/definitions.test.ts:223
+#: utils/parser/__tests__/definitions.test.ts:204
+#: utils/parser/__tests__/definitions.test.ts:206
+#: utils/parser/__tests__/definitions.test.ts:222
+#: utils/parser/__tests__/definitions.test.ts:224
 #. Used in: Components > Export Feed > Editor ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "invalidValue"
@@ -381,17 +381,17 @@ msgstr "Недійсне значення"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:204
 #: utils/parser/definitions.ts:206
-#: utils/parser/definitions.ts:368
-#: utils/parser/__tests__/definitions.test.ts:78
+#: utils/parser/definitions.ts:208
+#: utils/parser/definitions.ts:374
+#: utils/parser/__tests__/definitions.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "requiredFormat"
 msgstr "Необхідний формат: {format:string}."
 
-#: utils/parser/definitions.ts:49
+#: utils/parser/definitions.ts:51
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
@@ -400,43 +400,43 @@ msgstr "Необхідний формат: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Значення має бути числом"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "organization"
 msgstr "організація"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "person"
 msgstr "особа"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:30
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "other"
 msgstr "Інший"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:31
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "group"
 msgstr "Група"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "userDefinedItems"
 msgstr "Визначені користувачем елементи"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:36
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "entireTable"
 msgstr "Ціла таблиця"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:37
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "fieldFromTable"
@@ -478,13 +478,13 @@ msgstr "Створення нового запису"
 msgid "createNewRecordSet"
 msgstr "Створіть новий набір записів"
 
-#: components/PickLists/definitions.ts:151
+#: components/PickLists/definitions.ts:152
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "вперед"
 
-#: components/PickLists/definitions.ts:150
+#: components/PickLists/definitions.ts:151
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"
@@ -797,7 +797,7 @@ msgstr "Елемент успішно видалено."
 msgid "dateRange"
 msgstr "(Діапазон: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:282
+#: components/FieldFormatters/index.ts:287
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "catalogNumberNumericFormatter"

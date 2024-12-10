@@ -401,7 +401,7 @@ msgid "or"
 msgstr "o"
 
 #: utils/__tests__/fieldFormat.test.ts:92
-#: utils/parser/definitions.ts:117
+#: utils/parser/definitions.ts:119
 #. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
 msgstr "Sí"
@@ -452,31 +452,31 @@ msgstr "Definir informe basado en consulta"
 msgid "exportQueryAsLabel"
 msgstr "Definir etiqueta basada en la consulta"
 
-#: components/PickLists/definitions.ts:43
+#: components/PickLists/definitions.ts:44
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMerge"
 msgstr "Fusión de árboles"
 
-#: components/PickLists/definitions.ts:44
+#: components/PickLists/definitions.ts:45
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMove"
 msgstr "Mover el árbol"
 
-#: components/PickLists/definitions.ts:45
+#: components/PickLists/definitions.ts:46
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeSynonymize"
 msgstr "Sinonimizar árbol"
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:47
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeDesynonymize"
 msgstr "Desinonimizar árbol"
 
-#: components/PickLists/definitions.ts:47
+#: components/PickLists/definitions.ts:48
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeBulkMove"
