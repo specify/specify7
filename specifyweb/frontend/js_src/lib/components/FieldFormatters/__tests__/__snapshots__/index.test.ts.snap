@@ -3,6 +3,7 @@
 exports[`field formatters are fetched and parsed correctly 1`] = `
 {
   "AccessionNumber": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -50,6 +51,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionNumber",
   },
   "AccessionNumberByYear": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -97,6 +99,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionNumberByYear",
   },
   "AccessionStringFormatter": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       AlphaNumberField {
         "autoIncrement": false,
@@ -112,6 +115,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionStringFormatter",
   },
   "CatalogNumber": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -143,6 +147,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumber",
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -174,6 +179,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumberAlphaNumByYear",
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       CatalogNumberNumericField {
         "autoIncrement": true,
@@ -189,6 +195,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "Catalog Number Numeric",
   },
   "CatalogNumberNumericRegex": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       RegexField {
         "autoIncrement": false,
@@ -204,12 +211,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumberNumericRegex",
   },
   "Date": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": true,
     "table": undefined,
     "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
+    "field": "[literalField Deaccession.deaccessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -257,6 +266,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "DeaccessionNumber",
   },
   "GiftNumber": UiFormatter {
+    "field": "[literalField Gift.giftNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -288,6 +298,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "GiftNumber",
   },
   "InfoRequestNumber": UiFormatter {
+    "field": "[literalField InfoRequest.infoReqNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -319,6 +330,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "InfoRequestNumber",
   },
   "KUITeach": CatalogNumberNumeric {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       CatalogNumberNumericField {
         "autoIncrement": true,
@@ -334,6 +346,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "Catalog Number Numeric",
   },
   "LoanNumber": UiFormatter {
+    "field": "[literalField Loan.loanNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
@@ -365,6 +378,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "LoanNumber",
   },
   "NumericBigDecimal": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -380,6 +394,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericBigDecimal",
   },
   "NumericByte": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -395,6 +410,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericByte",
   },
   "NumericDouble": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -410,6 +426,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericDouble",
   },
   "NumericFloat": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -425,6 +442,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericFloat",
   },
   "NumericInteger": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -440,6 +458,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericInteger",
   },
   "NumericLong": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -455,6 +474,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericLong",
   },
   "NumericShort": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
@@ -470,24 +490,28 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericShort",
   },
   "PartialDate": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": true,
     "table": undefined,

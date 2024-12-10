@@ -69,7 +69,11 @@
     ],
     "CollectionObjectGroupJoin": [
         {
-            "rule": [["childCOG"], ["childCO"]],
+            "rule": [["childCo"], []],
+            "isDatabaseConstraint": true
+        },
+        {
+            "rule": [["childCog"], []],
             "isDatabaseConstraint": true
         }
     ],

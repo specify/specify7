@@ -17,4 +17,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options) -> None:
-        initialize(options['wipe'])
+        initialize(wipe=options['wipe'])
