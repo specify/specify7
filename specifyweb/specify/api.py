@@ -489,6 +489,12 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
+    if obj._meta.model_name == 'collectionobject' and hasattr(obj, 'cojo'): 
+        obj.cojo.save()
+
+    if obj._meta.model_name == 'collectionobjectgroup' and hasattr(obj, 'cojo'): 
+        obj.cojo.save()
+
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
