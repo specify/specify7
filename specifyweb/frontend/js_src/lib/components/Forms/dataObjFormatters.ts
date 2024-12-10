@@ -282,7 +282,7 @@ async function formatField(
           : fieldFormat(
               field,
               value as string | undefined,
-              resolveParser(field)
+              resolveParser(field, undefined, resource)
             )
       )
     : tryBest

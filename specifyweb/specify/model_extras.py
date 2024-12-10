@@ -20,6 +20,20 @@ class SpecifyUserManager(BaseUserManager):
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
 
+def is_legacy_admin(specifyuser) -> bool: 
+    "Returns true if user is a Specify 6 admin."
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("""
+    SELECT 1
+    FROM specifyuser_spprincipal, spprincipal
+    WHERE %s = specifyuser_spprincipal.SpecifyUserId
+    AND specifyuser_spprincipal.SpPrincipalId = spprincipal.SpPrincipalId
+    AND spprincipal.Name = 'Administrator'
+    LIMIT 1
+    """, [specifyuser.id])
+    return cursor.fetchone() is not None
+
 class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
@@ -61,18 +75,7 @@ class Specifyuser(models.Model):
         ).exists()
 
     def is_legacy_admin(self):
-        "Returns true if user is a Specify 6 admin."
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-        SELECT 1
-        FROM specifyuser_spprincipal, spprincipal
-        WHERE %s = specifyuser_spprincipal.SpecifyUserId
-        AND specifyuser_spprincipal.SpPrincipalId = spprincipal.SpPrincipalId
-        AND spprincipal.Name = 'Administrator'
-        LIMIT 1
-        """, [self.id])
-        return cursor.fetchone() is not None
+        return is_legacy_admin(self)
 
     def set_admin(self):
         "Make the user a Specify 6 admin."

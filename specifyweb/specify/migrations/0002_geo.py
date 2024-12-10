@@ -7,10 +7,11 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     protect_with_blockers
 )
-from specifyweb.specify.update_schema_config import (
+from specifyweb.specify.migration_utils.update_schema_config import (
     update_table_schema_config_with_defaults,
     revert_table_schema_config,
 )
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
 
 # Migrations Operations Order:
 # 1. Create CollectionObjectType
@@ -22,26 +23,6 @@ from specifyweb.specify.update_schema_config import (
 # 7. Create CollectionObjectGroupJoin
 # 8. Add discipline relationship to TreeDef tables
 # 9. Add schema config for new sp7 tables
-
-SCHEMA_CONFIG_TABLES = [
-    ('CollectionObjectType', None),
-    ('CollectionObjectGroupType', None),
-    ('CollectionObjectGroup', None),
-    ('CollectionObjectGroupJoin', None),
-    ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
-    ('SpAttachmentDataSet', 'Holds attachment data sets.'),
-    ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
-    ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
-    ('Message', 'Stores user notifications.'),
-    ('SpMerging', 'Tracks record and task IDs of records being merged.'),
-    ('UserPolicy', 'Records permissions for a user within a collection.'),
-    ('UserRole', 'Records roles associated with ecify users.'),
-    ('Role', 'Stores names, descriptions, and collection information for user-created roles.'),
-    ('RolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
-    ('LibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
-    ('LibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
-    ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
-]
 
 DEFAULT_COG_TYPES = [
     'Discrete',

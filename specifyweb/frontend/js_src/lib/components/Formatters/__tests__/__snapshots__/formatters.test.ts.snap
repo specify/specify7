@@ -2247,6 +2247,7 @@ exports[`getMainTableFields 1`] = `
   ],
   "CollectionObjectType": [
     "name",
+    "catalogNumberFormatName",
     "text1",
     "text2",
     "text3",

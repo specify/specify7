@@ -3,6 +3,8 @@
  * parsing it and formatting it
  */
 
+import type { AnySchema } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type {
   JavaType,
   LiteralField,
@@ -269,7 +271,8 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
+  resource?: SpecifyResource<AnySchema>
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -284,7 +287,10 @@ export function resolveParser(
     parser = parsers()[fullField.datePart] as Parser;
 
   const formatter =
-    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
+    field.isRelationship === false
+      ? field.getUiFormatter?.(resource)
+      : undefined;
+
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required

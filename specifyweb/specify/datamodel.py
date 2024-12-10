@@ -8246,7 +8246,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='catalogNumberFormatName', column='CatalogNumberFormatName', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
         indexes=[
 

@@ -10,6 +10,7 @@ import { camelToHuman } from '../../utils/utils';
 import { type UiFormatter, getUiFormatters } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
+import { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { schema, unescape } from './schema';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
@@ -273,13 +274,15 @@ export class LiteralField extends FieldBase {
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.
-  public getFormat(): string | undefined {
+  public getFormat(_resource?: SpecifyResource<AnySchema>): string | undefined {
     return this.localization.format ?? undefined;
   }
 
   // Returns the UIFormatter for the field specified in the schema config.
-  public getUiFormatter(): UiFormatter | undefined {
-    return getUiFormatters()[this.getFormat() ?? ''];
+  public getUiFormatter(
+    resource?: SpecifyResource<AnySchema>
+  ): UiFormatter | undefined {
+    return getUiFormatters()[this.getFormat(resource) ?? ''];
   }
 }
 
