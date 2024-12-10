@@ -9,14 +9,15 @@ from django.views.decorators.http import require_POST
 from specifyweb.interactions.cog_preps import (
     get_cog_consolidated_preps,
     get_cog_consolidated_preps_co_ids,
-    is_cog_recordset,
+    get_cogs_from_co_recordset,
+    is_co_recordset,
     remove_all_cog_sibling_preps_from_loan,
 )
 from specifyweb.middleware.general import require_GET
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Loan, Loanpreparation, \
-    Loanreturnpreparation, Preparation, Recordsetitem
+    Loanreturnpreparation, Preparation, Recordset, Recordsetitem
 from specifyweb.specify.views import login_maybe_required
 
 from django.db.models import F, Q, Sum
@@ -97,12 +98,14 @@ def preps_available_rs(request, recordset_id):
     "Returns a list of preparations that are loanable?(for loan) based on the CO recordset <recordset_id>."
     
     # Get consolidated CO ids if the recordset is a COG
-    rs = Recordsetitem.objects.filter(recordsetid=recordset_id).first()
+    rs = Recordset.objects.filter(id=recordset_id).first()
     cog_co_ids = set()
-    if is_cog_recordset(rs):
-        cog = Collectionobjectgroup.objects.get(id=recordset_id)
-        cog_co_ids = get_cog_consolidated_preps_co_ids(cog) - set(rs.recordsetitems.values_list('recordid', flat=True))
-    cog_co_ids_str = ','.join(map(str, cog_co_ids))
+    if is_co_recordset(rs):
+        cogs = get_cogs_from_co_recordset(rs)
+        for cog in cogs:
+            cog_co_ids += get_cog_consolidated_preps_co_ids(cog)
+        cog_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+    cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
 
     cursor = connection.cursor()
 

@@ -1,5 +1,7 @@
 from typing import List, Optional, Set
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset
+from django.db.models import Subquery
+from django.db.models.query import QuerySet
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset, Recordsetitem
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 
 def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
@@ -95,7 +97,13 @@ def is_cog_recordset(rs: Recordset) -> bool:
     """
     Check if the recordset is a CollectionObjectGroup recordset
     """
-    return rs.dbtableid == get_table_id_by_model_name('CollectionObjectGroup')
+    return rs.dbtableid == get_table_id_by_model_name('Collectionobjectgroup')
+
+def is_co_recordset(rs: Recordset) -> bool:
+    """
+    Check if the recordset is a CollectionObjectGroup recordset
+    """
+    return rs.dbtableid == get_table_id_by_model_name('Collectionobject')
 
 def prep_cog_recordset(rs: Recordset) -> Optional[List[Preparation]]:
     if not is_cog_recordset(rs):
@@ -109,8 +117,24 @@ def prep_cog_recordset(rs: Recordset) -> Optional[List[Preparation]]:
 
     # TODO
 
+def get_cogs_from_co_recordset(rs: Recordset) -> Optional[QuerySet[Collectionobjectgroup]]:
+    if not is_co_recordset(rs):
+        return None
+    
+    # Subquery to get CollectionObjectIDs from the recordset
+    co_subquery = Recordsetitem.objects.filter(recordset=rs).values('recordid')
+    
+    # Subquery to get parentcog IDs from Collectionobjectgroupjoin
+    parent_cog_subquery = Collectionobjectgroupjoin.objects.filter(
+        childco__in=Subquery(co_subquery)
+    ).values('parentcog')
+    
+    # Main query to get Collectionobjectgroup objects
+    cogs = Collectionobjectgroup.objects.filter(id__in=Subquery(parent_cog_subquery))
+    return cogs
+
 def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collectionobject]:
     preps = get_cog_consolidated_preps(cog)
     
-    # Return list of distinct CollectionObjectIDs associated with the preparations
-    return {prep.collectionobject for prep in preps}
+    # Return set of distinct CollectionObjectIDs associated with the preparations
+    return set(prep.collectionobject for prep in preps)
