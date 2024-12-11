@@ -31,5 +31,3 @@ class TableSchemaTests(DefaultsSetup):
             Collectionobjectgroupjoin.objects.create(parentcog=cog_3, childcog=cog_2, childco=None)
         with self.assertRaises(BusinessRuleException), transaction.atomic():
             Collectionobjectgroupjoin.objects.create(parentcog=cog_3, childcog=None, childco=co_1)
-        # with self.assertRaises(BusinessRuleException), transaction.atomic():
-        #     Collectionobjectgroupjoin.objects.create(parentcog=cog_3, childcog=cog_1, childco=co_3)
