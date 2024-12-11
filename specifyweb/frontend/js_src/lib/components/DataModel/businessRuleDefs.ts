@@ -3,10 +3,10 @@ import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
   COG_PRIMARY_KEY,
+  COG_TOITSELF,
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
-  PARENTCOG_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -240,20 +240,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           );
         });
       },
-      parentCog: async (cog): Promise<BusinessRuleResult> => {
-        if (cog.url() === cog.get('parentCog')) {
-          return {
-            isValid: false,
-            reason: resourcesText.parentCogSameAsChild(),
-            saveBlockerKey: PARENTCOG_KEY,
-          };
-        }
-
-        return {
-          isValid: true,
-          saveBlockerKey: PARENTCOG_KEY,
-        };
-      },
     },
   },
 
@@ -283,6 +269,38 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
+      parentCog: async (cojo): Promise<BusinessRuleResult> => {
+        if (
+          cojo.get('childCog') === cojo.get('parentCog') &&
+          typeof cojo.get('childCog') === 'string' &&
+          typeof cojo.get('parentCog') === 'string'
+        ) {
+          return {
+            isValid: false,
+            reason: resourcesText.cogAddedToItself(),
+            saveBlockerKey: COG_TOITSELF,
+          };
+        }
+        return {
+          isValid: true,
+          saveBlockerKey: COG_TOITSELF,
+        };
+      },
+    },
+    onAdded: (CollectionObjectGroupJoin) => {
+      if (
+        CollectionObjectGroupJoin.get('childCog') ===
+          CollectionObjectGroupJoin.get('parentCog') &&
+        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
+        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
+      ) {
+        setSaveBlockers(
+          CollectionObjectGroupJoin,
+          CollectionObjectGroupJoin.specifyTable.field.childCog,
+          [resourcesText.cogAddedToItself()],
+          COG_TOITSELF
+        );
+      }
     },
     onRemoved(_, collection) {
       // Trigger Consolidated COGs field check when a child is deleted

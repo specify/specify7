@@ -38445,14 +38445,6 @@
         "column": "COGTypeID"
       },
       {
-        "name": "parentCog",
-        "type": "many-to-one",
-        "required": false,
-        "dependent": false,
-        "relatedModelName": "CollectionObjectGroup",
-        "column": "ParentCogID"
-      },
-      {
         "name": "cojo",
         "type": "one-to-one",
         "required": false,
