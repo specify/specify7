@@ -142,7 +142,7 @@ def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collect
     preps = get_cog_consolidated_preps(cog)
     
     # Return set of distinct CollectionObjectIDs associated with the preparations
-    return set(prep.collectionobject for prep in preps)
+    return set(prep.collectionobject.id for prep in preps)
 
 def get_consolidated_sibling_co_ids(co_ids: List[int]) -> Set[Collectionobject]:
     """
@@ -151,8 +151,8 @@ def get_consolidated_sibling_co_ids(co_ids: List[int]) -> Set[Collectionobject]:
     cog_sibling_co_ids = set()
     cogs = get_cogs_from_co_ids(co_ids)
     for cog in cogs:
-        cog_sibling_co_ids += get_cog_consolidated_preps_co_ids(cog)
-    cog_sibling_co_ids -= set(co_ids)
+        cog_sibling_co_ids.update(get_cog_consolidated_preps_co_ids(cog))
+    # cog_sibling_co_ids -= set(co_ids)
 
     return cog_sibling_co_ids
 
@@ -164,7 +164,7 @@ def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]
     if is_co_recordset(rs):
         cogs = get_cogs_from_co_recordset(rs)
         for cog in cogs:
-            cog_sibling_co_ids += get_cog_consolidated_preps_co_ids(cog)
-        cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+            cog_sibling_co_ids.update(get_cog_consolidated_preps_co_ids(cog))
+        # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
 
     return cog_sibling_co_ids

@@ -89,7 +89,7 @@ def preps_available_rs_django(request, recordset_id):
 
     return JsonResponse(rows, safe=False)
 
-@require_POST
+@require_POST # NOTE: why is this a POST request?
 @login_maybe_required
 def preps_available_rs(request, recordset_id):
     "Returns a list of preparations that are loanable?(for loan) based on the CO recordset <recordset_id>."
