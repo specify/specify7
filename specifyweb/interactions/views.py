@@ -9,8 +9,8 @@ from django.views.decorators.http import require_POST
 from specifyweb.interactions.cog_preps import (
     get_cog_consolidated_preps,
     get_cog_consolidated_preps_co_ids,
-    get_cogs_from_co_recordset,
-    is_co_recordset,
+    get_consolidated_co_siblings_from_rs,
+    get_consolidated_sibling_co_ids,
     remove_all_cog_sibling_preps_from_loan,
 )
 from specifyweb.middleware.general import require_GET
@@ -26,11 +26,8 @@ from django.http import JsonResponse
 
 def preps_available_rs_django(request, recordset_id):
     # Get consolidated CO ids if the recordset is a COG
-    rs = Recordsetitem.objects.filter(recordsetid=recordset_id).first()
-    cog_co_ids = set()
-    if is_cog_recordset(rs):
-        cog = Collectionobjectgroup.objects.get(id=recordset_id)
-        cog_co_ids = get_cog_consolidated_preps_co_ids(cog) - set(rs.recordsetitems.values_list('recordid', flat=True))
+    rs = Recordset.objects.filter(id=recordset_id).first()
+    cog_co_ids = get_consolidated_co_siblings_from_rs(rs)
 
     # Determine if isLoan is true
     isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
@@ -99,12 +96,7 @@ def preps_available_rs(request, recordset_id):
     
     # Get consolidated CO ids if the recordset is a COG
     rs = Recordset.objects.filter(id=recordset_id).first()
-    cog_co_ids = set()
-    if is_co_recordset(rs):
-        cogs = get_cogs_from_co_recordset(rs)
-        for cog in cogs:
-            cog_co_ids += get_cog_consolidated_preps_co_ids(cog)
-        cog_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+    cog_co_ids = get_consolidated_co_siblings_from_rs(rs)
     cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
 
     cursor = connection.cursor()
@@ -176,6 +168,9 @@ def preps_available_ids(request):
     co_ids = json.loads(request.POST['co_ids'])
 
     isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
+
+    cog_co_ids = get_consolidated_sibling_co_ids(co_ids)
+    co_ids += cog_co_ids
 
     sql = """
     select co.CatalogNumber, co.collectionObjectId, t.FullName, t.taxonId, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,

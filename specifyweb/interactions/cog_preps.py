@@ -105,19 +105,11 @@ def is_co_recordset(rs: Recordset) -> bool:
     """
     return rs.dbtableid == get_table_id_by_model_name('Collectionobject')
 
-def prep_cog_recordset(rs: Recordset) -> Optional[List[Preparation]]:
-    if not is_cog_recordset(rs):
-        return None
-    
-    # Get recordsetitems
-    recordset_items = rs.recordsetitems.values_list("recordid", flat=True)
-
-    # Get the cog ids from the recordset items
-    cogs = Collectionobjectgroup.objects.filter(id__in=recordset_items)
-
-    # TODO
-
 def get_cogs_from_co_recordset(rs: Recordset) -> Optional[QuerySet[Collectionobjectgroup]]:
+    """
+    Get the CollectionObjectGroups from the CollectionObject recordset
+    """
+
     if not is_co_recordset(rs):
         return None
     
@@ -133,8 +125,46 @@ def get_cogs_from_co_recordset(rs: Recordset) -> Optional[QuerySet[Collectionobj
     cogs = Collectionobjectgroup.objects.filter(id__in=Subquery(parent_cog_subquery))
     return cogs
 
+def get_cogs_from_co_ids(co_ids: List[int]) -> Optional[QuerySet[Collectionobjectgroup]]:
+    """
+    Get the CollectionObjectGroups from the CollectionObject IDs
+    """
+    # Subquery to get parentcog IDs from Collectionobjectgroupjoin
+    parent_cog_subquery = Collectionobjectgroupjoin.objects.filter(
+        childco__in=co_ids
+    ).values('parentcog')
+    
+    # Main query to get Collectionobjectgroup objects
+    cogs = Collectionobjectgroup.objects.filter(id__in=Subquery(parent_cog_subquery))
+    return cogs
+
 def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collectionobject]:
     preps = get_cog_consolidated_preps(cog)
     
     # Return set of distinct CollectionObjectIDs associated with the preparations
     return set(prep.collectionobject for prep in preps)
+
+def get_consolidated_sibling_co_ids(co_ids: List[int]) -> Set[Collectionobject]:
+    """
+    Get the consolidated sibling CO IDs of the COs in the list
+    """
+    cog_sibling_co_ids = set()
+    cogs = get_cogs_from_co_ids(co_ids)
+    for cog in cogs:
+        cog_sibling_co_ids += get_cog_consolidated_preps_co_ids(cog)
+    cog_sibling_co_ids -= set(co_ids)
+
+    return cog_sibling_co_ids
+
+def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]:
+    """
+    Get the consolidated sibling CO IDs of the COs in the recordset
+    """
+    cog_sibling_co_ids = set()
+    if is_co_recordset(rs):
+        cogs = get_cogs_from_co_recordset(rs)
+        for cog in cogs:
+            cog_sibling_co_ids += get_cog_consolidated_preps_co_ids(cog)
+        cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+
+    return cog_sibling_co_ids
