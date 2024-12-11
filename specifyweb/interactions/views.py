@@ -8,9 +8,8 @@ from django.views.decorators.http import require_POST
 
 from specifyweb.interactions.cog_preps import (
     get_cog_consolidated_preps,
-    get_cog_consolidated_preps_co_ids,
     get_consolidated_co_siblings_from_rs,
-    get_consolidated_sibling_co_ids,
+    add_consolidated_sibling_co_ids,
     remove_all_cog_sibling_preps_from_loan,
 )
 from specifyweb.middleware.general import require_GET
@@ -96,7 +95,8 @@ def preps_available_rs(request, recordset_id):
     
     # Get consolidated CO ids if the recordset is a COG
     rs = Recordset.objects.filter(id=recordset_id).first()
-    cog_co_ids = get_consolidated_co_siblings_from_rs(rs)
+    # cog_co_ids = get_consolidated_co_siblings_from_rs(rs)
+    cog_co_ids = set()
     cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
 
     cursor = connection.cursor()
@@ -169,8 +169,7 @@ def preps_available_ids(request):
 
     isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
 
-    cog_co_ids = get_consolidated_sibling_co_ids(co_ids)
-    co_ids += cog_co_ids
+    co_ids = add_consolidated_sibling_co_ids(co_ids, id_fld)
 
     sql = """
     select co.CatalogNumber, co.collectionObjectId, t.FullName, t.taxonId, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,

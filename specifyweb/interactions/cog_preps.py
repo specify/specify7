@@ -1,4 +1,4 @@
-from typing import List, Optional, Set
+from typing import Any, List, Optional, Set
 from django.db.models import Subquery
 from django.db.models.query import QuerySet
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset, Recordsetitem
@@ -144,17 +144,23 @@ def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collect
     # Return set of distinct CollectionObjectIDs associated with the preparations
     return set(prep.collectionobject.id for prep in preps)
 
-def get_consolidated_sibling_co_ids(co_ids: List[int]) -> Set[Collectionobject]:
+def add_consolidated_sibling_co_ids(request_co_ids: List[Any], id_fld: Optional[str]=None) -> List[Any]:
     """
     Get the consolidated sibling CO IDs of the COs in the list
     """
     cog_sibling_co_ids = set()
+    if id_fld is None:
+        # id_fld = 'id'
+        id_fld = 'catalognumber'
+    id_fld = id_fld.lower()
+    co_ids = Collectionobject.objects.filter(**{f"{id_fld}__in": request_co_ids}).values_list('id', flat=True)
     cogs = get_cogs_from_co_ids(co_ids)
     for cog in cogs:
         cog_sibling_co_ids.update(get_cog_consolidated_preps_co_ids(cog))
     # cog_sibling_co_ids -= set(co_ids)
 
-    return cog_sibling_co_ids
+    cog_sibling_co_idfld_ids = Collectionobject.objects.filter(id__in=cog_sibling_co_ids).values_list(id_fld, flat=True)
+    return list(set(request_co_ids).union(set(cog_sibling_co_idfld_ids)))
 
 def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]:
     """
@@ -164,7 +170,7 @@ def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]
     if is_co_recordset(rs):
         cogs = get_cogs_from_co_recordset(rs)
         for cog in cogs:
-            cog_sibling_co_ids.update(get_cog_consolidated_preps_co_ids(cog))
+            cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
         # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
 
     return cog_sibling_co_ids
