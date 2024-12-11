@@ -10,7 +10,7 @@ import { camelToHuman } from '../../utils/utils';
 import { type UiFormatter, getUiFormatters } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
-import { AnySchema } from './helperTypes';
+import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { schema, unescape } from './schema';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';

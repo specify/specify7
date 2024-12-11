@@ -271,7 +271,11 @@ export const ResourceBase = Backbone.Model.extend({
     related.parent = this; // REFACTOR: this doesn't belong here
 
     switch (field.type) {
-      case 'one-to-one':
+      case 'one-to-one': {
+        this.dependentResources[field.name.toLowerCase()] = related;
+        related.set(field.otherSideName, this.url()); // REFACTOR: this logic belongs somewhere else. up probably
+        break;
+      }
       case 'many-to-one': {
         this.dependentResources[field.name.toLowerCase()] = related;
         break;
@@ -688,10 +692,13 @@ export const ResourceBase = Backbone.Model.extend({
         let toOne = this.dependentResources[fieldName];
 
         if (!toOne) {
-          _(value).isString() || softFail('expected URI, got', value);
-          toOne = resourceFromUrl(value, {
-            noBusinessRules: options.noBusinessRules,
-          });
+          if (typeof value === 'string')
+            toOne = resourceFromUrl(value, {
+              noBusinessRules: options.noBusinessRules,
+            });
+          else if (field.isDependent() && typeof value === 'object') {
+            toOne = new field.relatedTable.Resource({ ...value });
+          } else _(value).isString() || softFail('expected URI, got', value);
 
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
