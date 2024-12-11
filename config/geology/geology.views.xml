@@ -74,29 +74,22 @@
 		<view name="MineralAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectAttributeBusRules">
 			<desc>Subform within the Collection Object form.</desc>
 			<altviews>
-				<altview name="RockAttributes View" viewdef="RockAttributes (2)" mode="view"/>
-				<altview name="RockAttributes Edit" viewdef="RockAttributes (2)" mode="edit" default="true"/>
+				<altview name="RockAttributes View" viewdef="MineralAttributes" mode="view"/>
+				<altview name="RockAttributes Edit" viewdef="MineralAttributes" mode="edit" default="true"/>
 			</altviews>
 		</view>
 		<view name="MeteoriteAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectAttributeBusRules">
 			<desc>Subform within the Collection Object form.</desc>
 			<altviews>
-				<altview name="RockAttributes View" viewdef="RockAttributes (3)" mode="view"/>
-				<altview name="RockAttributes Edit" viewdef="RockAttributes (3)" mode="edit" default="true"/>
+				<altview name="MeteoriteAttributes View" viewdef="MeteoriteAttributes" mode="view"/>
+				<altview name="MeteoriteAttributes Edit" viewdef="MeteoriteAttributes" mode="edit" default="true"/>
 			</altviews>
 		</view>
 		<view name="FossilAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectAttributeBusRules">
 			<desc>Subform within the Collection Object form.</desc>
 			<altviews>
-				<altview name="RockAttributes View" viewdef="RockAttributes (4)" mode="view"/>
-				<altview name="RockAttributes Edit" viewdef="RockAttributes (4)" mode="edit" default="true"/>
-			</altviews>
-		</view>
-		<view name="AllAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectAttributeBusRules">
-			<desc>Subform within the Collection Object form.</desc>
-			<altviews>
-				<altview name="PaleoAttributes View" viewdef="PaleoAttributes (2)" mode="view"/>
-				<altview name="PaleoAttributes Edit" viewdef="PaleoAttributes (2)" mode="edit" default="true"/>
+				<altview name="FossilAttributes View" viewdef="FossilAttributes" mode="view"/>
+				<altview name="FossilAttributes Edit" viewdef="FossilAttributes" mode="edit" default="true"/>
 			</altviews>
 		</view>
 		<view name="CollectingEvent" class="edu.ku.brc.specify.datamodel.CollectingEvent" busrules="edu.ku.brc.specify.datamodel.busrules.CollectingEventBusRules" isinternal="false" resourcelabels="false">
@@ -111,6 +104,13 @@
 			<altviews>
 				<altview name="CollectingEventSub View" viewdef="CollectingEventSub" mode="view" default="true"/>
 				<altview name="CollectingEventSub Edit" viewdef="CollectingEventSub" mode="edit"/>
+			</altviews>
+		</view>
+		<view name="CollectionObjectAttribute" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectAttributeBusRules">
+			<desc>Subform within the Collection Object form.</desc>
+			<altviews>
+				<altview name="PaleoAttributes View" viewdef="CollectionObjectAttribute" mode="view"/>
+				<altview name="PaleoAttributes Edit" viewdef="CollectionObjectAttribute" mode="edit" default="true"/>
 			</altviews>
 		</view>
 	</views>
@@ -129,8 +129,8 @@
 					<cell type="field" id="1" name="catalogNumber" uitype="text"/>
 					<cell type="label" labelfor="COT"/>
 					<cell type="field" id="COT" name="collectionObjectType" uitype="combobox" colspan="3"/>
-					<cell type="label" labelfor="14"/>
-					<cell type="field" id="14" name="altCatalogNumber" uitype="combobox" colspan="1"/>
+					<cell type="label" label="Collection Object Group"/>
+					<cell type="field" id="COG" name="coParentCog" uitype="querycbx" readonly="true"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
@@ -140,25 +140,6 @@
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" default="today" uifieldformatter="Date"/>
 				</row>
-				<!-- 		<row>
-			<cell type="label" labelfor="status"/>
-			<cell type="field" id="status" name="text3" uitype="combobox"/>
-			<cell type="label" labelfor="container"/>
-			<cell type="field" id="container" name="container" uitype="querycbx" isrequired="false" colspan="3"/>
-			<cell type="field" id="primary" name="yesNo1" uitype="checkbox"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="quality"/>
-			<cell type="field" id="quality" name="text4" uitype="combobox" colspan="3"/>
-			<cell type="label" labelfor="Role"/>
-			<cell type="field" id="Role" name="text2" uitype="text"/>
-			<cell type="label" labelfor="Proportion"/>
-			<cell type="field" id="Proportion" name="text7" uitype="text"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="remarks"/>
-			<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="12" rows="2"/>
-		</row> -->
 				<!-- When PaleoContext is "shared", use a query combo box (querycbx) -->
 				<row>
 					<cell type="label" labelfor="9"/>
@@ -168,6 +149,33 @@
 				<!-- 		<row>
 			<cell type="subview" viewname="PaleoContext" id="9" name="paleoContext" defaulttype="form" colspan="14"/>
 		</row> -->
+				<row>
+					<cell type="panel" colspan="14">
+						<row>
+							<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="CollectionObjectAttribute" colspan="14"/>
+						</row>
+						<rows condition="collectionObjectType.Name=Fossil">
+							<row>
+								<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="FossilAttributes" colspan="14"/>
+							</row>
+						</rows>
+						<rows condition="collectionObjectType.Name=Mineral">
+							<row>
+								<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MineralAttributes" colspan="14"/>
+							</row>
+						</rows>
+						<rows condition="collectionObjectType.Name=Rock">
+							<row>
+								<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="RockAttributes" colspan="14"/>
+							</row>
+						</rows>
+						<rows condition="collectionObjectType.Name=Meteorite">
+							<row>
+								<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MeteoriteAttributes" colspan="14"/>
+							</row>
+						</rows>
+					</cell>
+				</row>
 				<row>
 					<cell type="panel" id="leftSide" colspan="5" initialize="verticalAlign=start">
 						<rows>
@@ -393,7 +401,7 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="pcn"/>
-					<cell type="field" id="pcn" name="paleoContextName" uitype="text"/>
+					<cell type="field" id="pcn" name="paleoContextName" uitype="text" colspan="5"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
@@ -407,10 +415,10 @@
 					<cell type="label" labelfor="254"/>
 					<cell type="field" id="254" name="chronosStratEnd" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
 				</row>
-				<!--<row>
+				<row>
 					<cell type="label" labelfor="tectonics"/>
 					<cell type="field" id="tectonics" name="tectonicUnit" uitype="querycbx" isrequired="false" colspan="6"/>
-    			</row> -->
+				</row>
 				<row>
 					<cell type="label" labelfor="4"/>
 					<cell type="field" id="4" name="remarks" uitype="textareabrief" rows="2" colspan="6"/>
@@ -750,7 +758,7 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef name="RockAttributes (2)" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="MineralAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Form For OtherIdentifier</desc>
 			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
@@ -938,7 +946,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="RockAttributes (3)" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="MeteoriteAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Form For OtherIdentifier</desc>
 			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
@@ -1125,7 +1133,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="RockAttributes (4)" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="FossilAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>Form For OtherIdentifier</desc>
 			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
 			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
@@ -1139,120 +1147,6 @@
 					<cell type="label" labelfor="weight"/>
 					<cell type="field" id="weight" name="text4" uitype="text"/>
 				</row>
-			</rows>
-		</viewdef>
-		<viewdef name="PaleoAttributes (2)" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>Form For OtherIdentifier</desc>
-			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,140px,5px,95px,2px,140px,5px,135px,2px,140px,5px,84px,2px,145px,0px,p:g</columnDef>
-			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2),0px</columnDef>
-			<rowDef auto="true" sep="2px" cell="p"/>
-			<rows>
-				<row>
-					<cell type="label" labelfor="size"/>
-					<cell type="field" id="size" name="text3" uitype="text"/>
-					<cell type="label" labelfor="weight"/>
-					<cell type="field" id="weight" name="text4" uitype="text"/>
-					<cell type="label" labelfor="color"/>
-					<cell type="field" id="color" name="text7" uitype="text"/>
-					<cell type="label" labelfor="streak"/>
-					<cell type="field" id="streak" name="text8" uitype="text"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="hardness"/>
-					<cell type="field" id="hardness" name="text10" uitype="text"/>
-					<cell type="label" labelfor="crystalForm"/>
-					<cell type="field" id="crystalForm" name="text11" uitype="text"/>
-					<cell type="label" labelfor="cleavage"/>
-					<cell type="field" id="cleavage" name="text13" uitype="text"/>
-					<cell type="label" labelfor="composition"/>
-					<cell type="field" id="composition" name="text5" uitype="text"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="shape"/>
-					<cell type="field" id="shape" name="text6" uitype="text"/>
-					<cell type="label" labelfor="magnetism"/>
-					<cell type="field" id="magnetism" name="text14" uitype="text"/>
-					<cell type="label" labelfor="impactFeatures"/>
-					<cell type="field" id="impactFeatures" name="text15" uitype="text"/>
-					<cell type="label" labelfor="widmanstatten"/>
-					<cell type="field" id="widmanstatten" name="yesNo1" uitype="checkbox" initialize="editable=true"/>
-				</row>
-				<row>
-					<cell type="separator" label="Specimen Value ($)" colspan="16"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="appraisedValue"/>
-					<cell type="field" id="appraisedValue" name="number1" uitype="text"/>
-					<cell type="label" labelfor="currentValue"/>
-					<cell type="field" id="currentValue" name="number2" uitype="text"/>
-					<cell type="label" labelfor="insuredValue"/>
-					<cell type="field" id="insuredValue" name="number3" uitype="text"/>
-				</row>
-				<!-- 		<row>
-			<cell type="separator" label="Age Data" colspan="15"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="name"/>
-			<cell type="field" id="name" name="text30" uitype="text" colspan="3"/>
-			<cell type="label" labelfor="verbatimAge"/>
-			<cell type="field" id="verbatimAge" name="text32" uitype="text" colspan="1"/>
-			<cell type="label" labelfor="description"/>
-			<cell type="field" id="description" name="text31" uitype="textareabrief" colspan="3"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="datingmethod"/>
-			<cell type="field" id="datingmethod" name="text23" uitype="text" colspan="3"/>
-			<cell type="label" labelfor="datingMethodRemarks"/>
-			<cell type="field" id="datingMethodRemarks" name="text22" uitype="textarea" colspan="7"/>
-		</row>
-		<row>
-			<cell type="separator" label="Relative Age" colspan="15"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="lowerBound"/>
-			<cell type="field" id="lowerBound" name="text25" uitype="text" colspan="1"/>
-			<cell type="label" labelfor="upperBound"/>
-			<cell type="field" id="upperBound" name="text26" uitype="text" colspan="1"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="n30"/>
-			<cell type="field" id="n30" name="number30" uitype="text"/>
-			<cell type="label" labelfor="n31"/>
-			<cell type="field" id="n31" name="number31" uitype="text"/>
-			<cell type="label" labelfor="relativeAgeUnits"/>
-			<cell type="field" id="relativeAgeUnits" name="text2" uitype="text"/>
-			<cell type="label" labelfor="relativeUncertainty"/>
-			<cell type="field" id="relativeUncertainty" name="text16" uitype="text"/>
-		</row>
-		<row>
-			<cell type="separator" label="Absolute Age" colspan="15"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="absoluteValue"/>
-			<cell type="field" id="absoluteValue" name="text33" uitype="text"/>
-			<cell type="label" labelfor="absoluteUnits"/>
-			<cell type="field" id="absoluteUnits" name="text34" uitype="text"/>
-			<cell type="label" labelfor="absoluteUncertainty"/>
-			<cell type="field" id="absoluteUncertainty" name="text35" uitype="text"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="age"/>
-			<cell type="field" id="age" name="number6" uitype="text"/>
-			<cell type="label" labelfor="error"/>
-			<cell type="field" id="error" name="number7" uitype="text"/>
-		</row>
-		<row>
-			<cell type="label" labelfor="technique"/>
-			<cell type="field" id="technique" name="text27" uitype="text"/>
-			<cell type="label" labelfor="material"/>
-			<cell type="field" id="material" name="text28" uitype="text"/>
-			<cell type="label" labelfor="ageInterpretationClass"/>
-			<cell type="field" id="ageInterpretationClass" name="text29" uitype="text"/>
-			<cell type="label" labelfor="formationEvent"/>
-			<cell type="field" id="formationEvent" name="text36" uitype="text"/>
-		</row> -->
 			</rows>
 		</viewdef>
 		<viewdef name="CollectingEvent" class="edu.ku.brc.specify.datamodel.CollectingEvent" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -1284,6 +1178,10 @@
 					<cell type="field" id="4" name="locality" uitype="querycbx" initialize="name=Locality;title=Locality;clonebtn=true" colspan="10"/>
 				</row>
 				<row>
+					<cell type="label" labelfor="10"/>
+					<cell type="field" id="10" name="collectingTrip" uitype="querycbx" initialize="name=CollectingTrip;title=CollectingTrip" colspan="10"/>
+				</row>
+				<row>
 					<cell type="label" labelfor="6"/>
 					<cell type="field" id="6" name="remarks" uitype="textareabrief" rows="2" colspan="10"/>
 				</row>
@@ -1298,10 +1196,6 @@
 				</row>
 				<row>
 					<cell type="subview" id="attachments" viewname="ObjectAttachment" name="collectingEventAttachments" colspan="13" initialize="btn=true;icon=CollectingEventAttachment"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="pcsh"/>
-					<cell type="field" uitype="querycbx" id="pcsh" name="paleoContext" initialize="name=PaleoContext" colspan="10"/>
 				</row>
 				<!--<row>
                  <cell type="subview" id="8" name="collectingEventAttribute" viewname="CollectingEventAttribute" colspan="13"/>
@@ -1414,6 +1308,120 @@
 					</cell>
 					<cell type="subview" viewname="Collectors" id="12" name="collectors" colspan="6" rows="3"/>
 				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="CollectionObjectAttribute" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Form For OtherIdentifier</desc>
+			<columnDef>100px,2px,115px,5px,75px,2px,115px,5px,109px,2px,115px,5px,60px,2px,115px,0px,p:g</columnDef>
+			<columnDef os="lnx">115px,2px,120px,5px,95px,2px,120px,5px,130px,2px,120px,5px,74px,2px,120px,0px,p:g</columnDef>
+			<columnDef os="mac">130px,2px,140px,5px,95px,2px,140px,5px,135px,2px,140px,5px,84px,2px,145px,0px,p:g</columnDef>
+			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2),0px</columnDef>
+			<rowDef auto="true" sep="2px" cell="p"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="size"/>
+					<cell type="field" id="size" name="text3" uitype="text"/>
+					<cell type="label" labelfor="weight"/>
+					<cell type="field" id="weight" name="text4" uitype="text"/>
+					<cell type="label" labelfor="color"/>
+					<cell type="field" id="color" name="text7" uitype="text"/>
+					<cell type="label" labelfor="streak"/>
+					<cell type="field" id="streak" name="text8" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="hardness"/>
+					<cell type="field" id="hardness" name="text10" uitype="text"/>
+					<cell type="label" labelfor="crystalForm"/>
+					<cell type="field" id="crystalForm" name="text11" uitype="text"/>
+					<cell type="label" labelfor="cleavage"/>
+					<cell type="field" id="cleavage" name="text13" uitype="text"/>
+					<cell type="label" labelfor="composition"/>
+					<cell type="field" id="composition" name="text5" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="shape"/>
+					<cell type="field" id="shape" name="text6" uitype="text"/>
+					<cell type="label" labelfor="magnetism"/>
+					<cell type="field" id="magnetism" name="text14" uitype="text"/>
+					<cell type="label" labelfor="impactFeatures"/>
+					<cell type="field" id="impactFeatures" name="text15" uitype="text"/>
+					<cell type="label" labelfor="widmanstatten"/>
+					<cell type="field" id="widmanstatten" name="yesNo1" uitype="checkbox" initialize="editable=true"/>
+				</row>
+				<row>
+					<cell type="separator" label="Specimen Value ($)" colspan="16"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="appraisedValue"/>
+					<cell type="field" id="appraisedValue" name="number1" uitype="text"/>
+					<cell type="label" labelfor="currentValue"/>
+					<cell type="field" id="currentValue" name="number2" uitype="text"/>
+					<cell type="label" labelfor="insuredValue"/>
+					<cell type="field" id="insuredValue" name="number3" uitype="text"/>
+				</row>
+				<!-- 		<row>
+			<cell type="separator" label="Age Data" colspan="15"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="name"/>
+			<cell type="field" id="name" name="text30" uitype="text" colspan="3"/>
+			<cell type="label" labelfor="verbatimAge"/>
+			<cell type="field" id="verbatimAge" name="text32" uitype="text" colspan="1"/>
+			<cell type="label" labelfor="description"/>
+			<cell type="field" id="description" name="text31" uitype="textareabrief" colspan="3"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="datingmethod"/>
+			<cell type="field" id="datingmethod" name="text23" uitype="text" colspan="3"/>
+			<cell type="label" labelfor="datingMethodRemarks"/>
+			<cell type="field" id="datingMethodRemarks" name="text22" uitype="textarea" colspan="7"/>
+		</row>
+		<row>
+			<cell type="separator" label="Relative Age" colspan="15"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="lowerBound"/>
+			<cell type="field" id="lowerBound" name="text25" uitype="text" colspan="1"/>
+			<cell type="label" labelfor="upperBound"/>
+			<cell type="field" id="upperBound" name="text26" uitype="text" colspan="1"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="n30"/>
+			<cell type="field" id="n30" name="number30" uitype="text"/>
+			<cell type="label" labelfor="n31"/>
+			<cell type="field" id="n31" name="number31" uitype="text"/>
+			<cell type="label" labelfor="relativeAgeUnits"/>
+			<cell type="field" id="relativeAgeUnits" name="text2" uitype="text"/>
+			<cell type="label" labelfor="relativeUncertainty"/>
+			<cell type="field" id="relativeUncertainty" name="text16" uitype="text"/>
+		</row>
+		<row>
+			<cell type="separator" label="Absolute Age" colspan="15"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="absoluteValue"/>
+			<cell type="field" id="absoluteValue" name="text33" uitype="text"/>
+			<cell type="label" labelfor="absoluteUnits"/>
+			<cell type="field" id="absoluteUnits" name="text34" uitype="text"/>
+			<cell type="label" labelfor="absoluteUncertainty"/>
+			<cell type="field" id="absoluteUncertainty" name="text35" uitype="text"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="age"/>
+			<cell type="field" id="age" name="number6" uitype="text"/>
+			<cell type="label" labelfor="error"/>
+			<cell type="field" id="error" name="number7" uitype="text"/>
+		</row>
+		<row>
+			<cell type="label" labelfor="technique"/>
+			<cell type="field" id="technique" name="text27" uitype="text"/>
+			<cell type="label" labelfor="material"/>
+			<cell type="field" id="material" name="text28" uitype="text"/>
+			<cell type="label" labelfor="ageInterpretationClass"/>
+			<cell type="field" id="ageInterpretationClass" name="text29" uitype="text"/>
+			<cell type="label" labelfor="formationEvent"/>
+			<cell type="field" id="formationEvent" name="text36" uitype="text"/>
+		</row> -->
 			</rows>
 		</viewdef>
 	</viewdefs>
