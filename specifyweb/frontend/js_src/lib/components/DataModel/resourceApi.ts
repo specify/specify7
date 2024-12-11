@@ -551,24 +551,6 @@ export const ResourceBase = Backbone.Model.extend({
        * Needed for taxonTreeDef on discipline because field.isVirtual equals false
        */
       case 'one-to-one': {
-        // If (!value) {
-        //   /*
-        //    * BUG: tighten up this check.
-        //    * The FK is null, or not a URI or inlined resource at any rate
-        //    */
-        //   If (field.isDependent()) this.storeDependent(field, null);
-        //   Else this.storeIndependent(field, null);
-        //   Return value;
-        // }
-
-        /*
-         * Const toOne = maybeMakeResource(value, relatedTable);
-         * if (field.isDependent()) this.storeDependent(field, toOne);
-         * else this.storeIndependent(field, toOne);
-         * this.trigger(`change:${fieldName}`, this);
-         * this.trigger('change', this);
-         * return toOne.url();
-         */
         return value;
       }
     }
