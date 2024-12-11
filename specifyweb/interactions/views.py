@@ -7,14 +7,15 @@ from django.db import connection, transaction
 from django.views.decorators.http import require_POST
 
 from specifyweb.interactions.cog_preps import (
+    get_all_sibling_preps_within_consolidated_cog,
     get_cog_consolidated_preps,
     get_consolidated_co_siblings_from_rs,
     add_consolidated_sibling_co_ids,
     remove_all_cog_sibling_preps_from_loan,
 )
 from specifyweb.middleware.general import require_GET
-from specifyweb.permissions.permissions import check_table_permissions
-from specifyweb.specify.api import toJson
+from specifyweb.permissions.permissions import check_table_permissions, table_permissions_checker
+from specifyweb.specify.api import get_resource, toJson, strict_uri_to_model
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Loan, Loanpreparation, \
     Loanreturnpreparation, Preparation, Recordset, Recordsetitem
 from specifyweb.specify.views import login_maybe_required
@@ -409,3 +410,43 @@ def remove_cog_consolidated_preps(request: http.HttpRequest, prep_id: int, loan_
     prep = Preparation.objects.get(id=prep_id)
     loan = Loan.objects.get(id=loan_id)
     remove_all_cog_sibling_preps_from_loan(prep, loan)
+
+@require_POST
+@login_maybe_required
+def create_sibling_loan_preps(request: http.HttpRequest):
+    # Extract from the loanpreps key in body of the request, a list of loanpreparations
+    loanprep_uris = json.loads(request.POST['loanpreps'])
+
+    # Extract preparation IDs from loanpreparation URIs
+    prep_ids = {
+        Loanpreparation.objects.get(id=strict_uri_to_model(uri, 'Loanpreparation')[1]).preparation.id
+        for uri in loanprep_uris
+    }
+
+    # Get all sibling preparations within the consolidated cog
+    sibling_preps = {
+        sibling_prep.id
+        for prep_id in prep_ids
+        for sibling_prep in get_all_sibling_preps_within_consolidated_cog(Preparation.objects.get(id=prep_id))
+    }
+
+    # Remove original preparation IDs from sibling preparations
+    sibling_preps -= prep_ids
+
+    # Get loan and discipline from the first loanpreparation
+    loanprep = Loanpreparation.objects.get(id=strict_uri_to_model(loanprep_uris[0], 'Loanpreparation')[1])
+    loan = loanprep.loan
+    discipline = loan.discipline
+
+    # Create new loanpreparations for sibling preparations
+    new_loanpreps = [
+        Loanpreparation(loan=loan, preparation=Preparation.objects.get(id=sibling_prep_id), discipline=discipline, isresolved=True)
+        for sibling_prep_id in sibling_preps
+    ]
+    Loanpreparation.objects.bulk_create(new_loanpreps)
+
+    # Map new_loanprep_ids to URIs
+    new_loanprep_uris = [f"/api/specify/loanpreparation/{loanprep.id}/" for loanprep in new_loanpreps]
+
+    # Return the URIs of the new loanpreparations
+    return http.HttpResponse(toJson(new_loanprep_uris), content_type='application/json') 

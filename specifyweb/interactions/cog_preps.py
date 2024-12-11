@@ -74,8 +74,8 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     sibling_preps = get_cog_consolidated_preps(top_consolidated_cog)
     # preps.extend(sibling_preps)
 
-    # Defup the list
-    # preps = list(set(preps))
+    # Dedup the list
+    preps = list(set(preps))
 
     # return preps
     return sibling_preps
