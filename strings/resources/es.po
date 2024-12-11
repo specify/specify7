@@ -580,17 +580,17 @@ msgstr "Valor de campo condicional"
 msgid "formatPreview"
 msgstr "Vista previa de formato"
 
-#: components/DataModel/businessRuleDefs.ts:354
 #: components/DataModel/businessRuleDefs.ts:372
+#: components/DataModel/businessRuleDefs.ts:390
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Se requiere una determinación actual."
 
-#: components/DataModel/businessRuleDefs.ts:247
+#: components/DataModel/businessRuleDefs.ts:280
+#: components/DataModel/businessRuleDefs.ts:300
 #. Used in: Components > Data Model > Business Rule Defs
-#, fuzzy
-msgid "parentCogSameAsChild"
+msgid "cogAddedToItself"
 msgstr ""
 
 #: components/DataModel/businessRuleDefs.ts:229

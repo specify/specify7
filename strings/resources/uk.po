@@ -497,15 +497,16 @@ msgstr "Умовне значення поля"
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
 
-#: components/DataModel/businessRuleDefs.ts:354
 #: components/DataModel/businessRuleDefs.ts:372
+#: components/DataModel/businessRuleDefs.ts:390
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "Потрібне поточне визначення."
 
-#: components/DataModel/businessRuleDefs.ts:247
+#: components/DataModel/businessRuleDefs.ts:280
+#: components/DataModel/businessRuleDefs.ts:300
 #. Used in: Components > Data Model > Business Rule Defs
-msgid "parentCogSameAsChild"
+msgid "cogAddedToItself"
 msgstr ""
 
 #: components/DataModel/businessRuleDefs.ts:229
