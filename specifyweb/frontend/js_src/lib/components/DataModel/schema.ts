@@ -12,7 +12,7 @@
  * schema, but it's here for now.
  */
 
-import type { RR, Writable } from '../../utils/types';
+import type { IR, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
 
 type Schema = {
@@ -21,6 +21,7 @@ type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
+  readonly collectionObjectTypeCatalogNumberFormats: IR<string | null>;
   readonly defaultCollectionObjectType: string | null;
   readonly orgHierarchy: readonly [
     'CollectionObject',
@@ -50,6 +51,8 @@ const schemaBase: Writable<Schema> = {
 
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
+
+  collectionObjectTypeCatalogNumberFormats: {},
 
   // Default collectionObjectType for the collection
   defaultCollectionObjectType: undefined!,
@@ -94,6 +97,8 @@ export const fetchContext = load<
   schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
   schemaBase.paleoContextChildTable = data.paleoContextChildTable;
   schemaBase.catalogNumFormatName = data.catalogNumFormatName;
+  schemaBase.collectionObjectTypeCatalogNumberFormats =
+    data.collectionObjectTypeCatalogNumberFormats;
   schemaBase.defaultCollectionObjectType = data.defaultCollectionObjectType;
   return schemaBase;
 });

@@ -2093,10 +2093,12 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="taxontreedef" uitype="querycbx" isrequired="true"/>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="taxontreedef" uitype="querycbx" isrequired="true"/>
 				</row>
 			</rows>
 		</viewdef>
