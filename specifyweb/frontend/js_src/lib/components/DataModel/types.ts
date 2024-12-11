@@ -6463,6 +6463,7 @@ export type Spdataset = {
 export type CollectionObjectType = {
   readonly tableName: 'CollectionObjectType';
   readonly fields: {
+    readonly catalogNumberFormatName: string | null;
     readonly name: string;
     readonly text1: string | null;
     readonly text2: string | null;

@@ -842,4 +842,8 @@ export const resourcesText = createDictionary({
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
   },
+  primaryCogChildRequired: {
+    'en-us':
+      'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
 } as const);
