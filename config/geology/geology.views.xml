@@ -129,8 +129,8 @@
 					<cell type="field" id="1" name="catalogNumber" uitype="text"/>
 					<cell type="label" labelfor="COT"/>
 					<cell type="field" id="COT" name="collectionObjectType" uitype="combobox" colspan="3"/>
-					<cell type="label" label="Collection Object Group"/>
-					<cell type="field" id="COG" name="coParentCog" uitype="querycbx" readonly="true"/>
+					<cell type="label" labelfor="altCatNum"/>
+					<cell type="field" id="altCatNum" name="altCatalogNumber" uitype="text"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
@@ -139,6 +139,9 @@
 					<cell type="field" id="4" name="cataloger" uitype="querycbx" initialize="name=Agent;title=Catalog Agent" colspan="3"/>
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" default="today" uifieldformatter="Date"/>
+				</row>
+				<row>
+					<cell type="subview" viewname="CollectionObjectGroupJoin_Sub" id="co_cog_join" name="cojo" colspan="14"/>
 				</row>
 				<!-- When PaleoContext is "shared", use a query combo box (querycbx) -->
 				<row>
