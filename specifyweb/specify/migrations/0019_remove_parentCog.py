@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0015_add_version_to_ages'),
+        ('specify', '0018_cot_catnum_schema'),
     ]
 
     operations = [
