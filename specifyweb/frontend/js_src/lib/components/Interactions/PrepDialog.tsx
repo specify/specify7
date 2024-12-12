@@ -25,6 +25,7 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import type { InteractionWithPreps, PreparationData } from './helpers';
 import { interactionPrepTables } from './helpers';
@@ -99,7 +100,10 @@ export function PrepDialog({
       body: {
         ids: preparationIds,
       },
-    }).then(({ data }) => data);
+    }).then(({ data }) => {
+      console.log(data);
+      return data;
+    });
 
   return (
     <Dialog
@@ -189,44 +193,46 @@ export function PrepDialog({
             })
           );
 
-          const preparationIds = items.map((item) =>
-            idFromUrl(item.get('preparation') ?? '')
-          );
+          const preparationIds: RA<number> = items
+            .map((item) => idFromUrl(item.get('preparation') ?? ''))
+            .filter((id): id is number => id !== undefined);
 
-          fetchSiblings(preparationIds).then((siblings) => {
-            const siblingsPreps = siblings.map((preparation) => {
-              const result = new itemTable.Resource();
-              result.set(
-                'preparation',
-                getResourceApiUrl('Preparation', preparation)
-              );
-              // Need to find a way to set the maximum
-              result.set('quantity', 1);
-              const loanPreparation = toTable(result, 'LoanPreparation');
-              loanPreparation?.set('quantityReturned', 0);
-              loanPreparation?.set('quantityResolved', 0);
-              return result;
-            });
-
-            const mergedPreparations = [...items, ...siblingsPreps];
-
-            if (typeof itemCollection === 'object') {
-              itemCollection.add(mergedPreparations);
-              handleClose();
-            } else {
-              const interaction = new table.Resource();
-              setPreparationItems(interaction, mergedPreparations);
-
-              const loan = toTable(interaction, 'Loan');
-              loan?.set('isClosed', false);
-              navigate(getResourceViewUrl(table.name, undefined), {
-                state: {
-                  type: 'RecordSet',
-                  resource: serializeResource(interaction),
-                },
+          void fetchSiblings(preparationIds)
+            .then((siblings) => {
+              const siblingsPreps = siblings.map((preparation) => {
+                const result = new itemTable.Resource();
+                result.set(
+                  'preparation',
+                  getResourceApiUrl('Preparation', preparation)
+                );
+                // Need to find a way to set the maximum
+                result.set('quantity', 1);
+                const loanPreparation = toTable(result, 'LoanPreparation');
+                loanPreparation?.set('quantityReturned', 0);
+                loanPreparation?.set('quantityResolved', 0);
+                return result;
               });
-            }
-          });
+
+              const mergedPreparations = [...items, ...siblingsPreps];
+
+              if (typeof itemCollection === 'object') {
+                itemCollection.add(mergedPreparations);
+                handleClose();
+              } else {
+                const interaction = new table.Resource();
+                setPreparationItems(interaction, mergedPreparations);
+
+                const loan = toTable(interaction, 'Loan');
+                loan?.set('isClosed', false);
+                navigate(getResourceViewUrl(table.name, undefined), {
+                  state: {
+                    type: 'RecordSet',
+                    resource: serializeResource(interaction),
+                  },
+                });
+              }
+            })
+            .catch((error) => softFail(error));
         }}
       >
         <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
