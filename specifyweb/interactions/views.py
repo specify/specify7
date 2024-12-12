@@ -459,7 +459,7 @@ def create_sibling_loan_preps(request: http.HttpRequest):
     # Return the URIs of the new loanpreparations
     return http.HttpResponse(toJson(new_loanprep_uris), content_type='application/json') 
 
-@require_GET
+@require_POST
 @login_maybe_required
 def get_sibling_preps(request: http.HttpRequest):
     data = json.loads(request.body)
