@@ -120,6 +120,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         )
       );
       handleDelete?.(index, source);
+      // Add code here to verify if need to delete other prep fro same cog?
       setRecords(getRecords);
     },
     onSlide: (index, replace, callback): void => {
