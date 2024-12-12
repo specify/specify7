@@ -195,8 +195,6 @@ export function PrepDialog({
           );
 
           fetchSiblings(preparationIds).then((siblings) => {
-            console.log(siblings);
-
             const siblingsPreps = siblings.map((preparation) => {
               const result = new itemTable.Resource();
               result.set(
