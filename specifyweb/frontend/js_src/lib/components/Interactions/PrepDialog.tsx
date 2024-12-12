@@ -89,7 +89,7 @@ export function PrepDialog({
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
 
   const fetchSiblings = async (
-    preparationIds: readonly string[]
+    preparationIds: RA<number>
   ): Promise<RA<number>> =>
     ajax<RA<number>>(`/interactions/sibling_preps/`, {
       method: 'GET',
