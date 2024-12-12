@@ -414,8 +414,10 @@ def remove_cog_consolidated_preps(request: http.HttpRequest, prep_id: int, loan_
 @require_POST
 @login_maybe_required
 def create_sibling_loan_preps(request: http.HttpRequest):
+    table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
     # Extract from the loanpreps key in body of the request, a list of loanpreparations
-    loanprep_uris = json.loads(request.POST['loanpreps'])
+    loanprep_uris = json.loads(request.body).get('loanpreps', [])
 
     # Extract preparation IDs from loanpreparation URIs
     prep_ids = {
@@ -424,24 +426,30 @@ def create_sibling_loan_preps(request: http.HttpRequest):
     }
 
     # Get all sibling preparations within the consolidated cog
-    sibling_preps = {
+    sibling_prep_ids = {
         sibling_prep.id
         for prep_id in prep_ids
         for sibling_prep in get_all_sibling_preps_within_consolidated_cog(Preparation.objects.get(id=prep_id))
     }
 
     # Remove original preparation IDs from sibling preparations
-    sibling_preps -= prep_ids
+    sibling_prep_ids -= prep_ids
 
     # Get loan and discipline from the first loanpreparation
     loanprep = Loanpreparation.objects.get(id=strict_uri_to_model(loanprep_uris[0], 'Loanpreparation')[1])
     loan = loanprep.loan
     discipline = loan.discipline
 
+    # Filter out new props for loanpreparations that already exist based on loan_id, preparation_id, and discipline_id
+    existing_loanprep_prep_ids = Loanpreparation.objects.filter(
+        Q(loan=loan) & Q(preparation_id__in=sibling_prep_ids) & Q(discipline=discipline)
+    ).values_list('preparation_id', flat=True)
+    sibling_prep_ids -= set(existing_loanprep_prep_ids)
+
     # Create new loanpreparations for sibling preparations
     new_loanpreps = [
         Loanpreparation(loan=loan, preparation=Preparation.objects.get(id=sibling_prep_id), discipline=discipline, isresolved=True)
-        for sibling_prep_id in sibling_preps
+        for sibling_prep_id in sibling_prep_ids
     ]
     Loanpreparation.objects.bulk_create(new_loanpreps)
 
@@ -450,3 +458,22 @@ def create_sibling_loan_preps(request: http.HttpRequest):
 
     # Return the URIs of the new loanpreparations
     return http.HttpResponse(toJson(new_loanprep_uris), content_type='application/json') 
+
+@require_GET
+@login_maybe_required
+def get_sibling_preps(request: http.HttpRequest):
+    prep_uris = json.loads(request.GET.get('preps', '[]'))
+    prep_ids = {
+        Preparation.objects.get(id=strict_uri_to_model(uri, 'Preparation')[1]).id
+        for uri in prep_uris
+    }
+
+    sibling_prep_ids = {
+        sibling_prep.id
+        for prep_id in prep_ids
+        for sibling_prep in get_all_sibling_preps_within_consolidated_cog(Preparation.objects.get(id=prep_id))
+    }
+    sibling_prep_ids -= prep_ids
+
+    sibling_loanprep_uris = [f"/api/specify/preparation/{loanprep.id}/" for loanprep in sibling_prep_ids]
+    return http.HttpResponse(toJson(sibling_loanprep_uris), content_type='application/json') 

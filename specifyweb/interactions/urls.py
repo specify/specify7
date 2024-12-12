@@ -13,5 +13,6 @@ urlpatterns = [
     # special COG APIs
     url(r'^cog_consolidated_preps/(?P<model>\w+)/$', cog_consolidated_preps),
     url(r'^remove_cog_consolidated_preps/(?P<model>\w+)/$', remove_cog_consolidated_preps),
-    url(r'^create_sibling_loan_preps/(?P<model>\w+)/$', create_sibling_loan_preps),
+    url(r'^create_sibling_loan_preps/$', create_sibling_loan_preps),
+    url(r'^sibling_preps/$', get_sibling_preps),
 ]
