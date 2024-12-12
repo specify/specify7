@@ -462,11 +462,8 @@ def create_sibling_loan_preps(request: http.HttpRequest):
 @require_GET
 @login_maybe_required
 def get_sibling_preps(request: http.HttpRequest):
-    prep_uris = json.loads(request.GET.get('preps', '[]'))
-    prep_ids = {
-        Preparation.objects.get(id=strict_uri_to_model(uri, 'Preparation')[1]).id
-        for uri in prep_uris
-    }
+    data = json.loads(request.body)
+    prep_ids = set(data.get('ids', []))
 
     sibling_prep_ids = {
         sibling_prep.id
@@ -475,5 +472,4 @@ def get_sibling_preps(request: http.HttpRequest):
     }
     sibling_prep_ids -= prep_ids
 
-    sibling_loanprep_uris = [f"/api/specify/preparation/{loanprep.id}/" for loanprep in sibling_prep_ids]
-    return http.HttpResponse(toJson(sibling_loanprep_uris), content_type='application/json') 
+    return http.HttpResponse(toJson({'ids': list(sibling_prep_ids)}), content_type='application/json') 

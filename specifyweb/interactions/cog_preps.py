@@ -43,13 +43,13 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
         return None
 
     # Get the parent cog of the CollectionObject
-    cog = Collectionobjectgroupjoin.objects.filter(childco=co).values_list("parentcog", flat=True).first()
+    cog = Collectionobjectgroupjoin.objects.filter(childco=co).first().parentcog
     if cog is None:
         return None
 
     cojo = Collectionobjectgroupjoin.objects.filter(childcog=cog).first()
     consolidated_parent_cog = cojo.parentcog if cojo is not None else None
-    top_cog = consolidated_parent_cog
+    top_cog = consolidated_parent_cog if consolidated_parent_cog is not None else cog
 
     # Move up consolidated parent CollectionObjectGroups until the top consolidated CollectionObjectGroup is found
     while consolidated_parent_cog is not None:
@@ -72,12 +72,10 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     
     # Get all the sibling preparations
     sibling_preps = get_cog_consolidated_preps(top_consolidated_cog)
-    # preps.extend(sibling_preps)
 
-    # Dedup the list
-    preps = list(set(preps))
+    # Remove the prep.id from the sibling preparations
+    sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
-    # return preps
     return sibling_preps
 
 def remove_all_cog_sibling_preps_from_loan(prep: Preparation, loan: Loan) -> None:

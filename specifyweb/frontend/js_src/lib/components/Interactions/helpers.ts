@@ -116,6 +116,6 @@ export const getSiblingPreps = async (prepUris: RA<string>) =>
     {
       method: 'GET',
       headers: { Accept: 'application/json' },
-      params: { preps: JSON.stringify(prepUris) },
+      body: { preps: JSON.stringify(prepUris) },
     }
   ).then(({ data }) => data);
