@@ -15,7 +15,11 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
+import {
+  getResourceApiUrl,
+  getResourceViewUrl,
+  idFromUrl,
+} from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -171,7 +175,11 @@ export function PrepDialog({
             })
           );
 
-          // call api create_sibling_loan_preps
+          const preparationIds = items.map((item) =>
+            idFromUrl(item.get('preparation') ?? '')
+          );
+
+          // Call api create_sibling_loan_preps
 
           if (typeof itemCollection === 'object') {
             itemCollection.add(items);
