@@ -165,10 +165,14 @@ def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]
     Get the consolidated sibling CO IDs of the COs in the recordset
     """
     cog_sibling_co_ids = set()
-    if is_co_recordset(rs):
-        cogs = get_cogs_from_co_recordset(rs)
+    # if is_co_recordset(rs):
+    #     cogs = get_cogs_from_co_recordset(rs)
+    #     for cog in cogs:
+    #         cog_sibling_co_ids = cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
+    #     # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+    if is_cog_recordset(rs):
+        cogs = Collectionobjectgroup.objects.filter(id__in=rs.recordsetitems.values_list('recordid', flat=True))
         for cog in cogs:
-            cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
-        # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
+            cog_sibling_co_ids = cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
 
     return cog_sibling_co_ids
