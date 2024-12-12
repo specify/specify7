@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
@@ -24,6 +25,7 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import type { InteractionWithPreps, PreparationData } from './helpers';
 import { interactionPrepTables } from './helpers';
@@ -86,6 +88,19 @@ export function PrepDialog({
 
   const [bulkValue, setBulkValue] = React.useState(0);
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
+  const fetchSiblings = async (
+    preparationIds: readonly string[]
+  ): Promise<RA<number>> =>
+    ajax<RA<number>>(`/interactions/sibling_preps/`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: {
+        ids: preparationIds,
+      },
+    }).then(({ data }) => data);
 
   return (
     <Dialog
@@ -179,24 +194,42 @@ export function PrepDialog({
             idFromUrl(item.get('preparation') ?? '')
           );
 
-          // Call api create_sibling_loan_preps
+          fetchSiblings(preparationIds).then((siblings) => {
+            console.log(siblings);
 
-          if (typeof itemCollection === 'object') {
-            itemCollection.add(items);
-            handleClose();
-          } else {
-            const interaction = new table.Resource();
-            setPreparationItems(interaction, items);
-
-            const loan = toTable(interaction, 'Loan');
-            loan?.set('isClosed', false);
-            navigate(getResourceViewUrl(table.name, undefined), {
-              state: {
-                type: 'RecordSet',
-                resource: serializeResource(interaction),
-              },
+            const siblingsPreps = siblings.map((preparation) => {
+              const result = new itemTable.Resource();
+              result.set(
+                'preparation',
+                getResourceApiUrl('Preparation', preparation)
+              );
+              // Need to find a way to set the maximum
+              result.set('quantity', 1);
+              const loanPreparation = toTable(result, 'LoanPreparation');
+              loanPreparation?.set('quantityReturned', 0);
+              loanPreparation?.set('quantityResolved', 0);
+              return result;
             });
-          }
+
+            const mergedPreparations = [...items, ...siblingsPreps];
+
+            if (typeof itemCollection === 'object') {
+              itemCollection.add(mergedPreparations);
+              handleClose();
+            } else {
+              const interaction = new table.Resource();
+              setPreparationItems(interaction, mergedPreparations);
+
+              const loan = toTable(interaction, 'Loan');
+              loan?.set('isClosed', false);
+              navigate(getResourceViewUrl(table.name, undefined), {
+                state: {
+                  type: 'RecordSet',
+                  resource: serializeResource(interaction),
+                },
+              });
+            }
+          });
         }}
       >
         <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
