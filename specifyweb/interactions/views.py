@@ -472,4 +472,4 @@ def get_sibling_preps(request: http.HttpRequest):
     }
     sibling_prep_ids -= prep_ids
 
-    return http.HttpResponse(toJson({'ids': list(sibling_prep_ids)}), content_type='application/json') 
+    return http.HttpResponse(toJson(list(sibling_prep_ids)), content_type='application/json') 
