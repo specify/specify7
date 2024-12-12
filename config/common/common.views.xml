@@ -7191,7 +7191,7 @@
 		</viewdef>
 		<viewdef name="CollectionObjectGroupJoin Table" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form Grid View</desc>
-			<definition>CollectionObjectGroupJoin (2)</definition>
+			<definition>CollectionObjectGroupJoin_GridView</definition>
 		</viewdef>
 		<viewdef name="CollectionObjectGroupJoin_GridView" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form</desc>
@@ -7241,7 +7241,7 @@
 		</viewdef>
 		<viewdef name="CollectionObjectGroupJoin_Sub Table" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form Grid View</desc>
-			<definition>CollectionObjectGroupJoin (2)</definition>
+			<definition>CollectionObjectGroupJoin_GridView</definition>
 		</viewdef>
 	</viewdefs>
 </viewset>
