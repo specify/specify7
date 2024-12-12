@@ -114,43 +114,8 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const catalogNumbers = handleParse();
-    const recordSetTable =
-      typeof recordSet?.dbTableId === 'number'
-        ? getTableById(recordSet.dbTableId)
-        : null;
-
-    const rsId = recordSet?.id;
-
-    if (recordSetTable?.name === 'CollectionObjectGroup') {
-      fetchCollection('RecordSetItem', {
-        recordSet: rsId,
-        domainFilter: false,
-        limit: 2000,
-      })
-        .then(({ records }) => {
-          const catIdsFromRS = records.map((record) =>
-            record.recordId.toString()
-          );
-
-          handleProceedWithCatalogNumbers(catIdsFromRS, recordSet);
-        })
-        .catch((error) => {
-          softError(
-            'Error fetching catalog numbers from RecordSetItem:',
-            error
-          );
-        });
-    } else {
-      handleProceedWithCatalogNumbers(catalogNumbers, recordSet);
-    }
-  }
-
-  function handleProceedWithCatalogNumbers(
-    catalogNumbers: RA<string> | undefined,
-    recordSet: SerializedResource<RecordSet> | undefined
-  ): void {
-    if (catalogNumbers === undefined) return;
-    if (isLoanReturn) {
+    if (catalogNumbers === undefined) return undefined;
+    if (isLoanReturn)
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
@@ -170,13 +135,13 @@ export function InteractionDialog({
           })
         )
       );
-    } else if (typeof recordSet === 'object') {
+    else if (typeof recordSet === 'object')
       loading(
         getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
           availablePrepsReady(undefined, data)
         )
       );
-    } else {
+    else
       loading(
         (catalogNumbers.length === 0
           ? Promise.resolve([])
@@ -187,7 +152,6 @@ export function InteractionDialog({
             )
         ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
-    }
   }
 
   const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
