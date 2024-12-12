@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
@@ -25,7 +25,6 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
-import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import type { InteractionWithPreps, PreparationData } from './helpers';
 import { interactionPrepTables } from './helpers';
