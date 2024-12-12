@@ -93,7 +93,7 @@ export function PrepDialog({
     preparationIds: RA<number>
   ): Promise<RA<number>> =>
     ajax<RA<number>>(`/interactions/sibling_preps/`, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         Accept: 'application/json',
       },
