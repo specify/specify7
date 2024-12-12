@@ -100,10 +100,7 @@ export function PrepDialog({
       body: {
         ids: preparationIds,
       },
-    }).then(({ data }) => {
-      console.log(data);
-      return data;
-    });
+    }).then(({ data }) => data);
 
   return (
     <Dialog
