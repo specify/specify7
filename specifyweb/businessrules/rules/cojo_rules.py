@@ -1,8 +1,15 @@
 import os
 import sys
+from enum import Enum
+
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Collectionobjectgroupjoin
+
+class COGType(Enum):
+    DISCRETE = "Discrete"
+    CONSOLIDATED = "Consolidated"
+    DRILL_CORE = "Drill Core"
 
 def is_running_tests():
     return any(module in sys.modules for module in ('pytest', 'unittest'))
@@ -45,3 +52,14 @@ def cojo_pre_save(cojo):
         and not is_running_tests()
     ):
         raise BusinessRuleException('ChildCo is already in use as a child in another COG.')
+    
+@orm_signal_handler('post_save', 'Collectionobjectgroupjoin')
+def cojo_post_save(cojo):
+    """
+        For Consolidated COGs, mark the first CO child as primary if none have been set by the user
+    """
+    co_children = Collectionobjectgroupjoin.objects.filter(parentcog=cojo.parentcog, childco__isnull=False)
+    if len(co_children) > 0 and not co_children.filter(isprimary=True).exists() and cojo.parentcog.cogtype.type == COGType.CONSOLIDATED.value:
+        first_child = co_children.first()
+        first_child.isprimary = True
+        first_child.save()
