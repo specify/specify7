@@ -102,20 +102,3 @@ export const getPrepAvailability = async (
     }`,
     { headers: { Accept: 'application/json' } }
   ).then(({ data }) => data);
-
-export const createSiblingLoanPreps = async (loanprepUris: RA<string>) =>
-  ajax('/interactions/create_sibling_loan_preps/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ loanpreps: loanprepUris }),
-  }).then(({ data }) => data);
-
-export const getSiblingPreps = async (prepUris: RA<string>) =>
-  ajax<RA<string>>(
-    `/interactions/sibling_preps/`,
-    {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-      body: { preps: JSON.stringify(prepUris) },
-    }
-  ).then(({ data }) => data);
