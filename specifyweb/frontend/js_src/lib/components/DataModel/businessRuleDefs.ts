@@ -287,19 +287,25 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         };
       },
     },
-    onAdded: (CollectionObjectGroupJoin) => {
+    onAdded: (cojo, collection) => {
       if (
-        CollectionObjectGroupJoin.get('childCog') ===
-          CollectionObjectGroupJoin.get('parentCog') &&
-        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
-        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
+        cojo.get('childCog') === cojo.get('parentCog') &&
+        typeof cojo.get('childCog') === 'string' &&
+        typeof cojo.get('parentCog') === 'string'
       ) {
         setSaveBlockers(
-          CollectionObjectGroupJoin,
-          CollectionObjectGroupJoin.specifyTable.field.childCog,
+          cojo,
+          cojo.specifyTable.field.childCog,
           [resourcesText.cogAddedToItself()],
           COG_TOITSELF
         );
+      }
+
+      // Trigger Consolidated COGs field check when a child is added
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
       }
     },
     onRemoved(_, collection) {
