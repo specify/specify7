@@ -35,14 +35,13 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import { getTableById, tables } from '../DataModel/tables';
+import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { softError } from '../Errors/assert';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -240,6 +239,11 @@ export function InteractionDialog({
     );
   };
 
+  const collectionObjectGroupResourceTableId = React.useMemo(
+    () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
+    []
+  );
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -296,7 +300,7 @@ export function InteractionDialog({
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
         collectionObjectGroupResourceTableId={
-          new tables.CollectionObjectGroup.Resource().specifyTable.tableId
+          collectionObjectGroupResourceTableId
         }
         table={itemTable}
         onClose={handleClose}
