@@ -169,6 +169,11 @@ export function IntegratedRecordSelector({
         typeof collection.models[0].get('parentCog') === 'string'
       : false;
 
+  const isLoanPrep = relationship.relatedTable.name === 'LoanPreparation';
+  const disableRemove =
+    isLoanPrep &&
+    (collection.related?.isNew() === true || collection.related?.needsSaved);
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -315,7 +320,8 @@ export function IntegratedRecordSelector({
                             collection.models.length === 0 ||
                             resource === undefined ||
                             (renderedResourceId !== undefined &&
-                              resource?.id === renderedResourceId)
+                              resource?.id === renderedResourceId) ||
+                            disableRemove
                           }
                           onClick={(): void => {
                             handleRemove('minusButton');
