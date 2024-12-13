@@ -133,18 +133,18 @@ export abstract class FieldBase {
       globalFieldOverride?.visibility === 'readOnly' ||
       fieldDefinition.readOnly === true;
 
+    this.localization =
+      this.table.localization.items[this.name.toLowerCase()] ?? {};
+
     this.isRequired =
       globalFieldOverride?.visibility === 'required'
         ? true
         : globalFieldOverride?.visibility === 'optional'
         ? false
-        : fieldDefinition.required;
+        : fieldDefinition.required || (this.localization?.isrequired ?? false);
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.databaseColumn = fieldDefinition.column;
-
-    this.localization =
-      this.table.localization.items[this.name.toLowerCase()] ?? {};
 
     this.label =
       typeof this.localization.name === 'string' &&

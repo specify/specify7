@@ -344,7 +344,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             return true;
           if (
             field !== undefined &&
-            !(field.isRequired || field.localization.isrequired) &&
+            !field.isRequired &&
             (value === undefined || value === null)
           ) {
             return false;
