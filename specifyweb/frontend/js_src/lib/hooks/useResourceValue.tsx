@@ -211,7 +211,7 @@ export function useResourceValue<
        * should overwrite that of the resource
        */
       resource.isNew() &&
-      (!parsedValue.isValid ||
+      ((!parsedValue.isValid && field.name === 'catalogNumber') ||
         ((parser.type !== 'number' ||
           typeof fieldValue !== 'number' ||
           fieldValue === 0) &&
