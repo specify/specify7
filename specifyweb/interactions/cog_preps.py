@@ -1,7 +1,20 @@
+import re
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
 from django.db.models.query import QuerySet
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Collectionobjectgroupjoin, Loan, Loanpreparation, Preparation, Recordset, Recordsetitem
+from specifyweb.specify.models import (
+    Collectionobject,
+    Collectionobjectgroup,
+    Collectionobjectgroupjoin,
+    Disposalpreparation,
+    Giftpreparation,
+    Loan,
+    Loanpreparation,
+    Loanreturnpreparation,
+    Preparation,
+    Recordset,
+    Recordsetitem,
+)
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 
 def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
@@ -53,7 +66,11 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
 
     # Move up consolidated parent CollectionObjectGroups until the top consolidated CollectionObjectGroup is found
     while consolidated_parent_cog is not None:
-        if consolidated_parent_cog.cogtype is None or consolidated_parent_cog.cogtype.type is None or consolidated_parent_cog.cogtype.type.lower().title() != 'Consolidated':
+        if (
+            consolidated_parent_cog.cogtype is None
+            or consolidated_parent_cog.cogtype.type is None
+            or consolidated_parent_cog.cogtype.type.lower().title() != "Consolidated"
+        ):
             break
         top_cog = consolidated_parent_cog
         cojo = Collectionobjectgroupjoin.objects.filter(childcog=consolidated_parent_cog).first()
@@ -165,21 +182,169 @@ def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]
     Get the consolidated sibling CO IDs of the COs in the recordset
     """
     cog_sibling_co_ids = set()
-    cog_co_ids = set()
-    # if is_co_recordset(rs):
-    #     cogs = get_cogs_from_co_recordset(rs)
-    #     for cog in cogs:
-    #         cog_sibling_co_ids = cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
-    #     # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
-    if is_cog_recordset(rs):
-        # cogs = Collectionobjectgroup.objects.filter(id__in=rs.recordsetitems.values_list('recordid', flat=True))
-        cogs = Collectionobjectgroup.objects.filter(
-            id__in=rs.recordsetitems.values_list("recordid", flat=True),
-            # cogtype__type__iexact="Consolidated",
-        )
+    if is_co_recordset(rs):
+        cogs = get_cogs_from_co_recordset(rs)
         for cog in cogs:
-            cog_co_ids = cog_co_ids.union(set(Collectionobjectgroupjoin.objects.filter(parentcog=cog).values_list('childco', flat=True)))
-            # cog_sibling_co_ids = cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
-        return cog_co_ids
+            cog_sibling_co_ids = cog_sibling_co_ids.union(get_cog_consolidated_preps_co_ids(cog))
+        # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
 
     return cog_sibling_co_ids
+
+def get_co_ids_from_shared_cog_rs(rs: Recordset) -> Set[Collectionobject]:
+    """
+    Get the CO IDs from the shared COGs in the recordset
+    """
+    if not is_cog_recordset(rs):
+        return set()
+
+    cogs = Collectionobjectgroup.objects.filter(
+        id__in=rs.recordsetitems.values_list("recordid", flat=True),
+        # cogtype__type__iexact="Consolidated",
+    )
+
+    cog_co_ids = set().union(*[
+        Collectionobjectgroupjoin.objects.filter(parentcog=cog).values_list("childco", flat=True)
+        for cog in cogs
+    ])
+    return cog_co_ids
+
+def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updated_prep_ids: Set[int]) -> Set[int]:
+    """
+    Determine the difference between the preparation IDs original and updated prep.
+    Get a list of preparation IDs that were added and a list of preparation IDs that were removed.
+    Create a map of a each preparation ID to a list of sibling preparation IDs.
+    For each preparation ID that was removed, remove all sibling preparations from the updated_prep_ids.
+    For each preparation ID that was added, add all sibling preparations to the updated_prep_ids.
+    Return the modified updated_prep_ids.
+    """
+    # Get the preparation IDs that were added and removed
+    added_preps = updated_prep_ids - original_prep_ids
+    removed_preps = original_prep_ids - updated_prep_ids
+
+    # Create a map of each preparation ID to a list of sibling preparation IDs
+    prep_to_sibling_preps = {}
+    for prep_id in updated_prep_ids:
+        prep = Preparation.objects.get(id=prep_id)
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+        prep_to_sibling_preps[prep_id] = set(p.id for p in sibling_preps)
+
+    # Remove all sibling preparations from the updated_prep_ids that were removed
+    for prep_id in removed_preps:
+        updated_prep_ids -= prep_to_sibling_preps[prep_id]
+
+    # Add all sibling preparations to the updated_prep_ids that were added
+    for prep_id in added_preps:
+        updated_prep_ids.update(prep_to_sibling_preps[prep_id])
+
+    return updated_prep_ids
+
+def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated_interaction_data):
+    """
+    Determine the difference between the preparation IDs in the Loanpreparations of the original and updated interactions.
+    Based on the preparation differences, determine which preparations were added and removed from the interaction.
+    Remove all sibling preparations from the loan that were removed from the interaction.
+    Add all sibling preparations to the loan that were added to the interaction.
+    Return the modified updated interaction object.
+    """
+    # InteractionPrepModel = None
+    # if original_interaction_obj.__class__.__name___ == 'Loan':
+    #     InteractionPrepModel = Loanreturnpreparation
+    #     InteractionPrepModel = Loanpreparation
+    # elif original_interaction_obj.__class__.__name___ == 'Gift':
+    #     InteractionPrepModel = Giftpreparation
+    # elif original_interaction_obj.__class__.__name___ == 'Disposal':
+    #     InteractionPrepModel = Disposalpreparation
+    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Permit':
+    # #     InteractionPrepModel = Permitpreparation
+    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Exchange':
+    # #     InteractionPrepModel = Exchangepreparation
+    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Borrow':
+    # #     InteractionPrepModel = Borrowpreparation
+    
+    # original_prep_ids = set(InteractionPrepModel.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
+    # updated_prep_ids = set(InteractionPrepModel.objects.filter(loan=updated_interaction_obj).values_list("preparation_id", flat=True))
+
+    def parse_preparation_id(uri: str) -> int:
+        match = re.search(r'^/api/specify/preparation/(\d+)/$', uri)
+        if match:
+            return int(match.group(1))
+        else:
+            raise ValueError("No preparation ID found in the URL")
+
+    original_prep_ids = set()
+    updated_prep_ids = set()
+    modified_updated_prep_ids = set()
+    # TODO: Abstract code
+    if original_interaction_obj._meta.model_name == 'loan':
+        loanprep_data = updated_interaction_data['loanpreparations']
+        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
+        original_prep_ids = set(Loanpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
+
+        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
+
+        added_preps = modified_updated_prep_ids - original_prep_ids
+        removed_preps = original_prep_ids - modified_updated_prep_ids
+
+        Loanpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
+        Loanpreparation.objects.bulk_create([
+            Loanpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1, discipline=original_interaction_obj.discipline)
+            for prep_id in added_preps
+        ])
+
+        # loanprep_data = updated_interaction_data['loanreturnpreparations']
+        # updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
+        # original_prep_ids = set(Loanreturnpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
+
+        # modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
+
+        # added_preps = modified_updated_prep_ids - original_prep_ids
+        # removed_preps = original_prep_ids - modified_updated_prep_ids
+
+        # Loanreturnpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
+        # Loanreturnpreparation.objects.bulk_create([
+        #     Loanreturnpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1)
+        #     for prep_id in added_preps
+        # ])
+
+        updated_interaction_data['loanpreparations'] = [
+            loanprep for loanprep in loanprep_data if parse_preparation_id(loanprep['preparation']) not in removed_preps
+        ]
+
+        updated_interaction_data['loanpreparations'] = [
+            {"preparation": f"/api/specify/preparation/{prep_id}/", "quantity": 1, "isresolved": True, "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/"}
+            for prep_id in added_preps
+        ]
+    elif original_interaction_obj._meta.model_name == 'gift':
+        loanprep_data = updated_interaction_data['giftpreparations']
+        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
+        original_prep_ids = set(Giftpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
+
+        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
+
+        added_preps = modified_updated_prep_ids - original_prep_ids
+        removed_preps = original_prep_ids - modified_updated_prep_ids
+
+        Giftpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
+        Giftpreparation.objects.bulk_create([
+            Giftpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1)
+            for prep_id in added_preps
+        ])
+    elif original_interaction_obj._meta.model_name == 'disposal':
+        loanprep_data = updated_interaction_data['disposalpreparations']
+        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
+        original_prep_ids = set(Disposalpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
+
+        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
+
+        added_preps = modified_updated_prep_ids - original_prep_ids
+        removed_preps = original_prep_ids - modified_updated_prep_ids
+
+        Disposalpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
+        Disposalpreparation.objects.bulk_create([
+            Disposalpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1)
+            for prep_id in added_preps
+        ])
+    # Permit, Exchange, Borrow interactions, no preparation data?
+
+    # return modified_updated_prep_ids
+    return updated_interaction_data

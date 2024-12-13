@@ -10,6 +10,7 @@ from specifyweb.interactions.cog_preps import (
     get_all_sibling_preps_within_consolidated_cog,
     get_cog_consolidated_preps,
     get_consolidated_co_siblings_from_rs,
+    get_co_ids_from_shared_cog_rs,
     add_consolidated_sibling_co_ids,
     remove_all_cog_sibling_preps_from_loan,
 )
@@ -97,7 +98,7 @@ def preps_available_rs(request, recordset_id):
     
     # Get consolidated CO ids if the recordset is a COG
     rs = Recordset.objects.filter(id=recordset_id).first()
-    cog_co_ids = get_consolidated_co_siblings_from_rs(rs)
+    cog_co_ids = get_co_ids_from_shared_cog_rs(rs)
     # cog_co_ids = set()
     cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
 
