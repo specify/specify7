@@ -33,7 +33,7 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyTable';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
