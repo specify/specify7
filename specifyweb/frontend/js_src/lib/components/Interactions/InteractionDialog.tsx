@@ -25,7 +25,6 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { fetchCollection } from '../DataModel/collection';
 import type {
   AnyInteractionPreparation,
   AnySchema,

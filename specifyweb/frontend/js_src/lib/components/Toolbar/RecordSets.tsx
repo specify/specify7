@@ -20,7 +20,7 @@ import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
-import type { CollectionObjectGroup, RecordSet } from '../DataModel/types';
+import type { RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
