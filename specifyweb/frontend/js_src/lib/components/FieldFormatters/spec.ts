@@ -129,42 +129,35 @@ const formatterSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.object(partSpec()),
-          syncer(
-            (part) => ({
-              ...part,
-              placeholder:
-                part.type === 'regex'
-                  ? localized(trimRegexString(part.placeholder))
-                  : part.type === 'year'
-                  ? fieldFormatterTypeMapper.year.placeholder
-                  : part.type === 'numeric'
-                  ? fieldFormatterTypeMapper.numeric.buildPlaceholder(part.size)
-                  : part.placeholder,
-            }),
-            (part) => ({
-              ...part,
-              placeholder:
-                part.type === 'regex'
-                  ? localized(normalizeRegexString(part.placeholder))
-                  : part.placeholder,
-            })
-          ),
-          syncer(
-            (part) => ({
-              ...part,
-              size: fieldFormatterTypesWithForcedSize.has(
-                part.type as 'constant'
-              )
-                ? part.placeholder.length
-                : part.size,
-            }),
-            (part) => part
-          )
+          syncer(normalizeFieldFormatterPart, (part) => ({
+            ...part,
+            placeholder:
+              part.type === 'regex'
+                ? localized(normalizeRegexString(part.placeholder))
+                : part.placeholder,
+          }))
         )
       )
     ),
   })
 );
+
+export function normalizeFieldFormatterPart(
+  part: SpecToJson<ReturnType<typeof partSpec>>
+): SpecToJson<ReturnType<typeof partSpec>> {
+  const placeholder =
+    part.type === 'regex'
+      ? localized(trimRegexString(part.placeholder))
+      : part.type === 'year'
+      ? fieldFormatterTypeMapper.year.placeholder
+      : part.type === 'numeric'
+      ? fieldFormatterTypeMapper.numeric.buildPlaceholder(part.size)
+      : part.placeholder;
+  const size = fieldFormatterTypesWithForcedSize.has(part.type as 'constant')
+    ? placeholder.length
+    : part.size;
+  return { ...part, placeholder, size };
+}
 
 export const fieldFormatterTypesWithForcedSize = new Set([
   'constant',
@@ -174,7 +167,7 @@ export const fieldFormatterTypesWithForcedSize = new Set([
 
 /**
  * Specify 6 expects the regex pattern to start with "/^" and end with "$/"
- * because it parts each field part individually.
+ * because it parses each field part individually.
  * In Specify 7, we construct a combined regex that parts all field parts at
  * once.
  * Thus we do not want the "^" and "$" to be part of the pattern as far as

@@ -209,7 +209,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Формат поля',
     'de-ch': 'Feldformat',
   },
-  uiFormattersForField: {
+  fieldFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
   },
   formatted: {

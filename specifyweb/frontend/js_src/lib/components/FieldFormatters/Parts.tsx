@@ -13,9 +13,12 @@ import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { fieldFormatterLocalization, fieldFormatterTypeMapper } from '.';
+import { fieldFormatterLocalization } from '.';
 import type { FieldFormatter, FieldFormatterPart } from './spec';
-import { fieldFormatterTypesWithForcedSize } from './spec';
+import {
+  fieldFormatterTypesWithForcedSize,
+  normalizeFieldFormatterPart,
+} from './spec';
 
 export function FieldFormatterParts({
   fieldFormatter: [fieldFormatter, setFieldFormatter],
@@ -111,10 +114,12 @@ function Part({
           disabled={isReadOnly}
           value={part.type ?? 'constant'}
           onValueChange={(newType): void =>
-            handleChange({
-              ...part,
-              type: newType as keyof typeof fieldFormatterLocalization,
-            })
+            handleChange(
+              normalizeFieldFormatterPart({
+                ...part,
+                type: newType as keyof typeof fieldFormatterLocalization,
+              })
+            )
           }
         >
           {Object.entries(fieldFormatterLocalization).map(([type, label]) => (
@@ -133,14 +138,12 @@ function Part({
           required
           value={part.size}
           onValueChange={(size): void =>
-            handleChange({
-              ...part,
-              size,
-              placeholder:
-                part.type === 'numeric'
-                  ? fieldFormatterTypeMapper.numeric.buildPlaceholder(size)
-                  : part.placeholder,
-            })
+            handleChange(
+              normalizeFieldFormatterPart({
+                ...part,
+                size,
+              })
+            )
           }
         />
       </td>
@@ -156,11 +159,13 @@ function Part({
               : part.placeholder
           }
           onValueChange={(placeholder): void =>
-            handleChange({
-              ...part,
-              [part.type === 'regex' ? 'regexPlaceholder' : 'placeholder']:
-                placeholder,
-            })
+            handleChange(
+              normalizeFieldFormatterPart({
+                ...part,
+                [part.type === 'regex' ? 'regexPlaceholder' : 'placeholder']:
+                  placeholder,
+              })
+            )
           }
         />
       </td>
