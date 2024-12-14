@@ -30,7 +30,7 @@ export const schemaExtras: {
     table: SpecifyTable<Tables[TABLE_NAME]>
   ) => readonly [
     fields: RA<LiteralField | Relationship>,
-    callback?: () => void
+    callback?: () => void,
   ];
 } = {
   Agent: (table) => [

@@ -42,7 +42,7 @@ export const resourceEvents = eventListener<{
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
-  STRICT extends boolean = true
+  STRICT extends boolean = true,
 >(
   tableName: TABLE_NAME,
   id: number,

@@ -69,5 +69,5 @@ function findIconInXml(
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])
-    : iconNode ?? undefined;
+    : (iconNode ?? undefined);
 }

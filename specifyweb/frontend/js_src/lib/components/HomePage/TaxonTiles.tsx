@@ -121,7 +121,7 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
               rankId: number,
               parentId: number,
               name: string,
-              count: number
+              count: number,
             ]
           >
         >('/barvis/taxon_bar/', {

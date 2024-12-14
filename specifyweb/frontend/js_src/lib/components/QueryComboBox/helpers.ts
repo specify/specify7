@@ -190,8 +190,8 @@ export const getRelatedCollectionId = (
   (fieldName === 'rightSide'
     ? left
     : fieldName === 'leftSide'
-    ? right
-    : undefined
+      ? right
+      : undefined
   )?.find(
     ({ id }) =>
       id ===

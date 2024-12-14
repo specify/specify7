@@ -47,7 +47,7 @@ const relationshipTypes = [
   'zero-to-one',
 ] as const;
 
-export type RelationshipType = typeof relationshipTypes[number];
+export type RelationshipType = (typeof relationshipTypes)[number];
 
 export type FieldDefinition = {
   readonly column?: string;
@@ -137,8 +137,8 @@ export abstract class FieldBase {
       globalFieldOverride?.visibility === 'required'
         ? true
         : globalFieldOverride?.visibility === 'optional'
-        ? false
-        : fieldDefinition.required;
+          ? false
+          : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.databaseColumn = fieldDefinition.column;
@@ -240,8 +240,8 @@ export abstract class FieldBase {
     const name = value.startsWith('[literalField')
       ? 'literalField'
       : value.startsWith('[relationship')
-      ? 'relationship'
-      : undefined;
+        ? 'relationship'
+        : undefined;
     if (name === undefined) return undefined;
     const parts = value.replace(`[${name} `, '').replace(']', '').split('.');
     if (parts.length !== 2) return undefined;
@@ -345,9 +345,9 @@ export class Relationship extends FieldBase {
       this.name === 'collectingEvent'
       ? schema.embeddedCollectingEvent
       : this.table.name.toLowerCase() === schema.paleoContextChildTable &&
-        this.name === 'paleoContext'
-      ? schema.embeddedPaleoContext
-      : this.dependent;
+          this.name === 'paleoContext'
+        ? schema.embeddedPaleoContext
+        : this.dependent;
   }
 
   // Returns the field of the related table that is the reverse of this field.

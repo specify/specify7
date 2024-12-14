@@ -16,7 +16,7 @@ import type { IR, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
 
 type Schema = {
-  readonly domainLevelIds: RR<typeof domainLevels[number], number>;
+  readonly domainLevelIds: RR<(typeof domainLevels)[number], number>;
   readonly embeddedCollectingEvent: boolean;
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
@@ -28,7 +28,7 @@ type Schema = {
     'Collection',
     'Discipline',
     'Division',
-    'Institution'
+    'Institution',
   ];
   readonly referenceSymbol: string;
   readonly treeDefinitionSymbol: string;

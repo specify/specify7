@@ -45,7 +45,7 @@ import { useValidation } from './useValidation';
  */
 export function useResourceValue<
   T extends boolean | number | string | null,
-  INPUT extends Input = HTMLInputElement
+  INPUT extends Input = HTMLInputElement,
 >(
   resource: SpecifyResource<AnySchema> | undefined,
   // If field is undefined, this hook behaves pretty much like useValidation()
@@ -125,12 +125,13 @@ export function useResourceValue<
         field?.isRelationship === true && newValue === ''
           ? null
           : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
-          ? parsedValue
-          : newValue;
+            ? parsedValue
+            : newValue;
       setValue(
         (parser.type === 'number' && reportErrors
-          ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
-            parsedValue
+          ? (f.parseFloat(
+              parser?.printFormatter?.(parsedValue, parser) ?? ''
+            ) ?? parsedValue)
           : formattedValue) as T
       );
       if (field === undefined) return;
@@ -223,9 +224,9 @@ export function useResourceValue<
       resource.set(
         field.name,
         (parser.type === 'date'
-          ? getDateInputValue(
+          ? (getDateInputValue(
               parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
-            ) ?? new Date()
+            ) ?? new Date())
           : parser.value) as never,
         { silent: true }
       );
