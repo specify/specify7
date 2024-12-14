@@ -892,7 +892,4 @@ export const resourcesText = createDictionary({
   pattern: {
     'en-us': 'Pattern',
   },
-  parentCogSameAsChild: {
-    'en-us': 'A Collection Object Group cannot be a parent to itself',
-  },
 } as const);
