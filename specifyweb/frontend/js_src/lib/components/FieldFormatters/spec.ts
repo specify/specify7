@@ -174,7 +174,7 @@ export const fieldFormatterTypesWithForcedSize = new Set([
  * Specify 7 front-end is concerned, but we want it to be part of the pattern
  * in the .xml to work with Specify 6.
  */
-function trimRegexString(regexString: string): string {
+export function trimRegexString(regexString: string): string {
   let pattern = regexString;
   if (pattern.startsWith('/')) pattern = pattern.slice(1);
   if (pattern.startsWith('^')) pattern = pattern.slice(1);

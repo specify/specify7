@@ -19,7 +19,7 @@ import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { FieldFormatter, FieldFormatterPart } from './spec';
-import { fieldFormattersSpec } from './spec';
+import { fieldFormattersSpec, trimRegexString } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([
@@ -262,16 +262,11 @@ class RegexPart extends Part {
   public readonly type = 'regex';
 
   public get regex(): LocalizedString {
-    let pattern: string = this.placeholder;
     /*
      * In UiFormatter.getRegex() we are adding ^ and $ as necessary, so trim
      * them if they were present here
      */
-    if (pattern.startsWith('/')) pattern = pattern.slice(1);
-    if (pattern.startsWith('^')) pattern = pattern.slice(1);
-    if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
-    if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
-    return pattern as LocalizedString;
+    return trimRegexString(this.placeholder) as LocalizedString;
   }
 }
 
