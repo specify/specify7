@@ -8,6 +8,7 @@ import {
 } from '../../utils/parser/definitions';
 import type { GetSet, RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
+import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -53,7 +54,7 @@ function FieldPicker({
     [fieldFormatter.field]
   );
   return fieldFormatter.table === undefined ? null : (
-    <Label.Block>
+    <div className={className.label}>
       {schemaText.field()}
       <ResourceMapping
         fieldFilter={excludeNonLiteral}
@@ -76,7 +77,7 @@ function FieldPicker({
         openIndex={openIndex}
         table={fieldFormatter.table}
       />
-    </Label.Block>
+    </div>
   );
 }
 
