@@ -134,6 +134,7 @@ function Part({
           aria-label={commonText.size()}
           disabled={enforcePlaceholderSize}
           isReadOnly={isReadOnly}
+          max={maxSize}
           min={1}
           required
           value={part.size}
@@ -225,6 +226,8 @@ function Part({
     </tr>
   );
 }
+
+const maxSize = 9999;
 
 function RegexField({
   value,
