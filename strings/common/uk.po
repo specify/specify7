@@ -81,8 +81,8 @@ msgstr "Немає"
 #: components/Toolbar/RecordSets.tsx:220
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
-#: components/TreeView/Actions.tsx:398
-#: components/TreeView/Actions.tsx:414
+#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:418
 #: components/TreeView/AddRank.tsx:54
 #: components/TreeView/CreateTree.tsx:74
 #: components/WbActions/WbRevert.tsx:39
@@ -228,7 +228,7 @@ msgstr "Створити"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:557
+#: components/QueryComboBox/index.tsx:558
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -254,7 +254,7 @@ msgstr "Створити"
 #: components/Toolbar/QueryTablesEdit.tsx:73
 #: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
-#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:406
 #: components/WbActions/WbNoUploadPlan.tsx:42
 #: components/WbActions/index.tsx:199
 #: components/WbActions/index.tsx:210
@@ -332,7 +332,7 @@ msgstr "зберегти"
 #: components/Formatters/List.tsx:138
 #: components/Forms/Save.tsx:325
 #: components/Merging/CompareSubView.tsx:184
-#: components/Molecules/AutoComplete.tsx:525
+#: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:463
 #: components/SchemaConfig/Format.tsx:289
@@ -372,7 +372,7 @@ msgstr "ВІДЧИНЕНО"
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
 #: components/Statistics/DeleteCategory.tsx:38
-#: components/TreeView/Actions.tsx:503
+#: components/TreeView/Actions.tsx:507
 #: components/WorkBench/DataSetMeta.tsx:147
 #: components/WorkBench/DataSetMeta.tsx:173
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -427,7 +427,7 @@ msgstr "Інструменти"
 #: components/Interactions/PrepReturnRow.tsx:96
 #: components/Leaflet/index.ts:194
 #: components/Merging/Usages.tsx:69
-#: components/Molecules/AutoComplete.tsx:441
+#: components/Molecules/AutoComplete.tsx:440
 #: components/Molecules/FormattedResource.tsx:16
 #: components/Molecules/FormattedResource.tsx:31
 #: components/Molecules/index.tsx:24
@@ -438,7 +438,7 @@ msgstr "Інструменти"
 #: components/QueryBuilder/Formatter.tsx:59
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
-#: components/QueryComboBox/index.tsx:413
+#: components/QueryComboBox/index.tsx:414
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
@@ -866,7 +866,7 @@ msgstr "Вибране"
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
-#: components/Molecules/AutoComplete.tsx:544
+#: components/Molecules/AutoComplete.tsx:543
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
 msgid "expand"
 msgstr "Розгорнути"
@@ -987,8 +987,8 @@ msgstr "{header:string}:"
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116
-#: components/TreeView/helpers.ts:196
-#: components/TreeView/helpers.ts:204
+#: components/TreeView/helpers.ts:195
+#: components/TreeView/helpers.ts:203
 #: components/WorkBench/DataSetMeta.tsx:229
 #: components/WorkBench/DataSetMeta.tsx:236
 #: components/WorkBench/DataSetMeta.tsx:369

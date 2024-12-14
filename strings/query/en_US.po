@@ -166,12 +166,12 @@ msgstr "Count"
 msgid "distinct"
 msgstr "Distinct"
 
-#: components/QueryBuilder/Export.tsx:174
+#: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Create CSV"
 
-#: components/QueryBuilder/Export.tsx:192
+#: components/QueryBuilder/Export.tsx:193
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Create KML"

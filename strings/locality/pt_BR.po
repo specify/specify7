@@ -52,7 +52,7 @@ msgstr ""
 msgid "errorRadius"
 msgstr ""
 
-#: components/FormPlugins/Leaflet.tsx:84
+#: components/FormPlugins/Leaflet.tsx:83
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "showMap"

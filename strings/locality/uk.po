@@ -49,7 +49,7 @@ msgstr "Межі багатокутників"
 msgid "errorRadius"
 msgstr "Радіус помилки"
 
-#: components/FormPlugins/Leaflet.tsx:84
+#: components/FormPlugins/Leaflet.tsx:83
 #. Used in: Components > Form Plugins > Leaflet
 msgid "showMap"
 msgstr "Показати карту"

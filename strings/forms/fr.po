@@ -533,7 +533,7 @@ msgid "removeFromRecordSet"
 msgstr "Supprimer de {recordSetTable:string}"
 
 #: components/AttachmentsBulkImport/utils.ts:484
-#: components/Molecules/AutoComplete.tsx:533
+#: components/Molecules/AutoComplete.tsx:532
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #, fuzzy
 msgid "nothingFound"

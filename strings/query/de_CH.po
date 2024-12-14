@@ -203,13 +203,13 @@ msgstr "Zählen"
 msgid "distinct"
 msgstr "Unterscheidbar"
 
-#: components/QueryBuilder/Export.tsx:174
+#: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "CSV erstellen"
 
-#: components/QueryBuilder/Export.tsx:192
+#: components/QueryBuilder/Export.tsx:193
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"

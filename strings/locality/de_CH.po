@@ -49,7 +49,7 @@ msgstr "Polygon-Grenzen"
 msgid "errorRadius"
 msgstr "Fehlerradius"
 
-#: components/FormPlugins/Leaflet.tsx:84
+#: components/FormPlugins/Leaflet.tsx:83
 #. Used in: Components > Form Plugins > Leaflet
 msgid "showMap"
 msgstr "Karte anzeigen"
