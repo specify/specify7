@@ -226,24 +226,15 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
 
     # Create a map of each preparation ID to a list of sibling preparation IDs
     prep_to_sibling_preps = {}
-    for prep_id in updated_prep_ids:
-        if prep_id in prep_to_sibling_preps.keys():
-            continue
-        prep = Preparation.objects.get(id=prep_id)
-        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-        prep_to_sibling_preps[prep_id] = set(p.id for p in sibling_preps)
-    for prep_id in removed_prep_ids:
-        if prep_id in prep_to_sibling_preps.keys():
-            continue
-        prep = Preparation.objects.get(id=prep_id)
-        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-        prep_to_sibling_preps[prep_id] = set(p.id for p in sibling_preps)
-    for prep_id in added_prep_ids:
-        if prep_id in prep_to_sibling_preps.keys():
-            continue
-        prep = Preparation.objects.get(id=prep_id)
-        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-        prep_to_sibling_preps[prep_id] = set(p.id for p in sibling_preps)
+    def update_prep_to_sibling_preps(prep_ids, prep_to_sibling_preps):
+        for prep_id in prep_ids:
+            if prep_id not in prep_to_sibling_preps:
+                prep = Preparation.objects.get(id=prep_id)
+                sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+                prep_to_sibling_preps[prep_id] = {p.id for p in sibling_preps}
+
+    all_prep_ids = updated_prep_ids | removed_prep_ids | added_prep_ids
+    update_prep_to_sibling_preps(all_prep_ids, prep_to_sibling_preps)
 
     # Remove all sibling preparations from the updated_prep_ids that were removed
     for prep_id in removed_prep_ids:
@@ -272,19 +263,24 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
 
     iteraction_prep_name = None
     InteractionPrepModel = None
+    filter_fld = None
     if original_interaction_obj._meta.model_name == 'loan':
         if 'loanpreparations' in updated_interaction_data:
             iteraction_prep_name = "loanpreparations"
+            filter_fld = "loan"
         elif 'loanreturnpreparations' in updated_interaction_data:
             iteraction_prep_name = "loanreturnpreparations" 
+            filter_fld = "loanreturn"
         else:
             return updated_interaction_data    
         InteractionPrepModel = Loanpreparation
     elif original_interaction_obj._meta.model_name == 'gift':
         iteraction_prep_name = "giftpreparations"
+        filter_fld = "gift"
         InteractionPrepModel = Giftpreparation
     elif original_interaction_obj._meta.model_name == 'disposal':
         iteraction_prep_name = "disposalpreparations"
+        filter_fld = "disposal"
         InteractionPrepModel = Disposalpreparation
     else:
         # Permit, Exchange, Borrow interactions, no preparation data?
@@ -295,7 +291,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         [parse_preparation_id(loanprep["preparation"]) for loanprep in loanprep_data]
     )
     original_prep_ids = set(
-        InteractionPrepModel.objects.filter(loan=original_interaction_obj).values_list(
+        InteractionPrepModel.objects.filter(**{filter_fld: original_interaction_obj}).values_list(
             "preparation_id", flat=True
         )
     )
