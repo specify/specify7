@@ -108,8 +108,7 @@ def revert_table_schema_config(table_name, apps = apps):
     try:
         table: Table = datamodel.get_table_strict(table_name)
     except TableDoesNotExistError:
-        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
-        return
+        logger.warning(f"Table does not exist in latest state of the datamodel, deleting Schema Config entries using table name: {table_name}")
     
     table_name = table.name
 
@@ -198,8 +197,7 @@ def revert_table_field_schema_config(table_name, field_name, apps = apps):
     try:
         table: Table = datamodel.get_table_strict(table_name)
     except TableDoesNotExistError:
-        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
-        return
+        logger.warning(f"Table does not exist in latest state of the datamodel, deleting Schema Config entries using table name: {table_name}")
     
     table_name = table.name
 
