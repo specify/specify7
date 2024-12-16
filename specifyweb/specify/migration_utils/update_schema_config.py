@@ -105,13 +105,6 @@ def update_table_schema_config_with_defaults(
 
 
 def revert_table_schema_config(table_name, apps = apps):
-    try:
-        table: Table = datamodel.get_table_strict(table_name)
-    except TableDoesNotExistError:
-        logger.warning(f"Table does not exist in latest state of the datamodel, deleting Schema Config entries using table name: {table_name}")
-    
-    table_name = table.name
-
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -194,13 +187,6 @@ def update_table_field_schema_config_with_defaults(
         Splocaleitemstr.objects.get_or_create(**itm_str)
 
 def revert_table_field_schema_config(table_name, field_name, apps = apps):
-    try:
-        table: Table = datamodel.get_table_strict(table_name)
-    except TableDoesNotExistError:
-        logger.warning(f"Table does not exist in latest state of the datamodel, deleting Schema Config entries using table name: {table_name}")
-    
-    table_name = table.name
-
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
