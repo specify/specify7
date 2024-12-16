@@ -6,7 +6,7 @@ import logging
 from django.db.models import Q
 from django.apps import apps
 
-from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError
+from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models import (
     datamodel,
 )
@@ -66,7 +66,12 @@ def update_table_schema_config_with_defaults(
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+
     table_config = TableSchemaConfig(
         name=table.name,
         discipline_id=discipline_id,
@@ -100,7 +105,12 @@ def update_table_schema_config_with_defaults(
 
 
 def revert_table_schema_config(table_name, apps = apps):
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+    
     table_name = table.name
 
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -124,7 +134,12 @@ def update_table_field_schema_config_with_defaults(
     field_name: str,
     apps = apps
 ):
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+    
     table_name = table.name
     table_config = TableSchemaConfig(
         name=table_name.lower(),
@@ -180,7 +195,12 @@ def update_table_field_schema_config_with_defaults(
         Splocaleitemstr.objects.get_or_create(**itm_str)
 
 def revert_table_field_schema_config(table_name, field_name, apps = apps):
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+    
     table_name = table.name
 
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
