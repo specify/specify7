@@ -270,11 +270,15 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         else:
             raise ValueError("No preparation ID found in the URL")
 
-    iteraction_prep_name = "loanpreparations"
-    InteractionPrepModel = Loanpreparation
-    # Permit, Exchange, Borrow interactions, no preparation data?
+    iteraction_prep_name = None
+    InteractionPrepModel = None
     if original_interaction_obj._meta.model_name == 'loan':
-        iteraction_prep_name = "loanpreparations"
+        if 'loanpreparations' in updated_interaction_data:
+            iteraction_prep_name = "loanpreparations"
+        elif 'loanreturnpreparations' in updated_interaction_data:
+            iteraction_prep_name = "loanreturnpreparations" 
+        else:
+            return updated_interaction_data    
         InteractionPrepModel = Loanpreparation
     elif original_interaction_obj._meta.model_name == 'gift':
         iteraction_prep_name = "giftpreparations"
@@ -282,6 +286,9 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     elif original_interaction_obj._meta.model_name == 'disposal':
         iteraction_prep_name = "disposalpreparations"
         InteractionPrepModel = Disposalpreparation
+    else:
+        # Permit, Exchange, Borrow interactions, no preparation data?
+        return updated_interaction_data
 
     loanprep_data = updated_interaction_data[iteraction_prep_name]
     updated_prep_ids = set(
@@ -310,6 +317,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     ]
 
     # Add preps
+    added_prep_ids -= updated_prep_ids
     updated_interaction_data[iteraction_prep_name].extend(
         [
             {
