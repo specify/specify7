@@ -248,7 +248,6 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
     # Remove all sibling preparations from the updated_prep_ids that were removed
     for prep_id in removed_prep_ids:
         modified_prep_ids -= prep_to_sibling_preps[prep_id]
-        # updated_prep_ids -= prep_to_sibling_preps.get(prep_id, set())
 
     # Add all sibling preparations to the updated_prep_ids that were added
     for prep_id in added_prep_ids:
@@ -264,24 +263,6 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     Add all sibling preparations to the loan that were added to the interaction.
     Return the modified updated interaction object.
     """
-    # InteractionPrepModel = None
-    # if original_interaction_obj.__class__.__name___ == 'Loan':
-    #     InteractionPrepModel = Loanreturnpreparation
-    #     InteractionPrepModel = Loanpreparation
-    # elif original_interaction_obj.__class__.__name___ == 'Gift':
-    #     InteractionPrepModel = Giftpreparation
-    # elif original_interaction_obj.__class__.__name___ == 'Disposal':
-    #     InteractionPrepModel = Disposalpreparation
-    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Permit':
-    # #     InteractionPrepModel = Permitpreparation
-    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Exchange':
-    # #     InteractionPrepModel = Exchangepreparation
-    # # elif original_interaction_obj.__class__.__class__.__name___ == 'Borrow':
-    # #     InteractionPrepModel = Borrowpreparation
-    
-    # original_prep_ids = set(InteractionPrepModel.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
-    # updated_prep_ids = set(InteractionPrepModel.objects.filter(loan=updated_interaction_obj).values_list("preparation_id", flat=True))
-
     def parse_preparation_id(uri: str) -> int:
         match = re.search(r'^/api/specify/preparation/(\d+)/$', uri)
         if match:
@@ -289,73 +270,56 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         else:
             raise ValueError("No preparation ID found in the URL")
 
-    original_prep_ids = set()
-    updated_prep_ids = set()
-    modified_updated_prep_ids = set()
-    # TODO: Abstract code
-    if original_interaction_obj._meta.model_name == 'loan':
-        loanprep_data = updated_interaction_data['loanpreparations']
-        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
-        original_prep_ids = set(Loanpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
-
-        if len(loanprep_data) != len(updated_prep_ids):
-            raise Exception("Parsing of loanpreparations failed")
-
-        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
-        if modified_updated_prep_ids == updated_prep_ids:
-            return updated_interaction_data
-
-        added_prep_ids = modified_updated_prep_ids - original_prep_ids
-        removed_prep_ids = original_prep_ids - modified_updated_prep_ids
-
-        # Loanpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
-        # Loanpreparation.objects.bulk_create([
-        #     Loanpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1, discipline=original_interaction_obj.discipline)
-        #     for prep_id in added_preps
-        # ])
-
-        # Remove preps
-        updated_interaction_data['loanpreparations'] = [
-            loanprep for loanprep in loanprep_data if parse_preparation_id(loanprep['preparation']) not in removed_prep_ids
-        ]
-
-        # Add preps
-        # added_prep_ids -= updated_prep_ids
-        updated_interaction_data['loanpreparations'].extend([
-            {"preparation": f"/api/specify/preparation/{prep_id}/", "quantity": 1, "isresolved": True, "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/"}
-            for prep_id in added_prep_ids
-        ])
-    elif original_interaction_obj._meta.model_name == 'gift':
-        loanprep_data = updated_interaction_data['giftpreparations']
-        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
-        original_prep_ids = set(Giftpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
-
-        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
-
-        added_preps = modified_updated_prep_ids - original_prep_ids
-        removed_preps = original_prep_ids - modified_updated_prep_ids
-
-        # Giftpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
-        # Giftpreparation.objects.bulk_create([
-        #     Giftpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1)
-        #     for prep_id in added_preps
-        # ])
-    elif original_interaction_obj._meta.model_name == 'disposal':
-        loanprep_data = updated_interaction_data['disposalpreparations']
-        updated_prep_ids = set([parse_preparation_id(loanprep['preparation']) for loanprep in loanprep_data])
-        original_prep_ids = set(Disposalpreparation.objects.filter(loan=original_interaction_obj).values_list("preparation_id", flat=True))
-
-        modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(original_prep_ids, updated_prep_ids)
-
-        added_preps = modified_updated_prep_ids - original_prep_ids
-        removed_preps = original_prep_ids - modified_updated_prep_ids
-
-        # Disposalpreparation.objects.filter(loan=original_interaction_obj, preparation__in=list(removed_preps)).delete()
-        # Disposalpreparation.objects.bulk_create([
-        #     Disposalpreparation(loan=original_interaction_obj, preparation_id=prep_id, isresolved=True, quantity=1)
-        #     for prep_id in added_preps
-        # ])
+    iteraction_prep_name = "loanpreparations"
+    InteractionPrepModel = Loanpreparation
     # Permit, Exchange, Borrow interactions, no preparation data?
+    if original_interaction_obj._meta.model_name == 'loan':
+        iteraction_prep_name = "loanpreparations"
+        InteractionPrepModel = Loanpreparation
+    elif original_interaction_obj._meta.model_name == 'gift':
+        iteraction_prep_name = "giftpreparations"
+        InteractionPrepModel = Giftpreparation
+    elif original_interaction_obj._meta.model_name == 'disposal':
+        iteraction_prep_name = "disposalpreparations"
+        InteractionPrepModel = Disposalpreparation
 
-    # return modified_updated_prep_ids
+    loanprep_data = updated_interaction_data[iteraction_prep_name]
+    updated_prep_ids = set(
+        [parse_preparation_id(loanprep["preparation"]) for loanprep in loanprep_data]
+    )
+    original_prep_ids = set(
+        InteractionPrepModel.objects.filter(loan=original_interaction_obj).values_list(
+            "preparation_id", flat=True
+        )
+    )
+    modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(
+        original_prep_ids, updated_prep_ids
+    )
+
+    if len(loanprep_data) != len(updated_prep_ids):
+        raise Exception("Parsing of loanpreparations failed")
+
+    added_prep_ids = modified_updated_prep_ids - original_prep_ids
+    removed_prep_ids = original_prep_ids - modified_updated_prep_ids
+
+    # Remove preps
+    updated_interaction_data[iteraction_prep_name] = [
+        loanprep
+        for loanprep in loanprep_data
+        if parse_preparation_id(loanprep["preparation"]) not in removed_prep_ids
+    ]
+
+    # Add preps
+    updated_interaction_data[iteraction_prep_name].extend(
+        [
+            {
+                "preparation": f"/api/specify/preparation/{prep_id}/",
+                "quantity": 1,
+                "isresolved": True,
+                "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/",
+            }
+            for prep_id in added_prep_ids
+        ]
+    )
+
     return updated_interaction_data
