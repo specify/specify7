@@ -324,7 +324,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         [
             {
                 "preparation": f"/api/specify/preparation/{prep_id}/",
-                "quantity": 1,
+                "quantity": 2,
                 "isresolved": True,
                 "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/",
             }
