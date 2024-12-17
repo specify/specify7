@@ -99,10 +99,9 @@ def preps_available_rs(request, recordset_id):
     # Get consolidated CO ids if the recordset is a COG
     rs = Recordset.objects.filter(id=recordset_id).first()
     cog_co_ids = get_co_ids_from_shared_cog_rs(rs)
+    cog_co_ids = [co_id for co_id in cog_co_ids if co_id is not None]
     # cog_co_ids = set()
     cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
-    if cog_co_ids_str is None or cog_co_ids_str == '':
-        cog_co_ids_str = 'NULL'
 
     cursor = connection.cursor()
 
