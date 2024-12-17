@@ -56,7 +56,13 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
         return None
 
     # Get the parent cog of the CollectionObject
-    cog = Collectionobjectgroupjoin.objects.filter(childco=co).first().parentcog
+    cojo = Collectionobjectgroupjoin.objects.filter(childco=co).first()
+    if cojo is None:
+        return None
+    child_cog = Collectionobjectgroupjoin.objects.filter(childco=co).first()
+    if child_cog is None:
+        return None
+    cog = child_cog.parentcog
     # cog = Collectionobjectgroupjoin.objects.filter(childco=co, parentcog.cogtype.type='Consolidated').first().parentcog
     if cog is None:
         return None
