@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2024-12-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -382,13 +382,13 @@ msgstr "Mammalogie"
 #: components/TreeView/defaults.ts:578
 #, fuzzy
 msgid "ornithology"
-msgstr "Leerer Baum"
+msgstr "Synonyme: [X10X]"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Baumpflücker"
+msgstr "Paläobotanik"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
