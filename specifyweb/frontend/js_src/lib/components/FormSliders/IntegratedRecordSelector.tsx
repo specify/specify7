@@ -367,6 +367,7 @@ export function IntegratedRecordSelector({
               <FormTableCollection
                 collection={collection}
                 dialog={dialog}
+                disableRemove={disableRemove}
                 isCollapsed={isCollapsed}
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
