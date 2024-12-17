@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2024-12-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/fr/"
 ">\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -77,7 +77,7 @@ msgstr "Déplacer le nœud"
 #: components/TreeView/Actions.tsx:153
 #, fuzzy
 msgid "addChild"
-msgstr "Désynonymiser le nœud"
+msgstr "Désynamiser le nœud"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
@@ -135,7 +135,7 @@ msgstr "Impossible de fusionner en synonymes"
 #: components/TreeView/Actions.tsx:369
 #, fuzzy
 msgid "cantSynonymizeSynonym"
-msgstr "Mauvaise structure de l'arbre."
+msgstr "Impossible de faire un synonyme avec un synonyme"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:340
@@ -212,7 +212,7 @@ msgstr ""
 #: components/TreeView/Actions.tsx:445
 #, fuzzy
 msgid "desynonymizeNode"
-msgstr "Désynamiser le nœud"
+msgstr "Désynonymiser le nœud"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:347
@@ -283,7 +283,7 @@ msgstr "({directCount:number|formatted})"
 #: components/TreeView/helpers.ts:197
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Nombre direct {collectionObjectTable:string}"
+msgstr "Compte direct {collectionObjectTable:string}"
 
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:205
@@ -353,7 +353,7 @@ msgstr "Choisissez le rang des parents"
 #: components/TreeView/Actions.tsx:440
 #, fuzzy
 msgid "moveItems"
-msgstr "Impossible de fusionner ce nœud d'arbre ici"
+msgstr "Déplacer des éléments"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:64
