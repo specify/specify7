@@ -101,6 +101,7 @@ def preps_available_rs(request, recordset_id):
     cog_co_ids = get_co_ids_from_shared_cog_rs(rs)
     # cog_co_ids = set()
     cog_co_ids_str = ','.join(map(str, cog_co_ids)) if cog_co_ids else 'NULL'
+    cog_co_ids_param = f"({cog_co_ids_str})" if cog_co_ids_str != 'NULL' else 'NULL'
 
     cursor = connection.cursor()
 
@@ -140,7 +141,7 @@ def preps_available_rs(request, recordset_id):
            AND (p.collectionobjectid IN (SELECT recordid
                                         FROM   recordsetitem
                                         WHERE  recordsetid = %s)
-                OR p.collectionobjectid IN ({cog_co_ids_str}))
+                OR p.collectionobjectid IN {cog_co_ids_param})
     """
 
     # Add `pt.isloanable` if `isLoan`

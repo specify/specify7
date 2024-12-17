@@ -274,12 +274,13 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         if 'loanpreparations' in updated_interaction_data:
             iteraction_prep_name = "loanpreparations"
             filter_fld = "loan"
+            InteractionPrepModel = Loanpreparation
         elif 'loanreturnpreparations' in updated_interaction_data:
             iteraction_prep_name = "loanreturnpreparations" 
             filter_fld = "loanreturn"
+            InteractionPrepModel = Loanreturnpreparation
         else:
             return updated_interaction_data    
-        InteractionPrepModel = Loanpreparation
     elif original_interaction_obj._meta.model_name == 'gift':
         iteraction_prep_name = "giftpreparations"
         filter_fld = "gift"
@@ -324,7 +325,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         [
             {
                 "preparation": f"/api/specify/preparation/{prep_id}/",
-                "quantity": 2,
+                "quantity": 1,
                 "isresolved": True,
                 "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/",
             }
