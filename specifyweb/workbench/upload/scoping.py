@@ -129,8 +129,9 @@ def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: D
         uploadTable = toOne['collectionobjecttype']
 
         wb_col = cast(UploadTable, uploadTable).wbcols.get('name', None) if hasattr(uploadTable, 'wbcols') else None
-        col_name = None if wb_col is None else wb_col.column
-        if col_name is not None: 
+        optional_col_name = None if wb_col is None else wb_col.column
+        if optional_col_name is not None: 
+            col_name = cast(str, optional_col_name)
             formats: Dict[str, Optional[UIFormatter]] = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
             return lambda row: formats.get(row[col_name], get_uiformatter(collection, tablename, fieldname))
 
