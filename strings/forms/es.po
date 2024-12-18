@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-18 15:05+0000\n"
+"PO-Revision-Date: 2024-12-18 15:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9.2-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -186,7 +186,7 @@ msgstr "Guardar registro primero"
 #: components/Preferences/UserDefinitions.tsx:1117
 #, fuzzy
 msgid "firstRecord"
-msgstr "Historial de edición"
+msgstr "Primer disco"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:96
@@ -244,7 +244,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Información de registro"
+msgstr "Guardar bloqueado"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -527,7 +527,7 @@ msgstr "Configurar campos para transferir"
 #: components/FormMeta/CarryForward.tsx:184
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configurar campos para transferirlos en forma masiva"
+msgstr "Configurar campos para transferirlos en masa"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:338
@@ -570,7 +570,7 @@ msgstr "Crear un nuevo registro en blanco"
 #: components/FormMeta/AutoNumbering.tsx:92
 #, fuzzy
 msgid "autoNumbering"
-msgstr "Formulario Meta"
+msgstr "Numeración automática"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:138
@@ -588,7 +588,7 @@ msgstr "Utilice el formulario generado automáticamente"
 #: components/FormMeta/Definition.tsx:119
 #, fuzzy
 msgid "useFieldLabels"
-msgstr "Comando N/A"
+msgstr "Utilice etiquetas de campo localizadas"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:205
