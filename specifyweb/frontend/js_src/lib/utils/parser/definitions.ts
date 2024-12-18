@@ -401,7 +401,10 @@ export function formatterToParser(
         value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
-    type: field.type === undefined ? undefined : parserFromType(field.type as ExtendedJavaType).type,
+    type:
+      field.type === undefined
+        ? undefined
+        : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
     value: canAutoNumber ? formatter.valueOrWild() : undefined,
