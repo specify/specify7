@@ -17,18 +17,24 @@ from specifyweb.specify.models import (
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 
+def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
+    """
+    Check if the CollectionObjectGroup is consolidated.
+    """
+    return (
+        cog is not None
+        and cog.cogtype is not None
+        and cog.cogtype.type is not None
+        and cog.cogtype.type.lower().title() == "Consolidated"
+    )
+
 def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
     """
     Recursively get all the child CollectionObjectGroups, then get the leaf CollectionObjects,
     and then reuturn all the preparation ids if the CollectionObjectGroup to CollectionObject is consolidated
     """
     # Don't continue if the cog is not consolidated
-    if (
-        cog is None
-        or cog.cogtype is None
-        or cog.cogtype.type is None
-        or cog.cogtype.type.lower().title() != "Consolidated"
-    ):
+    if not is_consolidated_cog(cog):
         return []
 
     # For each child cog, recursively get the consolidated preparations
@@ -54,41 +60,29 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
 
 def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[Collectionobjectgroup]:
     """
-    Get the topmost consolidated parent CollectionObjectGroup of the preparation
+    Get the topmost consolidated parent CollectionObjectGroup of the preparation.
     """
     # Get the CollectionObject of the preparation
     co = prep.collectionobject
     if co is None:
         return None
 
-    # Get the parent cog of the CollectionObject
+    # Get the initial parent cog of the CollectionObject
     cojo = Collectionobjectgroupjoin.objects.filter(childco=co).first()
     if cojo is None:
         return None
-    child_cog = Collectionobjectgroupjoin.objects.filter(childco=co).first()
-    if child_cog is None:
-        return None
-    cog = child_cog.parentcog
-    # cog = Collectionobjectgroupjoin.objects.filter(childco=co, parentcog.cogtype.type='Consolidated').first().parentcog
-    if cog is None:
+    cog = cojo.parentcog
+    if not is_consolidated_cog(cog):
         return None
 
-    cojo = Collectionobjectgroupjoin.objects.filter(childcog=cog).first()
-    # cojo = Collectionobjectgroupjoin.objects.filter(childcog=cog, parentcog.cogtype.type='Consolidated').first()
-    consolidated_parent_cog = cojo.parentcog if cojo is not None else None
-    top_cog = consolidated_parent_cog if consolidated_parent_cog is not None else cog
+    top_cog = cog
 
     # Move up consolidated parent CollectionObjectGroups until the top consolidated CollectionObjectGroup is found
-    while consolidated_parent_cog is not None:
-        if (
-            consolidated_parent_cog.cogtype is None
-            or consolidated_parent_cog.cogtype.type is None
-            or consolidated_parent_cog.cogtype.type.lower().title() != "Consolidated"
-        ):
+    while True:
+        cojo = Collectionobjectgroupjoin.objects.filter(childcog=top_cog).first()
+        if cojo is None or not is_consolidated_cog(cojo.parentcog):
             break
-        top_cog = consolidated_parent_cog
-        cojo = Collectionobjectgroupjoin.objects.filter(childcog=consolidated_parent_cog).first()
-        consolidated_parent_cog = cojo.parentcog if cojo is not None else None
+        top_cog = cojo.parentcog
 
     return top_cog
 
