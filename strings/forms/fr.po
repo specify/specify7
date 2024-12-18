@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-18 15:05+0000\n"
+"PO-Revision-Date: 2024-12-18 15:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9.2-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -41,7 +41,7 @@ msgstr "La valeur doit être unique à {fieldName:string}"
 #: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "Rien trouvé"
+msgstr "La valeur doit être unique dans la base de données"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
@@ -274,7 +274,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Informations sur le dossier"
+msgstr "Enregistrer bloqué"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -308,7 +308,9 @@ msgstr "Cette commande n'est actuellement pas disponible pour Specify 7."
 #: components/FormPlugins/index.tsx:205
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
-msgstr "(supprimé)"
+msgstr ""
+"Il a probablement été inclus dans ce formulaire à partir de Specify 6 et "
+"peut être pris en charge à l'avenir."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
@@ -466,7 +468,7 @@ msgstr "Résultats supplémentaires omis"
 #: components/FormSliders/RecordSelectorFromIds.tsx:278
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
-msgstr "Continuer sans sauvegarder ?"
+msgstr "Continuer sans enregistrer ?"
 
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:281
@@ -688,14 +690,14 @@ msgstr "Informations sur le dossier"
 #: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
-msgstr "Ajouter à [X7X] ?"
+msgstr "Partager l'enregistrement"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "[X0X] #[X20X]"
+msgstr "Trouver des utilisations"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
@@ -726,7 +728,7 @@ msgstr "Sous-vue"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "La valeur doit être unique à [X24X]"
+msgstr "Sélectionner la source des tables"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
