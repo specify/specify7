@@ -425,14 +425,17 @@ export function QueryLine({
                     )
                   : undefined;
 
-                const parser =
-                  (filter.fieldFormat === undefined ||
-                  terminatingField === undefined
+                const fieldFormatter =
+                  filter.fieldFormat === undefined
                     ? undefined
-                    : formatterToParser(
-                        terminatingField,
-                        getUiFormatters()[filter.fieldFormat]
-                      )) ?? fieldMeta.parser;
+                    : getUiFormatters()[filter.fieldFormat];
+
+                const parser =
+                  (terminatingField === undefined ||
+                  fieldFormatter === undefined
+                    ? undefined
+                    : formatterToParser(terminatingField, fieldFormatter)) ??
+                  fieldMeta.parser;
 
                 return (
                   <div

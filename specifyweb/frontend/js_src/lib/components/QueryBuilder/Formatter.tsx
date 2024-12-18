@@ -115,9 +115,13 @@ export function CatalogNumberFormatSelection({
       availableFormatters={availableFormatters}
       currentFormat={formatter}
       showSingular={
-        !Object.values(schema.collectionObjectTypeCatalogNumberFormats).some(
-          (format) => format === null || format === schema.catalogNumFormatName
-        )
+        Object.values(schema.collectionObjectTypeCatalogNumberFormats).some(
+          (format) => format !== null && format !== schema.catalogNumFormatName
+        ) ||
+        (formatter !== undefined &&
+          !Object.values(schema.collectionObjectTypeCatalogNumberFormats)
+            .filter((formatName) => formatName !== null)
+            .includes(formatter))
       }
       onChange={handleChange}
     />
@@ -178,6 +182,14 @@ function FormatSelect({
                 {`${title} ${isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
+            {currentFormat !== undefined &&
+            !availableFormatters
+              .map(({ name }) => name)
+              .includes(currentFormat) ? (
+              <option key="invalidCOT" value={currentFormat}>
+                {queryText.invalidPicklistValue({ value: currentFormat })}
+              </option>
+            ) : undefined}
           </Select>
         </div>
       )}
