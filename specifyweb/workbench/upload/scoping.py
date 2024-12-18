@@ -115,7 +115,7 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, Uploadable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
+def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, UploadTable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
     """ The CollectionObject -> catalogNumber format can be determined by the 
     CollectionObjectType -> catalogNumberFormatName for the CollectionObject
 
