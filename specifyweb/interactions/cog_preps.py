@@ -92,6 +92,8 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     """
     # Get the topmost consolidated parent cog of the preparation
     top_consolidated_cog = get_the_top_consolidated_parent_cog_of_prep(prep)
+    if top_consolidated_cog is int:
+        top_consolidated_cog = Collectionobjectgroup.objects.filter(id=top_consolidated_cog).first()
     if top_consolidated_cog is None:
         return [prep]
     
