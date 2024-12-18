@@ -113,13 +113,15 @@ FieldSpecJoinPath = Tuple[QueryNode]
 
 
 class QueryFieldSpec(
-    namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part")
+    namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")
 ):
     root_table: Table
     root_sql_table: SQLTable
     join_path: FieldSpecJoinPath
     table: Table
     date_part: Optional[str]
+    tree_rank: Optional[str]
+    tree_field: Optional[str]
 
     @classmethod
     def from_path(cls, path_in, add_id=False):
@@ -149,6 +151,8 @@ class QueryFieldSpec(
             date_part=(
                 "Full Date" if (join_path and join_path[-1].is_temporal()) else None
             ),
+            tree_rank=None,
+            tree_field=None
         )
 
     @classmethod
@@ -177,33 +181,33 @@ class QueryFieldSpec(
         extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
 
-        if field is None:  # try finding tree
-            tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
-            if tree_rank_name:
-                tree_rank = TreeRankQuery(name=tree_rank_name)
-                # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
-                tree_rank.relatedModelName = node.name
-                tree_rank.type = "many-to-one"
-                join_path.append(tree_rank)
-                assert field is not None
-                field = node.get_field(field)
+        # if field is None:  # try finding tree
+        #     tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
+        #     if tree_rank_name:
+        #         tree_rank = TreeRankQuery(name=tree_rank_name)
+        #         # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
+        #         tree_rank.relatedModelName = node.name
+        #         tree_rank.type = "many-to-one"
+        #         join_path.append(tree_rank)
+        #         assert field is not None
+        #         field = node.get_field(field)
 
-        if field is not None:
+        tree_rank = tree_field = None
+        if field is None:
         # TODO: Check if removing below code breaks #5094
         # tree_rank = tree_field = None
-        # if field is None:
-        #     tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
-        #     if tree_id_match:
-        #         tree_rank = tree_id_match.group(1)
-        #         tree_field = 'ID'
-        #     else:
-        #         tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Taxon') else GEOGRAPHY_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Geography') else None
-        #         if tree_field_match:
-        #             tree_rank = tree_field_match.group(1)
-        #             tree_field = tree_field_match.group(2)
-        #         else:
-        #             tree_rank = extracted_fieldname if extracted_fieldname else None
-        # else:
+            tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
+            if tree_id_match:
+                tree_rank = tree_id_match.group(1)
+                tree_field = 'ID'
+            else:
+                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Taxon') else GEOGRAPHY_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Geography') else None
+                if tree_field_match:
+                    tree_rank = tree_field_match.group(1)
+                    tree_field = tree_field_match.group(2)
+                else:
+                    tree_rank = extracted_fieldname if extracted_fieldname else None
+        else:
             join_path.append(field)
             if field.is_temporal() and date_part is None:
                 date_part = "Full Date"
@@ -214,6 +218,8 @@ class QueryFieldSpec(
             join_path=tuple(join_path),
             table=node,
             date_part=date_part,
+            tree_rank=tree_rank,
+            tree_field=tree_field
         )
 
         logger.debug(

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 EphemeralField = namedtuple(
     "EphemeralField",
-    "stringId isRelFld operStart startValue isNot isDisplay sortType formatName",
+    "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict",
 )
 
 

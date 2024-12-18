@@ -39,6 +39,7 @@ class RelatedSearchMeta(type):
                 display=True,
                 format_name=None,
                 sort_type=0,
+                strict=False
             )
             for col in Rs.columns
         ]
@@ -53,6 +54,7 @@ class RelatedSearchMeta(type):
                     display=True,
                     format_name=None,
                     sort_type=0,
+                    strict=False
                 )
             )
 
@@ -66,6 +68,7 @@ class RelatedSearchMeta(type):
                 display=False,
                 format_name=None,
                 sort_type=0,
+                strict=False
             )
 
         Rs.filter_fields = [make_filter(f, False) for f in Rs.filters] + [

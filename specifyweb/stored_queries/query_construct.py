@@ -108,7 +108,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # We don't want to include treedef if the rank is not present.
         new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
-        return query, column
+        return query, column, current_field_spec.get_field(), table
 
     def tables_in_path(self, table, join_path):
         path = deque(join_path)

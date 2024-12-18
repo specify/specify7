@@ -178,6 +178,7 @@ class BatchEditPack(NamedTuple):
             display=True,
             format_name=None,
             sort_type=sort_type,
+            strict=False
         )
 
     def _index(
