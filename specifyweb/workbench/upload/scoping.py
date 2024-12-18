@@ -85,7 +85,7 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     return adjust_to_ones
 
 
-def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
+def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, UploadTable]] = None) -> ExtendedColumnOptions:
     toOne = {} if _toOne is None else _toOne
     schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
