@@ -23,7 +23,12 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
     and then reuturn all the preparation ids if the CollectionObjectGroup to CollectionObject is consolidated
     """
     # Don't continue if the cog is not consolidated
-    if cog.cogtype is None or cog.cogtype.type is None or cog.cogtype.type.lower().title() != 'Consolidated':
+    if (
+        cog is None
+        or cog.cogtype is None
+        or cog.cogtype.type is None
+        or cog.cogtype.type.lower().title() != "Consolidated"
+    ):
         return []
 
     # For each child cog, recursively get the consolidated preparations
@@ -31,7 +36,8 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
         parentcog=cog, childcog__isnull=False
     ).values_list("childcog", flat=True)
     consolidated_preps = []
-    for child_cog in child_cogs:
+    for child_cog_id in child_cogs:
+        child_cog = Collectionobjectgroup.objects.filter(id=child_cog_id).first()
         child_preps = get_cog_consolidated_preps(child_cog)
         consolidated_preps.extend(child_preps)
 
@@ -92,8 +98,6 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     """
     # Get the topmost consolidated parent cog of the preparation
     top_consolidated_cog = get_the_top_consolidated_parent_cog_of_prep(prep)
-    if top_consolidated_cog is int:
-        top_consolidated_cog = Collectionobjectgroup.objects.filter(id=top_consolidated_cog).first()
     if top_consolidated_cog is None:
         return [prep]
     
