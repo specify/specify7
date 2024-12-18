@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def autonumber_and_save(collection, user, obj) -> None:
-    uiformatters = get_uiformatters(collection, user, obj.__class__.__name__)
+    uiformatters = get_uiformatters(collection, obj, user)
 
     autonumber_fields = [(formatter, vals)
                          for formatter in uiformatters

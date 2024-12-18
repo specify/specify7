@@ -1,11 +1,13 @@
 Fixes #
 
-
+<!--
+⚠️ **Note:** This PR affects database migrations. See [migration testing instructions](https://specify.github.io/testing/pull_requests.html#prs-tagged-with-label-migration).
+-->
 
 ### Checklist
 
-- [ ] Self-review the PR after opening it to make sure the changes look good
-      and self-explanatory (or properly documented)
+- [ ] Self-review the PR after opening it to make sure the changes look good and
+      self-explanatory (or properly documented)
 - [ ] Add automated tests
 - [ ] Add relevant issue to release milestone
 

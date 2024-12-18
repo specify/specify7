@@ -18,7 +18,8 @@ from specifyweb.specify.models import (
     Collectionobject,
     Loan,
     Deaccession,
-    Accession
+    Accession,
+    Collectionobjectgroupjoin,
 )
 
 logger = logging.getLogger(__name__)
@@ -102,6 +103,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["currentdetermination"] = next(
             (det["resource_uri"] for det in dets if det["iscurrent"]), None
         )
+
+        extra["isMemberOfCOG"] = Collectionobjectgroupjoin.objects.filter(childco=obj).exists()
 
     elif isinstance(obj, Loan):
         preps = data["loanpreparations"]

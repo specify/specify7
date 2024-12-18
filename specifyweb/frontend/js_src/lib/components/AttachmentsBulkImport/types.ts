@@ -119,19 +119,18 @@ export type AttachmentDataSet = AttachmentDatasetBrief &
     };
   };
 
-export type FetchedDataSet =
-  | AttachmentDataSet &
-      (
-        | { readonly uploaderstatus: 'main' }
-        | ({
-            readonly uploaderstatus: 'deleting' | 'uploading';
-            readonly rows: RA<PartialUploadableFileSpec>;
-          } & {
-            readonly uploadplan: {
-              readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
-            };
-          })
-      );
+export type FetchedDataSet = AttachmentDataSet &
+  (
+    | { readonly uploaderstatus: 'main' }
+    | ({
+        readonly uploaderstatus: 'deleting' | 'uploading';
+        readonly rows: RA<PartialUploadableFileSpec>;
+      } & {
+        readonly uploadplan: {
+          readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+        };
+      })
+  );
 
 export type WrappedActionProps<KEY extends keyof Tables> = {
   readonly uploadableFile: PartialUploadableFileSpec;

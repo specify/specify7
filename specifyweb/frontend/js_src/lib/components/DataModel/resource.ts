@@ -42,7 +42,7 @@ export const resourceEvents = eventListener<{
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
-  STRICT extends boolean = true
+  STRICT extends boolean = true,
 >(
   tableName: TABLE_NAME,
   id: number,
@@ -233,9 +233,10 @@ export const parseJavaClassName = (className: string): string =>
 
 export function getFieldsToNotClone(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const fieldsToClone = getCarryOverPreference(table, cloneAll, isBulkCarry);
   const uniqueFields = getUniqueFields(table);
   return table.fields
     .map(({ name }) => name)
@@ -247,11 +248,16 @@ export function getFieldsToNotClone(
 
 function getCarryOverPreference(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
   const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
     ? {}
-    : userPreferences.get('form', 'preferences', 'carryForward');
+    : userPreferences.get(
+        'form',
+        'preferences',
+        isBulkCarry ? 'bulkCarryForward' : 'carryForward'
+      );
   return config?.[table.name] ?? getFieldsToClone(table);
 }
 

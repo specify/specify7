@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 from django.db import connection
 from django.db.models import Model
-from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
@@ -237,33 +236,26 @@ def query(
         matching_role_policies=rps,
     )
 
+TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
-PERMISSION_ACTIONS = Union[
-    Literal["read"], Literal["update"], Literal["create"], Literal["delete"]
-]
-
-
-def check_table_permissions(collection, actor, obj, action: PERMISSION_ACTIONS) -> None:
+def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
     enforce(collection, actor, [f"/table/{name}"], action)
 
+def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
+    return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
 
-def check_field_permissions(
-    collection, actor, obj, fields: Iterable[str], action: str
-) -> None:
+def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
     if isinstance(obj, Table):
         table = obj.name.lower()
     else:
         table = obj.specify_model.name.lower()
     enforce(collection, actor, [f"/field/{table}/{field}" for field in fields], action)
 
-
-def table_permissions_checker(
-    collection, actor, action: PERMISSION_ACTIONS
-) -> Callable[[Any], None]:
+def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:
         check_table_permissions(collection, actor, obj, action)
 

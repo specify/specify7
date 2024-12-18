@@ -150,7 +150,6 @@
   /* Make spinner buttons larger */
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
-    -webkit-appearance: inner-spin-button !important;
     @apply absolute right-0 top-0 h-full w-2;
   }
 
@@ -162,7 +161,9 @@
     @apply text-center;
   }
 
-  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(
+      .aria-handled
+    ) {
     @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 

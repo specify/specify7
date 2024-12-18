@@ -119,8 +119,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
             sortConfig.sortField === 'timestampCreated'
               ? dataset.timestampcreated
               : sortConfig.sortField === 'timestampModified'
-              ? dataset.timestampmodified
-              : dataset.name
+                ? dataset.timestampmodified
+                : dataset.name
           ),
     [unsortedDatasets, applySortConfig, sortConfig]
   );
@@ -200,9 +200,9 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                       label
                       name={
                         attachmentDataSet.uploadplan?.staticPathKey
-                          ? staticAttachmentImportPaths[
+                          ? (staticAttachmentImportPaths[
                               attachmentDataSet.uploadplan.staticPathKey
-                            ]?.baseTable ?? 'Workbench'
+                            ]?.baseTable ?? 'Workbench')
                           : 'Workbench'
                       }
                     />

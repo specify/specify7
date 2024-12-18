@@ -288,6 +288,65 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
+def validate_sqlalchemy_model(datamodel_table):
+    table_errors = {
+        'not_found': [],  # Fields / Relationships not found
+        'incorrect_direction': {},  # Relationship direct not correct
+        'incorrect_columns': {},  # Relationship columns not correct
+        'incorrect_table': {}  # Relationship related model not correct
+    }
+    orm_table = orm.aliased(getattr(models, datamodel_table.name))
+    known_fields = datamodel_table.all_fields
+
+    for field in known_fields:
+
+        in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
+
+        if in_sql is None:
+            table_errors['not_found'].append(field.name)
+            continue
+
+        if not field.is_relationship:
+            continue
+
+        sa_relationship = inspect(in_sql).property
+
+        sa_direction = sa_relationship.direction.name.lower()
+        datamodel_direction = field.type.replace('-', '').lower()
+
+        if sa_direction != datamodel_direction:
+            table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
+            print(f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}")
+
+        remote_sql_table = sa_relationship.target.name.lower()
+        remote_datamodel_table = field.relatedModelName.lower()
+
+        if remote_sql_table.lower() != remote_datamodel_table:
+            # Check case where the relation model's name is different from the DB table name
+            remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
+            if remote_sql_table.lower() != remote_datamodel_table:
+                table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+                print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
+
+        sa_column = list(sa_relationship.local_columns)[0].name
+        if sa_column.lower() != (
+        datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
+            table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
+                                                             getattr(field, 'column', None)]
+            print(f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")
+
+    return {key: value for key, value in table_errors.items() if len(value) > 0}
+
+class SQLAlchemyModelTest(TestCase):
+    def test_sqlalchemy_model_errors(self):
+        for table in spmodels.datamodel.tables:
+            table_errors = validate_sqlalchemy_model(table)
+            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
+            if 'not_found' in table_errors:
+                table_errors['not_found'] = sorted(table_errors['not_found'])
+            if table_errors:
+                self.assertDictEqual(table_errors, expected_errors[table.name], table.name)
+
 STRINGID_LIST = [
     # (stringid, isrelfld)
     ("1,10,110-collectingEventAttachments,41.attachment.attachment", 1),
@@ -712,3 +771,149 @@ STRINGID_LIST = [
     ("69.referencework.text2", 0),
     ("69.referencework.title", 0),
 ]
+
+expected_errors = {
+  "Attachment": {
+    "incorrect_table": {
+      "dnaSequencingRunAttachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "AutoNumberingScheme": {
+    "not_found": [
+      "collections",
+      "disciplines",
+      "divisions"
+    ]
+  },
+  "Collection": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "CollectionObject": {
+    "not_found": [
+      "projects", 
+    ],
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
+  "DNASequencingRun": {
+    "incorrect_table": {
+      "attachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "Discipline": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "Division": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "Institution": {
+    "not_found": [
+      "userGroups"
+    ]
+  },
+  "InstitutionNetwork": {
+    "not_found": [
+      "collections",
+      "contacts"
+    ]
+  },
+  "Locality": {
+    "incorrect_direction": {
+      "geoCoordDetails": [
+        "onetomany",
+        "zerotoone"
+      ],
+      "localityDetails": [
+        "onetomany",
+        "zerotoone"
+      ]
+    }
+  },
+  "Project": {
+    "not_found": [
+      "collectionObjects"
+    ]
+  },
+  "SpExportSchema": {
+    "not_found": [
+      "spExportSchemaMappings"
+    ]
+  },
+  "SpExportSchemaMapping": {
+    "not_found": [
+      "spExportSchemas"
+    ]
+  },
+  "SpPermission": {
+    "not_found": [
+      "principals"
+    ]
+  },
+  "SpPrincipal": {
+    "not_found": [
+      "permissions",
+      "scope",
+      "specifyUsers"
+    ]
+  },
+  "SpReport": {
+    "incorrect_direction": {
+      "workbenchTemplate": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "SpecifyUser": {
+    "not_found": [
+      "spPrincipals"
+    ]
+  },
+  "TaxonTreeDef": {
+    "incorrect_direction": {
+      "discipline": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroupJoin": {
+    "incorrect_direction": {
+      "childCog": [
+        "manytoone",
+        "onetoone"
+      ],
+      "childCo": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
+}

@@ -208,11 +208,11 @@ export async function format<SCHEMA extends AnySchema>(
   // Doesn't support switch fields that are in child objects
   const fields =
     typeof formatter.switchFieldName === 'string'
-      ? formatter.fields.find(
+      ? (formatter.fields.find(
           ({ value }) =>
             (value?.toString() ?? '') ===
             (resource.get(formatter.switchFieldName ?? '') ?? '').toString()
-        )?.fields ?? formatter.fields[0].fields
+        )?.fields ?? formatter.fields[0].fields)
       : formatter.fields[0].fields;
 
   const automaticFormatter = tryBest
@@ -230,7 +230,7 @@ export async function format<SCHEMA extends AnySchema>(
     .every((value) => value === undefined || value === null || value === '');
 
   return isEmptyResource
-    ? automaticFormatter ?? undefined
+    ? (automaticFormatter ?? undefined)
     : Promise.all(
         fields.map(async (field) => formatField(field, resource, tryBest))
       ).then(
@@ -278,16 +278,16 @@ async function formatField(
         >
       ).then(async (value) =>
         formatter.length > 0 && typeof value === 'object'
-          ? (await format(value, formatter)) ?? ''
+          ? ((await format(value, formatter)) ?? '')
           : fieldFormat(
               field,
               value as string | undefined,
-              resolveParser(field)
+              resolveParser(field, undefined, resource)
             )
       )
     : tryBest
-    ? naiveFormatter(resource.specifyTable.name, resource.id)
-    : userText.noPermission();
+      ? naiveFormatter(resource.specifyTable.name, resource.id)
+      : userText.noPermission();
 
   return { formatted, separator: formatted ? separator : '' };
 }

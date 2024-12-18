@@ -13,6 +13,7 @@ from .models import (
     Taxon,
     Storage,
     Attachment,
+    Tectonicunit
 )
 
 CONCRETE_HIERARCHY = ["collection", "discipline", "division", "institution"]
@@ -37,7 +38,7 @@ def filter_by_collection(queryset, collection, strict=True):
             )
         )
 
-    if queryset.model in (Geography, Geologictimeperiod, Lithostrat):
+    if queryset.model in (Geography, Geologictimeperiod, Lithostrat, Tectonicunit):
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:

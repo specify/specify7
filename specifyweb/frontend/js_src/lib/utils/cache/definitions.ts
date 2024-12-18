@@ -73,24 +73,26 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
+    readonly [key in `definition${AnyTree['tableName']}`]: number;
+  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
-    readonly /** Collapsed ranks in a given tree */
-    [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+    /** Collapsed ranks in a given tree */
+    readonly [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
   } & {
-    readonly /** Open nodes in a given tree */
-    [key in `conformations${AnyTree['tableName']}`]: Conformations;
+    /** Open nodes in a given tree */
+    readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
-    readonly /**
+    /**
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<
+    readonly [key in `${number}_${number}`]: RA<
       Pick<hot.plugins.ColumnSorting.Config, 'column' | 'sortOrder'> & {
         readonly physicalCol: number;
       }
@@ -149,7 +151,7 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
   };
-  readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
+  readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
   readonly formEditor: {
     readonly layout: 'horizontal' | 'vertical';
   };

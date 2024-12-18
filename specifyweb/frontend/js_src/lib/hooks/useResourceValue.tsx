@@ -45,7 +45,7 @@ import { useValidation } from './useValidation';
  */
 export function useResourceValue<
   T extends boolean | number | string | null,
-  INPUT extends Input = HTMLInputElement
+  INPUT extends Input = HTMLInputElement,
 >(
   resource: SpecifyResource<AnySchema> | undefined,
   // If field is undefined, this hook behaves pretty much like useValidation()
@@ -62,7 +62,7 @@ export function useResourceValue<
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
-  const parser = useParser(field, defaultParser);
+  const parser = useParser(field, resource, defaultParser);
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
@@ -125,12 +125,13 @@ export function useResourceValue<
         field?.isRelationship === true && newValue === ''
           ? null
           : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
-          ? parsedValue
-          : newValue;
+            ? parsedValue
+            : newValue;
       setValue(
         (parser.type === 'number' && reportErrors
-          ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
-            parsedValue
+          ? (f.parseFloat(
+              parser?.printFormatter?.(parsedValue, parser) ?? ''
+            ) ?? parsedValue)
           : formattedValue) as T
       );
       if (field === undefined) return;
@@ -191,6 +192,18 @@ export function useResourceValue<
         parser.value !== false ||
         defaultParser?.value === false);
 
+    const fieldValue = resource.get(field.name) as
+      | boolean
+      | number
+      | string
+      | null
+      | undefined;
+    const parsedValue = parseValue(
+      parser,
+      inputRef.current ?? undefined,
+      fieldValue?.toString() ?? '',
+      trim
+    );
     if (
       hasDefault &&
       /*
@@ -199,21 +212,21 @@ export function useResourceValue<
        * should overwrite that of the resource
        */
       resource.isNew() &&
-      (parser.type !== 'number' ||
-        typeof resource.get(field.name) !== 'number' ||
-        resource.get(field.name) === 0) &&
-      ((parser.type !== 'text' && parser.type !== 'date') ||
-        typeof resource.get(field.name) !== 'string' ||
-        resource.get(field.name) === '') &&
-      (parser.type !== 'checkbox' ||
-        typeof resource.get(field.name) !== 'boolean')
+      ((!parsedValue.isValid && field.name === 'catalogNumber') ||
+        ((parser.type !== 'number' ||
+          typeof fieldValue !== 'number' ||
+          fieldValue === 0) &&
+          ((parser.type !== 'text' && parser.type !== 'date') ||
+            typeof fieldValue !== 'string' ||
+            fieldValue === '') &&
+          (parser.type !== 'checkbox' || typeof fieldValue !== 'boolean')))
     )
       resource.set(
         field.name,
         (parser.type === 'date'
-          ? getDateInputValue(
+          ? (getDateInputValue(
               parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
-            ) ?? new Date()
+            ) ?? new Date())
           : parser.value) as never,
         { silent: true }
       );

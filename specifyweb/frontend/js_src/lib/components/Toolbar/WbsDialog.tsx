@@ -45,7 +45,7 @@ const createWorkbenchDataSet = async () =>
   );
 
 export const createEmptyDataSet = async <
-  DATASET extends AttachmentDataSet | Dataset
+  DATASET extends AttachmentDataSet | Dataset,
 >(
   datasetVariant: keyof typeof datasetVariants,
   name: LocalizedString,
@@ -177,8 +177,8 @@ export function GenericDataSetsDialog({
           sortConfig.sortField === 'name'
             ? name
             : sortConfig.sortField === 'dateCreated'
-            ? timestampcreated
-            : uploadresult?.timestamp ?? ''
+              ? timestampcreated
+              : (uploadresult?.timestamp ?? '')
       )
     : undefined;
 

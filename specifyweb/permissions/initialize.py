@@ -1,13 +1,20 @@
 
 from django.db import transaction, connection
+from django.apps import apps
 
-from specifyweb.specify.models import Specifyuser, Agent, Collection # type: ignore
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.model_extras import is_legacy_admin
 
-from .models import LibraryRole, Role, UserPolicy, LibraryRolePolicy, RolePolicy, UserRole
 from .permissions import CollectionAccessPT
 
-def wipe_permissions() -> None:
+def wipe_permissions(apps = apps) -> None:
+    RolePolicy = apps.get_model('permissions', 'RolePolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+    Role = apps.get_model('permissions', 'Role')
+    LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')
+    LibraryRole = apps.get_model('permissions', 'LibraryRole')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+
     RolePolicy.objects.all().delete()
     UserRole.objects.all().delete()
     Role.objects.all().delete()
@@ -15,22 +22,25 @@ def wipe_permissions() -> None:
     LibraryRole.objects.all().delete()
     UserPolicy.objects.all().delete()
 
-def initialize(wipe: bool=False) -> None:
+def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
-            wipe_permissions()
-        create_admins()
-        create_roles()
-        assign_users_to_roles()
+            wipe_permissions(apps)
+        create_admins(apps)
+        create_roles(apps)
+        assign_users_to_roles(apps)
 
-def create_admins() -> None:
+def create_admins(apps=apps) -> None:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Specifyuser = apps.get_model('specify', 'Specifyuser')
+
     if UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
         # don't do anything if there is already any admin.
         return
 
     users = Specifyuser.objects.all()
     for user in users:
-        if user.is_legacy_admin():
+        if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
                 collection=None,
                 specifyuser_id=user.id,
@@ -38,8 +48,14 @@ def create_admins() -> None:
                 action="%",
             )
 
-def assign_users_to_roles() -> None:
+def assign_users_to_roles(apps=apps) -> None:
     from specifyweb.context.views import users_collections_for_sp6
+
+    Role = apps.get_model('permissions', 'Role')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Collection = apps.get_model('specify', 'Collection')
+    Specifyuser = apps.get_model('specify', 'Specifyuser')
+    Agent = apps.get_model('specify', 'Agent')
 
     cursor = connection.cursor()
     for user in Specifyuser.objects.all():
@@ -62,7 +78,12 @@ def assign_users_to_roles() -> None:
                     action=CollectionAccessPT.access.action(),
                 )
 
-def create_roles() -> None:
+def create_roles(apps = apps) -> None:
+    LibraryRole = apps.get_model('permissions', 'LibraryRole')
+    Role = apps.get_model('permissions', 'Role')
+    Collection = apps.get_model('specify', 'Collection')
+    Specifyuser = apps.get_model('specify', 'Specifyuser')
+    
     role = LibraryRole.objects.create(name="Assign Roles", description="Gives ability to assign existing roles to existing users.")
     role.policies.create(resource="/permissions/user/roles", action="read")
     role.policies.create(resource="/permissions/user/roles", action="update")
@@ -392,10 +413,10 @@ def create_roles() -> None:
                 r.policies.create(resource=lp.resource, action=lp.action)
 
 
-    for collection in Collection.objects.all():
+    for collection_id in Collection.objects.values_list('id', flat=True):
         # Copy the collection admin role into the collection roles.
         ca = Role.objects.create(
-            collection_id=collection.id,
+            collection_id=collection_id,
             name=collection_admin.name,
             description=collection_admin.description,
         )

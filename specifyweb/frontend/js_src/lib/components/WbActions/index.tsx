@@ -112,8 +112,8 @@ export function WbActions({
             dataCheckInProgress
               ? wbText.unavailableWhileValidating()
               : isUploaded
-              ? undefined
-              : wbText.wbUploadedUnavailable()
+                ? undefined
+                : wbText.wbUploadedUnavailable()
           }
           onClick={handleToggleResults}
         >

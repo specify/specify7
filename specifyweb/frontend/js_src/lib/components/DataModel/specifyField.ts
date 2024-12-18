@@ -10,6 +10,7 @@ import { camelToHuman } from '../../utils/utils';
 import { type UiFormatter, getUiFormatters } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
+import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { schema, unescape } from './schema';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
@@ -46,7 +47,7 @@ const relationshipTypes = [
   'zero-to-one',
 ] as const;
 
-export type RelationshipType = typeof relationshipTypes[number];
+export type RelationshipType = (typeof relationshipTypes)[number];
 
 export type FieldDefinition = {
   readonly column?: string;
@@ -136,8 +137,8 @@ export abstract class FieldBase {
       globalFieldOverride?.visibility === 'required'
         ? true
         : globalFieldOverride?.visibility === 'optional'
-        ? false
-        : fieldDefinition.required;
+          ? false
+          : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.databaseColumn = fieldDefinition.column;
@@ -239,8 +240,8 @@ export abstract class FieldBase {
     const name = value.startsWith('[literalField')
       ? 'literalField'
       : value.startsWith('[relationship')
-      ? 'relationship'
-      : undefined;
+        ? 'relationship'
+        : undefined;
     if (name === undefined) return undefined;
     const parts = value.replace(`[${name} `, '').replace(']', '').split('.');
     if (parts.length !== 2) return undefined;
@@ -257,8 +258,11 @@ export class LiteralField extends FieldBase {
   // Indicates white space should not be ignored in the field
   public readonly whiteSpaceSensitive: boolean;
 
+  public readonly datamodelDefinition: FieldDefinition;
+
   public constructor(table: SpecifyTable, fieldDefinition: FieldDefinition) {
     super(table, fieldDefinition);
+    this.datamodelDefinition = fieldDefinition;
     this.type = fieldDefinition.type;
 
     const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
@@ -270,13 +274,15 @@ export class LiteralField extends FieldBase {
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.
-  public getFormat(): string | undefined {
+  public getFormat(_resource?: SpecifyResource<AnySchema>): string | undefined {
     return this.localization.format ?? undefined;
   }
 
   // Returns the UIFormatter for the field specified in the schema config.
-  public getUiFormatter(): UiFormatter | undefined {
-    return getUiFormatters()[this.getFormat() ?? ''];
+  public getUiFormatter(
+    resource?: SpecifyResource<AnySchema>
+  ): UiFormatter | undefined {
+    return getUiFormatters()[this.getFormat(resource) ?? ''];
   }
 }
 
@@ -287,6 +293,8 @@ export class Relationship extends FieldBase {
   public readonly relatedTable: SpecifyTable;
 
   public readonly type: RelationshipType;
+
+  public readonly datamodelDefinition: RelationshipDefinition;
 
   private readonly dependent: boolean;
 
@@ -301,6 +309,7 @@ export class Relationship extends FieldBase {
       indexed: false,
       unique: false,
     });
+    this.datamodelDefinition = relationshipDefinition;
 
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
@@ -336,9 +345,9 @@ export class Relationship extends FieldBase {
       this.name === 'collectingEvent'
       ? schema.embeddedCollectingEvent
       : this.table.name.toLowerCase() === schema.paleoContextChildTable &&
-        this.name === 'paleoContext'
-      ? schema.embeddedPaleoContext
-      : this.dependent;
+          this.name === 'paleoContext'
+        ? schema.embeddedPaleoContext
+        : this.dependent;
   }
 
   // Returns the field of the related table that is the reverse of this field.

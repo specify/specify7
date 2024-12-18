@@ -5,6 +5,7 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
+import re
 from typing import Union, List, Tuple, Dict, Any
 from uuid import uuid4
 
@@ -79,6 +80,8 @@ def api_view(dispatch_func):
 
 resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
+collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
+collection_bulk = api_view(api.collection_dispatch_bulk)
 
 
 def raise_error(request):
@@ -1364,3 +1367,4 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+    

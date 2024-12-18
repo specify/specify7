@@ -147,9 +147,9 @@ class TreeRank(models.Model):
         # post_save
         post_tree_rank_save(self.__class__, self)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, allow_root_del=False, **kwargs):
         # pre_delete
-        if self.__class__.objects.get(id=self.id).parent is None:
+        if not allow_root_del and self.__class__.objects.get(id=self.id).parent is None:
             raise TreeBusinessRuleException(
                 "cannot delete root level tree definition item",
                 {"tree": self.__class__.__name__,
@@ -165,7 +165,6 @@ class TreeRank(models.Model):
 
         # post_delete
         post_tree_rank_deletion(self)
-
 
 
 def open_interval(model, parent_node_number, size):
@@ -674,9 +673,12 @@ def renumber_tree(table):
     }
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
-    if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
-        formattedResults)
+    if bad_ranks_count > 0:
+        # raise AssertionError( # Phasing out node numbering, logging as warning instead of raising an exception
+        logger.warning(
+            f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
+            formattedResults,
+        )
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
@@ -728,12 +730,12 @@ def renumber_tree(table):
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
-def is_instance_of_tree_def_item(obj):
-    tree_def_item_classes = [
-        spmodels.Geographytreedefitem,
-        spmodels.Geologictimeperiodtreedefitem,
-        spmodels.Lithostrattreedefitem,
-        spmodels.Storagetreedefitem,
-        spmodels.Taxontreedefitem,
-    ]
-    return any(isinstance(obj, cls) for cls in tree_def_item_classes)
+def is_treedefitem(obj):
+    return issubclass(obj.__class__, TreeRank) or bool(
+        re.search(r"treedefitem'>$", str(obj.__class__), re.IGNORECASE)
+    )
+
+def is_treedef(obj):
+    return issubclass(obj.__class__, Tree) or bool(
+        re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
+    )

@@ -6,7 +6,7 @@ import { fetchCollection } from '../DataModel/collection';
 import { toTreeTable } from '../DataModel/helpers';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
+import { idFromUrl, resourceOn } from '../DataModel/resource';
 import type { TreeDefItem } from '../DataModel/treeBusinessRules';
 import type { Geography } from '../DataModel/types';
 import type {
@@ -22,25 +22,28 @@ import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
 
 const fetchTreeRoot = async (
-  treeName: AnyTree['tableName']
+  treeName: AnyTree['tableName'],
+  treeDefinitionId: number
 ): Promise<SerializedResource<TreeDefItem<AnyTree>>> =>
   treeRanksPromise.then(
     () =>
-      strictGetTreeDefinitionItems(treeName as 'Geography', true).find(
+      strictGetTreeDefinitionItems(treeName, true, treeDefinitionId).find(
         ({ rankId }) => rankId === 0
       )!
   );
 
 export const fetchPossibleRanks = async (
   resource: SpecifyResource<AnyTree>,
-  parentDefinitionRankId: number
+  parentDefinitionRankId: number,
+  treeDefinitionId: number
 ): Promise<RA<SerializedResource<TreeDefItem<AnyTree>>>> =>
   treeRanksPromise
     .then(async () =>
       fetchLowestChildRank(resource).then((lowestChildRank) =>
         strictGetTreeDefinitionItems(
-          resource.specifyTable.name as 'Geography',
-          false
+          resource.specifyTable.name,
+          false,
+          treeDefinitionId
         )
           .filter(
             ({ rankId }) =>
@@ -83,6 +86,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(
     undefined
   );
+
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
@@ -105,13 +109,20 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
           )
           .then(async (treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
-              ? fetchPossibleRanks(resource, treeDefinitionItem.get('rankId'))
+              ? fetchPossibleRanks(
+                  resource,
+                  treeDefinitionItem.get('rankId'),
+                  idFromUrl(treeDefinitionItem.get('treeDef'))!
+                )
               : typeof resource.get('definitionItem') === 'string' &&
-                !resource.isNew()
-              ? ([await fetchTreeRoot(resource.specifyTable.name)] as RA<
-                  SerializedResource<TreeDefItem<AnyTree>>
-                >)
-              : undefined
+                  !resource.isNew()
+                ? ([
+                    await fetchTreeRoot(
+                      resource.specifyTable.name,
+                      idFromUrl(resource.get('definition'))!
+                    ),
+                  ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
+                : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;

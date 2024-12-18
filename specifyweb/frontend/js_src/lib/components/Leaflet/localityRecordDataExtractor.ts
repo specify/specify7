@@ -62,7 +62,7 @@ type FilterFunction = (
   mappingPath: readonly [
     pastParts: MappingPath,
     currentPart: MappingPath,
-    nextParts: MappingPath
+    nextParts: MappingPath,
   ],
   resource: Collection<AnySchema> | SpecifyResource<AnySchema>
 ) => boolean;
@@ -136,7 +136,8 @@ async function recursiveResourceResolve(
       return [];
     const tableRanks = strictGetTreeDefinitionItems(
       treeTableName as 'Geography',
-      false
+      false,
+      'all'
     );
     const currentRank = defined(
       tableRanks.find(({ rankId }) => rankId === resource.get('rankId')),
@@ -181,7 +182,7 @@ async function recursiveResourceResolve(
 // eslint-disable-next-line functional/prefer-readonly-type
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
-  RA<MappingPath> | undefined
+  RA<MappingPath> | undefined,
 ] = [undefined, undefined];
 export const parseLocalityPinFields = (
   quickFetch: boolean

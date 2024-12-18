@@ -343,6 +343,9 @@ export const queryText = createDictionary({
     'uk-ua': '(будь-який ранг)',
     'de-ch': '(jeder Rang)',
   },
+  anyTree: {
+    'en-us': '(any tree)',
+  },
   moveUp: {
     comment: 'As in move it up',
     'en-us': 'Move Up',
@@ -906,5 +909,14 @@ export const queryText = createDictionary({
     'fr-fr': 'Choisir le formateur',
     'ru-ru': 'Выберите форматтер',
     'uk-ua': 'Виберіть форматер',
+  },
+  range: {
+    'en-us': 'Range',
+  },
+  strict: {
+    'en-us': 'Strict',
+  },
+  nonStrict: {
+    'en-us': 'Non strict',
   },
 } as const);

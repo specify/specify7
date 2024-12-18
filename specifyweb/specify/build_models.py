@@ -118,6 +118,7 @@ SPECIAL_DELETION_RULES = {
     'Lithostrattreedefitem.parent': models.DO_NOTHING,
     'Storagetreedefitem.parent': models.DO_NOTHING,
     'Taxontreedefitem.parent': models.DO_NOTHING,
+    'Tectonicunittreedefitem.parent': models.DO_NOTHING,
 }
 
 def make_relationship(modelname, rel, datamodel):
@@ -280,6 +281,8 @@ class make_boolean_field(make_field):
 # appropriate field constructor functions.
 field_type_map = {
     'text': make_text_field,
+    'json': make_text_field,
+    'blob': make_text_field,
     'java.lang.String': make_string_field,
     'java.lang.Integer': make_integer_field,
     'java.lang.Long': make_integer_field,

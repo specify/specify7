@@ -4,7 +4,7 @@ from typing import Any, List, NamedTuple, Optional, TypedDict, Union
 
 from specifyweb.specify.auditlog import AuditLog
 from specifyweb.permissions.permissions import (
-    PERMISSION_ACTIONS,
+    TABLE_ACTION,
     check_table_permissions,
 )
 from specifyweb.specify.models import Agent
@@ -37,7 +37,7 @@ class Auditor(NamedTuple):
     skip_create_permission_check: bool = False
     agent: Optional[Agent] = None
 
-    def pre_log(self, obj: Any, action_name: PERMISSION_ACTIONS):
+    def pre_log(self, obj: Any, action_name: TABLE_ACTION):
         if self.skip_create_permission_check:
             return
         if self.agent is None:

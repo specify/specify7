@@ -1,3 +1,4 @@
+from email.policy import strict
 import logging
 from collections import namedtuple
 from typing import Any, Dict, List, NamedTuple, Optional
@@ -40,6 +41,7 @@ class QueryField(NamedTuple):
     display: bool
     format_name: Optional[str]
     sort_type: int
+    strict: bool
 
     @classmethod
     def from_spqueryfield(cls, field: EphemeralField, value=None):
@@ -58,6 +60,7 @@ class QueryField(NamedTuple):
             display=field.isDisplay,
             format_name=field.formatName,
             sort_type=field.sortType,
+            strict=field.isStrict,
         )
 
     def add_to_query(self, query, no_filter=False, formatauditobjs=False):
@@ -81,4 +84,5 @@ class QueryField(NamedTuple):
             negate=self.negate,
             formatter=self.format_name,
             formatauditobjs=formatauditobjs,
+            strict=self.strict,
         )

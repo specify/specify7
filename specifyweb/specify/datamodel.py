@@ -1478,7 +1478,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='prepTypes', type='one-to-many',required=False, relatedModelName='PrepType', otherSideName='collection'),
             Relationship(name='rightSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='rightSideCollection'),
             Relationship(name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collTechContact'),
-            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope'),
+            Relationship(name='collectionObjectType', type='many-to-one',required=False, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID', otherSideName='collections')
         ],
         fieldAliases=[
 
@@ -1553,7 +1554,7 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
         ],
         indexes=[
             Index(name='FieldNumberIDX', column_names=['FieldNumber']),
@@ -1595,13 +1596,20 @@ datamodel = Datamodel(tables=[
             Relationship(name='rightSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='rightSide', dependent=True),
             Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True)
+            Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
+            Relationship(name='collectionObjectType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
+            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
+            Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
+            Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
         ],
         fieldAliases=[
 
         ],
         view='CollectionObject',
-        searchDialog='CollectionObjectSearch'
+        searchDialog='CollectionObjectSearch',
+        virtual_fields=[
+            Field(name='age', column='Age', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.CollectionObjectAttachment',
@@ -2985,13 +2993,14 @@ datamodel = Datamodel(tables=[
             Relationship(name='dataType', type='many-to-one',required=True, relatedModelName='DataType', column='DataTypeID'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID', otherSideName='disciplines'),
             Relationship(name='geographyTreeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='disciplines'),
+            Relationship(name='taxonTreeDef', type='many-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='disciplines'),
             Relationship(name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
             Relationship(name='lithoStratTreeDef', type='many-to-one',required=False, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='disciplines'),
+            Relationship(name='tectonicUnitTreeDef', type='many-to-one',required=False, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='disciplines'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='disciplines'),
             Relationship(name='spExportSchemas', type='one-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='discipline'),
             Relationship(name='spLocaleContainers', type='one-to-many',required=False, relatedModelName='SpLocaleContainer', otherSideName='discipline'),
-            Relationship(name='taxonTreeDef', type='one-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='discipline'),
             Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
@@ -3843,7 +3852,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geographyTreeDef'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID', otherSideName='geographyTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definition')
@@ -3959,7 +3968,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geologicTimePeriodTreeDef'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID', otherSideName='geologicTimePeriodTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definition')
@@ -4479,7 +4488,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='lithoStratTreeDef'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='lithoStratTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definition')
@@ -5152,6 +5161,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='lithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='LithoStratID', otherSideName='paleoContexts'),
+            Relationship(name='tectonicUnit', type='many-to-one',required=False, relatedModelName='TectonicUnit', column='TectonicUnitID', otherSideName='paleoContexts'),
             Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='paleoContext'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -6193,7 +6203,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAuditLog',
         table='spauditlog',
         tableId=530,
-        system=True,
+        system=False,
         idColumn='SpAuditLogID',
         idFieldName='spAuditLogId',
         idField=IdField(name='spAuditLogId', column='SpAuditLogID', type='java.lang.Integer'),
@@ -6631,7 +6641,8 @@ datamodel = Datamodel(tables=[
             Field(name='tableList', column='TableList', indexed=False, unique=False, required=True, type='java.lang.String', length=500),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=True, type='java.lang.Boolean')
         ],
         indexes=[
 
@@ -6973,7 +6984,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='institutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='storageTreeDef'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID', otherSideName='storageTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definition')
@@ -7421,7 +7432,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDef'), # no column aka.(columnname), virtual
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='taxonTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
@@ -7831,6 +7842,7 @@ datamodel = Datamodel(tables=[
     Table( # Spuserexternalid
         sp7_only=True,
         django_app='accounts',
+        system=True,
         classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
         table='spuserexternalid',
         tableId=1000,
@@ -7856,6 +7868,7 @@ datamodel = Datamodel(tables=[
     Table( # Spattachmentdataset TODO: check json field errors
         sp7_only=True,
         django_app='attachment_gw',
+        system=True,
         classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
         table='attachmentdataset',
         tableId=1001,
@@ -7890,6 +7903,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UniquenessRule
         sp7_only=True,
+        system=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRule',
         table='uniquenessrule',
@@ -7907,6 +7921,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='discipline', type='many-to-one', required=False, relatedModelName='Discipline', column='DisciplineID'),
+            # Relationship(name='fields', type='one-to-many', required=False, relatedModelName='UniquenessRuleField') #REFACTOR: Add this to sqlalchemy models
         ],
         fieldAliases=[
 
@@ -7914,6 +7929,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UniquenessRuleField
         sp7_only=True,
+        system=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRuleField', # NOTE: the classname is what is used in the QB api
         table='uniquenessrule_fields',
@@ -7937,6 +7953,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Message
         sp7_only=True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.Message', # NOTE: the classname is what is used in the QB api
         table='notifications_message',
@@ -7961,6 +7978,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Spmerging
         sp7_only=True,
+        system=True,
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.Spmerging',
         table='spmerging',
@@ -7995,6 +8013,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LocalityUpdate
         sp7_only = True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.LocalityUpdate',
         table='localityupdate',
@@ -8018,6 +8037,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( #LocalityUpdateRowResult
         sp7_only = True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.LocalityUpdateRowResult',
         table='localityupdaterowresult',
@@ -8035,6 +8055,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UserPolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserPolicy',
         table='spuserpolicy',
@@ -8059,6 +8080,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Role
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.Role',
         table='sprole',
@@ -8082,6 +8104,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LibraryRole
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRole',
         table='splibraryrole',
@@ -8105,6 +8128,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UserRole
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserRole',
         table='spuserrole',
@@ -8128,6 +8152,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # RolePolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.RolePolicy',
         table='sprolepolicy',
@@ -8151,6 +8176,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LibraryRolePolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
         table='splibraryrolepolicy',
@@ -8174,6 +8200,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Spdataset
         sp7_only=True,
+        system=True,
         django_app='workbench',
         classname='edu.ku.brc.specify.datamodel.Spdataset',
         table='spdataset',
@@ -8206,7 +8233,483 @@ datamodel = Datamodel(tables=[
         fieldAliases=[
 
         ]
-    )
+    ),
+    Table( # CollectionObjectType
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectType',
+        table='collectionobjecttype',
+        tableId=1015,
+        idColumn='CollectionObjectTypeID',
+        idFieldName='collectionObjectTypeId',
+        idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='catalogNumberFormatName', column='CatalogNumberFormatName', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='taxonTreeDef', type='many-to-one', required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroup
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroup',
+        table='collectionobjectgroup',
+        tableId=1016,
+        idColumn='CollectionObjectGroupID',
+        idFieldName='collectionObjectGroupId',
+        idField=IdField(name='collectionObjectGroupId', column='CollectionObjectGroupID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text'),
+            Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='decimal1', column='Decimal1', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='decimal2', column='Decimal2', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='decimal3', column='Decimal3', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+        ],
+        indexes=[
+        
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
+            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',otherSideName='childCog', dependent=True),
+            Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroupJoin
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin',
+        table='collectionobjectgroupjoin',
+        tableId=1017,
+        idColumn='CollectionObjectGroupJoinID',
+        idFieldName='collectionObjectGroupJoinId',
+        idField=IdField(name='collectionObjectGroupJoinId', column='CollectionObjectGroupJoinID', type='java.lang.Integer'),
+        fields=[
+            Field(name='isPrimary', column='IsPrimary', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='isSubstrate', column='IsSubstrate', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='precedence', column='Precedence', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='parentCog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='children'),
+            Relationship(name='childCog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
+            Relationship(name='childCo', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroupType
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupType',
+        table='collectionobjectgrouptype',
+        tableId=1018,
+        idColumn='COGTypeID',
+        idFieldName='cogTypeId',
+        idField=IdField(name='cogTypeId', column='COGTypeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # AbsoluteAge
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.AbsoluteAge',
+        table='absoluteage',
+        tableId=1019,
+        idColumn='AbsoluteAgeID',
+        idFieldName='absoluteAgeId',
+        idField=IdField(name='absoluteAgeId', column='AbsoluteAgeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='absoluteAge', column='AbsoluteAge', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='ageType', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='ageUncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='collectionDate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='date1', column='Date1', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='date2', column='Date2', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='datingMethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='datingMethodRemarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='absoluteAgeAttachments', type='one-to-many', required=False, relatedModelName='AbsoluteAgeAttachment', otherSideName='absoluteAge', dependent=True),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='absoluteAges'),
+            Relationship(name='absoluteAgeCitations', type='one-to-many',required=False, relatedModelName='AbsoluteAgeCitation', otherSideName='absoluteAge', dependent=True),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # RelativeAge
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.RelativeAge',
+        table='relativeage',
+        tableId=1020,
+        idColumn='RelativeAgeID',
+        idFieldName='relativeAgeId',
+        idField=IdField(name='relativeAgeId', column='RelativeAgeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='ageType', column='AgeType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='ageUncertainty', column='AgeUncertainty', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='collectionDate', column='CollectionDate', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='date1', column='Date1', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='date2', column='Date2', indexed=False, unique=False, required=False, type='java.util.Date'),
+            Field(name='datingMethod', column='DatingMethod', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='datingMethodRemarks', column='DatingMethodRemarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='relativeAgePeriod', column='RelativeAgePeriod', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='verbatimName', column='VerbatimName', indexed=False, unique=False, required=False, type='text'),
+            Field(name='verbatimPeriod', column='VerbatimPeriod', indexed=False, unique=False, required=False, type='text'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='ageName', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameID'),
+            Relationship(name='ageNameEnd', type='many-to-one', required=False, relatedModelName='GeologicTimePeriod', column='AgeNameEndID'),
+            Relationship(name='agent1', type='many-to-one', required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one', required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='relativeAgeAttachments', type='one-to-many', required=False, relatedModelName='RelativeAgeAttachment', otherSideName='relativeAge', dependent=True),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='relativeAges'),
+            Relationship(name='relativeAgeCitations', type='one-to-many',required=False, relatedModelName='RelativeAgeCitation', otherSideName='relativeAge', dependent=True),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # AbsoluteAgeAttachment
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.AbsoluteAgeAttachment',
+        table='absoluteageattachment',
+        tableId=1021,
+        idColumn='AbsoluteAgeAttachmentID',
+        idFieldName='absoluteAgeAttachmentId',
+        idField=IdField(name='absoluteAgeAttachmentId', column='AbsoluteAgeAttachmentID', type='java.lang.Integer'),
+        fields=[
+            Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='absoluteAgeAttachments', dependent=True),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='absoluteAge', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID', otherSideName='absoluteAgeAttachments')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # RelativeAgeAttachment
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.RelativeAgeAttachment',
+        table='relativeageattachment',
+        tableId=1022,
+        idColumn='RelativeAgeAttachmentID',
+        idFieldName='relativeAgeAttachmentId',
+        idField=IdField(name='relativeAgeAttachmentId', column='RelativeAgeAttachmentID', type='java.lang.Integer'),
+        fields=[
+            Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='attachment', type='many-to-one', required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='relativeAgeAttachments', dependent=True),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='relativeAge', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID', otherSideName='relativeAgeAttachments'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # AbsoluteAgeCitation
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.AbsoluteAgeCitation',
+        table='absoluteagecitation',
+        tableId=1023,
+        idColumn='AbsoluteAgeCitationID',
+        idFieldName='absoluteAgeCitationId',
+        idField=IdField(name='absoluteAgeCitationId', column='AbsoluteAgeCitationID', type='java.lang.Integer'),
+        fields=[
+            Field(name='figureNumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='isFigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='pageNumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='plateNumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='absoluteAge', type='many-to-one', required=True, relatedModelName='AbsoluteAge', column='AbsoluteAgeID', otherSideName='absoluteAgeCitations'),
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # RelativeAgeCitation
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.RelativeAgeCitation',
+        table='relativeagecitation',
+        tableId=1024,
+        idColumn='RelativeAgeCitationID',
+        idFieldName='relativeAgeCitationId',
+        idField=IdField(name='relativeAgeCitationId', column='RelativeAgeCitationID', type='java.lang.Integer'),
+        fields=[
+            Field(name='figureNumber', column='FigureNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='isFigured', column='IsFigured', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='pageNumber', column='PageNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='plateNumber', column='PlateNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one', required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
+            Relationship(name='relativeAge', type='many-to-one', required=True, relatedModelName='RelativeAge', column='RelativeAgeID', otherSideName='relativeAgeCitations'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # TectonicUnitTreeDef
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.TectonicUnitTreeDef',
+        table='tectonicunittreedef',
+        tableId=1025,
+        idColumn='TectonicUnitTreeDefID',
+        idFieldName='tectonicUnitTreeDefId',
+        idField=IdField(name='tectonicUnitTreeDefId', column='TectonicUnitTreeDefID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullNameDirection', column='FullNameDirection', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='tectonicUnitTreeDefs'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TectonicUnitTreeDefItem', otherSideName='treeDef', dependent=True),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definition')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # TectonicUnitTreeDefItem
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem',
+        table='tectonicunittreedefitem',
+        tableId=1026,
+        idColumn='TectonicUnitTreeDefItemID',
+        idFieldName='tectonicUnitTreeDefItemId',
+        idField=IdField(name='tectonicUnitTreeDefItemId', column='TectonicUnitTreeDefItemID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullNameSeparator', column='FullNameSeparator', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='isEnforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isInFullName', column='IsInFullName', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='textAfter', column='TextAfter', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='textBefore', column='TextBefore', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='TectonicUnitTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='TectonicUnitTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID',
+            otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='definitionItem')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # TectonicUnit
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.TectonicUnit',
+        table='tectonicunit',
+        tableId=1027,
+        idColumn='TectonicUnitID',
+        idFieldName='tectonicUnitId',
+        idField=IdField(name='tectonicUnitId', column='TectonicUnitID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullName', column='FullName', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
+            Field(name='highestChildNodeNumber', column='HighestChildNodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isAccepted', column='IsAccepted', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='nodeNumber', column='NodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='TectonicUnit', otherSideName='acceptedTectonicUnit'),
+            Relationship(name='acceptedTectonicUnit', type='many-to-one', required=False, relatedModelName='TectonicUnit', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one', required=True, relatedModelName='TectonicUnit', column='ParentID'),
+            Relationship(name='definition', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='treeEntries'),
+        ],
+        fieldAliases=[
+            {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
+        ],
+    ),
 ])
 
 # add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions

@@ -1,7 +1,5 @@
 import logging
 from time import time
-from typing import Any
-from typing_extensions import TypedDict
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 
@@ -12,8 +10,7 @@ import re
 from django.db import connection
 from django.conf import settings
 
-from specifyweb.specify.models import Spauditlog
-from specifyweb.specify.models import Spauditlogfield
+from specifyweb.specify.models import Spauditlog, Spauditlogfield
 from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
 from specifyweb.specify.models import datamodel
 
@@ -24,6 +21,13 @@ Division = datamodel.get_table_strict('Division')
 
 from . import auditcodes
     
+def truncate_str_to_bytes(string: str, bytes: int) -> str:
+    str_as_bytes = string.encode()
+    try:
+        return str_as_bytes[:bytes].decode()
+    except UnicodeDecodeError as err:
+        return str_as_bytes[:err.start].decode()
+
 class AuditLog(object):
 
     _auditingFlds = None
@@ -66,6 +70,8 @@ class AuditLog(object):
         return self._log(auditcodes.INSERT, obj, agent, parent_record)
 
     def remove(self, obj, agent, parent_record=None):
+        from specifyweb.specify.api import parse_uri
+
         log_obj = self._log(auditcodes.REMOVE, obj, agent, parent_record)
         if log_obj is not None:
             for spfld in obj.specify_model.fields:
@@ -120,11 +126,12 @@ class AuditLog(object):
     def _log_fld_update(self, vals, log, agent):
         agent_id = agent if isinstance(agent, int) else (agent and agent.id)
         newval = vals['new_value']
+        max_value_length = 2**16 - 1
         if newval is not None:
-            newval = str(vals['new_value'])[:(2**16 - 1)]
+            newval = truncate_str_to_bytes(str(vals['new_value']), max_value_length)
         oldval = vals['old_value']
         if oldval is not None:
-            oldval = str(vals['old_value'])[:(2**16 - 1)]
+            oldval = truncate_str_to_bytes(str(vals['old_value']), max_value_length)
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
             newvalue=newval,

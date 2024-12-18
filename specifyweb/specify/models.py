@@ -1,5 +1,6 @@
 from functools import partialmethod
 from django.db import models
+from django.db.models import Q, CheckConstraint
 from django.utils import timezone
 from specifyweb.businessrules.exceptions import AbortSave
 from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
@@ -76,8 +77,8 @@ class Accession(models.Model):
         db_table = 'accession'
         ordering = ()
         indexes = [
-            # models.Index(fields=['AccessionNumber'], name='AccessionNumberIDX'),
-            # models.Index(fields=['DateAccessioned'], name='AccessionDateIDX')
+            models.Index(fields=['accessionnumber'], name='AccessionNumberIDX'),
+            models.Index(fields=['dateaccessioned'], name='AccessionDateIDX')
         ]
 
     
@@ -106,6 +107,7 @@ class Accessionagent(models.Model):
     class Meta:
         db_table = 'accessionagent'
         ordering = ()
+        unique_together = (('role', 'agent', 'accession'),)
 
     
     save = partialmethod(custom_save)
@@ -324,11 +326,11 @@ class Agent(models.Model):
         db_table = 'agent'
         ordering = ()
         indexes = [
-            # models.Index(fields=['LastName'], name='AgentLastNameIDX'),
-            # models.Index(fields=['FirstName'], name='AgentFirstNameIDX'),
-            # models.Index(fields=['GUID'], name='AgentGuidIDX'),
-            # models.Index(fields=['AgentType'], name='AgentTypeIDX'),
-            # models.Index(fields=['Abbreviation'], name='AbbreviationIDX')
+            models.Index(fields=['lastname'], name='AgentLastNameIDX'),
+            models.Index(fields=['firstname'], name='AgentFirstNameIDX'),
+            models.Index(fields=['guid'], name='AgentGuidIDX'),
+            models.Index(fields=['agenttype'], name='AgentTypeIDX'),
+            models.Index(fields=['abbreviation'], name='AbbreviationIDX')
         ]
 
     
@@ -447,6 +449,7 @@ class Agentspecialty(models.Model):
     class Meta:
         db_table = 'agentspecialty'
         ordering = ()
+        unique_together = (('agent', 'ordernumber'),)
 
     
     save = partialmethod(custom_save)
@@ -505,8 +508,8 @@ class Appraisal(models.Model):
         db_table = 'appraisal'
         ordering = ()
         indexes = [
-            # models.Index(fields=['AppraisalNumber'], name='AppraisalNumberIDX'),
-            # models.Index(fields=['AppraisalDate'], name='AppraisalDateIDX')
+            models.Index(fields=['appraisalnumber'], name='AppraisalNumberIDX'),
+            models.Index(fields=['appraisaldate'], name='AppraisalDateIDX')
         ]
 
     
@@ -558,11 +561,11 @@ class Attachment(models.Model):
         db_table = 'attachment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Title'], name='TitleIDX'),
-            # models.Index(fields=['DateImaged'], name='DateImagedIDX'),
-            # models.Index(fields=['ScopeID'], name='AttchScopeIDIDX'),
-            # models.Index(fields=['ScopeType'], name='AttchScopeTypeIDX'),
-            # models.Index(fields=['GUID'], name='AttchmentGuidIDX')
+            models.Index(fields=['title'], name='TitleIDX'),
+            models.Index(fields=['dateimaged'], name='DateImagedIDX'),
+            models.Index(fields=['scopeid'], name='AttchScopeIDIDX'),
+            models.Index(fields=['scopetype'], name='AttchScopeTypeIDX'),
+            models.Index(fields=['guid'], name='AttchmentGuidIDX')
         ]
 
     
@@ -706,6 +709,7 @@ class Author(models.Model):
     class Meta:
         db_table = 'author'
         ordering = ('ordernumber',)
+        unique_together = (('referencework', 'agent'),)
 
     
     save = partialmethod(custom_save)
@@ -734,7 +738,7 @@ class Autonumberingscheme(models.Model):
         db_table = 'autonumberingscheme'
         ordering = ()
         indexes = [
-            # models.Index(fields=['SchemeName'], name='SchemeNameIDX')
+            models.Index(fields=['schemename'], name='SchemeNameIDX')
         ]
 
     
@@ -779,9 +783,9 @@ class Borrow(models.Model):
         db_table = 'borrow'
         ordering = ()
         indexes = [
-            # models.Index(fields=['InvoiceNumber'], name='BorInvoiceNumberIDX'),
-            # models.Index(fields=['ReceivedDate'], name='BorReceivedDateIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX')
+            models.Index(fields=['invoicenumber'], name='BorInvoiceNumberIDX'),
+            models.Index(fields=['receiveddate'], name='BorReceivedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorColMemIDX')
         ]
 
     
@@ -810,6 +814,7 @@ class Borrowagent(models.Model):
     class Meta:
         db_table = 'borrowagent'
         ordering = ()
+        unique_together = (('role', 'agent', 'borrow'),)
         indexes = [
             # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX2')
         ]
@@ -873,9 +878,9 @@ class Borrowmaterial(models.Model):
         db_table = 'borrowmaterial'
         ordering = ()
         indexes = [
-            # models.Index(fields=['MaterialNumber'], name='BorMaterialNumberIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='BorMaterialColMemIDX'),
-            # models.Index(fields=['Description'], name='DescriptionIDX')
+            models.Index(fields=['materialnumber'], name='BorMaterialNumberIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorMaterialColMemIDX'),
+            models.Index(fields=['description'], name='DescriptionIDX')
         ]
 
     
@@ -906,8 +911,8 @@ class Borrowreturnmaterial(models.Model):
         db_table = 'borrowreturnmaterial'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ReturnedDate'], name='BorrowReturnedDateIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='BorrowReturnedColMemIDX')
+            models.Index(fields=['returneddate'], name='BorrowReturnedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorrowReturnedColMemIDX')
         ]
 
     
@@ -971,12 +976,13 @@ class Collectingevent(models.Model):
     class Meta:
         db_table = 'collectingevent'
         ordering = ()
+        unique_together = (('discipline', 'uniqueidentifier'),)
         indexes = [
-            # models.Index(fields=['StationFieldNumber'], name='CEStationFieldNumberIDX'),
-            # models.Index(fields=['StartDate'], name='CEStartDateIDX'),
-            # models.Index(fields=['EndDate'], name='CEEndDateIDX'),
-            # models.Index(fields=['UniqueIdentifier'], name='CEUniqueIdentifierIDX'),
-            # models.Index(fields=['GUID'], name='CEGuidIDX')
+            models.Index(fields=['stationfieldnumber'], name='CEStationFieldNumberIDX'),
+            models.Index(fields=['startdate'], name='CEStartDateIDX'),
+            models.Index(fields=['enddate'], name='CEEndDateIDX'),
+            models.Index(fields=['uniqueidentifier'], name='CEUniqueIdentifierIDX'),
+            models.Index(fields=['guid'], name='CEGuidIDX')
         ]
 
     
@@ -1006,7 +1012,7 @@ class Collectingeventattachment(models.Model):
         db_table = 'collectingeventattachment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='CEAColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='CEAColMemIDX')
         ]
 
     
@@ -1036,7 +1042,7 @@ class Collectingeventattr(models.Model):
         db_table = 'collectingeventattr'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COLEVATColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLEVATColMemIDX')
         ]
 
     
@@ -1109,7 +1115,7 @@ class Collectingeventattribute(models.Model):
         db_table = 'collectingeventattribute'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='COLEVATSDispIDX')
+            models.Index(fields=['discipline'], name='COLEVATSDispIDX')
         ]
 
     
@@ -1194,8 +1200,8 @@ class Collectingtrip(models.Model):
         db_table = 'collectingtrip'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectingTripName'], name='COLTRPNameIDX'),
-            # models.Index(fields=['StartDate'], name='COLTRPStartDateIDX')
+            models.Index(fields=['collectingtripname'], name='COLTRPNameIDX'),
+            models.Index(fields=['startdate'], name='COLTRPStartDateIDX')
         ]
 
     
@@ -1225,7 +1231,7 @@ class Collectingtripattachment(models.Model):
         db_table = 'collectingtripattachment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='CTAColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='CTAColMemIDX')
         ]
 
     
@@ -1297,7 +1303,7 @@ class Collectingtripattribute(models.Model):
         db_table = 'collectingtripattribute'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='COLTRPSDispIDX')
+            models.Index(fields=['discipline'], name='COLTRPSDispIDX')
         ]
 
     
@@ -1366,13 +1372,14 @@ class Collection(models.Model):
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='collections', null=False, on_delete=protect_with_blockers)
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'collection'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionName'], name='CollectionNameIDX'),
-            # models.Index(fields=['GUID'], name='CollectionGuidIDX')
+            models.Index(fields=['collectionname'], name='CollectionNameIDX'),
+            models.Index(fields=['guid'], name='CollectionGuidIDX')
         ]
 
     
@@ -1463,18 +1470,20 @@ class Collectionobject(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'collectionobject'
         ordering = ()
+        unique_together = (('collection', 'catalognumber'), ('collection', 'uniqueidentifier'),)
         indexes = [
-            # models.Index(fields=['FieldNumber'], name='FieldNumberIDX'),
-            # models.Index(fields=['CatalogedDate'], name='CatalogedDateIDX'),
-            # models.Index(fields=['CatalogNumber'], name='CatalogNumberIDX'),
-            # models.Index(fields=['UniqueIdentifier'], name='COUniqueIdentifierIDX'),
-            # models.Index(fields=['AltCatalogNumber'], name='AltCatalogNumberIDX'),
-            # models.Index(fields=['GUID'], name='ColObjGuidIDX'),
-            # models.Index(fields=['CollectionmemberID'], name='COColMemIDX')
+            models.Index(fields=['fieldnumber'], name='FieldNumberIDX'),
+            models.Index(fields=['catalogeddate'], name='CatalogedDateIDX'),
+            models.Index(fields=['catalognumber'], name='CatalogNumberIDX'),
+            models.Index(fields=['uniqueidentifier'], name='COUniqueIdentifierIDX'),
+            models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
+            models.Index(fields=['guid'], name='ColObjGuidIDX'),
+            models.Index(fields=['collectionmemberid'], name='COColMemIDX')
         ]
 
     
@@ -1504,7 +1513,7 @@ class Collectionobjectattachment(models.Model):
         db_table = 'collectionobjectattachment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COLOBJATTColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATTColMemIDX')
         ]
 
     
@@ -1534,7 +1543,7 @@ class Collectionobjectattr(models.Model):
         db_table = 'collectionobjectattr'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COLOBJATRSColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATRSColMemIDX')
         ]
 
     
@@ -1681,7 +1690,7 @@ class Collectionobjectattribute(models.Model):
         db_table = 'collectionobjectattribute'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COLOBJATTRSColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATTRSColMemIDX')
         ]
 
     
@@ -1709,12 +1718,14 @@ class Collectionobjectcitation(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='collectionobjectcitations', null=False, on_delete=protect_with_blockers)
+    # absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='collectionobjectcitations', null=True, on_delete=protect_with_blockers)
+    # relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='collectionobjectcitations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectcitation'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COCITColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COCITColMemIDX')
         ]
 
     
@@ -1903,7 +1914,7 @@ class Collectionobjectproperty(models.Model):
         db_table = 'collectionobjectproperty'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='COLOBJPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJPROPColMemIDX')
         ]
 
     
@@ -1990,8 +2001,9 @@ class Collector(models.Model):
     class Meta:
         db_table = 'collector'
         ordering = ('ordernumber',)
+        unique_together = (('agent', 'collectingevent'),)
         indexes = [
-            # models.Index(fields=['DivisionID'], name='COLTRDivIDX')
+            models.Index(fields=['division'], name='COLTRDivIDX')
         ]
 
     
@@ -2022,8 +2034,8 @@ class Commonnametx(models.Model):
         db_table = 'commonnametx'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='CommonNameTxNameIDX'),
-            # models.Index(fields=['Country'], name='CommonNameTxCountryIDX')
+            models.Index(fields=['name'], name='CommonNameTxNameIDX'),
+            models.Index(fields=['country'], name='CommonNameTxCountryIDX')
         ]
 
     
@@ -2130,7 +2142,7 @@ class Conservdescription(models.Model):
         db_table = 'conservdescription'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ShortDesc'], name='ConservDescShortDescIDX')
+            models.Index(fields=['shortdesc'], name='ConservDescShortDescIDX')
         ]
 
     
@@ -2206,8 +2218,8 @@ class Conservevent(models.Model):
         db_table = 'conservevent'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ExamDate'], name='ConservExamDateIDX'),
-            # models.Index(fields=['completedDate'], name='ConservCompletedDateIDX')
+            models.Index(fields=['examdate'], name='ConservExamDateIDX'),
+            models.Index(fields=['completeddate'], name='ConservCompletedDateIDX')
         ]
 
     
@@ -2258,15 +2270,15 @@ class Container(models.Model):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='containers', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'container'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='ContainerNameIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='ContainerMemIDX')
+            models.Index(fields=['name'], name='ContainerNameIDX'),
+            models.Index(fields=['collectionmemberid'], name='ContainerMemIDX')
         ]
 
     
@@ -2316,7 +2328,7 @@ class Dnaprimer(models.Model):
         db_table = 'dnaprimer'
         ordering = ()
         indexes = [
-            # models.Index(fields=['PrimerDesignator'], name='DesignatorIDX')
+            models.Index(fields=['primerdesignator'], name='DesignatorIDX')
         ]
 
     
@@ -2374,9 +2386,9 @@ class Dnasequence(models.Model):
         db_table = 'dnasequence'
         ordering = ()
         indexes = [
-            # models.Index(fields=['GenBankAccessionNumber'], name='GenBankAccIDX'),
-            # models.Index(fields=['BOLDBarcodeID'], name='BOLDBarcodeIDX'),
-            # models.Index(fields=['BOLDSampleID'], name='BOLDSampleIDX')
+            models.Index(fields=['genbankaccessionnumber'], name='GenBankAccIDX'),
+            models.Index(fields=['boldbarcodeid'], name='BOLDBarcodeIDX'),
+            models.Index(fields=['boldsampleid'], name='BOLDSampleIDX')
         ]
 
     
@@ -2596,8 +2608,8 @@ class Deaccession(models.Model):
         db_table = 'deaccession'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DeaccessionNumber'], name='DeaccessionNumberIDX'),
-            # models.Index(fields=['DeaccessionDate'], name='DeaccessionDateIDX')
+            models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'),
+            models.Index(fields=['deaccessiondate'], name='DeaccessionDateIDX')
         ]
 
     
@@ -2625,6 +2637,7 @@ class Deaccessionagent(models.Model):
     class Meta:
         db_table = 'deaccessionagent'
         ordering = ()
+        unique_together = (('role', 'agent', 'deaccession'),)
 
     
     save = partialmethod(custom_save)
@@ -2717,11 +2730,11 @@ class Determination(models.Model):
         db_table = 'determination'
         ordering = ('-iscurrent',)
         indexes = [
-            # models.Index(fields=['DeterminedDate'], name='DeterminedDateIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='DetMemIDX'),
-            # models.Index(fields=['AlternateName'], name='AlterNameIDX'),
-            # models.Index(fields=['GUID'], name='DeterminationGuidIDX'),
-            # models.Index(fields=['TypeStatusName'], name='TypeStatusNameIDX')
+            models.Index(fields=['determineddate'], name='DeterminedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='DetMemIDX'),
+            models.Index(fields=['alternatename'], name='AlterNameIDX'),
+            models.Index(fields=['guid'], name='DeterminationGuidIDX'),
+            models.Index(fields=['typestatusname'], name='TypeStatusNameIDX')
         ]
 
     
@@ -2753,8 +2766,9 @@ class Determinationcitation(models.Model):
     class Meta:
         db_table = 'determinationcitation'
         ordering = ()
+        unique_together = (('referencework', 'determination'),)
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='DetCitColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='DetCitColMemIDX')
         ]
 
     
@@ -2787,11 +2801,12 @@ class Determiner(models.Model):
     class Meta:
         db_table = 'determiner'
         ordering = ('ordernumber',)
+        unique_together = (('agent', 'determination'),)
 
     
     save = partialmethod(custom_save)
 
-class Discipline(models.Model):
+class Discipline(model_extras.Discipline):
     specify_model = datamodel.get_table('discipline')
 
     # ID Field
@@ -2807,23 +2822,22 @@ class Discipline(models.Model):
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
-    # Relationships: One-to-One
-    taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
-
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     datatype = models.ForeignKey('DataType', db_column='DataTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     geographytreedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
+    tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'discipline'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='DisciplineNameIDX')
+            models.Index(fields=['name'], name='DisciplineNameIDX')
         ]
 
     
@@ -2860,8 +2874,8 @@ class Disposal(models.Model):
         db_table = 'disposal'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisposalNumber'], name='DisposalNumberIDX'),
-            # models.Index(fields=['DisposalDate'], name='DisposalDateIDX')
+            models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
+            models.Index(fields=['disposaldate'], name='DisposalDateIDX')
         ]
 
     
@@ -2889,6 +2903,7 @@ class Disposalagent(models.Model):
     class Meta:
         db_table = 'disposalagent'
         ordering = ()
+        unique_together = (('role', 'agent', 'disposal'),)
 
     
     save = partialmethod(custom_save)
@@ -2976,7 +2991,7 @@ class Division(models.Model):
         db_table = 'division'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='DivisionNameIDX')
+            models.Index(fields=['name'], name='DivisionNameIDX')
         ]
 
     
@@ -3019,8 +3034,8 @@ class Exchangein(models.Model):
         db_table = 'exchangein'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ExchangeDate'], name='ExchangeDateIDX'),
-            # models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX')
+            models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
+            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX')
         ]
 
     
@@ -3080,7 +3095,7 @@ class Exchangeinprep(models.Model):
         db_table = 'exchangeinprep'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='ExchgInPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='ExchgInPrepDspMemIDX')
         ]
 
     
@@ -3124,9 +3139,9 @@ class Exchangeout(models.Model):
         db_table = 'exchangeout'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ExchangeDate'], name='ExchangeOutdateIDX'),
+            models.Index(fields=['exchangedate'], name='ExchangeOutdateIDX'),
             # models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX2'),
-            # models.Index(fields=['ExchangeOutNumber'], name='ExchangeOutNumberIDX')
+            models.Index(fields=['exchangeoutnumber'], name='ExchangeOutNumberIDX')
         ]
 
     
@@ -3186,7 +3201,7 @@ class Exchangeoutprep(models.Model):
         db_table = 'exchangeoutprep'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='ExchgOutPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='ExchgOutPrepDspMemIDX')
         ]
 
     
@@ -3270,6 +3285,7 @@ class Extractor(models.Model):
     class Meta:
         db_table = 'extractor'
         ordering = ('ordernumber',)
+        unique_together = (('agent', 'dnasequence'),)
 
     
     save = partialmethod(custom_save)
@@ -3301,9 +3317,9 @@ class Fieldnotebook(models.Model):
         db_table = 'fieldnotebook'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='FNBNameIDX'),
-            # models.Index(fields=['StartDate'], name='FNBStartDateIDX'),
-            # models.Index(fields=['EndDate'], name='FNBEndDateIDX')
+            models.Index(fields=['name'], name='FNBNameIDX'),
+            models.Index(fields=['startdate'], name='FNBStartDateIDX'),
+            models.Index(fields=['enddate'], name='FNBEndDateIDX')
         ]
 
     
@@ -3359,8 +3375,8 @@ class Fieldnotebookpage(models.Model):
         db_table = 'fieldnotebookpage'
         ordering = ()
         indexes = [
-            # models.Index(fields=['PageNumber'], name='FNBPPageNumberIDX'),
-            # models.Index(fields=['ScanDate'], name='FNBPScanDateIDX')
+            models.Index(fields=['pagenumber'], name='FNBPPageNumberIDX'),
+            models.Index(fields=['scandate'], name='FNBPScanDateIDX')
         ]
 
     
@@ -3419,8 +3435,8 @@ class Fieldnotebookpageset(models.Model):
         db_table = 'fieldnotebookpageset'
         ordering = ()
         indexes = [
-            # models.Index(fields=['StartDate'], name='FNBPSStartDateIDX'),
-            # models.Index(fields=['EndDate'], name='FNBPSEndDateIDX')
+            models.Index(fields=['startdate'], name='FNBPSStartDateIDX'),
+            models.Index(fields=['enddate'], name='FNBPSEndDateIDX')
         ]
 
     
@@ -3477,8 +3493,9 @@ class Fundingagent(models.Model):
     class Meta:
         db_table = 'fundingagent'
         ordering = ()
+        unique_together = (('agent', 'collectingtrip'),)
         indexes = [
-            # models.Index(fields=['DivisionID'], name='COLTRIPDivIDX')
+            models.Index(fields=['division'], name='COLTRIPDivIDX')
         ]
 
     
@@ -3583,14 +3600,14 @@ class Geography(model_extras.Geography):
     definition = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geography'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='GeoNameIDX'),
-            # models.Index(fields=['FullName'], name='GeoFullNameIDX')
+            models.Index(fields=['name'], name='GeoNameIDX'),
+            models.Index(fields=['fullname'], name='GeoFullNameIDX')
         ]
 
     
@@ -3611,6 +3628,7 @@ class Geographytreedef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geographytreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -3655,7 +3673,7 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
     save = partialmethod(custom_save)
 
 class Geologictimeperiod(model_extras.Geologictimeperiod):
-    specify_model = datamodel.get_table('geologictimeperiod')
+    specify_model = datamodel.get_table('geologictimeperiod') # aka. Chronostratigraphy
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodid')
@@ -3687,15 +3705,15 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     definition = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'geologictimeperiod'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='GTPNameIDX'),
-            # models.Index(fields=['FullName'], name='GTPFullNameIDX'),
-            # models.Index(fields=['GUID'], name='GTPGuidIDX')
+            models.Index(fields=['name'], name='GTPNameIDX'),
+            models.Index(fields=['fullname'], name='GTPFullNameIDX'),
+            models.Index(fields=['guid'], name='GTPGuidIDX')
         ]
 
     
@@ -3716,6 +3734,7 @@ class Geologictimeperiodtreedef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geologictimeperiodtreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -3808,8 +3827,8 @@ class Gift(models.Model):
         db_table = 'gift'
         ordering = ()
         indexes = [
-            # models.Index(fields=['GiftNumber'], name='GiftNumberIDX'),
-            # models.Index(fields=['GiftDate'], name='GiftDateIDX')
+            models.Index(fields=['giftnumber'], name='GiftNumberIDX'),
+            models.Index(fields=['giftdate'], name='GiftDateIDX')
         ]
 
     
@@ -3839,8 +3858,9 @@ class Giftagent(models.Model):
     class Meta:
         db_table = 'giftagent'
         ordering = ()
+        unique_together = (('role', 'gift', 'agent'),)
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='GiftAgDspMemIDX')
+            models.Index(fields=['discipline'], name='GiftAgDspMemIDX')
         ]
 
     
@@ -3904,7 +3924,7 @@ class Giftpreparation(models.Model):
         db_table = 'giftpreparation'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='GiftPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='GiftPrepDspMemIDX')
         ]
 
     
@@ -3933,6 +3953,7 @@ class Groupperson(models.Model):
     class Meta:
         db_table = 'groupperson'
         ordering = ()
+        unique_together = (('ordernumber', 'group'),)
 
     
     save = partialmethod(custom_save)
@@ -3966,7 +3987,7 @@ class Inforequest(models.Model):
         db_table = 'inforequest'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='IRColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='IRColMemIDX')
         ]
 
     
@@ -4019,8 +4040,8 @@ class Institution(models.Model):
         db_table = 'institution'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='InstNameIDX'),
-            # models.Index(fields=['GUID'], name='InstGuidIDX')
+            models.Index(fields=['name'], name='InstNameIDX'),
+            models.Index(fields=['guid'], name='InstGuidIDX')
         ]
 
     
@@ -4058,7 +4079,7 @@ class Institutionnetwork(models.Model):
         db_table = 'institutionnetwork'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='InstNetworkNameIDX')
+            models.Index(fields=['name'], name='InstNetworkNameIDX')
         ]
 
     
@@ -4090,8 +4111,8 @@ class Journal(models.Model):
         db_table = 'journal'
         ordering = ()
         indexes = [
-            # models.Index(fields=['JournalName'], name='JournalNameIDX'),
-            # models.Index(fields=['GUID'], name='JournalGUIDIDX')
+            models.Index(fields=['journalname'], name='JournalNameIDX'),
+            models.Index(fields=['guid'], name='JournalGUIDIDX')
         ]
 
     
@@ -4176,15 +4197,15 @@ class Lithostrat(model_extras.Lithostrat):
     definition = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'lithostrat'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='LithoNameIDX'),
-            # models.Index(fields=['FullName'], name='LithoFullNameIDX'),
-            # models.Index(fields=['GUID'], name='LithoGuidIDX')
+            models.Index(fields=['name'], name='LithoNameIDX'),
+            models.Index(fields=['fullname'], name='LithoFullNameIDX'),
+            models.Index(fields=['guid'], name='LithoGuidIDX')
         ]
 
     
@@ -4205,6 +4226,7 @@ class Lithostrattreedef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='lithostratstreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -4299,9 +4321,9 @@ class Loan(models.Model):
         db_table = 'loan'
         ordering = ()
         indexes = [
-            # models.Index(fields=['LoanNumber'], name='LoanNumberIDX'),
-            # models.Index(fields=['LoanDate'], name='LoanDateIDX'),
-            # models.Index(fields=['CurrentDueDate'], name='CurrentDueDateIDX')
+            models.Index(fields=['loannumber'], name='LoanNumberIDX'),
+            models.Index(fields=['loandate'], name='LoanDateIDX'),
+            models.Index(fields=['currentduedate'], name='CurrentDueDateIDX')
         ]
 
     
@@ -4330,8 +4352,9 @@ class Loanagent(models.Model):
     class Meta:
         db_table = 'loanagent'
         ordering = ()
+        unique_together = (('role', 'loan', 'agent'),)
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='LoanAgDspMemIDX')
+            models.Index(fields=['discipline'], name='LoanAgDspMemIDX')
         ]
 
     
@@ -4398,7 +4421,7 @@ class Loanpreparation(models.Model):
         db_table = 'loanpreparation'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='LoanPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='LoanPrepDspMemIDX')
         ]
 
     
@@ -4430,8 +4453,8 @@ class Loanreturnpreparation(models.Model):
         db_table = 'loanreturnpreparation'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ReturnedDate'], name='LoanReturnedDateIDX'),
-            # models.Index(fields=['DisciplineID'], name='LoanRetPrepDspMemIDX')
+            models.Index(fields=['returneddate'], name='LoanReturnedDateIDX'),
+            models.Index(fields=['discipline'], name='LoanRetPrepDspMemIDX')
         ]
 
     
@@ -4501,12 +4524,13 @@ class Locality(models.Model):
     class Meta:
         db_table = 'locality'
         ordering = ()
+        unique_together = (('discipline', 'uniqueidentifier'),)
         indexes = [
-            # models.Index(fields=['LocalityName'], name='localityNameIDX'),
-            # models.Index(fields=['DisciplineID'], name='LocalityDisciplineIDX'),
-            # models.Index(fields=['NamedPlace'], name='NamedPlaceIDX'),
-            # models.Index(fields=['UniqueIdentifier'], name='LocalityUniqueIdentifierIDX'),
-            # models.Index(fields=['RelationToNamedPlace'], name='RelationToNamedPlaceIDX')
+            models.Index(fields=['localityname'], name='localityNameIDX'),
+            models.Index(fields=['discipline'], name='LocalityDisciplineIDX'),
+            models.Index(fields=['namedplace'], name='NamedPlaceIDX'),
+            models.Index(fields=['uniqueidentifier'], name='LocalityUniqueIdentifierIDX'),
+            models.Index(fields=['relationtonamedplace'], name='RelationToNamedPlaceIDX')
         ]
 
     
@@ -4564,8 +4588,9 @@ class Localitycitation(models.Model):
     class Meta:
         db_table = 'localitycitation'
         ordering = ()
+        unique_together = (('referencework', 'locality'),)
         indexes = [
-            # models.Index(fields=['DisciplineID'], name='LocCitDspMemIDX')
+            models.Index(fields=['discipline'], name='LocCitDspMemIDX')
         ]
 
     
@@ -4664,7 +4689,7 @@ class Localitynamealias(models.Model):
         db_table = 'localitynamealias'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='LocalityNameAliasIDX')
+            models.Index(fields=['name'], name='LocalityNameAliasIDX')
         ]
 
     
@@ -4731,7 +4756,7 @@ class Materialsample(models.Model):
         db_table = 'materialsample'
         ordering = ()
         indexes = [
-            # models.Index(fields=['GGBNSampleDesignation'], name='DesignationIDX')
+            models.Index(fields=['ggbn_sampledesignation'], name='DesignationIDX')
         ]
 
     
@@ -4808,14 +4833,14 @@ class Otheridentifier(models.Model):
         db_table = 'otheridentifier'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='OthIdColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='OthIdColMemIDX')
         ]
 
     
     save = partialmethod(custom_save)
 
 class Paleocontext(models.Model):
-    specify_model = datamodel.get_table('paleocontext')
+    specify_model = datamodel.get_table('paleocontext') # aka. GeoContext
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='paleocontextid')
@@ -4849,14 +4874,15 @@ class Paleocontext(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     lithostrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
+    tectonicunit = models.ForeignKey('TectonicUnit', db_column='TectonicUnitID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'paleocontext'
         ordering = ()
         indexes = [
-            # models.Index(fields=['PaleoContextName'], name='PaleoCxtNameIDX'),
-            # models.Index(fields=['DisciplineID'], name='PaleoCxtDisciplineIDX')
+            models.Index(fields=['paleocontextname'], name='PaleoCxtNameIDX'),
+            models.Index(fields=['discipline'], name='PaleoCxtDisciplineIDX')
         ]
 
     
@@ -4888,6 +4914,7 @@ class Pcrperson(models.Model):
     class Meta:
         db_table = 'pcrperson'
         ordering = ()
+        unique_together = (('agent', 'dnasequence'),)
 
     
     save = partialmethod(custom_save)
@@ -4937,8 +4964,8 @@ class Permit(models.Model):
         db_table = 'permit'
         ordering = ()
         indexes = [
-            # models.Index(fields=['PermitNumber'], name='PermitNumberIDX'),
-            # models.Index(fields=['IssuedDate'], name='IssuedDateIDX')
+            models.Index(fields=['permitnumber'], name='PermitNumberIDX'),
+            models.Index(fields=['issueddate'], name='IssuedDateIDX')
         ]
 
     
@@ -5001,7 +5028,7 @@ class Picklist(models.Model):
         db_table = 'picklist'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='PickListNameIDX')
+            models.Index(fields=['name'], name='PickListNameIDX')
         ]
 
     
@@ -5123,12 +5150,13 @@ class Preparation(model_extras.Preparation):
     class Meta:
         db_table = 'preparation'
         ordering = ()
+        unique_together = (('collectionmemberid', 'barcode'),)
         indexes = [
-            # models.Index(fields=['preparedDate'], name='PreparedDateIDX'),
-            # models.Index(fields=['CollectionMemberID'], name='PrepColMemIDX'),
-            # models.Index(fields=['GUID'], name='PrepGuidIDX'),
-            # models.Index(fields=['SampleNumber'], name='PrepSampleNumIDX'),
-            # models.Index(fields=['BarCode'], name='PrepBarCodeIDX')
+            models.Index(fields=['prepareddate'], name='PreparedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='PrepColMemIDX'),
+            models.Index(fields=['guid'], name='PrepGuidIDX'),
+            models.Index(fields=['samplenumber'], name='PrepSampleNumIDX'),
+            models.Index(fields=['barcode'], name='PrepBarCodeIDX')
         ]
 
     
@@ -5158,7 +5186,7 @@ class Preparationattachment(models.Model):
         db_table = 'preparationattachment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='PrepAttColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttColMemIDX')
         ]
 
     
@@ -5188,7 +5216,7 @@ class Preparationattr(models.Model):
         db_table = 'preparationattr'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='PrepAttrColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttrColMemIDX')
         ]
 
     
@@ -5255,7 +5283,7 @@ class Preparationattribute(models.Model):
         db_table = 'preparationattribute'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='PrepAttrsColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttrsColMemIDX')
         ]
 
     
@@ -5444,7 +5472,7 @@ class Preparationproperty(models.Model):
         db_table = 'preparationproperty'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='PREPPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PREPPROPColMemIDX')
         ]
 
     
@@ -5486,8 +5514,8 @@ class Project(models.Model):
         db_table = 'project'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ProjectName'], name='ProjectNameIDX'),
-            # models.Index(fields=['ProjectNumber'], name='ProjectNumberIDX')
+            models.Index(fields=['projectname'], name='ProjectNameIDX'),
+            models.Index(fields=['projectnumber'], name='ProjectNumberIDX')
         ]
 
     
@@ -5523,7 +5551,7 @@ class Recordset(models.Model):
         db_table = 'recordset'
         ordering = ()
         indexes = [
-            # models.Index(fields=['name'], name='RecordSetNameIDX')
+            models.Index(fields=['name'], name='RecordSetNameIDX')
         ]
 
     
@@ -5591,10 +5619,10 @@ class Referencework(models.Model):
         db_table = 'referencework'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Title'], name='RefWrkTitleIDX'),
-            # models.Index(fields=['Publisher'], name='RefWrkPublisherIDX'),
-            # models.Index(fields=['GUID'], name='RefWrkGuidIDX'),
-            # models.Index(fields=['ISBN'], name='ISBNIDX')
+            models.Index(fields=['title'], name='RefWrkTitleIDX'),
+            models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
+            models.Index(fields=['guid'], name='RefWrkGuidIDX'),
+            models.Index(fields=['isbn'], name='ISBNIDX')
         ]
 
     
@@ -5661,7 +5689,7 @@ class Repositoryagreement(models.Model):
         db_table = 'repositoryagreement'
         ordering = ()
         indexes = [
-            # models.Index(fields=['RepositoryAgreementNumber'], name='RefWrkNumberIDX'),
+            models.Index(fields=['repositoryagreementnumber'], name='RefWrkNumberIDX'),
             # models.Index(fields=['StartDate'], name='RefWrkStartDate')
         ]
 
@@ -5734,10 +5762,10 @@ class Shipment(models.Model):
         db_table = 'shipment'
         ordering = ()
         indexes = [
-            # models.Index(fields=['ShipmentNumber'], name='ShipmentNumberIDX'),
-            # models.Index(fields=['ShipmentDate'], name='ShipmentDateIDX'),
-            # models.Index(fields=['DisciplineID'], name='ShipmentDspMemIDX'),
-            # models.Index(fields=['ShipmentMethod'], name='ShipmentMethodIDX')
+            models.Index(fields=['shipmentnumber'], name='ShipmentNumberIDX'),
+            models.Index(fields=['shipmentdate'], name='ShipmentDateIDX'),
+            models.Index(fields=['discipline'], name='ShipmentDspMemIDX'),
+            models.Index(fields=['shipmentmethod'], name='ShipmentMethodIDX')
         ]
 
     
@@ -5772,8 +5800,8 @@ class Spappresource(models.Model):
         db_table = 'spappresource'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpAppResNameIDX'),
-            # models.Index(fields=['MimeType'], name='SpAppResMimeTypeIDX')
+            models.Index(fields=['name'], name='SpAppResNameIDX'),
+            models.Index(fields=['mimetype'], name='SpAppResMimeTypeIDX')
         ]
     
     save = partialmethod(custom_save)
@@ -5857,7 +5885,7 @@ class Spappresourcedir(models.Model):
         db_table = 'spappresourcedir'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DisciplineType'], name='SpAppResourceDirDispTypeIDX')
+            models.Index(fields=['disciplinetype'], name='SpAppResourceDirDispTypeIDX')
         ]
 
     
@@ -6028,7 +6056,7 @@ class Spexportschemamapping(models.Model):
         db_table = 'spexportschemamapping'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='SPEXPSCHMMAPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SPEXPSCHMMAPColMemIDX')
         ]
 
     
@@ -6058,7 +6086,7 @@ class Spfieldvaluedefault(models.Model):
         db_table = 'spfieldvaluedefault'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='SpFieldValueDefaultColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SpFieldValueDefaultColMemIDX')
         ]
 
     
@@ -6094,7 +6122,7 @@ class Splocalecontainer(models.Model):
         db_table = 'splocalecontainer'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpLocaleContainerNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerNameIDX')
         ]
 
     
@@ -6129,7 +6157,7 @@ class Splocalecontaineritem(models.Model):
         db_table = 'splocalecontaineritem'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpLocaleContainerItemNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerItemNameIDX')
         ]
 
     
@@ -6162,8 +6190,8 @@ class Splocaleitemstr(models.Model):
         db_table = 'splocaleitemstr'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Language'], name='SpLocaleLanguageIDX'),
-            # models.Index(fields=['Country'], name='SpLocaleCountyIDX')
+            models.Index(fields=['language'], name='SpLocaleLanguageIDX'),
+            models.Index(fields=['country'], name='SpLocaleCountyIDX')
         ]
 
     
@@ -6247,7 +6275,7 @@ class Spquery(models.Model):
         db_table = 'spquery'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpQueryNameIDX')
+            models.Index(fields=['name'], name='SpQueryNameIDX')
         ]
 
     
@@ -6281,6 +6309,7 @@ class Spqueryfield(models.Model):
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    isstrict = models.BooleanField(db_column='IsStrict', blank=True, null=True)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6323,7 +6352,7 @@ class Spreport(models.Model):
         db_table = 'spreport'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpReportNameIDX')
+            models.Index(fields=['name'], name='SpReportNameIDX')
         ]
 
     
@@ -6357,7 +6386,7 @@ class Spsymbiotainstance(models.Model):
         db_table = 'spsymbiotainstance'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='SPSYMINSTColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SPSYMINSTColMemIDX')
         ]
 
     
@@ -6448,7 +6477,7 @@ class Spviewsetobj(models.Model):
         db_table = 'spviewsetobj'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpViewObjNameIDX')
+            models.Index(fields=['name'], name='SpViewObjNameIDX')
         ]
 
     
@@ -6476,7 +6505,7 @@ class Spvisualquery(models.Model):
         db_table = 'spvisualquery'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='SpVisualQueryNameIDX')
+            models.Index(fields=['name'], name='SpVisualQueryNameIDX')
         ]
 
     
@@ -6544,14 +6573,14 @@ class Storage(model_extras.Storage):
     definition = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'storage'
         ordering = ()
         indexes = [
-            # models.Index(fields=['Name'], name='StorNameIDX'),
-            # models.Index(fields=['FullName'], name='StorFullNameIDX')
+            models.Index(fields=['name'], name='StorNameIDX'),
+            models.Index(fields=['fullname'], name='StorFullNameIDX')
         ]
 
     
@@ -6598,6 +6627,7 @@ class Storagetreedef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
+    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -6742,7 +6772,7 @@ class Taxon(model_extras.Taxon):
     hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
     hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     taxonattribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -6750,12 +6780,12 @@ class Taxon(model_extras.Taxon):
         db_table = 'taxon'
         ordering = ()
         indexes = [
-            # models.Index(fields=['GUID'], name='TaxonGuidIDX'),
-            # models.Index(fields=['TaxonomicSerialNumber'], name='TaxonomicSerialNumberIDX'),
-            # models.Index(fields=['CommonName'], name='TaxonCommonNameIDX'),
-            # models.Index(fields=['Name'], name='TaxonNameIDX'),
-            # models.Index(fields=['FullName'], name='TaxonFullNameIDX'),
-            # models.Index(fields=['EnvironmentalProtectionStatus'], name='EnvironmentalProtectionStatusIDX')
+            models.Index(fields=['guid'], name='TaxonGuidIDX'),
+            models.Index(fields=['taxonomicserialnumber'], name='TaxonomicSerialNumberIDX'),
+            models.Index(fields=['commonname'], name='TaxonCommonNameIDX'),
+            models.Index(fields=['name'], name='TaxonNameIDX'),
+            models.Index(fields=['fullname'], name='TaxonFullNameIDX'),
+            models.Index(fields=['environmentalprotectionstatus'], name='EPSIDX') # Avoid error: The index name 'EnvironmentalProtectionStatusIDX' cannot be longer than 30 characters.
         ]
 
     
@@ -7025,6 +7055,7 @@ class Taxontreedef(models.Model):
     # Relationships: One-to-One
 
     # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='taxontreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7118,10 +7149,10 @@ class Treatmentevent(models.Model):
         db_table = 'treatmentevent'
         ordering = ()
         indexes = [
-            # models.Index(fields=['DateReceived'], name='TEDateReceivedIDX'),
-            # models.Index(fields=['DateTreatmentStarted'], name='TEDateTreatmentStartedIDX'),
-            # models.Index(fields=['FieldNumber'], name='TEFieldNumberIDX'),
-            # models.Index(fields=['TreatmentNumber'], name='TETreatmentNumberIDX')
+            models.Index(fields=['datereceived'], name='TEDateReceivedIDX'),
+            models.Index(fields=['datetreatmentstarted'], name='TEDateTreatmentStartedIDX'),
+            models.Index(fields=['fieldnumber'], name='TEFieldNumberIDX'),
+            models.Index(fields=['treatmentnumber'], name='TETreatmentNumberIDX')
         ]
 
     
@@ -7191,7 +7222,7 @@ class Voucherrelationship(models.Model):
         db_table = 'voucherrelationship'
         ordering = ()
         indexes = [
-            # models.Index(fields=['CollectionMemberID'], name='VRXDATColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='VRXDATColMemIDX')
         ]
 
     
@@ -7230,7 +7261,7 @@ class Workbench(models.Model):
         db_table = 'workbench'
         ordering = ()
         indexes = [
-            # models.Index(fields=['name'], name='WorkbenchNameIDX')
+            models.Index(fields=['name'], name='WorkbenchNameIDX')
         ]
 
     
@@ -7255,7 +7286,7 @@ class Workbenchdataitem(models.Model):
         db_table = 'workbenchdataitem'
         ordering = ()
         indexes = [
-            # models.Index(fields=['rowNumber'], name='DataItemRowNumberIDX')
+            models.Index(fields=['rownumber'], name='DataItemRowNumberIDX')
         ]
 
     save = partialmethod(custom_save)
@@ -7289,7 +7320,7 @@ class Workbenchrow(models.Model):
         db_table = 'workbenchrow'
         ordering = ()
         indexes = [
-            # models.Index(fields=['RowNumber'], name='RowNumberIDX')
+            models.Index(fields=['rownumber'], name='RowNumberIDX')
         ]
 
     def get_decoded_data(self):
@@ -7463,4 +7494,422 @@ class Workbenchtemplatemappingitem(models.Model):
         ordering = ()
 
     
+    save = partialmethod(custom_save)
+
+class Collectionobjecttype(models.Model):
+    specify_model = datamodel.get_table('collectionobjecttype')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectTypeID')
+
+    # Fields
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    catalognumberformatname = models.CharField(blank=True, null=True, max_length=255, unique=False, db_column='CatalogNumberFormatName', db_index=False)
+    
+    # Relationships: Many-to-One
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cotypes', null=False, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='cotypes', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'collectionobjecttype'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Collectionobjectgrouptype(models.Model):
+    specify_model = datamodel.get_table('collectionobjectgrouptype')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='COGTypeID')
+
+    # Fields
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False) # microscope slide, whole rock, or piece of bark
+    type = models.CharField(blank=True, max_length=255, null=False, unique=False, db_column='Type', db_index=False) # discrete, consolidated, or drill core
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    
+    # Relationships: Many-to-One
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cogtypes', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'collectionobjectgrouptype'
+        ordering = ()
+    
+    save = partialmethod(custom_save)
+
+class Collectionobjectgroup(models.Model): # aka. Cog
+    specify_model = datamodel.get_table('collectionobjectgroup')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='collectionobjectgroupid')
+
+    # Fields
+    name = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Name', db_index=False)
+    description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
+    igsn = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='IGSN', db_index=False)
+    guid = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='GUID', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
+    integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
+    integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
+    decimal1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal1', db_index=False)
+    decimal2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal2', db_index=False)
+    decimal3 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal3', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+
+    # Relationships: Many-to-One
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
+    cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'collectionobjectgroup'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
+    specify_model = datamodel.get_table('collectionobjectgroupjoin')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='collectionobjectgroupjoinid')
+
+    # Fields
+    isprimary = models.BooleanField(blank=True, null=True, unique=False, db_column='IsPrimary', db_index=False)
+    issubstrate = models.BooleanField(blank=True, null=True, unique=False, db_column='IsSubstrate', db_index=False)
+    precedence = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Precedence', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
+    integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
+    integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+
+    # Relationships: Many-to-One
+    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='children', null=False, on_delete=models.CASCADE)
+
+    # Relationships: One-to-One
+    childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'collectionobjectgroupjoin'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteage(models.Model):
+    specify_model = datamodel.get_table('absoluteage')
+
+    # ID Field
+    id = models.AutoField(db_column='AbsoluteAgeID', primary_key=True)
+
+    # Fields
+    absoluteage = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AbsoluteAge', db_index=False)
+    agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False) # sedimentation, metamorphic, inclusion, original, fall, etc.
+    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
+    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
+    date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
+    date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='absoluteages', null=False, on_delete=models.CASCADE)
+    absoluteageattachment = models.ForeignKey(db_column='AbsoluteAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteageattachment')
+    absoluteagecitation = models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation')
+    createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+
+    class Meta:
+        db_table = 'absoluteage'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeage(models.Model):
+    specify_model = datamodel.get_table('relativeage')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeageid')
+
+    # Fields
+    agetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AgeType', db_index=False)
+    ageuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AgeUncertainty', db_index=False)
+    collectiondate = models.DateField(blank=True, null=True, unique=False, db_column='CollectionDate', db_index=False)
+    date1 = models.DateField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
+    date2 = models.DateField(blank=True, null=True, unique=False, db_column='Date2', db_index=False)
+    datingmethod = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DatingMethod', db_index=False)
+    datingmethodremarks = models.TextField(blank=True, null=True, unique=False, db_column='DatingMethodRemarks', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    relativeageperiod = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='RelativeAgePeriod', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    verbatimperiod = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimPeriod', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='agename', null=True, on_delete=protect_with_blockers)
+    agenameend = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameEndID', related_name='agenameend', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
+    relativeageattachment = models.ForeignKey(db_column='RelativeAgeAttachmentID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeageattachment')
+    relativeagecitation = models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation')
+    createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+
+    class Meta:
+        db_table = 'relativeage'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteageattachment(models.Model):
+    specify_model = datamodel.get_table('absoluteageattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='absoluteageattachmentid')
+
+    # Fields
+    ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'absoluteageattachment'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeageattachment(models.Model):
+    specify_model = datamodel.get_table('relativeageattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeageattachmentid')
+
+    # Fields
+    ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'relativeageattachment'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Absoluteagecitation(models.Model):
+    specify_model = datamodel.get_table('absoluteagecitation')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='absoluteagecitationid')
+
+    # Fields
+    figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
+    pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
+    platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'absoluteagecitation'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Relativeagecitation(models.Model):
+    specify_model = datamodel.get_table('relativeagecitation')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='relativeagecitationid')
+
+    # Fields
+    figurenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='FigureNumber', db_index=False)
+    isfigured = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFigured', db_index=False)
+    pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
+    platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'relativeagecitation'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunittreedef(models.Model):
+    specify_model = datamodel.get_table('tectonicunittreedef')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefid')
+
+    # Fields
+    fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False, default=0)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunittreedef'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
+    specify_model = datamodel.get_table('tectonicUnittreedefitem')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunittreedefitemid')
+
+    # Fields
+    fullnameseparator = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullNameSeparator', db_index=False)
+    isenforced = models.BooleanField(blank=True, null=True, unique=False, db_column='IsEnforced', db_index=False)
+    isinfullname = models.BooleanField(blank=True, null=True, unique=False, db_column='IsInFullName', db_index=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    rankid = models.IntegerField(blank=True, null=True, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    textafter = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextAfter', db_index=False)
+    textbefore = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextBefore', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
+    treedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treedefitems', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunittreedefitem'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Tectonicunit(model_extras.Tectonicunit):
+    specify_model = datamodel.get_table('tectonicunit')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='tectonicunitid')
+
+    # Fields
+    fullname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullName', db_index=False)
+    guid = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='GUID', db_index=False)
+    highestchildnodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='HighestChildNodeNumber', db_index=False)
+    isaccepted = models.BooleanField(blank=False, null=False, unique=False, db_column='IsAccepted', db_index=False, default=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    nodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='NodeNumber', db_index=False)   
+    number1 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    rankid = models.IntegerField(blank=False, null=False, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    
+    # Relationships: Many-to-One
+    acceptedtectonicunit = models.ForeignKey('TectonicUnit', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
+    definition = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'tectonicunit'
+        ordering = ()
+
     save = partialmethod(custom_save)

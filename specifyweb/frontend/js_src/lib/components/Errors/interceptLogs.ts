@@ -27,7 +27,7 @@ const logTypes = [
 export type LogMessage = {
   readonly message: RA<unknown>;
   // Context is not a real type, but is used by deduplicateLogContext()
-  readonly type: typeof logTypes[number] | 'context';
+  readonly type: (typeof logTypes)[number] | 'context';
   readonly date: string;
   readonly context: IR<unknown>;
 };
@@ -116,6 +116,13 @@ export function interceptLogs(): void {
     console[logType] = (...args: RA<unknown>): void => {
       const context = getLogContext();
       const hasContext = Object.keys(context).length > 0;
+
+      // Silencing https://github.com/reactjs/react-modal/issues/808
+      if (
+        args[0] ===
+        "React-Modal: Cannot register modal instance that's already open"
+      )
+        return;
 
       /**
        * If actively redirecting log output, don't print to console

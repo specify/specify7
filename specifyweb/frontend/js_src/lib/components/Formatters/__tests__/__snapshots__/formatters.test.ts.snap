@@ -2032,6 +2032,16 @@ exports[`Formatters are fetched and parsed correctly 1`] = `
 
 exports[`getMainTableFields 1`] = `
 {
+  "AbsoluteAge": [
+    "ageType",
+    "datingMethod",
+  ],
+  "AbsoluteAgeAttachment": [],
+  "AbsoluteAgeCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
   "Accession": [
     "accessionNumber",
     "status",
@@ -2214,9 +2224,33 @@ exports[`getMainTableFields 1`] = `
     "pageNumber",
     "plateNumber",
   ],
+  "CollectionObjectGroup": [
+    "name",
+    "guid",
+    "igsn",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupJoin": [
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupType": [
+    "name",
+    "type",
+  ],
   "CollectionObjectProperty": [
     "guid",
     "text1",
+  ],
+  "CollectionObjectType": [
+    "name",
+    "catalogNumberFormatName",
+    "text1",
+    "text2",
+    "text3",
   ],
   "CollectionRelType": [
     "name",
@@ -2431,6 +2465,13 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "LatLonPolygonPnt": [],
+  "LibraryRole": [
+    "name",
+  ],
+  "LibraryRolePolicy": [
+    "action",
+    "resource",
+  ],
   "LithoStrat": [
     "name",
     "guid",
@@ -2486,6 +2527,11 @@ exports[`getMainTableFields 1`] = `
     "name",
     "source",
   ],
+  "LocalityUpdate": [
+    "status",
+    "taskid",
+  ],
+  "LocalityUpdateRowResult": [],
   "MaterialSample": [
     "GGBN_absorbanceRatioMethod",
     "GGBN_concentrationUnit",
@@ -2501,6 +2547,7 @@ exports[`getMainTableFields 1`] = `
     "GGBN_weightMethod",
     "GGBN_weightUnit",
   ],
+  "Message": [],
   "MorphBankView": [],
   "OtherIdentifier": [
     "identifier",
@@ -2568,11 +2615,28 @@ exports[`getMainTableFields 1`] = `
     "volume",
   ],
   "ReferenceWorkAttachment": [],
+  "RelativeAge": [
+    "ageType",
+    "datingMethod",
+  ],
+  "RelativeAgeAttachment": [],
+  "RelativeAgeCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
   "RepositoryAgreement": [
     "repositoryAgreementNumber",
     "status",
   ],
   "RepositoryAgreementAttachment": [],
+  "Role": [
+    "name",
+  ],
+  "RolePolicy": [
+    "action",
+    "resource",
+  ],
   "Shipment": [
     "shipmentNumber",
     "shipmentMethod",
@@ -2640,10 +2704,28 @@ exports[`getMainTableFields 1`] = `
   "SpVisualQuery": [
     "name",
   ],
+  "Spattachmentdataset": [
+    "name",
+  ],
+  "Spdataset": [
+    "name",
+    "rowresults",
+  ],
   "SpecifyUser": [
     "name",
     "password",
     "userType",
+  ],
+  "Spmerging": [
+    "name",
+    "status",
+    "table",
+    "taskid",
+  ],
+  "Spuserexternalid": [
+    "provider",
+    "providerid",
+    "idtoken",
   ],
   "Storage": [
     "name",
@@ -2682,11 +2764,36 @@ exports[`getMainTableFields 1`] = `
     "textBefore",
     "title",
   ],
+  "TectonicUnit": [
+    "name",
+    "guid",
+    "text1",
+    "text2",
+  ],
+  "TectonicUnitTreeDef": [
+    "name",
+  ],
+  "TectonicUnitTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
   "TreatmentEvent": [
     "treatmentNumber",
     "type",
   ],
   "TreatmentEventAttachment": [],
+  "UniquenessRule": [
+    "modelname",
+  ],
+  "UniquenessRuleField": [],
+  "UserPolicy": [
+    "action",
+    "resource",
+  ],
+  "UserRole": [],
   "VoucherRelationship": [
     "collectionCode",
     "institutionCode",

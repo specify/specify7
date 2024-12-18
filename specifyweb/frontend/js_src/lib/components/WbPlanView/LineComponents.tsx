@@ -229,15 +229,21 @@ export function MappingElement({
 }: MappingElementProps): JSX.Element {
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
-  >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName = getFieldGroupName(
-      fieldData.isHidden ?? false,
-      fieldData.isRequired ?? false
-    );
-    fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = fieldData;
-    return fieldGroups;
-  }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+  >(
+    (fieldGroups, [fieldName, fieldData]) => {
+      const groupName = getFieldGroupName(
+        fieldData.isHidden ?? false,
+        fieldData.isRequired ?? false
+      );
+      fieldGroups[groupName] ??= {};
+      fieldGroups[groupName][fieldName] = fieldData;
+
+      return fieldGroups;
+    },
+    Object.fromEntries(
+      Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])
+    )
+  );
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)

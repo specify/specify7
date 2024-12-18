@@ -56,6 +56,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
       initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
 
+    // REFACTOR: use the 'changed' event over 'change'
     this.resource.on('change', this.changed, this);
     this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
@@ -495,8 +496,8 @@ export const runAllFieldChecks = async (
     (result === undefined || result === null
       ? []
       : result instanceof ResourceBase
-      ? [result]
-      : (result as Collection<AnySchema>).models) as unknown as RA<
+        ? [result]
+        : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
   // Running only on dependent resources. the order shouldn't matter.....

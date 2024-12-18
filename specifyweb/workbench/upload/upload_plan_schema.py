@@ -1,15 +1,16 @@
-from typing import Dict, Any, Union, Tuple
+from functools import reduce
+from typing import Dict, Union, Tuple
+import logging
 
-from specifyweb.specify.datamodel import datamodel, Table, Relationship
-from specifyweb.specify.load_datamodel import DoesNotExistError
-from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.workbench.upload.auditor import DEFAULT_BATCH_EDIT_PREFS, BatchEditPrefs
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
-from .treerecord import TreeRecord, MustMatchTreeRecord
+from .treerecord import TreeRank, TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 
+logger = logging.getLogger(__name__)
 
 schema: Dict = {
     "title": "Specify 7 Workbench Upload Plan",
@@ -104,11 +105,10 @@ schema: Dict = {
                         "oneOf": [
                             {"type": "string"},
                             {
-                                "type": "object",
-                                "properties": {
-                                    "treeNodeCols": {
-                                        "$ref": "#/definitions/treeNodeCols"
-                                    },
+                                'type': 'object',
+                                'properties': {
+                                    'treeNodeCols': { '$ref': '#/definitions/treeNodeCols' },
+                                    'treeId': { '$ref': '#definitions/treeId'}
                                 },
                                 "required": ["treeNodeCols"],
                                 "additionalProperties": False,
@@ -182,11 +182,32 @@ schema: Dict = {
                 },
             ],
         },
-        "wbcols": {
-            "type": "object",
-            "description": "Maps the columns of the destination table to the headers of the source columns of input data.",
-            "additionalProperties": {
-                "oneOf": [{"type": "string"}, {"$ref": "#/definitions/columnOptions"}]
+
+        'treeId': {
+            "oneOf": [
+                { "type": "integer" },
+                { "type": "null" }
+            ]
+        },
+
+        'wbcols': {
+            'type': 'object',
+            'description': 'Maps the columns of the destination table to the headers of the source columns of input data.',
+            'additionalProperties': { 'oneOf': [ { 'type': 'string' }, { '$ref': '#/definitions/columnOptions' } ] },
+            'examples': [
+                {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
+                {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
+            ]
+        },
+
+        'treeNodeCols': {
+            'type': 'object',
+            'description': 'Maps the columns of the destination tree table to the headers of the source columns of input data.',
+            'required': ['name'],
+            'properties': {
+                'nodenumber': False,
+                'highestchildnodenumber': False,
+                'rankid': False,
             },
             "examples": [
                 {
@@ -335,30 +356,50 @@ def parse_upload_table(table: Table, to_parse: Dict) -> UploadTable:
         },
     )
 
-
 # TODO: Figure out a better way to do this. Django migration? Silently handle it?
 def _hacky_augment_to_many(to_parse: Dict):
     return {"uploadTable": to_parse}
 
+def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
+    """Parse tree record from the given data"""
 
-def parse_tree_record(table: Table, to_parse: Dict) -> TreeRecord:
-    ranks = {
-        rank: (
-            {"name": parse_column_options(name_or_cols)}
-            if isinstance(name_or_cols, str)
-            else {
-                k: parse_column_options(v)
-                for k, v in name_or_cols["treeNodeCols"].items()
-            }
-        )
-        for rank, name_or_cols in to_parse["ranks"].items()
-    }
-    for rank, cols in ranks.items():
-        assert "name" in cols, to_parse
+    def parse_rank(name_or_cols):
+        if isinstance(name_or_cols, str):
+            return name_or_cols, {'name': parse_column_options(name_or_cols)}, None
+        tree_node_cols = {k: parse_column_options(v) for k, v in name_or_cols['treeNodeCols'].items()}
+        rank_name = name_or_cols['treeNodeCols']['name']
+        treedefid = name_or_cols.get('treeId')
+        return rank_name, tree_node_cols, treedefid
+
+    def create_tree_rank_record(rank, table_name, treedefid):
+        return TreeRank.create(rank, table_name, treedefid).tree_rank_record()
+
+    def parse_ranks(to_parse, table_name):
+        def parse_single_rank(rank, name_or_cols):
+            rank_name, parsed_cols, treedefid = parse_rank(name_or_cols)
+            tree_rank_record = create_tree_rank_record(rank, table_name, treedefid)
+            return tree_rank_record, parsed_cols
+
+        def aggregate_ranks(acc, item):
+            rank, name_or_cols = item
+            tree_rank_record, parsed_cols = parse_single_rank(rank, name_or_cols)
+            acc[tree_rank_record] = parsed_cols
+            return acc
+
+        ranks = reduce(aggregate_ranks, to_parse['ranks'].items(), {})
+        return ranks
+
+    # Validate ranks by checking if 'name' is present in each rank
+    def validate_ranks(ranks, to_parse):
+        for rank, cols in ranks.items():
+            assert 'name' in cols, to_parse
+
+    ranks = parse_ranks(to_parse, table.name)
+    validate_ranks(ranks, to_parse)
 
     return TreeRecord(
         name=table.django_name,
-        ranks=ranks,
+        ranks=ranks
     )
 
 

@@ -1,224 +1,234 @@
 {
-    "Accession": [
-        {
-            "rule": [["accessionNumber"], ["division"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Accessionagent": [
-        {
-            "rule": [["role", "agent"], ["accession"]],
-            "isDatabaseConstraint": true
-        },
-        {
-            "rule": [["role", "agent"], ["repositoryagreement"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Appraisal": [
-        {
-            "rule": [["appraisalNumber"], ["accession"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Author": [
-        {
-            "rule": [["agent"], ["referenceWork"]],
-            "isDatabaseConstraint": true
-        },
-        {
-            "rule": [["orderNumber"], ["referenceWork"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Borrowagent": [
-        {
-            "rule": [["role", "agent"], ["borrow"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Collection": [
-        {
-            "rule": [["collectionName"], ["discipline"]],
-            "isDatabaseConstraint": false
-        },
-        {
-            "rule": [["code"], ["discipline"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Collectingevent": [
-        {
-            "rule": [["uniqueIdentifier"], []],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Collectionobject": [
-        {
-            "rule": [["catalogNumber"], ["collection"]],
-            "isDatabaseConstraint": true
-        },
-        {
-            "rule": [["uniqueIdentifier"], []],
-            "isDatabaseConstraint": true
-        },
-        {
-            "rule": [["guid"], []],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Collector": [
-        {
-            "rule": [["agent"], ["collectingEvent"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Determiner": [
-        {
-            "rule": [["agent"], ["determination"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Discipline": [
-        {
-            "rule": [["name"], ["division"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Disposalagent": [
-        {
-            "rule": [["role", "agent"], ["disposal"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Division": [
-        {
-            "rule": [["name"], ["institution"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Extractor": [
-        {
-            "rule": [["agent"], ["dnaSequence"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Fundingagent": [
-        {
-            "rule": [["agent"], ["collectingTrip"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Gift": [
-        {
-            "rule": [["giftNumber"], ["discipline"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Giftagent": [
-        {
-            "rule": [["role", "agent"], ["gift"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Groupperson": [
-        {
-            "rule": [["member"], ["group"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Institution": [
-        {
-            "rule": [["name"], []],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Loan": [
-        {
-            "rule": [["loanNumber"], ["discipline"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Loanagent": [
-        {
-            "rule": [["role", "agent"], ["loan"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Locality": [
-        {
-            "rule": [["uniqueIdentifier"], []],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Localitycitation": [
-        {
-            "rule": [["referenceWork"], ["locality"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Pcrperson": [
-        {
-            "rule": [["agent"], ["dnaSequence"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Permit": [
-        {
-            "rule": [["permitNumber"], []],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Picklist": [
-        {
-            "rule": [["name"], ["collection"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Preparation": [
-        {
-            "rule": [["barCode"], ["collectionobject__collection"]],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Preptype": [
-        {
-            "rule": [["name"], ["collection"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Repositoryagreement": [
-        {
-            "rule": [["repositoryAgreementNumber"], ["division"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Spappresourcedata": [
-        {
-            "rule": [["spAppResource"], []],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Specifyuser": [
-        {
-            "rule": [["name"], []],
-            "isDatabaseConstraint": true
-        }
-    ],
-    "Taxontreedef": [
-        {
-            "rule": [["name"], ["discipline"]],
-            "isDatabaseConstraint": false
-        }
-    ],
-    "Taxontreedefitem": [
-        {
-            "rule": [["name"], ["treeDef"]],
-            "isDatabaseConstraint": false
-        },
-        {
-            "rule": [["title"], ["treeDef"]],
-            "isDatabaseConstraint": false
-        }
-    ]
+  "Accession": [
+    {
+      "rule": [["accessionNumber"], ["division"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Accessionagent": [
+    {
+      "rule": [["role", "agent"], ["accession"]],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["role", "agent"], ["repositoryagreement"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Appraisal": [
+    {
+      "rule": [["appraisalNumber"], ["accession"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Author": [
+    {
+      "rule": [["agent"], ["referenceWork"]],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["orderNumber"], ["referenceWork"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Borrowagent": [
+    {
+      "rule": [["role", "agent"], ["borrow"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Collection": [
+    {
+      "rule": [["collectionName"], ["discipline"]],
+      "isDatabaseConstraint": false
+    },
+    {
+      "rule": [["code"], ["discipline"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Collectingevent": [
+    {
+      "rule": [["uniqueIdentifier"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Collectionobject": [
+    {
+      "rule": [["catalogNumber"], ["collection"]],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["uniqueIdentifier"], []],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["guid"], []],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "CollectionObjectGroupJoin": [
+    {
+      "rule": [["childCo"], []],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["childCog"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Collector": [
+    {
+      "rule": [["agent"], ["collectingEvent"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Determiner": [
+    {
+      "rule": [["agent"], ["determination"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Discipline": [
+    {
+      "rule": [["name"], ["division"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Disposalagent": [
+    {
+      "rule": [["role", "agent"], ["disposal"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Division": [
+    {
+      "rule": [["name"], ["institution"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Extractor": [
+    {
+      "rule": [["agent"], ["dnaSequence"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Fundingagent": [
+    {
+      "rule": [["agent"], ["collectingTrip"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Gift": [
+    {
+      "rule": [["giftNumber"], ["discipline"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Giftagent": [
+    {
+      "rule": [["role", "agent"], ["gift"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Groupperson": [
+    {
+      "rule": [["member"], ["group"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Institution": [
+    {
+      "rule": [["name"], []],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Loan": [
+    {
+      "rule": [["loanNumber"], ["discipline"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Loanagent": [
+    {
+      "rule": [["role", "agent"], ["loan"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Locality": [
+    {
+      "rule": [["uniqueIdentifier"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Localitycitation": [
+    {
+      "rule": [["referenceWork"], ["locality"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Pcrperson": [
+    {
+      "rule": [["agent"], ["dnaSequence"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Permit": [
+    {
+      "rule": [["permitNumber"], []],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Picklist": [
+    {
+      "rule": [["name"], ["collection"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Preparation": [
+    {
+      "rule": [["barCode"], ["collectionobject__collection"]],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Preptype": [
+    {
+      "rule": [["name"], ["collection"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Repositoryagreement": [
+    {
+      "rule": [["repositoryAgreementNumber"], ["division"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Spappresourcedata": [
+    {
+      "rule": [["spAppResource"], []],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Specifyuser": [
+    {
+      "rule": [["name"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
+  "Taxontreedef": [
+    {
+      "rule": [["name"], ["discipline"]],
+      "isDatabaseConstraint": false
+    }
+  ],
+  "Taxontreedefitem": [
+    {
+      "rule": [["name"], ["treeDef"]],
+      "isDatabaseConstraint": false
+    },
+    {
+      "rule": [["title"], ["treeDef"]],
+      "isDatabaseConstraint": false
+    }
+  ]
 }

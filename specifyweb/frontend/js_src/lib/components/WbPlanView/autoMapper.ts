@@ -569,7 +569,7 @@ export class AutoMapper {
   }
 
   private readonly findFormattedHeaderFieldSynonyms = <
-    TABLE_NAME extends keyof Tables
+    TABLE_NAME extends keyof Tables,
   >(
     tableName: TABLE_NAME,
     fieldName: string
@@ -888,14 +888,14 @@ export class AutoMapper {
     if (isTreeTable(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
-          ? f.maybe(
-              getTreeDefinitionItems(tableName as 'Geography', false)?.find(
+          ? (f.maybe(
+              getTreeDefinitionItems(tableName, false, 'all')?.find(
                 ({ name }) =>
                   name.toLowerCase() ===
                   getNameFromTreeRankName(mappingPathPart).toLowerCase()
               )?.name,
               formatTreeRank
-            ) ?? mappingPathPart
+            ) ?? mappingPathPart)
           : mappingPathPart
       );
     }

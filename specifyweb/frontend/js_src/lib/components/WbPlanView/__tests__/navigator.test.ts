@@ -20,405 +20,432 @@ theories(getMappingLineData, [
     ],
     out: [
       {
-        "customSelectSubtype": "simple",
-        "defaultValue": "determinations",
-        "selectLabel": localized("Collection Object"),
-        "fieldsData": {
-          "catalogNumber": {
-            "optionLabel": "Cat #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+        defaultValue: 'determinations',
+        customSelectSubtype: 'simple',
+        selectLabel: localized('Collection Object'),
+        fieldsData: {
+          catalogNumber: {
+            optionLabel: 'Cat #',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "catalogedDate": {
-            "optionLabel": "Cat Date",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          absoluteAges: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Absolute Ages',
+            tableName: 'AbsoluteAge',
           },
-          "reservedText": {
-            "optionLabel": "CT Scan",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          relativeAges: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Relative Ages',
+            tableName: 'RelativeAge',
           },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          catalogedDate: {
+            optionLabel: 'Cat Date',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "altCatalogNumber": {
-            "optionLabel": "Prev/Exch #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          reservedText: {
+            optionLabel: 'CT Scan',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "projectNumber": {
-            "optionLabel": "Project Number",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          guid: {
+            optionLabel: 'GUID',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "remarks": {
-            "optionLabel": "Remarks",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          leftSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Left Side Rels',
+            tableName: 'CollectionRelationship',
           },
-          "reservedText2": {
-            "optionLabel": "Reserved Text2",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          altCatalogNumber: {
+            optionLabel: 'Prev/Exch #',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "fieldNumber": {
-            "optionLabel": "Voucher",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          projectNumber: {
+            optionLabel: 'Project Number',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "accession": {
-            "optionLabel": "Accession #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Accession"
+          remarks: {
+            optionLabel: 'Remarks',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "cataloger": {
-            "optionLabel": "Cataloger",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Agent"
+          reservedText2: {
+            optionLabel: 'Reserved Text2',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "collectionObjectAttribute": {
-            "optionLabel": "Col Obj Attribute",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectAttribute"
+          rightSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Right Side Rels',
+            tableName: 'CollectionRelationship',
           },
-          "collection": {
-            "optionLabel": "Collection",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Collection"
+          fieldNumber: {
+            optionLabel: 'Voucher',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "collectionObjectAttachments": {
-            "optionLabel": "Collection Object Attachments",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectAttachment"
+          accession: {
+            optionLabel: 'Accession #',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'Accession',
           },
-          "collectionObjectCitations": {
-            "optionLabel": "Collection Object Citations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectCitation"
+          cataloger: {
+            optionLabel: 'Cataloger',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'Agent',
           },
-          "determinations": {
-            "optionLabel": "Determinations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": true,
-            "tableName": "Determination"
+          cojo: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Cojo',
+            tableName: 'CollectionObjectGroupJoin',
           },
-          "dnaSequences": {
-            "optionLabel": "DNA Sequences",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "DNASequence"
+          collectionObjectAttribute: {
+            optionLabel: 'Col Obj Attribute',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'CollectionObjectAttribute',
           },
-          "collectingEvent": {
-            "optionLabel": "Field No: Locality",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectingEvent"
+          collectionObjectCitations: {
+            optionLabel: 'Collection Object Citations',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'CollectionObjectCitation',
           },
-          "leftSideRels": {
-            "optionLabel": "Left Side Rels",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionRelationship"
+          collectionObjectType: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Type',
+            tableName: 'CollectionObjectType',
           },
-          "preparations": {
-            "optionLabel": "Preparations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Preparation"
+          determinations: {
+            optionLabel: 'Determinations',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: true,
+            isRelationship: true,
+            tableName: 'Determination',
           },
-          "rightSideRels": {
-            "optionLabel": "Right Side Rels",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionRelationship"
+          dnaSequences: {
+            optionLabel: 'DNA Sequences',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'DNASequence',
           },
-          "voucherRelationships": {
-            "optionLabel": "Voucher Relationships",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "VoucherRelationship"
-          }
+          collectingEvent: {
+            optionLabel: 'Field No: Locality',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'CollectingEvent',
+          },
+          collection: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection',
+            tableName: 'Collection',
+          },
+          collectionObjectAttachments: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Attachments',
+            tableName: 'CollectionObjectAttachment',
+          },
+          preparations: {
+            optionLabel: 'Preparations',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'Preparation',
+          },
+          voucherRelationships: {
+            optionLabel: 'Voucher Relationships',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'VoucherRelationship',
+          },
         },
-        "tableName": "CollectionObject"
+        tableName: 'CollectionObject',
       },
       {
-        "customSelectSubtype": "toMany",
-        "defaultValue": "#1",
-        "selectLabel": localized("Determination"),
-        "fieldsData": {
-          "#1": {
-            "optionLabel": "#1",
-            "isRelationship": true,
-            "isDefault": true,
-            "tableName": "Determination"
+        defaultValue: '#1',
+        customSelectSubtype: 'toMany',
+        selectLabel: localized('Determination'),
+        fieldsData: {
+          '#1': {
+            optionLabel: '#1',
+            isRelationship: true,
+            isDefault: true,
+            tableName: 'Determination',
           },
-          "#2": {
-            "optionLabel": "Add",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Determination"
-          }
+          '#2': {
+            optionLabel: 'Add',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Determination',
+          },
         },
-        "tableName": "Determination"
+        tableName: 'Determination',
       },
       {
-        "customSelectSubtype": "simple",
-        "defaultValue": "taxon",
-        "selectLabel": localized("Determination"),
-        "fieldsData": {
-          "determinedDate": {
-            "optionLabel": "Date",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+        defaultValue: 'taxon',
+        customSelectSubtype: 'simple',
+        selectLabel: localized('Determination'),
+        fieldsData: {
+          determinedDate: {
+            optionLabel: 'Date',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          guid: {
+            optionLabel: 'GUID',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "typeStatusName": {
-            "optionLabel": "Type Status",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          typeStatusName: {
+            optionLabel: 'Type Status',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "determiner": {
-            "optionLabel": "Determiner",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Agent"
+          determiner: {
+            optionLabel: 'Determiner',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: true,
+            tableName: 'Agent',
           },
-          "determiners": {
-            "optionLabel": "Determiners",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Determiner"
+          taxon: {
+            optionLabel: 'Taxon',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: true,
+            isRelationship: true,
+            tableName: 'Taxon',
           },
-          "taxon": {
-            "optionLabel": "Taxon",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": true,
-            "tableName": "Taxon"
-          }
         },
-        "tableName": "Determination"
+        tableName: 'Determination',
       },
       {
-        "customSelectSubtype": "tree",
-        "defaultValue": "$Family",
-        "selectLabel": localized("Taxon"),
-        "fieldsData": {
-          "$Kingdom": {
-            "optionLabel": "Kingdom",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+        defaultValue: '$Family',
+        customSelectSubtype: 'tree',
+        selectLabel: localized('Taxon'),
+        fieldsData: {
+          $Kingdom: {
+            optionLabel: 'Kingdom',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Phylum": {
-            "optionLabel": "Phylum",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Phylum: {
+            optionLabel: 'Phylum',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Class": {
-            "optionLabel": "Class",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Class: {
+            optionLabel: 'Class',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Order": {
-            "optionLabel": "Order",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Order: {
+            optionLabel: 'Order',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Family": {
-            "optionLabel": "Family",
-            "isRelationship": true,
-            "isDefault": true,
-            "tableName": "Taxon"
+          $Family: {
+            optionLabel: 'Family',
+            isRelationship: true,
+            isDefault: true,
+            tableName: 'Taxon',
           },
-          "$Subfamily": {
-            "optionLabel": "Subfamily",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Subfamily: {
+            optionLabel: 'Subfamily',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Genus": {
-            "optionLabel": "Genus",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Genus: {
+            optionLabel: 'Genus',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Subgenus": {
-            "optionLabel": "Subgenus",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Subgenus: {
+            optionLabel: 'Subgenus',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Species": {
-            "optionLabel": "Species",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Species: {
+            optionLabel: 'Species',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
           },
-          "$Subspecies": {
-            "optionLabel": "Subspecies",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
-          }
+          $Subspecies: {
+            optionLabel: 'Subspecies',
+            isRelationship: true,
+            isDefault: false,
+            tableName: 'Taxon',
+          },
         },
-        "tableName": "Taxon"
+        tableName: 'Taxon',
       },
       {
-        "customSelectSubtype": "simple",
-        "defaultValue": "name",
-        "selectLabel": localized("Taxon"),
-        "fieldsData": {
-          "author": {
-            "optionLabel": "Author",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+        defaultValue: 'name',
+        customSelectSubtype: 'simple',
+        selectLabel: localized('Taxon'),
+        fieldsData: {
+          author: {
+            optionLabel: 'Author',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "commonName": {
-            "optionLabel": "Common Name",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          commonName: {
+            optionLabel: 'Common Name',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          guid: {
+            optionLabel: 'GUID',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "name": {
-            "optionLabel": "Name",
-            "isEnabled": true,
-            "isRequired": true,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": false
+          name: {
+            optionLabel: 'Name',
+            isEnabled: true,
+            isRequired: true,
+            isHidden: false,
+            isDefault: true,
+            isRelationship: false,
           },
-          "remarks": {
-            "optionLabel": "Remarks",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          remarks: {
+            optionLabel: 'Remarks',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
           },
-          "source": {
-            "optionLabel": "Source",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          }
+          source: {
+            optionLabel: 'Source',
+            isEnabled: true,
+            isRequired: false,
+            isHidden: false,
+            isDefault: false,
+            isRelationship: false,
+          },
         },
-        "tableName": "Taxon"
-      }
+        tableName: 'Taxon',
+      },
     ],
   },
   {
@@ -431,546 +458,536 @@ theories(getMappingLineData, [
         spec: navigatorSpecs.queryBuilder,
       },
     ],
-    out: [{
-        "customSelectSubtype": "simple",
-        "defaultValue": "determinations",
-        "selectLabel": localized("Collection Object"),
-        "fieldsData": {
-          "-formatted": {
-            "optionLabel": "(formatted)",
-            "tableName": "CollectionObject",
-            "isRelationship": false,
-            "isDefault": false,
-            "isEnabled": true
+    out: [
+      {
+        customSelectSubtype: 'simple',
+        defaultValue: 'determinations',
+        fieldsData: {
+          '-formatted': {
+            isDefault: false,
+            isEnabled: true,
+            isRelationship: false,
+            optionLabel: '(formatted)',
+            tableName: 'CollectionObject',
           },
-          "catalogNumber": {
-            "optionLabel": "Cat #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          absoluteAges: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Absolute Ages',
+            tableName: 'AbsoluteAge',
           },
-          "catalogedDate-fullDate": {
-            "optionLabel": "Cat Date",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          accession: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Accession #',
+            tableName: 'Accession',
           },
-          "catalogedDate-day": {
-            "optionLabel": "Cat Date (Day)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          age: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Age',
+            tableName: undefined,
           },
-          "catalogedDate-month": {
-            "optionLabel": "Cat Date (Month)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          altCatalogNumber: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Prev/Exch #',
           },
-          "catalogedDate-year": {
-            "optionLabel": "Cat Date (Year)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          catalogNumber: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Cat #',
           },
-          "reservedText": {
-            "optionLabel": "CT Scan",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'catalogedDate-day': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Cat Date (Day)',
           },
-          "timestampModified-fullDate": {
-            "optionLabel": "Date Edited",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'catalogedDate-fullDate': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Cat Date',
           },
-          "timestampModified-day": {
-            "optionLabel": "Date Edited (Day)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'catalogedDate-month': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Cat Date (Month)',
           },
-          "timestampModified-month": {
-            "optionLabel": "Date Edited (Month)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'catalogedDate-year': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Cat Date (Year)',
           },
-          "timestampModified-year": {
-            "optionLabel": "Date Edited (Year)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          cataloger: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Cataloger',
+            tableName: 'Agent',
           },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          cojo: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Cojo',
+            tableName: 'CollectionObjectGroupJoin',
           },
-          "altCatalogNumber": {
-            "optionLabel": "Prev/Exch #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collectingEvent: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Field No: Locality',
+            tableName: 'CollectingEvent',
           },
-          "projectNumber": {
-            "optionLabel": "Project Number",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collection: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection',
+            tableName: 'Collection',
           },
-          "remarks": {
-            "optionLabel": "Remarks",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collectionObjectAttachments: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Attachments',
+            tableName: 'CollectionObjectAttachment',
           },
-          "reservedText2": {
-            "optionLabel": "Reserved Text2",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collectionObjectAttribute: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Col Obj Attribute',
+            tableName: 'CollectionObjectAttribute',
           },
-          "fieldNumber": {
-            "optionLabel": "Voucher",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collectionObjectCitations: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Citations',
+            tableName: 'CollectionObjectCitation',
           },
-          "accession": {
-            "optionLabel": "Accession #",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Accession"
+          collectionObjectType: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Type',
+            tableName: 'CollectionObjectType',
           },
-          "cataloger": {
-            "optionLabel": "Cataloger",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Agent"
+          determinations: {
+            isDefault: true,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Determinations',
+            tableName: 'Determination',
           },
-          "collectionObjectAttribute": {
-            "optionLabel": "Col Obj Attribute",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectAttribute"
+          dnaSequences: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'DNA Sequences',
+            tableName: 'DNASequence',
           },
-          "collection": {
-            "optionLabel": "Collection",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Collection"
+          fieldNumber: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Voucher',
           },
-          "collectionObjectAttachments": {
-            "optionLabel": "Collection Object Attachments",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectAttachment"
+          guid: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'GUID',
           },
-          "collectionObjectCitations": {
-            "optionLabel": "Collection Object Citations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionObjectCitation"
+          leftSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Left Side Rels',
+            tableName: 'CollectionRelationship',
           },
-          "determinations": {
-            "optionLabel": "Determinations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": true,
-            "tableName": "Determination"
+          modifiedByAgent: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Edited By',
+            tableName: 'Agent',
           },
-          "dnaSequences": {
-            "optionLabel": "DNA Sequences",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "DNASequence"
+          preparations: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Preparations',
+            tableName: 'Preparation',
           },
-          "modifiedByAgent": {
-            "optionLabel": "Edited By",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Agent"
+          projectNumber: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Project Number',
           },
-          "collectingEvent": {
-            "optionLabel": "Field No: Locality",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectingEvent"
+          relativeAges: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Relative Ages',
+            tableName: 'RelativeAge',
           },
-          "leftSideRels": {
-            "optionLabel": "Left Side Rels",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionRelationship"
+          remarks: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Remarks',
           },
-          "preparations": {
-            "optionLabel": "Preparations",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Preparation"
+          reservedText: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'CT Scan',
           },
-          "rightSideRels": {
-            "optionLabel": "Right Side Rels",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "CollectionRelationship"
+          reservedText2: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Reserved Text2',
           },
-          "voucherRelationships": {
-            "optionLabel": "Voucher Relationships",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "VoucherRelationship"
-          }
+          rightSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Right Side Rels',
+            tableName: 'CollectionRelationship',
+          },
+          'timestampModified-day': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date Edited (Day)',
+          },
+          'timestampModified-fullDate': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date Edited',
+          },
+          'timestampModified-month': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date Edited (Month)',
+          },
+          'timestampModified-year': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date Edited (Year)',
+          },
+          voucherRelationships: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Voucher Relationships',
+            tableName: 'VoucherRelationship',
+          },
         },
-        "tableName": "CollectionObject"
+        selectLabel: localized('Collection Object'),
+        tableName: 'CollectionObject',
       },
       {
-        "customSelectSubtype": "simple",
-        "defaultValue": "taxon",
-        "selectLabel": localized("Determination"),
-        "fieldsData": {
-          "-formatted": {
-            "optionLabel": "(aggregated)",
-            "tableName": "Determination",
-            "isRelationship": false,
-            "isDefault": false,
-            "isEnabled": true
+        customSelectSubtype: 'simple',
+        defaultValue: 'taxon',
+        fieldsData: {
+          '-formatted': {
+            isDefault: false,
+            isEnabled: true,
+            isRelationship: false,
+            optionLabel: '(aggregated)',
+            tableName: 'Determination',
           },
-          "isCurrent": {
-            "optionLabel": "Current",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          collectionObject: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object',
+            tableName: 'CollectionObject',
           },
-          "determinedDate-fullDate": {
-            "optionLabel": "Date",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'determinedDate-day': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date (Day)',
           },
-          "determinedDate-day": {
-            "optionLabel": "Date (Day)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'determinedDate-fullDate': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date',
           },
-          "determinedDate-month": {
-            "optionLabel": "Date (Month)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'determinedDate-month': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date (Month)',
           },
-          "determinedDate-year": {
-            "optionLabel": "Date (Year)",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          'determinedDate-year': {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Date (Year)',
           },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          determiner: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Determiner',
+            tableName: 'Agent',
           },
-          "typeStatusName": {
-            "optionLabel": "Type Status",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          determiners: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Determiners',
+            tableName: 'Determiner',
           },
-          "determiner": {
-            "optionLabel": "Determiner",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Agent"
+          guid: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'GUID',
           },
-          "determiners": {
-            "optionLabel": "Determiners",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Determiner"
+          isCurrent: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Current',
           },
-          "preferredTaxon": {
-            "optionLabel": "Preferred Taxon",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": true,
-            "tableName": "Taxon"
+          preferredTaxon: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Preferred Taxon',
+            tableName: 'Taxon',
           },
-          "taxon": {
-            "optionLabel": "Taxon",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": true,
-            "tableName": "Taxon"
-          }
+          taxon: {
+            isDefault: true,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Taxon',
+            tableName: 'Taxon',
+          },
+          typeStatusName: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Type Status',
+          },
         },
-        "tableName": "Determination"
+        selectLabel: localized('Determination'),
+        tableName: 'Determination',
       },
       {
-        "customSelectSubtype": "tree",
-        "defaultValue": "$Family",
-        "selectLabel": localized("Taxon"),
-        "fieldsData": {
-          "$-any": {
-            "optionLabel": "(any rank)",
-            "isRelationship": true,
-            "isDefault": false,
-            "isEnabled": true,
-            "tableName": "Taxon"
+        customSelectSubtype: 'tree',
+        defaultValue: '$Family',
+        fieldsData: {
+          '$-any': {
+            isDefault: false,
+            isEnabled: true,
+            isRelationship: true,
+            optionLabel: '(any rank)',
+            tableName: 'Taxon',
           },
-          "$Kingdom": {
-            "optionLabel": "Kingdom",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Class: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Class',
+            tableName: 'Taxon',
           },
-          "$Phylum": {
-            "optionLabel": "Phylum",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Family: {
+            isDefault: true,
+            isRelationship: true,
+            optionLabel: 'Family',
+            tableName: 'Taxon',
           },
-          "$Class": {
-            "optionLabel": "Class",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Genus: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Genus',
+            tableName: 'Taxon',
           },
-          "$Order": {
-            "optionLabel": "Order",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Kingdom: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Kingdom',
+            tableName: 'Taxon',
           },
-          "$Family": {
-            "optionLabel": "Family",
-            "isRelationship": true,
-            "isDefault": true,
-            "tableName": "Taxon"
+          $Order: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Order',
+            tableName: 'Taxon',
           },
-          "$Subfamily": {
-            "optionLabel": "Subfamily",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Phylum: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Phylum',
+            tableName: 'Taxon',
           },
-          "$Genus": {
-            "optionLabel": "Genus",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Species: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Species',
+            tableName: 'Taxon',
           },
-          "$Subgenus": {
-            "optionLabel": "Subgenus",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Subfamily: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Subfamily',
+            tableName: 'Taxon',
           },
-          "$Species": {
-            "optionLabel": "Species",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
+          $Subgenus: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Subgenus',
+            tableName: 'Taxon',
           },
-          "$Subspecies": {
-            "optionLabel": "Subspecies",
-            "isRelationship": true,
-            "isDefault": false,
-            "tableName": "Taxon"
-          }
+          $Subspecies: {
+            isDefault: false,
+            isRelationship: true,
+            optionLabel: 'Subspecies',
+            tableName: 'Taxon',
+          },
         },
-        "tableName": "Taxon"
+        selectLabel: localized('Taxon'),
+        tableName: 'Taxon',
       },
       {
-        "customSelectSubtype": "simple",
-        "defaultValue": "name",
-        "selectLabel": localized("Taxon"),
-        "fieldsData": {
-          "author": {
-            "optionLabel": "Author",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+        customSelectSubtype: 'simple',
+        defaultValue: 'name',
+        fieldsData: {
+          author: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Author',
           },
-          "commonName": {
-            "optionLabel": "Common Name",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
+          fullName: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: false,
+            isRequired: false,
+            optionLabel: 'Full Name',
           },
-          "fullName": {
-            "optionLabel": "Full Name",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "guid": {
-            "optionLabel": "GUID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "isHybrid": {
-            "optionLabel": "Is Hybrid",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "isAccepted": {
-            "optionLabel": "Is Preferred",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "name": {
-            "optionLabel": "Name",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": true,
-            "isRelationship": false
-          },
-          "rankId": {
-            "optionLabel": "Rank ID",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "remarks": {
-            "optionLabel": "Remarks",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          },
-          "source": {
-            "optionLabel": "Source",
-            "isEnabled": true,
-            "isRequired": false,
-            "isHidden": false,
-            "isDefault": false,
-            "isRelationship": false
-          }
         },
-        "tableName": "Taxon"
-      }
-    ]
-  }
-]
-);
+        selectLabel: localized('Taxon'),
+        tableName: 'Taxon',
+      },
+    ],
+  },
+]);

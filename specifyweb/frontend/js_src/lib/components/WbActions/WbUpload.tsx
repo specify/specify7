@@ -49,8 +49,8 @@ export function WbUpload({
           hasUnsavedChanges
             ? wbText.unavailableWhileEditing()
             : cellCounts.invalidCells > 0
-            ? wbText.uploadUnavailableWhileHasErrors()
-            : undefined
+              ? wbText.uploadUnavailableWhileHasErrors()
+              : undefined
         }
         onClick={handleUpload}
       >

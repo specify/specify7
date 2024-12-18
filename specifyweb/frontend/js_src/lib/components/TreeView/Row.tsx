@@ -172,8 +172,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   isAction
                     ? 'outline outline-1 outline-red-500'
                     : isFocused
-                    ? 'outline outline-1 outline-blue-500'
-                    : ''
+                      ? 'outline outline-1 outline-blue-500'
+                      : ''
                 }
                 ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
@@ -205,19 +205,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
                     ? isLoading
                       ? commonText.loading()
                       : row.children === 0
-                      ? treeText.leafNode()
-                      : displayChildren
-                      ? treeText.opened()
-                      : treeText.closed()
+                        ? treeText.leafNode()
+                        : displayChildren
+                          ? treeText.opened()
+                          : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
-                  ? icons.blank
-                  : displayChildren
-                  ? icons.chevronDown
-                  : icons.chevronRight}
+                    ? icons.blank
+                    : displayChildren
+                      ? icons.chevronDown
+                      : icons.chevronRight}
               </span>
               <span
                 className={
@@ -231,10 +231,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
                       : typeof row.synonyms === 'string'
-                      ? treeText.synonyms({
-                          names: row.synonyms,
-                        })
-                      : undefined
+                        ? treeText.synonyms({
+                            names: row.synonyms,
+                          })
+                        : undefined
                   }
                 >
                   {doIncludeAuthorPref &&

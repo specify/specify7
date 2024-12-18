@@ -15,7 +15,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { Container } from '../Atoms';
@@ -106,7 +106,7 @@ export function SecurityUser(): JSX.Element {
     <UserView
       initialCollectionId={f.parseInt(initialCollection)}
       user={user}
-      onAdd={(newUser): void => {
+      onAdd={([newUser]): void => {
         navigate(
           formatUrl(`/specify/security/user/new/`, {
             collection: initialCollection,
@@ -158,7 +158,7 @@ function UserView({
   readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollectionId: number | undefined;
   readonly onSave: (changedUser: SerializedResource<SpecifyUser>) => void;
-  readonly onAdd: (resource: SpecifyResource<SpecifyUser>) => void;
+  readonly onAdd: (resources: RA<SpecifyResource<SpecifyUser>>) => void;
   readonly onDeleted: () => void;
 }): JSX.Element {
   const collections = useAvailableCollections();
@@ -433,8 +433,8 @@ function UserView({
             </SetPermissionContext>
             <ErrorBoundary dismissible>
               <LegacyPermissions
-                userResource={userResource}
                 collections={collections}
+                userResource={userResource}
               />
             </ErrorBoundary>
           </>,
@@ -507,40 +507,40 @@ function UserView({
                             response: JSON.parse(data),
                           })
                         : Array.isArray(institutionPolicies) &&
-                          changedInstitutionPolicies
-                        ? ajax(
-                            `/permissions/user_policies/institution/${userResource.id}/`,
-                            {
-                              method: 'PUT',
-                              body: decompressPolicies(institutionPolicies),
-                              headers: { Accept: 'text/plain' },
-                              expectedErrors: [Http.BAD_REQUEST],
-                            }
-                          ).then(({ data, status }) => {
-                            /*
-                             * Removing admin status fails if current user
-                             * is the last admin
-                             */
-                            if (status === Http.BAD_REQUEST) {
-                              const parsed: {
-                                readonly NoAdminUsersException: IR<never>;
-                              } = JSON.parse(data);
-                              if (
-                                typeof parsed === 'object' &&
-                                'NoAdminUsersException' in parsed
-                              )
-                                setState({
-                                  type: 'NoAdminsError',
-                                });
-                              else
-                                setState({
-                                  type: 'SettingAgents',
-                                  response: JSON.parse(data),
-                                });
-                            } else return true;
-                            return undefined;
-                          })
-                        : true
+                            changedInstitutionPolicies
+                          ? ajax(
+                              `/permissions/user_policies/institution/${userResource.id}/`,
+                              {
+                                method: 'PUT',
+                                body: decompressPolicies(institutionPolicies),
+                                headers: { Accept: 'text/plain' },
+                                expectedErrors: [Http.BAD_REQUEST],
+                              }
+                            ).then(({ data, status }) => {
+                              /*
+                               * Removing admin status fails if current user
+                               * is the last admin
+                               */
+                              if (status === Http.BAD_REQUEST) {
+                                const parsed: {
+                                  readonly NoAdminUsersException: IR<never>;
+                                } = JSON.parse(data);
+                                if (
+                                  typeof parsed === 'object' &&
+                                  'NoAdminUsersException' in parsed
+                                )
+                                  setState({
+                                    type: 'NoAdminsError',
+                                  });
+                                else
+                                  setState({
+                                    type: 'SettingAgents',
+                                    response: JSON.parse(data),
+                                  });
+                              } else return true;
+                              return undefined;
+                            })
+                          : true
                     )
                     .then(async (canContinue) =>
                       canContinue === true

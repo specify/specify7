@@ -48,6 +48,7 @@ export type QueryField = {
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
+    readonly isStrict: boolean;
   }>;
 };
 
@@ -58,7 +59,7 @@ export function parseQueryFields(
   return group(
     Array.from(queryFields)
       .sort(sortFunction(({ position }) => position))
-      .map(({ isNot, isDisplay, ...field }, index) => {
+      .map(({ isNot, isDisplay, isStrict, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
           field.isRelFld ?? false
@@ -84,7 +85,7 @@ export function parseQueryFields(
                 .map((parsed) =>
                   parsed?.isValid
                     ? (parsed.parsed as string)
-                    : field.startValue ?? ''
+                    : (field.startValue ?? '')
                 )
                 .join(',')
             : field.startValue;
@@ -105,6 +106,7 @@ export function parseQueryFields(
                 `Unknown SpQueryField.operStart value: ${field.operStart}`
               )[KEY],
               isNot,
+              isStrict,
               startValue,
             },
             isDisplay,
@@ -162,8 +164,8 @@ export const augmentQueryFields = (
   isDistinct
     ? fields
     : baseTableName === 'SpAuditLog'
-    ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields);
+      ? addQueryFields(fields, auditLogMappingPaths, true)
+      : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -215,9 +217,10 @@ const addQueryFields = (
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
-        } as const)
+        }) as const
     ),
 ];
 
@@ -285,6 +288,7 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
         },
@@ -313,7 +317,7 @@ export const unParseQueryFields = (
           hasFilters ? filter.type !== 'any' : index === 0
         )
         .map(
-          ({ type, startValue, isNot }, index) =>
+          ({ type, startValue, isNot, isStrict }, index) =>
             ({
               ...commonData,
               operStart: defined(
@@ -325,13 +329,14 @@ export const unParseQueryFields = (
               )[VALUE].id,
               startValue,
               isNot,
+              isStrict,
               /*
                * Prevent OR conditions from returning separate column in the
                * results
                */
               isDisplay: commonData.isDisplay && index === 0,
               // REFACTOR: add missing nullable fields here
-            } as unknown as SerializedResource<SpQueryField>)
+            }) as unknown as SerializedResource<SpQueryField>
         );
     }
   );

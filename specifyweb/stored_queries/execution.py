@@ -16,6 +16,8 @@ from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter
@@ -26,7 +28,7 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -82,17 +84,13 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        return query.filter(
-            model.TaxonTreeDefID == collection.discipline.taxontreedef_id
-        )
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.TaxonTreeDefItem:
-        logger.info(
-            "filtering taxon rank to discipline: %s", collection.discipline.name
-        )
-        return query.filter(
-            model.TaxonTreeDefID == collection.discipline.taxontreedef_id
-        )
+        logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
@@ -143,6 +141,14 @@ def filter_by_collection(model, query, collection):
             model.GeologicTimePeriodTreeDefID
             == collection.discipline.geologictimeperiodtreedef_id
         )
+
+    if model is models.TectonicUnit:
+        logger.info("filtering tectonic unit to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+
+    if model is models.TectonicUnitTreeDefItem:
+        logger.info("filtering tectonic unit rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
 
     if model is models.Storage:
         logger.info(
@@ -211,45 +217,16 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = "query-export-to-csv-complete"
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery["fields"])
-        if exporttype == "csv":
-            query_to_csv(
-                session,
-                collection,
-                user,
-                tableid,
-                field_specs,
-                path,
-                recordsetid=recordsetid,
-                captions=spquery["captions"],
-                strip_id=True,
-                distinct=spquery["selectdistinct"],
-                delimiter=spquery["delimiter"],
-            )
-        elif exporttype == "kml":
-            query_to_kml(
-                session,
-                collection,
-                user,
-                tableid,
-                field_specs,
-                path,
-                spquery["captions"],
-                host,
-                recordsetid=recordsetid,
-                strip_id=False,
-            )
-            message_type = "query-export-to-kml-complete"
-
-    Message.objects.create(
-        user=user,
-        content=json.dumps(
-            {
-                "type": message_type,
-                "file": filename,
-            }
-        ),
-    )
+        field_specs = field_specs_from_json(spquery['fields'])
+        if exporttype == 'csv':
+            query_to_csv(session, collection, user, tableid, field_specs, path,
+                         recordsetid=recordsetid, 
+                         captions=spquery['captions'], strip_id=True,
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+        elif exporttype == 'kml':
+            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
+                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+            message_type = 'query-export-to-kml-complete'
 
 
 def stored_query_to_csv(query_id, collection, user, path):
@@ -291,6 +268,7 @@ def query_to_csv(
     row_filter=None,
     distinct=False,
     delimiter=",",
+    bom=False,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -310,7 +288,11 @@ def query_to_csv(
 
     logger.debug("query_to_csv starting")
 
-    with open(path, "w", newline="", encoding="utf-8") as f:
+    encoding = 'utf-8'
+    if bom:
+        encoding = 'utf-8-sig'
+
+    with open(path, 'w', newline='', encoding=encoding) as f:
         csv_writer = csv.writer(f, delimiter=delimiter)
         if captions:
             header = captions
@@ -351,6 +333,7 @@ def query_to_kml(
     host,
     recordsetid=None,
     strip_id=False,
+    selected_rows=None,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
@@ -367,6 +350,10 @@ def query_to_kml(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True),
     )
+    if selected_rows:
+        model = models.models_by_tableid[tableid]
+        id_field = getattr(model, model._id)
+        query = query.filter(id_field.in_(selected_rows))
 
     logger.debug("query_to_kml starting")
 
@@ -903,5 +890,8 @@ def build_query(
     if props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    internal_predicate = query.get_internal_filters()
+    query = query.filter(internal_predicate)
+
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs

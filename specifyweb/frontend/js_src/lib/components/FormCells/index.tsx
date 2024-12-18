@@ -19,6 +19,7 @@ import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
+import { EMPTY_VALUE_CONDITION } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type {
   cellAlign,
@@ -39,8 +40,8 @@ const cellRenderers: {
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
-    readonly align: typeof cellAlign[number];
-    readonly verticalAlign: typeof cellVerticalAlign[number];
+    readonly align: (typeof cellAlign)[number];
+    readonly verticalAlign: (typeof cellVerticalAlign)[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -90,7 +91,7 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? genericTables[forClass].localization.desc ?? undefined
+            ? (genericTables[forClass].localization.desc ?? undefined)
             : undefined
         }
       >
@@ -235,7 +236,10 @@ const cellRenderers: {
             break;
           }
           const value = await fetchPathAsString(resource, condition.field);
-          if (!destructorCalled && value === condition.value) {
+          if (
+            (!destructorCalled && value === condition.value) ||
+            (condition.value === EMPTY_VALUE_CONDITION && value === '')
+          ) {
             foundIndex = Number.parseInt(index);
             break;
           }
@@ -334,10 +338,12 @@ export function FormCell({
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
-  readonly align: typeof cellAlign[number];
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly align: (typeof cellAlign)[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
+  const Render = cellRenderers[
+    cellData.type
+  ] as (typeof cellRenderers)['Field'];
   return (
     <Render
       align={align}

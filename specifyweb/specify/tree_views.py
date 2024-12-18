@@ -1,6 +1,8 @@
 from functools import wraps
-from typing import Literal
-from django.db import transaction
+from django import http
+from typing import Literal, Tuple
+from django.db import connection, transaction
+from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql, distinct
@@ -8,20 +10,18 @@ from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.permissions.permissions import (
-    PermissionTarget,
-    PermissionTargetAction,
-    check_permission_targets,
-)
-from specifyweb.specify.tree_ranks import tree_rank_count
-from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.stored_queries import models
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
+
+from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
+from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify import models as spmodels
+from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
-from .models import datamodel
 from .tree_stats import get_tree_stats
 from .views import login_maybe_required, openapi
 
@@ -29,9 +29,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-TREE_TABLE = Literal[
-    "Taxon", "Storage", "Geography", "Geologictimeperiod", "Lithostrat"
-]
+TREE_TABLE = Literal['Taxon', 'Storage',
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
+
+GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
+
+COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
+                                        'Geography']
+
+ALL_TRESS: Tuple[TREE_TABLE, ...] = [
+    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 
 def tree_mutation(mutation):
@@ -71,56 +78,58 @@ def tree_mutation(mutation):
                         "application/json": {
                             "schema": {
                                 "type": "array",
-                                "items": {
-                                    "type": "array",
-                                    "prefixItems": [
-                                        {
-                                            "type": "integer",
-                                            "description": "The id of the child node",
-                                        },
-                                        {
-                                            "type": "string",
-                                            "description": "The name of the child node",
-                                        },
-                                        {
-                                            "type": "string",
-                                            "description": "The fullName of the child node",
-                                        },
-                                        {
-                                            "type": "integer",
-                                            "description": "The nodenumber of the child node",
-                                        },
-                                        {
-                                            "type": "integer",
-                                            "description": "The highestChildNodeNumber of the child node",
-                                        },
-                                        {
-                                            "type": "integer",
-                                            "description": "The rankId of the child node",
-                                        },
-                                        {
-                                            "type": "number",
-                                            "description": "The acceptedId of the child node. Returns null if the node has no acceptedId",
-                                        },
-                                        {
-                                            "type": "string",
-                                            "description": "The fullName of the child node's accepted node. Returns null if the node has no acceptedId",
-                                        },
-                                        {
-                                            "type": "string",
-                                            "description": "The author of the child node. \
-                                        Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter",
-                                        },
-                                        {
-                                            "type": "integer",
-                                            "description": "The number of children the child node has",
-                                        },
-                                        {
-                                            "type": "string",
-                                            "description": "Concat of fullname of syonyms",
-                                        },
-                                    ],
-                                },
+                                "prefixItems": [
+                                    {
+
+                                        "type": "integer",
+                                        "description": "The id of the child node"
+
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The name of the child node"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The fullName of the child node"
+                                    },
+                                    {
+
+                                        "type": "integer",
+                                        "description": "The nodenumber of the child node"
+                                    },
+                                    {
+                                        "type": "integer",
+                                        "description": "The highestChildNodeNumber of the child node"
+                                    },
+                                    {
+                                        "type": "integer",
+                                        "description": "The rankId of the child node"
+
+                                    },
+                                    {
+                                        "type": "number",
+                                        "description": "The acceptedId of the child node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The author of the child node. \
+                                        Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
+                                    },
+                                    {
+
+                                        "type" : "integer",
+                                        "description" : "The number of children the child node has"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "Concat of fullname of syonyms"
+                                    }
+                                ],
                             }
                         }
                     },
@@ -131,7 +140,7 @@ def tree_mutation(mutation):
 )
 @login_maybe_required
 @require_GET
-def tree_view(request, treedef, tree, parentid, sortfield):
+def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     """Returns a list of <tree> nodes with parent <parentid> restricted to
     the tree defined by treedefid = <treedef>. The nodes are sorted
     according to <sortfield>.
@@ -143,20 +152,18 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
     implementation/design decisions
     """
-    include_author = request.GET.get("includeauthor", False) and tree == "taxon"
-    with models.session_context() as session:
+    include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(
-            treedef, tree, parentid, sortfield, include_author, session
-        )
-    return HttpResponse(toJson(results), content_type="application/json")
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+    return HttpResponse(toJson(results), content_type='application/json')
 
 
 def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
-    tree_table = datamodel.get_table(tree)
-    parentid = None if parentid == "null" else int(parentid)
+    tree_table = spmodels.datamodel.get_table(tree)
+    parentid = None if parentid == 'null' else int(parentid)
 
-    node = getattr(models, tree_table.name)
+    node = getattr(sqlmodels, tree_table.name)
     child = aliased(node)
     accepted = aliased(node)
     synonym = aliased(node)
@@ -210,28 +217,21 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     results = list(query)
     return results
 
-
 @login_maybe_required
 @require_GET
 def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
 
-    using_cte = tree in ["geography", "taxon", "storage"]
+    using_cte = (tree in ['geography', 'taxon', 'storage'])
     results = get_tree_stats(
-        treedef,
-        tree,
-        parentid,
-        request.specify_collection,
-        models.session_context,
-        using_cte,
-    )
+        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
 
     return HttpResponse(toJson(results), content_type="application/json")
 
 
 @login_maybe_required
 @require_GET
-def path(request, tree, id):
+def path(request, tree: TREE_TABLE, id: int):
     "Returns all nodes up to the root of <tree> starting from node <id>."
     id = int(id)
     tree_node = get_object_or_404(tree, id=id)
@@ -253,7 +253,7 @@ def get_tree_path(tree_node):
 
 @login_maybe_required
 @require_GET
-def predict_fullname(request, tree, parentid):
+def predict_fullname(request, tree: TREE_TABLE, parentid: int):
     """Returns the predicted fullname for a <tree> node based on the name
     field of the node and its <parentid>. Requires GET parameters
     'treedefitemid' and 'name', to indicate the rank (treedefitem) and
@@ -271,7 +271,7 @@ def predict_fullname(request, tree, parentid):
 
 
 @tree_mutation
-def merge(request, tree, id):
+def merge(request, tree: TREE_TABLE, id: int):
     """Merges <tree> node <id> into the node with id indicated by the
     'target' POST parameter."""
     check_permission_targets(
@@ -285,7 +285,7 @@ def merge(request, tree, id):
 
 
 @tree_mutation
-def move(request, tree, id):
+def move(request, tree: TREE_TABLE, id: int):
     """Reparents the <tree> node <id> to be a child of the node
     indicated by the 'target' POST parameter.
     """
@@ -315,35 +315,36 @@ def move(request, tree, id):
         )
 
 
-@openapi(
-    schema={
-        "post": {
-            "parameters": [
-                {
-                    "name": "tree",
-                    "in": "path",
-                    "required": True,
-                    "schema": {"enum": ["Storage"]},
-                },
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "The id of the node from which to bulk move from.",
-                    "required": True,
-                    "schema": {"type": "integer", "minimum": 0},
-                },
-            ],
-            "requestBody": {
-                "required": True,
-                "content": {
-                    "application/x-www-form-urlencoded": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "target": {
-                                    "type": "integer",
-                                    "description": "The ID of the storage tree node to which the preparations should be moved.",
-                                },
+@openapi(schema={
+    "post": {
+        "parameters": [{
+            "name": "tree",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "enum": ['Storage']
+            }
+        },
+            {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the node from which to bulk move from.",
+            "required": True,
+            "schema": {
+                "type": "integer",
+                "minimum": 0
+            }
+        }],
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "target": {
+                                "type": "integer",
+                                "description": "The ID of the storage tree node to which the preparations should be moved."
                             },
                             "required": ["target"],
                             "additionalProperties": False,
@@ -358,7 +359,7 @@ def move(request, tree, id):
             },
         }
     }
-)
+})
 @tree_mutation
 def bulk_move(request, tree: TREE_TABLE, id: int):
     """Bulk move the preparations under the <tree> node <id> to have
@@ -376,7 +377,7 @@ def bulk_move(request, tree: TREE_TABLE, id: int):
 
 
 @tree_mutation
-def synonymize(request, tree, id):
+def synonymize(request, tree: TREE_TABLE, id: int):
     """Synonymizes the <tree> node <id> to be a synonym of the node
     indicated by the 'target' POST parameter.
     """
@@ -391,7 +392,7 @@ def synonymize(request, tree, id):
 
 
 @tree_mutation
-def desynonymize(request, tree, id):
+def desynonymize(request, tree: TREE_TABLE, id: int):
     "Causes the <tree> node <id> to no longer be a synonym of another node."
     check_permission_targets(
         request.specify_collection.id,
@@ -403,18 +404,54 @@ def desynonymize(request, tree, id):
 
 
 @tree_mutation
-def repair_tree(request, tree):
+def repair_tree(request, tree: TREE_TABLE):
     "Repairs the indicated <tree>."
-    check_permission_targets(
-        request.specify_collection.id,
-        request.specify_user.id,
-        [perm_target(tree).repair],
-    )
-    tree_model = datamodel.get_table(tree)
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id,
+                             [perm_target(tree).repair])
+    tree_model = spmodels.datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
 
+@tree_mutation
+def add_root(request, tree, treeid): 
+    "Creates a root node in a specific tree."
+
+    tree_name = tree.title()
+    tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
+    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
+    item = getattr(spmodels, tree_name)
+
+    tree_def_item, create = tree_def_item_model.objects.get_or_create(
+            treedef=tree_target,
+            rankid=0
+        )
+
+    filter_kwargs = {
+        'rankid': 0,
+        'definition_id': treeid
+    }
+
+    if item.objects.filter(**filter_kwargs).count() > 0:
+        raise Exception("Root node already exists.") 
+
+    root = item.objects.create(
+        name="Root",
+        isaccepted=1,
+        nodenumber=1,
+        rankid=0,
+        parent=None,
+        definition=tree_target,
+        definitionitem=tree_def_item,
+        fullname="Root"
+    )
+
+    # Override node number with raw sql execution
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE {tree_name.lower()} SET NodeNumber = 1 WHERE {tree}id = {root.id}")
+
+    return http.HttpResponse(status=204)
 
 @login_maybe_required
 @require_GET
@@ -427,6 +464,77 @@ def tree_rank_item_count(request, tree, rankid):
     count = tree_rank_count(tree, rank.id)
     return HttpResponse(toJson(count), content_type="application/json")
 
+
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": 'Tree information fetched successfully',
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            'properties': {
+                                tree: {"$ref": "#/components/schemas/tree_info"} for tree in ALL_TRESS
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}, components={
+    "schemas": {
+        'tree_info': {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "definition": {
+                        "type": "object",
+                        "description": "A serialized TreeDef",
+                    },
+                    "ranks": {
+                        "type": "array",
+                        "description": "An array of the TreeDef's TreeDefItems, sorted by ascending rankid",
+                        "items": {
+                            "type": "object",
+                            "description": "A serialized TreeDefItem"
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+@login_maybe_required
+@require_GET
+def all_tree_information(request):
+    def has_tree_read_permission(tree: TREE_TABLE) -> bool:
+        return has_table_permission(
+            request.specify_collection.id, request.specify_user.id, tree, 'read')
+
+    is_paleo_or_geo_discipline = request.specify_collection.discipline.is_paleo_geo()
+
+    accessible_trees = tuple(filter(
+        has_tree_read_permission, ALL_TRESS if is_paleo_or_geo_discipline else COMMON_TREES))
+
+    result = {}
+
+    for tree in accessible_trees:
+        result[tree] = []
+
+        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
+        tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree)).distinct()
+        for definition in tree_defs:
+            ranks = definition.treedefitems.order_by('rankid')            
+            result[tree].append({
+                'definition': obj_to_data(definition),
+                'ranks': [obj_to_data(rank) for rank in ranks]
+            })
+
+    return HttpResponse(toJson(result), content_type='application/json')
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
@@ -473,12 +581,20 @@ class LithostratMutationPT(PermissionTarget):
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
+class TectonicunitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
 
 def perm_target(tree):
     return {
-        "taxon": TaxonMutationPT,
-        "geography": GeographyMutationPT,
-        "storage": StorageMutationPT,
-        "geologictimeperiod": GeologictimeperiodMutationPT,
-        "lithostrat": LithostratMutationPT,
+        'taxon': TaxonMutationPT,
+        'geography': GeographyMutationPT,
+        'storage': StorageMutationPT,
+        'geologictimeperiod': GeologictimeperiodMutationPT,
+        'lithostrat': LithostratMutationPT,
+        'tectonicunit':TectonicunitMutationPT
     }[tree]

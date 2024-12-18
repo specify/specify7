@@ -92,6 +92,7 @@ class Table(object):
     fieldAliases: List[Dict[str, str]]
     sp7_only: bool = False
     django_app: str = "specify"
+    virtual_fields: List['Field'] = []
 
     def __init__(
         self,
@@ -110,6 +111,7 @@ class Table(object):
         system: bool = False,
         sp7_only: bool = False,
         django_app: str = "specify",
+        virtual_fields: List['Field'] = None
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -138,6 +140,7 @@ class Table(object):
         self.fieldAliases = fieldAliases if fieldAliases is not None else []
         self.sp7_only = sp7_only
         self.django_app = django_app
+        self.virtual_fields = virtual_fields if virtual_fields is not None else []
 
     @property
     def name(self) -> str:
@@ -158,9 +161,11 @@ class Table(object):
 
         return list(af())
 
-    def get_field(
-        self, fieldname: str, strict: bool = False
-    ) -> Union["Field", "Relationship", None]:
+
+    def is_virtual_field(self, fieldname: str) -> bool:
+        return fieldname in [f.name for f in self.virtual_fields]
+   
+    def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
         return strict_to_optional(self.get_field_strict, fieldname, strict)
 
     def get_field_strict(self, fieldname: str) -> Union["Field", "Relationship"]:
@@ -168,11 +173,13 @@ class Table(object):
         for field in self.all_fields:
             if field.name.lower() == fieldname:
                 return field
-        raise FieldDoesNotExistError(
-            _("Field %(field_name)s not in table %(table_name)s. ")
-            % {"field_name": fieldname, "table_name": self.name}
-            + _("Fields: %(fields)s") % {"fields": [f.name for f in self.all_fields]}
-        )
+        for field in self.virtual_fields:
+            if field.name.lower() == fieldname:
+                return field
+        # if self.table == 'collectionobject' and fieldname == 'age': # TODO: This is temporary for testing, more conprehensive solution to come.
+        #     return Field(name='age', column='age', indexed=False, unique=False, required=False, type='java.lang.Integer', length=0)
+        raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
+                                     _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 
     def get_relationship(self, name: str) -> "Relationship":
         field = self.get_field_strict(name)
@@ -457,8 +464,8 @@ def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
 
 
 def flag_dependent_fields(datamodel: Datamodel) -> None:
-    for name in dependent_fields:
-        tablename, fieldname = name.split(".")
+    for name in sp6_dependent_fields:
+        tablename, fieldname = name.split('.')
         try:
             field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
         except DoesNotExistError as e:
@@ -477,7 +484,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
 
 
 def flag_system_tables(datamodel: Datamodel) -> None:
-    for name in system_tables:
+    for name in sp6_system_tables:
         datamodel.get_table_strict(name).system = True
 
     for table in datamodel.tables:
@@ -486,140 +493,138 @@ def flag_system_tables(datamodel: Datamodel) -> None:
         if table.name.endswith("treedef") or table.name.endswith("treedefitem"):
             table.system = True
 
-
-dependent_fields = {
-    "Accession.accessionagents",
-    "Accession.accessionauthorizations",
-    "Accession.addressofrecord",
-    "Agent.addresses",
-    "Agent.agentgeographies",
-    "Agent.agentspecialties",
-    "Agent.groups",
-    "Agent.identifiers",
-    "Agent.variants",
-    "Borrow.addressofrecord",
-    "Borrow.borrowagents",
-    "Borrow.borrowmaterials",
-    "Borrow.shipments",
-    "Borrowmaterial.borrowreturnmaterials",
-    "Collectingevent.collectingeventattribute",
-    "Collectingevent.collectingeventattrs",
-    "Collectingevent.collectingeventauthorizations",
-    "Collectingevent.collectors",
-    "Collectingtrip.collectingtripattribute",
-    "Collectingtrip.collectingtripauthorizations",
-    "Collectingtrip.fundingagents",
-    "Collectionobject.collectionobjectattribute",
-    "Collectionobject.collectionobjectattrs",
-    "Collectionobject.collectionobjectcitations",
-    "Collectionobject.conservdescriptions",
-    "Collectionobject.determinations",
-    "Collectionobject.dnasequences",
-    "Collectionobject.exsiccataitems",
-    "CollectionObject.leftsiderels",
-    "Collectionobject.otheridentifiers",
-    "Collectionobject.preparations",
-    "Collectionobject.collectionobjectproperties",
-    "CollectionObject.rightsiderels",
-    "Collectionobject.treatmentevents",
-    "Collectionobject.voucherrelationships",
-    "Commonnametx.citations",
-    "Conservdescription.events",
-    "Deaccession.deaccessionagents",
-    "Determination.determinationcitations",
-    "Determination.determiners",
-    "Disposal.disposalagents",
-    "Disposal.disposalpreparations",
-    "Dnasequence.dnasequencingruns",
-    "Dnasequencingrun.citations",
-    "Exchangein.exchangeinpreps",
-    "Exchangein.addressofrecord",
-    "Exchangeout.exchangeoutpreps",
-    "Exchangeout.addressofrecord",
-    "Exsiccata.exsiccataitems",
-    "Fieldnotebook.pagesets",
-    "Fieldnotebookpageset.pages",
-    "Geographytreedef.treedefitems",
-    "Geologictimeperiodtreedef.treedefitems",
-    "Gift.addressofrecord",
-    "Gift.giftagents",
-    "Gift.giftpreparations",
-    "Gift.shipments",
-    "Latlonpolygon.points",
-    "lithostrattreedef.treedefitems",
-    "Loan.addressofrecord",
-    "Loan.loanagents",
-    "Loan.loanpreparations",
-    "Loan.shipments",
-    "Loanpreparation.loanreturnpreparations",
-    "Locality.geocoorddetails",
-    "Locality.latlonpolygons",
-    "Locality.localitycitations",
-    "Locality.localitydetails",
-    "Locality.localitynamealiass",
-    "Materialsample.dnasequences",
-    "Picklist.picklistitems",
-    "Preparation.materialsamples",
-    "Preparation.preparationattribute",
-    "Preparation.preparationattrs",
-    "Preparation.preparationproperties",
-    "Preptype.attributedefs",
-    "Referencework.authors",
-    "Repositoryagreement.addressofrecord",
-    "Repositoryagreement.repositoryagreementagents",
-    "Repositoryagreement.repositoryagreementauthorizations",
-    "Spquery.fields",
-    "Storagetreedef.treedefitems",
-    "Taxon.commonnames",
-    "Taxon.taxoncitations",
-    "Taxon.taxonattribute",
-    "Taxontreedef.treedefitems",
-    "Workbench.workbenchtemplate",
-    "Workbenchtemplate.workbenchtemplatemappingitems",
+sp6_dependent_fields = {
+    'Accession.accessionagents',
+    'Accession.accessionauthorizations',
+    'Accession.addressofrecord',
+    'Agent.addresses',
+    'Agent.agentgeographies',
+    'Agent.agentspecialties',
+    'Agent.groups',
+    'Agent.identifiers',
+    'Agent.variants',
+    'Borrow.addressofrecord',
+    'Borrow.borrowagents',
+    'Borrow.borrowmaterials',
+    'Borrow.shipments',
+    'Borrowmaterial.borrowreturnmaterials',
+    'Collectingevent.collectingeventattribute',
+    'Collectingevent.collectingeventattrs',
+    'Collectingevent.collectingeventauthorizations',
+    'Collectingevent.collectors',
+    'Collectingtrip.collectingtripattribute',
+    'Collectingtrip.collectingtripauthorizations',
+    'Collectingtrip.fundingagents',
+    'Collectionobject.collectionobjectattribute',
+    'Collectionobject.collectionobjectattrs',
+    'Collectionobject.collectionobjectcitations',
+    'Collectionobject.conservdescriptions',
+    'Collectionobject.determinations',
+    'Collectionobject.dnasequences',
+    'Collectionobject.exsiccataitems',
+    'CollectionObject.leftsiderels',
+    'Collectionobject.otheridentifiers',
+    'Collectionobject.preparations',
+    'Collectionobject.collectionobjectproperties',
+    'CollectionObject.rightsiderels',
+    'Collectionobject.treatmentevents',
+    'Collectionobject.voucherrelationships',
+    'Commonnametx.citations',
+    'Conservdescription.events',
+    'Deaccession.deaccessionagents',
+    'Determination.determinationcitations',
+    'Determination.determiners',
+    'Disposal.disposalagents',
+    'Disposal.disposalpreparations',
+    'Dnasequence.dnasequencingruns',
+    'Dnasequencingrun.citations',
+    'Exchangein.exchangeinpreps',
+    'Exchangein.addressofrecord',
+    'Exchangeout.exchangeoutpreps',
+    'Exchangeout.addressofrecord',
+    'Exsiccata.exsiccataitems',
+    'Fieldnotebook.pagesets',
+    'Fieldnotebookpageset.pages',
+    'Geographytreedef.treedefitems',
+    'Geologictimeperiodtreedef.treedefitems',
+    'Gift.addressofrecord',
+    'Gift.giftagents',
+    'Gift.giftpreparations',
+    'Gift.shipments',
+    'Latlonpolygon.points',
+    'lithostrattreedef.treedefitems',
+    'Loan.addressofrecord',
+    'Loan.loanagents',
+    'Loan.loanpreparations',
+    'Loan.shipments',
+    'Loanpreparation.loanreturnpreparations',
+    'Locality.geocoorddetails',
+    'Locality.latlonpolygons',
+    'Locality.localitycitations',
+    'Locality.localitydetails',
+    'Locality.localitynamealiass',
+    'Materialsample.dnasequences',
+    'Picklist.picklistitems',
+    'Preparation.materialsamples',
+    'Preparation.preparationattribute',
+    'Preparation.preparationattrs',
+    'Preparation.preparationproperties',
+    'Preptype.attributedefs',
+    'Referencework.authors',
+    'Repositoryagreement.addressofrecord',
+    'Repositoryagreement.repositoryagreementagents',
+    'Repositoryagreement.repositoryagreementauthorizations',
+    'Spquery.fields',
+    'Storagetreedef.treedefitems',
+    'Taxon.commonnames',
+    'Taxon.taxoncitations',
+    'Taxon.taxonattribute',
+    'Taxontreedef.treedefitems',
+    'Workbench.workbenchtemplate',
+    'Workbenchtemplate.workbenchtemplatemappingitems',
 }
 
 
-system_tables = {
-    "Attachment",
-    "Attachmentimageattribute",
-    "Attachmentmetadata",
-    "Attachmenttag",
-    "Attributedef",
-    "Autonumberingscheme",
-    "Datatype",
-    "Morphbankview",
-    "Picklist",
-    "Picklistitem",
-    "Recordset",
-    "Recordsetitem",
-    "Spappresource",
-    "Spappresourcedata",
-    "Spappresourcedir",
-    "Spauditlog",
-    "Spauditlogfield",
-    "Spexportschema",
-    "Spexportschemaitem",
-    "Spexportschemaitemmapping",
-    "Spexportschemamapping",
-    "Spfieldvaluedefault",
-    "Splocalecontainer",
-    "Splocalecontaineritem",
-    "Splocaleitemstr",
-    "Sppermission",
-    "Spprincipal",
-    "Spquery",
-    "Spqueryfield",
-    "Spreport",
-    "Sptasksemaphore",
-    "Spversion",
-    "Spviewsetobj",
-    "Spvisualquery",
-    "Specifyuser",
-    "Workbench",
-    "Workbenchdataitem",
-    "Workbenchrow",
-    "Workbenchrowexportedrelationship",
-    "Workbenchrowimage",
-    "Workbenchtemplate",
-    "Workbenchtemplatemappingitem",
+sp6_system_tables = {
+    'Attachment',
+    'Attachmentimageattribute',
+    'Attachmentmetadata',
+    'Attachmenttag',
+    'Attributedef',
+    'Autonumberingscheme',
+    'Datatype',
+    'Morphbankview',
+    'Picklist',
+    'Picklistitem',
+    'Recordset',
+    'Recordsetitem',
+    'Spappresource',
+    'Spappresourcedata',
+    'Spappresourcedir',
+    'Spauditlogfield',
+    'Spexportschema',
+    'Spexportschemaitem',
+    'Spexportschemaitemmapping',
+    'Spexportschemamapping',
+    'Spfieldvaluedefault',
+    'Splocalecontainer',
+    'Splocalecontaineritem',
+    'Splocaleitemstr',
+    'Sppermission',
+    'Spprincipal',
+    'Spquery',
+    'Spqueryfield',
+    'Spreport',
+    'Sptasksemaphore',
+    'Spversion',
+    'Spviewsetobj',
+    'Spvisualquery',
+    'Specifyuser',
+    'Workbench',
+    'Workbenchdataitem',
+    'Workbenchrow',
+    'Workbenchrowexportedrelationship',
+    'Workbenchrowimage',
+    'Workbenchtemplate',
+    'Workbenchtemplatemappingitem',
 }
