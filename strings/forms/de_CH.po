@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-18 15:05+0000\n"
+"PO-Revision-Date: 2024-12-18 15:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9.2-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -44,7 +44,7 @@ msgstr "Der Wert muss in der Datenbank eindeutig sein"
 #: components/DataModel/uniquenessRules.ts:131
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
-msgstr "Möchten Sie dieses [X49X] wirklich dauerhaft aus der Datenbank löschen?"
+msgstr "Werte von {values:string} müssen für {fieldName:string} eindeutig sein."
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:135
@@ -70,7 +70,9 @@ msgstr "Blockierte löschen"
 #: components/Forms/DeleteButton.tsx:168
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "Verwendungen finden"
+msgstr ""
+"Die Ressource kann nicht gelöscht werden, da sie von den folgenden "
+"Ressourcen referenziert wird:"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
@@ -162,7 +164,9 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #: components/PickLists/index.tsx:290
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "JJJJ"
+msgstr ""
+"Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen "
+"\"{pickListName:string}\" hinzufügen?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -265,7 +269,7 @@ msgstr ""
 #: components/Forms/Save.tsx:373
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Datensatzinformationen"
+msgstr "Speichern blockiert"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:376
@@ -709,7 +713,7 @@ msgstr "Netz"
 #: components/FormMeta/index.tsx:197
 #, fuzzy
 msgid "subviewConfiguration"
-msgstr "Weitertragen"
+msgstr "Unteransicht"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:50
@@ -740,7 +744,7 @@ msgstr "Deaktivieren des Nur-Lese-Modus"
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
-msgstr "Anzahl der Massenüberträge"
+msgstr "Aktivieren Sie den Nur-Lese-Modus"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:129
