@@ -324,8 +324,9 @@ def get_uiformatters(collection, obj, user) -> List[UIFormatter]:
         if f is not None
     ]
     if tablename.lower() == 'collectionobject':
-        cat_num_format = get_catalognumber_format(collection, obj, user)
-        if cat_num_format: uiformatters.append(cat_num_format)
+        cat_num_format = getattr(getattr(obj, 'collectionobjecttype', None), 'catalognumberformatname', None)
+        cat_num_formatter = get_catalognumber_format(collection, cat_num_format, user)
+        if cat_num_formatter: uiformatters.append(cat_num_formatter)
 
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
@@ -346,9 +347,10 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFo
     else:
         return get_uiformatter_by_name(collection, None, field_format)
 
-def get_catalognumber_format(collection, collection_object, user) -> UIFormatter: 
-    cot_formatter = getattr(getattr(collection_object, 'collectionobjecttype', None), 'catalognumberformatname', None)
-    if cot_formatter: 
-        return get_uiformatter_by_name(collection, user, cot_formatter)
-    else: 
-        return get_uiformatter_by_name(collection, user, collection.catalognumformatname)
+def get_catalognumber_format(collection, format_name: Optional[str], user) -> UIFormatter:
+    if format_name: 
+         formatter = get_uiformatter_by_name(collection, user, format_name)
+         if formatter:
+            return formatter
+
+    return get_uiformatter_by_name(collection, user, collection.catalognumformatname)
