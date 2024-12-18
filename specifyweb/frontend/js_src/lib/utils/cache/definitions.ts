@@ -73,15 +73,15 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
-    readonly [key in `definition${AnyTree['tableName']}`]: number;
-  } & {
-    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
-  } & {
     /** Collapsed ranks in a given tree */
     readonly [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
   } & {
     /** Open nodes in a given tree */
     readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
+    readonly [key in `definition${AnyTree['tableName']}`]: number;
+  } & {
+    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;

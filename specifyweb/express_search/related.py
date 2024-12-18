@@ -163,6 +163,7 @@ class RelatedSearch(object, metaclass=RelatedSearchMeta):
             display=False,
             format_name=None,
             sort_type=0,
+            strict=False
         )
 
         logger.debug("primary queryfield: %s", primary_field)
