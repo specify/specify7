@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Tuple, Callable, Union
+from typing import Dict, Any, Optional, Tuple, Callable, Union, cast
 
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -85,7 +85,7 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     return adjust_to_ones
 
 
-def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, UploadTable]] = None) -> ExtendedColumnOptions:
+def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
     toOne = {} if _toOne is None else _toOne
     schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
@@ -115,7 +115,7 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, UploadTable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
+def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, Uploadable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
     """ The CollectionObject -> catalogNumber format can be determined by the 
     CollectionObjectType -> catalogNumberFormatName for the CollectionObject
 
@@ -126,10 +126,12 @@ def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: D
     """
     toOne = {key.lower():value for key, value in _toOne.items()}
     if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne.keys():
-        wb_col = toOne['collectionobjecttype'].wbcols.get('name', None)
+        uploadTable = toOne['collectionobjecttype']
+
+        wb_col = cast(UploadTable, uploadTable).wbcols.get('name', None) if hasattr(uploadTable, 'wbcols') else None
         col_name = None if wb_col is None else wb_col.column
-        if col_name: 
-            formats = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
+        if col_name is not None: 
+            formats: Dict[str, Optional[UIFormatter]] = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
             return lambda row: formats.get(row[col_name], get_uiformatter(collection, tablename, fieldname))
 
     return get_uiformatter(collection, tablename, fieldname)
