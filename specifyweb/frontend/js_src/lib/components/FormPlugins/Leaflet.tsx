@@ -50,9 +50,8 @@ function LeafletDialog({
       localityPoints={[localityData]}
       onClose={handleClose}
       onMarkerClick={async (_, { target: marker }): Promise<void> => {
-        fullLocalityData.current ??= await fetchLocalityDataFromResource(
-          locality
-        );
+        fullLocalityData.current ??=
+          await fetchLocalityDataFromResource(locality);
         if (fullLocalityData.current === false) return;
         (marker as Leaflet.Marker)
           .getPopup()

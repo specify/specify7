@@ -90,7 +90,7 @@ export function SchemaConfigField({
       <Label.Inline>
         <Input.Checkbox
           checked={
-            canChangeIsRequired ? item.isRequired ?? false : field.isRequired
+            canChangeIsRequired ? (item.isRequired ?? false) : field.isRequired
           }
           disabled={!canChangeIsRequired}
           isReadOnly={isReadOnly}

@@ -58,16 +58,16 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
                 field.name,
                 field.isRelationship
                   ? handleRelationship(record, field, spec)
-                  : record[field.name as keyof typeof record] ??
+                  : (record[field.name as keyof typeof record] ??
                     (field.name === 'version'
                       ? 1
                       : (
-                          field.isRequired
-                            ? requiredFields === 'set'
-                            : optionalFields === 'set'
-                        )
-                      ? parserFromType(field.type).value
-                      : null),
+                            field.isRequired
+                              ? requiredFields === 'set'
+                              : optionalFields === 'set'
+                          )
+                        ? parserFromType(field.type).value
+                        : null)),
               ]
             : undefined
         )

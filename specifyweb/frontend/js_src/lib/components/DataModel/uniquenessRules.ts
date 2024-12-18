@@ -96,15 +96,15 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   return Object.keys(uniquenessRules).length === 0
     ? undefined
     : tableName === undefined
-    ? uniquenessRules
-    : uniquenessRules[tableName];
+      ? uniquenessRules
+      : uniquenessRules[tableName];
 }
 
 export function useTableUniquenessRules(
   tableName: keyof Tables
 ): readonly [
   ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
-  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void
+  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void,
 ] {
   const [rawModelRules = [], setTableUniquenessRules] = React.useState(
     uniquenessRules[tableName]
@@ -145,7 +145,7 @@ export function getUniqueInvalidReason(
 
 export async function validateUniqueness<
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
 >(
   table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,

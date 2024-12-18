@@ -18,7 +18,7 @@ import type { IR } from '../utils/types';
 export const mount = <
   Q extends Queries = typeof queries,
   CONTAINER extends DocumentFragment | Element = HTMLElement,
-  BASE_ELEMENT extends DocumentFragment | Element = CONTAINER
+  BASE_ELEMENT extends DocumentFragment | Element = CONTAINER,
 >(
   ui: React.ReactElement,
   options: RenderOptions<Q, CONTAINER, BASE_ELEMENT> = {}

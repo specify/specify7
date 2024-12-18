@@ -105,8 +105,8 @@ export function WbActions({
             dataCheckInProgress
               ? wbText.unavailableWhileValidating()
               : isUploaded
-              ? undefined
-              : wbText.wbUploadedUnavailable()
+                ? undefined
+                : wbText.wbUploadedUnavailable()
           }
           onClick={handleToggleResults}
         >
@@ -212,16 +212,16 @@ export function WbActions({
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
-              ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled()
+                ? wbText.rollbackCanceled()
+                : wbText.uploadCanceled()
           }
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription()}
+              ? wbText.rollbackCanceledDescription()
+              : wbText.uploadCanceledDescription()}
         </Dialog>
       )}
     </>

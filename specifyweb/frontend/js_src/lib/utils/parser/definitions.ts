@@ -3,6 +3,8 @@
  * parsing it and formatting it
  */
 
+import type { AnySchema } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type {
   JavaType,
   LiteralField,
@@ -71,9 +73,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -89,7 +91,7 @@ export type Parser = Partial<{
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
-    : (value as number)?.toString() ?? '';
+    : ((value as number)?.toString() ?? '');
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
 
@@ -114,8 +116,8 @@ export const parsers = f.store(
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText.yes()
-          : commonText.no(),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -269,7 +271,8 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
+  resource?: SpecifyResource<AnySchema>
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -284,7 +287,10 @@ export function resolveParser(
     parser = parsers()[fullField.datePart] as Parser;
 
   const formatter =
-    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
+    field.isRelationship === false
+      ? field.getUiFormatter?.(resource)
+      : undefined;
+
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required

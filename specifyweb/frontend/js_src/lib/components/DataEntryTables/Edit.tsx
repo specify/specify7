@@ -95,8 +95,8 @@ export function useFormTables(
     tables === 'legacy'
       ? []
       : tables.length === 0
-      ? filterArray(defaultVisibleForms[type].map(getTable))
-      : tables.map(getTableById);
+        ? filterArray(defaultVisibleForms[type].map(getTable))
+        : tables.map(getTableById);
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
   );

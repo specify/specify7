@@ -161,16 +161,16 @@ export function generateMappingPathPreview(
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
-      ? tableOrRankName
-      : undefined;
+        ? tableOrRankName
+        : undefined;
 
   const tableNameFormatted =
     tablesToHide.has(databaseTableOrRankName) &&
     databaseFieldName !== formattedEntry
       ? [parentTableOrTreeName || tableNameNonEmpty]
       : genericTables.has(databaseTableOrRankName)
-      ? [parentTableOrTreeName, tableNameNonEmpty]
-      : [tableNameNonEmpty];
+        ? [parentTableOrTreeName, tableNameNonEmpty]
+        : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)

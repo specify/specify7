@@ -84,7 +84,7 @@ async function fetchPickListItems(
 
   const limit = Math.max(
     0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
+    pickList.get('readOnly') ? (pickList.get('sizeLimit') ?? 0) : 0
   );
 
   if (type === PickListTypes.TABLE)
@@ -180,8 +180,8 @@ export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
     pickList.get('sortType') === PickListSortType.TITLE_SORT
       ? Array.from(items).sort(sortFunction(({ title }) => title))
       : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items
+        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+        : items
   ).map(({ value, title }) => ({
     value: value ?? title,
     title: title ?? value,

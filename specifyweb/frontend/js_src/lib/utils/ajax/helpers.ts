@@ -44,10 +44,10 @@ export function formData(
           Array.isArray(value)
             ? JSON.stringify(value)
             : typeof value === 'number'
-            ? value.toString()
-            : typeof value === 'boolean'
-            ? value.toString()
-            : value
+              ? value.toString()
+              : typeof value === 'boolean'
+                ? value.toString()
+                : value
         )
   );
   return formData;
