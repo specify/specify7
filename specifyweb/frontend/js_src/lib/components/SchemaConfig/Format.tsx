@@ -183,8 +183,8 @@ function FormatterLine({
     name === 'none' || name === 'pickList'
       ? true
       : name === 'webLink' || name === 'formatted'
-      ? !field.isRelationship
-      : false;
+        ? !field.isRelationship
+        : false;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
@@ -198,7 +198,7 @@ function FormatterLine({
             handleFormatted(
               name,
               typeof values === 'object'
-                ? Object.values(values)[0][0][0]! ?? null
+                ? (Object.values(values)[0][0][0]! ?? null)
                 : null
             )
           }

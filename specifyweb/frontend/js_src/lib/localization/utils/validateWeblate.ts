@@ -81,8 +81,8 @@ export const getComponentKind = (
   ignoredComponents.has(slug)
     ? undefined
     : slug.startsWith(schemaLocalizationName)
-    ? 'schema'
-    : 'userInterface';
+      ? 'schema'
+      : 'userInterface';
 
 function getToken(): string {
   const key = process.env.WEBLATE_API_TOKEN;

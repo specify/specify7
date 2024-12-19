@@ -496,8 +496,8 @@ export const runAllFieldChecks = async (
     (result === undefined || result === null
       ? []
       : result instanceof ResourceBase
-      ? [result]
-      : (result as Collection<AnySchema>).models) as unknown as RA<
+        ? [result]
+        : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
   // Running only on dependent resources. the order shouldn't matter.....

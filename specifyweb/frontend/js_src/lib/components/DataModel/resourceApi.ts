@@ -89,7 +89,7 @@ function eventHandlerForToMany(related, field) {
 // Always returns a resource
 const maybeMakeResource = <
   TABLE extends SpecifyTable,
-  TABLE_SCHEMA extends Tables[TABLE['name']]
+  TABLE_SCHEMA extends Tables[TABLE['name']],
 >(
   value:
     | Partial<SerializedRecord<TABLE_SCHEMA> | SerializedResource<TABLE_SCHEMA>>
@@ -364,9 +364,9 @@ export const ResourceBase = Backbone.Model.extend({
     const newValue = value ?? undefined;
     const oldValue =
       typeof key === 'string'
-        ? this.attributes[key.toLowerCase()] ??
+        ? (this.attributes[key.toLowerCase()] ??
           this.dependentResources[key.toLowerCase()] ??
-          undefined
+          undefined)
         : undefined;
     // Don't needlessly trigger unload protect if value didn't change
     if (
@@ -464,12 +464,12 @@ export const ResourceBase = Backbone.Model.extend({
       value = _.isString(value)
         ? this._handleUri(value, fieldName)
         : typeof value === 'number'
-        ? this._handleUri(
-            // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-            getResourceApiUrl(field.table.name, value),
-            fieldName
-          )
-        : this._handleInlineDataOrResource(value, fieldName);
+          ? this._handleUri(
+              // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+              getResourceApiUrl(field.table.name, value),
+              fieldName
+            )
+          : this._handleInlineDataOrResource(value, fieldName);
     }
     return [fieldName, value];
   },
@@ -636,7 +636,8 @@ export const ResourceBase = Backbone.Model.extend({
          * or collection
          */
         if (options.prePop) {
-          if (!value) return value; // Ok if the related resource doesn't exist
+          if (!value)
+            return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
           /*
@@ -906,8 +907,8 @@ export const ResourceBase = Backbone.Model.extend({
           json[fieldName] = isRelationshipCollection(related)
             ? related.toApiJSON(options)
             : related.isNew() || related.needsSaved
-            ? related.toJSON(options)
-            : related.url();
+              ? related.toJSON(options)
+              : related.url();
         }
       }
     );

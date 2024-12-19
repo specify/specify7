@@ -27,7 +27,7 @@ export function useCollection<SCHEMA extends AnySchema>({
   ...GetOrSet<Collection<SCHEMA> | false | undefined>,
   (
     filters?: CollectionFetchFilters<SCHEMA>
-  ) => Promise<Collection<SCHEMA> | undefined>
+  ) => Promise<Collection<SCHEMA> | undefined>,
 ] {
   const [collection, setCollection] = useAsyncState<
     Collection<SCHEMA> | false | undefined

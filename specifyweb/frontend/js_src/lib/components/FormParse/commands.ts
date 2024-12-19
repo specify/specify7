@@ -57,8 +57,8 @@ const processUiCommand: {
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
       : table.name === 'Loan'
-      ? { type: 'ReturnLoan' }
-      : { type: 'WrongTable', supportedTables: ['Loan'] },
+        ? { type: 'ReturnLoan' }
+        : { type: 'WrongTable', supportedTables: ['Loan'] },
   Unsupported: ({ name }) => {
     console.error(`Unsupported command: ${name ?? '(null)'}`);
     return { type: 'Unsupported', name };

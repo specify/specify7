@@ -85,7 +85,7 @@ export function parseQueryFields(
                 .map((parsed) =>
                   parsed?.isValid
                     ? (parsed.parsed as string)
-                    : field.startValue ?? ''
+                    : (field.startValue ?? '')
                 )
                 .join(',')
             : field.startValue;
@@ -164,8 +164,8 @@ export const augmentQueryFields = (
   isDistinct
     ? fields
     : baseTableName === 'SpAuditLog'
-    ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields);
+      ? addQueryFields(fields, auditLogMappingPaths, true)
+      : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -220,7 +220,7 @@ const addQueryFields = (
               isStrict: false,
             },
           ],
-        } as const)
+        }) as const
     ),
 ];
 
@@ -336,7 +336,7 @@ export const unParseQueryFields = (
                */
               isDisplay: commonData.isDisplay && index === 0,
               // REFACTOR: add missing nullable fields here
-            } as unknown as SerializedResource<SpQueryField>)
+            }) as unknown as SerializedResource<SpQueryField>
         );
     }
   );

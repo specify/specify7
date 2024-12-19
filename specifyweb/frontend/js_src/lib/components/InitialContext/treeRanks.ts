@@ -100,7 +100,7 @@ export const treeRanksPromise = Promise.all([
 
 function getTreeScope(
   treeName: AnyTree['tableName']
-): keyof typeof schema['domainLevelIds'] | undefined {
+): keyof (typeof schema)['domainLevelIds'] | undefined {
   const treeRelationships = new Set(
     genericTables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
       relatedTable.name.toLowerCase()
@@ -149,16 +149,16 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   return specificTreeDefinitions === undefined
     ? undefined
     : typeof treeDefinitionId === 'number'
-    ? specificTreeDefinitions
-        .find(({ definition }) => definition.id === treeDefinitionId)
-        ?.ranks.slice(includeRoot ? 0 : 1)
-    : specificTreeDefinitions.flatMap(({ ranks }) =>
-        ranks.slice(includeRoot ? 0 : 1)
-      );
+      ? specificTreeDefinitions
+          .find(({ definition }) => definition.id === treeDefinitionId)
+          ?.ranks.slice(includeRoot ? 0 : 1)
+      : specificTreeDefinitions.flatMap(({ ranks }) =>
+          ranks.slice(includeRoot ? 0 : 1)
+        );
 }
 
 export const strictGetTreeDefinitionItems = <
-  TREE_NAME extends AnyTree['tableName']
+  TREE_NAME extends AnyTree['tableName'],
 >(
   tableName: TREE_NAME,
   includeRoot: boolean,

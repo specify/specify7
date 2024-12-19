@@ -1,14 +1,17 @@
 import re
 
 from typing import NamedTuple, List
+import logging
 
 from django.db.models import Q
 from django.apps import apps
 
-from specifyweb.specify.load_datamodel import Table
+from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models import (
     datamodel,
 )
+
+logger = logging.getLogger(__name__)
 
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
@@ -62,9 +65,13 @@ def update_table_schema_config_with_defaults(
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+
     table_config = TableSchemaConfig(
         name=table.name,
         discipline_id=discipline_id,
@@ -74,7 +81,7 @@ def update_table_schema_config_with_defaults(
     )
 
     # Create Splocalecontainer for the table
-    sp_local_container = Splocalecontainer.objects.create(
+    sp_local_container, _ = Splocalecontainer.objects.get_or_create(
         name=table_config.name.lower(),
         discipline_id=discipline_id,
         schematype=table_config.schema_type,
@@ -91,38 +98,13 @@ def update_table_schema_config_with_defaults(
             'version': 0,
         }
         item_str[k] = sp_local_container
-        Splocaleitemstr.objects.create(**item_str)
+        Splocaleitemstr.objects.get_or_create(**item_str)
 
     for field in table.all_fields:
-        # Create Splocalecontaineritem for each field
-        sp_local_container_item = Splocalecontaineritem.objects.create(
-            name=field.name,
-            container=sp_local_container,
-            type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
-            ishidden=field.name.lower() in HIDDEN_FIELDS,
-            isrequired=field.required,
-            issystem=table.system,
-            version=0,
-        )
-
-        # Splocaleitemstr for the field name and description
-        for k, text in {
-            "itemname": camel_to_spaced_title_case(field.name),
-            "itemdesc": camel_to_spaced_title_case(field.name),
-        }.items():
-            itm_str = {
-                "text": text,
-                "language": "en",
-                "version": 0,
-            }
-            itm_str[k] = sp_local_container_item
-            Splocaleitemstr.objects.create(**itm_str)
+        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps)
 
 
 def revert_table_schema_config(table_name, apps = apps):
-    table: Table = datamodel.get_table(table_name)
-    table_name = table.name
-
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -144,7 +126,12 @@ def update_table_field_schema_config_with_defaults(
     field_name: str,
     apps = apps
 ):
-    table: Table = datamodel.get_table(table_name)
+    try:
+        table: Table = datamodel.get_table_strict(table_name)
+    except TableDoesNotExistError:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+    
     table_name = table.name
     table_config = TableSchemaConfig(
         name=table_name.lower(),
@@ -157,13 +144,17 @@ def update_table_field_schema_config_with_defaults(
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    sp_local_container = Splocalecontainer.objects.get(
+    sp_local_container, _ = Splocalecontainer.objects.get_or_create(
         name=table.name.lower(),
         discipline_id=discipline_id,
         schematype=table_config.schema_type,
     )
 
-    field = table.get_field(field_name)
+    try:
+        field = table.get_field_strict(field_name)
+    except FieldDoesNotExistError:
+        logger.warning(f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}")
+        return
 
     field_config = FieldSchemaConfig(
         name=field_name,
@@ -173,7 +164,7 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
-    sp_local_container_item = Splocalecontaineritem.objects.create(
+    sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
         name=field_config.name,
         container=sp_local_container,
         type=field_config.java_type,
@@ -193,12 +184,9 @@ def update_table_field_schema_config_with_defaults(
             'version': 0,
         }
         itm_str[k] = sp_local_container_item
-        Splocaleitemstr.objects.create(**itm_str)
+        Splocaleitemstr.objects.get_or_create(**itm_str)
 
 def revert_table_field_schema_config(table_name, field_name, apps = apps):
-    table: Table = datamodel.get_table(table_name)
-    table_name = table.name
-
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')

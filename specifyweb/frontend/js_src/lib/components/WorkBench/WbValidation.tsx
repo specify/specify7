@@ -34,7 +34,7 @@ type UploadResults = {
             readonly [
               tableName: Lowercase<keyof Tables>,
               id: number,
-              alternativeLabel: string | ''
+              alternativeLabel: string | '',
             ]
           >
         >
