@@ -803,6 +803,9 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     else:
         obj.modifiedbyagent = agent
 
+    if obj._meta.model_name == 'collectionobjectgroupjoin': 
+        obj.save()
+
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
