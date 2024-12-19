@@ -28,7 +28,7 @@ export function AttachmentDatasetMeta({
   return (
     <DataSetMeta
       dataset={dataset}
-      datasetUrl="/attachment_gw/dataset/"
+      datasetVariant='bulkAttachment'
       deleteDescription={attachmentsText.deleteAttachmentDataSetDescription()}
       permissionResource="/attachment_import/dataset"
       onChange={(changed) =>
