@@ -53,6 +53,7 @@ import {
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { definePref } from './types';
+import { batchEditText } from '../../localization/batchEdit';
 
 const isLightMode = ({
   isDarkMode,
@@ -1995,6 +1996,40 @@ export const userPreferenceDefinitions = {
       },
     },
   },
+  batchEdit: {
+    title: batchEditText.batchEdit(),
+    subCategories: {
+      query: {
+        title: queryText.query(),
+        items: {
+          limit: definePref<number>({
+            title: batchEditText.numberOfRecords(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 5000,
+            type: "java.lang.Double",
+            parser: {
+              min: 0
+            }
+          })
+        }
+      },
+      editor: {
+        title: preferencesText.general(),
+        items: {
+          showRollback: definePref<boolean>({
+            title: batchEditText.showRollback(),
+            requiresReload: false,
+            defaultValue: true,
+            type: "java.lang.Boolean",
+            visible: true,
+            description: batchEditText.showRollbackDescription()
+          })
+        }
+      }
+
+    }
+  }
 } as const;
 
 // Use tree table labels as titles for the tree editor sections

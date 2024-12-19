@@ -1,0 +1,1046 @@
+{
+  "accession": [
+    "accessionAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "accessionagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "accessionattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "accessionauthorization": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "accessioncitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "address": [
+    "timestampCreated",
+    "version",
+    "isCurrent",
+    "isPrimary",
+    "timestampModified"
+  ],
+  "addressofrecord": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agent": [
+    "agentAttachments",
+    "specifyUser",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agentattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agentgeography": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agentidentifier": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agentspecialty": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "agentvariant": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "appraisal": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "attachment": [
+    "accessionAttachments",
+    "agentAttachments",
+    "borrowAttachments",
+    "collectingEventAttachments",
+    "collectingTripAttachments",
+    "collectionObjectAttachments",
+    "conservDescriptionAttachments",
+    "conservEventAttachments",
+    "deaccessionAttachments",
+    "disposalAttachments",
+    "dnaSequenceAttachments",
+    "dnaSequencingRunAttachments",
+    "exchangeInAttachments",
+    "exchangeOutAttachments",
+    "fieldNotebookAttachments",
+    "fieldNotebookPageAttachments",
+    "fieldNotebookPageSetAttachments",
+    "giftAttachments",
+    "loanAttachments",
+    "localityAttachments",
+    "permitAttachments",
+    "preparationAttachments",
+    "referenceWorkAttachments",
+    "repositoryAgreementAttachments",
+    "storageAttachments",
+    "taxonAttachments",
+    "treatmentEventAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "attachmentimageattribute": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "attachmentmetadata": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "attachmenttag": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "attributedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "author": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "autonumberingscheme": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "borrow": [
+    "borrowAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "borrowagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "borrowattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "borrowmaterial": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "borrowreturnmaterial": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingevent": [
+    "collectingEventAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingeventattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingeventattr": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingeventattribute": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingeventauthorization": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingtrip": [
+    "collectingTripAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingtripattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingtripattribute": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectingtripauthorization": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collection": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobject": [
+    "collectionObjectAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobjectattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobjectattr": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobjectattribute": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobjectcitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionobjectproperty": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionreltype": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collectionrelationship": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "collector": [
+    "timestampCreated",
+    "version",
+    "isPrimary",
+    "timestampModified"
+  ],
+  "commonnametx": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "commonnametxcitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "conservdescription": [
+    "conservDescriptionAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "conservdescriptionattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "conservevent": [
+    "conservEventAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "conserveventattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "container": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnaprimer": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnasequence": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnasequenceattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnasequencingrun": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnasequencingrunattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "dnasequencingruncitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "datatype": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "deaccession": [
+    "deaccessionAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "deaccessionagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "deaccessionattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "determination": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "isCurrent",
+    "timestampModified"
+  ],
+  "determinationcitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "determiner": [
+    "timestampCreated",
+    "version",
+    "isPrimary",
+    "timestampModified"
+  ],
+  "discipline": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "disposal": [
+    "disposalAttachments",
+    "disposalPreparations",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "disposalagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "disposalattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "disposalpreparation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "division": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangein": [
+    "exchangeInAttachments",
+    "exchangeInPreps",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangeinattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangeinprep": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangeout": [
+    "exchangeOutAttachments",
+    "exchangeOutPreps",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangeoutattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exchangeoutprep": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exsiccata": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "exsiccataitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "extractor": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebook": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebookattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebookpage": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebookpageattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebookpageset": [
+    "attachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fieldnotebookpagesetattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "fundingagent": [
+    "timestampCreated",
+    "version",
+    "isPrimary",
+    "timestampModified"
+  ],
+  "geocoorddetail": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "geography": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "isCurrent",
+    "timestampModified"
+  ],
+  "geographytreedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "geographytreedefitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "geologictimeperiod": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "geologictimeperiodtreedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "geologictimeperiodtreedefitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "gift": [
+    "giftAttachments",
+    "giftPreparations",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "giftagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "giftattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "giftpreparation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "groupperson": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "inforequest": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "institution": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "institutionnetwork": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "journal": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "latlonpolygon": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "latlonpolygonpnt": [],
+  "lithostrat": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "lithostrattreedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "lithostrattreedefitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "loan": [
+    "loanAttachments",
+    "loanPreparations",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "loanagent": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "loanattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "loanpreparation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "loanreturnpreparation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "locality": [
+    "localityAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "localityattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "localitycitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "localitydetail": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "localitynamealias": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "materialsample": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "morphbankview": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "otheridentifier": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "paleocontext": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "pcrperson": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "permit": [
+    "permitAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "permitattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "picklist": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "picklistitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preptype": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preparation": [
+    "preparationAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preparationattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preparationattr": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preparationattribute": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "preparationproperty": [
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "project": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "recordset": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "recordsetitem": [],
+  "referencework": [
+    "referenceWorkAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "referenceworkattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "repositoryagreement": [
+    "repositoryAgreementAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "repositoryagreementattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "shipment": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spappresource": [
+    "timestampCreated",
+    "version"
+  ],
+  "spappresourcedata": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spappresourcedir": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spauditlog": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spauditlogfield": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spexportschema": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spexportschemaitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spexportschemaitemmapping": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spexportschemamapping": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spfieldvaluedefault": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "splocalecontainer": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "splocalecontaineritem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "splocaleitemstr": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "sppermission": [],
+  "spprincipal": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spquery": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spqueryfield": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spreport": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spsymbiotainstance": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "sptasksemaphore": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spversion": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spviewsetobj": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spvisualquery": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "specifyuser": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "storage": [
+    "storageAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "storageattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "storagetreedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "storagetreedefitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxon": [
+    "taxonAttachments",
+    "guid",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxonattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxonattribute": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxoncitation": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxontreedef": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "taxontreedefitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "treatmentevent": [
+    "treatmentEventAttachments",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "treatmenteventattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "voucherrelationship": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "workbench": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "workbenchdataitem": [],
+  "workbenchrow": [],
+  "workbenchrowexportedrelationship": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "workbenchrowimage": [],
+  "workbenchtemplate": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "workbenchtemplatemappingitem": [
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ],
+  "spuserexternalid": [],
+  "spattachmentdataset": [
+    "timestampcreated",
+    "timestampmodified"
+  ],
+  "uniquenessrule": [],
+  "uniquenessrulefield": [],
+  "message": [
+    "timestampcreated"
+  ],
+  "spmerging": [
+    "timestampcreated",
+    "timestampmodified"
+  ],
+  "localityupdate": [
+    "timestampcreated",
+    "timestampmodified"
+  ],
+  "localityupdaterowresult": [],
+  "userpolicy": [],
+  "role": [],
+  "libraryrole": [],
+  "userrole": [],
+  "rolepolicy": [],
+  "libraryrolepolicy": [],
+  "spdataset": [
+    "timestampcreated",
+    "timestampmodified"
+  ]
+}
