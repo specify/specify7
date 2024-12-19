@@ -39,7 +39,7 @@ const treeToPref = {
 
 export function Tree<
   SCHEMA extends AnyTree,
-  TREE_NAME extends SCHEMA['tableName']
+  TREE_NAME extends SCHEMA['tableName'],
 >({
   treeDefinitionItems,
   tableName,
@@ -207,7 +207,7 @@ export function Tree<
                   }
                 >
                   {
-                    (collapsedRanks?.includes(rank.rankId) ?? false
+                    ((collapsedRanks?.includes(rank.rankId) ?? false)
                       ? rankName[0]
                       : rankName) as LocalizedString
                   }

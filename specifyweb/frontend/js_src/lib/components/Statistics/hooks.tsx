@@ -401,7 +401,7 @@ export function statsToTsv(
  *
  */
 export function useStatValueLoad<
-  PROMISE_TYPE extends number | string | undefined
+  PROMISE_TYPE extends number | string | undefined,
 >(
   value: number | string | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,

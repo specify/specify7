@@ -2,10 +2,11 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  COG_PRIMARY_KEY,
+  COG_TOITSELF,
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
-  PARENTCOG_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -27,6 +28,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Determination,
   DNASequence,
@@ -113,8 +115,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? returned > quantity
               ? quantity
               : returned > resolved
-              ? resolved
-              : returned
+                ? resolved
+                : returned
             : undefined;
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
@@ -133,8 +135,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? resolved > quantity
               ? quantity
               : resolved < returned
-              ? returned
-              : resolved
+                ? returned
+                : resolved
             : undefined;
 
         if (typeof adjustedResolved === 'number')
@@ -208,34 +210,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   CollectionObjectGroup: {
     fieldChecks: {
       cogType: (cog): void => {
-        // The first COJO CO will automatically have isPrimary set to True when the COG type is 'consolidated'
+        // Consolidated COGs need to have a primary CO child. If not, save will be blocked
         cog.rgetPromise('cogType').then((cogtype) => {
           if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
-            const cojos = cog.getDependentResource('children');
-            // Set first CO in COG to primary
-            cojos?.models
-              .find(
-                (cojo) =>
-                  cojo.get('childCo') !== null &&
-                  cojo.get('childCo') !== undefined
-              )
-              ?.set('isPrimary', true);
-          }
-        });
-      },
-      parentCog: async (cog): Promise<BusinessRuleResult> => {
-        if (cog.url() === cog.get('parentCog')) {
-          return {
-            isValid: false,
-            reason: resourcesText.parentCogSameAsChild(),
-            saveBlockerKey: PARENTCOG_KEY,
-          };
-        }
+            const children = cog.getDependentResource('children');
+            const collectionObjectChildren =
+              children?.models.filter(
+                (child) => typeof child.get('childCo') === 'string'
+              ) ?? [];
 
-        return {
-          isValid: true,
-          saveBlockerKey: PARENTCOG_KEY,
-        };
+            if (
+              collectionObjectChildren.length > 0 &&
+              !collectionObjectChildren.some((cojo) => cojo.get('isPrimary'))
+            ) {
+              setSaveBlockers(
+                cog,
+                tables.CollectionObjectGroupJoin.field.isPrimary,
+                [resourcesText.primaryCogChildRequired()],
+                COG_PRIMARY_KEY
+              );
+              return;
+            }
+          }
+          setSaveBlockers(
+            cog,
+            tables.CollectionObjectGroupJoin.field.isPrimary,
+            [],
+            COG_PRIMARY_KEY
+          );
+        });
       },
     },
   },
@@ -248,6 +251,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        */
       isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
+
+        // Trigger Consolidated COGs field check when isPrimary changes
+        if (
+          cojo.collection?.related?.specifyTable ===
+          tables.CollectionObjectGroup
+        ) {
+          const cog = cojo.collection
+            .related as SpecifyResource<CollectionObjectGroup>;
+          cog.businessRuleManager?.checkField('cogType');
+        }
       },
       /*
        * Only a single CO in a COG can be set as substrate.
@@ -256,6 +269,52 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
         ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
       },
+      parentCog: async (cojo): Promise<BusinessRuleResult> => {
+        if (
+          cojo.get('childCog') === cojo.get('parentCog') &&
+          typeof cojo.get('childCog') === 'string' &&
+          typeof cojo.get('parentCog') === 'string'
+        ) {
+          return {
+            isValid: false,
+            reason: resourcesText.cogAddedToItself(),
+            saveBlockerKey: COG_TOITSELF,
+          };
+        }
+        return {
+          isValid: true,
+          saveBlockerKey: COG_TOITSELF,
+        };
+      },
+    },
+    onAdded: (cojo, collection) => {
+      if (
+        cojo.get('childCog') === cojo.get('parentCog') &&
+        typeof cojo.get('childCog') === 'string' &&
+        typeof cojo.get('parentCog') === 'string'
+      ) {
+        setSaveBlockers(
+          cojo,
+          cojo.specifyTable.field.childCog,
+          [resourcesText.cogAddedToItself()],
+          COG_TOITSELF
+        );
+      }
+
+      // Trigger Consolidated COGs field check when a child is added
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
+    },
+    onRemoved(_, collection) {
+      // Trigger Consolidated COGs field check when a child is deleted
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
     },
   },
 

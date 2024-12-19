@@ -195,8 +195,8 @@ const processFieldType: {
           name === 'name'
             ? 'PartialDateUI'
             : name === 'canChangePrecision'
-            ? 'false'
-            : getProperty(name),
+              ? 'false'
+              : getProperty(name),
       });
     else if (fieldType === 'checkbox') return processFieldType.Checkbox(props);
 

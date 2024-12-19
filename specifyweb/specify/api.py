@@ -2,6 +2,7 @@
 Implements the RESTful business data API
 """
 
+from calendar import c
 import json
 import logging
 import re
@@ -10,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
+
+from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
 logger = logging.getLogger(__name__)
 
@@ -489,6 +492,8 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
+    _handle_special_save_priors(obj)
+
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
@@ -798,6 +803,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
         obj.modifiedbyagent = agent
 
     bump_version(obj, version)
+    _handle_special_update_priors(obj, data)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
@@ -871,7 +877,8 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
 
     data = dict((field.name, field_to_val(obj, field, perm_checker))
                 for field in fields
-                if not (field.auto_created or field.one_to_many or field.many_to_many))
+                # if not (field.auto_created or field.one_to_many or field.many_to_many))
+                if not (field.one_to_many or field.many_to_many))
     # Get *-to-many fields.
     data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro, perm_checker))
                      for ro in obj._meta.get_fields()
@@ -901,16 +908,16 @@ def field_to_val(obj, field, checker: ReadPermChecker) -> Any:
     """Return the value or nested data or URI for the given field which should
     be either a regular field or a *-to-one field.
     """
-    if field.many_to_one or (field.one_to_one and not field.auto_created):
+    if field.many_to_one or field.one_to_one:
         if is_dependent_field(obj, field.name):
-            related_obj = getattr(obj, field.name)
+            related_obj = getattr(obj, field.name, None)
             if related_obj is None: return None
             return _obj_to_data(related_obj, checker)
         related_id = getattr(obj, field.name + '_id')
         if related_id is None: return None
         return uri_for_model(field.related_model, related_id)
     else:
-        return getattr(obj, field.name)
+        return getattr(obj, field.name, None)
 
 CollectionPayloadMeta = TypedDict('CollectionPayloadMeta', {
     'limit': int,
@@ -1057,3 +1064,20 @@ def rows(request, model_name: str) -> HttpResponse:
 
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
+
+def _save_cojo_prior(obj):
+    """
+    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
+    """
+    if obj._meta.model_name in {'collectionobject', 'collectionobjectgroup'} and hasattr(obj, 'cojo'):
+        obj.cojo.save()
+
+def _handle_special_save_priors(obj):
+    """
+    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
+    """
+    _save_cojo_prior(obj)
+
+def _handle_special_update_priors(obj, data):
+    data = modify_update_of_interaction_sibling_preps(obj, data)
+    pass

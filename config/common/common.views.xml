@@ -952,8 +952,17 @@
 		<view name="CollectionObjectGroupJoin_GridView" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
 			<desc>The Collection Object Group Join form.</desc>
 			<altviews>
-				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin (2)" mode="view" default="true"/>
-				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin (2)" mode="edit"/>
+				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin_GridView" mode="view" default="true"/>
+				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin_GridView" mode="edit"/>
+			</altviews>
+		</view>
+		<view name="CollectionObjectGroupJoin_Sub" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectGroupJoinBusRules" resourcelabels="false">
+			<desc>The Collection Object Group Join form.</desc>
+			<altviews>
+				<altview name="CollectionObjectGroupJoin View" viewdef="CollectionObjectGroupJoin_Sub" mode="view" default="true"/>
+				<altview name="CollectionObjectGroupJoin Edit" viewdef="CollectionObjectGroupJoin_Sub" mode="edit"/>
+				<altview name="CollectionObjectGroupJoin Table View" viewdef="CollectionObjectGroupJoin_Sub Table" mode="view" validated="false"/>
+				<altview name="CollectionObjectGroupJoin Table Edit" viewdef="CollectionObjectGroupJoin_Sub Table" mode="edit" validated="false"/>
 			</altviews>
 		</view>
 	</views>
@@ -1920,11 +1929,12 @@
 					<cell type="field" id="name" name="name" uitype="text"/>
 					<cell type="label" labelfor="cogType"/>
 					<cell type="field" id="cogType" name="cogType" uitype="combobox"/>
-					<cell type="label" label="Parent COG"/>
-					<cell type="field" id="parentCojo" name="parentCog" uitype="querycbx"/>
 				</row>
 				<row>
-					<cell type="subview" id="cojo" name="children" uitype="subview" defaulttype="table" colspan="13"/>
+					<cell type="subview" viewname="CollectionObjectGroupJoin_Sub" id="cog_cog_join" name="cojo" colspan="14"/>
+				</row>
+				<row>
+					<cell type="subview" id="cojo" name="children" uitype="subview" initialize="sortfield=-isPrimary" defaulttype="table" colspan="13"/>
 				</row>
 			</rows>
 		</viewdef>
@@ -2083,10 +2093,12 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="taxontreedef" uitype="querycbx" isrequired="true"/>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="taxontreedef" uitype="querycbx" isrequired="true"/>
 				</row>
 			</rows>
 		</viewdef>
@@ -6901,7 +6913,7 @@
 				</row>
 				<row>
 					<cell type="label" label="Catalog Number Format Name" initialize="align=right"/>
-					<cell type="field" id="4" name="catalogNumFormatName" uitype="text" readonly="true"/>
+					<cell type="field" id="4" name="catalogNumFormatName" uitype="text" readonly="false"/>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="code" uitype="text" isrequired="false"/>
 				</row>
@@ -7033,6 +7045,14 @@
 					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" uifieldformatter="Date"/>
 				</row>
 				<row>
+					<cell type="label" labelfor="21"/>
+					<cell type="field" id="21" name="collectingEvent" uitype="querycbx" colspan="12"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="43"/>
+					<cell type="field" id="43" name="paleoContext" uitype="querycbx" colspan="12"/>
+				</row>
+				<row>
 					<cell type="separator" label="Collection Object Metadata" colspan="18"/>
 				</row>
 				<row>
@@ -7044,7 +7064,7 @@
 								<cell type="panel" colspan="3">
 									<row>
 										<cell type="label" label="Collection Object Attributes"/>
-										<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MineralAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
+										<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="AllAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
 									</row>
 									<rows condition="text8=Mineral">
 										<row>
@@ -7071,8 +7091,8 @@
 										</row>
 									</rows>
 								</cell>
-								<cell type="label" label="Collecting Event"/>
-								<cell type="subview" viewname="CollectingEventSub" id="21" name="collectingEvent" initialize="btn=true;align=left;verticalAlign=center" colspan="1" rows="5"/>
+								<!-- 						<cell type="label" label="Collecting Event"/>
+						<cell type="subview" viewname="CollectingEventSub" id="21" name="collectingEvent" initialize="btn=true;align=left;verticalAlign=center" colspan="1" rows="5"/> -->
 								<cell type="label" label="Geologic Context"/>
 								<cell type="subview" uitype="querycbx" id="pcsh" name="paleoContext" initialize="name=PaleoContext;btn=true;align=left;verticalAlign=center" colspan="1"/>
 								<cell type="label" label="Relative Ages"/>
@@ -7171,9 +7191,9 @@
 		</viewdef>
 		<viewdef name="CollectionObjectGroupJoin Table" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form Grid View</desc>
-			<definition>CollectionObjectGroupJoin (2)</definition>
+			<definition>CollectionObjectGroupJoin_GridView</definition>
 		</viewdef>
-		<viewdef name="CollectionObjectGroupJoin (2)" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+		<viewdef name="CollectionObjectGroupJoin_GridView" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object Group Join Form</desc>
 			<enableRules/>
 			<columnDef>50px,2px,30px,5px,50px,2px,30px,5px,50px,2px,100px,0px,50px,2px,100px,p:g</columnDef>
@@ -7181,9 +7201,9 @@
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false"/>
+					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false" readonly="true"/>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false"/>
+					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false" readonly="true"/>
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" name="childCo" uitype="querycbx" readonly="true" colspan="3"/>
 					<!-- Collection Object Details -->
@@ -7202,6 +7222,26 @@
 					<cell type="field" id="typeOfGroup" name="childCog.COGType.Name" uitype="text" readonly="true"/>
 				</row>
 			</rows>
+		</viewdef>
+		<viewdef name="CollectionObjectGroupJoin_Sub" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Join Form</desc>
+			<enableRules/>
+			<columnDef>70px,2px,30px,5px,70px,2px,30px,2px,70px,2px,500px,,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="isPrimary" uitype="checkbox" default="false" readonly="true"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="isSubstrate" uitype="checkbox" default="false" readonly="true"/>
+					<cell type="label" labelfor="5"/>
+					<cell type="field" id="5" name="parentCog" uitype="querycbx" colspan="3"/>
+				</row>
+			</rows>
+		</viewdef>
+		<viewdef name="CollectionObjectGroupJoin_Sub Table" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object Group Join Form Grid View</desc>
+			<definition>CollectionObjectGroupJoin_GridView</definition>
 		</viewdef>
 	</viewdefs>
 </viewset>

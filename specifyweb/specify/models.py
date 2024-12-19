@@ -7505,6 +7505,7 @@ class Collectionobjecttype(models.Model):
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    catalognumberformatname = models.CharField(blank=True, null=True, max_length=255, unique=False, db_column='CatalogNumberFormatName', db_index=False)
     
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cotypes', null=False, on_delete=protect_with_blockers)
@@ -7574,7 +7575,6 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCogID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectgroup'

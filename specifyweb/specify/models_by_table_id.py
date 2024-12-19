@@ -479,6 +479,12 @@ def get_model_by_table_id(tableid):
     if callable(model):
         model = model()
     return model
+    
+def get_table_id_by_model_name(model_name):
+    for tableid, name in model_names_by_table_id.items():
+        if name == model_name:
+            return tableid
+    raise ValueError(f"Model {model_name} not found in model_names_by_table_id")
 
 def models_iterator():
     for tableid, _ in model_names_by_table_id.items():

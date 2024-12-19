@@ -58,12 +58,14 @@ export function RecordSetsDialog({
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = defaultRenderer,
+  collectionObjectGroupResourceTableId,
 }: {
   readonly onClose: () => void;
   readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: Renderer;
+  readonly collectionObjectGroupResourceTableId?: number;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
     | State<'CreateState'>
@@ -100,6 +102,38 @@ export function RecordSetsDialog({
     ),
     false
   );
+
+  const [collectionObjectGroupData] = useAsyncState(
+    React.useCallback(
+      /**
+       * DomainFilter does filter for tables that are
+       * scoped using the collectionMemberId field
+       */
+      async () =>
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          limit,
+          domainFilter: true,
+          orderBy,
+          offset,
+          dbTableId: collectionObjectGroupResourceTableId,
+          collectionMemberId: schema.domainLevelIds.collection,
+        }),
+      [collectionObjectGroupResourceTableId, limit, offset, orderBy]
+    ),
+    false
+  );
+
+  const concatenatedRecordSets = [
+    ...(data?.records ?? []),
+    ...(collectionObjectGroupData?.records ?? []),
+  ];
+
+  const RSToUse =
+    typeof collectionObjectGroupResourceTableId === 'number'
+      ? concatenatedRecordSets
+      : data?.records;
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
   totalCountRef.current = data?.totalCount ?? totalCountRef.current;
@@ -140,7 +174,7 @@ export function RecordSetsDialog({
               </tr>
             </thead>
             <tbody>
-              {data?.records.map((recordSet) => (
+              {RSToUse?.map((recordSet) => (
                 <Row
                   key={recordSet.id}
                   recordSet={recordSet}

@@ -209,9 +209,8 @@ describe('rgetCollection', () => {
       id: collectionObjectId,
     });
     const firstDeterminations = await resource.rgetCollection('determinations');
-    const secondDeterminations = await resource.rgetCollection(
-      'determinations'
-    );
+    const secondDeterminations =
+      await resource.rgetCollection('determinations');
     expect(firstDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(secondDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(firstDeterminations).toBe(secondDeterminations);
@@ -412,9 +411,8 @@ describe('placeInSameHierarchy', () => {
       id: 5,
     });
     const locality = new tables.Locality.Resource();
-    const hierarchyResource = await locality.placeInSameHierarchy(
-      collectionObject
-    );
+    const hierarchyResource =
+      await locality.placeInSameHierarchy(collectionObject);
     expect(hierarchyResource?.url()).toBe(getResourceApiUrl('Discipline', 3));
     expect(locality.get('discipline')).toBe(getResourceApiUrl('Discipline', 3));
   });
