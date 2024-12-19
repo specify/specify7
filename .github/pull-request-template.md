@@ -1,7 +1,8 @@
 Fixes #
 
 <!--
-⚠️ **Note:** This PR affects database migrations. See [migration testing instructions](https://specify.github.io/testing/pull_requests.html#prs-tagged-with-label-migration).
+> [!WARNING]  
+> This PR affects database migrations. See [migration testing instructions](https://specify.github.io/testing/pull_requests.html#prs-tagged-with-label-migration).
 -->
 
 ### Checklist
