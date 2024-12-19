@@ -238,6 +238,11 @@ export function InteractionDialog({
     );
   };
 
+  const collectionObjectGroupResourceTableId = React.useMemo(
+    () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
+    []
+  );
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -293,6 +298,9 @@ export function InteractionDialog({
   ) : (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
+        collectionObjectGroupResourceTableId={
+          collectionObjectGroupResourceTableId
+        }
         table={itemTable}
         onClose={handleClose}
         onSelect={handleProceed}
