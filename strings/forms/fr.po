@@ -186,8 +186,8 @@ msgstr ""
 "{pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:235
-#: components/FormCells/FormTable.tsx:560
+#: components/FormCells/FormTable.tsx:237
+#: components/FormCells/FormTable.tsx:563
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy

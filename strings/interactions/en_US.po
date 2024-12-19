@@ -20,61 +20,61 @@ msgstr ""
 msgid "interactions"
 msgstr "Interactions"
 
-#: components/Interactions/InteractionDialog.tsx:335
-#: components/Interactions/PrepDialog.tsx:114
+#: components/Interactions/InteractionDialog.tsx:343
+#: components/Interactions/PrepDialog.tsx:133
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Add Items"
 
-#: components/Interactions/InteractionDialog.tsx:337
+#: components/Interactions/InteractionDialog.tsx:345
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "{table:string} Return"
 
-#: components/Interactions/InteractionDialog.tsx:385
+#: components/Interactions/InteractionDialog.tsx:393
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "No preparations were found for the following records:"
 
-#: components/Interactions/InteractionDialog.tsx:394
+#: components/Interactions/InteractionDialog.tsx:402
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""
 "No preparations are available for at least one type of preparation in the "
 "following records:"
 
-#: components/Interactions/InteractionDialog.tsx:375
+#: components/Interactions/InteractionDialog.tsx:383
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "There are problems with the entry:"
 
-#: components/Interactions/InteractionDialog.tsx:344
+#: components/Interactions/InteractionDialog.tsx:352
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
 msgstr "By choosing a recordset ({{count:none | one | ??}} available)"
 
-#: components/Interactions/InteractionDialog.tsx:350
+#: components/Interactions/InteractionDialog.tsx:358
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "By entering {fieldName:string}s"
 
-#: components/Interactions/InteractionDialog.tsx:315
+#: components/Interactions/InteractionDialog.tsx:323
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Without preparations"
 
-#: components/Interactions/InteractionDialog.tsx:275
-#: components/Interactions/InteractionDialog.tsx:279
+#: components/Interactions/InteractionDialog.tsx:280
+#: components/Interactions/InteractionDialog.tsx:284
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "continueWithoutPreparations"
 msgstr "Continue without preparations"
 
-#: components/Interactions/InteractionDialog.tsx:311
+#: components/Interactions/InteractionDialog.tsx:319
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Add unassociated item"
 
-#: components/Interactions/PrepDialog.tsx:125
+#: components/Interactions/PrepDialog.tsx:144
 #. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
 msgstr "Preparations"
@@ -116,15 +116,15 @@ msgstr "Return all preparations"
 msgid "returnSelectedPreparations"
 msgstr "Return selected preparations"
 
-#: components/Interactions/PrepDialog.tsx:96
+#: components/Interactions/PrepDialog.tsx:115
 #. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
 msgstr "Select all available preparations"
 
 #: components/FormMeta/CarryForward.tsx:306
 #: components/Interactions/LoanReturn.tsx:176
-#: components/Interactions/PrepDialog.tsx:101
-#: components/Interactions/PrepDialog.tsx:196
+#: components/Interactions/PrepDialog.tsx:120
+#: components/Interactions/PrepDialog.tsx:239
 #: components/Interactions/PrepDialogRow.tsx:64
 #: components/Interactions/PrepDialogRow.tsx:66
 #: components/Interactions/PrepReturnRow.tsx:80
@@ -137,8 +137,8 @@ msgstr "Select All"
 #: components/Interactions/LoanReturn.tsx:264
 #: components/Interactions/LoanReturn.tsx:274
 #: components/Interactions/LoanReturn.tsx:278
-#: components/Interactions/PrepDialog.tsx:131
-#: components/Interactions/PrepDialog.tsx:135
+#: components/Interactions/PrepDialog.tsx:150
+#: components/Interactions/PrepDialog.tsx:154
 #: components/Interactions/PrepDialogRow.tsx:91
 #: components/Interactions/PrepDialogRow.tsx:94
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
@@ -187,13 +187,13 @@ msgstr "{exhangeInTable:string} / {exhangeOutTable:string} records"
 msgid "unCataloged"
 msgstr "uncataloged"
 
-#: components/Interactions/InteractionDialog.tsx:244
-#: components/Interactions/InteractionDialog.tsx:285
+#: components/Interactions/InteractionDialog.tsx:249
+#: components/Interactions/InteractionDialog.tsx:290
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedPreparations"
 msgstr "Returned {tablePreparation:string} records"
 
-#: components/Interactions/InteractionDialog.tsx:249
+#: components/Interactions/InteractionDialog.tsx:254
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedAndSaved"
 msgstr ""
@@ -202,18 +202,18 @@ msgstr ""
 
 #: components/FormMeta/CarryForward.tsx:327
 #: components/Interactions/LoanReturn.tsx:191
-#: components/Interactions/PrepDialog.tsx:108
+#: components/Interactions/PrepDialog.tsx:127
 #: components/QueryBuilder/Results.tsx:211
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Deselect all"
 
-#: components/Interactions/PrepDialog.tsx:208
+#: components/Interactions/PrepDialog.tsx:251
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Available"
 
-#: components/Interactions/PrepDialog.tsx:209
+#: components/Interactions/PrepDialog.tsx:252
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Unavailable"
@@ -224,18 +224,18 @@ msgstr "Unavailable"
 msgid "returnLoan"
 msgstr "Return {tableLoan:string} records"
 
-#: components/Interactions/InteractionDialog.tsx:338
-#: components/Interactions/PrepDialog.tsx:115
+#: components/Interactions/InteractionDialog.tsx:346
+#: components/Interactions/PrepDialog.tsx:134
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
 msgstr "Create {table:string}"
 
-#: components/Interactions/InteractionDialog.tsx:290
+#: components/Interactions/InteractionDialog.tsx:295
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "noPreparationsWarning"
 msgstr "None of these objects have preparations. Would you like to continue?"
 
-#: components/Interactions/InteractionDialog.tsx:327
+#: components/Interactions/InteractionDialog.tsx:335
 #: components/TreeView/AddRank.tsx:62
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 msgid "continue"

@@ -41,10 +41,10 @@ msgstr ""
 #: components/Forms/ResourceView.tsx:348
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:267
+#: components/Interactions/InteractionDialog.tsx:272
 #: components/Interactions/InteractionsDialog.tsx:56
 #: components/Interactions/LoanReturn.tsx:161
-#: components/Interactions/PrepDialog.tsx:93
+#: components/Interactions/PrepDialog.tsx:112
 #: components/LocalityUpdate/Status.tsx:142
 #: components/LocalityUpdate/Status.tsx:188
 #: components/Merging/Status.tsx:119
@@ -77,8 +77,8 @@ msgstr ""
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
-#: components/Toolbar/RecordSets.tsx:181
-#: components/Toolbar/RecordSets.tsx:220
+#: components/Toolbar/RecordSets.tsx:215
+#: components/Toolbar/RecordSets.tsx:254
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:402
@@ -168,7 +168,7 @@ msgstr ""
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:531
+#: components/FormCells/FormTable.tsx:534
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -203,10 +203,10 @@ msgstr ""
 #: components/Forms/Save.tsx:382
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:243
-#: components/Interactions/InteractionDialog.tsx:330
+#: components/Interactions/InteractionDialog.tsx:248
+#: components/Interactions/InteractionDialog.tsx:338
 #: components/Interactions/LoanReturn.tsx:71
-#: components/Interactions/PrepDialog.tsx:90
+#: components/Interactions/PrepDialog.tsx:109
 #: components/Leaflet/Map.tsx:103
 #: components/LocalityUpdate/Status.tsx:153
 #: components/LocalityUpdate/Status.tsx:222
@@ -281,7 +281,7 @@ msgstr ""
 
 #: components/DataEntryTables/Edit.tsx:47
 #: components/Interactions/LoanReturn.tsx:197
-#: components/Interactions/PrepDialog.tsx:120
+#: components/Interactions/PrepDialog.tsx:139
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:423
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -299,7 +299,7 @@ msgid "applyAll"
 msgstr ""
 
 #: components/Interactions/LoanReturn.tsx:180
-#: components/Interactions/PrepDialog.tsx:105
+#: components/Interactions/PrepDialog.tsx:124
 #: components/Notifications/Notifications.tsx:85
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 #, fuzzy
@@ -393,7 +393,7 @@ msgid "delete"
 msgstr ""
 
 #: components/Attachments/Dialog.tsx:113
-#: components/Interactions/InteractionDialog.tsx:370
+#: components/Interactions/InteractionDialog.tsx:378
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 #, fuzzy
@@ -424,7 +424,7 @@ msgstr ""
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:233
+#: components/FormCells/FormTable.tsx:235
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:82
@@ -498,8 +498,8 @@ msgstr ""
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:155
 #: components/ExportFeed/Editor.tsx:157
-#: components/FormCells/FormTable.tsx:452
-#: components/FormCells/FormTable.tsx:463
+#: components/FormCells/FormTable.tsx:454
+#: components/FormCells/FormTable.tsx:466
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
@@ -564,7 +564,7 @@ msgstr ""
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
-#: components/Toolbar/RecordSets.tsx:186
+#: components/Toolbar/RecordSets.tsx:220
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "new"
@@ -588,7 +588,7 @@ msgstr ""
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:609
-#: components/Toolbar/RecordSets.tsx:286
+#: components/Toolbar/RecordSets.tsx:320
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:121
@@ -625,7 +625,7 @@ msgid "end"
 msgstr ""
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:369
+#: components/Interactions/InteractionDialog.tsx:377
 #: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
@@ -673,8 +673,8 @@ msgstr ""
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:209
-#: components/FormCells/FormTable.tsx:437
-#: components/FormCells/FormTable.tsx:440
+#: components/FormCells/FormTable.tsx:439
+#: components/FormCells/FormTable.tsx:442
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #, fuzzy
 msgid "openInNewTab"
@@ -689,7 +689,7 @@ msgstr ""
 msgid "goToHomepage"
 msgstr ""
 
-#: components/FormCells/FormTable.tsx:310
+#: components/FormCells/FormTable.tsx:312
 #: components/QueryBuilder/Edit.tsx:94
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #, fuzzy
@@ -725,20 +725,20 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:136
 #: components/SearchDialog/SelectRecordSet.tsx:98
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:194
-#: components/Toolbar/RecordSets.tsx:221
+#: components/Toolbar/RecordSets.tsx:228
+#: components/Toolbar/RecordSets.tsx:255
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "recordSets"
 msgstr ""
 
-#: components/Toolbar/RecordSets.tsx:276
+#: components/Toolbar/RecordSets.tsx:310
 #. Used in: Components > Toolbar > Record Sets
 #, fuzzy
 msgid "recordCount"
 msgstr ""
 
-#: components/Toolbar/RecordSets.tsx:138
+#: components/Toolbar/RecordSets.tsx:172
 #. Used in: Components > Toolbar > Record Sets
 #, fuzzy
 msgid "size"
@@ -918,16 +918,16 @@ msgstr ""
 msgid "copyToClipboard"
 msgstr ""
 
-#: components/Interactions/PrepDialog.tsx:207
+#: components/Interactions/PrepDialog.tsx:250
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "selected"
 msgstr ""
 
-#: components/FormCells/FormTable.tsx:265
-#: components/FormCells/FormTable.tsx:361
+#: components/FormCells/FormTable.tsx:267
 #: components/FormCells/FormTable.tsx:363
+#: components/FormCells/FormTable.tsx:365
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
@@ -943,8 +943,8 @@ msgstr ""
 msgid "expandAll"
 msgstr ""
 
-#: components/FormCells/FormTable.tsx:321
 #: components/FormCells/FormTable.tsx:323
+#: components/FormCells/FormTable.tsx:325
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
@@ -1000,14 +1000,14 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:122
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
-#: components/FormCells/FormTable.tsx:155
+#: components/FormCells/FormTable.tsx:157
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
 #: components/Forms/DeleteBlocked.tsx:93
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:220
-#: components/Toolbar/RecordSets.tsx:193
+#: components/Toolbar/RecordSets.tsx:227
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Actions > Wb Validate
@@ -1088,7 +1088,7 @@ msgstr ""
 msgid "jsxColonLine"
 msgstr ""
 
-#: components/Interactions/PrepDialog.tsx:129
+#: components/Interactions/PrepDialog.tsx:148
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "bulkSelect"
