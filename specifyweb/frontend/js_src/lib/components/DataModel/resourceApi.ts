@@ -558,9 +558,11 @@ export const ResourceBase = Backbone.Model.extend({
       /*
        * Needed for taxonTreeDef on discipline because field.isVirtual equals false
        */
-      // case 'one-to-one': {
-      //   return value;
-      // }
+      /*
+       * Case 'one-to-one': {
+       *   return value;
+       * }
+       */
       case 'one-to-one': {
         if (!value) {
           if (field.isDependent()) this.storeDependent(field, null);
