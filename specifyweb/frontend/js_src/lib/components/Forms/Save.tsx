@@ -269,25 +269,26 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                   carryForwardAmount > 1
                   ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
                       const formatter =
-                        tables.CollectionObject.strictGetLiteralField(
-                          'catalogNumber'
-                        ).getUiFormatter()!;
-                      const wildCard = formatter.valueOrWild();
-
-                      const clonePromises = Array.from(
-                        { length: carryForwardAmount },
-                        async () => {
-                          const clonedResource = await resource.clone(
-                            false,
-                            true
-                          );
+                      tables.CollectionObject.strictGetLiteralField(
+                        'catalogNumber'
+                      ).getUiFormatter()!;
+                    const wildCard =formatter === undefined ? null : formatter.valueOrWild();
+                    const clonePromises = Array.from(
+                      { length: carryForwardAmount },
+                      async () => {
+                        const clonedResource = await resource.clone(
+                          false,
+                          true
+                        );
+                        if (wildCard !== null) {
                           clonedResource.set(
                             'catalogNumber',
                             wildCard as never
                           );
-                          return clonedResource;
                         }
-                      );
+                        return clonedResource;
+                      }
+                    );
 
                       const clones = await Promise.all(clonePromises);
 
