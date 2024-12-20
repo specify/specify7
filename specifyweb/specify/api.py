@@ -836,6 +836,8 @@ def bump_version(obj, version) -> None:
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
+        if obj._meta.model_name in {'collectionobjectgroupjoin'}:
+            return # TODO: temporary solution to allow for multiple updates to the same cojo object
         raise StaleObjectException("%s object %d is out of date" % (obj.__class__.__name__, obj.id))
     obj.version = version + 1
 
