@@ -483,13 +483,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
         model = get_model_or_404(model)
     data = cleanData(model, data, agent)
     obj = model()
-    if (
-        obj._meta.model_name == "collectionobjectgroupjoin"
-        and parent_obj._meta.model_name == "collectionobject"
-        and data["childco"] == "/api/specify/collectionobject/"
-    ):
-        parent_obj.save() # temporary fix for saving co cojo.childco
-        data['childco'] = f"{data['childco']}{parent_obj.id}/"
+    _handle_special_create_priors(obj, data, parent_obj)
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
@@ -1091,4 +1085,15 @@ def _handle_special_save_priors(obj):
 
 def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
-    pass
+
+def _save_parent_co_prior(obj, data, parent_obj):
+    if (
+        obj._meta.model_name == "collectionobjectgroupjoin"
+        and parent_obj._meta.model_name == "collectionobject"
+        and data["childco"] == "/api/specify/collectionobject/"
+    ):
+        parent_obj.save() # temporary fix for saving co cojo.childco
+        data['childco'] = f"{data['childco']}{parent_obj.id}/"
+
+def _handle_special_create_priors(obj, data, parent_obj):
+    _save_parent_co_prior(obj, data, parent_obj)
