@@ -335,7 +335,7 @@ msgstr "Speichern"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:463
+#: components/QueryBuilder/Wrapped.tsx:462
 #: components/SchemaConfig/Format.tsx:289
 #: components/SchemaConfig/Format.tsx:337
 #: components/SchemaConfig/Languages.tsx:75
@@ -436,7 +436,7 @@ msgstr "Tools"
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:646
-#: components/QueryBuilder/Formatter.tsx:59
+#: components/QueryBuilder/Formatter.tsx:148
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
 #: components/QueryComboBox/index.tsx:414
@@ -488,8 +488,8 @@ msgstr "Hochgeladen"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:296
-#: components/QueryBuilder/Line.tsx:300
+#: components/QueryBuilder/Line.tsx:303
+#: components/QueryBuilder/Line.tsx:307
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -825,8 +825,8 @@ msgid "id"
 msgstr "ID"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/Line.tsx:429
-#: components/QueryBuilder/Line.tsx:437
+#: components/QueryBuilder/Line.tsx:464
+#: components/QueryBuilder/Line.tsx:472
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 msgid "filter"
 msgstr "Filter"

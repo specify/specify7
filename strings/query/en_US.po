@@ -134,8 +134,9 @@ msgstr ""
 "download."
 
 #: components/PickLists/index.tsx:188
+#: components/QueryBuilder/Formatter.tsx:190
 #: components/SchemaConfig/Components.tsx:90
-#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
+#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
@@ -151,7 +152,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:466
+#: components/QueryBuilder/Wrapped.tsx:465
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -509,9 +510,9 @@ msgstr "Scroll to editor"
 msgid "viewRecords"
 msgstr "View records"
 
-#: components/QueryBuilder/Formatter.tsx:65
-#: components/QueryBuilder/Formatter.tsx:74
-#: components/QueryBuilder/Formatter.tsx:82
+#: components/QueryBuilder/Formatter.tsx:154
+#: components/QueryBuilder/Formatter.tsx:164
+#: components/QueryBuilder/Formatter.tsx:172
 #. Used in: Components > Query Builder > Formatter
 msgid "chooseFormatter"
 msgstr "Choose formatter"

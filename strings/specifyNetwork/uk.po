@@ -52,7 +52,7 @@ msgstr "Повідомив {provider:string}"
 msgid "collectionDate"
 msgstr "Дата збору"
 
-#: components/SpecifyNetwork/Map.tsx:222
+#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr "Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF."

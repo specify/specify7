@@ -58,7 +58,7 @@ msgstr ""
 msgid "collectionDate"
 msgstr ""
 
-#: components/SpecifyNetwork/Map.tsx:222
+#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
