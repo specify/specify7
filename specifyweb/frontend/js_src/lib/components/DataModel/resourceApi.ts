@@ -174,6 +174,7 @@ export const ResourceBase = Backbone.Model.extend({
       { createdBy: 'clone' }
     );
 
+    newResource.specifyTable = this.specifyTable;
     newResource.needsSaved = self.needsSaved;
 
     await Promise.all(
@@ -557,9 +558,23 @@ export const ResourceBase = Backbone.Model.extend({
       /*
        * Needed for taxonTreeDef on discipline because field.isVirtual equals false
        */
+      // case 'one-to-one': {
+      //   return value;
+      // }
       case 'one-to-one': {
-        return value;
-      }
+        if (!value) {
+          if (field.isDependent()) this.storeDependent(field, null);
+          else this.storeIndependent(field, null);
+          return value;
+        }
+
+        const toOne = maybeMakeResource(value, relatedTable);
+        if (field.isDependent()) this.storeDependent(field, toOne);
+        else this.storeIndependent(field, toOne);
+        this.trigger(`change:${fieldName}`, this);
+        this.trigger('change', this);
+        return toOne.url();
+      } 
     }
     if (!field.isVirtual)
       softFail('Unhandled setting of relationship field', {
