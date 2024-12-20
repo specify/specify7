@@ -809,8 +809,8 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     else:
         obj.modifiedbyagent = agent
 
-    bump_version(obj, version)
     _handle_special_update_priors(obj, data)
+    bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
@@ -843,6 +843,8 @@ def bump_version(obj, version) -> None:
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
+        if obj._meta.model_name in {'collectionobjectgroupjoin'}:
+            return # TODO: temporary solution to allow for multiple updates to the same cojo object
         raise StaleObjectException("%s object %d is out of date" % (obj.__class__.__name__, obj.id))
     obj.version = version + 1
 
@@ -1078,6 +1080,8 @@ def _save_cojo_prior(obj):
     """
     if obj._meta.model_name in {'collectionobject', 'collectionobjectgroup'} and hasattr(obj, 'cojo'):
         obj.cojo.save()
+    elif obj._meta.model_name in {'collectionobjectgroupjoin'}:
+        obj.save()
 
 def _handle_special_save_priors(obj):
     """
