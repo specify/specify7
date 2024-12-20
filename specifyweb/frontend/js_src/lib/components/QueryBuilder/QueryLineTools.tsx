@@ -81,7 +81,7 @@ export function QueryLineTools({
               : queryText.sort()
         }
         className={`
-         ${isFieldComplete ? undefined : 'invisible'} ${isBasic ? 'h-full' : ''}
+         ${isFieldComplete ? '' : 'invisible'} ${isBasic ? 'h-full' : ''}
         `}
         title={
           field.sortType === 'ascending'
