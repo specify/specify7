@@ -215,6 +215,13 @@ export const ResourceBase = Backbone.Model.extend({
               );
               break;
             }
+            case 'one-to-one': {
+              newResource.set(
+                fieldName,
+                await related?.clone(cloneAll, isBulkCarry)
+              );
+              break;
+            }
             default: {
               throw new Error('unhandled relationship type');
             }
