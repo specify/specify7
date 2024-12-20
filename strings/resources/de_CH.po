@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -262,7 +262,7 @@ msgstr "XML-Editor"
 #: components/AppResources/Tabs.tsx:143
 #, fuzzy
 msgid "jsonEditor"
-msgstr "Separator"
+msgstr "JSON-Editor"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:141
@@ -554,7 +554,7 @@ msgstr "Bedingter Feldwert"
 #: components/Formatters/Definitions.tsx:218
 #, fuzzy
 msgid "formatPreview"
-msgstr "Feldformate anpassen"
+msgstr "Formatvorschau"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:319
