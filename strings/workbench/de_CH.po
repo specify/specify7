@@ -981,4 +981,4 @@ msgstr "WB-Upload von „{dataSet:string}“"
 #. Used in: Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr "Datensatz erfolgreich gelöscht."
+msgstr "{node:string} {author:string} (in {parent:string})"

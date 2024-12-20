@@ -826,4 +826,4 @@ msgstr "WB завантаження \"{dataSet:string}\""
 #: components/WorkBench/Disambiguation.tsx:100
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
-msgstr "{node:string} (у {parent:string})"
+msgstr "{node:string} {author:string} (у {parent:string})"

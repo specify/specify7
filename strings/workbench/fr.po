@@ -863,4 +863,4 @@ msgstr "Téléchargement WB de \"{dataSet:string}\""
 #. Used in: Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr "{node:string} (dans {parent:string})"
+msgstr "{node:string} {author:string} (dans {parent:string})"
