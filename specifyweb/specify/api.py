@@ -483,6 +483,9 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
         model = get_model_or_404(model)
     data = cleanData(model, data, agent)
     obj = model()
+    if obj._meta.model_name == 'collectionobjectgroupjoin' and parent_obj._meta.model_name == 'collectionobject':
+        parent_obj.save() # temporary fix for saving co cojo.childco
+        data['childco'] = f"{data['childco']}{parent_obj.id}/"
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
