@@ -1,7 +1,10 @@
----
 title: ""
 labels: ["1 - Request"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your interest in improving this project! Please fill out the following sections to help us understand your feature request better.
   - type: textarea
     id: problem-description
     attributes:
