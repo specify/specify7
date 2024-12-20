@@ -802,8 +802,8 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     else:
         obj.modifiedbyagent = agent
 
-    bump_version(obj, version)
     _handle_special_update_priors(obj, data)
+    bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
@@ -1071,6 +1071,8 @@ def _save_cojo_prior(obj):
     """
     if obj._meta.model_name in {'collectionobject', 'collectionobjectgroup'} and hasattr(obj, 'cojo'):
         obj.cojo.save()
+    elif obj._meta.model_name in {'collectionobjectgroupjoin'}:
+        obj.save()
 
 def _handle_special_save_priors(obj):
     """
