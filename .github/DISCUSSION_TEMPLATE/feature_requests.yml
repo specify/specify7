@@ -1,5 +1,5 @@
-title: "[Feature Request] "
-labels: ["Feature Request"]
+title: ""
+labels: ["1 - Request"]
 body:
   - type: markdown
     attributes:
@@ -12,7 +12,6 @@ body:
       description: "A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]"
       value: |
         ...
-      render: bash
     validations:
       required: true
   - type: textarea
@@ -22,7 +21,6 @@ body:
       description: "A clear and concise description of what you want to happen."
       value: |
         ...
-      render: bash
     validations:
       required: true
   - type: textarea
@@ -32,7 +30,6 @@ body:
       description: "A clear and concise description of any alternative solutions or features you've considered."
       value: |
         ...
-      render: bash
   - type: input
     id: reported-by
     attributes:
