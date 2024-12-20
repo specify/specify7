@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/resources/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -98,7 +98,7 @@ msgstr "Adicionar recurso"
 #: components/AppResources/types.tsx:30
 #, fuzzy
 msgid "appResource"
-msgstr "Subcategorias"
+msgstr "Recurso do aplicativo"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:127
@@ -423,7 +423,7 @@ msgstr "Excluir definição"
 #: components/WebLinks/Definition.tsx:27
 #, fuzzy
 msgid "urlPart"
-msgstr "Outro recurso JSON"
+msgstr "Parte URL"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -493,7 +493,7 @@ msgstr "Publicar"
 #: components/ExportFeed/Editor.tsx:184
 #, fuzzy
 msgid "fileName"
-msgstr "Selecione a tabela primeiro"
+msgstr "Nome do arquivo"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
@@ -529,7 +529,7 @@ msgstr "Copiar definição de visualização existente"
 #: components/FormEditor/Create.tsx:84
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr "Formatadores de Registros"
+msgstr "Copiar definição de visualização padrão"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
