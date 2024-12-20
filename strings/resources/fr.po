@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -98,7 +98,7 @@ msgstr "Ajouter une ressource"
 #: components/AppResources/types.tsx:30
 #, fuzzy
 msgid "appResource"
-msgstr "Sous-catégories"
+msgstr "Ressource de l'application"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:127
@@ -319,7 +319,7 @@ msgstr "Préférences à distance"
 #: components/Formatters/index.tsx:99
 #, fuzzy
 msgid "failedParsingXml"
-msgstr "Échec de l'analyse du XML"
+msgstr "Impossible d'analyser le XML"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
@@ -426,7 +426,7 @@ msgstr "Supprimer la définition"
 #: components/WebLinks/Definition.tsx:27
 #, fuzzy
 msgid "urlPart"
-msgstr "Autre ressource JSON"
+msgstr "Partie URL"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -496,7 +496,7 @@ msgstr "Publier"
 #: components/ExportFeed/Editor.tsx:184
 #, fuzzy
 msgid "fileName"
-msgstr "Sélectionnez d'abord la table"
+msgstr "Nom de fichier"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
@@ -532,7 +532,7 @@ msgstr "Copier la définition de vue existante"
 #: components/FormEditor/Create.tsx:84
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr "Formateurs d'enregistrement"
+msgstr "Copier la définition de la vue par défaut"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
