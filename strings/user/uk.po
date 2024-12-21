@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
 "uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -134,9 +134,9 @@ msgstr "Увійдіть за допомогою Вказати облікови
 msgid "unknownOicUser"
 msgstr ""
 "Наразі немає жодного користувача, пов’язаного з вашим обліковим записом "
-"{providerName:string}. Якщо у вас є вказати ім’я користувача та пароль, ви "
-"можете ввести їх нижче, щоб пов’язати цього користувача з обліковим записом "
-"{providerName:string} для майбутніх входів."
+"{providerName:string}. Якщо у вас є вказане ім’я користувача та пароль, ви "
+"можете ввести їх нижче, щоб пов’язати цього користувача з вашим обліковим "
+"записом {providerName:string} для майбутніх входів."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:83
@@ -384,7 +384,7 @@ msgstr "Ролі користувачів"
 #: components/Security/PreviewComponents.tsx:88
 #, fuzzy
 msgid "collectionUserRoles"
-msgstr "{collectionTable:string} Ролі користувача"
+msgstr "{collectionTable:string} Ролі користувачів"
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:109
