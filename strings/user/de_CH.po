@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -549,7 +549,7 @@ msgstr "Ausgeschlossene institutionelle Richtlinien:"
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in "
-"den 7 Servereinstellungen konfigurieren."
+"den Servereinstellungen festlegen."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
