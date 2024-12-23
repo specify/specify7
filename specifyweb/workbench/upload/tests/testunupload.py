@@ -4,9 +4,9 @@ from .base import UploadTestsBase
 from ..upload import do_upload, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
-from ..tomany import ToManyRecord
 from ..upload_plan_schema import parse_column_options
 
+from django.conf import settings
 
 class UnUploadTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -49,7 +49,7 @@ class UnUploadTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -107,7 +107,7 @@ class UnUploadTests(UploadTestsBase):
                 'State': {'name': parse_column_options('State/Prov/Pref')},
                 'County': {'name': parse_column_options('Co')},
             }
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Douglass'},
@@ -192,7 +192,7 @@ class UnUploadTests(UploadTestsBase):
                     static={},
                     toOne={},
                     toMany={
-                        'collectors': [ToManyRecord(
+                        'collectors': [UploadTable(
                             name='Collector',
                             wbcols={},
                             static={},
@@ -206,12 +206,15 @@ class UnUploadTests(UploadTestsBase):
                                     toOne={},
                                     toMany={},
                                 ),
-                            })]
+                            },
+                            toMany={}
+                            )
+                            ]
                     }
                 )
             },
             toMany={}
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},

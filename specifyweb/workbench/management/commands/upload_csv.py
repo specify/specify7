@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
         with open(options['csv_file'], newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            result = do_upload_csv(specify_collection, reader, parse_plan(specify_collection, plan).apply_scoping(specify_collection), not options['commit'])
+            result = do_upload_csv(specify_collection, reader, parse_plan(plan), not options['commit'])
 
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
 

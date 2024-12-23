@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def autonumber_and_save(collection, user, obj) -> None:
-    uiformatters = get_uiformatters(collection, user, obj.__class__.__name__)
+    uiformatters = get_uiformatters(collection, obj, user)
 
     autonumber_fields = [(formatter, vals)
                          for formatter in uiformatters
@@ -56,8 +56,8 @@ def get_tables_to_lock(collection, obj, field_names) -> Set[str]:
     obj_table = obj._meta.db_table
     scope_table = Scoping(obj).get_scope_model()
 
-    tables = set([obj._meta.db_table, 'django_migrations',
-                  UniquenessRule._meta.db_table, 'discipline', scope_table._meta.db_table])
+    tables = {obj._meta.db_table, 'django_migrations', UniquenessRule._meta.db_table, 'discipline',
+              scope_table._meta.db_table}
 
     rules = UniquenessRule.objects.filter(
         modelName=obj_table, discipline=collection.discipline)

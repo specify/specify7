@@ -1,6 +1,18 @@
-from typing import Any, Callable, Literal, List, Dict, Union, Iterable, Optional, NamedTuple
+from typing import (
+    Any,
+    Callable,
+    Literal,
+    Tuple,
+    List,
+    Dict,
+    Union,
+    Iterable,
+    Optional,
+    NamedTuple,
+)
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 from django.db import connection
@@ -12,6 +24,7 @@ from specifyweb.specify.datamodel import Table
 from . import models
 
 registry: Dict[str, List[str]] = dict()
+
 
 class PermissionTargetAction:
     _resource = "undefined"
@@ -26,22 +39,31 @@ class PermissionTargetAction:
 
 class PermissionTargetMeta(type):
     def __new__(cls, name, bases, attrs):
-        if bases: # skip PermissionsTarget base class
-            resource: str = attrs['resource']
-            if resource in registry: raise AssertionError(f"Resource '{resource}' already in Permissions registry", {"resource" : resource, "localizationKey" : "resourceInPermissionRegistry"})
+        if bases:  # skip PermissionsTarget base class
+            resource: str = attrs["resource"]
+            if resource in registry:
+                raise AssertionError(
+                    f"Resource '{resource}' already in Permissions registry",
+                    {
+                        "resource": resource,
+                        "localizationKey": "resourceInPermissionRegistry",
+                    },
+                )
 
             actions = registry[resource] = []
 
             for k, v in attrs.items():
                 if isinstance(v, PermissionTargetAction):
-                    v._resource = attrs['resource']
+                    v._resource = attrs["resource"]
                     v._action = k
                     actions.append(k)
 
         return super(PermissionTargetMeta, cls).__new__(cls, name, bases, attrs)
 
+
 class PermissionTarget(metaclass=PermissionTargetMeta):
     pass
+
 
 class PermRequest(NamedTuple):
     collectionid: Optional[int]
@@ -49,10 +71,16 @@ class PermRequest(NamedTuple):
     resource: str
     action: str
 
-def check_permission_targets(collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]) -> None:
-    if not targets: return
 
-    perm_requests = [PermRequest(collectionid, userid, t.resource(), t.action()) for t in targets]
+def check_permission_targets(
+    collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]
+) -> None:
+    if not targets:
+        return
+
+    perm_requests = [
+        PermRequest(collectionid, userid, t.resource(), t.action()) for t in targets
+    ]
     results = [(r, *query(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
@@ -60,11 +88,23 @@ def check_permission_targets(collectionid: Optional[int], userid: int, targets: 
     if denials:
         raise NoMatchingRuleException(denials)
 
+
+def has_target_permission(
+    collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]
+):
+    try:
+        check_permission_targets(collectionid, userid, targets)
+        return True
+    except NoMatchingRuleException:
+        return False
+
+
 class PermissionsException(Exception):
     status_code = 500
 
     def to_json(self) -> Dict:
-        return {'PermissionsException': repr(self)}
+        return {"PermissionsException": repr(self)}
+
 
 class NoMatchingRuleException(PermissionsException):
     status_code = 403
@@ -73,23 +113,30 @@ class NoMatchingRuleException(PermissionsException):
         self.denials = denials
 
     def to_json(self) -> Dict:
-        return {'NoMatchingRuleException': [d._asdict() for d in self.denials]}
+        return {"NoMatchingRuleException": [d._asdict() for d in self.denials]}
+
 
 class NoAdminUsersException(PermissionsException):
     status_code = 400
 
     def to_json(self) -> Dict:
-        return {'NoAdminUsersException': {}}
+        return {"NoAdminUsersException": {}}
 
-def enforce(collection: Union[int, Model, None], actor, resources: List[str], action: str) -> None:
-    if not resources: return
+
+def enforce(
+    collection: Union[int, Model, None], actor, resources: List[str], action: str
+) -> None:
+    if not resources:
+        return
 
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
-        if not isinstance(actor, models.Specifyuser): raise AssertionError(
-            f"Agent '{actor}' is not a SpecifyUser", 
-            {"actor" : actor, "localizationKey" : "actorIsNotSpecifyUser"})
+        if not isinstance(actor, models.Specifyuser):
+            raise AssertionError(
+                f"Agent '{actor}' is not a SpecifyUser",
+                {"actor": actor, "localizationKey": "actorIsNotSpecifyUser"},
+            )
         userid = actor.id
 
     if userid is None:
@@ -98,14 +145,20 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if isinstance(collection, int) or collection is None:
         collectionid = collection
     else:
-        if not isinstance(collection, models.Collection): raise AssertionError(
-            f"Unexpted type of collection '{collection.__class__.__name__}'. Expected '{models.Collection.__class__.__name__}'",
-            {"unexptectedTypeName": collection.__class__.__name__, 
-            "collectionName" : models.Collection.__class__.__name__, 
-            "localizationKey" : "unexpectedCollectionType"})
+        if not isinstance(collection, models.Collection):
+            raise AssertionError(
+                f"Unexpted type of collection '{collection.__class__.__name__}'. Expected '{models.Collection.__class__.__name__}'",
+                {
+                    "unexptectedTypeName": collection.__class__.__name__,
+                    "collectionName": models.Collection.__class__.__name__,
+                    "localizationKey": "unexpectedCollectionType",
+                },
+            )
         collectionid = collection.id
 
-    perm_requests = [PermRequest(collectionid, userid, resource, action) for resource in resources]
+    perm_requests = [
+        PermRequest(collectionid, userid, resource, action) for resource in resources
+    ]
     results = [(r, *query(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
@@ -113,37 +166,48 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if denials:
         raise NoMatchingRuleException(denials)
 
+
 class QueryResult(NamedTuple):
     allowed: bool
     matching_user_policies: List
     matching_role_policies: List
 
-def query_pt(collectionid: Optional[int], userid: int, target: PermissionTargetAction) -> QueryResult:
+
+def query_pt(
+    collectionid: Optional[int], userid: int, target: PermissionTargetAction
+) -> QueryResult:
     return query(collectionid, userid, target.resource(), target.action())
 
-def query(collectionid: Optional[int], userid: int, resource: str, action: str) -> QueryResult:
+
+def query(
+    collectionid: Optional[int], userid: int, resource: str, action: str
+) -> QueryResult:
     cursor = connection.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
     select collection_id, specifyuser_id, resource, action
     from spuserpolicy
     where (collection_id = %(collectionid)s or collection_id is null)
     and (specifyuser_id = %(userid)s or specifyuser_id is null)
     and %(resource)s like resource
     and %(action)s like action
-    """, {
-        'collectionid': collectionid,
-        'userid': userid,
-        'resource': resource,
-        'action': action
-    })
+    """,
+        {
+            "collectionid": collectionid,
+            "userid": userid,
+            "resource": resource,
+            "action": action,
+        },
+    )
 
     ups = [
         dict(zip(("collectionid", "userid", "resource", "action"), r))
         for r in cursor.fetchall()
     ]
 
-    cursor.execute("""
+    cursor.execute(
+        """
     select r.id, r.name, resource, action
     from spuserrole ur
     join sprole r on r.id = ur.role_id
@@ -152,12 +216,14 @@ def query(collectionid: Optional[int], userid: int, resource: str, action: str) 
     and collection_id = %(collectionid)s
     and %(resource)s like resource
     and %(action)s like action
-    """, {
-        'collectionid': collectionid,
-        'userid': userid,
-        'resource': resource,
-        'action': action
-    })
+    """,
+        {
+            "collectionid": collectionid,
+            "userid": userid,
+            "resource": resource,
+            "action": action,
+        },
+    )
 
     rps = [
         dict(zip(("roleid", "rolename", "resource", "action"), r))
@@ -177,7 +243,7 @@ def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> Non
         name = obj.name.lower()
     else:
         name = obj.specify_model.name.lower()
-    enforce(collection, actor, [f'/table/{name}'], action)
+    enforce(collection, actor, [f"/table/{name}"], action)
 
 def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
     return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
@@ -187,18 +253,20 @@ def check_field_permissions(collection, actor, obj, fields: Iterable[str], actio
         table = obj.name.lower()
     else:
         table = obj.specify_model.name.lower()
-    enforce(collection, actor, [f'/field/{table}/{field}' for field in fields], action)
+    enforce(collection, actor, [f"/field/{table}/{field}" for field in fields], action)
 
 def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:
         check_table_permissions(collection, actor, obj, action)
+
     return checker
+
 
 def skip_collection_access_check(view):
     view.__skip_sp_collection_access_check = True
     return view
 
+
 class CollectionAccessPT(PermissionTarget):
     resource = "/system/sp7/collection"
     access = PermissionTargetAction()
-

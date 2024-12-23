@@ -16,6 +16,7 @@ from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
@@ -25,6 +26,7 @@ from .tree_stats import get_tree_stats
 from .views import login_maybe_required, openapi
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
@@ -47,37 +49,34 @@ def tree_mutation(mutation):
     def wrapper(*args, **kwargs):
         try:
             mutation(*args, **kwargs)
-            result = {'success': True}
+            result = {"success": True}
         except BusinessRuleException as e:
-            result = {'success': False, 'error': str(e)}
+            result = {"success": False, "error": str(e)}
         return HttpResponse(toJson(result), content_type="application/json")
 
     return wrapper
 
 
-@openapi(schema={
-    "get": {
-        "parameters": [
-            {
-                "name": "includeauthor",
-                "in": "query",
-                "required": False,
-                "schema": {
-                    "type": "number"
-                },
-                "description": "If parameter is present, include the author of the requested node in the response \
-                    if the tree is taxon and node's rankid >= paramter value."
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": "Returns a list of nodes with parent <parentid> restricted to the tree defined by <treedef>. \
+@openapi(
+    schema={
+        "get": {
+            "parameters": [
+                {
+                    "name": "includeauthor",
+                    "in": "query",
+                    "required": False,
+                    "schema": {"type": "number"},
+                    "description": "If parameter is present, include the author of the requested node in the response \
+                    if the tree is taxon and node's rankid >= paramter value.",
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Returns a list of nodes with parent <parentid> restricted to the tree defined by <treedef>. \
                 Nodes are sorted by <sortfield>",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                                 "type": "array",
                                 "prefixItems": [
                                     {
@@ -133,12 +132,12 @@ def tree_mutation(mutation):
                                 ],
                             }
                         }
-                    }
+                    },
                 }
-            }
+            },
         }
     }
-})
+)
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
@@ -171,8 +170,8 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-    orderby = tree_table.name.lower() + '.' + sortfield
-        
+    orderby = getattr(node, tree_table.get_field_strict(sortfield).name)
+
     col_args = [
         node.name,
         node.fullName,
@@ -186,32 +185,35 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
 
     apply_min = [
         # for some reason, SQL is rejecting the group_by in some dbs
-        # due to "only_full_group_by". It is somehow not smart enough to see 
+        # due to "only_full_group_by". It is somehow not smart enough to see
         # that there is no dependency in the columns going from main table to the to-manys (child, and syns)
         # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
         # I don't want to disable "only_full_group_by" in case someone misuses it...
         # applying min to fool into thinking it is aggregated.
         # these values are guarenteed to be the same
-        sql.func.min(arg) for arg in col_args
-        ]
-    
+        sql.func.min(arg)
+        for arg in col_args
+    ]
+
     grouped = [
-        *apply_min, 
+        *apply_min,
         # syns are to-many, so child can be duplicated
         sql.func.count(distinct(child_id)),
         # child are to-many, so syn's full name can be duplicated
         # FEATURE: Allow users to select a separator?? Maybe that's too nice
-        group_concat(distinct(synonym.fullName), separator=', ')
+        group_concat(distinct(synonym.fullName), separator=", "),
     ]
 
-    query = session.query(id_col, *grouped) \
-        .outerjoin(child, child.ParentID == id_col) \
-        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
-        .outerjoin(synonym, synonym.AcceptedID == id_col) \
-        .group_by(id_col) \
-        .filter(treedef_col == int(treedef)) \
-        .filter(node.ParentID == parentid) \
+    query = (
+        session.query(id_col, *grouped)
+        .outerjoin(child, child.ParentID == id_col)
+        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id))
+        .outerjoin(synonym, synonym.AcceptedID == id_col)
+        .group_by(id_col)
+        .filter(treedef_col == int(treedef))
+        .filter(node.ParentID == parentid)
         .order_by(orderby)
+    )
     results = list(query)
     return results
 
@@ -224,7 +226,7 @@ def tree_stats(request, treedef, tree, parentid):
     results = get_tree_stats(
         treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
 
-    return HttpResponse(toJson(results), content_type='application/json')
+    return HttpResponse(toJson(results), content_type="application/json")
 
 
 @login_maybe_required
@@ -234,12 +236,13 @@ def path(request, tree: TREE_TABLE, id: int):
     id = int(id)
     tree_node = get_object_or_404(tree, id=id)
 
-    data = {node.definitionitem.name: obj_to_data(node)
-            for node in get_tree_path(tree_node)}
+    data = {
+        node.definitionitem.name: obj_to_data(node) for node in get_tree_path(tree_node)
+    }
 
-    data['resource_uri'] = '/api/specify_tree/%s/%d/path/' % (tree, id)
+    data["resource_uri"] = "/api/specify_tree/%s/%d/path/" % (tree, id)
 
-    return HttpResponse(toJson(data), content_type='application/json')
+    return HttpResponse(toJson(data), content_type="application/json")
 
 
 def get_tree_path(tree_node):
@@ -259,22 +262,25 @@ def predict_fullname(request, tree: TREE_TABLE, parentid: int):
     parent = get_object_or_404(tree, id=parentid)
     depth = parent.definition.treedefitems.count()
     reverse = parent.definition.fullnamedirection == -1
-    defitemid = int(request.GET['treedefitemid'])
-    name = request.GET['name']
+    defitemid = int(request.GET["treedefitemid"])
+    name = request.GET["name"]
     fullname = tree_extras.predict_fullname(
         parent._meta.db_table, depth, parent.id, defitemid, name, reverse
     )
-    return HttpResponse(fullname, content_type='text/plain')
+    return HttpResponse(fullname, content_type="text/plain")
 
 
 @tree_mutation
 def merge(request, tree: TREE_TABLE, id: int):
     """Merges <tree> node <id> into the node with id indicated by the
     'target' POST parameter."""
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id, [perm_target(tree).merge])
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).merge],
+    )
     node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST['target'])
+    target = get_object_or_404(tree, id=request.POST["target"])
     tree_extras.merge(node, target, request.specify_user_agent)
 
 
@@ -283,10 +289,11 @@ def move(request, tree: TREE_TABLE, id: int):
     """Reparents the <tree> node <id> to be a child of the node
     indicated by the 'target' POST parameter.
     """
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id, [perm_target(tree).move])
+    check_permission_targets(
+        request.specify_collection.id, request.specify_user.id, [perm_target(tree).move]
+    )
     node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST['target'])
+    target = get_object_or_404(tree, id=request.POST["target"])
     old_parent = node.parent
     old_parentid = old_parent.id
     old_fullname = node.fullname
@@ -295,14 +302,17 @@ def move(request, tree: TREE_TABLE, id: int):
     node.save()
     node = get_object_or_404(tree, id=id)
     if old_stamp is None or (node.timestampmodified > old_stamp):
-        tree_extras.mutation_log(TREE_MOVE, node, request.specify_user_agent,
-                                 node.parent,
-                                 [{'field_name': 'parentid',
-                                   'old_value': old_parentid,
-                                   'new_value': target.id},
-                                  {'field_name': 'fullname',
-                                   'old_value': old_fullname,
-                                   'new_value': node.fullname}])
+        field_change_infos = [
+            FieldChangeInfo(
+                field_name="parentid", old_value=old_parentid, new_value=target.id
+            ),
+            FieldChangeInfo(
+                field_name="fullname", old_value=old_fullname, new_value=node.fullname
+            ),
+        ]
+        tree_extras.mutation_log(
+            TREE_MOVE, node, request.specify_user_agent, node.parent, field_change_infos
+        )
 
 
 @openapi(schema={
@@ -336,17 +346,17 @@ def move(request, tree: TREE_TABLE, id: int):
                                 "type": "integer",
                                 "description": "The ID of the storage tree node to which the preparations should be moved."
                             },
-                        },
-                        'required': ['target'],
-                        'additionalProperties': False
+                            "required": ["target"],
+                            "additionalProperties": False,
+                        }
                     }
+                },
+            },
+            "responses": {
+                "200": {
+                    "description": "Success message indicating the bulk move operation was successful."
                 }
-            }
-        },
-        "responses": {
-            "200": {
-                "description": "Success message indicating the bulk move operation was successful."
-            }
+            },
         }
     }
 })
@@ -356,10 +366,13 @@ def bulk_move(request, tree: TREE_TABLE, id: int):
     as new location storage the node indicated by the 'target'
     POST parameter.
     """
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id, [perm_target(tree).bulk_move])
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).bulk_move],
+    )
     node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST['target'])
+    target = get_object_or_404(tree, id=request.POST["target"])
     tree_extras.bulk_move(node, target, request.specify_user_agent)
 
 
@@ -368,20 +381,24 @@ def synonymize(request, tree: TREE_TABLE, id: int):
     """Synonymizes the <tree> node <id> to be a synonym of the node
     indicated by the 'target' POST parameter.
     """
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id,
-                             [perm_target(tree).synonymize])
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).synonymize],
+    )
     node = get_object_or_404(tree, id=id)
-    target = get_object_or_404(tree, id=request.POST['target'])
+    target = get_object_or_404(tree, id=request.POST["target"])
     tree_extras.synonymize(node, target, request.specify_user_agent)
 
 
 @tree_mutation
 def desynonymize(request, tree: TREE_TABLE, id: int):
     "Causes the <tree> node <id> to no longer be a synonym of another node."
-    check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id,
-                             [perm_target(tree).desynonymize])
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).desynonymize],
+    )
     node = get_object_or_404(tree, id=id)
     tree_extras.desynonymize(node, request.specify_user_agent)
 
@@ -440,11 +457,13 @@ def add_root(request, tree, treeid):
 @require_GET
 def tree_rank_item_count(request, tree, rankid):
     """Returns the number of items in the tree rank with id <rank_id>."""
-    tree_rank_model_name = tree if tree.endswith(
-        'treedefitem') else tree + 'treedefitem'
+    tree_rank_model_name = (
+        tree if tree.endswith("treedefitem") else tree + "treedefitem"
+    )
     rank = get_object_or_404(tree_rank_model_name, id=rankid)
     count = tree_rank_count(tree, rank.id)
-    return HttpResponse(toJson(count), content_type='application/json')
+    return HttpResponse(toJson(count), content_type="application/json")
+
 
 
 @openapi(schema={

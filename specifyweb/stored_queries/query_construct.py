@@ -7,6 +7,7 @@ from sqlalchemy import orm, sql
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tree_utils import get_treedefs
 
+from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.stored_queries import models
 
 logger = logging.getLogger(__name__)
@@ -27,13 +28,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['internal_filters'] = []
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank, tree_field):
+    def handle_tree_field(self, node, table, tree_rank, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
         if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
             f"No Collection found in Query for {table}",
             {"table" : table,
              "localizationKey" : "noCollectionInQuery"}) 
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
+        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
@@ -70,10 +71,25 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
-        column_name = 'name' if tree_field is None else \
-                      node._id if tree_field == 'ID' else \
-                      table.get_field(tree_field.lower()).name
+        def make_tree_field_spec(tree_node):
+            return current_field_spec._replace(
+                root_table=table, # rebasing the query
+                root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
+                join_path=next_join_path, # slicing join path to begin from after the tree
+            )
 
+        # TODO: Verify below code can be removed
+        # cases = []
+        # field = None # just to stop mypy from complaining.
+        # for ancestor in ancestors:
+        #     field_spec = make_tree_field_spec(ancestor)
+        #     query, orm_field, field, table = field_spec.add_spec_to_query(query)
+        #     #field and table won't matter. rank acts as fork, and these two will be same across siblings
+        #     cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
+
+        # column = sql.case(cases)
+
+        # return query, column, field, table
         def _predicates_for_node(_node):
             return [
                 # TEST: consider taking the treedef_id comparison just to the first node, if it speeds things up (matching for higher is redundant..)
@@ -92,7 +108,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # We don't want to include treedef if the rank is not present.
         new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
-        return query, column
+        return query, column, current_field_spec.get_field(), table
 
     def tables_in_path(self, table, join_path):
         path = deque(join_path)
@@ -102,7 +118,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = tables[-1].get_field(field, strict=True)
-            if not field.is_relationship:
+            if not field.is_relationship: # also handles tree ranks
                 break
 
             tables.append(spmodels.datamodel.get_table(field.relatedModelName, strict=True))
@@ -116,8 +132,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
-
-            if not field.is_relationship:
+            # basically, tree ranks act as forks.
+            if not field.is_relationship or isinstance(field, TreeRankQuery):
                 break
             next_table = spmodels.datamodel.get_table(field.relatedModelName, strict=True)
             logger.debug("joining: %r to %r via %r", table, next_table, field)

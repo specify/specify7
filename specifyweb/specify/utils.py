@@ -1,4 +1,3 @@
-import sys
 from specifyweb.accounts import models as acccounts_models
 from specifyweb.attachment_gw import models as attachment_gw_models
 from specifyweb.businessrules import models as businessrules_models

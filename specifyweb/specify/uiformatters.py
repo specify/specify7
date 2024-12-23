@@ -6,7 +6,7 @@ Supports autonumbering mechanism
 import logging
 import re
 from datetime import date
-from typing import NamedTuple, List, Optional, Sequence
+from typing import NamedTuple, List, Optional, Sequence, Union, Callable
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
@@ -16,12 +16,16 @@ from django.db import connection
 logger = logging.getLogger(__name__)
 
 from specifyweb.context.app_resource import get_app_resource
+from specifyweb.specify.datamodel import Table
+from specifyweb.specify import models
 
 from .models import Splocalecontaineritem as Item
 from .filter_by_col import filter_by_collection
 
 class AutonumberOverflowException(Exception):
     pass
+
+ScopedFormatter = Callable[[Table, str], str]
 
 class ScopeInfo(NamedTuple):
     db_id_field: str
@@ -73,6 +77,18 @@ class FormatMismatch(ValueError):
         self.value = value
         self.formatter = formatter
     pass
+
+class CustomRepr:
+    def __init__(self, func, new_repr):
+        self.new_repr = new_repr
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return None if self.func is None else self.func(*args, **kwargs)
+
+    def __repr__(self):
+        return self.new_repr
+
 
 class UIFormatter(NamedTuple):
     model_name: str
@@ -185,6 +201,20 @@ class UIFormatter(NamedTuple):
 
     def canonicalize(self, values: Sequence[str]) -> str:
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
+
+    def apply_scope(self, collection):
+        def parser(table: Table, value: str) -> str:
+            parsed = self.parse(value)
+            if self.needs_autonumber(parsed):
+                canonicalized = self.autonumber_now(
+                    collection,
+                    getattr(models, table.django_name),
+                    parsed
+                )
+            else:
+                canonicalized = self.canonicalize(parsed)
+            return canonicalized
+        return parser
 
 class Field(NamedTuple):
     size: int
@@ -303,7 +333,8 @@ def new_field(node) -> Field:
         inc = node.attrib.get('inc', 'false') == 'true',
         by_year = node.attrib.get('byyear', 'false') == 'true')
 
-def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
+def get_uiformatters(collection, obj, user) -> List[UIFormatter]:
+    tablename = obj.__class__.__name__
     filters = dict(container__discipline=collection.discipline,
                    container__name=tablename.lower(),
                    format__isnull=False)
@@ -315,9 +346,6 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         .values_list('format', flat=True)
     )
 
-    if tablename.lower() == 'collectionobject':
-        formatter_names.append(collection.catalognumformatname)
-
     logger.debug("formatters for %s: %s", tablename, formatter_names)
 
     uiformatters = [
@@ -325,13 +353,17 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         (get_uiformatter_by_name(collection, user, fn) for fn in formatter_names)
         if f is not None
     ]
+    if tablename.lower() == 'collectionobject':
+        cat_num_format = get_catalognumber_format(collection, obj, user)
+        if cat_num_format: uiformatters.append(cat_num_format)
+
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
 def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_uiformatter_by_name(collection, None, collection.catalognumformatname)
+        return get_catalognumber_format(collection, None, None)
 
     try:
         field_format = Item.objects.get(
@@ -343,3 +375,10 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFo
         return None
     else:
         return get_uiformatter_by_name(collection, None, field_format)
+
+def get_catalognumber_format(collection, collection_object, user) -> UIFormatter: 
+    cot_formatter = getattr(getattr(collection_object, 'collectionobjecttype', None), 'catalognumberformatname', None)
+    if cot_formatter: 
+        return get_uiformatter_by_name(collection, user, cot_formatter)
+    else: 
+        return get_uiformatter_by_name(collection, user, collection.catalognumformatname)

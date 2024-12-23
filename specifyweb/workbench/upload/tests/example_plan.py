@@ -1,5 +1,4 @@
 from ..upload_table import UploadTable, ScopedUploadTable
-from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord
 from ..upload_plan_schema import parse_column_options
 
@@ -55,6 +54,7 @@ json = dict(
                             }
                         )}
                     },
+                    toMany = {}
                 ),
             ],
         },
@@ -106,7 +106,8 @@ json = dict(
                                     toOne = {},
                                     toMany = {},
                                 )}
-                            }
+                            },
+                            toMany = {}
                         ),
                         dict(
                             wbcols = {},
@@ -125,7 +126,8 @@ json = dict(
                                     toOne = {},
                                     toMany = {},
                                 )}
-                            }
+                            },
+                            toMany = {}
                         ),
                     ]
                 }
@@ -134,8 +136,7 @@ json = dict(
     )}
 )
 
-def with_scoping(collection) -> ScopedUploadTable:
-    return UploadTable(
+upload_plan = UploadTable(
         name = 'Collectionobject',
         wbcols = {
             'catalognumber' : parse_column_options("BMSM No."),
@@ -144,7 +145,7 @@ def with_scoping(collection) -> ScopedUploadTable:
         static = {},
         toMany = {
             'determinations': [
-                ToManyRecord(
+                UploadTable(
                     name = 'Determination',
                     wbcols = {
                         'determineddate': parse_column_options('ID Date'),
@@ -179,6 +180,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                             }
                         )
                     },
+                    toMany={}
                 ),
             ],
         },
@@ -218,7 +220,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                 },
                 toMany = {
                     'collectors': [
-                        ToManyRecord(
+                        UploadTable(
                             name = 'Collector',
                             wbcols = {},
                             static = {'isprimary': True, 'ordernumber': 0},
@@ -236,9 +238,10 @@ def with_scoping(collection) -> ScopedUploadTable:
                                     toOne = {},
                                     toMany = {},
                                 )
-                            }
+                            },
+                            toMany={}
                         ),
-                        ToManyRecord(
+                        UploadTable(
                             name = 'Collector',
                             wbcols = {},
                             static = {'isprimary': False, 'ordernumber': 1},
@@ -256,10 +259,14 @@ def with_scoping(collection) -> ScopedUploadTable:
                                     toOne = {},
                                     toMany = {},
                                 )
-                            }
+                            },
+                            toMany={}
                         ),
                     ]
                 }
             ),
         },
-    ).apply_scoping(collection)
+    )
+
+def with_scoping(collection) -> ScopedUploadTable:
+    return upload_plan.apply_scoping(collection)

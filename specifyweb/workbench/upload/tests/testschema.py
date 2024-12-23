@@ -1,13 +1,10 @@
 from typing import Dict
 from jsonschema import validate, Draft7Validator, exceptions # type: ignore
-import json
 import unittest
 from hypothesis import given, infer, settings, HealthCheck
-from hypothesis.strategies import text
 from hypothesis_jsonschema import from_schema
 
 from ..upload_table import UploadTable
-from ..treerecord import TreeRecord
 from ..column_options import ColumnOptions
 from ..upload_plan_schema import schema, parse_plan, parse_column_options
 
@@ -29,10 +26,10 @@ class SchemaTests(UploadTestsBase):
         set_plan_treeId()
         Draft7Validator.check_schema(schema)
         validate(example_plan.json, schema)
-        plan = parse_plan(self.collection, example_plan.json).apply_scoping(self.collection)
+        plan = parse_plan(example_plan.json).apply_scoping(self.collection) # keeping this same
         # have to test repr's here because NamedTuples of different
         # types can be equal if their fields are equal.
-        self.assertEqual(repr(plan), repr(self.example_plan))
+        self.assertEqual(repr(plan), repr(self.example_plan_scoped))
 
     def test_unparsing(self) -> None:
         set_plan_treeId()

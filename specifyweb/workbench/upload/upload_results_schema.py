@@ -47,6 +47,10 @@ schema = {
                 { '$ref': '#/definitions/Matched' },
                 { '$ref': '#/definitions/Uploaded' },
                 { '$ref': '#/definitions/PropagatedFailure' },
+                { '$ref': '#/definitions/NoChange' },
+                { '$ref': '#/definitions/Updated' },
+                { '$ref': '#/definitions/Deleted' },
+                { '$ref': '#/definitions/MatchedAndChanged' },
             ]
         },
 
@@ -62,7 +66,6 @@ schema = {
             'required': ['PropagatedFailure'],
             'additionalProperties': False
         },
-
         'ParseFailures': {
             'type': 'object',
             'desciption': 'Indicates one or more values were invalid, preventing a record from uploading.',
@@ -93,7 +96,6 @@ schema = {
             'required': ['ParseFailures'],
             'additionalProperties': False
         },
-
         'NoMatch': {
             'type': 'object',
             'desciption': 'Indicates failure due to inability to find an expected existing matching record.',
@@ -110,7 +112,6 @@ schema = {
             'required': ['NoMatch'],
             'additionalProperties': False
         },
-
         'FailedBusinessRule': {
             'type': 'object',
             'desciption': 'Indicates a record failed to upload due to a business rule violation.',
@@ -133,7 +134,6 @@ schema = {
             'required': ['FailedBusinessRule'],
             'additionalProperties': False
         },
-
         'NullRecord': {
             'type': 'object',
             'desciption': 'Indicates that no record was uploaded because all relevant columns in the data set are empty.',
@@ -150,7 +150,6 @@ schema = {
             'required': ['NullRecord'],
             'additionalProperties': False
         },
-
         'MatchedMultiple': {
             'type': 'object',
             'desciption': 'Indicates failure due to finding multiple matches to existing records.',
@@ -169,7 +168,6 @@ schema = {
             'required': ['MatchedMultiple'],
             'additionalProperties': False
         },
-
         'Matched': {
             'type': 'object',
             'desciption': 'Indicates that an existing record in the database was matched.',
@@ -187,7 +185,6 @@ schema = {
             'required': ['Matched'],
             'additionalProperties': False
         },
-
         'Uploaded': {
             'type': 'object',
             'desciption': 'Indicates that a new row was added to the database.',
@@ -209,7 +206,6 @@ schema = {
             'required': ['Uploaded'],
             'additionalProperties': False
         },
-
         'PicklistAddition': {
             'type': 'object',
             'desciption': 'Indicates that a value had to be added to a picklist in the course of uploading a record.',
@@ -222,7 +218,6 @@ schema = {
             'required': ['id', 'name', 'value', 'caption'],
             'additionalProperties': False
         },
-
         'ReportInfo': {
             'type': 'object',
             'desciption': 'Records metadata about an UploadResult indicating the tables, data set columns, and any tree information involved.',
@@ -244,6 +239,78 @@ schema = {
             },
             'required': ['rank', 'name'],
             'additionalProperties': False
-        }
+        },
+        'NoChange': {
+            'type': 'object',
+            'desciption': "Indicates that there was no change to the record.",
+            'properties': {
+                'NoChange': {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer", "description": "The id of the database row"},
+                        "info": { '$ref': '#/definitions/ReportInfo' }
+                    },
+                    "required": ["id", "info"],
+                    "additionalProperties": False
+                }
+            },
+            "required": ["NoChange"],
+            "additionalProperties": False
+        },
+        "Updated": {
+            'type': "object",
+            "desciption": "Indicates that were updates to the record",
+            "properties": {
+                "Updated" : {
+                    'type': 'object',
+                    'properties': {
+                        'id': { 'type': 'integer', 'description': 'The database id of the updated row.' },
+                        'picklistAdditions': {
+                            'type': 'array',
+                            'items': { '$ref': '#definitions/PicklistAddition' }
+                        },
+                        'info': { '$ref': '#/definitions/ReportInfo' },
+                    },
+                    'required': ['id', 'info', 'picklistAdditions'],
+                    'additionalProperties': False
+                    }
+                },
+            "required": ["Updated"],
+            "additionalProperties": False
+        },   
+        "Deleted": {
+            'type': 'object',
+            'desciption': "Indicates that record was deleted.",
+            'properties': {
+                'Deleted': {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer", "description": "The id of the database row"},
+                        "info": { '$ref': '#/definitions/ReportInfo' }
+                    },
+                    "required": ["id", "info"],
+                    "additionalProperties": False
+                }
+            },
+            "required": ["Deleted"],
+            "additionalProperties": False
+        },
+        "MatchedAndChanged": {
+            "type": "object",
+            "desciption": "Indicates a related record was matched, different than current related record",
+            'properties': {
+                'MatchedAndChanged': {
+                    'type': 'object',
+                    'properties': {
+                        'id': { 'type': 'integer', 'description': 'The id of the new matched record' },
+                        'info': { '$ref': '#/definitions/ReportInfo' }
+                    },
+                    'required': ['id', 'info'],
+                    'additionalProperties': False
+                }
+            },
+            'required': ['MatchedAndChanged'],
+            'additionalProperties': False
+        }   
     }
 }

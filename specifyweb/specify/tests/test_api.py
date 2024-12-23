@@ -2,7 +2,6 @@
 Tests for api.py
 """
 
-
 import json
 from unittest import skip
 from datetime import datetime
@@ -54,7 +53,7 @@ class MainSetupTearDown:
             isserverbased=False,
             issharinglocalities=True,
             issinglegeographytree=True,
-            )
+        )
 
         self.division = Division.objects.create(
             institution=self.institution,
@@ -77,7 +76,8 @@ class MainSetupTearDown:
             geologictimeperiodtreedef=self.geologictimeperiodtreedef,
             geographytreedef=self.geographytreedef,
             division=self.division,
-            datatype=self.datatype)
+            datatype=self.datatype,
+        )
 
         apply_default_uniqueness_rules(self.discipline)
 
@@ -85,19 +85,20 @@ class MainSetupTearDown:
             catalognumformatname='test',
             collectionname='TestCollection',
             isembeddedcollectingevent=False,
-            discipline=self.discipline)
+            discipline=self.discipline,
+        )
 
         self.specifyuser = Specifyuser.objects.create(
             isloggedin=False,
             isloggedinreport=False,
             name="testuser",
-            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
         UserPolicy.objects.create(
             collection=None,
             specifyuser=self.specifyuser,
-            resource='%',
-            action='%',
+            resource="%",
+            action="%",
         )
 
         self.agent = Agent.objects.create(
@@ -105,7 +106,8 @@ class MainSetupTearDown:
             firstname="Test",
             lastname="User",
             division=self.division,
-            specifyuser=self.specifyuser)
+            specifyuser=self.specifyuser,
+        )
 
         self.collectingevent = Collectingevent.objects.create(
             discipline=self.discipline)
@@ -126,20 +128,21 @@ class ApiTests(MainSetupTearDown, TestCase): pass
 
 skip_perms_check = lambda x: None
 
+
 class SimpleApiTests(ApiTests):
 
     def test_get_collection(self):
-        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
-        self.assertEqual(data['meta']['total_count'], len(self.collectionobjects))
-        self.assertEqual(len(data['objects']), len(self.collectionobjects))
-        ids = [obj['id'] for obj in data['objects']]
+        data = api.get_collection(self.collection, "collectionobject", skip_perms_check)
+        self.assertEqual(data["meta"]["total_count"], len(self.collectionobjects))
+        self.assertEqual(len(data["objects"]), len(self.collectionobjects))
+        ids = [obj["id"] for obj in data["objects"]]
         for co in self.collectionobjects:
             self.assertTrue(co.id in ids)
 
     def test_get_resouce(self):
-        data = api.get_resource('institution', self.institution.id, skip_perms_check)
-        self.assertEqual(data['id'], self.institution.id)
-        self.assertEqual(data['name'], self.institution.name)
+        data = api.get_resource("institution", self.institution.id, skip_perms_check)
+        self.assertEqual(data["id"], self.institution.id)
+        self.assertEqual(data["name"], self.institution.name)
 
     def test_create_object(self):
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
@@ -148,7 +151,7 @@ class SimpleApiTests(ApiTests):
         obj = Collectionobject.objects.get(id=obj.id)
         self.assertTrue(obj.id is not None)
         self.assertEqual(obj.collection, self.collection)
-        self.assertEqual(obj.catalognumber, 'foobar')
+        self.assertEqual(obj.catalognumber, "foobar")
         self.assertEqual(obj.createdbyagent, self.agent)
 
     def test_update_object(self):
@@ -174,25 +177,47 @@ class RecordSetTests(ApiTests):
             dbtableid=Collectionobject.specify_model.tableId,
             name="Test recordset",
             type=0,
-            specifyuser=self.specifyuser)
+            specifyuser=self.specifyuser,
+        )
 
     def test_post_resource(self):
-        obj = api.post_resource(self.collection, self.agent, 'collectionobject', {
-                'collection': api.uri_for_model('collection', self.collection.id),
-                'catalognumber': 'foobar'}, recordsetid=self.recordset.id)
-        self.assertEqual(self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
+        obj = api.post_resource(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            {
+                "collection": api.uri_for_model("collection", self.collection.id),
+                "catalognumber": "foobar",
+            },
+            recordsetid=self.recordset.id,
+        )
+        self.assertEqual(
+            self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1
+        )
 
-    @skip("errors because of many-to-many stuff checking if Agent is admin. should test with different model.")
+    @skip(
+        "errors because of many-to-many stuff checking if Agent is admin. should test with different model."
+    )
     def test_post_bad_resource(self):
         with self.assertRaises(api.RecordSetException) as cm:
-            obj = api.post_resource(self.collection, self.agent, 'Agent',
-                                    {'agenttype': 0,
-                                     'lastname': 'MonkeyWrench',
-                                     'division': api.uri_for_model('division', self.division.id)},
-                                    recordsetid=self.recordset.id)
-        self.assertEqual(Agent.objects.filter(lastname='MonkeyWrench').count(), 0)
+            obj = api.post_resource(
+                self.collection,
+                self.agent,
+                "Agent",
+                {
+                    "agenttype": 0,
+                    "lastname": "MonkeyWrench",
+                    "division": api.uri_for_model("division", self.division.id),
+                },
+                recordsetid=self.recordset.id,
+            )
+        self.assertEqual(
+            models.Agent.objects.filter(lastname="MonkeyWrench").count(), 0
+        )
 
-    @skip("errors because of many-to-many stuff checking if Agent is admin. should test with different model.")
+    @skip(
+        "errors because of many-to-many stuff checking if Agent is admin. should test with different model."
+    )
     def test_post_resource_to_bad_recordset(self):
         max_id = Recordset.objects.aggregate(Max('id'))['id__max']
         with self.assertRaises(api.RecordSetException) as cm:
@@ -209,35 +234,60 @@ class RecordSetTests(ApiTests):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        counts = set((self.recordset.recordsetitems.filter(recordid=id).count() for id in ids))
+        counts = set(
+            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
+        )
         self.assertEqual(counts, set([1]))
 
         for co in self.collectionobjects:
             co.delete()
 
-        counts = set((self.recordset.recordsetitems.filter(recordid=id).count() for id in ids))
+        counts = set(
+            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
+        )
         self.assertEqual(counts, set([0]))
 
     def test_get_resource_with_recordset_info(self):
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
-        self.assertFalse(hasattr(data, 'recordset_info'))
+        data = api.get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        self.assertFalse(hasattr(data, "recordset_info"))
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
-        self.assertEqual(data['recordset_info'], None)
+        data = api.get_resource(
+            "collectionobject",
+            self.collectionobjects[0].id,
+            skip_perms_check,
+            self.recordset.id,
+        )
+        self.assertEqual(data["recordset_info"], None)
 
         self.recordset.recordsetitems.create(recordid=self.collectionobjects[0].id)
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
-        self.assertEqual(data['recordset_info']['recordsetid'], self.recordset.id)
-
+        data = api.get_resource(
+            "collectionobject",
+            self.collectionobjects[0].id,
+            skip_perms_check,
+            self.recordset.id,
+        )
+        self.assertEqual(data["recordset_info"]["recordsetid"], self.recordset.id)
 
     def test_update_object(self):
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
-        self.assertEqual(data['recordset_info'], None)
+        data = api.get_resource(
+            "collectionobject",
+            self.collectionobjects[0].id,
+            skip_perms_check,
+            self.recordset.id,
+        )
+        self.assertEqual(data["recordset_info"], None)
 
-        obj = api.update_obj(self.collection, self.agent, 'collectionobject',
-                             data['id'], data['version'], data)
-
+        obj = api.update_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            data["id"],
+            data["version"],
+            data,
+        )
 
     def test_get_recordset_info(self):
         ids = [co.id for co in self.collectionobjects]
@@ -247,14 +297,30 @@ class RecordSetTests(ApiTests):
 
         for i, co in enumerate(self.collectionobjects):
             info = api.get_recordset_info(co, self.recordset.id)
-            self.assertEqual(info['recordsetid'], self.recordset.id)
-            self.assertEqual(info['total_count'], len(self.collectionobjects))
-            self.assertEqual(info['index'], i)
-            self.assertEqual(info['previous'], None if i == 0 else \
-                                 api.uri_for_model('collectionobject', self.collectionobjects[i-1].id))
+            self.assertEqual(info["recordsetid"], self.recordset.id)
+            self.assertEqual(info["total_count"], len(self.collectionobjects))
+            self.assertEqual(info["index"], i)
+            self.assertEqual(
+                info["previous"],
+                (
+                    None
+                    if i == 0
+                    else api.uri_for_model(
+                        "collectionobject", self.collectionobjects[i - 1].id
+                    )
+                ),
+            )
 
-            self.assertEqual(info['next'], None if i == len(self.collectionobjects) - 1 else \
-                                 api.uri_for_model('collectionobject', self.collectionobjects[i+1].id))
+            self.assertEqual(
+                info["next"],
+                (
+                    None
+                    if i == len(self.collectionobjects) - 1
+                    else api.uri_for_model(
+                        "collectionobject", self.collectionobjects[i + 1].id
+                    )
+                ),
+            )
 
     def test_no_recordset_info(self):
         info = api.get_recordset_info(self.collectionobjects[0], self.recordset.id)
@@ -268,10 +334,14 @@ class RecordSetTests(ApiTests):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        rsis = api.get_collection(self.collection, 'recordsetitem', skip_perms_check, params={
-            'recordset': self.recordset.id})
+        rsis = api.get_collection(
+            self.collection,
+            "recordsetitem",
+            skip_perms_check,
+            params={"recordset": self.recordset.id},
+        )
 
-        result_ids = [rsi['recordid'] for rsi in rsis['objects']]
+        result_ids = [rsi["recordid"] for rsi in rsis["objects"]]
         ids.sort()
         self.assertEqual(result_ids, ids)
 
@@ -290,51 +360,71 @@ class RecordSetTests(ApiTests):
         with self.assertRaises(Recordset.DoesNotExist) as cm:
             recordset = Recordset.objects.get(id=self.recordset.id)
 
+
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
-        data = api.get_resource('collectingevent', self.collectingevent.id, skip_perms_check)
-        self.assertEqual(data['collectionobjects'],
-                         api.uri_for_model('collectionobject') +
-                         '?collectingevent=%d' % self.collectingevent.id)
+        data = api.get_resource(
+            "collectingevent", self.collectingevent.id, skip_perms_check
+        )
+        self.assertEqual(
+            data["collectionobjects"],
+            api.uri_for_model("collectionobject")
+            + "?collectingevent=%d" % self.collectingevent.id,
+        )
 
     def test_get_to_many_uris_with_special_othersidename(self):
-        data = api.get_resource('agent', self.agent.id, skip_perms_check)
+        data = api.get_resource("agent", self.agent.id, skip_perms_check)
 
         # This one is actually a regular othersidename
-        self.assertEqual(data['collectors'],
-                         api.uri_for_model('collector') +
-                         '?agent=%d' % self.agent.id)
+        self.assertEqual(
+            data["collectors"],
+            api.uri_for_model("collector") + "?agent=%d" % self.agent.id,
+        )
 
         # This one is the special otherside name ("organization" instead of "agent")
-        self.assertEqual(data['orgmembers'],
-                         api.uri_for_model('agent') +
-                         '?organization=%d' % self.agent.id)
+        self.assertEqual(
+            data["orgmembers"],
+            api.uri_for_model("agent") + "?organization=%d" % self.agent.id,
+        )
 
 
 class VersionCtrlApiTests(ApiTests):
     def test_bump_version(self):
-        data = api.get_resource('collection', self.collection.id, skip_perms_check)
-        data['collectionname'] = 'New Name'
-        obj = api.update_obj(self.collection, self.agent, 'collection',
-                             data['id'], data['version'], data)
-        self.assertEqual(obj.version, data['version'] + 1)
+        data = api.get_resource("collection", self.collection.id, skip_perms_check)
+        data["collectionname"] = "New Name"
+        obj = api.update_obj(
+            self.collection, self.agent, "collection", data["id"], data["version"], data
+        )
+        self.assertEqual(obj.version, data["version"] + 1)
 
     def test_update_object(self):
-        data = api.get_resource('collection', self.collection.id, skip_perms_check)
-        data['collectionname'] = 'New Name'
+        data = api.get_resource("collection", self.collection.id, skip_perms_check)
+        data["collectionname"] = "New Name"
         self.collection.version += 1
         self.collection.save()
         with self.assertRaises(api.StaleObjectException) as cm:
-            api.update_obj(self.collection, self.agent, 'collection',
-                           data['id'], data['version'], data)
-        data = api.get_resource('collection', self.collection.id, skip_perms_check)
-        self.assertNotEqual(data['collectionname'], 'New Name')
+            api.update_obj(
+                self.collection,
+                self.agent,
+                "collection",
+                data["id"],
+                data["version"],
+                data,
+            )
+        data = api.get_resource("collection", self.collection.id, skip_perms_check)
+        self.assertNotEqual(data["collectionname"], "New Name")
 
     def test_delete_object(self):
-        obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
-                'collection': api.uri_for_model('collection', self.collection.id),
-                'catalognumber': 'foobar'})
-        data = api.get_resource('collectionobject', obj.id, skip_perms_check)
+        obj = api.create_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            {
+                "collection": api.uri_for_model("collection", self.collection.id),
+                "catalognumber": "foobar",
+            },
+        )
+        data = api.get_resource("collectionobject", obj.id, skip_perms_check)
         obj.version += 1
         obj.save()
         with self.assertRaises(api.StaleObjectException) as cm:
@@ -342,40 +432,45 @@ class VersionCtrlApiTests(ApiTests):
         self.assertEqual(Collectionobject.objects.filter(id=obj.id).count(), 1)
 
     def test_missing_version(self):
-        data = api.get_resource('collection', self.collection.id, skip_perms_check)
-        data['collectionname'] = 'New Name'
+        data = api.get_resource("collection", self.collection.id, skip_perms_check)
+        data["collectionname"] = "New Name"
         self.collection.version += 1
         self.collection.save()
         with self.assertRaises(api.MissingVersionException) as cm:
-            api.update_obj(self.collection, self.agent, 'collection',
-                           data['id'], None, data)
+            api.update_obj(
+                self.collection, self.agent, "collection", data["id"], None, data
+            )
+
 
 class InlineApiTests(ApiTests):
     def test_get_resource_with_to_many_inlines(self):
         for i in range(3):
-            self.collectionobjects[0].determinations.create(
-                iscurrent=False, number1=i)
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
-        self.assertTrue(isinstance(data['determinations'], list))
-        self.assertEqual(len(data['determinations']), 3)
-        ids = [d['id'] for d in data['determinations']]
+            self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
+        data = api.get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        self.assertTrue(isinstance(data["determinations"], list))
+        self.assertEqual(len(data["determinations"]), 3)
+        ids = [d["id"] for d in data["determinations"]]
         for det in self.collectionobjects[0].determinations.all():
             self.assertTrue(det.id in ids)
 
     def test_inlined_in_collection(self):
-        dets = [self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
-                for i in range(3)]
+        dets = [
+            self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
+            for i in range(3)
+        ]
 
-        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
-        for obj in data['objects']:
-            self.assertTrue(isinstance(obj['determinations'], list))
-            if obj['id'] == self.collectionobjects[0].id:
-                serialized_dets = obj['determinations']
-                self.assertEqual(len(obj['determinations']), 3)
+        data = api.get_collection(self.collection, "collectionobject", skip_perms_check)
+        for obj in data["objects"]:
+            self.assertTrue(isinstance(obj["determinations"], list))
+            if obj["id"] == self.collectionobjects[0].id:
+                serialized_dets = obj["determinations"]
+                self.assertEqual(len(obj["determinations"]), 3)
             else:
-                self.assertEqual(len(obj['determinations']), 0)
+                self.assertEqual(len(obj["determinations"]), 0)
 
-        ids = {d['id'] for d in serialized_dets}
+        ids = {d["id"] for d in serialized_dets}
         for det in dets:
             self.assertTrue(det.id in ids)
 
@@ -385,47 +480,54 @@ class InlineApiTests(ApiTests):
 
         for i in range(3):
             self.collectionobjects[0].preparations.create(
-                collectionmemberid=self.collection.id,
-                preptype=preptype)
-        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
-        co = next(obj for obj in data['objects'] if obj['id'] == self.collectionobjects[0].id)
-        self.assertTrue(isinstance(co['preparations'], list))
-        self.assertEqual(co['preparations'][0]['preparationattachments'], [])
+                collectionmemberid=self.collection.id, preptype=preptype
+            )
+        data = api.get_collection(self.collection, "collectionobject", skip_perms_check)
+        co = next(
+            obj for obj in data["objects"] if obj["id"] == self.collectionobjects[0].id
+        )
+        self.assertTrue(isinstance(co["preparations"], list))
+        self.assertEqual(co["preparations"][0]["preparationattachments"], [])
 
     def test_get_resource_with_to_one_inlines(self):
         self.collectionobjects[0].collectionobjectattribute = \
             Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
         self.collectionobjects[0].save()
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
-        self.assertTrue(isinstance(data['collectionobjectattribute'], dict))
-        self.assertEqual(data['collectionobjectattribute']['id'],
-                         self.collectionobjects[0].collectionobjectattribute.id)
+        data = api.get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        self.assertTrue(isinstance(data["collectionobjectattribute"], dict))
+        self.assertEqual(
+            data["collectionobjectattribute"]["id"],
+            self.collectionobjects[0].collectionobjectattribute.id,
+        )
 
     def test_create_object_with_inlines(self):
-        data =  {
-            'collection': api.uri_for_model('collection', self.collection.id),
-            'catalognumber': 'foobar',
-            'determinations': [{
-                    'iscurrent': False,
-                    'number1': 1
-                    }, {
-                    'iscurrent': False,
-                    'number1': 2
-                    }],
-            'collectionobjectattribute': {
-                'text1': 'some text'}}
+        data = {
+            "collection": api.uri_for_model("collection", self.collection.id),
+            "catalognumber": "foobar",
+            "determinations": [
+                {"iscurrent": False, "number1": 1},
+                {"iscurrent": False, "number1": 2},
+            ],
+            "collectionobjectattribute": {"text1": "some text"},
+        }
 
-        obj = api.create_obj(self.collection, self.agent, 'collectionobject', data)
-        co = Collectionobject.objects.get(id=obj.id)
-        self.assertEqual(set(co.determinations.values_list('number1', flat=True)),
-                        set((1, 2)))
-        self.assertEqual(co.collectionobjectattribute.text1, 'some text')
+        obj = api.create_obj(self.collection, self.agent, "collectionobject", data)
+        co = models.Collectionobject.objects.get(id=obj.id)
+        self.assertEqual(
+            set(co.determinations.values_list("number1", flat=True)), set((1, 2))
+        )
+        self.assertEqual(co.collectionobjectattribute.text1, "some text")
 
     def test_create_object_with_inlined_existing_resource(self):
-        coa = Collectionobjectattribute.objects.create(
-            collectionmemberid=self.collection.id)
+        coa = models.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id
+        )
 
-        coa_data = api.get_resource('collectionobjectattribute', coa.id, skip_perms_check)
+        coa_data = api.get_resource(
+            "collectionobjectattribute", coa.id, skip_perms_check
+        )
         co_data = {
             'collection': api.uri_for_model('collection', self.collection.id),
             'collectionobjectattribute': coa_data,
@@ -450,43 +552,58 @@ class InlineApiTests(ApiTests):
 
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
-            collectionmemberid=self.collection.id,
-            number1=1,
-            remarks='original value')
+            collectionmemberid=self.collection.id, number1=1, remarks="original value"
+        )
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
-        data['determinations'][0]['remarks'] = 'changed value'
-        data['determinations'].append({
-                'number1': 2,
-                'remarks': 'a new determination'})
-        data['collectionobjectattribute'] = {
-            'text1': 'added an attribute'}
+        data = api.get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        data["determinations"][0]["remarks"] = "changed value"
+        data["determinations"].append({"number1": 2, "remarks": "a new determination"})
+        data["collectionobjectattribute"] = {"text1": "added an attribute"}
 
-        api.update_obj(self.collection, self.agent, 'collectionobject',
-                       data['id'], data['version'], data)
+        api.update_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            data["id"],
+            data["version"],
+            data,
+        )
 
         obj = Collectionobject.objects.get(id=self.collectionobjects[0].id)
         self.assertEqual(obj.determinations.count(), 2)
-        self.assertEqual(obj.determinations.get(number1=1).remarks, 'changed value')
-        self.assertEqual(obj.determinations.get(number1=2).remarks, 'a new determination')
-        self.assertEqual(obj.collectionobjectattribute.text1, 'added an attribute')
+        self.assertEqual(obj.determinations.get(number1=1).remarks, "changed value")
+        self.assertEqual(
+            obj.determinations.get(number1=2).remarks, "a new determination"
+        )
+        self.assertEqual(obj.collectionobjectattribute.text1, "added an attribute")
 
     def test_update_object_with_more_inlines(self):
         for i in range(6):
             self.collectionobjects[0].determinations.create(
-                collectionmemberid=self.collection.id,
-                number1=i)
+                collectionmemberid=self.collection.id, number1=i
+            )
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
-        even_dets = [d for d in data['determinations'] if d['number1'] % 2 == 0]
-        for d in even_dets: data['determinations'].remove(d)
+        data = api.get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        even_dets = [d for d in data["determinations"] if d["number1"] % 2 == 0]
+        for d in even_dets:
+            data["determinations"].remove(d)
 
         text1_data = 'look! an attribute'
 
         data['collectionobjectattribute'] = {'text1': text1_data}
 
-        api.update_obj(self.collection, self.agent, 'collectionobject',
-                       data['id'], data['version'], data)
+        api.update_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            data["id"],
+            data["version"],
+            data,
+        )
 
         obj = Collectionobject.objects.get(id=self.collectionobjects[0].id)
         self.assertEqual(obj.determinations.count(), 3)
@@ -669,13 +786,14 @@ class UserApiTests(ApiTests):
 
         # Because the test database doesn't have specifyuser_spprincipal
         from specifyweb.context import views
+
         views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_agents(self):
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f'/api/set_agents/{self.specifyuser.id}/',
+            f"/api/set_agents/{self.specifyuser.id}/",
             data=[self.agent.id],
             content_type="application/json",
         )
@@ -686,31 +804,34 @@ class UserApiTests(ApiTests):
             catalognumformatname='test2',
             collectionname='TestCollection2',
             isembeddedcollectingevent=False,
-            discipline=self.discipline)
-        
+            discipline=self.discipline,
+        )
+
         UserPolicy.objects.create(
             collection_id=collection2.id,
             specifyuser_id=self.specifyuser.id,
-            resource='%',
-            action='%',
+            resource="%",
+            action="%",
         )
 
         c = Client()
         c.force_login(self.specifyuser)
 
         response = c.post(
-            f'/api/set_agents/{self.specifyuser.id}/',
+            f"/api/set_agents/{self.specifyuser.id}/",
             data=[],
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {
-                'all_accessible_divisions': [self.division.id],
-                'missing_for_6': [],
-                'missing_for_7': [self.collection.id, collection2.id]
-            }}
+            {
+                "MissingAgentForAccessibleCollection": {
+                    "all_accessible_divisions": [self.division.id],
+                    "missing_for_6": [],
+                    "missing_for_7": [self.collection.id, collection2.id],
+                }
+            },
         )
 
     def test_set_user_agents_multiple_exception(self):
@@ -719,19 +840,28 @@ class UserApiTests(ApiTests):
             firstname="Test2",
             lastname="User2",
             division=self.division,
-            specifyuser=None)
+            specifyuser=None,
+        )
 
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f'/api/set_agents/{self.specifyuser.id}/',
+            f"/api/set_agents/{self.specifyuser.id}/",
             data=[self.agent.id, agent2.id],
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MultipleAgentsException': [{'agentid1': self.agent.id, 'agentid2': agent2.id, 'divisonid': self.division.id}]}
+            {
+                "MultipleAgentsException": [
+                    {
+                        "agentid1": self.agent.id,
+                        "agentid2": agent2.id,
+                        "divisonid": self.division.id,
+                    }
+                ]
+            },
         )
 
     def test_set_user_agents_in_use_exception(self):
@@ -739,20 +869,20 @@ class UserApiTests(ApiTests):
             isloggedin=False,
             isloggedinreport=False,
             name="testuser2",
-            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f'/api/set_agents/{user2.id}/',
+            f"/api/set_agents/{user2.id}/",
             data=[self.agent.id],
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            json.loads(response.content),
-            {'AgentInUseException': [self.agent.id]}
+            json.loads(response.content), {"AgentInUseException": [self.agent.id]}
         )
+
 
 class ScopingTests(ApiTests):
     def setUp(self):
@@ -766,13 +896,15 @@ class ScopingTests(ApiTests):
             geologictimeperiodtreedef=self.geologictimeperiodtreedef,
             geographytreedef=self.geographytreedef,
             division=self.other_division,
-            datatype=self.datatype)
+            datatype=self.datatype,
+        )
 
         self.other_collection = Collection.objects.create(
             catalognumformatname='test',
             collectionname='OtherCollection',
             isembeddedcollectingevent=False,
-            discipline=self.other_discipline)
+            discipline=self.other_discipline,
+        )
 
     def test_explicitly_defined_scope(self):
         accession = Accession.objects.create(
@@ -800,23 +932,29 @@ class ScopingTests(ApiTests):
         loan = Loan.objects.create(
             loannumber = "Inerred_Loan",
             division=self.other_division,
-            discipline=self.other_discipline
+            discipline=self.other_discipline,
         )
         inferred_loan_scope = scoping.Scoping(loan)._infer_scope()[1]
         self.assertEqual(inferred_loan_scope.id, self.other_division.id)
 
-        collection_object_scope = scoping.Scoping(self.collectionobjects[0]).get_scope_model()
+        collection_object_scope = scoping.Scoping(
+            self.collectionobjects[0]
+        ).get_scope_model()
         self.assertEqual(collection_object_scope.id, self.collection.id)
 
     def test_in_same_scope(self):
-        collection_objects_same_collection = (self.collectionobjects[0], self.collectionobjects[1])
-        self.assertEqual(scoping.in_same_scope(*collection_objects_same_collection), True)
+        collection_objects_same_collection = (
+            self.collectionobjects[0],
+            self.collectionobjects[1],
+        )
+        self.assertEqual(
+            scoping.in_same_scope(*collection_objects_same_collection), True
+        )
 
         other_collectionobject = Collectionobject.objects.create(
             catalognumber="other-co",
             collection=self.other_collection
         )
-        self.assertEqual(scoping.in_same_scope(other_collectionobject, self.collectionobjects[0]), False)
 
         agent = Agent.objects.create(
             agenttype=1,

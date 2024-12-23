@@ -33,16 +33,6 @@ def _group_concat_mysql(element, compiler, **kwargs):
 
     return 'GROUP_CONCAT(%s)' % inner_expr
 
-def extract_clauses(element, compiler):
-    expr = compiler.process(element.clauses.clauses[0])
-    def process_clause(idx):
-        return compiler.process(element.clauses.clauses[idx])
-
-    separator = process_clause(1) if len(element.clauses) > 1 else None
-    order_by = process_clause(2) if len(element.clauses) > 2 else None
-
-    return expr, separator, order_by
-
 def group_by_displayed_fields(query: QueryConstruct, fields):
     for field in fields:
         query = query.group_by(field)
