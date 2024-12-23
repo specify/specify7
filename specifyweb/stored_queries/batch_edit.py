@@ -1106,11 +1106,13 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # Consider optimizing when relationships are not-editable? May not benefit actually
     # This permission just gets enforced here
-    omit_relationships = not has_target_permission(
-        props["collection"].id,
-        props["user"].id,
-        [BatchEditDataSetPT.edit_multiple_tables],
-    )
+    # NOTE: Relationships disabled for issue-5413 branch to minimize scope of testing
+    omit_relationships = True
+    # omit_relationships = not has_target_permission(
+    #     props["collection"].id,
+    #     props["user"].id,
+    #     [BatchEditDataSetPT.edit_multiple_tables],
+    # )
 
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
