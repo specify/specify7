@@ -2,9 +2,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { wbPlanText } from '../../localization/wbPlan';
-import { f } from '../../utils/functools';
 import { icons } from '../Atoms/Icons';
-import { getTable } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';

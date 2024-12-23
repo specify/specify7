@@ -703,32 +703,7 @@ export const wbText = createDictionary({
   uploadErrorsSecondDescription: {
     'en-us': `
       Validate the Data Set and review the mouseover hints for each error cell,
-      then make the appropriate corrections. Save and retry the Upload.
-    `,
-    'ru-ru': `
-      Проверте набор данных и наведите указатель мыши на каждую ячейку с
-      ошибкой, затем сделайте соответствующие исправления, сохраните и повторите
-      попытку.
-    `,
-    'es-es': `
-      Valide el conjunto de datos y revise las sugerencias del mouseover para
-      cada celda de error, luego haga las correcciones apropiadas. Guarde y
-      vuelva a intentar la carga.
-    `,
-    'fr-fr': `
-      Validez l'ensemble de données et examinez les conseils de passage de la
-      souris pour chaque cellule d'erreur, puis apportez les corrections
-      appropriées. Enregistrez et réessayez le téléchargement.
-    `,
-    'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
-      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
-      завантаження.
-    `,
-    'de-ch': `
-      Validieren Sie den Datensatz und überprüfen Sie die Mouseover-Hinweise für
-      jede Fehlerzelle. Nehmen Sie dann die entsprechenden Korrekturen vor.
-      Speichern Sie und versuchen Sie den Upload erneut.
+      then make the appropriate corrections. Save and retry the {type:string}.
     `,
   },
   dataSetRollback: {
@@ -1263,12 +1238,7 @@ export const wbText = createDictionary({
     'de-ch': 'Neuer Datensatz {date}',
   },
   dataSets: {
-    'en-us': 'WorkBench Data Sets',
-    'ru-ru': 'Наборы данных',
-    'es-es': 'Conjuntos de datos de WorkBench',
-    'fr-fr': 'Ensembles de données WorkBench',
-    'uk-ua': 'Набори даних WorkBench',
-    'de-ch': 'WorkBench-Datensätze',
+    'en-us': '{variant:string} WorkBench Data Sets',
   },
   wbsDialogEmpty: {
     'en-us': 'Currently no Data Sets exist.',

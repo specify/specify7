@@ -12,14 +12,14 @@ import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import type { AnyTree, FilterTablesByEndsWith, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
-import type { GeographyTreeDefItem, SpQuery, Tables } from '../DataModel/types';
+import type { SpQuery, Tables } from '../DataModel/types';
 import {
   isTreeTable,
   strictGetTreeDefinitionItems,
@@ -166,7 +166,7 @@ const filters = [containsFaultyNestedToMany, containsSystemTables];
 
 const getTreeDefFromName = (
   rankName: string,
-  treeDefItems: RA<SerializedResource<GeographyTreeDefItem>>
+  treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
 ) =>
   defined(
     treeDefItems.find(
