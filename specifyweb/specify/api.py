@@ -484,7 +484,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     data = cleanData(model, data, agent)
     obj = model()
     _handle_special_create_priors(obj, data, parent_obj)
-    handle_fk_fields(collection, agent, obj, data)
+    handle_fk_fields(collection, agent, obj, data, parent_obj)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
@@ -493,7 +493,8 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
-    _handle_special_save_priors(obj)
+    # _handle_special_create_posteriors(obj, data, parent_obj, delay_fields)
+    _handle_special_save_priors(obj) # TODO: move before autonumbering_and_save
 
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
@@ -575,7 +576,7 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
         yield (key, data[key])
 
 
-def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List[FieldChangeInfo]]:
+def handle_fk_fields(collection, agent, obj, data: Dict[str, Any], parent_obj = None) -> Tuple[List, List[FieldChangeInfo]]:
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -615,8 +616,22 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
             rel_model = field.related_model
+            rel_obj = None
 
-            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None)
+            if (field_name == 'childco'
+                and obj._meta.model_name == 'collectionobjectgroupjoin'
+                and parent_obj is not None 
+                and parent_obj._meta.model_name == 'collectionobject'):
+                # parent_obj.save() # TODO: Decide to save here or in special save priors function
+                rel_obj = parent_obj
+            else:
+                rel_obj = update_or_create_resource(
+                    collection,
+                    agent,
+                    rel_model,
+                    val,
+                    obj if dependent else None,
+                )
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
@@ -1087,13 +1102,22 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
 
 def _save_parent_co_prior(obj, data, parent_obj):
-    if (
-        obj._meta.model_name == "collectionobjectgroupjoin"
-        and parent_obj._meta.model_name == "collectionobject"
-        and data["childco"] == "/api/specify/collectionobject/"
-    ):
-        parent_obj.save() # temporary fix for saving co cojo.childco
-        data['childco'] = f"{data['childco']}{parent_obj.id}/"
+    """
+    Save the parent collection object and update the 'childco' field in the data.
+    """
+    if obj._meta.model_name == "collectionobjectgroupjoin" and parent_obj._meta.model_name == "collectionobject":
+        if data.get("childco") == "/api/specify/collectionobject/":
+            parent_obj.save()  # temporary fix for saving co cojo.childco
+            data["childco"] = f"{data['childco']}{parent_obj.id}/"
+        elif "catalognumber" not in data: # and 'id' not in data:
+            parent_obj.save()
 
 def _handle_special_create_priors(obj, data, parent_obj):
     _save_parent_co_prior(obj, data, parent_obj)
+
+def _save_cojo_child_co_posterior(obj, data, parent_obj=None):
+    if obj._meta.model_name == "collectionobjectgroupjoin" and data["childco"] == "/api/specify/collectionobject/":
+        obj.save()
+
+def _handle_special_create_posteriors(obj, data, parent_obj):
+    _save_cojo_child_co_posterior(obj, data, parent_obj)
