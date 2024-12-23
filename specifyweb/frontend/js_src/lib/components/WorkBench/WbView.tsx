@@ -190,7 +190,8 @@ export function WbView({
             {commonText.tools()}
           </Button.Small>
           <span className="-ml-1 flex-1" />
-          {canUpdate || isMapped ? (
+          {/* NOTE: Data Mapper temporarily disabled in #5413 */}
+          {!dataset.isupdate && (canUpdate || isMapped)? (
             <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
               {wbPlanText.dataMapper()}
             </Link.Small>
