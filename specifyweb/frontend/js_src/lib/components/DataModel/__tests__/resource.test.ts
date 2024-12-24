@@ -250,9 +250,19 @@ describe('getCarryOverPreference', () => {
   });
 });
 
-test('checkUniqueFields', ()=>{
-  Object.values(tables).map((table)=>expect(getUniqueFields(table, false)).toEqual(uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]))
-})
+/**
+ * If this test breaks, uniqueFields.json needs to be regenerated.
+ * 1. Go to the dev console on the browser
+ * 2. Run the function _getUniqueFields()
+ * 3. Paste the text into uniqueFields.json and format with prettier
+ */
+test('checkUniqueFields', () => {
+  Object.values(tables).map((table) =>
+    expect(getUniqueFields(table, false)).toEqual(
+      uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]
+    )
+  );
+});
 
 test('getFieldsToNotClone', () => {
   userPreferences.set('form', 'preferences', 'carryForward', {
