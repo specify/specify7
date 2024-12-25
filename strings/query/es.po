@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -72,7 +72,7 @@ msgstr "Cualquier"
 #: components/QueryBuilder/FieldFilter.tsx:393
 #, fuzzy
 msgid "startValue"
-msgstr "Años"
+msgstr "Valor inicial"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:354
@@ -448,7 +448,7 @@ msgstr "Definir informe basado en consulta"
 #: components/QueryBuilder/Edit.tsx:104
 #, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "[X0X][X7X][X20X] [X29X][X37X][X50X] [X60X][X71X][X89X]"
+msgstr "Definir etiqueta en función de la consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:43
