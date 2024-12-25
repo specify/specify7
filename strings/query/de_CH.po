@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -306,7 +306,7 @@ msgstr "(aggregiert)"
 #: components/WbPlanView/navigator.ts:490
 #, fuzzy
 msgid "formattedInline"
-msgstr "Erstellen [X7X]"
+msgstr "(formatiert)"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:436
@@ -392,7 +392,7 @@ msgstr "In"
 #: components/QueryBuilder/FieldFilter.tsx:516
 #, fuzzy
 msgid "inDescription"
-msgstr "Datensätze anzeigen"
+msgstr "Eine durch Kommas getrennte Liste von Werten"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #: components/Preferences/UserDefinitions.tsx:1380
@@ -528,7 +528,7 @@ msgstr ""
 #: components/QueryBuilder/RelativeDate.tsx:186
 #, fuzzy
 msgid "future"
-msgstr "Exportdatei wird erstellt"
+msgstr "in der Zukunft"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:185
