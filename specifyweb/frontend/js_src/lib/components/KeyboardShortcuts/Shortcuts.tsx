@@ -7,6 +7,7 @@ import React from 'react';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
@@ -65,9 +66,11 @@ export function KeyboardShortcutPreferenceItem({
             editingIndex === index
               ? (shortcut): void => {
                   setShortcuts(
-                    shortcut === undefined
-                      ? removeItem(shortcuts, index)
-                      : replaceItem(shortcuts, index, shortcut)
+                    f.unique(
+                      shortcut === undefined
+                        ? removeItem(shortcuts, index)
+                        : replaceItem(shortcuts, index, shortcut)
+                    )
                   );
                   setEditingIndex(false);
                 }
