@@ -49,7 +49,7 @@ export function FieldFormatterParts({
             <tr>
               <th>{resourcesText.type()}</th>
               <th>{commonText.size()}</th>
-              <th>{resourcesText.hint()}</th>
+              <th>{resourcesText.value()}</th>
               <th />
               <th />
             </tr>
@@ -150,7 +150,7 @@ function Part({
       </td>
       <td>
         <Input.Text
-          aria-label={resourcesText.hint()}
+          aria-label={resourcesText.value()}
           disabled={part.type === 'year' || part.type === 'numeric'}
           isReadOnly={isReadOnly}
           required
@@ -227,7 +227,7 @@ function Part({
   );
 }
 
-const maxSize = 9999;
+const maxSize = 99;
 
 function RegexField({
   value,

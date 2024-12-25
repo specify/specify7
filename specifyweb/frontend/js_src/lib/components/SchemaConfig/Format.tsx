@@ -205,8 +205,11 @@ function FormatterLine({
           onChange={(): void =>
             handleFormatted(
               name,
+              // Select first option if there is such
               typeof values === 'object'
-                ? (Object.values(values)[0][0][0]! ?? null)
+                ? (Object.values(values).at(0)?.at(0)?.at(0) ??
+                    Object.values(values).at(1)?.at(0)?.at(0) ??
+                    null)
                 : null
             )
           }
@@ -312,6 +315,9 @@ function PickListEditing({
   );
 }
 
+const overlayPrefix = '/specify/overlay/resources/app-resource/';
+const fullScreenPrefix = '/specify/resources/app-resource/';
+
 function WebLinkEditing({
   value,
   schemaData,
@@ -322,32 +328,29 @@ function WebLinkEditing({
   const index = schemaData.webLinks.find(({ name }) => name === value)?.index;
   const resourceId = appResourceIds.WebLinks;
   const navigate = useNavigate();
+
   return typeof resourceId === 'number' ? (
     <>
       {typeof index === 'number' && (
         <Link.Icon
           className={className.dataEntryEdit}
-          href={`/specify/resources/app-resource/${resourceId}/web-link/${index}/`}
+          href={`${fullScreenPrefix}${resourceId}/web-link/${index}`}
           icon="pencil"
           title={commonText.edit()}
           onClick={(event): void => {
             event.preventDefault();
-            navigate(
-              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`
-            );
+            navigate(`${overlayPrefix}${resourceId}/web-link/${index}`);
           }}
         />
       )}
       <Link.Icon
         className={className.dataEntryAdd}
-        href={`/specify/resources/app-resource/${resourceId}/web-link/`}
+        href={`${fullScreenPrefix}${resourceId}/web-link`}
         icon="plus"
         title={commonText.add()}
         onClick={(event): void => {
           event.preventDefault();
-          navigate(
-            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`
-          );
+          navigate(`${overlayPrefix}${resourceId}/web-link`);
         }}
       />
     </>
@@ -370,29 +373,29 @@ function FieldFormatterEditing({
   const navigate = useNavigate();
   if (resourceId === undefined) return null;
 
-  const baseUrl = `/specify/resources/app-resource/${resourceId}/field-formatters/${table.name}/`;
+  const commonUrl = `${resourceId}/field-formatters/${table.name}`;
   return (
     <>
       {typeof index === 'number' && (
         <Link.Icon
           className={className.dataEntryEdit}
-          href={`${baseUrl}${index}/`}
+          href={`${fullScreenPrefix}${commonUrl}/${index}`}
           icon="pencil"
           title={commonText.edit()}
           onClick={(event): void => {
             event.preventDefault();
-            navigate(`${baseUrl}${index}/`);
+            navigate(`${overlayPrefix}${commonUrl}/${index}`);
           }}
         />
       )}
       <Link.Icon
         className={className.dataEntryAdd}
-        href={baseUrl}
+        href={`${fullScreenPrefix}${commonUrl}`}
         icon="plus"
         title={commonText.add()}
         onClick={(event): void => {
           event.preventDefault();
-          navigate(baseUrl);
+          navigate(`${overlayPrefix}${commonUrl}`);
         }}
       />
     </>

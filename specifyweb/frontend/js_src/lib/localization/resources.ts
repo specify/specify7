@@ -155,9 +155,9 @@ export const resourcesText = createDictionary({
   },
   fieldFormattersDescription: {
     'en-us': `
-      Field formatter controls how data for a specific table field is
-      shown in query results, exports, and on the form. It determines
-      autonumbering and individual parts that make up the field.
+      The “Field Format” controls how data for a specific table field is
+      displayed in query results, exports, and forms. It manages autonumbering
+      and the composition of various parts that define the field.
     `,
   },
   dataObjectFormatters: {
@@ -855,13 +855,13 @@ export const resourcesText = createDictionary({
   nonConformingInline: {
     'en-us': '(non-conforming)',
   },
-  hint: {
-    'en-us': 'Hint',
-    'de-ch': 'Hinweis',
-    'es-es': 'Sugerencia',
-    'fr-fr': 'Indice',
-    'ru-ru': 'Подсказка',
-    'uk-ua': 'Підказка',
+  value: {
+    'en-us': 'Value',
+    'de-ch': 'Wert',
+    'es-es': 'Valor',
+    'fr-fr': 'Valeur',
+    'ru-ru': 'Значение',
+    'uk-ua': 'Значення',
   },
   constant: {
     'en-us': 'Constant',

@@ -12,7 +12,8 @@ import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { LiteralField } from '../DataModel/specifyField';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { genericTables } from '../DataModel/tables';
 import { softError } from '../Errors/assert';
 import { ResourceMapping } from '../Formatters/Components';
 import { ResourcePreview } from '../Formatters/Preview';
@@ -84,9 +85,17 @@ function FieldPicker({
 const excludeNonLiteral = (mappingData: MappingLineData): MappingLineData => ({
   ...mappingData,
   fieldsData: Object.fromEntries(
-    Object.entries(mappingData.fieldsData).filter(
-      ([_name, fieldData]) => fieldData.tableName === undefined
-    )
+    Object.entries(mappingData.fieldsData).filter(([name, fieldData]) => {
+      if (fieldData.tableName !== undefined) return false;
+      const field: LiteralField | Relationship | undefined =
+        mappingData.tableName === undefined
+          ? undefined
+          : genericTables[mappingData.tableName].field[name];
+      if (field === undefined) return false;
+      return (
+        !field.isReadOnly && !field.isVirtual && !field.overrides.isReadOnly
+      );
+    })
   ),
 });
 
