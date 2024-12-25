@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -328,7 +328,7 @@ msgstr ""
 #: components/QueryBuilder/FieldFilter.tsx:445
 #, fuzzy
 msgid "equal"
-msgstr "Résultats de la requête"
+msgstr "Égal"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:454
@@ -382,7 +382,7 @@ msgstr "Faux ou vide"
 #: components/QueryBuilder/FieldFilter.tsx:506
 #, fuzzy
 msgid "between"
-msgstr "Arbre désynonymisé"
+msgstr "Entre"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:515
@@ -467,7 +467,7 @@ msgstr "Parcourir les formulaires"
 #: components/Toolbar/QueryTablesEdit.tsx:32
 #, fuzzy
 msgid "configureQueryTables"
-msgstr "(n'importe quel arbre)"
+msgstr "Configurer les tables de requête visibles"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:96
