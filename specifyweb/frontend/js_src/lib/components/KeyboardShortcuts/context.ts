@@ -75,7 +75,13 @@ document.addEventListener('keydown', (event) => {
   // Ignore shortcuts that result in printed characters when in an input field
   const ignore = isPrintable && isEntering;
   if (ignore) return;
-  if (modifiers.length === 0 && specialKeyboardKeys.has(event.code)) return;
+  const isSpecial = specialKeyboardKeys.has(event.code);
+  if (
+    isSpecial &&
+    (modifiers.length === 0 ||
+      (modifiers[0] === 'Shift' && event.code === 'Tab'))
+  )
+    return;
 
   if (!pressedKeys.includes(event.code)) {
     pressedKeys.push(event.code);
