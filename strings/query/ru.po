@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-25 21:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -211,7 +211,7 @@ msgstr "Создать CSV-файл"
 #: components/QueryBuilder/Export.tsx:192
 #, fuzzy
 msgid "createKml"
-msgstr "Создать KML"
+msgstr "Создать KML-файл"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 #: components/QueryBuilder/Components.tsx:231
@@ -257,7 +257,7 @@ msgstr "Выбрать форматировщик"
 #: components/Toolbar/ListEdit.tsx:117
 #, fuzzy
 msgid "moveDown"
-msgstr "Переместить вниз"
+msgstr "Двигаться вниз"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:81
@@ -324,7 +324,7 @@ msgstr ""
 #: components/QueryBuilder/FieldFilter.tsx:445
 #, fuzzy
 msgid "equal"
-msgstr "Результаты запроса"
+msgstr "Равный"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:454
@@ -378,7 +378,7 @@ msgstr "Ложь или Пусто"
 #: components/QueryBuilder/FieldFilter.tsx:506
 #, fuzzy
 msgid "between"
-msgstr "Дерево Десиномизирует"
+msgstr "Между"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:515
@@ -463,7 +463,7 @@ msgstr "Просмотр в формах"
 #: components/Toolbar/QueryTablesEdit.tsx:32
 #, fuzzy
 msgid "configureQueryTables"
-msgstr "(любое дерево)"
+msgstr "Настройте видимые таблицы запросов"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:96
