@@ -2120,4 +2120,19 @@ export const preferencesText = createDictionary({
   actions: {
     'en-us': 'Actions',
   },
+  urlShortcuts: {
+    'en-us': 'Keyboard Shortcuts to URLs',
+  },
+  pages: {
+    'en-us': 'Pages',
+  },
+  overlays: {
+    'en-us': 'Overlays',
+  },
+  customPages: {
+    'en-us': 'Custom Pages',
+  },
+  relativeOrAbsoluteUrl: {
+    'en-us': 'Relative or absolute URL',
+  },
 } as const);

@@ -41,6 +41,8 @@ import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
 import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
+import type { UrlShortcuts } from '../KeyboardShortcuts/UrlShortcuts';
+import { UrlShortcutsEditor } from '../KeyboardShortcuts/UrlShortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -612,7 +614,7 @@ export const userPreferenceDefinitions = {
             ],
           }),
           items: definePref<MenuPreferences>({
-            title: preferencesText.position(),
+            title: preferencesText.header(),
             requiresReload: false,
             visible: true,
             defaultValue: {
@@ -636,6 +638,23 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '',
             type: 'text',
+          }),
+        },
+      },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          urlShortcuts: definePref<UrlShortcuts>({
+            title: preferencesText.urlShortcuts(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: {
+              '/specify/user-keyboard-shortcuts': {
+                other: ['Ctrl+Slash'],
+              },
+            },
+            renderer: UrlShortcutsEditor,
+            container: 'div',
           }),
         },
       },

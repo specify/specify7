@@ -163,8 +163,10 @@ export function usePrefDefinitions(filter: PreferencesFilter) {
                               if (filter !== 'allUserPreferences') {
                                 const isKeyboardShortcut =
                                   'renderer' in item &&
-                                  item.renderer.name ===
-                                    'KeyboardShortcutPreferenceItem';
+                                  (item.renderer.name ===
+                                    'KeyboardShortcutPreferenceItem' ||
+                                    item.renderer.name ===
+                                      'UrlShortcutsEditor');
                                 const showKeyboardShortcuts =
                                   filter === 'userKeyboardShortcuts';
 
@@ -184,7 +186,7 @@ export function usePrefDefinitions(filter: PreferencesFilter) {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
+    [preferencesVisibilityContext, filter]
   );
 }
 
