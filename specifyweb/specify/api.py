@@ -915,7 +915,16 @@ def field_to_val(obj, field, checker: ReadPermChecker) -> Any:
             related_obj = getattr(obj, field.name, None)
             if related_obj is None: return None
             return _obj_to_data(related_obj, checker)
-        related_id = getattr(obj, field.name + '_id')
+        
+        # The FK can exist on the other side in the case of one_to_one 
+        # relationships
+        has_fk = hasattr(obj, field.name + '_id')
+        if has_fk: 
+            related_id = getattr(obj, field.name + '_id')
+        else: 
+            related_obj = getattr(obj, field.name, None)
+            related_id = getattr(related_obj, 'id', None)
+
         if related_id is None: return None
         return uri_for_model(field.related_model, related_id)
     else:

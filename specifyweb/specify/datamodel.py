@@ -1594,7 +1594,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
             Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
             Relationship(name='collectionObjectType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
-            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
+            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco'),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
         ],
@@ -8298,7 +8298,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
-            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',otherSideName='childCog', dependent=True),
+            Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',otherSideName='childCog'),
             Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
