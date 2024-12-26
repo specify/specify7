@@ -22,34 +22,33 @@ import {
   resolvePlatformShortcuts,
 } from './utils';
 
-/**
- * FIXME: define keyboard shortcuts for common actions and pages
- *
- * FIXME: allow setting keyboard shortcuts for arbitrary pages
- *
- * FIXME: create a mechanism for setting shortcuts for a page, and then displaying
- * those in the UI if present on the page
- *
- * FIXME: open key shortcut viewer on cmd+/
- */
-
+export const emptyShortcuts = {};
 export function KeyboardShortcutPreferenceItem({
-  value,
+  value = emptyShortcuts,
   onChange: handleChange,
-}: PreferenceRendererProps<KeyboardShortcuts>): JSX.Element {
+}: Partial<
+  Pick<PreferenceRendererProps<KeyboardShortcuts>, 'onChange' | 'value'>
+>): JSX.Element {
   const [editingIndex, setEditingIndex] = React.useState<number | false>(false);
   const isEditing = typeof editingIndex === 'number';
   const shortcuts = resolvePlatformShortcuts(value) ?? [];
-  const setShortcuts = (shortcuts: RA<string>): void =>
-    handleChange(replaceKey(value, keyboardPlatform, shortcuts));
+  const setShortcuts =
+    handleChange === undefined
+      ? undefined
+      : (shortcuts: RA<string>): void =>
+          handleChange(replaceKey(value, keyboardPlatform, shortcuts));
 
-  // Do not allow saving an empty shortcut
-  const hasEmptyShortcut = !isEditing && shortcuts.includes('');
-  React.useEffect(() => {
-    if (hasEmptyShortcut)
-      setShortcuts(shortcuts.filter((shortcut) => shortcut !== ''));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasEmptyShortcut]);
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Cleanup empty when we finish editing
+  React.useEffect(
+    () =>
+      isEditing
+        ? (): void => handleChange?.(cleanupEmpty(valueRef.current))
+        : undefined,
+    [isEditing, handleChange]
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -63,7 +62,7 @@ export function KeyboardShortcutPreferenceItem({
               : undefined
           }
           onSave={
-            editingIndex === index
+            editingIndex === index && setShortcuts !== undefined
               ? (shortcut): void => {
                   setShortcuts(
                     f.unique(
@@ -78,26 +77,34 @@ export function KeyboardShortcutPreferenceItem({
           }
         />
       ))}
-      <div className="flex items-end gap-2">
-        {!isEditing && (
-          <Button.Small
-            onClick={(): void => {
-              setShortcuts([...shortcuts, '']);
-              setEditingIndex(shortcuts.length);
-            }}
-          >
-            {commonText.add()}
-          </Button.Small>
-        )}
-      </div>
+      {setShortcuts !== undefined && (
+        <Button.Small
+          disabled={isEditing}
+          onClick={(): void => {
+            setShortcuts([...shortcuts, '']);
+            setEditingIndex(shortcuts.length);
+          }}
+        >
+          {commonText.add()}
+        </Button.Small>
+      )}
     </div>
   );
 }
-// This is used in BasePreferences.useKeyboardShortcut to validate that the pref you are trying to listen to is actually a keyboard shortcut
-if (process.env.NODE_ENV !== 'production')
-  Object.defineProperty(KeyboardShortcutPreferenceItem, 'name', {
-    value: 'KeyboardShortcutPreferenceItem',
-  });
+
+function cleanupEmpty(value: KeyboardShortcuts): KeyboardShortcuts {
+  const shortcuts = Object.fromEntries(
+    Object.entries(value).map(([platform, shortcuts]) => [
+      platform,
+      // Drop empty strings
+      shortcuts?.filter((shortcut) => shortcut.length > 0),
+    ])
+  );
+  const isCompletelyEmpty = Object.values(shortcuts).every(
+    (shortcuts) => shortcuts === undefined || shortcuts.length === 0
+  );
+  return isCompletelyEmpty ? {} : value;
+}
 
 function EditKeyboardShortcut({
   shortcut,

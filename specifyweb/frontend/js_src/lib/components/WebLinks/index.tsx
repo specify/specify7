@@ -53,13 +53,10 @@ export function WebLinkField({
   const url = builtUrl
     ?.map((part) => (typeof part === 'string' ? part : ''))
     .join('');
-  const isExternal = React.useMemo(() => {
-    try {
-      return url !== undefined && isExternalUrl(url);
-    } catch {
-      return true;
-    }
-  }, [url]);
+  const isExternal = React.useMemo(
+    () => url !== undefined && isExternalUrl(url),
+    [url]
+  );
 
   React.useEffect(() => {
     if (

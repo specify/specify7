@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
@@ -14,11 +15,11 @@ import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 
-// FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
     path: 'specify-network-collection',
+    title: specifyNetworkText.specifyNetwork(),
     element: () =>
       import('../SpecifyNetworkCollection').then(
         ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
@@ -89,6 +90,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
+                title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
                     ({ CreateLibraryRole }) => CreateLibraryRole
@@ -229,11 +231,11 @@ export const routes: RA<EnhancedRoute> = [
     path: 'import',
     children: [
       {
+        title: headerText.localityUpdateTool(),
         path: 'locality-dataset',
         element: () =>
           import('../LocalityUpdate').then(
-            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
-              ImportLocalitySet
+            ({ LocalityUpdateFromDataSet }) => LocalityUpdateFromDataSet
           ),
       },
     ],
@@ -378,7 +380,6 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'schema-config',
-    title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
         ({ SchemaConfig }) => SchemaConfig
@@ -386,6 +387,7 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         index: true,
+        title: schemaText.schemaConfig(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ ChooseSchemaLanguage }) => ChooseSchemaLanguage

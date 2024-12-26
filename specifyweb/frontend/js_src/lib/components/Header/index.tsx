@@ -18,6 +18,7 @@ import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { useUrlShortcuts } from '../KeyboardShortcuts/useUrlShortcuts';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { Notifications } from '../Notifications/Notifications';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -94,6 +95,8 @@ export function Header({
       ) ?? commonText.chooseCollection(),
     []
   );
+
+  useUrlShortcuts();
 
   const activeMenuItem = React.useContext(MenuContext);
   return (

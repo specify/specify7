@@ -110,7 +110,6 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'queries',
-        title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay
@@ -118,6 +117,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
+            title: queryText.queries(),
             element: () =>
               import('../Toolbar/Query').then(
                 ({ QueryListOutlet }) => QueryListOutlet
