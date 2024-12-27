@@ -1597,6 +1597,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
+            Relationship(name='issue5451', type='one-to-one', relatedModelName='Issue5451Test', otherSideName='collectionObject')
         ],
         fieldAliases=[
 
@@ -8704,6 +8705,31 @@ datamodel = Datamodel(tables=[
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
+        ],
+    ),
+    Table( # Issue 5451 Test
+        sp7_only=True,
+        django_app='issue5451',
+        classname='edu.ku.brc.specify.datamodel.Issue5451Test',
+        table='issue5451test',
+        tableId=1028,
+        idColumn='issue5451testID',
+        idFieldName='issue5451testId',
+        idField=IdField(name='issue5451testId', column='issue5451testID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='name', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text1', column='text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collectionObject', type='one-to-one', required=True, column='CollectionObjectID', relatedModelName='CollectionObject', otherSideName='issue5451'),
+        ],
+        fieldAliases=[
+
         ],
     ),
 ])

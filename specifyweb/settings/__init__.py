@@ -226,6 +226,7 @@ INSTALLED_APPS = (
     'specifyweb.interactions',
     'specifyweb.workbench',
     'specifyweb.notifications',
+    'specifyweb.issue5451',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
 )

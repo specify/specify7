@@ -216,6 +216,7 @@ model_names_by_table_id = {
     1025:'Tectonicunittreedef',
     1026:'Tectonicunittreedefitem',
     1027:'Tectonicunit', 
+    1028: 'Issue5451Test'
 }
 
 model_names_by_app = {
@@ -245,6 +246,9 @@ model_names_by_app = {
     },
     'workbench': {
         'Spdataset'
+    },
+    'issue5451': {
+        'Issue5451Test'
     },
     'specify': {
         'Accession',
