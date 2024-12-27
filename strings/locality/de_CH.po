@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-27 06:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -363,6 +363,6 @@ msgstr "Der Breitengrad muss einen Wert zwischen -90° und 90° haben"
 #, fuzzy
 msgid "validLongitude"
 msgstr ""
-"Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wird von "
-"der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: "
-"string}-Datensätze erstellt:"
+"Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen ist von der "
+"Aktualisierung betroffen und es werden {geoCoordDetailTableLabel: string}-"
+"Datensätze erstellt:"
