@@ -70,7 +70,9 @@ export const fetchContext = f
             table.name,
             rules
               ?.filter(({ rule }) =>
-                rule.fields.some((field) => table.getField(field) !== undefined)
+                rule.fields.every(
+                  (field) => table.getField(field) !== undefined
+                )
               )
               .map(({ rule }) => ({
                 rule,
