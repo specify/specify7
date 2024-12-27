@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-27 06:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -139,9 +139,7 @@ msgstr "Línea"
 #: components/FormPlugins/LatLongUi.tsx:264
 #, fuzzy
 msgid "rectangle"
-msgstr ""
-"Se encontró más de una localidad con guid: {guid:string}. ID de localidad: "
-"{localityIds: string}"
+msgstr "Rectángulo"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:270
@@ -194,7 +192,7 @@ msgstr "DD MM SS.SS (32 45 42,84)"
 #: components/WbToolkit/CoordinateConverter.tsx:97
 #, fuzzy
 msgid "degreesWithDirection"
-msgstr "El conjunto de datos debe contener un encabezado 'guid'"
+msgstr "DD.DDDD N/S/E/O (32.7619 N)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:102
@@ -265,7 +263,7 @@ msgstr "Conjunto de datos de actualización de localidad analizados"
 #: components/Notifications/NotificationRenderers.tsx:253
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Línea"
+msgstr "Error en la actualización de la localidad"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
@@ -286,7 +284,7 @@ msgstr "Actualización de localidad cancelada"
 #: components/Notifications/NotificationRenderers.tsx:297
 #, fuzzy
 msgid "localityUpdateSucceeded"
-msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
+msgstr "Actualización de localidad realizada con éxito"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
