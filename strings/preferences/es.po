@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2024-12-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -17,7 +17,7 @@ msgstr ""
 #: components/Router/Routes.tsx:365
 #, fuzzy
 msgid "preferences"
-msgstr "Esquinas redondeadas"
+msgstr "Preferencias"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:45
@@ -222,7 +222,7 @@ msgstr "Campo obligatorio background"
 #: components/Preferences/UserDefinitions.tsx:930
 #, fuzzy
 msgid "darkFieldBackground"
-msgstr "(fuente predeterminada)"
+msgstr "Fondo de campo (tema oscuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:938
@@ -483,7 +483,7 @@ msgstr "Mostrar icono en el encabezado"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Mostrar vista básica"
+msgstr "Interfaz de escala"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -580,7 +580,7 @@ msgstr "No tienes permiso para cambiar esta opción"
 #: components/Preferences/UserDefinitions.tsx:1557
 #, fuzzy
 msgid "stickyScrolling"
-msgstr "Comienza con (distingue entre mayúsculas y minúsculas)"
+msgstr "Barra de desplazamiento fija"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:967
@@ -642,7 +642,7 @@ msgstr "Color de acento 4"
 #: components/Preferences/UserDefinitions.tsx:285
 #, fuzzy
 msgid "accentColor5"
-msgstr "Fondo de campo deshabilitado (tema oscuro)"
+msgstr "Color de acento 5"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1715
@@ -672,7 +672,7 @@ msgstr "Navegue hacia el otro lado al llegar a la fila del borde."
 #: components/Preferences/UserDefinitions.tsx:1777
 #, fuzzy
 msgid "enterBeginsEditing"
-msgstr "Fondo de campo no válido (tema oscuro)"
+msgstr "La tecla Enter inicia la edición de la celda"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1743
@@ -781,7 +781,7 @@ msgstr "Los cuadros de texto crecen automáticamente"
 #: components/Preferences/UserDefinitions.tsx:1680
 #, fuzzy
 msgid "clearQueryFilters"
-msgstr "Color de acento 1"
+msgstr "Restablecer filtros de consulta"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1681
@@ -843,7 +843,7 @@ msgstr "Inercia de la sartén"
 #: components/Preferences/UserDefinitions.tsx:1981
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Resaltar la subcadena coincidente"
+msgstr "El ratón arrastra"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1988
@@ -1121,7 +1121,7 @@ msgstr "Bien"
 #: components/Preferences/UserDefinitions.tsx:512
 #, fuzzy
 msgid "showUnsavedIndicator"
-msgstr "Desenfocar el contenido detrás del diálogo"
+msgstr "Mostrar indicador de cambios no guardados"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:513
@@ -1175,7 +1175,7 @@ msgstr "Recordar las posiciones de las ventanas de diálogo"
 #: components/Preferences/UserDefinitions.tsx:1304
 #, fuzzy
 msgid "autoPlayMedia"
-msgstr "Reproducir automáticamente los medios"
+msgstr "Reproducir automáticamente medios"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:225
@@ -1293,7 +1293,7 @@ msgstr "Color del botón de información"
 #: components/Preferences/UserDefinitions.tsx:382
 #, fuzzy
 msgid "warningButtonColor"
-msgstr "Dirección del movimiento cuando se presiona la tecla [X27X]Enter[X37X]"
+msgstr "Color del botón de advertencia"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:337
