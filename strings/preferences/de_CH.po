@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2024-12-28 18:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -930,7 +930,7 @@ msgstr "Einrücken mit <key>Tabulator</key>"
 #: components/Preferences/UserDefinitions.tsx:767
 #, fuzzy
 msgid "formHeaderFormat"
-msgstr "Formularkopfzeilenformat"
+msgstr "Format der Formularkopfzeile"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:774
