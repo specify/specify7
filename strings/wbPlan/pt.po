@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-28 17:00+0000\n"
+"PO-Revision-Date: 2024-12-28 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/pt/>\n"
@@ -10,13 +10,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:241
 #, fuzzy
 msgid "ignoreNever"
-msgstr "Nunca ignore"
+msgstr "NENHUM SELECIONADO"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:242
@@ -221,7 +221,7 @@ msgstr "Salvar inacabado"
 #: components/WbPlanView/Mapper.tsx:470
 #, fuzzy
 msgid "map"
-msgstr "Mapa"
+msgstr "Mapeador Automático"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -233,7 +233,10 @@ msgstr "Desmapear"
 #: components/WbPlanView/Mapper.tsx:467
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr "Mapear campo selecionado para cabeçalho selecionado"
+msgstr ""
+"Este mapeamento de dados está sem um ou mais campos de dados necessários "
+"para upload pela sua configuração Specify. Adicione os mapeamentos ausentes "
+"mostrados ou salve este Plano de Upload como inacabado."
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
@@ -410,7 +413,7 @@ msgstr "Campos Ocultos"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Revelar campos de formulário ocultos"
+msgstr "Conjunto de dados vazio"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
