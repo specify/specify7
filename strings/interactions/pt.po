@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-29 20:00+0000\n"
+"PO-Revision-Date: 2024-12-29 20:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "interactions/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -128,7 +128,7 @@ msgstr "Resolver"
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "Retorne todos os preparativos"
+msgstr "[X0X] Retornar"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:96
@@ -273,7 +273,7 @@ msgstr "Nenhum desses objetos tem preparações. Você gostaria de continuar?"
 #: components/TreeView/AddRank.tsx:62
 #, fuzzy
 msgid "continue"
-msgstr "Continuar"
+msgstr "Continuar sem preparações"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
