@@ -47,11 +47,6 @@ function eventHandlerForToOne(related, field) {
         this.set(field.name, related.url());
         return;
       }
-      case 'changed': {
-        if (!related.isBeingInitialized()) {
-          this.set(field.name, related);
-        }
-      }
     }
 
     // Pass change:field events up the tree, updating fields with dot notation
