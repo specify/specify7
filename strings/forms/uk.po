@@ -32,25 +32,25 @@ msgstr "Клон"
 msgid "cloneDescription"
 msgstr "Створіть повну копію поточного запису"
 
-#: components/DataModel/uniquenessRules.ts:140
+#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "Значення має бути унікальним для {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:143
+#: components/DataModel/uniquenessRules.ts:146
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Значення має бути унікальним для бази даних"
 
-#: components/DataModel/uniquenessRules.ts:131
+#: components/DataModel/uniquenessRules.ts:134
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Значення {values:string} мають бути унікальними для {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:135
+#: components/DataModel/uniquenessRules.ts:138
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"

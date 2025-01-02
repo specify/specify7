@@ -18,22 +18,22 @@ msgstr ""
 msgid "cloneDescription"
 msgstr ""
 
-#: components/DataModel/uniquenessRules.ts:140
+#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToField"
 msgstr ""
 
-#: components/DataModel/uniquenessRules.ts:143
+#: components/DataModel/uniquenessRules.ts:146
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr ""
 
-#: components/DataModel/uniquenessRules.ts:131
+#: components/DataModel/uniquenessRules.ts:134
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr ""
 
-#: components/DataModel/uniquenessRules.ts:135
+#: components/DataModel/uniquenessRules.ts:138
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr ""

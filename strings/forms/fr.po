@@ -31,25 +31,25 @@ msgstr "Cloner"
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
 
-#: components/DataModel/uniquenessRules.ts:140
+#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "La valeur doit être unique à {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:143
+#: components/DataModel/uniquenessRules.ts:146
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
 msgstr "La valeur doit être unique à la base de données"
 
-#: components/DataModel/uniquenessRules.ts:131
+#: components/DataModel/uniquenessRules.ts:134
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:135
+#: components/DataModel/uniquenessRules.ts:138
 #. Used in: Components > Data Model > Uniqueness Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"

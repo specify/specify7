@@ -28,22 +28,22 @@ msgstr "Clon"
 msgid "cloneDescription"
 msgstr "Crear una copia completa del registro actual"
 
-#: components/DataModel/uniquenessRules.ts:140
+#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToField"
 msgstr "El valor debe ser exclusivo de {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:143
+#: components/DataModel/uniquenessRules.ts:146
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "El valor debe ser exclusivo de la base de datos."
 
-#: components/DataModel/uniquenessRules.ts:131
+#: components/DataModel/uniquenessRules.ts:134
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Los valores de {values:string} deben ser únicos para {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:135
+#: components/DataModel/uniquenessRules.ts:138
 #. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Los valores de {values:string} deben ser únicos para la base de datos."
