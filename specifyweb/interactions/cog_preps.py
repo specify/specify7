@@ -315,6 +315,12 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(
         original_prep_ids, updated_prep_ids
     )
+    unassociated_prep_data = [
+        iteraction_prep
+        for iteraction_prep in iteraction_prep_data
+        if "preparation" not in iteraction_prep.keys()
+        or iteraction_prep["preparation"] is None
+    ]
 
     if len(iteraction_prep_data) != len(updated_prep_ids):
         # At least one preparation was not parsed correctly, or did not have an associated preparation ID
@@ -345,5 +351,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
             for prep_id in added_prep_ids
         ]
     )
+
+    # Add back the unassociated preparation data
+    updated_interaction_data[iteraction_prep_name].extend(unassociated_prep_data)
 
     return updated_interaction_data
