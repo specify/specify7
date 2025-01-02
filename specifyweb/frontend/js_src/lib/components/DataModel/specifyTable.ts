@@ -220,7 +220,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
           attachmentView
-        : tableDefinition.view ?? tableViews[this.name] ?? this.name;
+        : (tableDefinition.view ?? tableViews[this.name] ?? this.name);
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;

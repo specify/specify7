@@ -137,8 +137,8 @@ export function LanguageSelection<LANGUAGES extends string>({
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
               : !isForInterface || f.has(completeLanguages, value)
-              ? handleChange(value as LANGUAGES)
-              : setWarningLanguage(value as LANGUAGES)
+                ? handleChange(value as LANGUAGES)
+                : setWarningLanguage(value as LANGUAGES)
           }
         >
           {Object.entries(languages).map(([code, nameLocal]) => (

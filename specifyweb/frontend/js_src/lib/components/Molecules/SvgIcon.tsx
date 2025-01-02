@@ -110,8 +110,8 @@ function getShortName(rawName: keyof Tables): string {
     rawName.endsWith('Attachment') && rawName !== 'Attachment'
       ? rawName.slice(0, -'Attachment'.length)
       : rawName.startsWith('Sp')
-      ? rawName.slice(2)
-      : rawName;
+        ? rawName.slice(2)
+        : rawName;
   const capitalLetters = name.replaceAll(/[^A-Z]/gu, '');
   return capitalLetters.length > 1
     ? capitalLetters.slice(0, 3)

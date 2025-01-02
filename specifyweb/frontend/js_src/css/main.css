@@ -162,7 +162,9 @@
     @apply text-center;
   }
 
-  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(
+      .aria-handled
+    ) {
     @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 

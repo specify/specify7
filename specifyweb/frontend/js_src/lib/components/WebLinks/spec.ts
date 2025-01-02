@@ -176,16 +176,16 @@ function reconstructWeblink(
             title: parameter.field.map(({ label }) => label).join(' > '),
           }
         : parameter.type === 'ThisField'
-        ? {
-            name: 'this',
-            title: 'This',
-          }
-        : parameter.type === 'FormattedResource'
-        ? {
-            name: `${formatter}${parameter.formatter}`,
-            title: parameter.formatter,
-          }
-        : parameter.value
+          ? {
+              name: 'this',
+              title: 'This',
+            }
+          : parameter.type === 'FormattedResource'
+            ? {
+                name: `${formatter}${parameter.formatter}`,
+                title: parameter.formatter,
+              }
+            : parameter.value
     );
   return {
     url: augmented

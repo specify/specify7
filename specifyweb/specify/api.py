@@ -2,6 +2,7 @@
 Implements the RESTful business data API
 """
 
+from calendar import c
 import json
 import logging
 import re
@@ -12,6 +13,7 @@ from urllib.parse import urlencode
 from typing_extensions import TypedDict
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
 logger = logging.getLogger(__name__)
 
@@ -491,11 +493,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
-    if obj._meta.model_name == 'collectionobject' and hasattr(obj, 'cojo'): 
-        obj.cojo.save()
-
-    if obj._meta.model_name == 'collectionobjectgroup' and hasattr(obj, 'cojo'): 
-        obj.cojo.save()
+    _handle_special_save_priors(obj)
 
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
@@ -809,6 +807,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     if hasattr(obj, 'modifiedbyagent'):
         setattr(obj, 'modifiedbyagent', agent)
 
+    _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
@@ -843,6 +842,8 @@ def bump_version(obj, version) -> None:
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
+        if obj._meta.model_name in {'collectionobjectgroupjoin'}:
+            return # TODO: temporary solution to allow for multiple updates to the same cojo object
         raise StaleObjectException("%s object %d is out of date" % (obj.__class__.__name__, obj.id))
     obj.version = version + 1
 
@@ -1071,3 +1072,22 @@ def rows(request, model_name: str) -> HttpResponse:
 
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
+
+def _save_cojo_prior(obj):
+    """
+    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
+    """
+    if obj._meta.model_name in {'collectionobject', 'collectionobjectgroup'} and hasattr(obj, 'cojo'):
+        obj.cojo.save()
+    elif obj._meta.model_name in {'collectionobjectgroupjoin'}:
+        obj.save()
+
+def _handle_special_save_priors(obj):
+    """
+    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
+    """
+    _save_cojo_prior(obj)
+
+def _handle_special_update_priors(obj, data):
+    data = modify_update_of_interaction_sibling_preps(obj, data)
+    pass

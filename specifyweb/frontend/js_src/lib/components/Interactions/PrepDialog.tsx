@@ -5,6 +5,7 @@ import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
@@ -15,11 +16,16 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
+import {
+  getResourceApiUrl,
+  getResourceViewUrl,
+  idFromUrl,
+} from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import type { InteractionWithPreps, PreparationData } from './helpers';
 import { interactionPrepTables } from './helpers';
@@ -82,6 +88,19 @@ export function PrepDialog({
 
   const [bulkValue, setBulkValue] = React.useState(0);
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
+  const fetchSiblings = async (
+    preparationIds: RA<number>
+  ): Promise<RA<number>> =>
+    ajax<RA<number>>(`/interactions/sibling_preps/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: {
+        ids: preparationIds,
+      },
+    }).then(({ data }) => data);
 
   return (
     <Dialog
@@ -171,22 +190,46 @@ export function PrepDialog({
             })
           );
 
-          if (typeof itemCollection === 'object') {
-            itemCollection.add(items);
-            handleClose();
-          } else {
-            const interaction = new table.Resource();
-            setPreparationItems(interaction, items);
+          const preparationIds: RA<number> = items
+            .map((item) => idFromUrl(item.get('preparation') ?? ''))
+            .filter((id): id is number => id !== undefined);
 
-            const loan = toTable(interaction, 'Loan');
-            loan?.set('isClosed', false);
-            navigate(getResourceViewUrl(table.name, undefined), {
-              state: {
-                type: 'RecordSet',
-                resource: serializeResource(interaction),
-              },
-            });
-          }
+          void fetchSiblings(preparationIds)
+            .then((siblings) => {
+              const siblingsPreps = siblings.map((preparation) => {
+                const result = new itemTable.Resource();
+                result.set(
+                  'preparation',
+                  getResourceApiUrl('Preparation', preparation)
+                );
+                // Need to find a way to set the maximum
+                result.set('quantity', 1);
+                const loanPreparation = toTable(result, 'LoanPreparation');
+                loanPreparation?.set('quantityReturned', 0);
+                loanPreparation?.set('quantityResolved', 0);
+                return result;
+              });
+
+              const mergedPreparations = [...items, ...siblingsPreps];
+
+              if (typeof itemCollection === 'object') {
+                itemCollection.add(mergedPreparations);
+                handleClose();
+              } else {
+                const interaction = new table.Resource();
+                setPreparationItems(interaction, mergedPreparations);
+
+                const loan = toTable(interaction, 'Loan');
+                loan?.set('isClosed', false);
+                navigate(getResourceViewUrl(table.name, undefined), {
+                  state: {
+                    type: 'RecordSet',
+                    resource: serializeResource(interaction),
+                  },
+                });
+              }
+            })
+            .catch((error) => softFail(error));
         }}
       >
         <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">

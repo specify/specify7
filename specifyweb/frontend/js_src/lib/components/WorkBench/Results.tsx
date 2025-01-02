@@ -123,7 +123,7 @@ export function TableRecordCounts({
   readonly sortFunction?: (
     value: readonly [
       Lowercase<keyof Tables>,
-      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>
+      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>,
     ]
   ) => ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>;
 }): JSX.Element {

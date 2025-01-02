@@ -69,6 +69,6 @@
     <typesearch tableid="65"  name="PrepType"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="4"   name="Taxon"                  searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="Taxon"/>
     <typesearch tableid="77"  name="TaxonTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
-    <typesearch tableid="1026"  name="TectonicUnitTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
-    <typesearch tableid="1027"  name="TectonicUnit"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="1027"  name="TectonicUnit"         searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="TectonicUnit"/>
+    <typesearch tableid="1026"  name="TectonicUnitTreeDefItem"       searchfield="name"   displaycols="name"               format="%s"     dataobjformatter=""/>
 </typesearches>

@@ -1,15 +1,16 @@
 from functools import reduce
-from typing import Dict, Any, Generator, Tuple, Callable, List
+from typing import Dict, Any, Optional, Tuple, Callable, Union, cast, List
+
 from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
-from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.stored_queries.format import get_date_format
 from specifyweb.workbench.upload.predicates import SPECIAL_TREE_FIELDS_TO_SKIP
 
-from .uploadable import ScopeGenerator, ScopedUploadable
+from .uploadable import ScopeGenerator, Uploadable, ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
-from .column_options import ColumnOptions, ExtendedColumnOptions, CustomRepr
+from .column_options import ColumnOptions, ExtendedColumnOptions, DeferredUIFormatter
 from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
@@ -97,9 +98,8 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     return adjust_to_ones
 
 
-def extend_columnoptions(
-    colopts: ColumnOptions, collection, tablename: str, fieldname: str
-) -> ExtendedColumnOptions:
+def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
+    toOne = {} if _toOne is None else _toOne
     schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
@@ -131,11 +131,7 @@ def extend_columnoptions(
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
         schemaitem=schemaitem,
-        uiformatter=(
-            None
-            if scoped_formatter is None
-            else CustomRepr(scoped_formatter, friendly_repr)
-        ),
+        uiformatter=get_or_defer_formatter(collection, tablename, fieldname, toOne),
         picklist=picklist,
         dateformat=get_date_format(),
     )
@@ -178,6 +174,29 @@ def get_deferred_scoping(
     return uploadable._replace(overrideScope={"collection": collection_id})
 
 
+def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, Uploadable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
+    """ The CollectionObject -> catalogNumber format can be determined by the 
+    CollectionObjectType -> catalogNumberFormatName for the CollectionObject
+
+    Similarly to PrepType, CollectionObjectType in the WorkBench is resolvable 
+    by the 'name' field
+
+    See https://github.com/specify/specify7/issues/5473 
+    """
+    toOne = {key.lower():value for key, value in _toOne.items()}
+    if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne.keys():
+        uploadTable = toOne['collectionobjecttype']
+
+        wb_col = cast(UploadTable, uploadTable).wbcols.get('name', None) if hasattr(uploadTable, 'wbcols') else None
+        optional_col_name = None if wb_col is None else wb_col.column
+        if optional_col_name is not None: 
+            col_name = cast(str, optional_col_name)
+            formats: Dict[str, Optional[UIFormatter]] = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
+            return lambda row: formats.get(row[col_name], get_uiformatter(collection, tablename, fieldname))
+
+    return get_uiformatter(collection, tablename, fieldname)
+
+
 def apply_scoping_to_uploadtable(
     ut: UploadTable, collection, generator: ScopeGenerator = None, row=None
 ) -> ScopedUploadTable:
@@ -218,7 +237,7 @@ def apply_scoping_to_uploadtable(
     scoped_table = ScopedUploadTable(
         name=ut.name,
         wbcols={
-            f: extend_columnoptions(colopts, collection, table.name, f)
+            f: extend_columnoptions(colopts, collection, table.name, f, ut.toOne)
             for f, colopts in ut.wbcols.items()
         },
         static=ut.static,

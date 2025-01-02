@@ -53,7 +53,15 @@
 /* Cell navigation */
 
 .wbs-form
-  :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell, .wb-updated-cell, .wb-deleted-cell, .wb-matched-and-changed-cell),
+  :is(
+    .wb-no-match-cell,
+    .wb-modified-cell,
+    .htCommentCell,
+    .wb-search-match-cell,
+    .wb-updated-cell, 
+    .wb-deleted-cell, 
+    .wb-matched-and-changed-cell
+  ),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }

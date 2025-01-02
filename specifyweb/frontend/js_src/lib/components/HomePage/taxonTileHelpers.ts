@@ -177,7 +177,7 @@ const recurseTreeTiles = (
     ? [
         ...(node.parent === null
           ? []
-          : recurseTreeTiles(node.parent, genusRankId) ?? []),
+          : (recurseTreeTiles(node.parent, genusRankId) ?? [])),
         Array.isArray(node.children) ? node.data.name : undefined,
       ]
     : undefined;

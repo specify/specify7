@@ -196,7 +196,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             label,
             value: `(${
               selectedRows.size === 0
-                ? totalCount ?? commonText.loading()
+                ? (totalCount ?? commonText.loading())
                 : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
             })`,
           })}
@@ -241,7 +241,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
                   defaultRecordSetName={
-                    queryResource?.isNew() ?? true
+                    (queryResource?.isNew() ?? true)
                       ? undefined
                       : queryResource?.get('name')
                   }

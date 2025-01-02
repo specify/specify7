@@ -41,7 +41,7 @@ export function ToolPermissionDenied({
   action,
 }: {
   readonly tool: keyof ReturnType<typeof toolDefinitions>;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
 }): JSX.Element {
   return (
     <PermissionError
@@ -70,7 +70,7 @@ export function ProtectedTool({
   children,
 }: {
   readonly tool: keyof ReturnType<typeof toolDefinitions>;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: React.ReactNode;
 }): JSX.Element {
   return hasToolPermission(tool, action) ? (
@@ -81,7 +81,7 @@ export function ProtectedTool({
 }
 
 export function PermissionDenied<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number],
 >({
   resource,
   action,
@@ -111,7 +111,7 @@ export function PermissionDenied<
 }
 
 export function ProtectedAction<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number],
 >({
   resource,
   action,
@@ -134,7 +134,7 @@ export function TablePermissionDenied({
   action,
 }: {
   readonly tableName: keyof Tables;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
 }): JSX.Element {
   return (
     <PermissionError
@@ -162,7 +162,7 @@ export function ProtectedTable({
   children,
 }: {
   readonly tableName: keyof Tables;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: React.ReactNode;
 }): JSX.Element {
   return hasTablePermission(tableName, action) ? (
@@ -178,7 +178,7 @@ export function ProtectedTree({
   children,
 }: {
   readonly treeName: AnyTree['tableName'];
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: JSX.Element | null;
 }): JSX.Element | null {
   return hasTreeAccess(treeName, action) ? (

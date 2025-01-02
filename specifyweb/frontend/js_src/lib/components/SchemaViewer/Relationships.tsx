@@ -53,8 +53,8 @@ export function SchemaViewerRelationships({
                 dependentFilter === undefined
                   ? true
                   : dependentFilter
-                  ? undefined
-                  : true
+                    ? undefined
+                    : true
               )
             }
           >
@@ -69,8 +69,8 @@ export function SchemaViewerRelationships({
                 dependentFilter === undefined
                   ? false
                   : dependentFilter
-                  ? false
-                  : undefined
+                    ? false
+                    : undefined
               )
             }
           >
@@ -102,7 +102,7 @@ const relationshipColumns = f.store(
       relatedTable: schemaText.relatedTable(),
       otherSideName: schemaText.otherSideName(),
       isDependent: schemaText.dependent(),
-    } as const)
+    }) as const
 );
 
 const getRelationships = (table: SpecifyTable) =>
@@ -133,6 +133,6 @@ const getRelationships = (table: SpecifyTable) =>
           ],
           otherSideName: field.otherSideName,
           isDependent: booleanFormatter(field.isDependent()),
-        } as const)
+        }) as const
     )
   );

@@ -437,10 +437,10 @@ export function Dialog({
           reduceTransparency || highContrast || specialMode === 'noGradient'
             ? dialogClassNames.solidBackground
             : transparentDialog && modal
-            ? supportsBackdropBlur
-              ? dialogClassNames.transparentBackground
-              : dialogClassNames.legacyTransparentBackground
-            : dialogClassNames.gradientBackground
+              ? supportsBackdropBlur
+                ? dialogClassNames.transparentBackground
+                : dialogClassNames.legacyTransparentBackground
+              : dialogClassNames.gradientBackground
         }
       `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
