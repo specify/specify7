@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2025-01-02 22:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "merging/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1637
@@ -89,7 +89,7 @@ msgstr "Отклонить от слияния"
 #: components/Merging/definitions.ts:23
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Объединенная запись"
+msgstr "Агенты содержат членов группы"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
@@ -101,7 +101,7 @@ msgstr "Следующие записи не могут быть объедин�
 #: components/Merging/InvalidMergeRecords.tsx:93
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "В процессе слияния что-то пошло не так."
+msgstr "Некоторые записи не могут быть объединены"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
