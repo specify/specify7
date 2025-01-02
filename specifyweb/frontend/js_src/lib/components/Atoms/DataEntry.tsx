@@ -65,7 +65,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `items-center p-1 -ml-1 gap-2`,
+    `items-center p-1 gap-2`,
     ({
       viewDefinition,
       display,
