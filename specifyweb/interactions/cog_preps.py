@@ -293,9 +293,13 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         # Permit, Exchange, Borrow interactions, no preparation data?
         return updated_interaction_data
 
-    loanprep_data = updated_interaction_data[iteraction_prep_name]
+    iteraction_prep_data = updated_interaction_data[iteraction_prep_name]
     updated_prep_ids = set(
-        [parse_preparation_id(loanprep["preparation"]) for loanprep in loanprep_data]
+        [
+            parse_preparation_id(iteraction_prep["preparation"])
+            for iteraction_prep in iteraction_prep_data
+            if "preparation" in iteraction_prep.keys()
+        ]
     )
     original_prep_ids = set(
         InteractionPrepModel.objects.filter(**{filter_fld: original_interaction_obj}).values_list(
@@ -306,17 +310,19 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         original_prep_ids, updated_prep_ids
     )
 
-    if len(loanprep_data) != len(updated_prep_ids):
-        raise Exception("Parsing of loanpreparations failed")
+    if len(iteraction_prep_data) != len(updated_prep_ids):
+        # raise Exception("Parsing of iteraction preparations failed")
+        # At least one preparation was not parsed correctly, or did not have an associated preparation ID
+        return updated_interaction_data
 
     added_prep_ids = modified_updated_prep_ids - original_prep_ids
     removed_prep_ids = original_prep_ids - modified_updated_prep_ids
 
     # Remove preps
     updated_interaction_data[iteraction_prep_name] = [
-        loanprep
-        for loanprep in loanprep_data
-        if parse_preparation_id(loanprep["preparation"]) not in removed_prep_ids
+        iteraction_prep
+        for iteraction_prep in iteraction_prep_data
+        if parse_preparation_id(iteraction_prep["preparation"]) not in removed_prep_ids
     ]
 
     # Add preps
