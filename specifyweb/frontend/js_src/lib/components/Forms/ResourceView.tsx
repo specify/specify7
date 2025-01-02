@@ -315,7 +315,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
-        <div className={isCollapsed ? 'hidden' : (hasNoData ? '' : 'border rounded-bl rounded-br')}>
+        <div className={isCollapsed ? 'hidden' : (hasNoData ? '' : 'dark:border-gray-700 border border-t-0 rounded-bl rounded-br')}>
           {formattedChildren}
         </div>
       </DataEntry.SubForm>
