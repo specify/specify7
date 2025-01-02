@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2025-01-02 22:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/merging/de_CH/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1637
@@ -88,7 +88,7 @@ msgstr "Vom Zusammenführen ausschließen"
 #: components/Merging/definitions.ts:23
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Zusammengeführter Datensatz"
+msgstr "Agenten enthalten Gruppenmitglieder"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
@@ -100,7 +100,7 @@ msgstr "Die folgenden Datensätze können nicht zusammengeführt werden. Grund:"
 #: components/Merging/InvalidMergeRecords.tsx:93
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
+msgstr "Einige Datensätze können nicht zusammengeführt werden"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
