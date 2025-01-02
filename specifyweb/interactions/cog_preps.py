@@ -273,38 +273,38 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         else:
             raise ValueError("No preparation ID found in the URL")
 
-    iteraction_prep_name = None
+    interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
     if original_interaction_obj._meta.model_name == 'loan':
         if 'loanpreparations' in updated_interaction_data:
-            iteraction_prep_name = "loanpreparations"
+            interaction_prep_name = "loanpreparations"
             filter_fld = "loan"
             InteractionPrepModel = Loanpreparation
         elif 'loanreturnpreparations' in updated_interaction_data:
-            iteraction_prep_name = "loanreturnpreparations" 
+            interaction_prep_name = "loanreturnpreparations" 
             filter_fld = "loanreturn"
             InteractionPrepModel = Loanreturnpreparation
         else:
             return updated_interaction_data    
     elif original_interaction_obj._meta.model_name == 'gift':
-        iteraction_prep_name = "giftpreparations"
+        interaction_prep_name = "giftpreparations"
         filter_fld = "gift"
         InteractionPrepModel = Giftpreparation
     elif original_interaction_obj._meta.model_name == 'disposal':
-        iteraction_prep_name = "disposalpreparations"
+        interaction_prep_name = "disposalpreparations"
         filter_fld = "disposal"
         InteractionPrepModel = Disposalpreparation
     else:
         # Permit, Exchange, Borrow interactions, no preparation data?
         return updated_interaction_data
 
-    iteraction_prep_data = updated_interaction_data[iteraction_prep_name]
+    interaction_prep_data = updated_interaction_data[interaction_prep_name]
     updated_prep_ids = set(
         [
-            parse_preparation_id(iteraction_prep["preparation"])
-            for iteraction_prep in iteraction_prep_data
-            if "preparation" in iteraction_prep.keys() and iteraction_prep["preparation"] is not None
+            parse_preparation_id(interaction_prep["preparation"])
+            for interaction_prep in interaction_prep_data
+            if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
         ]
     )
     original_prep_ids = set(
@@ -316,31 +316,31 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         original_prep_ids, updated_prep_ids
     )
     unassociated_prep_data = [
-        iteraction_prep
-        for iteraction_prep in iteraction_prep_data
-        if "preparation" not in iteraction_prep.keys()
-        or iteraction_prep["preparation"] is None
+        interaction_prep
+        for interaction_prep in interaction_prep_data
+        if "preparation" not in interaction_prep.keys()
+        or interaction_prep["preparation"] is None
     ]
 
-    if len(iteraction_prep_data) != len(updated_prep_ids):
+    if len(interaction_prep_data) != len(updated_prep_ids):
         # At least one preparation was not parsed correctly, or did not have an associated preparation ID
-        logger.warning("Parsing of iteraction preparations failed")
+        logger.warning("Parsing of interaction preparations failed")
 
     added_prep_ids = modified_updated_prep_ids - original_prep_ids
     removed_prep_ids = original_prep_ids - modified_updated_prep_ids
 
     # Remove preps
-    updated_interaction_data[iteraction_prep_name] = [
-        iteraction_prep
-        for iteraction_prep in iteraction_prep_data
-        if "preparation" in iteraction_prep.keys()
-        and iteraction_prep["preparation"] is not None
-        and parse_preparation_id(iteraction_prep["preparation"]) not in removed_prep_ids
+    updated_interaction_data[interaction_prep_name] = [
+        interaction_prep
+        for interaction_prep in interaction_prep_data
+        if "preparation" in interaction_prep.keys()
+        and interaction_prep["preparation"] is not None
+        and parse_preparation_id(interaction_prep["preparation"]) not in removed_prep_ids
     ]
 
     # Add preps
     added_prep_ids -= updated_prep_ids
-    updated_interaction_data[iteraction_prep_name].extend(
+    updated_interaction_data[interaction_prep_name].extend(
         [
             {
                 "preparation": f"/api/specify/preparation/{prep_id}/",
@@ -353,6 +353,6 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     )
 
     # Add back the unassociated preparation data
-    updated_interaction_data[iteraction_prep_name].extend(unassociated_prep_data)
+    updated_interaction_data[interaction_prep_name].extend(unassociated_prep_data)
 
     return updated_interaction_data
