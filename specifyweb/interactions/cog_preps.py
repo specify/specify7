@@ -311,9 +311,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     )
 
     if len(iteraction_prep_data) != len(updated_prep_ids):
-        # raise Exception("Parsing of iteraction preparations failed")
         # At least one preparation was not parsed correctly, or did not have an associated preparation ID
-        return updated_interaction_data
+        raise Warning("Parsing of iteraction preparations failed")
 
     added_prep_ids = modified_updated_prep_ids - original_prep_ids
     removed_prep_ids = original_prep_ids - modified_updated_prep_ids
