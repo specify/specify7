@@ -1,4 +1,5 @@
 import re
+import logging
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
 from django.db.models.query import QuerySet
@@ -16,6 +17,8 @@ from specifyweb.specify.models import (
     Recordsetitem,
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+
+logger = logging.getLogger(__name__)
 
 def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
     """
@@ -235,9 +238,12 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
     def update_prep_to_sibling_preps(prep_ids, prep_to_sibling_preps):
         for prep_id in prep_ids:
             if prep_id not in prep_to_sibling_preps:
-                prep = Preparation.objects.get(id=prep_id)
-                sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-                prep_to_sibling_preps[prep_id] = {p.id for p in sibling_preps}
+                try:
+                    prep = Preparation.objects.get(id=prep_id)
+                    sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+                    prep_to_sibling_preps[prep_id] = {p.id for p in sibling_preps}
+                except Preparation.DoesNotExist:
+                    prep_to_sibling_preps[prep_id] = set()
 
     all_prep_ids = updated_prep_ids | removed_prep_ids | added_prep_ids
     update_prep_to_sibling_preps(all_prep_ids, prep_to_sibling_preps)
@@ -298,7 +304,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         [
             parse_preparation_id(iteraction_prep["preparation"])
             for iteraction_prep in iteraction_prep_data
-            if "preparation" in iteraction_prep.keys()
+            if "preparation" in iteraction_prep.keys() and iteraction_prep["preparation"] is not None
         ]
     )
     original_prep_ids = set(
@@ -312,7 +318,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
 
     if len(iteraction_prep_data) != len(updated_prep_ids):
         # At least one preparation was not parsed correctly, or did not have an associated preparation ID
-        raise Warning("Parsing of iteraction preparations failed")
+        logger.warning("Parsing of iteraction preparations failed")
 
     added_prep_ids = modified_updated_prep_ids - original_prep_ids
     removed_prep_ids = original_prep_ids - modified_updated_prep_ids
@@ -321,7 +327,9 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     updated_interaction_data[iteraction_prep_name] = [
         iteraction_prep
         for iteraction_prep in iteraction_prep_data
-        if parse_preparation_id(iteraction_prep["preparation"]) not in removed_prep_ids
+        if "preparation" in iteraction_prep.keys()
+        and iteraction_prep["preparation"] is not None
+        and parse_preparation_id(iteraction_prep["preparation"]) not in removed_prep_ids
     ]
 
     # Add preps
