@@ -1,4 +1,5 @@
 import re
+import logging
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
 from django.db.models.query import QuerySet
@@ -16,6 +17,8 @@ from specifyweb.specify.models import (
     Recordsetitem,
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+
+logger = logging.getLogger(__name__)
 
 def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
     """
@@ -235,9 +238,12 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
     def update_prep_to_sibling_preps(prep_ids, prep_to_sibling_preps):
         for prep_id in prep_ids:
             if prep_id not in prep_to_sibling_preps:
-                prep = Preparation.objects.get(id=prep_id)
-                sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-                prep_to_sibling_preps[prep_id] = {p.id for p in sibling_preps}
+                try:
+                    prep = Preparation.objects.get(id=prep_id)
+                    sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+                    prep_to_sibling_preps[prep_id] = {p.id for p in sibling_preps}
+                except Preparation.DoesNotExist:
+                    prep_to_sibling_preps[prep_id] = set()
 
     all_prep_ids = updated_prep_ids | removed_prep_ids | added_prep_ids
     update_prep_to_sibling_preps(all_prep_ids, prep_to_sibling_preps)
@@ -267,35 +273,39 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         else:
             raise ValueError("No preparation ID found in the URL")
 
-    iteraction_prep_name = None
+    interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
     if original_interaction_obj._meta.model_name == 'loan':
         if 'loanpreparations' in updated_interaction_data:
-            iteraction_prep_name = "loanpreparations"
+            interaction_prep_name = "loanpreparations"
             filter_fld = "loan"
             InteractionPrepModel = Loanpreparation
         elif 'loanreturnpreparations' in updated_interaction_data:
-            iteraction_prep_name = "loanreturnpreparations" 
+            interaction_prep_name = "loanreturnpreparations" 
             filter_fld = "loanreturn"
             InteractionPrepModel = Loanreturnpreparation
         else:
             return updated_interaction_data    
     elif original_interaction_obj._meta.model_name == 'gift':
-        iteraction_prep_name = "giftpreparations"
+        interaction_prep_name = "giftpreparations"
         filter_fld = "gift"
         InteractionPrepModel = Giftpreparation
     elif original_interaction_obj._meta.model_name == 'disposal':
-        iteraction_prep_name = "disposalpreparations"
+        interaction_prep_name = "disposalpreparations"
         filter_fld = "disposal"
         InteractionPrepModel = Disposalpreparation
     else:
         # Permit, Exchange, Borrow interactions, no preparation data?
         return updated_interaction_data
 
-    loanprep_data = updated_interaction_data[iteraction_prep_name]
+    interaction_prep_data = updated_interaction_data[interaction_prep_name]
     updated_prep_ids = set(
-        [parse_preparation_id(loanprep["preparation"]) for loanprep in loanprep_data]
+        [
+            parse_preparation_id(interaction_prep["preparation"])
+            for interaction_prep in interaction_prep_data
+            if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
+        ]
     )
     original_prep_ids = set(
         InteractionPrepModel.objects.filter(**{filter_fld: original_interaction_obj}).values_list(
@@ -305,23 +315,32 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     modified_updated_prep_ids = modify_prep_update_based_on_sibling_preps(
         original_prep_ids, updated_prep_ids
     )
+    unassociated_prep_data = [
+        interaction_prep
+        for interaction_prep in interaction_prep_data
+        if "preparation" not in interaction_prep.keys()
+        or interaction_prep["preparation"] is None
+    ]
 
-    if len(loanprep_data) != len(updated_prep_ids):
-        raise Exception("Parsing of loanpreparations failed")
+    if len(interaction_prep_data) != len(updated_prep_ids):
+        # At least one preparation was not parsed correctly, or did not have an associated preparation ID
+        logger.warning("Parsing of interaction preparations failed")
 
     added_prep_ids = modified_updated_prep_ids - original_prep_ids
     removed_prep_ids = original_prep_ids - modified_updated_prep_ids
 
     # Remove preps
-    updated_interaction_data[iteraction_prep_name] = [
-        loanprep
-        for loanprep in loanprep_data
-        if parse_preparation_id(loanprep["preparation"]) not in removed_prep_ids
+    updated_interaction_data[interaction_prep_name] = [
+        interaction_prep
+        for interaction_prep in interaction_prep_data
+        if "preparation" in interaction_prep.keys()
+        and interaction_prep["preparation"] is not None
+        and parse_preparation_id(interaction_prep["preparation"]) not in removed_prep_ids
     ]
 
     # Add preps
     added_prep_ids -= updated_prep_ids
-    updated_interaction_data[iteraction_prep_name].extend(
+    updated_interaction_data[interaction_prep_name].extend(
         [
             {
                 "preparation": f"/api/specify/preparation/{prep_id}/",
@@ -332,5 +351,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
             for prep_id in added_prep_ids
         ]
     )
+
+    # Add back the unassociated preparation data
+    updated_interaction_data[interaction_prep_name].extend(unassociated_prep_data)
 
     return updated_interaction_data
