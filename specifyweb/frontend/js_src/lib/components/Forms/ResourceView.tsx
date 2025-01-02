@@ -264,7 +264,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </ErrorBoundary>
     ) : undefined;
 
-  const hasNoData = !resource || (Array.isArray(resource) && resource.length === 0);
+  const hasNoData =
+    !resource || (Array.isArray(resource) && resource.length === 0);
 
   const headerContent = (
     <>
@@ -315,7 +316,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
-        <div className={isCollapsed ? 'hidden' : (hasNoData ? '' : 'dark:border-gray-700 border border-t-0 rounded-bl rounded-br')}>
+        <div
+          className={
+            isCollapsed
+              ? 'hidden'
+              : hasNoData
+                ? ''
+                : 'dark:border-gray-700 border border-t-0 rounded-bl rounded-br'
+          }
+        >
           {formattedChildren}
         </div>
       </DataEntry.SubForm>
