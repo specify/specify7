@@ -96,7 +96,8 @@ export function QueryComboBox({
     if (defaultRecordId !== undefined) {
       resource.set(
         field.name,
-        resource.get(field.name) ?? getResourceApiUrl(field.relatedTable.name, defaultRecordId),
+        resource.get(field.name) ??
+          getResourceApiUrl(field.relatedTable.name, defaultRecordId),
         {
           silent: true,
         }

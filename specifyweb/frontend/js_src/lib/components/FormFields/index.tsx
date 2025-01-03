@@ -156,6 +156,7 @@ const fieldRenderers: {
   }) {
     return field === undefined || !field.isRelationship ? null : (
       <QueryComboBox
+        defaultRecordId={defaultRecordId}
         field={field}
         forceCollection={undefined}
         formType={formType}
@@ -169,7 +170,6 @@ const fieldRenderers: {
         resource={resource}
         searchView={searchView}
         typeSearch={typeSearch}
-        defaultRecordId={defaultRecordId}
       />
     );
   },
