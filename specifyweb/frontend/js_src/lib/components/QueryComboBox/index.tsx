@@ -92,17 +92,27 @@ export function QueryComboBox({
 }): JSX.Element {
   React.useEffect(() => {
     if (resource === undefined || !resource.isNew()) return;
-    // TODO: Add special ids CURRENT_AGENT and CURRENT_USER
     if (defaultRecordId !== undefined) {
+      let defaultUri: string | null;
+      if (defaultRecordId === 'CURRENT_AGENT') {
+        defaultUri = userInformation.agent.resource_uri;
+      } else if (defaultRecordId === 'CURRENT_USER') {
+        defaultUri = userInformation.resource_uri;
+      } else if (defaultRecordId === 'BLANK') {
+        defaultUri = null;
+      } else {
+        defaultUri = getResourceApiUrl(field.relatedTable.name, defaultRecordId);
+      }
+
       resource.set(
         field.name,
-        resource.get(field.name) ?? getResourceApiUrl(field.relatedTable.name, defaultRecordId),
+        resource.get(field.name) ?? defaultUri,
         {
           silent: true,
         }
       );
-    }
-    if (field.name === 'cataloger') {
+    // The following cases can be technically be covered by the above code, but need to be kept for outdated forms
+    } else if (field.name === 'cataloger') {
       const record = toTable(resource, 'CollectionObject');
       record?.set(
         'cataloger',
@@ -111,8 +121,7 @@ export function QueryComboBox({
           silent: true,
         }
       );
-    }
-    if (field.name === 'specifyUser') {
+    } else if (field.name === 'specifyUser') {
       const record = toTable(resource, 'RecordSet');
       record?.set(
         'specifyUser',
@@ -121,8 +130,7 @@ export function QueryComboBox({
           silent: true,
         }
       );
-    }
-    if (field.name === 'receivedBy') {
+    } else if (field.name === 'receivedBy') {
       const record = toTable(resource, 'LoanReturnPreparation');
       record?.set(
         'receivedBy',
