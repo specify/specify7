@@ -71,6 +71,7 @@ export function QueryComboBox({
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
+  defaultRecordId,
   relatedTable: initialRelatedTable,
 }: {
   readonly id: string | undefined;
@@ -86,10 +87,21 @@ export function QueryComboBox({
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
+  readonly defaultRecordId?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     if (resource === undefined || !resource.isNew()) return;
+    // TODO: Add special ids CURRENT_AGENT and CURRENT_USER
+    if (defaultRecordId !== undefined) {
+      resource.set(
+        field.name,
+        resource.get(field.name) ?? getResourceApiUrl(field.relatedTable.name, defaultRecordId),
+        {
+          silent: true,
+        }
+      );
+    }
     if (field.name === 'cataloger') {
       const record = toTable(resource, 'CollectionObject');
       record?.set(

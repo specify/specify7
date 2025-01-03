@@ -130,6 +130,7 @@ function fieldToDefinition(
       hasViewButton: false,
       typeSearch: undefined,
       searchView: undefined,
+      defaultRecordId: undefined,
     };
   else if (field.type === 'java.lang.Boolean')
     return {

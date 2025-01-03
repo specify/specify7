@@ -151,6 +151,7 @@ const fieldRenderers: {
       hasEditButton,
       hasSearchButton,
       hasViewButton,
+      defaultRecordId,
     },
   }) {
     return field === undefined || !field.isRelationship ? null : (
@@ -168,6 +169,7 @@ const fieldRenderers: {
         resource={resource}
         searchView={searchView}
         typeSearch={typeSearch}
+        defaultRecordId={defaultRecordId}
       />
     );
   },
