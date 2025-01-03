@@ -231,7 +231,7 @@ exports[`DataEntry.SubFormHeader renders without errors 1`] = `
 <DocumentFragment>
   <legend>
     <div
-      class="gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center"
+      class="gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center"
     >
       Test
     </div>
