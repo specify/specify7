@@ -82,13 +82,17 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
      *   don't need to fetch all records in between)
      */
     if (
-      typeof handleFetch === 'function' &&
       !isToOne &&
       isLazy &&
       collection.related?.isNew() !== true &&
       collection.models[index] === undefined
-    )
-      handleFetch();
+    ){
+      if (typeof handleFetch === 'function' ) {
+        handleFetch?.()
+      } else {
+        void collection.fetch() 
+      }
+    }
   }, [collection, isLazy, index, records.length, isToOne, handleFetch]);
 
   const state = useRecordSelector({
