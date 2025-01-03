@@ -240,7 +240,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         className={
           isCollapsed
             ? 'hidden'
-            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b p-1'
+            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
         }
         onScroll={handleScroll}
       >
