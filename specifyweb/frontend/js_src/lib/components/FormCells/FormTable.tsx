@@ -237,7 +237,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     ) : (
       <div
-        className={isCollapsed ? 'hidden' : 'overflow-x-auto dark:border-gray-800 border border-t-0 rounded-bl rounded-br'}
+        className={isCollapsed ? 'hidden' : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b p-0.5'}
         onScroll={handleScroll}
       >
         <DataEntry.Grid

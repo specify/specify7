@@ -322,7 +322,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               ? 'hidden'
               : hasNoData
                 ? ''
-                : 'dark:border-gray-700 border border-t-0 rounded-bl rounded-br'
+                : 'border border-gray-500 border-t-0 rounded-b p-2'
           }
         >
           {formattedChildren}
