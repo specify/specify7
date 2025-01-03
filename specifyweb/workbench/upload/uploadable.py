@@ -73,6 +73,7 @@ class ScopedUploadable(Protocol):
 
     def bind(
         self,
+        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,

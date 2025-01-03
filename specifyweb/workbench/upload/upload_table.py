@@ -205,6 +205,7 @@ class ScopedUploadTable(NamedTuple):
 
     def bind(
         self,
+        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
@@ -220,7 +221,7 @@ class ScopedUploadTable(NamedTuple):
             parseFails: List[WorkBenchParseFailure] = []
             current_id = None
         else:
-            parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
+            parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
@@ -281,12 +282,13 @@ class OneToOneTable(UploadTable):
 class ScopedOneToOneTable(ScopedUploadTable):
     def bind(
         self,
+        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(row, uploadingAgentId, auditor, cache)
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
@@ -304,12 +306,13 @@ class MustMatchTable(UploadTable):
 class ScopedMustMatchTable(ScopedUploadTable):
     def bind(
         self,
+        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(row, uploadingAgentId, auditor, cache)
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 

@@ -338,7 +338,7 @@ def do_upload(
                 bind_result = (
                     scoped_table.disambiguate(da)
                     .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(row, uploading_agent_id, _auditor, cache)
+                    .bind(collection, row, uploading_agent_id, _auditor, cache)
                 )
                 if isinstance(bind_result, ParseFailures):
                     result = UploadResult(bind_result, {}, {})
