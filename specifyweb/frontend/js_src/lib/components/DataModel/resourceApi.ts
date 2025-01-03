@@ -901,6 +901,8 @@ export const ResourceBase = Backbone.Model.extend({
       }
     });
 
+    if (self.specifyTable.name === 'CollectionRelationship') return json
+
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
         if (related) {
