@@ -159,7 +159,7 @@ msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:237
-#: components/FormCells/FormTable.tsx:563
+#: components/FormCells/FormTable.tsx:567
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -210,7 +210,7 @@ msgstr "Next Record"
 msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:391
+#: components/Forms/ResourceView.tsx:404
 #: components/Forms/Save.tsx:46
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
