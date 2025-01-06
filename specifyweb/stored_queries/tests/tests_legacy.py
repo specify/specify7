@@ -1,5 +1,6 @@
 from unittest import TestCase, expectedFailure, skip
 
+import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 
