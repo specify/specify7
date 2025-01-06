@@ -13,16 +13,16 @@ from specifyweb.workbench import models as workbench_models
 from django.test import TestCase
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
-from .format import ObjectFormatter
-from .query_construct import QueryConstruct
-from .queryfieldspec import QueryFieldSpec
+from ..format import ObjectFormatter
+from ..query_construct import QueryConstruct
+from ..queryfieldspec import QueryFieldSpec
 from MySQLdb.cursors import SSCursor
 from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
 from sqlalchemy import event
-from . import models
+from .. import models
 from xml.etree import ElementTree
 # Used for pretty-formatting sql code for testing
 import sqlparse
