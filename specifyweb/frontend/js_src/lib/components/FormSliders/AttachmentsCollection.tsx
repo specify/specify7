@@ -4,8 +4,10 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
@@ -18,8 +20,6 @@ import type {
   CollectionObjectAttachment,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { ping } from '../../utils/ajax/ping';
-import { keysToLowerCase } from '../../utils/utils';
 
 export function AttachmentsCollection({
   collection,
@@ -65,7 +65,7 @@ export function AttachmentsCollection({
     void ping('/attachments_gw/download_all', {
       method: 'POST',
       body: keysToLowerCase({
-        recordIds: recordIds,
+        recordIds,
       }),
       errorMode: 'dismissible',
     });
