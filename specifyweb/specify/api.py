@@ -12,7 +12,10 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
 
-from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
+from specifyweb.interactions.cog_preps import (
+    modify_update_of_interaction_sibling_preps,
+    modify_update_of_loan_return_sibling_preps,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +28,12 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
-from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
+from specifyweb.permissions.permissions import (
+    enforce,
+    check_table_permissions,
+    check_field_permissions,
+    table_permissions_checker,
+)
 from specifyweb.specify.models_by_table_id import get_model_by_table_id
 
 from . import models
@@ -1084,5 +1092,4 @@ def _handle_special_save_priors(obj):
 
 def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
-    # data = modify_update_of_loan_return_sibling_preps(obj, data)
-    pass
+    data = modify_update_of_loan_return_sibling_preps(obj, data)
