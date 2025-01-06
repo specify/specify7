@@ -455,7 +455,7 @@ def cleanData(model, data: Dict[str, Any], parent_relationship: Optional[Relatio
         try:
             db_field_name = correct_field_name(model, field_name)
         except FieldDoesNotExist:
-            logger.warn('field "%s" does not exist in %s', field_name, model)
+            logger.warning('field "%s" does not exist in %s', field_name, model)
         else:
             if _is_circular_relationship(model, db_field_name, parent_relationship): 
                 parent_name: str = getattr(parent_relationship, 'name', '')
@@ -463,7 +463,7 @@ def cleanData(model, data: Dict[str, Any], parent_relationship: Optional[Relatio
                 Accession -> collectionObjects -> accession - then omit the 
                 final resource from the cleaned data
                 """
-                logger.warn(f"circular/redundant relationship {parent_name} -> {db_field_name} found in data. Skipping update/create of {db_field_name}")
+                logger.warning(f"circular/redundant relationship {parent_name} -> {db_field_name} found in data. Skipping update/create of {db_field_name}")
                 continue
             cleaned[db_field_name] = data[field_name]
 
@@ -694,9 +694,7 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
 
     for rel_data in value:
         rel_data[field.field.name] = obj
-        datamodel_field = obj.specify_model.get_relationship(field.name)
-
-        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj, parent_relationship=datamodel_field)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
 
         ids.append(rel_obj.id) # Record the id as one to keep.
 
@@ -747,8 +745,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = raw_rel_data
 
         rel_data[field.field.name] = obj
-        datamodel_field = obj.specify_model.get_relationship(field.name)
-        update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None, parent_relationship=datamodel_field)
+        update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None)
     
     if len(to_remove) > 0:
         assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"

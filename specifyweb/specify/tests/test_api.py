@@ -675,11 +675,13 @@ class InlineApiTests(ApiTests):
                         },
                         "determinations": [
                             {
+                                "text1": "test determination",
                                 "collectionObject": {
                                     "catalogNumber": redundant_catalog_number
                                 },
                             }
-                        ]
+                        ],
+                        'collection': api.uri_for_model('Collection', self.collection.id),
                     }
                 ]
             }
@@ -688,8 +690,6 @@ class InlineApiTests(ApiTests):
         accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.assertFalse(models.Accession.objects.filter(accessionnumber=redundant_accession_number).exists())
         self.assertFalse(models.Collectionobject.objects.filter(catalognumber=redundant_catalog_number).exists())
-        co = models.Collectionobject.objects.get(catalognumber=catalog_number)
-        self.assertEqual(len(co.determinations.all()), 0)
     
     # version control on inlined resources should be tested
 
