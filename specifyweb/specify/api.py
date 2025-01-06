@@ -1084,4 +1084,5 @@ def _handle_special_save_priors(obj):
 
 def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
+    # data = modify_update_of_loan_return_sibling_preps(obj, data)
     pass

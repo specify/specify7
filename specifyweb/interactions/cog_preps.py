@@ -258,6 +258,20 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
 
     return modified_prep_ids
 
+def parse_uri_id(uri: str, field: str) -> int:
+    pattern = rf'^/api/specify/{field}/(\d+)/$'
+    match = re.search(pattern, uri)
+    if match:
+        return int(match.group(1))
+    else:
+        raise ValueError(f"No {field} ID found in the URL")
+
+def parse_preparation_id(uri: str) -> int:
+    return parse_uri_id(uri, "preparation")
+
+def parse_loan_preparation_id(uri: str) -> int:
+    return parse_uri_id(uri, "loanpreparation")
+
 def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated_interaction_data):
     """
     Determine the difference between the preparation IDs in the Loanpreparations of the original and updated interactions.
@@ -266,13 +280,6 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     Add all sibling preparations to the loan that were added to the interaction.
     Return the modified updated interaction object.
     """
-    def parse_preparation_id(uri: str) -> int:
-        match = re.search(r'^/api/specify/preparation/(\d+)/$', uri)
-        if match:
-            return int(match.group(1))
-        else:
-            raise ValueError("No preparation ID found in the URL")
-
     interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
@@ -354,5 +361,264 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
 
     # Add back the unassociated preparation data
     updated_interaction_data[interaction_prep_name].extend(unassociated_prep_data)
+
+    return updated_interaction_data
+
+def modify_update_of_loan_return_sibling_preps_old(original_interaction_obj, updated_interaction_data):
+    if 'loanpreparations' not in updated_interaction_data:
+        return updated_interaction_data
+
+    loan_prep_data = updated_interaction_data["loanpreparations"]
+    loan_return_prep_data_lst = []
+    loan_prep_data_to_prep_id_map = {}
+    map_prep_id_to_loan_prep_idx = {}
+    loan_return_prep_data_to_prep_id_map = {}
+    # map_prep_id_to_
+    loan_prep_idx = 0
+    return_date = None
+    for loan_prep_data in updated_interaction_data["loanpreparations"]:
+        prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
+        prep_id = parse_preparation_id(prep_uri) if prep_uri is not None else None
+        loan_prep_data_to_prep_id_map[loan_prep_data] = prep_id
+        loan_prep_id = loan_prep_data["id"] if "id" in loan_prep_data.keys() else None
+        map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
+        loan_prep_idx += 1
+
+        for loan_return_prep_data in loan_prep_data["loanreturnpreparations"]:
+            if "returneddate" in loan_return_prep_data.keys():
+                return_date = loan_return_prep_data["returneddate"]
+
+            loan_return_prep_data_lst.append(loan_return_prep_data)
+            loan_return_loan_prep_id = loan_return_prep_data["loanpreparation"]
+            if loan_return_loan_prep_id == loan_prep_id:
+                loan_return_prep_data_to_prep_id_map[loan_return_prep_data] = prep_id
+            else:
+                loan_prep = Loanpreparation.objects.filter(id=loan_return_loan_prep_id).first()
+                loan_return_prep_data_to_prep_id_map[loan_return_prep_data] = (
+                    loan_prep.preparation_id if loan_prep is not None else None
+                )
+
+    preps = {prep for prep in Preparation.objects.filter(id__in=loan_return_prep_data_to_prep_id_map.values())}
+    loan_prep_ids = {prep.id for prep in preps}  
+
+    map_prep_id_to_sibling_prep_ids = {}
+    map_sibling_prep_ids_to_original_prep_ids = {}
+    for prep in preps:
+        prep = Preparation.objects.filter(id=prep_id).first()
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+        sibling_prep_ids = {sibling_prep.id for sibling_prep in sibling_preps}
+        map_prep_id_to_sibling_prep_ids[prep.id] = sibling_prep_ids
+        for sibling_prep in sibling_preps:
+            if sibling_prep.id not in map_sibling_prep_ids_to_original_prep_ids.keys():
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id] = set(prep.id)
+            else:
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id].update({prep.id})
+
+    # sibling_preps = {
+    #     sibling_prep
+    #     for prep in preps
+    #     for sibling_prep in get_all_sibling_preps_within_consolidated_cog(prep)
+    # }
+    # sibling_prep_ids = {prep.id for prep in sibling_preps}
+    sibling_prep_ids = set(map_sibling_prep_ids_to_original_prep_ids.keys())
+    added_prep_ids = sibling_prep_ids - loan_prep_ids
+    new_loan_return_prep_ids = {prep_id for prep_id in added_prep_ids if prep_id in map_prep_id_to_loan_prep_idx.keys()}
+
+    for prep_id in new_loan_return_prep_ids:
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
+        existing_loan_return_prep_data = loan_prep_data[loan_prep_idx]["loanreturnpreparations"]
+
+        orginal_prep_ids = map_sibling_prep_ids_to_original_prep_ids[prep_id]
+        original_loan_return_data = None
+        original_loan_prep_idx = None
+        if len(orginal_prep_ids) == 1:
+            original_prep_id = orginal_prep_ids.pop()
+            original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
+            original_loan_return_data = loan_prep_data[original_loan_prep_idx]["loanreturnpreparations"].last()
+        elif len(orginal_prep_ids) > 1:
+            logger.warning
+            pass # TODO
+        else:
+            continue
+
+        # TODO: Continue if a loan return preparation already exists for the loan preparation
+
+        loan_prep_id = loan_prep_data[loan_prep_idx]["id"]
+        # discipline_uri = existing_loan_return_prep_data
+        quantity_returned = ( # TODO
+            original_loan_return_data["quantityreturned"]
+            if original_loan_return_data is not None
+            else 1
+        )
+        quantity_resolved = ( # TODO
+            original_loan_return_data["quantityresolved"]
+            if original_loan_return_data is not None
+            else 1
+        )
+        discipline_uri = (
+            loan_prep_data[loan_prep_idx]["discipline"]
+            if original_loan_return_data is not None
+            else original_loan_return_data["discipline"]
+        )
+        return_date = return_date if return_date is not None else "2025-01-02" # TODO
+        received_by_agent_uri = "" # TODO
+
+        # Handle different cases for quantity returned and resolved
+        # if the original loan return has all the items returned/resolved, then the new loan return should have all the items returned/resolved
+        # if the original loan return has zero the items returned/resolved, then the new loan return should have zero the items returned/resolved
+        # otherwise, just match the quantity returned/resolved to the original loan return, in the case of a partial return, but don't exceed the loan prep quantity
+        # if original_loan_return_data["quantityreturned"] == 
+
+        new_loan_return_data = {
+            # "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/",
+            "quantityreturned": quantity_returned,
+            "quantityresolved": quantity_resolved,
+            "discipline": discipline_uri,
+            "loanpreparation": f"/api/specify/loanpreparation/{loan_prep_id}/",
+            "remarks": "",
+            "receivedby": received_by_agent_uri,
+            "returneddate": return_date,
+            "_tableName": "LoanReturnPreparation"
+        }
+
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ].extend([new_loan_return_data])
+    
+    return updated_interaction_data
+
+
+def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated_interaction_data):
+    if 'loanpreparations' not in updated_interaction_data:
+        return updated_interaction_data
+
+    # Parse and map loan preparation data
+    map_prep_id_to_loan_prep_idx = {}
+    map_prep_id_to_loan_prep_id = {}
+    map_prep_id_to_new_loan_return_prep_data = {}
+    target_preps = set()
+    target_prep_ids = set()
+    loan_prep_idx = 0
+    for loan_prep_data in updated_interaction_data["loanpreparations"]:
+        prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
+        prep_id = parse_preparation_id(prep_uri) if prep_uri is not None else None
+        map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
+        loan_prep_idx += 1
+
+        # Continue if the loan return preparation is not new
+        if "id" in loan_prep_data.keys():
+            loan_prep_id = int(loan_prep_data["id"])
+            if Loanpreparation.objects.filter(id=loan_prep_id).exists():
+                map_prep_id_to_loan_prep_id[prep_id] = loan_prep_id # TODO: Double check this
+
+        for loan_return_prep_data in loan_prep_data["loanreturnpreparations"]:
+            loan_return_loan_prep_id = loan_return_prep_data["loanpreparation"]
+            if loan_return_loan_prep_id == loan_prep_id:
+                target_prep_ids.update({prep_id})
+                prep = Preparation.objects.filter(id=prep_id).first()
+                if prep is not None:
+                    target_preps.update({prep})
+                    map_prep_id_to_loan_prep_id[prep_id] = loan_prep_id
+                    map_prep_id_to_new_loan_return_prep_data[prep_id] = loan_return_prep_data
+            else:
+                loan_prep = Loanpreparation.objects.filter(id=loan_return_loan_prep_id).first()
+                prep = loan_prep.preparation if loan_prep is not None else None
+                if prep is not None:
+                    target_prep_ids.update({prep.id})
+                    target_preps.update({prep})
+
+    # Get the sibling preparations
+    map_prep_id_to_sibling_prep_ids = {}
+    map_sibling_prep_ids_to_original_prep_ids = {}
+    for prep in target_preps:
+        prep = Preparation.objects.filter(id=prep_id).first()
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+        sibling_prep_ids = {sibling_prep.id for sibling_prep in sibling_preps}
+        map_prep_id_to_sibling_prep_ids[prep.id] = sibling_prep_ids
+        for sibling_prep in sibling_preps:
+            if sibling_prep.id not in map_sibling_prep_ids_to_original_prep_ids.keys():
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id] = set(prep.id)
+            else:
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id].update({prep.id})
+
+    sibling_prep_ids = set(map_sibling_prep_ids_to_original_prep_ids.keys())
+    added_prep_ids = sibling_prep_ids - target_prep_ids
+    new_loan_return_prep_ids = {prep_id for prep_id in added_prep_ids if prep_id in map_prep_id_to_loan_prep_idx.keys()}
+
+    # Create new loan return preparation data
+    for prep_id in new_loan_return_prep_ids:
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
+        existing_loan_return_prep_data = loan_prep_data[loan_prep_idx]["loanreturnpreparations"]
+
+        # Determine the original loan return preparation data that this new sibling loan return preparation data should be based on
+        orginal_prep_ids = map_sibling_prep_ids_to_original_prep_ids[prep_id]
+        orignal_loan_prep_data = None
+        original_loan_return_data = None
+        original_loan_prep_idx = None
+        if len(orginal_prep_ids) == 1:
+            original_prep_id = orginal_prep_ids.pop()
+            original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
+            orignal_loan_prep_data = loan_prep_data[original_loan_prep_idx]
+            original_loan_return_data = loan_prep_data[original_loan_prep_idx]["loanreturnpreparations"].last()
+        elif len(orginal_prep_ids) > 1:
+            logger.warning
+            pass # TODO
+        else:
+            continue
+
+        # Handle different cases for quantity returned and resolved
+        original_loan_prep_quanity = loan_prep_data[original_loan_prep_idx]["quantity"]
+        original_loan_return_quantity_returned = (
+            original_loan_return_data["quantityreturned"]
+            if original_loan_return_data is not None
+            else 0
+        )
+        original_loan_return_quantity_resolved = (
+            original_loan_return_data["quantityresolved"]
+            if original_loan_return_data is not None
+            else 0
+        )
+        # all_original_loan_prep_loan_returns = loan_prep_
+        
+        quantity_returned = ( # TODO
+            original_loan_return_data["quantityreturned"]
+            if original_loan_return_data is not None
+            else 1
+        )
+        quantity_resolved = ( # TODO
+            original_loan_return_data["quantityresolved"]
+            if original_loan_return_data is not None
+            else 1
+        )
+
+        # Add new loan return preparation data to the loan prep
+        loan_prep_id = loan_prep_data[loan_prep_idx]["id"]
+        discipline_uri = (
+            loan_prep_data[loan_prep_idx]["discipline"]
+            if original_loan_return_data is not None
+            else original_loan_return_data["discipline"]
+        )
+        return_date = (
+            original_loan_return_data["returneddate"]
+            if "returneddate" in original_loan_return_data.keys()
+            else None
+        )
+        received_by_agent_uri = "" # TODO
+        new_loan_return_data = {
+            # "discipline": f"/api/specify/discipline/{original_interaction_obj.discipline.id}/",
+            "quantityreturned": quantity_returned,
+            "quantityresolved": quantity_resolved,
+            "discipline": discipline_uri,
+            "loanpreparation": f"/api/specify/loanpreparation/{loan_prep_id}/",
+            "remarks": "",
+            "receivedby": received_by_agent_uri,
+            "returneddate": return_date,
+            "_tableName": "LoanReturnPreparation"
+        }
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ].extend([new_loan_return_data])
+
+    # TODO: Handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data
