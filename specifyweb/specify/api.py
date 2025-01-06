@@ -437,7 +437,7 @@ def _is_circular_relationship(model, field_name: str, parent_relationship: Optio
     if field is None or parent_relationship is None: 
         return False
 
-    if not field.is_relationship or parent_relationship.otherSideName is None or field.otherSideName is None: 
+    if not field.is_relationship or parent_relationship.otherSideName is None or cast(Relationship, field).otherSideName is None: 
         return False
     
     return datamodel.reverse_relationship(cast(Relationship, field)) is parent_relationship
@@ -458,11 +458,12 @@ def cleanData(model, data: Dict[str, Any], parent_relationship: Optional[Relatio
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             if _is_circular_relationship(model, db_field_name, parent_relationship): 
+                parent_name: str = getattr(parent_relationship, 'name', '')
                 """If this would add a redundant resource - e.g., 
                 Accession -> collectionObjects -> accession - then omit the 
                 final resource from the cleaned data
                 """
-                logger.warn(f"circular/redundant relationship {parent_relationship.name} -> {db_field_name} found in data. Skipping update/create of {db_field_name}")
+                logger.warn(f"circular/redundant relationship {parent_name} -> {db_field_name} found in data. Skipping update/create of {db_field_name}")
                 continue
             cleaned[db_field_name] = data[field_name]
 
