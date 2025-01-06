@@ -201,7 +201,7 @@ class Field(object):
                  length: int = None, is_relationship: bool = False):
         if not name:
             raise ValueError("name is required")
-        if not column and type == 'many-to-one':
+        if not column and not is_relationship:
             raise ValueError("column is required")
         self.is_relationship = is_relationship
         self.name = name or ''
@@ -251,23 +251,26 @@ class Relationship(Field):
     type: str
     required: bool
     relatedModelName: str
-    column: str
-    otherSideName: str
-    
-    @property
-    def is_to_many(self) -> bool:
-        return 'to_many' in self.type
+    column: Optional[str]
+    otherSideName: Optional[str]
 
     def __init__(self, name: str = None, type: str = None, required: bool = None, 
-                 relatedModelName: str = None, column: str = None,
-                 otherSideName: str = None, dependent: bool = False, is_relationship: bool = True,
-                 is_to_many: bool = None):
+                 relatedModelName: Optional[str] = None, column: Optional[str] = None,
+                 otherSideName: Optional[str] = None, dependent: bool = False, is_relationship: bool = True):
         super().__init__(name, column, indexed=False, unique=False, required=required, 
                          type=type, length=0, is_relationship=is_relationship)
+
+        if relatedModelName is None: 
+            raise ValueError('relatedModelName is required for Relationship')
+        
+        if not column and type == 'many-to-one': 
+            raise ValueError('column is required')
+        
         self.dependent = dependent if dependent is not None else False
-        self.relatedModelName = relatedModelName or ''
-        self.otherSideName = otherSideName or ''
-        # self.is_to_many = is_to_many if is_to_many is not None else 'to_many' in self.type
+        self.column = column
+        self.relatedModelName = relatedModelName
+        self.otherSideName = otherSideName
+
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find('id')
