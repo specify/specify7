@@ -182,6 +182,7 @@ class QueryFieldSpec(
         extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
 
+        tree_rank_name = None
         if field is None:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:

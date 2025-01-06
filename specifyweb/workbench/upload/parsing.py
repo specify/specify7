@@ -118,7 +118,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
                 )
             return result
     formatter = colopts.uiformatter(row) if callable(colopts.uiformatter) else colopts.uiformatter
-    parsed = parse_field(collection, tablename, fieldname, value, formatter)
+    parsed = parse_field(collection, tablename, fieldname, value, with_formatter=formatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text'

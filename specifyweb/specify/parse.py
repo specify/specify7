@@ -5,11 +5,11 @@ from typing import Dict, List, Tuple, Any, NamedTuple, Union, Optional, Literal
 from datetime import datetime
 from decimal import Decimal
 
-
+from specifyweb.specify import models
 from specifyweb.specify.agent_types import agent_types
 from specifyweb.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
-from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch, ScopedFormatter, CustomRepr
+from specifyweb.specify.uiformatters import get_uiformatter, UIFormatter, FormatMismatch
 
 ParseFailureKey = Literal[
 'valueTooLong',
@@ -53,7 +53,7 @@ def parse_field(collection, table_name: str, field_name: str, raw_value: str, wi
         return parse_integer(field.name, raw_value)
 
     if formatter is not None:
-        return parse_formatted(formatter, table, field, raw_value)
+        return parse_formatted(collection, formatter, table, field, raw_value)
 
     if is_latlong(table, field):
         return parse_latlong(field, raw_value)
@@ -170,11 +170,17 @@ def parse_date(table: Table, field_name: str, dateformat: str, value: str) -> Pa
     return ParseFailure('badDateFormat', {'value': value, 'format': dateformat})
 
 
-def parse_formatted(formatter: ScopedFormatter, table: Table, field: Union[Field, Relationship], value: str) -> ParseResult:
+def parse_formatted(collection, uiformatter: UIFormatter, table: Table, field: Union[Field, Relationship], value: str) -> ParseResult:
     try:
-        canonicalized = formatter(table, value)
+        parsed = uiformatter.parse(value)
     except FormatMismatch as e:
         return ParseFailure('formatMismatch', {'value': e.value, 'formatter': e.formatter})
+
+    if uiformatter.needs_autonumber(parsed):
+        canonicalized = uiformatter.autonumber_now(
+            collection, getattr(models, table.django_name), parsed)
+    else:
+        canonicalized = uiformatter.canonicalize(parsed)
 
     if hasattr(field, 'length') and len(canonicalized) > field.length:
         return ParseFailure('valueTooLong', {'maxLength': field.length})

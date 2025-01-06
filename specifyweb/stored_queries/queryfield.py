@@ -41,7 +41,7 @@ class QueryField(NamedTuple):
     display: bool
     format_name: Optional[str]
     sort_type: int
-    strict: bool
+    strict: bool = False
 
     @classmethod
     def from_spqueryfield(cls, field: EphemeralField, value=None):
