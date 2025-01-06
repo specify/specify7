@@ -260,13 +260,6 @@ export const IndependentCollection = LazyCollection.extend({
         !(this.removed as ReadonlySet<string>).has(resource_uri)
     );
   },
-  /*
-   * IsComplete() {
-   *   return this.related.isNew()
-   *     ? true
-   *     : Reflect.apply(LazyCollection.prototype.isComplete, this, arguments);
-   * },
-   */
   async fetch(options) {
     // If the related is being fetched, don't try and fetch the collection
     if (this.related._fetch !== null) return fakeFetch.call(this, options);
