@@ -694,7 +694,8 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
 
     for rel_data in value:
         rel_data[field.field.name] = obj
-        datamodel_field = obj.specify_model.get_relationship(field.field.name)
+        datamodel_field = obj.specify_model.get_relationship(field.name)
+
         rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj, parent_relationship=datamodel_field)
 
         ids.append(rel_obj.id) # Record the id as one to keep.
@@ -746,7 +747,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = raw_rel_data
 
         rel_data[field.field.name] = obj
-        datamodel_field = obj.specify_model.get_relationship(field.field.name)
+        datamodel_field = obj.specify_model.get_relationship(field.name)
         update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None, parent_relationship=datamodel_field)
     
     if len(to_remove) > 0:
