@@ -896,7 +896,7 @@ export const ResourceBase = Backbone.Model.extend({
     });
 
     // Check added to avoid infinite loop in following forEach for collectionRelationship see https://github.com/specify/specify7/issues/6025
-    if (self.specifyTable.name === 'CollectionRelationship') return json
+    if (self.specifyTable.name === 'CollectionRelationship') return json;
 
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
