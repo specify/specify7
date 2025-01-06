@@ -71,25 +71,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
-        def make_tree_field_spec(tree_node):
-            return current_field_spec._replace(
-                root_table=table, # rebasing the query
-                root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
-                join_path=next_join_path, # slicing join path to begin from after the tree
-            )
+        column_name = next_join_path[0].name
 
-        # TODO: Verify below code can be removed
-        # cases = []
-        # field = None # just to stop mypy from complaining.
-        # for ancestor in ancestors:
-        #     field_spec = make_tree_field_spec(ancestor)
-        #     query, orm_field, field, table = field_spec.add_spec_to_query(query)
-        #     #field and table won't matter. rank acts as fork, and these two will be same across siblings
-        #     cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
-
-        # column = sql.case(cases)
-
-        # return query, column, field, table
         def _predicates_for_node(_node):
             return [
                 # TEST: consider taking the treedef_id comparison just to the first node, if it speeds things up (matching for higher is redundant..)
@@ -108,6 +91,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # We don't want to include treedef if the rank is not present.
         new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
+        
         return query, column, current_field_spec.get_field(), table
 
     def tables_in_path(self, table, join_path):
