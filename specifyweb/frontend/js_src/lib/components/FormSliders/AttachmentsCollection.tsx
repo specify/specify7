@@ -18,6 +18,8 @@ import type {
   CollectionObjectAttachment,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { ping } from '../../utils/ajax/ping';
+import { keysToLowerCase } from '../../utils/utils';
 
 export function AttachmentsCollection({
   collection,
@@ -58,6 +60,17 @@ export function AttachmentsCollection({
     (attachment) => attachment.attachmentLocation === null
   );
 
+  const handleDownloadAllAttachments = () => {
+    const recordIds = attachments.map((attachment) => attachment.id);
+    void ping('/attachments_gw/download_all', {
+      method: 'POST',
+      body: keysToLowerCase({
+        recordIds: recordIds,
+      }),
+      errorMode: 'dismissible',
+    });
+  };
+
   return attachments.length > 0 ? (
     <>
       <Button.Small
@@ -70,9 +83,17 @@ export function AttachmentsCollection({
       {showAllAttachments && (
         <Dialog
           buttons={
-            <Button.Info onClick={handleCloseAttachments}>
-              {commonText.close()}
-            </Button.Info>
+            <>
+              <Button.Info
+                disabled={isAttachmentsNotLoaded}
+                onClick={handleDownloadAllAttachments}
+              >
+                {attachmentsText.downloadAll()}
+              </Button.Info>
+              <Button.Info onClick={handleCloseAttachments}>
+                {commonText.close()}
+              </Button.Info>
+            </>
           }
           header={attachmentsText.attachments()}
           icon={icons.gallery}

@@ -2,6 +2,8 @@ import hmac
 import json
 import logging
 import time
+import shutil
+from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
@@ -12,7 +14,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     StreamingHttpResponse
 from django.db import transaction
 from django.utils.translation import gettext as _
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -295,6 +298,40 @@ def proxy(request):
     return StreamingHttpResponse(
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
+
+@require_POST
+@login_maybe_required
+@never_cache
+def download_all(request):
+    """
+    Download all attachments
+    """
+    # TODO: none of this works yet, just a rough idea
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+    recordIds = spquery['recordIds'],
+
+    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+    model = models.models_by_tableid[tableid]
+    id_field = getattr(model, model._id)
+    query = query.filter(id_field.in_(recordIds))
+
+    output_dir = mkdtemp()
+    
+    try:
+        for row in query.yield_per(1):
+            # Write attachment file to output_dir
+            pass
+        
+        basename = re.sub(r'\.zip$', '', output_file)
+        shutil.make_archive(basename, 'zip', output_dir, logger=logger)
+    finally:
+        shutil.rmtree(output_dir)
+
+
+    return HttpResponse('OK', content_type='text/plain')
 
 @transaction.atomic()
 @login_maybe_required
