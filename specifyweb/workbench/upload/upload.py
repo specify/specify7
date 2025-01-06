@@ -390,6 +390,7 @@ def validate_row(
             with savepoint("row validation"):
                 bind_result = upload_plan.disambiguate(da).bind(
                     # TODO: Handle auditor props better
+                    collection,
                     row,
                     uploading_agent_id,
                     Auditor(collection, props=DEFAULT_AUDITOR_PROPS, audit_log=None),

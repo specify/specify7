@@ -500,7 +500,6 @@ class ScopedTreeRecord(NamedTuple):
         uploadingAgentId: Optional[int],
         auditor: Auditor,
         cache: Optional[Dict] = None,
-        row_index: Optional[int] = None,
     ) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[TreeRankRecord, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
@@ -554,12 +553,13 @@ class MustMatchTreeRecord(TreeRecord):
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
     def bind(
         self,
+        collection,
         row: Row,
         uploadingAgentId: Optional[int],
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(row, uploadingAgentId, auditor, cache)
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 
@@ -680,7 +680,7 @@ class BoundTreeRecord(NamedTuple):
         else:
             return UploadResult(match_result, {}, {})
 
-    def _to_match(self) -> List[TreeDefItemWithParseResults]:
+    def _to_match(self, references=None) -> List[TreeDefItemWithParseResults]:
 
         # Check if the parse results have non-null values
         def has_non_null_values(parse_results):
@@ -704,7 +704,12 @@ class BoundTreeRecord(NamedTuple):
         return [
             TreeDefItemWithParseResults(tdi, get_parse_results(tdi))
             for tdi in self.treedefitems
-            if is_valid_tdi(tdi)
+            if is_valid_tdi(tdi) and (
+                    (references is None)
+                    or (tdi.name not in references)
+                    or (references[tdi.name] is None)
+                    or (any(v is not None for v in references[tdi.name]["attrs"]))
+                )
         ]
 
     def _match(

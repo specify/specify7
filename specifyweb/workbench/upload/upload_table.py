@@ -225,7 +225,7 @@ class ScopedUploadTable(NamedTuple):
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(row, uploadingAgentId, auditor, cache)
+            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -235,7 +235,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundUploadable] = []
             for record in records:
-                result_ = record.bind(row, uploadingAgentId, auditor, cache)
+                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:

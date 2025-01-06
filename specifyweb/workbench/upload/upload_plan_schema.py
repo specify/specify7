@@ -360,7 +360,7 @@ def parse_upload_table(table: Table, to_parse: Dict) -> UploadTable:
 def _hacky_augment_to_many(to_parse: Dict):
     return {"uploadTable": to_parse}
 
-def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
+def parse_tree_record(table: Table, to_parse: Dict) -> TreeRecord:
     """Parse tree record from the given data"""
 
     def parse_rank(name_or_cols):

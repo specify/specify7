@@ -33,7 +33,7 @@ class SchemaTests(UploadTestsBase):
 
     def test_unparsing(self) -> None:
         set_plan_treeId()
-        self.assertEqual(example_plan.json, parse_plan(self.collection, example_plan.json).unparse())
+        self.assertEqual(example_plan.json, parse_plan(example_plan.json).unparse())
 
     def test_reject_internal_tree_columns(self) -> None:
         def with_field(field: str) -> Dict:

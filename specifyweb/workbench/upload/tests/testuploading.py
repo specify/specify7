@@ -1370,7 +1370,7 @@ class UploadTests(UploadTestsBase):
         ).apply_scoping(self.collection)
         row = next(reader)
         bt = tree_record.bind(
-            row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog)
+            self.collection, row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, auditlog)
         )
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
@@ -1440,7 +1440,7 @@ class UploadTests(UploadTestsBase):
         # )
 
         bt = tree_record.bind(
-            row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
+            self.collection, row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
         )
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
@@ -1461,7 +1461,7 @@ class UploadTests(UploadTestsBase):
         )
 
         bt = tree_record.bind(
-            row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
+            self.collection, row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
         )
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
@@ -1473,7 +1473,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.parent.id, state.id)
 
         bt = tree_record.bind(
-            row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
+            self.collection, row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
         )
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
@@ -1486,7 +1486,7 @@ class UploadTests(UploadTestsBase):
         )
 
         bt = tree_record.bind(
-            row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
+            self.collection, row, None, Auditor(self.collection, DEFAULT_AUDITOR_PROPS, None)
         )
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
