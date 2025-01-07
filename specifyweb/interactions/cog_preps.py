@@ -428,6 +428,8 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 
     # Set all the consolidated target loan returns to the max returned and resolved quantity
     for prep in consolidated_target_preps_with_siblings:
+        if get_the_top_consolidated_parent_cog_of_prep(prep) is None:
+            continue
         loan_prep = Loanpreparation.objects.filter(preparation=prep).first()
         loan_prep_idx = map_prep_id_to_loan_prep_idx[prep.id]
         updated_interaction_data["loanpreparations"][loan_prep_idx][
