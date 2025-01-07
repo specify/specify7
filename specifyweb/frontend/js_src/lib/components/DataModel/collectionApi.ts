@@ -274,6 +274,9 @@ export const IndependentCollection = LazyCollection.extend({
 
     return lazyFetch.call(this, newOptions);
   },
+  isComplete() {
+    return this.length === this._totalCount;
+  },
   getFetchOffset() {
     return this.length === 0 && this.removed.size > 0
       ? this.removed.size
