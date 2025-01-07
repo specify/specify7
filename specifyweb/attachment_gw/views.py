@@ -308,25 +308,33 @@ def download_all(request):
     """
     # TODO: none of this works yet, just a rough idea
     try:
-        spquery = json.load(request)
+        r = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
-    recordIds = spquery['recordIds'],
+    # recordIds = spquery['recordIds'],
 
-    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-    model = models.models_by_tableid[tableid]
-    id_field = getattr(model, model._id)
-    query = query.filter(id_field.in_(recordIds))
+    # query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+    # model = models.models_by_tableid[tableid]
+    # id_field = getattr(model, model._id)
+    # query = query.filter(id_field.in_(recordIds))
+
+    attachmentLocations = r['attachmentLocations']
+    collection = r['collection']
 
     output_dir = mkdtemp()
     
     try:
-        for row in query.yield_per(1):
+        for attachmentLocation in attachmentLocations:
             # Write attachment file to output_dir
+            # Use collection and attachmentLocation to download
+            # EX:
+            # https://assets-test.specifycloud.org/fileget?coll=sp7demofish&type=T&filename=32a915ea-5866-45d5-921d-64a68d75b03e.jpg&scale=123
             pass
         
-        basename = re.sub(r'\.zip$', '', output_file)
+        basename = 'attachments.zip'
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)
+
+        # Send zip as a notification? It may be possible to automatically send it as a download? Maybe not a good idea if server is under load.
     finally:
         shutil.rmtree(output_dir)
 
