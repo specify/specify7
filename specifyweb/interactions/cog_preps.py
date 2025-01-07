@@ -430,8 +430,12 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     for prep in consolidated_target_preps_with_siblings:
         loan_prep = Loanpreparation.objects.filter(preparation=prep).first()
         loan_prep_idx = map_prep_id_to_loan_prep_idx[prep.id]
-        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = loan_prep.quantity
-        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = loan_prep.quantity
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ][-1]["quantityreturned"] = loan_prep.quantity
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ][-1]["quantityresolved"] = loan_prep.quantity
 
     # Create new loan return preparation data
     for prep_id in new_loan_return_prep_ids:
