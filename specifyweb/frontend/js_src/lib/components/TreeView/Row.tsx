@@ -74,18 +74,33 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const isExpanded = Array.isArray(conformation);
   const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
+  const orderByField = userPreferences.get('treeEditor', 'behavior', 'orderByField');
+
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
-    void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
+        void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
+            const sortedRows = [...fetchedRows].sort((a, b) => {
+                switch (orderByField) {
+                    case 'rankID':
+                        return a.rankId - b.rankId;
+                    case 'nodeNumber':
+                        return a.nodeNumber - b.nodeNumber;
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'fullName':
+                        return a.fullName.localeCompare(b.fullName);
+                }
+            });
+
+            destructorCalled ? undefined : setRows(sortedRows);
+        });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row]);
+  }, [isLoading, getRows, row, orderByField]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;

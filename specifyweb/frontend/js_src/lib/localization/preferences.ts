@@ -1412,6 +1412,9 @@ export const preferencesText = createDictionary({
       gelangen
     `,
   },
+  sortByField: {
+    'en-us': 'Order by field',
+  },
   lineWrap: {
     'en-us': 'Line wrap',
     'ru-ru': 'Перенос строки',

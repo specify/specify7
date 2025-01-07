@@ -1347,6 +1347,30 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          orderByField: definePref<'fullName' | 'name' | 'rankID' | 'nodeNumber'>({
+            title: preferencesText.sortByField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'name',
+            values: [
+              {
+                value: 'name',
+                title: localized('_name'),
+              },
+              {
+                value: 'fullName',
+                title: localized('_fullName'),
+              },
+              {
+                value: 'rankID',
+                title: localized('_rankID'),
+              },
+              {
+                value: 'nodeNumber',
+                title: localized('_nodeNumber'),
+              },
+            ],
+          }),
           searchField: definePref<'fullName' | 'name'>({
             title: preferencesText.searchField(),
             requiresReload: false,
