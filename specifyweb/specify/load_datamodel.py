@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
+from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable, cast
 from xml.etree import ElementTree
 import os
 import warnings
@@ -57,7 +57,7 @@ class Datamodel(object):
 
     def reverse_relationship(self, relationship: 'Relationship') -> Optional['Relationship']:
         if hasattr(relationship, 'otherSideName'):
-            return self.get_table_strict(relationship.relatedModelName).get_relationship(relationship.otherSideName)
+            return self.get_table_strict(relationship.relatedModelName).get_relationship(cast(str, relationship.otherSideName))
         else:
             return None
 
@@ -189,27 +189,29 @@ class Table(object):
 class Field(object):
     is_relationship: bool = False
     name: str
-    column: str
+    column: Optional[str]
     indexed: bool
     unique: bool
     required: bool = False
-    type: str
+    type: Optional[str]
     length: Optional[int]
 
-    def __init__(self, name: str = None, column: str = None, indexed: bool = None, 
+    def __init__(self, name: str = None, column: Optional[str] = None, indexed: bool = None, 
                  unique: bool = None, required: bool = None, type: str = None,
                  length: int = None, is_relationship: bool = False):
         if not name:
             raise ValueError("name is required")
-        if not column and type == 'many-to-one':
+        if not type: 
+            raise ValueError('type is required')
+        if not column and not is_relationship:
             raise ValueError("column is required")
         self.is_relationship = is_relationship
-        self.name = name or ''
-        self.column = column or ''
+        self.name = name
+        self.column = column
         self.indexed = indexed if indexed is not None else False
         self.unique = unique if unique is not None else False
         self.required = required if required is not None else False
-        self.type = type if type is not None else ''
+        self.type = type
         self.length = length if length is not None else None
 
     def __repr__(self) -> str:
@@ -251,23 +253,26 @@ class Relationship(Field):
     type: str
     required: bool
     relatedModelName: str
-    column: str
-    otherSideName: str
-    
-    @property
-    def is_to_many(self) -> bool:
-        return 'to_many' in self.type
+    column: Optional[str]
+    otherSideName: Optional[str]
 
     def __init__(self, name: str = None, type: str = None, required: bool = None, 
-                 relatedModelName: str = None, column: str = None,
-                 otherSideName: str = None, dependent: bool = False, is_relationship: bool = True,
-                 is_to_many: bool = None):
+                 relatedModelName: Optional[str] = None, column: Optional[str] = None,
+                 otherSideName: Optional[str] = None, dependent: bool = False, is_relationship: bool = True):
         super().__init__(name, column, indexed=False, unique=False, required=required, 
                          type=type, length=0, is_relationship=is_relationship)
+
+        if relatedModelName is None: 
+            raise ValueError('relatedModelName is required for Relationship')
+        
+        if not column and type == 'many-to-one': 
+            raise ValueError('column is required')
+        
         self.dependent = dependent if dependent is not None else False
-        self.relatedModelName = relatedModelName or ''
-        self.otherSideName = otherSideName or ''
-        # self.is_to_many = is_to_many if is_to_many is not None else 'to_many' in self.type
+        self.column = column
+        self.relatedModelName = relatedModelName
+        self.otherSideName = otherSideName
+
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find('id')

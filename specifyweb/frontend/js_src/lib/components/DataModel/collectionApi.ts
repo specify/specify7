@@ -200,14 +200,16 @@ export const IndependentCollection = LazyCollection.extend({
     this.on(
       'change',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isBeingInitialized()) {
-          if (relationshipIsToMany(this.field)) {
-            const otherSideName = this.field.getReverse().name;
-            this.related.set(otherSideName, resource);
-          }
-          this.updated[resource.cid] = resource;
-          this.trigger('saverequired');
+        if (resource.isBeingInitialized()) return;
+        if (
+          relationshipIsToMany(this.field) ||
+          this.field.type === 'one-to-one'
+        ) {
+          const otherSideName = this.field.getReverse().name;
+          this.related.set(otherSideName, resource);
         }
+        this.updated[resource.cid] = resource;
+        this.trigger('saverequired');
       },
       this
     );
