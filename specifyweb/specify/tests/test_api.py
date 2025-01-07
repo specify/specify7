@@ -115,13 +115,26 @@ class MainSetupTearDown:
         self.collectionobjecttype = Collectionobjecttype.objects.create(
             name="Test", collection=self.collection, taxontreedef=self.taxontreedef
         )
+        
+        def make_co(num: int):
+            return [
+                models.Collectionobject.objects.create(
+                    collection=self.collection, 
+                    catalognumber="num-%d" % i,
+                    collectionobjecttype=self.collectionobjecttype,
+                )
+                for i in range(num)
+            ]
 
-        self.collectionobjects = [
-            Collectionobject.objects.create(
-                collection=self.collection,
-                catalognumber="num-%d" % i,
-                collectionobjecttype=self.collectionobjecttype)
-            for i in range(5)]
+        self.collectionobjects = make_co(5)
+        self.make_co = make_co
+
+        def _update(obj, kwargs):
+            for key, value in kwargs.items():
+                setattr(obj, key, value)
+            obj.save()
+
+        self._update = _update
 
 
 class ApiTests(MainSetupTearDown, TestCase): pass
