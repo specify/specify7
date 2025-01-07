@@ -374,7 +374,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     map_prep_id_to_new_loan_return_prep_data = {} # Map preparation ID to new loan return preparation data
     target_preps = set() # Preparations that the user explicitly requested to create a new loan return record
     target_prep_ids = set() # Preparation IDs that the user explicitly requested to create a new loan return record
-    loan_prep_idx = -1
+    loan_prep_idx = 0
     for loan_prep_data in updated_interaction_data["loanpreparations"]:
         loan_prep_id = int(loan_prep_data["id"]) if "id" in loan_prep_data.keys() else None
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
@@ -409,22 +409,18 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
                 target_preps.update({prep})
 
     # Get the sibling preparations
-    map_prep_id_to_sibling_prep_ids = {} # Map preparation ID to sibling preparation IDs
     map_sibling_prep_ids_to_original_prep_ids = {} # Map sibling preparation ID to original preparation IDs
     consolidated_target_preps_with_siblings = set() # Set of consolidated target preparations with siblings
-    for prep in target_preps:
-        prep = Preparation.objects.filter(id=prep_id).first()
-        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-        if sibling_preps is None or len(sibling_preps) == 0:
+    for target_prep in target_preps:
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(target_prep)
+        if sibling_preps is None or len(sibling_preps) == 0 or target_prep.id is None:
             continue
-        consolidated_target_preps_with_siblings.update({prep})
-        sibling_prep_ids = {sibling_prep.id for sibling_prep in sibling_preps}
-        map_prep_id_to_sibling_prep_ids[prep.id] = sibling_prep_ids
+        consolidated_target_preps_with_siblings.update({target_prep})
         for sibling_prep in sibling_preps:
             if sibling_prep.id not in map_sibling_prep_ids_to_original_prep_ids.keys():
-                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id] = set({prep.id})
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id] = set({target_prep.id})
             else:
-                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id].update({prep.id})
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id].update({target_prep.id})
 
     sibling_prep_ids = set(map_sibling_prep_ids_to_original_prep_ids.keys())
     added_prep_ids = sibling_prep_ids - target_prep_ids
@@ -433,19 +429,19 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     # Set all the consolidated target loan returns to the max returned and resolved quantity
     for prep in consolidated_target_preps_with_siblings:
         loan_prep = Loanpreparation.objects.filter(preparation=prep).first()
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep.id]
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = loan_prep.quantity
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = loan_prep.quantity
 
     # Create new loan return preparation data
     for prep_id in new_loan_return_prep_ids:
         loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
-        # existing_loan_return_prep_data = loan_prep_data[loan_prep_idx]["loanreturnpreparations"]
 
         # Determine the original loan return preparation data that this new sibling loan return preparation data should be based on
         orginal_prep_ids = map_sibling_prep_ids_to_original_prep_ids[prep_id]
         original_loan_prep_idx = None
-        original_loan_prep_data = None 
-        original_loan_return_data_lst = None 
+        original_loan_prep_data = None
+        original_loan_return_data_lst = None
         original_loan_return_data = None
         if len(orginal_prep_ids) == 1:
             original_prep_id = orginal_prep_ids.pop()
@@ -468,15 +464,17 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 
         # Set the return and resolved quantity to the max amount.
         # In the future, maybe have more complex logic for partial returns/resolves of consolidated cogs.
+        loan_prep_data_lst = updated_interaction_data["loanpreparations"]
         loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
-        loan_prep_max_quantity = loan_prep_data[loan_prep_idx]["quantity"]
+        loan_prep_data = loan_prep_data_lst[loan_prep_idx]
+        loan_prep_max_quantity = loan_prep_data_lst[loan_prep_idx]["quantity"]
         quantity_returned = loan_prep_max_quantity
         quantity_resolved = loan_prep_max_quantity
 
         # Add new loan return preparation data to the loan prep
-        loan_prep_id = loan_prep_data[loan_prep_idx]["id"]
+        loan_prep_id = loan_prep_data["id"]
         discipline_uri = (
-            loan_prep_data[loan_prep_idx]["discipline"]
+            loan_prep_data["discipline"]
             if original_loan_return_data is not None
             else original_loan_return_data["discipline"]
         )
@@ -504,6 +502,6 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             "loanreturnpreparations"
         ].extend([new_loan_return_data])
 
-    # TODO: Handle removed sibling preparations after removing an existing loan return preparation
+    # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data
