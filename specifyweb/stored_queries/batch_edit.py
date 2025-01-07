@@ -1013,7 +1013,7 @@ class BatchEditProps(TypedDict):
     recordsetid: Optional[int]
     session_maker: Any
     fields: List[QueryField]
-    omit_relationships: Optional[bool] = False
+    omit_relationships: Optional[bool]
 
 
 def run_batch_edit_query(props: BatchEditProps):

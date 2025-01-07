@@ -38,6 +38,7 @@ def props_builder(self, session_maker):
             captions=None,
             limit=None,
             recordsetid=None,
+            omit_relationships=False
         )
 
     return _builder

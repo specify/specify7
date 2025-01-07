@@ -1,8 +1,10 @@
 from unittest import TestCase, expectedFailure, skip
+from sqlalchemy import orm, inspect
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
+from .. import models
 
 class QueryFieldTests(TestCase):
     def test_stringid_roundtrip_from_bug(self) -> None:
@@ -798,13 +800,7 @@ expected_errors = {
   "CollectionObject": {
     "not_found": [
       "projects", 
-    ],
-    "incorrect_direction": {
-      "cojo": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
+    ]
   },
   "DNASequencingRun": {
     "incorrect_table": {
@@ -892,26 +888,6 @@ expected_errors = {
   "TaxonTreeDef": {
     "incorrect_direction": {
       "discipline": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
-  },
-  "CollectionObjectGroupJoin": {
-    "incorrect_direction": {
-      "childCog": [
-        "manytoone",
-        "onetoone"
-      ],
-      "childCo": [
-        "manytoone",
-        "onetoone"
-      ]
-    }
-  },
-  "CollectionObjectGroup": {
-    "incorrect_direction": {
-      "cojo": [
         "onetomany",
         "onetoone"
       ]
