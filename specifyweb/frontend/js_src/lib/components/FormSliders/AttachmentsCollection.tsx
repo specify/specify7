@@ -61,7 +61,7 @@ export function AttachmentsCollection({
   );
 
   const handleDownloadAllAttachments = () => {
-    const attachmentLocations: string[] = attachments
+    const attachmentLocations: readonly string[] = attachments
       .map((attachment) => attachment.attachmentLocation)
       .filter((location): location is string => location !== null);
 
