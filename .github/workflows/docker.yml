@@ -23,6 +23,9 @@ jobs:
           - linux/amd64
           - linux/arm64
     steps:
+      - name: Pre-pull Base Image
+        run: docker pull ubuntu:18.04
+    
       - name: Prepare
         id: prep
         run: |
@@ -87,6 +90,7 @@ jobs:
             GIT_SHA=${{ github.sha }}
           tags: ${{ steps.prep.outputs.tags }}
           push: true
+          retries: 3
 
       - name: Export digest
         run: |
