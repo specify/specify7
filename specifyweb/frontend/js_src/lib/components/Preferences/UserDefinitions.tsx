@@ -1347,7 +1347,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          orderByField: definePref<'fullName' | 'name' | 'nodeNumber' | 'rankID'>({
+          orderByField: definePref<'fullName' | 'name' | 'nodeNumber' | 'rankId'>({
             title: preferencesText.sortByField(),
             requiresReload: false,
             visible: true,
@@ -1362,8 +1362,8 @@ export const userPreferenceDefinitions = {
                 title: localized('_fullName'),
               },
               {
-                value: 'rankID',
-                title: localized('_rankID'),
+                value: 'rankId',
+                title: localized('_rankId'),
               },
               {
                 value: 'nodeNumber',
@@ -2092,6 +2092,66 @@ import('../DataModel/tables')
           getField(tables.Taxon, 'fullName').label
         );
       } else softError('Unable to replace the tree preferences item title');
+
+      // TODO: Refactor this with a helper function since this is largely the same as above
+
+      // Update titles for orderByField
+      const treeOrderByBehavior =
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items.orderByField;
+      if ('values' in treeOrderByBehavior) {
+        const orderByValues = treeOrderByBehavior.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+
+        const nameOrderBy = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'name'
+          ),
+          'Unable to find tree name value for orderByField'
+        );
+        const fullNameOrderBy = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'fullName'
+          ),
+          'Unable to find tree full name value for orderByField'
+        );
+        const rankId = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'rankId'
+          ),
+          'Unable to find tree rankId value'
+        );
+        const nodeNumber = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'nodeNumber'
+          ),
+          'Unable to find tree nodeNumber value'
+        );
+
+        overwriteReadOnly(
+          nameOrderBy,
+          'title',
+          getField(tables.Taxon, 'name').label
+        );
+        overwriteReadOnly(
+          fullNameOrderBy,
+          'title',
+          getField(tables.Taxon, 'fullName').label
+        );
+        overwriteReadOnly(
+          rankId,
+          'title',
+          getField(tables.Taxon,'rankId').label
+        );
+        overwriteReadOnly(
+          nodeNumber,
+          'title',
+          getField(tables.Taxon, 'nodeNumber').label
+        );
+      } else {
+        softError('Unable to replace the tree preferences item title for orderByField');
+      }
     })
   )
   
