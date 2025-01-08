@@ -1418,7 +1418,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#662D91',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1439,7 +1439,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#C1272D',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1460,7 +1460,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#0071BC',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1481,7 +1481,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#39B54A',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1502,7 +1502,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#C1272D',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1523,7 +1523,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#FFB728',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -2082,7 +2082,10 @@ import('../DataModel/tables')
           ),
           'Unable to find tree full name value'
         );
-        overwriteReadOnly(name, 'title', getField(tables.Taxon, 'name').label);
+        overwriteReadOnly(
+          name, 
+          'title', 
+          getField(tables.Taxon, 'name').label);
         overwriteReadOnly(
           fullName,
           'title',
@@ -2091,6 +2094,7 @@ import('../DataModel/tables')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
+  
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
