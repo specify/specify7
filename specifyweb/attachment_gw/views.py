@@ -359,8 +359,9 @@ def make_attachment_zip(attachmentLocations, origFilenames, output_file):
     try:
         for attachmentLocation in attachmentLocations:
             response = requests.get(server_urls['read'] + '?' + f'coll=Paleo&type=O&filename={attachmentLocation}')
-            with open(os.path.join(output_dir, attachmentLocation), 'wb') as f:
-                f.write(response.content)
+            if response.status_code == 200:
+                with open(os.path.join(output_dir, attachmentLocation), 'wb') as f:
+                    f.write(response.content)
         
         basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)

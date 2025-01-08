@@ -4,10 +4,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
@@ -60,21 +58,6 @@ export function AttachmentsCollection({
     (attachment) => attachment.attachmentLocation === null
   );
 
-  const handleDownloadAllAttachments = () => {
-    const attachmentLocations: readonly string[] = attachments
-      .map((attachment) => attachment.attachmentLocation)
-      .filter((location): location is string => location !== null);
-
-    void ping('/attachment_gw/download_all/', {
-      method: 'POST',
-      body: keysToLowerCase({
-        collection, // TODO: Use id? This is just needed to get the url
-        attachmentLocations,
-      }),
-      errorMode: 'dismissible',
-    });
-  };
-
   return attachments.length > 0 ? (
     <>
       <Button.Small
@@ -87,17 +70,9 @@ export function AttachmentsCollection({
       {showAllAttachments && (
         <Dialog
           buttons={
-            <>
-              <Button.Info
-                disabled={isAttachmentsNotLoaded}
-                onClick={handleDownloadAllAttachments}
-              >
-                {attachmentsText.downloadAll()}
-              </Button.Info>
-              <Button.Info onClick={handleCloseAttachments}>
-                {commonText.close()}
-              </Button.Info>
-            </>
+            <Button.Info onClick={handleCloseAttachments}>
+              {commonText.close()}
+            </Button.Info>
           }
           header={attachmentsText.attachments()}
           icon={icons.gallery}

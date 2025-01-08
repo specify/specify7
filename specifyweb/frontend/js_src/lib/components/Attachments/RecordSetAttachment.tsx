@@ -83,21 +83,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
-
-  // const handleDownloadAllAttachments = () => {
-  //   const attachmentLocations: readonly string[] = attachments
-  //     .map((attachment) => attachment.attachmentLocation)
-  //     .filter((location): location is string => location !== null);
-
-  //   void ping('/attachments_gw/download_all', {
-  //     method: 'POST',
-  //     body: keysToLowerCase({
-  //       collection, // TODO: Use id? This is just needed to get the url
-  //       attachmentLocations,
-  //     }),
-  //     errorMode: 'dismissible',
-  //   });
-  // };
   const handleDownloadAllAttachments = (): void => {
     const attachmentLocations: readonly string[] = attachmentsRef.current.attachments
       .map((attachment) => attachment.attachmentLocation)

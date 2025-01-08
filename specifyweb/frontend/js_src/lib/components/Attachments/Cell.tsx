@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+// import { Input } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -21,6 +22,11 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
+import { fetchOriginalUrl } from './attachments';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { serializeResource } from '../DataModel/serializers';
+import { Link } from '../Atoms/Link';
+import { notificationsText } from '../../localization/notifications';
 
 export function AttachmentCell({
   attachment,
@@ -36,6 +42,15 @@ export function AttachmentCell({
     | undefined;
 }): JSX.Element {
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
+
+  const serialized = React.useMemo(
+    () => serializeResource(attachment),
+    [attachment]
+  );
+  const [originalUrl] = useAsyncState(
+    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
+    false
+  );
 
   return (
     <div className="relative">
@@ -61,6 +76,23 @@ export function AttachmentCell({
           handleOpen();
         }}
       />
+      {/* <Input.Checkbox
+        className="absolute right-0 top-0"
+        onValueChange={handleOpen}
+      /> */}
+      {typeof originalUrl === 'string' && (
+        <Link.Icon
+          className="absolute right-0 top-0"
+          download={new URL(originalUrl).searchParams.get(
+            'downloadname'
+          )}
+          href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+          target="_blank"
+          onClick={undefined}
+          icon="download"
+          title={notificationsText.download()}
+        />
+      )}
     </div>
   );
 }
