@@ -65,7 +65,7 @@ export function AttachmentsCollection({
       .map((attachment) => attachment.attachmentLocation)
       .filter((location): location is string => location !== null);
 
-    void ping('/attachments_gw/download_all', {
+    void ping('/attachment_gw/download_all/', {
       method: 'POST',
       body: keysToLowerCase({
         collection, // TODO: Use id? This is just needed to get the url

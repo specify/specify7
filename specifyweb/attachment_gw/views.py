@@ -1,3 +1,6 @@
+import os
+import traceback
+import re
 import hmac
 import json
 import logging
@@ -7,6 +10,8 @@ from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
+from datetime import datetime
+from threading import Thread
 
 import requests
 from django.conf import settings
@@ -16,6 +21,7 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.http import require_POST
+from ..notifications.models import Message
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -306,40 +312,60 @@ def download_all(request):
     """
     Download all attachments
     """
-    # TODO: none of this works yet, just a rough idea
     try:
         r = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
-    # recordIds = spquery['recordIds'],
 
-    # query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-    # model = models.models_by_tableid[tableid]
-    # id_field = getattr(model, model._id)
-    # query = query.filter(id_field.in_(recordIds))
+    logger.info('Downloading attachments for %s', r)
 
-    attachmentLocations = r['attachmentLocations']
-    collection = r['collection']
+    user = request.specify_user
+    collection = request.specify_collection
 
+    attachmentLocations = r['attachmentlocations']
+    origFilenames = r['origfilenames']
+    # collection = r['collection']
+
+    filename = 'attachments_%s.zip' % datetime.now().isoformat()
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+
+    def do_export():
+        try:
+            make_attachment_zip(attachmentLocations, origFilenames, path)
+        except Exception as e:
+            tb = traceback.format_exc()
+            logger.error('make_attachment_zip failed: %s', tb)
+            Message.objects.create(user=user, content=json.dumps({
+                'type': 'attachment-archive-failed',
+                'exception': str(e),
+                'traceback': tb if settings.DEBUG else None,
+            }))
+        else:
+            Message.objects.create(user=user, content=json.dumps({
+                'type': 'attachment-archive-complete',
+                'file': filename
+            }))
+
+    # # Send zip as a notification? It may be possible to automatically send it as a download? Maybe not a good idea if server is under load.
+    # # Or stream the zip file back to the client with StreamingHttpResponse
+
+    thread = Thread(target=do_export)
+    thread.daemon = True
+    thread.start()
+    return HttpResponse('OK', content_type='text/plain')
+
+def make_attachment_zip(attachmentLocations, origFilenames, output_file):
     output_dir = mkdtemp()
-    
     try:
         for attachmentLocation in attachmentLocations:
-            # Write attachment file to output_dir
-            # Use collection and attachmentLocation to download
-            # EX:
-            # https://assets-test.specifycloud.org/fileget?coll=sp7demofish&type=T&filename=32a915ea-5866-45d5-921d-64a68d75b03e.jpg&scale=123
-            pass
+            response = requests.get(server_urls['read'] + '?' + f'coll=Paleo&type=O&filename={attachmentLocation}')
+            with open(os.path.join(output_dir, attachmentLocation), 'wb') as f:
+                f.write(response.content)
         
-        basename = 'attachments.zip'
+        basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)
-
-        # Send zip as a notification? It may be possible to automatically send it as a download? Maybe not a good idea if server is under load.
     finally:
         shutil.rmtree(output_dir)
-
-
-    return HttpResponse('OK', content_type='text/plain')
 
 @transaction.atomic()
 @login_maybe_required

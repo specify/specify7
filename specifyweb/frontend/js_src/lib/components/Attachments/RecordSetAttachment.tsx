@@ -17,6 +17,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
+import { ping } from '../../utils/ajax/ping';
+import { keysToLowerCase } from '../../utils/utils';
 
 const haltIncrementSize = 300;
 
@@ -81,6 +83,39 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
+
+  // const handleDownloadAllAttachments = () => {
+  //   const attachmentLocations: readonly string[] = attachments
+  //     .map((attachment) => attachment.attachmentLocation)
+  //     .filter((location): location is string => location !== null);
+
+  //   void ping('/attachments_gw/download_all', {
+  //     method: 'POST',
+  //     body: keysToLowerCase({
+  //       collection, // TODO: Use id? This is just needed to get the url
+  //       attachmentLocations,
+  //     }),
+  //     errorMode: 'dismissible',
+  //   });
+  // };
+  const handleDownloadAllAttachments = (): void => {
+    const attachmentLocations: readonly string[] = attachmentsRef.current.attachments
+      .map((attachment) => attachment.attachmentLocation)
+      .filter((location): location is string => location !== null);
+    const origFilenames: readonly string[] = attachmentsRef.current.attachments
+      .map((attachment) => attachment.origFilename)
+      .filter((filename): filename is string => filename !== null);
+
+    void ping('/attachment_gw/download_all/', {
+      method: 'POST',
+      body: keysToLowerCase({
+        attachmentLocations,
+        origFilenames,
+      }),
+      errorMode: 'dismissible',
+    });
+  };
+
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
 
   /*
@@ -110,7 +145,17 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       {showAttachments && (
         <Dialog
           buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            <>
+              <Button.Info
+                disabled={fetchedCount.current !== records.length}
+                onClick={handleDownloadAllAttachments}
+              >
+                {attachmentsText.downloadAll()}
+              </Button.Info>
+              <Button.DialogClose>
+                {commonText.close()}
+              </Button.DialogClose>
+            </>
           }
           className={{
             container: dialogClassNames.wideContainer,

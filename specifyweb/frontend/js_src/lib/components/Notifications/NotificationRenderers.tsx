@@ -120,6 +120,34 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'attachment-archive-complete'(notification) {
+    return (
+      <>
+        {notificationsText.attachmentArchiveCompleted()}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${notification.payload.file}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
+  'attachment-archive-failed'(notification) {
+    return (
+      <>
+        {notificationsText.attachmentArchiveFailed()}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`data:application/json:${JSON.stringify(notification.payload)}`}
+        >
+          {notificationsText.exception()}
+        </Link.Success>
+      </>
+    );
+  },
   'dataset-ownership-transferred'(notification) {
     return (
       <StringToJsx
