@@ -23,9 +23,6 @@ jobs:
           - linux/amd64
           - linux/arm64
     steps:
-      - name: Pre-pull Base Image
-        run: docker pull ubuntu:18.04
-    
       - name: Prepare
         id: prep
         run: |
