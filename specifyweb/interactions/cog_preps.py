@@ -376,6 +376,8 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     target_prep_ids = set() # Preparation IDs that the user explicitly requested to create a new loan return record
     loan_prep_idx = 0
     for loan_prep_data in updated_interaction_data["loanpreparations"]:
+        if type(loan_prep_data) is str:
+            continue
         loan_prep_id = int(loan_prep_data["id"]) if "id" in loan_prep_data.keys() else None
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
         prep_id = parse_preparation_id(prep_uri) if prep_uri is not None else None
