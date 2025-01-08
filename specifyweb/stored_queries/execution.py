@@ -559,7 +559,30 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         if limit:
             query = query.limit(limit)
 
-        return {'results': list(query)}
+        results = list(query)
+
+        age_field_position = None
+        age_value = None
+
+        for index, field_spec in enumerate(field_specs):
+        # Search for the "age" field within the field_spec
+            for field in field_spec.fieldspec.join_path:
+                if field.name == "age":
+                    age_field_position = index
+                    age_value = field_spec.value
+                    break
+
+        # Check if the age field exists and modify the id with age value
+        if age_field_position is not None:
+            results = [
+                tuple(
+                    age_value if i == age_field_position + 1 else value
+                    for i, value in enumerate(result)
+                )
+                for result in results
+            ]
+
+        return {'results': results}
 
 def build_query(session, collection, user, tableid, field_specs,
                 recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, implicit_or=True):
