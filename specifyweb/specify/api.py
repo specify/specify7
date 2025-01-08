@@ -8,6 +8,7 @@ import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
     Callable, TypedDict, cast
+
 from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Model
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
@@ -41,7 +42,7 @@ from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
-from .datamodel import datamodel
+from .datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
@@ -437,19 +438,41 @@ def _maybe_delete(data: Dict[str, Any], to_delete: str):
     if to_delete in data:
         del data[to_delete]
 
-def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
-    """Returns a copy of data with only fields that are part of model, removing
-    metadata fields and warning on unexpected extra fields."""
+def _is_circular_relationship(model, field_name: str, parent_relationship: Optional[Relationship] = None) -> bool: 
+    table: Table = cast(Table, model.specify_model)
+    field = table.get_field(field_name)
+
+    if field is None or parent_relationship is None: 
+        return False
+
+    if not field.is_relationship or parent_relationship.otherSideName is None or cast(Relationship, field).otherSideName is None: 
+        return False
+    
+    return datamodel.reverse_relationship(cast(Relationship, field)) is parent_relationship
+
+def cleanData(model, data: Dict[str, Any], parent_relationship: Optional[Relationship] = None) -> Dict[str, Any]:
+    """Returns a copy of data with redundant resources removed and only 
+    fields that are part of model, removing metadata fields and warning on 
+    unexpected extra fields"""
     cleaned = {}
     for field_name in list(data.keys()):
         if field_name in ('resource_uri', 'recordset_info', '_tableName'):
             # These fields are meta data, not part of the resource.
             continue
+
         try:
             db_field_name = correct_field_name(model, field_name)
         except FieldDoesNotExist:
-            logger.warn('field "%s" does not exist in %s', field_name, model)
+            logger.warning('field "%s" does not exist in %s', field_name, model)
         else:
+            if _is_circular_relationship(model, db_field_name, parent_relationship): 
+                parent_name: str = getattr(parent_relationship, 'name', '')
+                """If this would add a redundant resource - e.g., 
+                Accession -> collectionObjects -> accession - then omit the 
+                final resource from the cleaned data
+                """
+                logger.warning(f"circular/redundant relationship {parent_name} -> {db_field_name} found in data. Skipping update/create of {db_field_name}")
+                continue
             cleaned[db_field_name] = data[field_name]
 
         # Unset date precision if date is not set, but precision is
@@ -484,12 +507,13 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
 
     return cleaned
 
-def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
+def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, str):
         model = get_model_or_404(model)
-    data = cleanData(model, data, agent)
+
+    data = cleanData(model, data, parent_relationship)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
@@ -520,7 +544,7 @@ def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
     return None
 
-def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
+def set_fields_from_data(obj: Model, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      """Where 'obj' is a Django model instance and 'data' is a dict,
      set all fields provided by data that are not related object fields.
      """
@@ -622,8 +646,8 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
             rel_model = field.related_model
-
-            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None)
+            datamodel_field = obj.specify_model.get_relationship(field_name)
+            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None, datamodel_field)
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
@@ -632,6 +656,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
             data[field_name] = _obj_to_data(rel_obj, read_checker)
         else:
             raise Exception(f'bad foreign key field in data: {field_name}')
+
         if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
 
@@ -673,11 +698,10 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
         assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
         
     rel_model = field.related_model
-    ids = [] # Ids not in this list will be deleted (if dependent) or removed from obj (if independent) at the end.
+    ids = [] # Ids not in this list will be deleted at the end.
 
     for rel_data in value:
         rel_data[field.field.name] = obj
-
         rel_obj = update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=obj)
 
         ids.append(rel_obj.id) # Record the id as one to keep.
@@ -729,7 +753,7 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = raw_rel_data
 
         rel_data[field.field.name] = obj
-        update_or_create_resource(collection, agent, rel_model, rel_data, None)
+        update_or_create_resource(collection, agent, rel_model, rel_data, parent_obj=None)
     
     if len(to_remove) > 0:
         assert obj.pk is not None, f"Unable to remove {obj.__class__.__name__}.{field.field.name} resources from new {obj.__class__.__name__}"
@@ -744,14 +768,14 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 
-def update_or_create_resource(collection, agent, model, data, parent_obj): 
+def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
     if 'id' in data: 
         return update_obj(collection, agent, 
                           model, data['id'], 
                           data['version'], data, 
-                          parent_obj=parent_obj)
+                          parent_obj=parent_obj, parent_relationship=parent_relationship)
     else: 
-        return create_obj(collection, agent, model, data, parent_obj=parent_obj)
+        return create_obj(collection, agent, model, data, parent_obj=parent_obj, parent_relationship=parent_relationship)
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:
@@ -790,14 +814,14 @@ def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, 
 def put_resource(collection, agent, name: str, id, version, data: Dict[str, Any]):
     return update_obj(collection, agent, name, id, version, data)
 
-def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], parent_obj=None):
+def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], parent_obj=None, parent_relationship=None):
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
     check_table_permissions(collection, agent, obj, "update")
 
-    data = cleanData(obj.__class__, data, agent)
+    data = cleanData(obj.__class__, data, parent_relationship)
     dependents_to_delete, fk_dirty = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
@@ -923,7 +947,16 @@ def field_to_val(obj, field, checker: ReadPermChecker) -> Any:
             related_obj = getattr(obj, field.name, None)
             if related_obj is None: return None
             return _obj_to_data(related_obj, checker)
-        related_id = getattr(obj, field.name + '_id')
+        
+        # The FK can exist on the other side in the case of one_to_one 
+        # relationships
+        has_fk = hasattr(obj, field.name + '_id')
+        if has_fk: 
+            related_id = getattr(obj, field.name + '_id')
+        else: 
+            related_obj = getattr(obj, field.name, None)
+            related_id = getattr(related_obj, 'id', None)
+
         if related_id is None: return None
         return uri_for_model(field.related_model, related_id)
     else:
