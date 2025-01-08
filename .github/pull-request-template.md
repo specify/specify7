@@ -11,6 +11,7 @@ Fixes #
       self-explanatory (or properly documented)
 - [ ] Add automated tests
 - [ ] Add relevant issue to release milestone
+- [ ] Add relevant documentation (Tester - Dev)
 
 ### Testing instructions
 
