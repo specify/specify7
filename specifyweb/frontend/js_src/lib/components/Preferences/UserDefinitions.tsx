@@ -2029,37 +2029,37 @@ import('../DataModel/tables')
       overwriteReadOnly(
         trees.geography,
         'title',
-        getField(tables.Geography, 'name').label
+        tables.Geography.label
       );
       overwriteReadOnly(
         trees.taxon,
         'title',
-        getField(tables.Taxon, 'name').label
+        tables.Taxon.label
       );
       overwriteReadOnly(
         trees.storage,
         'title',
-        getField(tables.Storage, 'name').label
+        tables.Storage.label
       );
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        getField(tables.Geography, 'name').label
+        tables.Geography.label
       );
       overwriteReadOnly(
         trees.lithoStrat,
         'title',
-        getField(tables.LithoStrat, 'name').label
+        tables.LithoStrat.label
       );
       overwriteReadOnly(
         trees.tectonicUnit,
         'title',
-        getField(tables.TectonicUnit, 'name').label
+        tables.TectonicUnit.label
       );
       overwriteReadOnly(
         userPreferenceDefinitions.form.subCategories.recordSet,
         'title',
-        getField(tables.RecordSet, 'name').label
+        tables.RecordSet.label
       );
 
       const treeSearchBehavior =
