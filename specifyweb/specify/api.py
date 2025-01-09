@@ -515,7 +515,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
 
     data = cleanData(model, data, parent_relationship)
     obj = model()
-    handle_fk_fields(collection, agent, obj, data)
+    _, remote_to_ones, _ = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
@@ -524,11 +524,13 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
-    _handle_special_save_priors(obj)
-
     if obj.id is not None: # was the object actually saved?
         check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
+
+    for (field, related) in remote_to_ones:
+        setattr(related, field.name, obj)
+        related.save()
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -606,7 +608,7 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
         yield (key, data[key])
 
 
-def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List[FieldChangeInfo]]:
+def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List, List[FieldChangeInfo]]:
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -616,6 +618,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
+    remote_to_ones = []
     dirty: List[FieldChangeInfo] = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
@@ -628,19 +631,22 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
         if val is None:
             setattr(obj, field_name, None)
+            rel_obj = None
             if dependent and old_related:
                 dependents_to_delete.append(old_related)
 
         elif isinstance(val, field.related_model):
             # The related value was patched into the data by a parent object.
             setattr(obj, field_name, val)
+            rel_obj = val
             new_related_id = val.id
 
         elif isinstance(val, str):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = strict_uri_to_model(val, field.related_model.__name__)
-            setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
+            rel_obj = get_object_or_404(fk_model, id=fk_id)
+            setattr(obj, field_name, rel_obj)
             new_related_id = fk_id
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
@@ -659,8 +665,13 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
 
         if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+        
+        # If the field is remote, the obj must be set on the remote side once 
+        # the obj exists
+        if not field.concrete and rel_obj is not None: 
+                remote_to_ones.append((field.remote_field, rel_obj))
 
-    return dependents_to_delete, dirty
+    return dependents_to_delete, remote_to_ones, dirty
 
 def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     """For every key in the dict 'data' which is a *-to-many field in the
@@ -822,7 +833,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     check_table_permissions(collection, agent, obj, "update")
 
     data = cleanData(obj.__class__, data, parent_relationship)
-    dependents_to_delete, fk_dirty = handle_fk_fields(collection, agent, obj, data)
+    dependents_to_delete, remote_to_ones, fk_dirty = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
@@ -840,6 +851,9 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
         delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
+    for (field, related) in remote_to_ones:
+        setattr(related, field.name, obj)
+        related.save()
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -1107,21 +1121,6 @@ def rows(request, model_name: str) -> HttpResponse:
 
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
-
-def _save_cojo_prior(obj):
-    """
-    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
-    """
-    if obj._meta.model_name in {'collectionobject', 'collectionobjectgroup'} and hasattr(obj, 'cojo'):
-        obj.cojo.save()
-    elif obj._meta.model_name in {'collectionobjectgroupjoin'}:
-        obj.save()
-
-def _handle_special_save_priors(obj):
-    """
-    Save the cojo attribute if it exists and the model is either collectionobject or collectionobjectgroup.
-    """
-    _save_cojo_prior(obj)
 
 def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
