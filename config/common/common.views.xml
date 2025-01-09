@@ -1984,7 +1984,7 @@
 								<cell type="field" id="locality" name="childCo.collectingEvent.locality.localityName" uitype="text" readonly="true"/>
 							</row>
 						</rows>
-						<rows condition="childCO=_EMPTY">
+						<rows condition="childCO.id=_EMPTY">
 							<row/>
 						</rows>
 					</cell>
@@ -2003,7 +2003,7 @@
 								<cell type="field" id="typeOfGroup" name="childCog.COGType.Name" uitype="text" readonly="true"/>
 							</row>
 						</rows>
-						<rows condition="childCOG=_EMPTY">
+						<rows condition="childCOG.id=_EMPTY">
 							<row/>
 						</rows>
 					</cell>
@@ -2015,7 +2015,7 @@
 								<cell type="subview" viewname="CollectionObjectMini" id="childCO" name="childCo" uitype="subview" colspan="20"/>
 							</row>
 						</rows>
-						<rows condition="childCo=_EMPTY">
+						<rows condition="childCO.id=_EMPTY">
 							<row/>
 							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
 						</rows>
@@ -2028,7 +2028,7 @@
 								<cell type="subview" viewname="CollectionObjectGroup" id="childCog" name="childCog" colspan="20"/>
 							</row>
 						</rows>
-						<rows condition="childcog=_EMPTY">
+						<rows condition="childCOG.id=_EMPTY">
 							<row/>
 							<!-- Show nothing if no Collection Object Group (COG) or Collection Object (CO) child exists for this COJO record -->
 						</rows>
