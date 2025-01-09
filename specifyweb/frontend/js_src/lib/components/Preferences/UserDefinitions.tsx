@@ -2044,7 +2044,7 @@ import('../DataModel/tables')
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        tables.Geography.label
+        tables.GeologicTimePeriod.label
       );
       overwriteReadOnly(
         trees.lithoStrat,
