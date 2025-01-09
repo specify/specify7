@@ -9,7 +9,6 @@ from specifyweb.specify.models import (
     Collectionobjectgroupjoin,
     Disposalpreparation,
     Giftpreparation,
-    Loan,
     Loanpreparation,
     Loanreturnpreparation,
     Preparation,
@@ -17,6 +16,7 @@ from specifyweb.specify.models import (
     Recordsetitem,
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+from specifyweb.specify.api import strict_uri_to_model
 
 logger = logging.getLogger(__name__)
 
@@ -105,19 +105,6 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
     return sibling_preps
-
-def remove_all_cog_sibling_preps_from_loan(prep: Preparation, loan: Loan) -> None:
-    """
-    Remove all the sibling preparations within the consolidated cog
-    """
-    # Get all the sibling preparations
-    preps = get_all_sibling_preps_within_consolidated_cog(prep)
-
-    # Get the loan preparations
-    loan_preps = Loanpreparation.objects.filter(loan=loan, preparation__in=preps)
-
-    # Delete the loan preparations
-    loan_preps.delete()
 
 def is_cog_recordset(rs: Recordset) -> bool:
     """
@@ -258,20 +245,6 @@ def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updat
 
     return modified_prep_ids
 
-def parse_uri_id(uri: str, field: str) -> int:
-    pattern = rf'^/api/specify/{field}/(\d+)/$'
-    match = re.search(pattern, uri)
-    if match:
-        return int(match.group(1))
-    else:
-        raise ValueError(f"No {field} ID found in the URL")
-
-def parse_preparation_id(uri: str) -> int:
-    return parse_uri_id(uri, "preparation")
-
-def parse_loan_preparation_id(uri: str) -> int:
-    return parse_uri_id(uri, "loanpreparation")
-
 def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated_interaction_data):
     """
     Determine the difference between the preparation IDs in the Loanpreparations of the original and updated interactions.
@@ -309,7 +282,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     interaction_prep_data = updated_interaction_data[interaction_prep_name]
     updated_prep_ids = set(
         [
-            parse_preparation_id(interaction_prep["preparation"])
+            # BUG: the preparation can be provided as an object in the request
+            strict_uri_to_model(interaction_prep["preparation"], "preparation")[1]
             for interaction_prep in interaction_prep_data
             if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
         ]
@@ -342,7 +316,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         for interaction_prep in interaction_prep_data
         if "preparation" in interaction_prep.keys()
         and interaction_prep["preparation"] is not None
-        and parse_preparation_id(interaction_prep["preparation"]) not in removed_prep_ids
+        # BUG: the preparation can be provided as a dict in the request
+        and strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
     ]
 
     # Add preps
@@ -379,8 +354,10 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         if type(loan_prep_data) is str:
             continue
         loan_prep_id = int(loan_prep_data["id"]) if "id" in loan_prep_data.keys() else None
+        
+        # BUG: the preparation can be provided as a dict in the request
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
-        prep_id = parse_preparation_id(prep_uri) if prep_uri is not None else None
+        _, prep_id = strict_uri_to_model("preparation", prep_uri) if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
         loan_return_prep_data_lst = loan_prep_data["loanreturnpreparations"]
@@ -395,7 +372,8 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             continue
 
         loan_return_prep_data = loan_return_prep_data_lst[0]
-        loan_return_loan_prep_id = parse_loan_preparation_id(loan_return_prep_data["loanpreparation"])
+        # BUG: the loanpreparation can be provided as an object in the request
+        loan_return_loan_prep_id = strict_uri_to_model(loan_return_prep_data["loanpreparation"], "loanpreparation")[1]
         if loan_return_loan_prep_id == loan_prep_id:
             target_prep_ids.update({prep_id})
             prep = Preparation.objects.filter(id=prep_id).first()
@@ -481,6 +459,8 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 
         # Add new loan return preparation data to the loan prep
         loan_prep_id = loan_prep_data["id"]
+        
+        # BUG: the discipline can be provided as an object in the request
         discipline_uri = (
             loan_prep_data["discipline"]
             if original_loan_return_data is not None
@@ -491,6 +471,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             if "returneddate" in original_loan_return_data.keys()
             else None
         )
+        # BUG: the receivedby can be provided as an object in the request
         received_by_agent_uri = ( # Use the target agent, but review this, maybe use this sibling prep's loan agent?
             original_loan_return_data["receivedby"]
             if "receivedby" in original_loan_return_data.keys()
