@@ -86,7 +86,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
     void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
       const sortedRows = Array.from(fetchedRows).sort((a, b) => {
         switch (orderByField) {
-          case 'rankID': {
+          case 'rankId': {
             return a.rankId - b.rankId;
           }
           case 'nodeNumber': {
