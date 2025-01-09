@@ -3,6 +3,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { sortFunction } from '../../utils/utils';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -84,23 +85,15 @@ export function TreeRow<SCHEMA extends AnyTree>({
     if (!isLoading) return undefined;
 
     void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
-      const sortedRows = Array.from(fetchedRows).sort((a, b) => {
-        switch (orderByField) {
-          case 'rankId': {
-            return a.rankId - b.rankId;
-          }
-          case 'nodeNumber': {
-            return a.nodeNumber - b.nodeNumber;
-          }
-          case 'name': {
-            return a.name.localeCompare(b.name);
-          }
-          case 'fullName': {
-            return a.fullName.localeCompare(b.fullName);
-          }
-        }
-      });
-
+      const sortedRows = Array.from(fetchedRows).sort(
+        sortFunction<Row, number | string>(
+          orderByField === 'rankId' ? (row) => row.rankId :
+          orderByField === 'nodeNumber' ? (row) => row.nodeNumber :
+          orderByField === 'name' ? (row) => row.name :
+          orderByField === 'fullName' ? (row) => row.fullName :
+          () => 0 
+        )
+      );
       destructorCalled ? undefined : setRows(sortedRows);
     });
 
