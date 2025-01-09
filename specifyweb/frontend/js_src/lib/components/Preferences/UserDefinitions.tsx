@@ -1347,7 +1347,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          orderByField: definePref<'fullName' | 'name' | 'rankID' | 'nodeNumber'>({
+          orderByField: definePref<'fullName' | 'name' | 'nodeNumber' | 'rankID'>({
             title: preferencesText.sortByField(),
             requiresReload: false,
             visible: true,
