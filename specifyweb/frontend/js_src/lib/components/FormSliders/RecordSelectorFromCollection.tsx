@@ -86,11 +86,11 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       isLazy &&
       collection.related?.isNew() !== true &&
       collection.models[index] === undefined
-    ){
-      if (typeof handleFetch === 'function' ) {
-        handleFetch?.()
+    ) {
+      if (typeof handleFetch === 'function') {
+        handleFetch?.();
       } else {
-        void collection.fetch() 
+        void collection.fetch();
       }
     }
   }, [collection, isLazy, index, records.length, isToOne, handleFetch]);
