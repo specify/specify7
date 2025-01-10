@@ -218,43 +218,147 @@ class SQLAlchemyModelTest(TestCase):
 
 
 expected_errors = {
-    "Attachment": {
-        "incorrect_table": {
-            "dnaSequencingRunAttachments": [
-                "dnasequencerunattachment",
-                "dnasequencingrunattachment",
-            ]
-        }
-    },
-    "AutoNumberingScheme": {"not_found": ["collections", "disciplines", "divisions"]},
-    "Collection": {"not_found": ["numberingSchemes", "userGroups"]},
-    "CollectionObject": {"not_found": ["projects"]},
-    "DNASequencingRun": {
-        "incorrect_table": {
-            "attachments": ["dnasequencerunattachment", "dnasequencingrunattachment"]
-        }
-    },
-    "Discipline": {
-        "not_found": ["numberingSchemes", "userGroups"],
-        "incorrect_direction": {"taxonTreeDef": ["manytoone", "onetoone"]},
-    },
-    "Division": {"not_found": ["numberingSchemes", "userGroups"]},
-    "Institution": {"not_found": ["userGroups"]},
-    "InstitutionNetwork": {"not_found": ["collections", "contacts"]},
-    "Locality": {
-        "incorrect_direction": {
-            "geoCoordDetails": ["onetomany", "zerotoone"],
-            "localityDetails": ["onetomany", "zerotoone"],
-        }
-    },
-    "Project": {"not_found": ["collectionObjects"]},
-    "SpExportSchema": {"not_found": ["spExportSchemaMappings"]},
-    "SpExportSchemaMapping": {"not_found": ["spExportSchemas"]},
-    "SpPermission": {"not_found": ["principals"]},
-    "SpPrincipal": {"not_found": ["permissions", "scope", "specifyUsers"]},
-    "SpReport": {
-        "incorrect_direction": {"workbenchTemplate": ["manytoone", "onetoone"]}
-    },
-    "SpecifyUser": {"not_found": ["spPrincipals"]},
-    "TaxonTreeDef": {"incorrect_direction": {"discipline": ["onetomany", "onetoone"]}},
+  "Attachment": {
+    "incorrect_table": {
+      "dnaSequencingRunAttachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "AutoNumberingScheme": {
+    "not_found": [
+      "collections",
+      "disciplines",
+      "divisions"
+    ]
+  },
+  "Collection": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "CollectionObject": {
+    "not_found": [
+      "projects", 
+    ],
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
+  "DNASequencingRun": {
+    "incorrect_table": {
+      "attachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "Discipline": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "Division": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "Institution": {
+    "not_found": [
+      "userGroups"
+    ]
+  },
+  "InstitutionNetwork": {
+    "not_found": [
+      "collections",
+      "contacts"
+    ]
+  },
+  "Locality": {
+    "incorrect_direction": {
+      "geoCoordDetails": [
+        "onetomany",
+        "zerotoone"
+      ],
+      "localityDetails": [
+        "onetomany",
+        "zerotoone"
+      ]
+    }
+  },
+  "Project": {
+    "not_found": [
+      "collectionObjects"
+    ]
+  },
+  "SpExportSchema": {
+    "not_found": [
+      "spExportSchemaMappings"
+    ]
+  },
+  "SpExportSchemaMapping": {
+    "not_found": [
+      "spExportSchemas"
+    ]
+  },
+  "SpPermission": {
+    "not_found": [
+      "principals"
+    ]
+  },
+  "SpPrincipal": {
+    "not_found": [
+      "permissions",
+      "scope",
+      "specifyUsers"
+    ]
+  },
+  "SpReport": {
+    "incorrect_direction": {
+      "workbenchTemplate": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "SpecifyUser": {
+    "not_found": [
+      "spPrincipals"
+    ]
+  },
+  "TaxonTreeDef": {
+    "incorrect_direction": {
+      "discipline": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroupJoin": {
+    "incorrect_direction": {
+      "childCog": [
+        "manytoone",
+        "onetoone"
+      ],
+      "childCo": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
 }
