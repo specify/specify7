@@ -68,6 +68,7 @@ SHARED_READONLY_FIELDS = [
     "highestchildnodenumber",
     "rankid",
     "fullname",
+    "age"
 ]
 
 SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
