@@ -357,7 +357,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         
         # BUG: the preparation can be provided as a dict in the request
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
-        _, prep_id = strict_uri_to_model("preparation", prep_uri) if prep_uri is not None else [None, None]
+        _, prep_id = strict_uri_to_model(prep_uri, "preparation") if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
         loan_return_prep_data_lst = loan_prep_data["loanreturnpreparations"]
