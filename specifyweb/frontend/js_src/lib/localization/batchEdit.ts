@@ -51,7 +51,7 @@ export const batchEditText = createDictionary({
     'en-us': `Click on the "Results" button to see the number of records affected in each database table`,
   },
   dateSetRevertDescription: {
-    'en-us': `This Rolledback Data Set is saved, however, it cannot be edit. Please re-run the query`,
+    'en-us': `This rolled-back Data Set is saved, however, it cannot be edited. Please re-run the query`,
   },
   committing: {
     'en-us': 'Committing',

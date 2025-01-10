@@ -1238,7 +1238,7 @@ export const wbText = createDictionary({
     'de-ch': 'Neuer Datensatz {date}',
   },
   dataSets: {
-    'en-us': '{variant:string} WorkBench Data Sets',
+    'en-us': '{variant:string} Data Sets',
   },
   wbsDialogEmpty: {
     'en-us': 'Currently no Data Sets exist.',
