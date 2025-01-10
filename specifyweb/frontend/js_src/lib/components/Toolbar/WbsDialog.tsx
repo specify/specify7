@@ -221,9 +221,9 @@ export function GenericDataSetsDialog({
       {datasets.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-3">
           <p>{localization.datasetsDialog.empty()}</p>
-          <Link.NewTab href={documentationUrl}>
+          {documentationUrl !== null && <Link.NewTab href={documentationUrl}>
             {headerText.documentation()}
-          </Link.NewTab>
+          </Link.NewTab>}
         </div>
       ) : (
         <nav>

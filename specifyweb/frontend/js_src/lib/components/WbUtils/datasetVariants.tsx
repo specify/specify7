@@ -130,7 +130,7 @@ export const datasetVariants = {
       },
     },
     // TODO: Change this
-    documentationUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    documentationUrl: null,
   },
   bulkAttachment: {
     fetchUrl: '/attachment_gw/dataset/',
