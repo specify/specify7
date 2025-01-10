@@ -129,8 +129,7 @@ export const datasetVariants = {
         doSuccessful: batchEditText.commitSuccessful(),
       },
     },
-    // TODO: Change this
-    documentationUrl: null,
+    documentationUrl: 'https://discourse.specifysoftware.org/t/batch-edit/2248',
   },
   bulkAttachment: {
     fetchUrl: '/attachment_gw/dataset/',
