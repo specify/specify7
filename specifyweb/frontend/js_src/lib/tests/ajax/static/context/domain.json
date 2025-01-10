@@ -7,5 +7,10 @@
   "embeddedPaleoContext": true,
   "paleoContextChildTable": "collectionobject",
   "catalogNumFormatName": "CatalogNumberNumeric",
-  "defaultCollectionObjectType": "/api/specify/collectionobjecttype/1/"
+  "defaultCollectionObjectType": "/api/specify/collectionobjecttype/1/",
+  "collectionObjectTypeCatalogNumberFormats": {
+    "/api/specify/collectionobjecttype/1/": null,
+    "/api/specify/collectionobjecttype/2/": "CatalogNumber",
+    "/api/specify/collectionobjecttype/3/": "CatalogNumberNumericRegex"
+  }
 }

@@ -1,9 +1,11 @@
 import { act, renderHook } from '@testing-library/react';
 
+import { resourcesText } from '../../../localization/resources';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
+import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
@@ -194,6 +196,16 @@ describe('Collection Object business rules', () => {
 });
 
 describe('CollectionObjectGroup business rules', () => {
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 1), {
+    name: 'Discrete type',
+    type: cogTypes.DISCRETE,
+  });
+
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 2), {
+    name: 'Consolidated type',
+    type: cogTypes.CONSOLIDATED,
+  });
+
   const getBaseCog = () => {
     const cog = new tables.CollectionObjectGroup.Resource({
       id: 1,
@@ -232,6 +244,32 @@ describe('CollectionObjectGroup business rules', () => {
 
     expect(cojo1.get('isSubstrate')).toBe(false);
     expect(cojo2.get('isSubstrate')).toBe(true);
+  });
+
+  test('Save blocked when a Consolidated COG has no primary CO child', async () => {
+    const { cog, cojo2 } = getBaseCog();
+    cog.set('cogType', getResourceApiUrl('CollectionObjectGroupType', 2));
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(cog, tables.CollectionObjectGroupJoin.field.isPrimary)
+    );
+
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save not blocked initially
+    expect(result.current[0]).toStrictEqual([]);
+
+    cojo2.set('isPrimary', false);
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save blocked after second child is marked as not primary
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.primaryCogChildRequired(),
+    ]);
   });
 });
 

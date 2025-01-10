@@ -4,6 +4,7 @@ import { localized, overwriteReadOnly } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
+import { CatalogNumberNumeric } from '../../FieldFormatters';
 import {
   exportsForTests,
   fetchFormatters,
@@ -33,6 +34,38 @@ test('getMainTableFields', () =>
       ])
     )
   ).toMatchSnapshot());
+
+test('CO -> catalogNumber format resolved by COT -> catalogNumberFormatName', () => {
+  const catalogNumberField =
+    tables.CollectionObject.strictGetLiteralField('catalogNumber');
+  const baseCo = new tables.CollectionObject.Resource();
+
+  expect(catalogNumberField.getUiFormatter(baseCo)).toStrictEqual(
+    new CatalogNumberNumeric()
+  );
+
+  /**
+   * This COT is defined in the domain.json endpoint to have the
+   * catalogNumberFormatName of CatalogNumber
+   */
+  const cot2 = new tables.CollectionObjectType.Resource({ id: 2 });
+  baseCo.set('collectionObjectType', cot2);
+
+  expect(catalogNumberField.getUiFormatter(baseCo)?.title).toBe(
+    'CatalogNumber'
+  );
+
+  /**
+   * This COT is defined in the domain.json endpoint to have the
+   * catalogNumberFormatName of CatalogNumberNumericRegex
+   */
+  const cot3 = new tables.CollectionObjectType.Resource({ id: 3 });
+  baseCo.set('collectionObjectType', cot3);
+
+  expect(catalogNumberField.getUiFormatter(baseCo)?.title).toBe(
+    'CatalogNumberNumericRegex'
+  );
+});
 
 describe('formatField', () => {
   const collectorId = 1;

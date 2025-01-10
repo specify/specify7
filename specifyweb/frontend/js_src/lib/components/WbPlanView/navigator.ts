@@ -143,7 +143,7 @@ function navigator({
       callbacks.handleTreeRanks({
         ...callbackPayload,
         definitionName: spec.useSpecificTreeInterface
-          ? definitions[0].definition.name ?? anyTreeRank
+          ? (definitions[0].definition.name ?? anyTreeRank)
           : anyTreeRank,
       });
   } else if (valueIsTreeDefinition(parentPartName))
@@ -163,8 +163,8 @@ function navigator({
   const nextTable = isSpecial
     ? table
     : typeof nextField === 'object' && nextField.isRelationship
-    ? nextField.relatedTable
-    : undefined;
+      ? nextField.relatedTable
+      : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({

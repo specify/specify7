@@ -2,21 +2,34 @@
 
 from django.db import migrations, models
 import specifyweb.specify.models
-from specifyweb.specify.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0013_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
+
 
 def update_schema_config(apps):
-    revert_table_field_schema_config('CollectionObjectGroup', 'parentCojo', apps)
-    revert_table_field_schema_config('CollectionObjectGroup', 'parentCog', apps)
+    revert_table_field_schema_config(
+        'CollectionObjectGroup', 'parentCojo', apps)
+    revert_table_field_schema_config(
+        'CollectionObjectGroup', 'parentCog', apps)
 
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('CollectionObjectGroup', discipline.id, 'parentCog', apps)
+        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+            for field in fields:
+                update_table_field_schema_config_with_defaults(
+                    table, discipline.id, field, apps)
+
 
 def revert_update(apps):
-    revert_table_field_schema_config('CollectionObjectGroup', 'parentCog', apps)
+    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+        for field in fields:
+            revert_table_field_schema_config(table, field, apps)
+
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('CollectionObjectGroup', discipline.id, 'parentCojo', apps)
+        update_table_field_schema_config_with_defaults(
+            'CollectionObjectGroup', discipline.id, 'parentCojo', apps)
+
 
 class Migration(migrations.Migration):
 
@@ -38,7 +51,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collectionobjectgroup',
             name='parentcog',
-            field=models.ForeignKey(db_column='ParentCogID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobjectgroup'),
+            field=models.ForeignKey(db_column='ParentCogID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers,
+                                    related_name='+', to='specify.collectionobjectgroup'),
         ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]

@@ -1,7 +1,7 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
-import { replaceItem } from '../../../utils/utils';
+import { removeKey, replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -181,14 +181,20 @@ describe('rgetCollection', () => {
     expect(agents.models).toHaveLength(0);
   });
 
-  test('repeated calls for independent return different object', async () => {
+  test('repeated calls for independent merge different objects', async () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
+    const testCEText = 'someOtherText';
+
     const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
+    firstCollectingEvent?.set('text1', testCEText);
     const secondCollectingEvent = await resource.rgetPromise('collectingEvent');
-    expect(firstCollectingEvent?.toJSON()).toEqual(collectingEventResponse);
-    expect(firstCollectingEvent).not.toBe(secondCollectingEvent);
+    expect(testCEText).not.toBe(collectingEventText);
+    expect(secondCollectingEvent?.get('text1')).toBe(testCEText);
+    expect(
+      removeKey(firstCollectingEvent?.toJSON() ?? {}, 'text1')
+    ).toStrictEqual(removeKey(secondCollectingEvent?.toJSON() ?? {}, 'text1'));
   });
 
   test('call for independent refetches related', async () => {
@@ -209,9 +215,8 @@ describe('rgetCollection', () => {
       id: collectionObjectId,
     });
     const firstDeterminations = await resource.rgetCollection('determinations');
-    const secondDeterminations = await resource.rgetCollection(
-      'determinations'
-    );
+    const secondDeterminations =
+      await resource.rgetCollection('determinations');
     expect(firstDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(secondDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(firstDeterminations).toBe(secondDeterminations);
@@ -412,9 +417,8 @@ describe('placeInSameHierarchy', () => {
       id: 5,
     });
     const locality = new tables.Locality.Resource();
-    const hierarchyResource = await locality.placeInSameHierarchy(
-      collectionObject
-    );
+    const hierarchyResource =
+      await locality.placeInSameHierarchy(collectionObject);
     expect(hierarchyResource?.url()).toBe(getResourceApiUrl('Discipline', 3));
     expect(locality.get('discipline')).toBe(getResourceApiUrl('Discipline', 3));
   });

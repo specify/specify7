@@ -239,10 +239,10 @@ const processCellType: {
 
     const formType =
       rawFormType === undefined
-        ? defaultFormType ?? 'form'
+        ? (defaultFormType ?? 'form')
         : rawFormType === 'table'
-        ? 'formTable'
-        : 'form';
+          ? 'formTable'
+          : 'form';
 
     return {
       type: 'SubView',
@@ -299,11 +299,11 @@ const processCellType: {
 
 export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly id: string | undefined;
-  readonly align: typeof cellAlign[number];
+  readonly align: (typeof cellAlign)[number];
   readonly colSpan: number;
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -351,13 +351,13 @@ export async function parseFormCell(
     align: f.includes(cellAlign, align)
       ? align
       : cellType === 'Label'
-      ? 'right'
-      : 'left',
+        ? 'right'
+        : 'left',
     verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
       ? verticalAlign
       : cellType === 'SubView'
-      ? 'stretch'
-      : 'center',
+        ? 'stretch'
+        : 'center',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

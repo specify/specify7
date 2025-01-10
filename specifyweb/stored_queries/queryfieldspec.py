@@ -69,40 +69,6 @@ def make_stringid(fs, table_list):
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
 
-# class QueryFieldSpec(NamedTuple):
-#     root_table: 'Table'
-#     root_sql_table: 'SQLTable' # type: ignore
-#     join_path: Tuple['Field', ...]
-#     table: 'Table'
-#     date_part: Optional[str]
-#     tree_rank: Optional[str]
-#     tree_field: Optional[str]
-
-#     @classmethod
-#     def create(cls, root_table, root_sql_table, join_path, table, date_part=None, tree_rank=None, tree_field=None):
-#         # Create a new QueryFieldSpec instance
-#         instance = cls(
-#             root_table=root_table,
-#             root_sql_table=root_sql_table,
-#             join_path=join_path,
-#             table=table,
-#             date_part=date_part,
-#             tree_rank=tree_rank,
-#             tree_field=tree_field
-#         )
-#         # Validate the instance
-#         instance.validate()
-#         return instance
-
-#     def validate(self):
-#         valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
-#         assert self.is_temporal() or self.date_part is None
-#         if self.date_part not in valid_date_parts:
-#             raise AssertionError(
-#                 f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}",
-#                 {"datePart": self.date_part,
-#                  "validDateParts": str(valid_date_parts),
-#                  "localizationKey": "invalidDatePart"})
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):

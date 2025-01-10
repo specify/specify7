@@ -36,6 +36,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryCbxExtendedSearch } from './helpers';
+import { SelectRecordSets } from './SelectRecordSet';
 
 const resourceLimit = 100;
 
@@ -59,6 +60,9 @@ type SearchDialogProps<SCHEMA extends AnySchema> = {
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onlyUseQueryBuilder?: boolean;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 };
 
 /**
@@ -142,19 +146,19 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? // Cast numbers to strings
-        // eslint-disable-next-line eqeqeq
-        values.some((value) => value == resource.get(field))
-      : operation === 'less'
-      ? values.every((value) => (resource.get(field) ?? 0) < value)
-      : error('Invalid Query Combo Box search filter', {
-          filter: {
-            operation,
-            field,
-            values,
-          },
-          resource,
-        });
+        ? // Cast numbers to strings
+          // eslint-disable-next-line eqeqeq
+          values.some((value) => value == resource.get(field))
+        : operation === 'less'
+          ? values.every((value) => (resource.get(field) ?? 0) < value)
+          : error('Invalid Query Combo Box search filter', {
+              filter: {
+                operation,
+                field,
+                values,
+              },
+              resource,
+            });
   return isNot ? !result : result;
 }
 
@@ -166,6 +170,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onSelected: handleSelected,
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
+  onAdd: handleAdd,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -174,6 +179,9 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -217,6 +225,11 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
+          <SelectRecordSets
+            handleParentClose={handleClose}
+            table={table}
+            onAdd={handleAdd}
+          />
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>

@@ -100,6 +100,16 @@ export function QueryComboBox({
         }
       );
     }
+    if (field.name === 'specifyUser') {
+      const record = toTable(resource, 'RecordSet');
+      record?.set(
+        'specifyUser',
+        record?.get('specifyUser') ?? userInformation.resource_uri,
+        {
+          silent: true,
+        }
+      );
+    }
     if (field.name === 'receivedBy') {
       const record = toTable(resource, 'LoanReturnPreparation');
       record?.set(
@@ -232,18 +242,19 @@ export function QueryComboBox({
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
-        !userInformation.availableCollections.some(
-          ({ id }) => id === relatedCollectionId
-        )
-      ? loading(
-          fetchResource('Collection', relatedCollectionId).then((collection) =>
-            setState({
-              type: 'AccessDeniedState',
-              collectionName: collection?.collectionName ?? '',
-            })
+          !userInformation.availableCollections.some(
+            ({ id }) => id === relatedCollectionId
           )
-        )
-      : setState({ type: 'ViewResourceState', isReadOnly });
+        ? loading(
+            fetchResource('Collection', relatedCollectionId).then(
+              (collection) =>
+                setState({
+                  type: 'AccessDeniedState',
+                  collectionName: collection?.collectionName ?? '',
+                })
+            )
+          )
+        : setState({ type: 'ViewResourceState', isReadOnly });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -512,23 +523,23 @@ export function QueryComboBox({
                                       value: startValue,
                                     }
                                   : fieldName === 'nodeNumber'
-                                  ? {
-                                      field: 'nodeNumber',
-                                      operation: 'between',
-                                      isNot: true,
-                                      value: startValue,
-                                    }
-                                  : fieldName === 'collectionRelTypeId'
-                                  ? {
-                                      field: 'id',
-                                      operation: 'in',
-                                      isNot: false,
-                                      value: startValue,
-                                    }
-                                  : f.error(`extended filter not created`, {
-                                      fieldName,
-                                      startValue,
-                                    })
+                                    ? {
+                                        field: 'nodeNumber',
+                                        operation: 'between',
+                                        isNot: true,
+                                        value: startValue,
+                                      }
+                                    : fieldName === 'collectionRelTypeId'
+                                      ? {
+                                          field: 'id',
+                                          operation: 'in',
+                                          isNot: false,
+                                          value: startValue,
+                                        }
+                                      : f.error(`extended filter not created`, {
+                                          fieldName,
+                                          startValue,
+                                        })
                               )
                           ),
                         })

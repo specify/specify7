@@ -59,18 +59,18 @@ export function WebLinkDefinition({
                           field: [],
                         }
                       : type === 'ThisField'
-                      ? {
-                          type: 'ThisField',
-                        }
-                      : type === 'FormattedResource'
-                      ? {
-                          type: 'FormattedResource',
-                          formatter: localized(''),
-                        }
-                      : {
-                          type: 'UrlPart',
-                          value: localized(''),
-                        }
+                        ? {
+                            type: 'ThisField',
+                          }
+                        : type === 'FormattedResource'
+                          ? {
+                              type: 'FormattedResource',
+                              formatter: localized(''),
+                            }
+                          : {
+                              type: 'UrlPart',
+                              value: localized(''),
+                            }
                   )
                 )
               }

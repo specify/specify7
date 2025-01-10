@@ -38,8 +38,8 @@ export function formatJsonBackendResponse(error: string): JSX.Element {
   return response.exception === 'BusinessRuleException'
     ? formatBusinessRuleException(response)
     : response.exception === 'TreeBusinessRuleException'
-    ? formatTreeBusinessRuleException(response)
-    : formatBasicResponse(response);
+      ? formatTreeBusinessRuleException(response)
+      : formatBasicResponse(response);
 }
 
 /**

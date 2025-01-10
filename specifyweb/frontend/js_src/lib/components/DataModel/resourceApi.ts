@@ -4,6 +4,7 @@ import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
@@ -46,10 +47,6 @@ function eventHandlerForToOne(related, field) {
         this.set(field.name, related.url());
         return;
       }
-      case 'changing': {
-        this.trigger.apply(this, args);
-        return;
-      }
     }
 
     // Pass change:field events up the tree, updating fields with dot notation
@@ -65,10 +62,6 @@ function eventHandlerForToMany(related, field) {
   return function (event) {
     const args = _.toArray(arguments);
     switch (event) {
-      case 'changing': {
-        this.trigger.apply(this, args);
-        break;
-      }
       case 'saverequired': {
         this.handleChanged();
         break;
@@ -89,7 +82,7 @@ function eventHandlerForToMany(related, field) {
 // Always returns a resource
 const maybeMakeResource = <
   TABLE extends SpecifyTable,
-  TABLE_SCHEMA extends Tables[TABLE['name']]
+  TABLE_SCHEMA extends Tables[TABLE['name']],
 >(
   value:
     | Partial<SerializedRecord<TABLE_SCHEMA> | SerializedResource<TABLE_SCHEMA>>
@@ -182,6 +175,7 @@ export const ResourceBase = Backbone.Model.extend({
           if (exemptFields.includes(fieldName)) return;
           const field = self.specifyTable.getField(fieldName);
           switch (field.type) {
+            case 'one-to-one':
             case 'many-to-one': {
               /*
                * Many-to-one wouldn't ordinarily be dependent, but
@@ -271,7 +265,11 @@ export const ResourceBase = Backbone.Model.extend({
     related.parent = this; // REFACTOR: this doesn't belong here
 
     switch (field.type) {
-      case 'one-to-one':
+      case 'one-to-one': {
+        this.dependentResources[field.name.toLowerCase()] = related;
+        related.set(field.otherSideName, this.url()); // REFACTOR: this logic belongs somewhere else. up probably
+        break;
+      }
       case 'many-to-one': {
         this.dependentResources[field.name.toLowerCase()] = related;
         break;
@@ -360,9 +358,9 @@ export const ResourceBase = Backbone.Model.extend({
     const newValue = value ?? undefined;
     const oldValue =
       typeof key === 'string'
-        ? this.attributes[key.toLowerCase()] ??
+        ? (this.attributes[key.toLowerCase()] ??
           this.dependentResources[key.toLowerCase()] ??
-          undefined
+          undefined)
         : undefined;
     // Don't needlessly trigger unload protect if value didn't change
     if (
@@ -460,12 +458,12 @@ export const ResourceBase = Backbone.Model.extend({
       value = _.isString(value)
         ? this._handleUri(value, fieldName)
         : typeof value === 'number'
-        ? this._handleUri(
-            // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-            getResourceApiUrl(field.table.name, value),
-            fieldName
-          )
-        : this._handleInlineDataOrResource(value, fieldName);
+          ? this._handleUri(
+              // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+              getResourceApiUrl(field.table.name, value),
+              fieldName
+            )
+          : this._handleInlineDataOrResource(value, fieldName);
     }
     return [fieldName, value];
   },
@@ -506,6 +504,7 @@ export const ResourceBase = Backbone.Model.extend({
          */
         return undefined;
       }
+      case 'one-to-one':
       case 'many-to-one': {
         if (!value) {
           /*
@@ -542,12 +541,6 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger(`change:${fieldName}`, this);
         this.trigger('change', this);
         return undefined;
-      }
-      /*
-       * Needed for taxonTreeDef on discipline because field.isVirtual equals false
-       */
-      case 'one-to-one': {
-        return value;
       }
     }
     if (!field.isVirtual)
@@ -613,12 +606,12 @@ export const ResourceBase = Backbone.Model.extend({
     };
     return this.getRelated(fieldName, options);
   },
-  async getRelated(fieldName, options) {
+  async getRelated(fieldName: RA<string> | string, options) {
     options ||= {
       prePop: false,
       noBusinessRules: false,
     };
-    const path = _(fieldName).isArray()
+    const path = Array.isArray(fieldName)
       ? fieldName
       : fieldName.split(backboneFieldSeparator);
 
@@ -632,7 +625,8 @@ export const ResourceBase = Backbone.Model.extend({
          * or collection
          */
         if (options.prePop) {
-          if (!value) return value; // Ok if the related resource doesn't exist
+          if (!value)
+            return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
           /*
@@ -684,22 +678,30 @@ export const ResourceBase = Backbone.Model.extend({
         // A foreign key field.
         if (!value) return value; // No related object
 
-        // Is the related resource a cached dependent?
-        let toOne = this.dependentResources[fieldName];
+        // Is the related resource cached?
+        let toOne =
+          this.dependentResources[fieldName] ??
+          this.independentResources[fieldName];
 
         if (!toOne) {
-          _(value).isString() || softFail('expected URI, got', value);
-          toOne = resourceFromUrl(value, {
-            noBusinessRules: options.noBusinessRules,
-          });
+          if (typeof value === 'string') {
+            toOne = resourceFromUrl(value, {
+              noBusinessRules: options.noBusinessRules,
+            });
+            if (toOne === undefined) softFail('expected URI, got', value);
+          } else if (typeof value === 'object') {
+            toOne = new field.relatedTable.Resource({ ...value });
+          }
 
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
-          } else {
-            // Always store and refetch independent related resources
-            this.storeIndependent(field, toOne);
           }
+        }
+
+        // Always store and refetch independent related resources
+        if (!field.isDependent()) {
+          this.storeIndependent(field, toOne);
         }
         // If we want a field within the related resource then recur
         return path.length > 1 ? toOne.rget(_.tail(path)) : toOne;
@@ -720,7 +722,7 @@ export const ResourceBase = Backbone.Model.extend({
          */
 
         // Is it already cached?
-        if (!_.isUndefined(this.dependentResources[fieldName])) {
+        if (this.dependentResources[fieldName] !== undefined) {
           value = this.dependentResources[fieldName];
           if (value == null) return null;
           // Recur if we need to traverse more
@@ -893,14 +895,17 @@ export const ResourceBase = Backbone.Model.extend({
       }
     });
 
+    // Check added to avoid infinite loop in following forEach for collectionRelationship see https://github.com/specify/specify7/issues/6025
+    if (self.specifyTable.name === 'CollectionRelationship') return json;
+
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
         if (related) {
           json[fieldName] = isRelationshipCollection(related)
             ? related.toApiJSON(options)
             : related.isNew() || related.needsSaved
-            ? related.toJSON(options)
-            : related.url();
+              ? related.toJSON(options)
+              : related.url();
         }
       }
     );

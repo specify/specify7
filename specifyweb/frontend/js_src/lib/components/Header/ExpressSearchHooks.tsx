@@ -49,12 +49,13 @@ export function usePrimarySearch(
   return primaryResults;
 }
 
-const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<RA<string>>('/context/available_related_searches.json', {
-        headers: { Accept: 'application/json' },
-      }).then(({ data }) => data)
-    : foreverFetch<RA<string>>()
+const relatedSearchesPromise = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? ajax<RA<string>>('/context/available_related_searches.json', {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data)
+      : foreverFetch<RA<string>>()
 );
 export const expressSearchFetchSize = 40;
 

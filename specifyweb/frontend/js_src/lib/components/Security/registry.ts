@@ -166,19 +166,19 @@ export function policiesToTsv(): string {
       key === '%'
         ? []
         : Object.keys(entry.children).length > 0
-        ? iterate(
-            entry.children,
-            [...path, entry.label],
-            isInstitutional || entry.isInstitutional
-          )
-        : entry.actions.map((action) => [
-            [...path, entry.label].join(' > '),
-            actionToLabel(action),
-            isInstitutional || entry.isInstitutional
-              ? 'Institution'
-              : 'Collection',
-            entry.groupName,
-          ])
+          ? iterate(
+              entry.children,
+              [...path, entry.label],
+              isInstitutional || entry.isInstitutional
+            )
+          : entry.actions.map((action) => [
+              [...path, entry.label].join(' > '),
+              actionToLabel(action),
+              isInstitutional || entry.isInstitutional
+                ? 'Institution'
+                : 'Collection',
+              entry.groupName,
+            ])
     );
 
   return [
