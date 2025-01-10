@@ -99,38 +99,36 @@ export function InteractionDialog({
   const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
 
   function availablePrepsReady(
-    parsed:
-      | { readonly entries: RA<string>; readonly entryIndex: number }
-      | undefined,
-    prepsData: RA<PreparationRow>
+    parsed: RA<string> | undefined,
+    prepsData: RA<PreparationRow>,
+    entryIndex: number = 0
   ) {
-    const prepEntries = prepsData.map(
-      (prepData) => prepData[parsed?.entryIndex ?? 0]
-    );
-    const missing =
-      typeof parsed === 'object'
-        ? parsed.entries.filter(
-            (entry) => !prepEntries.some((data) => data.includes(entry))
-          )
-        : [];
+    const prepEntries = prepsData.map((prepData) => prepData[entryIndex]);
+
+    const missing = Array.isArray(parsed)
+      ? parsed.filter(
+          (entry) =>
+            !prepEntries.some((data) => data?.toString().includes(entry))
+        )
+      : [];
     const unavailablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) === 0
     );
-    const availablePrep = prepsData.filter(
+    const availablePreps = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) > 0
     );
     const unavailable =
       typeof parsed === 'object'
-        ? parsed.entries.filter((entry) =>
+        ? parsed.filter((entry) =>
             unavailablePrep.some((item) => entry === item[0])
           )
         : [];
 
     if (missing.length > 0 || unavailable.length > 0) {
       setState({ type: 'MissingState', missing, unavailable });
-      setPrepsData(availablePrep);
+      setPrepsData(availablePreps);
       return { missing, unavailable };
-    } else showPrepSelectDlg(availablePrep);
+    } else return void showPrepSelectDlg(availablePreps);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -299,13 +297,7 @@ export function InteractionDialog({
                         isLoan
                       )
                   ).then((data) => {
-                    const results = availablePrepsReady(
-                      {
-                        entries: parsed,
-                        entryIndex: 12,
-                      },
-                      data
-                    );
+                    const results = availablePrepsReady(parsed, data, 12);
                     if (results !== undefined)
                       handleMissing(results.missing, results.unavailable);
                   })
@@ -329,13 +321,7 @@ export function InteractionDialog({
                         isLoan
                       )
                   ).then((data) => {
-                    const results = availablePrepsReady(
-                      {
-                        entries: parsed,
-                        entryIndex: 0,
-                      },
-                      data
-                    );
+                    const results = availablePrepsReady(parsed, data);
                     if (results !== undefined)
                       handleMissing(results.missing, results.unavailable);
                   })

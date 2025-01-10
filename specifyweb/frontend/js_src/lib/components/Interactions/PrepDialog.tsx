@@ -44,7 +44,10 @@ export function PrepDialog({
     const indexedPreparations = Object.fromEntries(
       group(
         mutatedPreparations.map((preparation) => [
-          getResourceApiUrl('Preparation', preparation.preparationId),
+          getResourceApiUrl(
+            'Preparation',
+            preparation.preparationId as PreparationData['preparationId']
+          ),
           preparation,
         ])
       )
