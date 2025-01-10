@@ -181,14 +181,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1117
+#: components/Preferences/UserDefinitions.tsx:1118
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1121
+#: components/Preferences/UserDefinitions.tsx:1122
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -604,7 +604,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1128
+#: components/Preferences/UserDefinitions.tsx:1129
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"

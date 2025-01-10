@@ -193,13 +193,13 @@ msgstr "Десинонімізувати вузол"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:230
-#: components/TreeView/Row.tsx:248
+#: components/TreeView/Row.tsx:246
+#: components/TreeView/Row.tsx:264
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Бажано: {name:string}"
 
-#: components/TreeView/Row.tsx:234
+#: components/TreeView/Row.tsx:250
 #. Used in: Components > Tree View > Row
 msgid "synonyms"
 msgstr "Синоніми: {names:string}"
@@ -216,17 +216,17 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Дерево пошуку"
 
-#: components/TreeView/Row.tsx:210
+#: components/TreeView/Row.tsx:226
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Відкрито"
 
-#: components/TreeView/Row.tsx:211
+#: components/TreeView/Row.tsx:227
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "ЗАЧИНЕНО"
 
-#: components/TreeView/Row.tsx:208
+#: components/TreeView/Row.tsx:224
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Листковий вузол"

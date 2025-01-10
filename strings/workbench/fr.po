@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.9-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:93
-#: components/Preferences/UserDefinitions.tsx:1699
+#: components/Preferences/UserDefinitions.tsx:1730
 #: components/Router/OverlayRoutes.tsx:150
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "workBench"
@@ -97,7 +97,7 @@ msgstr "Remplir"
 msgid "revert"
 msgstr "Revenir"
 
-#: components/Preferences/UserDefinitions.tsx:1705
+#: components/Preferences/UserDefinitions.tsx:1736
 #: components/WbActions/WbValidate.tsx:58
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 msgid "dataCheck"
@@ -109,7 +109,7 @@ msgstr "Vérification des données"
 msgid "dataCheckOn"
 msgstr "Vérification des données : activée"
 
-#: components/Preferences/UserDefinitions.tsx:1706
+#: components/Preferences/UserDefinitions.tsx:1737
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dataCheckDescription"
@@ -625,36 +625,36 @@ msgid "delimiter"
 msgstr "Délimiteur :"
 
 #: components/Molecules/CsvFilePicker.tsx:172
-#: components/Preferences/UserDefinitions.tsx:1576
-#: components/Preferences/UserDefinitions.tsx:1813
+#: components/Preferences/UserDefinitions.tsx:1607
+#: components/Preferences/UserDefinitions.tsx:1844
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Virgule"
 
 #: components/Molecules/CsvFilePicker.tsx:174
-#: components/Preferences/UserDefinitions.tsx:1584
-#: components/Preferences/UserDefinitions.tsx:1821
+#: components/Preferences/UserDefinitions.tsx:1615
+#: components/Preferences/UserDefinitions.tsx:1852
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Point-virgule"
 
 #: components/Molecules/CsvFilePicker.tsx:173
-#: components/Preferences/UserDefinitions.tsx:1580
-#: components/Preferences/UserDefinitions.tsx:1817
+#: components/Preferences/UserDefinitions.tsx:1611
+#: components/Preferences/UserDefinitions.tsx:1848
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "tab"
 msgstr "Languette"
 
 #: components/Molecules/CsvFilePicker.tsx:175
-#: components/Preferences/UserDefinitions.tsx:1588
-#: components/Preferences/UserDefinitions.tsx:1825
+#: components/Preferences/UserDefinitions.tsx:1619
+#: components/Preferences/UserDefinitions.tsx:1856
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "space"
 msgstr "Espace"
 
 #: components/Molecules/CsvFilePicker.tsx:176
-#: components/Preferences/UserDefinitions.tsx:1592
-#: components/Preferences/UserDefinitions.tsx:1829
+#: components/Preferences/UserDefinitions.tsx:1623
+#: components/Preferences/UserDefinitions.tsx:1860
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Tuyau"

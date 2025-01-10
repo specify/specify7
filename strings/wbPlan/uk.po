@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1836
+#: components/Preferences/UserDefinitions.tsx:1867
 #: components/WbToolkit/DevShowPlan.tsx:111
 #: components/WorkBench/WbView.tsx:192
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View

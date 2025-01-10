@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.9-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1637
+#: components/Preferences/UserDefinitions.tsx:1668
 #. Used in: Components > Preferences > User Definitions
 msgid "recordMerging"
 msgstr "Fusion d'enregistrements"
@@ -64,7 +64,7 @@ msgid "mergeFields"
 msgstr "Fusionner {field:string}"
 
 #: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Preferences/UserDefinitions.tsx:1674
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 msgid "autoPopulate"
 msgstr "Remplir automatiquement"

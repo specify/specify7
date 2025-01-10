@@ -222,14 +222,14 @@ msgstr "Désynonymiser le nœud"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" ne sera plus synonyme de \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:230
-#: components/TreeView/Row.tsx:248
+#: components/TreeView/Row.tsx:246
+#: components/TreeView/Row.tsx:264
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "acceptedName"
 msgstr "Préféré : {name:string}"
 
-#: components/TreeView/Row.tsx:234
+#: components/TreeView/Row.tsx:250
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "synonyms"
@@ -249,19 +249,19 @@ msgstr "{treeName:string} Arbre"
 msgid "searchTreePlaceholder"
 msgstr "Arbre de recherche"
 
-#: components/TreeView/Row.tsx:210
+#: components/TreeView/Row.tsx:226
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
 msgstr "Ouvert"
 
-#: components/TreeView/Row.tsx:211
+#: components/TreeView/Row.tsx:227
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "closed"
 msgstr "Fermé"
 
-#: components/TreeView/Row.tsx:208
+#: components/TreeView/Row.tsx:224
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"

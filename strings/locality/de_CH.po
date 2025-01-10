@@ -19,7 +19,7 @@ msgid "openMap"
 msgstr "Karte öffnen"
 
 #: components/Leaflet/Map.tsx:112
-#: components/Preferences/UserDefinitions.tsx:1947
+#: components/Preferences/UserDefinitions.tsx:1978
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WbToolkit/WbLeafletMap.tsx:65

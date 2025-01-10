@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1637
+#: components/Preferences/UserDefinitions.tsx:1668
 #. Used in: Components > Preferences > User Definitions
 msgid "recordMerging"
 msgstr "Record Merging"
@@ -53,7 +53,7 @@ msgid "mergeFields"
 msgstr "Merge {field:string}"
 
 #: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Preferences/UserDefinitions.tsx:1674
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 msgid "autoPopulate"
 msgstr "Auto-populate"
