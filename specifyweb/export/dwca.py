@@ -162,6 +162,7 @@ class QueryDefField(namedtuple('QueryDefField', 'field_spec term is_core_id')):
                 isDisplay  = 'term' in node.attrib or node.tag == 'id',
                 formatName = node.attrib.get('formatName', None),
                 sortType   = 0,
+                isStrict=False
             ),
 
             term = node.attrib.get('term', None),

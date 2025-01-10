@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
+from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable, cast
 from xml.etree import ElementTree
 import os
 import warnings
@@ -71,7 +71,7 @@ class Datamodel(object):
         if hasattr(relationship, "otherSideName"):
             return self.get_table_strict(
                 relationship.relatedModelName
-            ).get_relationship(relationship.otherSideName)
+            ).get_relationship(cast(str, relationship.otherSideName))
         else:
             return None
 
@@ -223,11 +223,11 @@ class Table(object):
 class Field(object):
     is_relationship: bool = False
     name: str
-    column: str
+    column: Optional[str]
     indexed: bool
     unique: bool
     required: bool = False
-    type: str
+    type: Optional[str]
     length: Optional[int]
 
     def __init__(
@@ -243,7 +243,9 @@ class Field(object):
     ):
         if not name:
             raise ValueError("name is required")
-        if not column and type == "many-to-one":
+        if not type: 
+            raise ValueError('type is required')
+        if not column and not is_relationship:
             raise ValueError("column is required")
         self.is_relationship = is_relationship
         self.name = name or ""
@@ -342,6 +344,13 @@ class Relationship(Field):
             length=0,
             is_relationship=is_relationship,
         )
+        
+        if relatedModelName is None: 
+            raise ValueError('relatedModelName is required for Relationship')
+        
+        if not column and type == 'many-to-one': 
+            raise ValueError('column is required')
+        
         self.dependent = dependent if dependent is not None else False
         self.relatedModelName = relatedModelName or ""
         self.otherSideName = otherSideName or ""

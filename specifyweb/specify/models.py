@@ -34,7 +34,7 @@ class ModelWithTable(models.Model):
 # The original models in this file are based on the Specify 6.8.03 datamodel schema.
 
 class Accession(models.Model):
-    specify_model = datamodel.get_table('accession')
+    specify_model = datamodel.get_table_strict('accession')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionid')
@@ -85,7 +85,7 @@ class Accession(models.Model):
     save = partialmethod(custom_save)
 
 class Accessionagent(models.Model):
-    specify_model = datamodel.get_table('accessionagent')
+    specify_model = datamodel.get_table_strict('accessionagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionagentid')
@@ -113,7 +113,7 @@ class Accessionagent(models.Model):
     save = partialmethod(custom_save)
 
 class Accessionattachment(models.Model):
-    specify_model = datamodel.get_table('accessionattachment')
+    specify_model = datamodel.get_table_strict('accessionattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionattachmentid')
@@ -139,7 +139,7 @@ class Accessionattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Accessionauthorization(models.Model):
-    specify_model = datamodel.get_table('accessionauthorization')
+    specify_model = datamodel.get_table_strict('accessionauthorization')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionauthorizationid')
@@ -165,7 +165,7 @@ class Accessionauthorization(models.Model):
     save = partialmethod(custom_save)
 
 class Accessioncitation(models.Model):
-    specify_model = datamodel.get_table('accessioncitation')
+    specify_model = datamodel.get_table_strict('accessioncitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessioncitationid')
@@ -194,7 +194,7 @@ class Accessioncitation(models.Model):
     save = partialmethod(custom_save)
 
 class Address(models.Model):
-    specify_model = datamodel.get_table('address')
+    specify_model = datamodel.get_table_strict('address')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='addressid')
@@ -239,7 +239,7 @@ class Address(models.Model):
     save = partialmethod(custom_save)
 
 class Addressofrecord(models.Model):
-    specify_model = datamodel.get_table('addressofrecord')
+    specify_model = datamodel.get_table_strict('addressofrecord')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='addressofrecordid')
@@ -269,7 +269,7 @@ class Addressofrecord(models.Model):
     save = partialmethod(custom_save)
 
 class Agent(models.Model):
-    specify_model = datamodel.get_table('agent')
+    specify_model = datamodel.get_table_strict('agent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentid')
@@ -337,7 +337,7 @@ class Agent(models.Model):
     save = partialmethod(custom_save)
 
 class Agentattachment(models.Model):
-    specify_model = datamodel.get_table('agentattachment')
+    specify_model = datamodel.get_table_strict('agentattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentattachmentid')
@@ -363,7 +363,7 @@ class Agentattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Agentgeography(models.Model):
-    specify_model = datamodel.get_table('agentgeography')
+    specify_model = datamodel.get_table_strict('agentgeography')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentgeographyid')
@@ -389,7 +389,7 @@ class Agentgeography(models.Model):
     save = partialmethod(custom_save)
 
 class Agentidentifier(models.Model):
-    specify_model = datamodel.get_table('agentidentifier')
+    specify_model = datamodel.get_table_strict('agentidentifier')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentidentifierid')
@@ -429,7 +429,7 @@ class Agentidentifier(models.Model):
     save = partialmethod(custom_save)
 
 class Agentspecialty(models.Model):
-    specify_model = datamodel.get_table('agentspecialty')
+    specify_model = datamodel.get_table_strict('agentspecialty')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentspecialtyid')
@@ -455,7 +455,7 @@ class Agentspecialty(models.Model):
     save = partialmethod(custom_save)
 
 class Agentvariant(models.Model):
-    specify_model = datamodel.get_table('agentvariant')
+    specify_model = datamodel.get_table_strict('agentvariant')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentvariantid')
@@ -483,7 +483,7 @@ class Agentvariant(models.Model):
     save = partialmethod(custom_save)
 
 class Appraisal(models.Model):
-    specify_model = datamodel.get_table('appraisal')
+    specify_model = datamodel.get_table_strict('appraisal')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='appraisalid')
@@ -516,7 +516,7 @@ class Appraisal(models.Model):
     save = partialmethod(custom_save)
 
 class Attachment(models.Model):
-    specify_model = datamodel.get_table('attachment')
+    specify_model = datamodel.get_table_strict('attachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentid')
@@ -572,7 +572,7 @@ class Attachment(models.Model):
     save = partialmethod(custom_save)
 
 class Attachmentimageattribute(models.Model):
-    specify_model = datamodel.get_table('attachmentimageattribute')
+    specify_model = datamodel.get_table_strict('attachmentimageattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentimageattributeid')
@@ -612,7 +612,7 @@ class Attachmentimageattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Attachmentmetadata(models.Model):
-    specify_model = datamodel.get_table('attachmentmetadata')
+    specify_model = datamodel.get_table_strict('attachmentmetadata')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentmetadataid')
@@ -637,7 +637,7 @@ class Attachmentmetadata(models.Model):
     save = partialmethod(custom_save)
 
 class Attachmenttag(models.Model):
-    specify_model = datamodel.get_table('attachmenttag')
+    specify_model = datamodel.get_table_strict('attachmenttag')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmenttagid')
@@ -661,7 +661,7 @@ class Attachmenttag(models.Model):
     save = partialmethod(custom_save)
 
 class Attributedef(models.Model):
-    specify_model = datamodel.get_table('attributedef')
+    specify_model = datamodel.get_table_strict('attributedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attributedefid')
@@ -688,7 +688,7 @@ class Attributedef(models.Model):
     save = partialmethod(custom_save)
 
 class Author(models.Model):
-    specify_model = datamodel.get_table('author')
+    specify_model = datamodel.get_table_strict('author')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='authorid')
@@ -715,7 +715,7 @@ class Author(models.Model):
     save = partialmethod(custom_save)
 
 class Autonumberingscheme(models.Model):
-    specify_model = datamodel.get_table('autonumberingscheme')
+    specify_model = datamodel.get_table_strict('autonumberingscheme')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='autonumberingschemeid')
@@ -745,7 +745,7 @@ class Autonumberingscheme(models.Model):
     save = partialmethod(custom_save)
 
 class Borrow(models.Model):
-    specify_model = datamodel.get_table('borrow')
+    specify_model = datamodel.get_table_strict('borrow')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowid')
@@ -792,7 +792,7 @@ class Borrow(models.Model):
     save = partialmethod(custom_save)
 
 class Borrowagent(models.Model):
-    specify_model = datamodel.get_table('borrowagent')
+    specify_model = datamodel.get_table_strict('borrowagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowagentid')
@@ -823,7 +823,7 @@ class Borrowagent(models.Model):
     save = partialmethod(custom_save)
 
 class Borrowattachment(models.Model):
-    specify_model = datamodel.get_table('borrowattachment')
+    specify_model = datamodel.get_table_strict('borrowattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowattachmentid')
@@ -849,7 +849,7 @@ class Borrowattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Borrowmaterial(models.Model):
-    specify_model = datamodel.get_table('borrowmaterial')
+    specify_model = datamodel.get_table_strict('borrowmaterial')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowmaterialid')
@@ -887,7 +887,7 @@ class Borrowmaterial(models.Model):
     save = partialmethod(custom_save)
 
 class Borrowreturnmaterial(models.Model):
-    specify_model = datamodel.get_table('borrowreturnmaterial')
+    specify_model = datamodel.get_table_strict('borrowreturnmaterial')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowreturnmaterialid')
@@ -919,7 +919,7 @@ class Borrowreturnmaterial(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingevent(models.Model):
-    specify_model = datamodel.get_table('collectingevent')
+    specify_model = datamodel.get_table_strict('collectingevent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventid')
@@ -989,7 +989,7 @@ class Collectingevent(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingeventattachment(models.Model):
-    specify_model = datamodel.get_table('collectingeventattachment')
+    specify_model = datamodel.get_table_strict('collectingeventattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventattachmentid')
@@ -1019,7 +1019,7 @@ class Collectingeventattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingeventattr(models.Model):
-    specify_model = datamodel.get_table('collectingeventattr')
+    specify_model = datamodel.get_table_strict('collectingeventattr')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
@@ -1049,7 +1049,7 @@ class Collectingeventattr(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingeventattribute(models.Model):
-    specify_model = datamodel.get_table('collectingeventattribute')
+    specify_model = datamodel.get_table_strict('collectingeventattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventattributeid')
@@ -1122,7 +1122,7 @@ class Collectingeventattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingeventauthorization(models.Model):
-    specify_model = datamodel.get_table('collectingeventauthorization')
+    specify_model = datamodel.get_table_strict('collectingeventauthorization')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventauthorizationid')
@@ -1147,7 +1147,7 @@ class Collectingeventauthorization(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingtrip(models.Model):
-    specify_model = datamodel.get_table('collectingtrip')
+    specify_model = datamodel.get_table_strict('collectingtrip')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripid')
@@ -1208,7 +1208,7 @@ class Collectingtrip(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingtripattachment(models.Model):
-    specify_model = datamodel.get_table('collectingtripattachment')
+    specify_model = datamodel.get_table_strict('collectingtripattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripattachmentid')
@@ -1238,7 +1238,7 @@ class Collectingtripattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingtripattribute(models.Model):
-    specify_model = datamodel.get_table('collectingtripattribute')
+    specify_model = datamodel.get_table_strict('collectingtripattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripattributeid')
@@ -1310,7 +1310,7 @@ class Collectingtripattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Collectingtripauthorization(models.Model):
-    specify_model = datamodel.get_table('collectingtripauthorization')
+    specify_model = datamodel.get_table_strict('collectingtripauthorization')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripauthorizationid')
@@ -1335,7 +1335,7 @@ class Collectingtripauthorization(models.Model):
     save = partialmethod(custom_save)
 
 class Collection(models.Model):
-    specify_model = datamodel.get_table('collection')
+    specify_model = datamodel.get_table_strict('collection')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
@@ -1386,7 +1386,7 @@ class Collection(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobject(models.Model):
-    specify_model = datamodel.get_table('collectionobject')
+    specify_model = datamodel.get_table_strict('collectionobject')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectid')
@@ -1490,7 +1490,7 @@ class Collectionobject(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectattachment(models.Model):
-    specify_model = datamodel.get_table('collectionobjectattachment')
+    specify_model = datamodel.get_table_strict('collectionobjectattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectattachmentid')
@@ -1520,7 +1520,7 @@ class Collectionobjectattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectattr(models.Model):
-    specify_model = datamodel.get_table('collectionobjectattr')
+    specify_model = datamodel.get_table_strict('collectionobjectattr')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
@@ -1550,7 +1550,7 @@ class Collectionobjectattr(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectattribute(models.Model):
-    specify_model = datamodel.get_table('collectionobjectattribute')
+    specify_model = datamodel.get_table_strict('collectionobjectattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectattributeid')
@@ -1697,7 +1697,7 @@ class Collectionobjectattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectcitation(models.Model):
-    specify_model = datamodel.get_table('collectionobjectcitation')
+    specify_model = datamodel.get_table_strict('collectionobjectcitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectcitationid')
@@ -1732,7 +1732,7 @@ class Collectionobjectcitation(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectproperty(models.Model):
-    specify_model = datamodel.get_table('collectionobjectproperty')
+    specify_model = datamodel.get_table_strict('collectionobjectproperty')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectpropertyid')
@@ -1921,7 +1921,7 @@ class Collectionobjectproperty(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionreltype(models.Model):
-    specify_model = datamodel.get_table('collectionreltype')
+    specify_model = datamodel.get_table_strict('collectionreltype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionreltypeid')
@@ -1947,7 +1947,7 @@ class Collectionreltype(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionrelationship(models.Model):
-    specify_model = datamodel.get_table('collectionrelationship')
+    specify_model = datamodel.get_table_strict('collectionrelationship')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionrelationshipid')
@@ -1974,7 +1974,7 @@ class Collectionrelationship(models.Model):
     save = partialmethod(custom_save)
 
 class Collector(models.Model):
-    specify_model = datamodel.get_table('collector')
+    specify_model = datamodel.get_table_strict('collector')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectorid')
@@ -2010,7 +2010,7 @@ class Collector(models.Model):
     save = partialmethod(custom_save)
 
 class Commonnametx(models.Model):
-    specify_model = datamodel.get_table('commonnametx')
+    specify_model = datamodel.get_table_strict('commonnametx')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='commonnametxid')
@@ -2042,7 +2042,7 @@ class Commonnametx(models.Model):
     save = partialmethod(custom_save)
 
 class Commonnametxcitation(models.Model):
-    specify_model = datamodel.get_table('commonnametxcitation')
+    specify_model = datamodel.get_table_strict('commonnametxcitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='commonnametxcitationid')
@@ -2077,7 +2077,7 @@ class Commonnametxcitation(models.Model):
     save = partialmethod(custom_save)
 
 class Conservdescription(models.Model):
-    specify_model = datamodel.get_table('conservdescription')
+    specify_model = datamodel.get_table_strict('conservdescription')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conservdescriptionid')
@@ -2149,7 +2149,7 @@ class Conservdescription(models.Model):
     save = partialmethod(custom_save)
 
 class Conservdescriptionattachment(models.Model):
-    specify_model = datamodel.get_table('conservdescriptionattachment')
+    specify_model = datamodel.get_table_strict('conservdescriptionattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conservdescriptionattachmentid')
@@ -2175,7 +2175,7 @@ class Conservdescriptionattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Conservevent(models.Model):
-    specify_model = datamodel.get_table('conservevent')
+    specify_model = datamodel.get_table_strict('conservevent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conserveventid')
@@ -2226,7 +2226,7 @@ class Conservevent(models.Model):
     save = partialmethod(custom_save)
 
 class Conserveventattachment(models.Model):
-    specify_model = datamodel.get_table('conserveventattachment')
+    specify_model = datamodel.get_table_strict('conserveventattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conserveventattachmentid')
@@ -2252,7 +2252,7 @@ class Conserveventattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Container(models.Model):
-    specify_model = datamodel.get_table('container')
+    specify_model = datamodel.get_table_strict('container')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='containerid')
@@ -2285,7 +2285,7 @@ class Container(models.Model):
     save = partialmethod(custom_save)
 
 class Dnaprimer(models.Model):
-    specify_model = datamodel.get_table('dnaprimer')
+    specify_model = datamodel.get_table_strict('dnaprimer')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnaprimerid')
@@ -2335,7 +2335,7 @@ class Dnaprimer(models.Model):
     save = partialmethod(custom_save)
 
 class Dnasequence(models.Model):
-    specify_model = datamodel.get_table('dnasequence')
+    specify_model = datamodel.get_table_strict('dnasequence')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequenceid')
@@ -2395,7 +2395,7 @@ class Dnasequence(models.Model):
     save = partialmethod(custom_save)
 
 class Dnasequenceattachment(models.Model):
-    specify_model = datamodel.get_table('dnasequenceattachment')
+    specify_model = datamodel.get_table_strict('dnasequenceattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequenceattachmentid')
@@ -2421,7 +2421,7 @@ class Dnasequenceattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Dnasequencingrun(models.Model):
-    specify_model = datamodel.get_table('dnasequencingrun')
+    specify_model = datamodel.get_table_strict('dnasequencingrun')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingrunid')
@@ -2477,7 +2477,7 @@ class Dnasequencingrun(models.Model):
     save = partialmethod(custom_save)
 
 class Dnasequencingrunattachment(models.Model):
-    specify_model = datamodel.get_table('dnasequencingrunattachment')
+    specify_model = datamodel.get_table_strict('dnasequencingrunattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingrunattachmentid')
@@ -2503,7 +2503,7 @@ class Dnasequencingrunattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Dnasequencingruncitation(models.Model):
-    specify_model = datamodel.get_table('dnasequencingruncitation')
+    specify_model = datamodel.get_table_strict('dnasequencingruncitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingruncitationid')
@@ -2538,7 +2538,7 @@ class Dnasequencingruncitation(models.Model):
     save = partialmethod(custom_save)
 
 class Datatype(models.Model):
-    specify_model = datamodel.get_table('datatype')
+    specify_model = datamodel.get_table_strict('datatype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='datatypeid')
@@ -2561,7 +2561,7 @@ class Datatype(models.Model):
     save = partialmethod(custom_save)
 
 class Deaccession(models.Model):
-    specify_model = datamodel.get_table('deaccession')
+    specify_model = datamodel.get_table_strict('deaccession')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionid')
@@ -2616,7 +2616,7 @@ class Deaccession(models.Model):
     save = partialmethod(custom_save)
 
 class Deaccessionagent(models.Model):
-    specify_model = datamodel.get_table('deaccessionagent')
+    specify_model = datamodel.get_table_strict('deaccessionagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionagentid')
@@ -2643,7 +2643,7 @@ class Deaccessionagent(models.Model):
     save = partialmethod(custom_save)
 
 class Deaccessionattachment(models.Model):
-    specify_model = datamodel.get_table('deaccessionattachment')
+    specify_model = datamodel.get_table_strict('deaccessionattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionattachmentid')
@@ -2669,7 +2669,7 @@ class Deaccessionattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Determination(models.Model):
-    specify_model = datamodel.get_table('determination')
+    specify_model = datamodel.get_table_strict('determination')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinationid')
@@ -2741,7 +2741,7 @@ class Determination(models.Model):
     save = partialmethod(custom_save)
 
 class Determinationcitation(models.Model):
-    specify_model = datamodel.get_table('determinationcitation')
+    specify_model = datamodel.get_table_strict('determinationcitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinationcitationid')
@@ -2775,7 +2775,7 @@ class Determinationcitation(models.Model):
     save = partialmethod(custom_save)
 
 class Determiner(models.Model):
-    specify_model = datamodel.get_table('determiner')
+    specify_model = datamodel.get_table_strict('determiner')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinerid')
@@ -2807,7 +2807,7 @@ class Determiner(models.Model):
     save = partialmethod(custom_save)
 
 class Discipline(model_extras.Discipline):
-    specify_model = datamodel.get_table('discipline')
+    specify_model = datamodel.get_table_strict('discipline')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
@@ -2844,7 +2844,7 @@ class Discipline(model_extras.Discipline):
     save = partialmethod(custom_save)
 
 class Disposal(models.Model):
-    specify_model = datamodel.get_table('disposal')
+    specify_model = datamodel.get_table_strict('disposal')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalid')
@@ -2882,7 +2882,7 @@ class Disposal(models.Model):
     save = partialmethod(custom_save)
 
 class Disposalagent(models.Model):
-    specify_model = datamodel.get_table('disposalagent')
+    specify_model = datamodel.get_table_strict('disposalagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalagentid')
@@ -2909,7 +2909,7 @@ class Disposalagent(models.Model):
     save = partialmethod(custom_save)
 
 class Disposalattachment(models.Model):
-    specify_model = datamodel.get_table('disposalattachment')
+    specify_model = datamodel.get_table_strict('disposalattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalattachmentid')
@@ -2935,7 +2935,7 @@ class Disposalattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Disposalpreparation(models.Model):
-    specify_model = datamodel.get_table('disposalpreparation')
+    specify_model = datamodel.get_table_strict('disposalpreparation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalpreparationid')
@@ -2962,7 +2962,7 @@ class Disposalpreparation(models.Model):
     save = partialmethod(custom_save)
 
 class Division(models.Model):
-    specify_model = datamodel.get_table('division')
+    specify_model = datamodel.get_table_strict('division')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
@@ -2998,7 +2998,7 @@ class Division(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangein(models.Model):
-    specify_model = datamodel.get_table('exchangein')
+    specify_model = datamodel.get_table_strict('exchangein')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinid')
@@ -3042,7 +3042,7 @@ class Exchangein(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangeinattachment(models.Model):
-    specify_model = datamodel.get_table('exchangeinattachment')
+    specify_model = datamodel.get_table_strict('exchangeinattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinattachmentid')
@@ -3068,7 +3068,7 @@ class Exchangeinattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangeinprep(models.Model):
-    specify_model = datamodel.get_table('exchangeinprep')
+    specify_model = datamodel.get_table_strict('exchangeinprep')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinprepid')
@@ -3102,7 +3102,7 @@ class Exchangeinprep(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangeout(models.Model):
-    specify_model = datamodel.get_table('exchangeout')
+    specify_model = datamodel.get_table_strict('exchangeout')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutid')
@@ -3148,7 +3148,7 @@ class Exchangeout(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangeoutattachment(models.Model):
-    specify_model = datamodel.get_table('exchangeoutattachment')
+    specify_model = datamodel.get_table_strict('exchangeoutattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutattachmentid')
@@ -3174,7 +3174,7 @@ class Exchangeoutattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Exchangeoutprep(models.Model):
-    specify_model = datamodel.get_table('exchangeoutprep')
+    specify_model = datamodel.get_table_strict('exchangeoutprep')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutprepid')
@@ -3208,7 +3208,7 @@ class Exchangeoutprep(models.Model):
     save = partialmethod(custom_save)
 
 class Exsiccata(models.Model):
-    specify_model = datamodel.get_table('exsiccata')
+    specify_model = datamodel.get_table_strict('exsiccata')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exsiccataid')
@@ -3234,7 +3234,7 @@ class Exsiccata(models.Model):
     save = partialmethod(custom_save)
 
 class Exsiccataitem(models.Model):
-    specify_model = datamodel.get_table('exsiccataitem')
+    specify_model = datamodel.get_table_strict('exsiccataitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exsiccataitemid')
@@ -3260,7 +3260,7 @@ class Exsiccataitem(models.Model):
     save = partialmethod(custom_save)
 
 class Extractor(models.Model):
-    specify_model = datamodel.get_table('extractor')
+    specify_model = datamodel.get_table_strict('extractor')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='extractorid')
@@ -3291,7 +3291,7 @@ class Extractor(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebook(models.Model):
-    specify_model = datamodel.get_table('fieldnotebook')
+    specify_model = datamodel.get_table_strict('fieldnotebook')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookid')
@@ -3326,7 +3326,7 @@ class Fieldnotebook(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebookattachment(models.Model):
-    specify_model = datamodel.get_table('fieldnotebookattachment')
+    specify_model = datamodel.get_table_strict('fieldnotebookattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookattachmentid')
@@ -3352,7 +3352,7 @@ class Fieldnotebookattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebookpage(models.Model):
-    specify_model = datamodel.get_table('fieldnotebookpage')
+    specify_model = datamodel.get_table_strict('fieldnotebookpage')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpageid')
@@ -3383,7 +3383,7 @@ class Fieldnotebookpage(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebookpageattachment(models.Model):
-    specify_model = datamodel.get_table('fieldnotebookpageattachment')
+    specify_model = datamodel.get_table_strict('fieldnotebookpageattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpageattachmentid')
@@ -3409,7 +3409,7 @@ class Fieldnotebookpageattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebookpageset(models.Model):
-    specify_model = datamodel.get_table('fieldnotebookpageset')
+    specify_model = datamodel.get_table_strict('fieldnotebookpageset')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpagesetid')
@@ -3443,7 +3443,7 @@ class Fieldnotebookpageset(models.Model):
     save = partialmethod(custom_save)
 
 class Fieldnotebookpagesetattachment(models.Model):
-    specify_model = datamodel.get_table('fieldnotebookpagesetattachment')
+    specify_model = datamodel.get_table_strict('fieldnotebookpagesetattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpagesetattachmentid')
@@ -3469,7 +3469,7 @@ class Fieldnotebookpagesetattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Fundingagent(models.Model):
-    specify_model = datamodel.get_table('fundingagent')
+    specify_model = datamodel.get_table_strict('fundingagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fundingagentid')
@@ -3502,7 +3502,7 @@ class Fundingagent(models.Model):
     save = partialmethod(custom_save)
 
 class Geocoorddetail(models.Model):
-    specify_model = datamodel.get_table('geocoorddetail')
+    specify_model = datamodel.get_table_strict('geocoorddetail')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geocoorddetailid')
@@ -3564,7 +3564,7 @@ class Geocoorddetail(models.Model):
     save = partialmethod(custom_save)
 
 class Geography(model_extras.Geography):
-    specify_model = datamodel.get_table('geography')
+    specify_model = datamodel.get_table_strict('geography')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographyid')
@@ -3614,7 +3614,7 @@ class Geography(model_extras.Geography):
     save = partialmethod(custom_save)
 
 class Geographytreedef(models.Model):
-    specify_model = datamodel.get_table('geographytreedef')
+    specify_model = datamodel.get_table_strict('geographytreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographytreedefid')
@@ -3640,7 +3640,7 @@ class Geographytreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Geographytreedefitem(model_extras.Geographytreedefitem):
-    specify_model = datamodel.get_table('geographytreedefitem')
+    specify_model = datamodel.get_table_strict('geographytreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographytreedefitemid')
@@ -3673,7 +3673,7 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
     save = partialmethod(custom_save)
 
 class Geologictimeperiod(model_extras.Geologictimeperiod):
-    specify_model = datamodel.get_table('geologictimeperiod') # aka. Chronostratigraphy
+    specify_model = datamodel.get_table_strict('geologictimeperiod') # aka. Chronostratigraphy
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodid')
@@ -3720,7 +3720,7 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     save = partialmethod(custom_save)
 
 class Geologictimeperiodtreedef(models.Model):
-    specify_model = datamodel.get_table('geologictimeperiodtreedef')
+    specify_model = datamodel.get_table_strict('geologictimeperiodtreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodtreedefid')
@@ -3746,7 +3746,7 @@ class Geologictimeperiodtreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
-    specify_model = datamodel.get_table('geologictimeperiodtreedefitem')
+    specify_model = datamodel.get_table_strict('geologictimeperiodtreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodtreedefitemid')
@@ -3779,7 +3779,7 @@ class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
     save = partialmethod(custom_save)
 
 class Gift(models.Model):
-    specify_model = datamodel.get_table('gift')
+    specify_model = datamodel.get_table_strict('gift')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftid')
@@ -3835,7 +3835,7 @@ class Gift(models.Model):
     save = partialmethod(custom_save)
 
 class Giftagent(models.Model):
-    specify_model = datamodel.get_table('giftagent')
+    specify_model = datamodel.get_table_strict('giftagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftagentid')
@@ -3867,7 +3867,7 @@ class Giftagent(models.Model):
     save = partialmethod(custom_save)
 
 class Giftattachment(models.Model):
-    specify_model = datamodel.get_table('giftattachment')
+    specify_model = datamodel.get_table_strict('giftattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftattachmentid')
@@ -3893,7 +3893,7 @@ class Giftattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Giftpreparation(models.Model):
-    specify_model = datamodel.get_table('giftpreparation')
+    specify_model = datamodel.get_table_strict('giftpreparation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftpreparationid')
@@ -3931,7 +3931,7 @@ class Giftpreparation(models.Model):
     save = partialmethod(custom_save)
 
 class Groupperson(models.Model):
-    specify_model = datamodel.get_table('groupperson')
+    specify_model = datamodel.get_table_strict('groupperson')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='grouppersonid')
@@ -3959,7 +3959,7 @@ class Groupperson(models.Model):
     save = partialmethod(custom_save)
 
 class Inforequest(models.Model):
-    specify_model = datamodel.get_table('inforequest')
+    specify_model = datamodel.get_table_strict('inforequest')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='inforequestid')
@@ -3994,7 +3994,7 @@ class Inforequest(models.Model):
     save = partialmethod(custom_save)
 
 class Institution(models.Model):
-    specify_model = datamodel.get_table('institution')
+    specify_model = datamodel.get_table_strict('institution')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
@@ -4048,7 +4048,7 @@ class Institution(models.Model):
     save = partialmethod(custom_save)
 
 class Institutionnetwork(models.Model):
-    specify_model = datamodel.get_table('institutionnetwork')
+    specify_model = datamodel.get_table_strict('institutionnetwork')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='institutionnetworkid')
@@ -4086,7 +4086,7 @@ class Institutionnetwork(models.Model):
     save = partialmethod(custom_save)
 
 class Journal(models.Model):
-    specify_model = datamodel.get_table('journal')
+    specify_model = datamodel.get_table_strict('journal')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='journalid')
@@ -4119,7 +4119,7 @@ class Journal(models.Model):
     save = partialmethod(custom_save)
 
 class Latlonpolygon(models.Model):
-    specify_model = datamodel.get_table('latlonpolygon')
+    specify_model = datamodel.get_table_strict('latlonpolygon')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='latlonpolygonid')
@@ -4146,7 +4146,7 @@ class Latlonpolygon(models.Model):
     save = partialmethod(custom_save)
 
 class Latlonpolygonpnt(models.Model):
-    specify_model = datamodel.get_table('latlonpolygonpnt')
+    specify_model = datamodel.get_table_strict('latlonpolygonpnt')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='latlonpolygonpntid')
@@ -4167,7 +4167,7 @@ class Latlonpolygonpnt(models.Model):
     save = partialmethod(custom_save)
 
 class Lithostrat(model_extras.Lithostrat):
-    specify_model = datamodel.get_table('lithostrat')
+    specify_model = datamodel.get_table_strict('lithostrat')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostratid')
@@ -4212,7 +4212,7 @@ class Lithostrat(model_extras.Lithostrat):
     save = partialmethod(custom_save)
 
 class Lithostrattreedef(models.Model):
-    specify_model = datamodel.get_table('lithostrattreedef')
+    specify_model = datamodel.get_table_strict('lithostrattreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostrattreedefid')
@@ -4238,7 +4238,7 @@ class Lithostrattreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
-    specify_model = datamodel.get_table('lithostrattreedefitem')
+    specify_model = datamodel.get_table_strict('lithostrattreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostrattreedefitemid')
@@ -4271,7 +4271,7 @@ class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
     save = partialmethod(custom_save)
 
 class Loan(models.Model):
-    specify_model = datamodel.get_table('loan')
+    specify_model = datamodel.get_table_strict('loan')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanid')
@@ -4330,7 +4330,7 @@ class Loan(models.Model):
     save = partialmethod(custom_save)
 
 class Loanagent(models.Model):
-    specify_model = datamodel.get_table('loanagent')
+    specify_model = datamodel.get_table_strict('loanagent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanagentid')
@@ -4361,7 +4361,7 @@ class Loanagent(models.Model):
     save = partialmethod(custom_save)
 
 class Loanattachment(models.Model):
-    specify_model = datamodel.get_table('loanattachment')
+    specify_model = datamodel.get_table_strict('loanattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanattachmentid')
@@ -4387,7 +4387,7 @@ class Loanattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Loanpreparation(models.Model):
-    specify_model = datamodel.get_table('loanpreparation')
+    specify_model = datamodel.get_table_strict('loanpreparation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanpreparationid')
@@ -4428,7 +4428,7 @@ class Loanpreparation(models.Model):
     save = partialmethod(custom_save)
 
 class Loanreturnpreparation(models.Model):
-    specify_model = datamodel.get_table('loanreturnpreparation')
+    specify_model = datamodel.get_table_strict('loanreturnpreparation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanreturnpreparationid')
@@ -4461,7 +4461,7 @@ class Loanreturnpreparation(models.Model):
     save = partialmethod(custom_save)
 
 class Locality(models.Model):
-    specify_model = datamodel.get_table('locality')
+    specify_model = datamodel.get_table_strict('locality')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localityid')
@@ -4537,7 +4537,7 @@ class Locality(models.Model):
     save = partialmethod(custom_save)
 
 class Localityattachment(models.Model):
-    specify_model = datamodel.get_table('localityattachment')
+    specify_model = datamodel.get_table_strict('localityattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localityattachmentid')
@@ -4563,7 +4563,7 @@ class Localityattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Localitycitation(models.Model):
-    specify_model = datamodel.get_table('localitycitation')
+    specify_model = datamodel.get_table_strict('localitycitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitycitationid')
@@ -4597,7 +4597,7 @@ class Localitycitation(models.Model):
     save = partialmethod(custom_save)
 
 class Localitydetail(models.Model):
-    specify_model = datamodel.get_table('localitydetail')
+    specify_model = datamodel.get_table_strict('localitydetail')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitydetailid')
@@ -4667,7 +4667,7 @@ class Localitydetail(models.Model):
     save = partialmethod(custom_save)
 
 class Localitynamealias(models.Model):
-    specify_model = datamodel.get_table('localitynamealias')
+    specify_model = datamodel.get_table_strict('localitynamealias')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitynamealiasid')
@@ -4696,7 +4696,7 @@ class Localitynamealias(models.Model):
     save = partialmethod(custom_save)
 
 class Materialsample(models.Model):
-    specify_model = datamodel.get_table('materialsample')
+    specify_model = datamodel.get_table_strict('materialsample')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='materialsampleid')
@@ -4763,7 +4763,7 @@ class Materialsample(models.Model):
     save = partialmethod(custom_save)
 
 class Morphbankview(models.Model):
-    specify_model = datamodel.get_table('morphbankview')
+    specify_model = datamodel.get_table_strict('morphbankview')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='morphbankviewid')
@@ -4794,7 +4794,7 @@ class Morphbankview(models.Model):
     save = partialmethod(custom_save)
 
 class Otheridentifier(models.Model):
-    specify_model = datamodel.get_table('otheridentifier')
+    specify_model = datamodel.get_table_strict('otheridentifier')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='otheridentifierid')
@@ -4840,7 +4840,7 @@ class Otheridentifier(models.Model):
     save = partialmethod(custom_save)
 
 class Paleocontext(models.Model):
-    specify_model = datamodel.get_table('paleocontext') # aka. GeoContext
+    specify_model = datamodel.get_table_strict('paleocontext') # aka. GeoContext
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='paleocontextid')
@@ -4889,7 +4889,7 @@ class Paleocontext(models.Model):
     save = partialmethod(custom_save)
 
 class Pcrperson(models.Model):
-    specify_model = datamodel.get_table('pcrperson')
+    specify_model = datamodel.get_table_strict('pcrperson')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='pcrpersonid')
@@ -4920,7 +4920,7 @@ class Pcrperson(models.Model):
     save = partialmethod(custom_save)
 
 class Permit(models.Model):
-    specify_model = datamodel.get_table('permit')
+    specify_model = datamodel.get_table_strict('permit')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='permitid')
@@ -4972,7 +4972,7 @@ class Permit(models.Model):
     save = partialmethod(custom_save)
 
 class Permitattachment(models.Model):
-    specify_model = datamodel.get_table('permitattachment')
+    specify_model = datamodel.get_table_strict('permitattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='permitattachmentid')
@@ -4998,7 +4998,7 @@ class Permitattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Picklist(models.Model):
-    specify_model = datamodel.get_table('picklist')
+    specify_model = datamodel.get_table_strict('picklist')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='picklistid')
@@ -5035,7 +5035,7 @@ class Picklist(models.Model):
     save = partialmethod(custom_save)
 
 class Picklistitem(models.Model):
-    specify_model = datamodel.get_table('picklistitem')
+    specify_model = datamodel.get_table_strict('picklistitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='picklistitemid')
@@ -5061,7 +5061,7 @@ class Picklistitem(models.Model):
     save = partialmethod(custom_save)
 
 class Preptype(models.Model):
-    specify_model = datamodel.get_table('preptype')
+    specify_model = datamodel.get_table_strict('preptype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preptypeid')
@@ -5086,7 +5086,7 @@ class Preptype(models.Model):
     save = partialmethod(custom_save)
 
 class Preparation(model_extras.Preparation):
-    specify_model = datamodel.get_table('preparation')
+    specify_model = datamodel.get_table_strict('preparation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationid')
@@ -5163,7 +5163,7 @@ class Preparation(model_extras.Preparation):
     save = partialmethod(custom_save)
 
 class Preparationattachment(models.Model):
-    specify_model = datamodel.get_table('preparationattachment')
+    specify_model = datamodel.get_table_strict('preparationattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationattachmentid')
@@ -5193,7 +5193,7 @@ class Preparationattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Preparationattr(models.Model):
-    specify_model = datamodel.get_table('preparationattr')
+    specify_model = datamodel.get_table_strict('preparationattr')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
@@ -5223,7 +5223,7 @@ class Preparationattr(models.Model):
     save = partialmethod(custom_save)
 
 class Preparationattribute(models.Model):
-    specify_model = datamodel.get_table('preparationattribute')
+    specify_model = datamodel.get_table_strict('preparationattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationattributeid')
@@ -5290,7 +5290,7 @@ class Preparationattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Preparationproperty(models.Model):
-    specify_model = datamodel.get_table('preparationproperty')
+    specify_model = datamodel.get_table_strict('preparationproperty')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationpropertyid')
@@ -5479,7 +5479,7 @@ class Preparationproperty(models.Model):
     save = partialmethod(custom_save)
 
 class Project(models.Model):
-    specify_model = datamodel.get_table('project')
+    specify_model = datamodel.get_table_strict('project')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='projectid')
@@ -5522,7 +5522,7 @@ class Project(models.Model):
     save = partialmethod(custom_save)
 
 class Recordset(models.Model):
-    specify_model = datamodel.get_table('recordset')
+    specify_model = datamodel.get_table_strict('recordset')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='recordsetid')
@@ -5558,7 +5558,7 @@ class Recordset(models.Model):
     save = partialmethod(custom_save)
 
 class Recordsetitem(models.Model):
-    specify_model = datamodel.get_table('recordsetitem')
+    specify_model = datamodel.get_table_strict('recordsetitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='recordsetitemid')
@@ -5577,7 +5577,7 @@ class Recordsetitem(models.Model):
     save = partialmethod(custom_save)
 
 class Referencework(models.Model):
-    specify_model = datamodel.get_table('referencework')
+    specify_model = datamodel.get_table_strict('referencework')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='referenceworkid')
@@ -5629,7 +5629,7 @@ class Referencework(models.Model):
     save = partialmethod(custom_save)
 
 class Referenceworkattachment(models.Model):
-    specify_model = datamodel.get_table('referenceworkattachment')
+    specify_model = datamodel.get_table_strict('referenceworkattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='referenceworkattachmentid')
@@ -5655,7 +5655,7 @@ class Referenceworkattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Repositoryagreement(models.Model):
-    specify_model = datamodel.get_table('repositoryagreement')
+    specify_model = datamodel.get_table_strict('repositoryagreement')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='repositoryagreementid')
@@ -5697,7 +5697,7 @@ class Repositoryagreement(models.Model):
     save = partialmethod(custom_save)
 
 class Repositoryagreementattachment(models.Model):
-    specify_model = datamodel.get_table('repositoryagreementattachment')
+    specify_model = datamodel.get_table_strict('repositoryagreementattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='repositoryagreementattachmentid')
@@ -5723,7 +5723,7 @@ class Repositoryagreementattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Shipment(models.Model):
-    specify_model = datamodel.get_table('shipment')
+    specify_model = datamodel.get_table_strict('shipment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='shipmentid')
@@ -5772,7 +5772,7 @@ class Shipment(models.Model):
     save = partialmethod(custom_save)
 
 class Spappresource(models.Model):
-    specify_model = datamodel.get_table('spappresource')
+    specify_model = datamodel.get_table_strict('spappresource')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourceid')
@@ -5807,7 +5807,7 @@ class Spappresource(models.Model):
     save = partialmethod(custom_save)
 
 class Spappresourcedata(models.Model):
-    specify_model = datamodel.get_table('spappresourcedata')
+    specify_model = datamodel.get_table_strict('spappresourcedata')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourcedataid')
@@ -5861,7 +5861,7 @@ class Spappresourcedata(models.Model):
     save = partialmethod(save_spappresourcedata)
 
 class Spappresourcedir(models.Model):
-    specify_model = datamodel.get_table('spappresourcedir')
+    specify_model = datamodel.get_table_strict('spappresourcedir')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourcedirid')
@@ -5892,7 +5892,7 @@ class Spappresourcedir(models.Model):
     save = partialmethod(custom_save)
 
 class Spauditlog(models.Model):
-    specify_model = datamodel.get_table('spauditlog')
+    specify_model = datamodel.get_table_strict('spauditlog')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spauditlogid')
@@ -5925,7 +5925,7 @@ class Spauditlog(models.Model):
     save = partialmethod(save_spauditlog)
 
 class Spauditlogfield(models.Model):
-    specify_model = datamodel.get_table('spauditlogfield')
+    specify_model = datamodel.get_table_strict('spauditlogfield')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spauditlogfieldid')
@@ -5951,7 +5951,7 @@ class Spauditlogfield(models.Model):
     save = partialmethod(custom_save)
 
 class Spexportschema(models.Model):
-    specify_model = datamodel.get_table('spexportschema')
+    specify_model = datamodel.get_table_strict('spexportschema')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaid')
@@ -5977,7 +5977,7 @@ class Spexportschema(models.Model):
     save = partialmethod(custom_save)
 
 class Spexportschemaitem(models.Model):
-    specify_model = datamodel.get_table('spexportschemaitem')
+    specify_model = datamodel.get_table_strict('spexportschemaitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaitemid')
@@ -6005,7 +6005,7 @@ class Spexportschemaitem(models.Model):
     save = partialmethod(custom_save)
 
 class Spexportschemaitemmapping(models.Model):
-    specify_model = datamodel.get_table('spexportschemaitemmapping')
+    specify_model = datamodel.get_table_strict('spexportschemaitemmapping')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaitemmappingid')
@@ -6034,7 +6034,7 @@ class Spexportschemaitemmapping(models.Model):
     save = partialmethod(custom_save)
 
 class Spexportschemamapping(models.Model):
-    specify_model = datamodel.get_table('spexportschemamapping')
+    specify_model = datamodel.get_table_strict('spexportschemamapping')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemamappingid')
@@ -6063,7 +6063,7 @@ class Spexportschemamapping(models.Model):
     save = partialmethod(custom_save)
 
 class Spfieldvaluedefault(models.Model):
-    specify_model = datamodel.get_table('spfieldvaluedefault')
+    specify_model = datamodel.get_table_strict('spfieldvaluedefault')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spfieldvaluedefaultid')
@@ -6093,7 +6093,7 @@ class Spfieldvaluedefault(models.Model):
     save = partialmethod(custom_save)
 
 class Splocalecontainer(models.Model):
-    specify_model = datamodel.get_table('splocalecontainer')
+    specify_model = datamodel.get_table_strict('splocalecontainer')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocalecontainerid')
@@ -6129,7 +6129,7 @@ class Splocalecontainer(models.Model):
     save = partialmethod(custom_save)
 
 class Splocalecontaineritem(models.Model):
-    specify_model = datamodel.get_table('splocalecontaineritem')
+    specify_model = datamodel.get_table_strict('splocalecontaineritem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocalecontaineritemid')
@@ -6164,7 +6164,7 @@ class Splocalecontaineritem(models.Model):
     save = partialmethod(custom_save)
 
 class Splocaleitemstr(models.Model):
-    specify_model = datamodel.get_table('splocaleitemstr')
+    specify_model = datamodel.get_table_strict('splocaleitemstr')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocaleitemstrid')
@@ -6198,7 +6198,7 @@ class Splocaleitemstr(models.Model):
     save = partialmethod(custom_save)
 
 class Sppermission(models.Model):
-    specify_model = datamodel.get_table('sppermission')
+    specify_model = datamodel.get_table_strict('sppermission')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='sppermissionid')
@@ -6216,7 +6216,7 @@ class Sppermission(models.Model):
     save = partialmethod(custom_save)
 
 class Spprincipal(models.Model):
-    specify_model = datamodel.get_table('spprincipal')
+    specify_model = datamodel.get_table_strict('spprincipal')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spprincipalid')
@@ -6244,7 +6244,7 @@ class Spprincipal(models.Model):
     save = partialmethod(custom_save)
 
 class Spquery(models.Model):
-    specify_model = datamodel.get_table('spquery')
+    specify_model = datamodel.get_table_strict('spquery')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spqueryid')
@@ -6282,7 +6282,7 @@ class Spquery(models.Model):
     save = partialmethod(custom_save)
 
 class Spqueryfield(models.Model):
-    specify_model = datamodel.get_table('spqueryfield')
+    specify_model = datamodel.get_table_strict('spqueryfield')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spqueryfieldid')
@@ -6324,7 +6324,7 @@ class Spqueryfield(models.Model):
     save = partialmethod(custom_save)
 
 class Spreport(models.Model):
-    specify_model = datamodel.get_table('spreport')
+    specify_model = datamodel.get_table_strict('spreport')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spreportid')
@@ -6359,7 +6359,7 @@ class Spreport(models.Model):
     save = partialmethod(custom_save)
 
 class Spsymbiotainstance(models.Model):
-    specify_model = datamodel.get_table('spsymbiotainstance')
+    specify_model = datamodel.get_table_strict('spsymbiotainstance')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spsymbiotainstanceid')
@@ -6393,7 +6393,7 @@ class Spsymbiotainstance(models.Model):
     save = partialmethod(custom_save)
 
 class Sptasksemaphore(models.Model):
-    specify_model = datamodel.get_table('sptasksemaphore')
+    specify_model = datamodel.get_table_strict('sptasksemaphore')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='tasksemaphoreid')
@@ -6425,7 +6425,7 @@ class Sptasksemaphore(models.Model):
     save = partialmethod(custom_save)
 
 class Spversion(models.Model):
-    specify_model = datamodel.get_table('spversion')
+    specify_model = datamodel.get_table_strict('spversion')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spversionid')
@@ -6453,7 +6453,7 @@ class Spversion(models.Model):
     save = partialmethod(custom_save)
 
 class Spviewsetobj(models.Model):
-    specify_model = datamodel.get_table('spviewsetobj')
+    specify_model = datamodel.get_table_strict('spviewsetobj')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spviewsetobjid')
@@ -6484,7 +6484,7 @@ class Spviewsetobj(models.Model):
     save = partialmethod(custom_save)
 
 class Spvisualquery(models.Model):
-    specify_model = datamodel.get_table('spvisualquery')
+    specify_model = datamodel.get_table_strict('spvisualquery')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spvisualqueryid')
@@ -6512,7 +6512,7 @@ class Spvisualquery(models.Model):
     save = partialmethod(custom_save)
 
 class Specifyuser(model_extras.Specifyuser):
-    specify_model = datamodel.get_table('specifyuser')
+    specify_model = datamodel.get_table_strict('specifyuser')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='specifyuserid')
@@ -6544,7 +6544,7 @@ class Specifyuser(model_extras.Specifyuser):
     # save = partialmethod(custom_save)
 
 class Storage(model_extras.Storage):
-    specify_model = datamodel.get_table('storage')
+    specify_model = datamodel.get_table_strict('storage')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storageid')
@@ -6587,7 +6587,7 @@ class Storage(model_extras.Storage):
     save = partialmethod(custom_save)
 
 class Storageattachment(models.Model):
-    specify_model = datamodel.get_table('storageattachment')
+    specify_model = datamodel.get_table_strict('storageattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storageattachmentid')
@@ -6613,7 +6613,7 @@ class Storageattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Storagetreedef(models.Model):
-    specify_model = datamodel.get_table('storagetreedef')
+    specify_model = datamodel.get_table_strict('storagetreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storagetreedefid')
@@ -6639,7 +6639,7 @@ class Storagetreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Storagetreedefitem(model_extras.Storagetreedefitem):
-    specify_model = datamodel.get_table('storagetreedefitem')
+    specify_model = datamodel.get_table_strict('storagetreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storagetreedefitemid')
@@ -6672,7 +6672,7 @@ class Storagetreedefitem(model_extras.Storagetreedefitem):
     save = partialmethod(custom_save)
 
 class Taxon(model_extras.Taxon):
-    specify_model = datamodel.get_table('taxon')
+    specify_model = datamodel.get_table_strict('taxon')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonid')
@@ -6792,7 +6792,7 @@ class Taxon(model_extras.Taxon):
     save = partialmethod(custom_save)
 
 class Taxonattachment(models.Model):
-    specify_model = datamodel.get_table('taxonattachment')
+    specify_model = datamodel.get_table_strict('taxonattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonattachmentid')
@@ -6818,7 +6818,7 @@ class Taxonattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Taxonattribute(models.Model):
-    specify_model = datamodel.get_table('taxonattribute')
+    specify_model = datamodel.get_table_strict('taxonattribute')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonattributeid')
@@ -7004,7 +7004,7 @@ class Taxonattribute(models.Model):
     save = partialmethod(custom_save)
 
 class Taxoncitation(models.Model):
-    specify_model = datamodel.get_table('taxoncitation')
+    specify_model = datamodel.get_table_strict('taxoncitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxoncitationid')
@@ -7039,7 +7039,7 @@ class Taxoncitation(models.Model):
     save = partialmethod(custom_save)
 
 class Taxontreedef(models.Model):
-    specify_model = datamodel.get_table('taxontreedef')
+    specify_model = datamodel.get_table_strict('taxontreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxontreedefid')
@@ -7067,7 +7067,7 @@ class Taxontreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Taxontreedefitem(model_extras.Taxontreedefitem):
-    specify_model = datamodel.get_table('taxontreedefitem')
+    specify_model = datamodel.get_table_strict('taxontreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxontreedefitemid')
@@ -7101,7 +7101,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     save = partialmethod(custom_save)
 
 class Treatmentevent(models.Model):
-    specify_model = datamodel.get_table('treatmentevent')
+    specify_model = datamodel.get_table_strict('treatmentevent')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='treatmenteventid')
@@ -7159,7 +7159,7 @@ class Treatmentevent(models.Model):
     save = partialmethod(custom_save)
 
 class Treatmenteventattachment(models.Model):
-    specify_model = datamodel.get_table('treatmenteventattachment')
+    specify_model = datamodel.get_table_strict('treatmenteventattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='treatmenteventattachmentid')
@@ -7185,7 +7185,7 @@ class Treatmenteventattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Voucherrelationship(models.Model):
-    specify_model = datamodel.get_table('voucherrelationship')
+    specify_model = datamodel.get_table_strict('voucherrelationship')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='voucherrelationshipid')
@@ -7229,7 +7229,7 @@ class Voucherrelationship(models.Model):
     save = partialmethod(custom_save)
 
 class Workbench(models.Model):
-    specify_model = datamodel.get_table('workbench')
+    specify_model = datamodel.get_table_strict('workbench')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchid')
@@ -7268,7 +7268,7 @@ class Workbench(models.Model):
     save = partialmethod(custom_save)
 
 class Workbenchdataitem(models.Model):
-    specify_model = datamodel.get_table('workbenchdataitem')
+    specify_model = datamodel.get_table_strict('workbenchdataitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchdataitemid')
@@ -7292,7 +7292,7 @@ class Workbenchdataitem(models.Model):
     save = partialmethod(custom_save)
 
 class Workbenchrow(models.Model):
-    specify_model = datamodel.get_table('workbenchrow')
+    specify_model = datamodel.get_table_strict('workbenchrow')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowid')
@@ -7354,7 +7354,7 @@ class Workbenchrow(models.Model):
     save = partialmethod(save_workbenchrow)
 
 class Workbenchrowexportedrelationship(models.Model):
-    specify_model = datamodel.get_table('workbenchrowexportedrelationship')
+    specify_model = datamodel.get_table_strict('workbenchrowexportedrelationship')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowexportedrelationshipid')
@@ -7381,7 +7381,7 @@ class Workbenchrowexportedrelationship(models.Model):
     save = partialmethod(custom_save)
 
 class Workbenchrowimage(models.Model):
-    specify_model = datamodel.get_table('workbenchrowimage')
+    specify_model = datamodel.get_table_strict('workbenchrowimage')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowimageid')
@@ -7431,7 +7431,7 @@ class Workbenchrowimage(models.Model):
     save = partialmethod(save_workbenchrowimage)
 
 class Workbenchtemplate(models.Model):
-    specify_model = datamodel.get_table('workbenchtemplate')
+    specify_model = datamodel.get_table_strict('workbenchtemplate')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchtemplateid')
@@ -7457,7 +7457,7 @@ class Workbenchtemplate(models.Model):
     save = partialmethod(custom_save)
 
 class Workbenchtemplatemappingitem(models.Model):
-    specify_model = datamodel.get_table('workbenchtemplatemappingitem')
+    specify_model = datamodel.get_table_strict('workbenchtemplatemappingitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchtemplatemappingitemid')
@@ -7497,7 +7497,7 @@ class Workbenchtemplatemappingitem(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjecttype(models.Model):
-    specify_model = datamodel.get_table('collectionobjecttype')
+    specify_model = datamodel.get_table_strict('collectionobjecttype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='CollectionObjectTypeID')
@@ -7525,7 +7525,7 @@ class Collectionobjecttype(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectgrouptype(models.Model):
-    specify_model = datamodel.get_table('collectionobjectgrouptype')
+    specify_model = datamodel.get_table_strict('collectionobjectgrouptype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='COGTypeID')
@@ -7549,7 +7549,7 @@ class Collectionobjectgrouptype(models.Model):
     save = partialmethod(custom_save)
 
 class Collectionobjectgroup(models.Model): # aka. Cog
-    specify_model = datamodel.get_table('collectionobjectgroup')
+    specify_model = datamodel.get_table_strict('collectionobjectgroup')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectgroupid')
@@ -7588,7 +7588,7 @@ class Collectionobjectgroup(models.Model): # aka. Cog
     save = partialmethod(custom_save)
 
 class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
-    specify_model = datamodel.get_table('collectionobjectgroupjoin')
+    specify_model = datamodel.get_table_strict('collectionobjectgroupjoin')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectgroupjoinid')
@@ -7624,7 +7624,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
     save = partialmethod(custom_save)
 
 class Absoluteage(models.Model):
-    specify_model = datamodel.get_table('absoluteage')
+    specify_model = datamodel.get_table_strict('absoluteage')
 
     # ID Field
     id = models.AutoField(db_column='AbsoluteAgeID', primary_key=True)
@@ -7664,7 +7664,7 @@ class Absoluteage(models.Model):
     save = partialmethod(custom_save)
 
 class Relativeage(models.Model):
-    specify_model = datamodel.get_table('relativeage')
+    specify_model = datamodel.get_table_strict('relativeage')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='relativeageid')
@@ -7709,7 +7709,7 @@ class Relativeage(models.Model):
     save = partialmethod(custom_save)
 
 class Absoluteageattachment(models.Model):
-    specify_model = datamodel.get_table('absoluteageattachment')
+    specify_model = datamodel.get_table_strict('absoluteageattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='absoluteageattachmentid')
@@ -7735,7 +7735,7 @@ class Absoluteageattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Relativeageattachment(models.Model):
-    specify_model = datamodel.get_table('relativeageattachment')
+    specify_model = datamodel.get_table_strict('relativeageattachment')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='relativeageattachmentid')
@@ -7761,7 +7761,7 @@ class Relativeageattachment(models.Model):
     save = partialmethod(custom_save)
 
 class Absoluteagecitation(models.Model):
-    specify_model = datamodel.get_table('absoluteagecitation')
+    specify_model = datamodel.get_table_strict('absoluteagecitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='absoluteagecitationid')
@@ -7790,7 +7790,7 @@ class Absoluteagecitation(models.Model):
     save = partialmethod(custom_save)
 
 class Relativeagecitation(models.Model):
-    specify_model = datamodel.get_table('relativeagecitation')
+    specify_model = datamodel.get_table_strict('relativeagecitation')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='relativeagecitationid')
@@ -7819,7 +7819,7 @@ class Relativeagecitation(models.Model):
     save = partialmethod(custom_save)
 
 class Tectonicunittreedef(models.Model):
-    specify_model = datamodel.get_table('tectonicunittreedef')
+    specify_model = datamodel.get_table_strict('tectonicunittreedef')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='tectonicunittreedefid')
@@ -7844,7 +7844,7 @@ class Tectonicunittreedef(models.Model):
     save = partialmethod(custom_save)
 
 class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
-    specify_model = datamodel.get_table('tectonicUnittreedefitem')
+    specify_model = datamodel.get_table_strict('tectonicUnittreedefitem')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='tectonicunittreedefitemid')
@@ -7876,7 +7876,7 @@ class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
     save = partialmethod(custom_save)
 
 class Tectonicunit(model_extras.Tectonicunit):
-    specify_model = datamodel.get_table('tectonicunit')
+    specify_model = datamodel.get_table_strict('tectonicunit')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='tectonicunitid')

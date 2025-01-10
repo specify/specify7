@@ -788,6 +788,38 @@ class InlineApiTests(ApiTests):
         self.collectionobjects[1].refresh_from_db()
         self.assertEqual(self.collectionobjects[0].accession, acc2)
         self.assertEqual(self.collectionobjects[1].accession, acc2)
+
+    def test_skipping_redundant_resources(self): 
+        catalog_number = f'num-{len(self.collectionobjects)}'
+        redundant_catalog_number = f'num-{len(self.collectionobjects) + 1}'
+        redundant_accession_number = 'c'
+        accession_data = {
+            'accessionnumber': "b",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    {
+                        "catalogNumber": catalog_number,
+                        'accession': {
+                            "accessionNumber": redundant_accession_number,
+                        },
+                        "determinations": [
+                            {
+                                "text1": "test determination",
+                                "collectionObject": {
+                                    "catalogNumber": redundant_catalog_number
+                                },
+                            }
+                        ],
+                        'collection': api.uri_for_model('Collection', self.collection.id),
+                    }
+                ]
+            }
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertFalse(models.Accession.objects.filter(accessionnumber=redundant_accession_number).exists())
+        self.assertFalse(models.Collectionobject.objects.filter(catalognumber=redundant_catalog_number).exists())
     
     # version control on inlined resources should be tested
 
