@@ -346,17 +346,17 @@ def move(request, tree: TREE_TABLE, id: int):
                                 "type": "integer",
                                 "description": "The ID of the storage tree node to which the preparations should be moved."
                             },
-                            "required": ["target"],
-                            "additionalProperties": False,
-                        }
+                        },
+                        'required': ['target'],
+                        'additionalProperties': False
                     }
-                },
-            },
-            "responses": {
-                "200": {
-                    "description": "Success message indicating the bulk move operation was successful."
                 }
-            },
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Success message indicating the bulk move operation was successful."
+            }
         }
     }
 })
