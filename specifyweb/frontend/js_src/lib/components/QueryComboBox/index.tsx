@@ -460,7 +460,7 @@ export function QueryComboBox({
                 }
               />
             )}
-            {hasSearchButton && (
+            {hasSearchButton && !field.isDependent() && (
               <DataEntry.Search
                 aria-pressed={state.type === 'SearchState'}
                 onClick={
