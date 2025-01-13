@@ -73,6 +73,6 @@ MIGRATION_0013_FIELDS = {
     'CollectionObjectGroup': ['parentCog']
 }
 
-MIGRATION_0020_FIELDS = {
+MIGRATION_0019_FIELDS = {
     'PaleoContext': ['tectonicUnit'],
 }

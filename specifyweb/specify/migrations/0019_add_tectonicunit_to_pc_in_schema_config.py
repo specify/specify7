@@ -3,7 +3,7 @@ This migration adds Tectonic Unit -> Paleo Context in the Schema Config.
 """
 from django.db import migrations
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0020_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0019_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
 
 
 def add_tectonicunit_to_pc_in_schema_config(apps):
@@ -24,7 +24,7 @@ def remove_tectonicunit_from_pc_schema_config(apps):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0019_remove_parentCog'),
+        ('specify', '0018_cot_catnum_schema'),
     ]
 
     def apply_migration(apps, schema_editor):
