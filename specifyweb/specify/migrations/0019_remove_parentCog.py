@@ -10,8 +10,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='collectionobjectgroup',
-            name='parentcog',
-        ),
+        # migrations.RemoveField(
+        #     model_name='collectionobjectgroup',
+        #     name='parentcog',
+        # ),
     ]
