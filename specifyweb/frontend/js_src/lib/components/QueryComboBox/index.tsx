@@ -91,7 +91,7 @@ export function QueryComboBox({
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
-  useQueryComboBoxDefaults({resource, field, defaultRecord});
+  useQueryComboBoxDefaults({ resource, field, defaultRecord });
 
   const treeData = useTreeData(resource, field);
   const collectionRelationships = useCollectionRelationships(resource);
