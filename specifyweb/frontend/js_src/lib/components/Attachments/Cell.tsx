@@ -6,7 +6,6 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-// import { Input } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -76,10 +75,6 @@ export function AttachmentCell({
           handleOpen();
         }}
       />
-      {/* <Input.Checkbox
-        className="absolute right-0 top-0"
-        onValueChange={handleOpen}
-      /> */}
       {typeof originalUrl === 'string' && (
         <Link.Icon
           className="absolute right-0 top-0"

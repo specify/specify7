@@ -679,10 +679,5 @@ export const attachmentsText = createDictionary({
 
   downloadAll: {
     'en-us': 'Download All',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
   },
 } as const);

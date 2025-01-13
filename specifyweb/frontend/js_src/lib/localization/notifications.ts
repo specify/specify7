@@ -111,20 +111,10 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
   },
   attachmentArchiveCompleted: {
-    'en-us': 'Attachments archive completed.',
-    'ru-ru': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
-    'de-ch': '',
+    'en-us': 'Attachment archive created.',
   },
   attachmentArchiveFailed: {
-    'en-us': 'Attachments archive failed.',
-    'ru-ru': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
-    'de-ch': '',
+    'en-us': 'Attachment archive creation failed.',
   },
   dataSetOwnershipTransferred: {
     'en-us': `
