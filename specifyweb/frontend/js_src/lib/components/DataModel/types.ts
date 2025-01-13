@@ -6809,5 +6809,8 @@ export type TectonicUnit = {
     readonly parent: TectonicUnit;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: { readonly acceptedChildren: RA<TectonicUnit> };
+  readonly toManyIndependent: {
+    readonly acceptedChildren: RA<TectonicUnit>;
+    readonly paleoContexts: RA<PaleoContext>;
+  };
 };

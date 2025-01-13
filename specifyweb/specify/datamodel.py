@@ -8701,6 +8701,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='parent', type='many-to-one', required=True, relatedModelName='TectonicUnit', column='ParentID'),
             Relationship(name='definition', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='treeEntries'),
             Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='paleoContexts', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='tectonicUnit'),
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
