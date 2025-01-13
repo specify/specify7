@@ -840,7 +840,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     else:
         obj.modifiedbyagent = agent
 
-    _handle_special_update_priors(obj, data)
+    data = _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
@@ -1123,4 +1123,5 @@ def _handle_special_update_priors(obj, data):
         modify_update_of_loan_return_sibling_preps,
     )
     data = modify_update_of_interaction_sibling_preps(obj, data)
-    modify_update_of_loan_return_sibling_preps(obj, data)
+    data = modify_update_of_loan_return_sibling_preps(obj, data)
+    return data

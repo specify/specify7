@@ -1,4 +1,3 @@
-import re
 import logging
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
@@ -504,6 +503,15 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         updated_interaction_data["loanpreparations"][loan_prep_idx][
             "loanreturnpreparations"
         ].extend([new_loan_return_data])
+
+    # Recalculate the total quantity returned and resolved for the loan preparation
+    # based on the modified loan return preparation data.
+    for loan_prep_idx in range(len(updated_interaction_data["loanpreparations"])):
+        loan_return_data = updated_interaction_data["loanpreparations"][loan_prep_idx]["loanreturnpreparations"]
+        total_quantity_returned = sum([loan_return["quantityreturned"] for loan_return in loan_return_data])
+        total_quantity_resolved = sum([loan_return["quantityresolved"] for loan_return in loan_return_data])
+        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = total_quantity_resolved
+        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = total_quantity_returned
 
     # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
