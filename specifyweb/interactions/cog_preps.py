@@ -9,6 +9,7 @@ from specifyweb.specify.models import (
     Collectionobjectgroupjoin,
     Disposalpreparation,
     Giftpreparation,
+    Loan,
     Loanpreparation,
     Loanreturnpreparation,
     Preparation,
@@ -105,6 +106,19 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
     return sibling_preps
+
+def remove_all_cog_sibling_preps_from_loan(prep: Preparation, loan: Loan) -> None:
+    """
+    Remove all the sibling preparations within the consolidated cog
+    """
+    # Get all the sibling preparations
+    preps = get_all_sibling_preps_within_consolidated_cog(prep)
+
+    # Get the loan preparations
+    loan_preps = Loanpreparation.objects.filter(loan=loan, preparation__in=preps)
+
+    # Delete the loan preparations
+    loan_preps.delete()
 
 def is_cog_recordset(rs: Recordset) -> bool:
     """
@@ -357,7 +371,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         
         # BUG: the preparation can be provided as a dict in the request
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
-        _, prep_id = strict_uri_to_model("preparation", prep_uri) if prep_uri is not None else [None, None]
+        _, prep_id = strict_uri_to_model(prep_uri, "preparation") if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
         loan_return_prep_data_lst = loan_prep_data["loanreturnpreparations"]

@@ -14,13 +14,11 @@ from specifyweb.interactions.cog_preps import (
     add_consolidated_sibling_co_ids,
 )
 from specifyweb.middleware.general import require_GET
+from specifyweb.specify.views import login_maybe_required
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson, filter_by_collection
-from specifyweb.specify.models import (Collectionobject, Loan, Loanpreparation,
-    Loanreturnpreparation, Preparation, Recordset, Recordsetitem, 
-    Collectionobjectgroup
-)
-from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroup, Loan, Loanpreparation, \
+    Loanreturnpreparation, Preparation, Recordset, Recordsetitem
 
 from django.db.models import F, Q, Sum
 from django.db.models.functions import Coalesce
