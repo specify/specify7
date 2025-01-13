@@ -12,7 +12,7 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -47,6 +47,7 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
   pendingValueToResource,
+  useQueryComboBoxDefaults,
 } from './helpers';
 import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
@@ -71,7 +72,7 @@ export function QueryComboBox({
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
-  defaultRecordId,
+  defaultRecord,
   relatedTable: initialRelatedTable,
 }: {
   readonly id: string | undefined;
@@ -87,60 +88,10 @@ export function QueryComboBox({
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
-  readonly defaultRecordId?: string | undefined;
+  readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
-  React.useEffect(() => {
-    if (resource === undefined || !resource.isNew()) return;
-    if (defaultRecordId !== undefined) {
-      let defaultUri: string | null;
-      if (defaultRecordId === 'CURRENT_AGENT') {
-        defaultUri = userInformation.agent.resource_uri;
-      } else if (defaultRecordId === 'CURRENT_USER') {
-        defaultUri = userInformation.resource_uri;
-      } else if (defaultRecordId === 'BLANK') {
-        defaultUri = null;
-      } else {
-        defaultUri = getResourceApiUrl(field.relatedTable.name, defaultRecordId);
-      }
-
-      resource.set(
-        field.name,
-        resource.get(field.name) ?? defaultUri,
-        {
-          silent: true,
-        }
-      );
-    // The following cases can be technically be covered by the above code, but need to be kept for outdated forms
-    } else if (field.name === 'cataloger') {
-      const record = toTable(resource, 'CollectionObject');
-      record?.set(
-        'cataloger',
-        record?.get('cataloger') ?? userInformation.agent.resource_uri,
-        {
-          silent: true,
-        }
-      );
-    } else if (field.name === 'specifyUser') {
-      const record = toTable(resource, 'RecordSet');
-      record?.set(
-        'specifyUser',
-        record?.get('specifyUser') ?? userInformation.resource_uri,
-        {
-          silent: true,
-        }
-      );
-    } else if (field.name === 'receivedBy') {
-      const record = toTable(resource, 'LoanReturnPreparation');
-      record?.set(
-        'receivedBy',
-        record?.get('receivedBy') ?? userInformation.agent.resource_uri,
-        {
-          silent: true,
-        }
-      );
-    }
-  }, [resource, field]);
+  useQueryComboBoxDefaults({resource, field, defaultRecord});
 
   const treeData = useTreeData(resource, field);
   const collectionRelationships = useCollectionRelationships(resource);
