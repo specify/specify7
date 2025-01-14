@@ -4,7 +4,6 @@ import logging
 from django.db import migrations, models
 from django.db.models import F
 import django.utils.timezone
-from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     protect_with_blockers
 )
