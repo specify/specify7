@@ -15,6 +15,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
@@ -552,6 +553,17 @@ export function getMappingLineData({
                 : field.isHidden,
               field.name
             );
+
+            const discipline = getSystemInfo().discipline
+
+            if (
+              field.name === 'age' &&
+              !['geology', 'invertpaleo', 'vertpaleo', 'paleobotany'].includes(
+                discipline
+              )
+            ) {
+              return false;
+            }
 
             isIncluded &&=
               isNoRestrictionsMode ||
