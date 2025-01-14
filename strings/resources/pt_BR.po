@@ -582,7 +582,7 @@ msgid "cogAddedToItself"
 msgstr ""
 
 #: components/DataModel/businessRuleDefs.ts:229
-#: components/DataModel/__tests__/businessRules.test.ts:271
+#: components/DataModel/__tests__/businessRules.test.ts:266
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
