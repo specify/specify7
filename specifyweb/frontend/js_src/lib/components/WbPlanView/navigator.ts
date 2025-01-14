@@ -542,6 +542,17 @@ export function getMappingLineData({
           .filter((field) => {
             let isIncluded = true;
 
+            const discipline = getSystemInfo().discipline.toLowerCase()
+
+            if (
+              field.name === 'age' &&
+              !['geology', 'invertpaleo', 'vertpaleo', 'paleobotany'].includes(
+                discipline
+              )
+            ) {
+              return false;
+            }
+
             isIncluded &&=
               generateFieldData === 'all' ||
               field.name === internalState.parsedDefaultValue[0];
@@ -553,17 +564,6 @@ export function getMappingLineData({
                 : field.isHidden,
               field.name
             );
-
-            const discipline = getSystemInfo().discipline
-
-            if (
-              field.name === 'age' &&
-              !['geology', 'invertpaleo', 'vertpaleo', 'paleobotany'].includes(
-                discipline
-              )
-            ) {
-              return false;
-            }
 
             isIncluded &&=
               isNoRestrictionsMode ||
