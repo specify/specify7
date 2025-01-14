@@ -13,6 +13,7 @@ from specifyweb.specify.migration_utils.update_schema_config import (
     revert_table_schema_config,
 )
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
+from specifyweb.specify.utils import create_default_collection_types
 
 logger = logging.getLogger(__name__)
 
@@ -33,42 +34,8 @@ DEFAULT_COG_TYPES = [
     'Drill Core',
 ]
 
-def create_default_collection_types(apps):
-    Collection = apps.get_model('specify', 'Collection')
-    Collectionobject = apps.get_model('specify', 'Collectionobject')
-    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
-    code_set = set(Collection.objects.all().values_list('code', flat=True))
-
-    # Create default collection types for each collection, named after the discipline
-    for collection in Collection.objects.all():
-        discipline = collection.discipline
-        discipline_name = discipline.name
-        cot, created = Collectionobjecttype.objects.get_or_create(
-            name=discipline_name,
-            collection=collection,
-            taxontreedef_id=discipline.taxontreedef_id
-        )
-
-        # Update CollectionObjects' collectionobjecttype for the discipline
-        Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
-        collection.collectionobjecttype = cot
-        try:
-            collection.save()
-        except BusinessRuleException as e:
-            if 'Collection must have unique code in discipline' in str(e):
-                # May want to do something besides numbering, but users can edit if after the migrqation if they want.
-                i = 1
-                while True:
-                    collection.code = f'{collection.code}-{i}'
-                    i += 1
-                    if collection.code not in code_set:
-                        code_set.add(collection.code)
-                        break
-                try:
-                    collection.save()
-                except BusinessRuleException as e:
-                    logger.warning(f'Problem saving collection {collection}: {e}')
-            continue
+def handle_default_collection_types(apps):
+    create_default_collection_types(apps)
 
 def revert_default_collection_types(apps):
     # Reverse handeled by table deletion.
@@ -175,7 +142,7 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_default_collection_types(apps)
+        handle_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
         create_table_schema_config_with_defaults(apps)
         create_default_collection_object_types(apps)
