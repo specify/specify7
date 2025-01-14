@@ -946,14 +946,6 @@ export const wbText = createDictionary({
     'fr-fr': 'Télécharger le forfait',
     'uk-ua': 'План завантаження',
   },
-  potentialUploadResults: {
-    'en-us': 'Potential Upload Results',
-    'ru-ru': 'Возможные результаты загрузки',
-    'es-es': 'Resultados potenciales de la carga',
-    'fr-fr': 'Résultats potentiels du téléchargement',
-    'uk-ua': 'Потенційні результати завантаження',
-    'de-ch': 'Mögliche Upload-Ergebnisse',
-  },
   noUploadResultsAvailable: {
     'en-us': 'No upload results are available for this cell',
     'ru-ru': 'Для этой ячейки нет результатов загрузки',
@@ -962,27 +954,6 @@ export const wbText = createDictionary({
       "Aucun résultat de téléchargement n'est disponible pour cette cellule",
     'uk-ua': 'Для цієї клітинки немає результатів завантаження',
     'de-ch': 'Für diese Zelle sind keine Upload-Ergebnisse verfügbar',
-  },
-  wbUploadedDescription: {
-    'en-us': 'Number of new records created in each table:',
-    'ru-ru': 'Количество новых записей, созданных в каждой таблице:',
-    'es-es': 'Número de registros nuevos creados en cada tabla:',
-    'fr-fr': 'Nombre de nouveaux enregistrements créés dans chaque table :',
-    'uk-ua': 'Кількість нових записів, створених у кожній таблиці:',
-    'de-ch': 'Anzahl der in jeder Tabelle erstellten neuen Datensätze:',
-  },
-  wbUploadedPotentialDescription: {
-    'en-us': 'Number of new records that would be created in each table:',
-    'ru-ru':
-      'Количество новых записей, которые будут созданы в каждой таблице:',
-    'es-es': 'Número de registros nuevos que se crearían en cada tabla:',
-    'fr-fr': `
-      Nombre de nouveaux enregistrements qui seraient créés dans chaque table :
-    `,
-    'uk-ua': 'Кількість нових записів, які будуть створені в кожній таблиці:',
-    'de-ch': `
-      Anzahl der neuen Datensätze, die in jeder Tabelle erstellt werden würden:
-    `,
   },
   navigationOptions: {
     'en-us': 'Navigation Options',
