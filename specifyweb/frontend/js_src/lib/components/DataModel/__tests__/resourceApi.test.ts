@@ -719,7 +719,7 @@ describe('set', () => {
     expect(resource.get('accession')).toBe(
       getResourceApiUrl('Accession', baseId + 1)
     );
-    expect(resource.independentResources.accession).toBe(undefined);
+    expect(resource.independentResources.accession).toBeUndefined();
   });
   test('null independent to-one', () => {
     const baseId = 1;
