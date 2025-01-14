@@ -4,13 +4,16 @@ This migration updates the geo tables hidden proprety in schema config.
 
 from django.db import migrations
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0021_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
+from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 
 def fix_hidden_geo_prop(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    filtered_disciplines = Discipline.objects.exclude(name__in=['verpaleo', 'invertpaleo', 'geology'])
+    excluded_disciplines = PALEO_DISCIPLINES | GEOLOGY_DISCIPLINES
+
+    filtered_disciplines = Discipline.objects.exclude(type__in=excluded_disciplines)
 
     for discipline in filtered_disciplines:
         for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
@@ -34,7 +37,9 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    filtered_disciplines = Discipline.objects.exclude(name__in=['verpaleo', 'invertpaleo', 'geology'])
+    excluded_disciplines = PALEO_DISCIPLINES | GEOLOGY_DISCIPLINES
+
+    filtered_disciplines = Discipline.objects.exclude(type__in=excluded_disciplines)
 
     for discipline in filtered_disciplines:
         for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
