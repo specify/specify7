@@ -513,6 +513,15 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = total_quantity_resolved
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = total_quantity_returned
 
+        # Set the modified loan prep isresolved to True if all the preparations are resolved
+        prep_uri = updated_interaction_data["loanpreparations"][loan_prep_idx]["preparation"]
+        prep_id = strict_uri_to_model(prep_uri, "preparation")[1]
+        if prep_id in sibling_prep_ids or prep_id in new_loan_return_prep_ids or prep_id in target_prep_ids:
+            updated_interaction_data["loanpreparations"][loan_prep_idx]["isresolved"] = True
+            quantity = updated_interaction_data["loanpreparations"][loan_prep_idx]["quantity"]
+            if total_quantity_returned + total_quantity_resolved >= quantity:
+                updated_interaction_data["loanpreparations"][loan_prep_idx]["isresolved"] = True
+
     # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data
