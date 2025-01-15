@@ -1,5 +1,4 @@
 import os
-import traceback
 import re
 import hmac
 import json
@@ -11,7 +10,6 @@ from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
 from datetime import datetime
-from threading import Thread
 
 import requests
 from django.conf import settings
