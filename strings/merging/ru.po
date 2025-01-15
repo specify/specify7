@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.9-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1668
+#: components/Preferences/UserDefinitions.tsx:1663
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "recordMerging"
@@ -73,7 +73,7 @@ msgid "mergeFields"
 msgstr "Объединить {field:string}"
 
 #: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1674
+#: components/Preferences/UserDefinitions.tsx:1669
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"

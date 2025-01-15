@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Requêtes"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1550
+#: components/Preferences/UserDefinitions.tsx:1545
 #: components/SearchDialog/index.tsx:225
 #: components/SearchDialog/index.tsx:367
 #: components/Security/registry.ts:210
@@ -397,7 +397,7 @@ msgstr "Dans"
 msgid "inDescription"
 msgstr "Une liste de valeurs séparées par des virgules"
 
-#: components/Preferences/UserDefinitions.tsx:1405
+#: components/Preferences/UserDefinitions.tsx:1406
 #: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -416,7 +416,7 @@ msgstr "Vide"
 msgid "and"
 msgstr "et"
 
-#: components/Preferences/UserDefinitions.tsx:1401
+#: components/Preferences/UserDefinitions.tsx:1402
 #: components/QueryBuilder/FieldFilter.tsx:537
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

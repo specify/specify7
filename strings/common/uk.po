@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
-#: components/Preferences/UserDefinitions.tsx:1824
+#: components/Preferences/UserDefinitions.tsx:1819
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:120
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -41,10 +41,10 @@ msgstr "Немає"
 #: components/Forms/ResourceView.tsx:361
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:272
+#: components/Interactions/InteractionDialog.tsx:194
 #: components/Interactions/InteractionsDialog.tsx:56
 #: components/Interactions/LoanReturn.tsx:161
-#: components/Interactions/PrepDialog.tsx:112
+#: components/Interactions/PrepDialog.tsx:104
 #: components/LocalityUpdate/Status.tsx:142
 #: components/LocalityUpdate/Status.tsx:188
 #: components/Merging/Status.tsx:119
@@ -77,8 +77,8 @@ msgstr "Немає"
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
-#: components/Toolbar/RecordSets.tsx:215
-#: components/Toolbar/RecordSets.tsx:254
+#: components/Toolbar/RecordSets.tsx:190
+#: components/Toolbar/RecordSets.tsx:229
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:402
@@ -199,10 +199,10 @@ msgstr "Створити"
 #: components/Forms/Save.tsx:382
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:248
-#: components/Interactions/InteractionDialog.tsx:338
+#: components/Interactions/InteractionDialog.tsx:170
+#: components/Interactions/InteractionDialog.tsx:263
 #: components/Interactions/LoanReturn.tsx:71
-#: components/Interactions/PrepDialog.tsx:109
+#: components/Interactions/PrepDialog.tsx:101
 #: components/Leaflet/Map.tsx:103
 #: components/LocalityUpdate/Status.tsx:153
 #: components/LocalityUpdate/Status.tsx:222
@@ -276,7 +276,7 @@ msgstr "Закрити"
 
 #: components/DataEntryTables/Edit.tsx:47
 #: components/Interactions/LoanReturn.tsx:197
-#: components/Interactions/PrepDialog.tsx:139
+#: components/Interactions/PrepDialog.tsx:131
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:423
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -292,7 +292,7 @@ msgid "applyAll"
 msgstr "Застосувати все"
 
 #: components/Interactions/LoanReturn.tsx:180
-#: components/Interactions/PrepDialog.tsx:124
+#: components/Interactions/PrepDialog.tsx:116
 #: components/Notifications/Notifications.tsx:85
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 msgid "clearAll"
@@ -380,7 +380,7 @@ msgid "delete"
 msgstr "Видалити"
 
 #: components/Attachments/Dialog.tsx:113
-#: components/Interactions/InteractionDialog.tsx:378
+#: components/Interactions/InteractionDialog.tsx:407
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 msgid "next"
@@ -422,9 +422,10 @@ msgstr "Інструменти"
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
 #: components/HomePage/AboutSpecify.tsx:220
-#: components/Interactions/PrepReturnRow.tsx:93
-#: components/Interactions/PrepReturnRow.tsx:94
-#: components/Interactions/PrepReturnRow.tsx:96
+#: components/Interactions/PrepReturnRow.tsx:120
+#: components/Interactions/PrepReturnRow.tsx:121
+#: components/Interactions/PrepReturnRow.tsx:122
+#: components/Interactions/PrepReturnRow.tsx:124
 #: components/Leaflet/index.ts:194
 #: components/Merging/Usages.tsx:69
 #: components/Molecules/AutoComplete.tsx:440
@@ -463,7 +464,7 @@ msgstr "Інструменти"
 #: components/Statistics/StatsResult.tsx:78
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:222
+#: components/TreeView/Row.tsx:226
 #: components/WorkBench/Disambiguation.tsx:124
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -541,7 +542,7 @@ msgstr "N/A"
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
-#: components/Toolbar/RecordSets.tsx:220
+#: components/Toolbar/RecordSets.tsx:195
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "новий"
@@ -564,7 +565,7 @@ msgstr "новий"
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:609
-#: components/Toolbar/RecordSets.tsx:320
+#: components/Toolbar/RecordSets.tsx:295
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:121
@@ -596,7 +597,7 @@ msgid "end"
 msgstr "Кінець"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:377
+#: components/Interactions/InteractionDialog.tsx:406
 #: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
@@ -663,7 +664,7 @@ msgstr "Дії"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1271
+#: components/Preferences/UserDefinitions.tsx:1270
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:62
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -686,18 +687,18 @@ msgstr "Спускається"
 #: components/Router/OverlayRoutes.tsx:136
 #: components/SearchDialog/SelectRecordSet.tsx:98
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:228
-#: components/Toolbar/RecordSets.tsx:255
+#: components/Toolbar/RecordSets.tsx:203
+#: components/Toolbar/RecordSets.tsx:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 msgid "recordSets"
 msgstr "Набори рекордів"
 
-#: components/Toolbar/RecordSets.tsx:310
+#: components/Toolbar/RecordSets.tsx:285
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Підрахунок записів"
 
-#: components/Toolbar/RecordSets.tsx:172
+#: components/Toolbar/RecordSets.tsx:147
 #. Used in: Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Розмір"
@@ -854,7 +855,7 @@ msgstr "Скопійовано!"
 msgid "copyToClipboard"
 msgstr "Копіювати в буфер обміну"
 
-#: components/Interactions/PrepDialog.tsx:250
+#: components/Interactions/PrepDialog.tsx:219
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 msgid "selected"
@@ -934,7 +935,7 @@ msgstr "Немає доступних"
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:220
-#: components/Toolbar/RecordSets.tsx:227
+#: components/Toolbar/RecordSets.tsx:202
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Actions > Wb Validate
@@ -1010,7 +1011,7 @@ msgstr "{label:string}: {value:string}"
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 
-#: components/Interactions/PrepDialog.tsx:148
+#: components/Interactions/PrepDialog.tsx:140
 #. Used in: Components > Interactions > Prep Dialog
 msgid "bulkSelect"
 msgstr "Завантаження…"
