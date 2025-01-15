@@ -576,7 +576,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         if age_field_position is not None:
             results = [
                 tuple(
-                    age_value if i == age_field_position + 1 else value
+                    age_value.replace(",", " - ") if i == age_field_position + 1 else value
                     for i, value in enumerate(result)
                 )
                 for result in results
