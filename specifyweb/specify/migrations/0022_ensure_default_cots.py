@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
         create_default_collection_types(apps)
 
     dependencies = [
-        ('specify', '0020_add_tectonicunit_to_pc_in_schema_config'),
+        ('specify', '0021_update_hidden_geo_tables'),
     ]
 
     operations = [
