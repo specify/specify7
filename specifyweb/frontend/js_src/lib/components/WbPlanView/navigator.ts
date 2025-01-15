@@ -543,7 +543,7 @@ export function getMappingLineData({
             let isIncluded = true;
 
             const disciplineType = getSystemInfo().discipline_type?.toLowerCase()
-            const geoPaleoDisciplines= ['geology', 'invertpaleo', 'vertpaleo', 'paleobotany']
+            const geoPaleoDisciplines= ['geology', 'invertpaleo', 'vertpaleo']
             if (
               field.name === 'age' &&
               !geoPaleoDisciplines.includes(
