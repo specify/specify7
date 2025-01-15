@@ -110,12 +110,6 @@ export const notificationsText = createDictionary({
     'uk-ua': 'Експорт запиту в KML завершено.',
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
   },
-  attachmentArchiveCompleted: {
-    'en-us': 'Attachment archive created.',
-  },
-  attachmentArchiveFailed: {
-    'en-us': 'Attachment archive creation failed.',
-  },
   dataSetOwnershipTransferred: {
     'en-us': `
       <userName /> transferred the ownership of the <dataSetName /> dataset to

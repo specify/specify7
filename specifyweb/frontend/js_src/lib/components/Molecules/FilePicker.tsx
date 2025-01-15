@@ -137,7 +137,7 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  text: string
+  data: string | Blob,
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;
@@ -145,18 +145,26 @@ export const downloadFile = async (
     iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null || fileDownloaded) return;
+      let url;
       const element = iframe.contentWindow.document.createElement('a');
-      element.setAttribute(
-        'href',
-        `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`
-      );
-      element.setAttribute('download', fileName);
+      if (typeof data === 'string') {
+        element.setAttribute(
+          'href',
+          `data:text/plain;charset=utf-8,${encodeURIComponent(data as string)}`
+        );
+        element.setAttribute('download', fileName);
+      } else {
+        url = window.URL.createObjectURL(data);
+        element.setAttribute('href', url);
+        element.setAttribute('download', fileName);
+      }
 
       element.style.display = 'none';
       iframe.contentWindow.document.body.append(element);
 
       element.click();
       fileDownloaded = true;
+      if (url !== undefined) window.URL.revokeObjectURL(url);
       globalThis.setTimeout(() => {
         iframe.remove();
         resolve();

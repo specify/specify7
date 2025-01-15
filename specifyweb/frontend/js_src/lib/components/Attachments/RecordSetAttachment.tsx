@@ -17,8 +17,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
-import { ping } from '../../utils/ajax/ping';
+import { ajax } from '../../utils/ajax/index';
 import { keysToLowerCase } from '../../utils/utils';
+import { downloadFile } from '../Molecules/FilePicker';
+import { Http } from '../../utils/ajax/definitions';
 
 const haltIncrementSize = 300;
 
@@ -83,22 +85,34 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
-  const handleDownloadAllAttachments = (): void => {
+  const handleDownloadAllAttachments = async (): Promise<void> => {
+    if (attachmentsRef.current === undefined) return;
     const attachmentLocations: readonly string[] = attachmentsRef.current.attachments
       .map((attachment) => attachment.attachmentLocation)
-      .filter((location): location is string => location !== null);
+      .filter((name): name is string => name !== null);
     const origFilenames: readonly string[] = attachmentsRef.current.attachments
       .map((attachment) => attachment.origFilename)
-      .filter((filename): filename is string => filename !== null);
+      .filter((name): name is string => name !== null);
 
-    void ping('/attachment_gw/download_all/', {
-      method: 'POST',
-      body: keysToLowerCase({
-        attachmentLocations,
-        origFilenames,
-      }),
-      errorMode: 'dismissible',
-    });
+    try {
+      const response = await ajax<Blob>('/attachment_gw/download_all/', {
+        method: 'POST',
+        body: keysToLowerCase({
+          attachmentLocations,
+          origFilenames,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/octet-stream',
+        },
+      });
+
+      if (response.status === Http.OK) {
+        downloadFile('attachments.zip', response.data);
+      }
+    } catch (error) {
+      console.error('Attachment archive download failed', error);
+    }
   };
 
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
@@ -132,7 +146,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.Info
-                disabled={fetchedCount.current !== records.length}
+                disabled={fetchedCount.current !== records.length || records.length <= 1}
                 onClick={handleDownloadAllAttachments}
               >
                 {attachmentsText.downloadAll()}

@@ -310,57 +310,52 @@ def proxy(request):
 @never_cache
 def download_all(request):
     """
-    Download all attachments
+    Download all attachments from a list of attachment locations and put them into a zip file.
     """
     try:
         r = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
-    logger.info('Downloading attachments for %s', r)
-
-    user = request.specify_user
-    collection = request.specify_collection
-
     attachmentLocations = r['attachmentlocations']
-    origFilenames = r['origfilenames']
-    # collection = r['collection']
+    origFileNames = r['origfilenames']
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
 
-    def do_export():
-        try:
-            make_attachment_zip(attachmentLocations, origFilenames, path)
-        except Exception as e:
-            tb = traceback.format_exc()
-            logger.error('make_attachment_zip failed: %s', tb)
-            Message.objects.create(user=user, content=json.dumps({
-                'type': 'attachment-archive-failed',
-                'exception': str(e),
-                'traceback': tb if settings.DEBUG else None,
-            }))
-        else:
-            Message.objects.create(user=user, content=json.dumps({
-                'type': 'attachment-archive-complete',
-                'file': filename
-            }))
+    make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
 
-    # # Send zip as a notification? It may be possible to automatically send it as a download? Maybe not a good idea if server is under load.
-    # # Or stream the zip file back to the client with StreamingHttpResponse
+    def file_iterator(file_path, chunk_size=512 * 1024):
+        with open(file_path, 'rb') as f:
+            while chunk := f.read(chunk_size):
+                yield chunk
+        os.remove(file_path)
 
-    thread = Thread(target=do_export)
-    thread.daemon = True
-    thread.start()
-    return HttpResponse('OK', content_type='text/plain')
+    response = StreamingHttpResponse(
+        file_iterator(path),
+        content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
 
-def make_attachment_zip(attachmentLocations, origFilenames, output_file):
+def make_attachment_zip(attachmentLocations, origFileNames, collection, output_file):
     output_dir = mkdtemp()
     try:
-        for attachmentLocation in attachmentLocations:
-            response = requests.get(server_urls['read'] + '?' + f'coll=Paleo&type=O&filename={attachmentLocation}')
+        for i, attachmentLocation in enumerate(attachmentLocations):
+            data = {
+                'filename': attachmentLocation,
+                'coll': collection,
+                'type': 'O',
+                'token': generate_token(get_timestamp(), attachmentLocation)
+            }
+            response = requests.get(server_urls['read'], params=data)
             if response.status_code == 200:
-                with open(os.path.join(output_dir, attachmentLocation), 'wb') as f:
+                downloadFileName = origFileNames[i]
+                if os.path.exists(os.path.join(output_dir, downloadFileName)):
+                    downloadOrigName = os.path.splitext(downloadFileName)[0]
+                    downloadName = os.path.splitext(attachmentLocation)[0]
+                    downloadExtension = os.path.splitext(downloadFileName)[1]
+                    downloadFileName = f'{downloadOrigName}_{downloadName}{downloadExtension}'
+                with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
                     f.write(response.content)
         
         basename = re.sub(r'\.zip$', '', output_file)

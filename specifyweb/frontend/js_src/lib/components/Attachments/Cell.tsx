@@ -47,7 +47,7 @@ export function AttachmentCell({
     [attachment]
   );
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
+    React.useCallback(async () => fetchOriginalUrl(serialized as SerializedResource<Attachment>), [serialized]),
     false
   );
 
