@@ -542,7 +542,7 @@ export function getMappingLineData({
           .filter((field) => {
             let isIncluded = true;
 
-            const disciplineType = getSystemInfo().discipline_type.toLowerCase()
+            const disciplineType = getSystemInfo().discipline_type?.toLowerCase()
             const geoPaleoDisciplines= ['geology', 'invertpaleo', 'vertpaleo', 'paleobotany']
             if (
               field.name === 'age' &&
