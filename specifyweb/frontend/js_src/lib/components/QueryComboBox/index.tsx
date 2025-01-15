@@ -51,8 +51,8 @@ import {
 import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
-import { useTypeSearch } from './useTypeSearch';
 import { TreeDefinitionContext } from './useTreeData';
+import { useTypeSearch } from './useTypeSearch';
 
 /*
  * REFACTOR: split this component
@@ -365,7 +365,7 @@ export function QueryComboBox({
       resource,
       treeData,
       fetchedTreeDefinition,
-      parentTreeDefinition
+      parentTreeDefinition,
     ]
   );
 
@@ -389,83 +389,49 @@ export function QueryComboBox({
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
-      <AutoComplete<string>
-        aria-label={undefined}
-        disabled={
-          !isLoaded ||
-          isReadOnly ||
-          formType === 'formTable' ||
-          typeSearch === undefined ||
-          /**
-           * Don't disable the input if it is currently focused
-           * Fixes https://github.com/specify/specify7/issues/2142
-           */
-          (formatted === undefined &&
-            document.activeElement !== inputRef.current)
-        }
-        filterItems={false}
-        forwardRef={validationRef}
-        inputProps={{
-          id,
-          required: isRequired,
-          title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
-          ...getValidationAttributes(parser),
-          type: 'text',
-          [titlePosition]: 'top',
-        }}
-        pendingValueRef={pendingValueRef}
-        source={fetchSource}
-        value={
-          formatted?.label ??
-          formattedRef.current?.formatted ??
-          commonText.loading()
-        }
-        onChange={({ data, label }): void => {
-          formattedRef.current = {
-            value: data,
-            formatted: localized(label.toString()),
-          };
-          updateValue(data);
-        }}
-        onCleared={(): void => updateValue('')}
-        onNewValue={
-          formType !== 'formTable' && canAdd
-            ? (): void =>
-                state.type === 'AddResourceState'
-                  ? setState({ type: 'MainState' })
-                  : setState({
-                      type: 'AddResourceState',
-                      resource: pendingValueToResource(
-                        field,
-                        typeSearch,
-                        pendingValueRef.current
-                      ),
-                    })
-            : undefined
-        }
-      />
-      <span className="contents print:hidden">
-        {formType === 'formTable' ? undefined : isReadOnly ? (
-          formatted?.resource === undefined ||
-          hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
-            viewButton
-          ) : undefined
-        ) : (
-          <>
-            {hasEditButton && (
-              <DataEntry.Edit
-                aria-pressed={state.type === 'ViewResourceState'}
-                disabled={
-                  formatted?.resource === undefined ||
-                  collectionRelationships === undefined
-                }
-                onClick={(): void => handleOpenRelated(false)}
-              />
-            )}
-            {canAdd && hasNewButton ? (
-              <DataEntry.Add
-                aria-pressed={state.type === 'AddResourceState'}
-                onClick={(): void =>
+        <AutoComplete<string>
+          aria-label={undefined}
+          disabled={
+            !isLoaded ||
+            isReadOnly ||
+            formType === 'formTable' ||
+            typeSearch === undefined ||
+            /**
+             * Don't disable the input if it is currently focused
+             * Fixes https://github.com/specify/specify7/issues/2142
+             */
+            (formatted === undefined &&
+              document.activeElement !== inputRef.current)
+          }
+          filterItems={false}
+          forwardRef={validationRef}
+          inputProps={{
+            id,
+            required: isRequired,
+            title:
+              typeof typeSearch === 'object' ? typeSearch.title : undefined,
+            ...getValidationAttributes(parser),
+            type: 'text',
+            [titlePosition]: 'top',
+          }}
+          pendingValueRef={pendingValueRef}
+          source={fetchSource}
+          value={
+            formatted?.label ??
+            formattedRef.current?.formatted ??
+            commonText.loading()
+          }
+          onChange={({ data, label }): void => {
+            formattedRef.current = {
+              value: data,
+              formatted: localized(label.toString()),
+            };
+            updateValue(data);
+          }}
+          onCleared={(): void => updateValue('')}
+          onNewValue={
+            formType !== 'formTable' && canAdd
+              ? (): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
                     : setState({
@@ -476,163 +442,201 @@ export function QueryComboBox({
                           pendingValueRef.current
                         ),
                       })
-                }
-              />
-            ) : undefined}
-            {hasCloneButton && (
-              <DataEntry.Clone
-                disabled={formatted?.resource === undefined}
-                onClick={(): void =>
-                  state.type === 'AddResourceState'
-                    ? setState({ type: 'MainState' })
-                    : loading(
-                        formatted!.resource!.clone(true).then((resource) =>
-                          setState({
-                            type: 'AddResourceState',
-                            resource,
-                          })
-                        )
-                      )
-                }
-              />
-            )}
-            {hasSearchButton && !field.isDependent() && (
-              <DataEntry.Search
-                aria-pressed={state.type === 'SearchState'}
-                onClick={
-                  isLoaded && typeof resource === 'object'
-                    ? (): void =>
-                        setState({
-                          type: 'SearchState',
-                          extraConditions: filterArray(
-                            getQueryComboBoxConditions({
-                              resource,
-                              fieldName: field.name,
-                              collectionRelationships:
-                                typeof collectionRelationships === 'object'
-                                  ? collectionRelationships
-                                  : undefined,
-                              treeData:
-                                typeof treeData === 'object'
-                                  ? treeData
-                                  : undefined,
-                              relatedTable,
-                              subViewRelationship,
-                              treeDefinition,
-                            })
-                              .map(serializeResource)
-                              .map(({ fieldName, startValue }) =>
-                                fieldName === 'rankId'
-                                  ? {
-                                      field: 'rankId',
-                                      isNot: false,
-                                      operation: 'less',
-                                      value: startValue,
-                                    }
-                                  : fieldName === 'nodeNumber'
-                                    ? {
-                                        field: 'nodeNumber',
-                                        operation: 'between',
-                                        isNot: true,
-                                        value: startValue,
-                                      }
-                                    : fieldName === 'collectionRelTypeId'
-                                      ? {
-                                          field: 'id',
-                                          operation: 'in',
-                                          isNot: false,
-                                          value: startValue,
-                                        }
-                                      : f.error(`extended filter not created`, {
-                                          fieldName,
-                                          startValue,
-                                        })
-                              )
-                          ),
-                        })
-                    : undefined
-                }
-              />
-            )}
-            {hasViewButton && hasTablePermission(relatedTable.name, 'read')
-              ? viewButton
-              : undefined}
-          </>
-        )}
-      </span>
-      {state.type === 'AccessDeniedState' && (
-        <Dialog
-          buttons={commonText.close()}
-          header={userText.collectionAccessDenied()}
-          onClose={(): void => setState({ type: 'MainState' })}
-        >
-          {userText.collectionAccessDeniedDescription({
-            collectionName: state.collectionName,
-          })}
-        </Dialog>
-      )}
-      {typeof formatted?.resource === 'object' &&
-      state.type === 'ViewResourceState' ? (
-        <ReadOnlyContext.Provider value={state.isReadOnly}>
-          <ResourceView
-            dialog="nonModal"
-            isDependent={field.isDependent()}
-            isSubForm={false}
-            resource={formatted.resource}
-            onAdd={undefined}
-            onClose={(): void => {
-              setState({ type: 'MainState' });
-            }}
-            onDeleted={(): void => {
-              resource?.set(field.name, null as never);
-              setState({ type: 'MainState' });
-            }}
-            onSaved={undefined}
-            onSaving={
-              field.isDependent()
-                ? f.never
-                : (): void => setState({ type: 'MainState' })
-            }
-          />
-        </ReadOnlyContext.Provider>
-      ) : state.type === 'AddResourceState' ? (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onDeleted={undefined}
-          onSaved={(): void => {
-            resource?.set(field.name, state.resource as never);
-            setState({ type: 'MainState' });
-          }}
-          onSaving={
-            field.isDependent()
-              ? (): false => {
-                  resource?.set(field.name, state.resource as never);
-                  setState({ type: 'MainState' });
-                  return false;
-                }
               : undefined
           }
         />
-      ) : undefined}
-      {state.type === 'SearchState' ? (
-        <SearchDialog
-          extraFilters={state.extraConditions}
-          forceCollection={forceCollection ?? relatedCollectionId}
-          multiple={false}
-          searchView={searchView}
-          table={relatedTable}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={([selectedResource]): void =>
-            // @ts-expect-error Need to refactor this to use generics
-            void resource.set(field.name, selectedResource)
-          }
-        />
-      ) : undefined}
+        <span className="contents print:hidden">
+          {formType === 'formTable' ? undefined : isReadOnly ? (
+            formatted?.resource === undefined ||
+            hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
+              viewButton
+            ) : undefined
+          ) : (
+            <>
+              {hasEditButton && (
+                <DataEntry.Edit
+                  aria-pressed={state.type === 'ViewResourceState'}
+                  disabled={
+                    formatted?.resource === undefined ||
+                    collectionRelationships === undefined
+                  }
+                  onClick={(): void => handleOpenRelated(false)}
+                />
+              )}
+              {canAdd && hasNewButton ? (
+                <DataEntry.Add
+                  aria-pressed={state.type === 'AddResourceState'}
+                  onClick={(): void =>
+                    state.type === 'AddResourceState'
+                      ? setState({ type: 'MainState' })
+                      : setState({
+                          type: 'AddResourceState',
+                          resource: pendingValueToResource(
+                            field,
+                            typeSearch,
+                            pendingValueRef.current
+                          ),
+                        })
+                  }
+                />
+              ) : undefined}
+              {hasCloneButton && (
+                <DataEntry.Clone
+                  disabled={formatted?.resource === undefined}
+                  onClick={(): void =>
+                    state.type === 'AddResourceState'
+                      ? setState({ type: 'MainState' })
+                      : loading(
+                          formatted!.resource!.clone(true).then((resource) =>
+                            setState({
+                              type: 'AddResourceState',
+                              resource,
+                            })
+                          )
+                        )
+                  }
+                />
+              )}
+              {hasSearchButton && !field.isDependent() && (
+                <DataEntry.Search
+                  aria-pressed={state.type === 'SearchState'}
+                  onClick={
+                    isLoaded && typeof resource === 'object'
+                      ? (): void =>
+                          setState({
+                            type: 'SearchState',
+                            extraConditions: filterArray(
+                              getQueryComboBoxConditions({
+                                resource,
+                                fieldName: field.name,
+                                collectionRelationships:
+                                  typeof collectionRelationships === 'object'
+                                    ? collectionRelationships
+                                    : undefined,
+                                treeData:
+                                  typeof treeData === 'object'
+                                    ? treeData
+                                    : undefined,
+                                relatedTable,
+                                subViewRelationship,
+                                treeDefinition,
+                              })
+                                .map(serializeResource)
+                                .map(({ fieldName, startValue }) =>
+                                  fieldName === 'rankId'
+                                    ? {
+                                        field: 'rankId',
+                                        isNot: false,
+                                        operation: 'less',
+                                        value: startValue,
+                                      }
+                                    : fieldName === 'nodeNumber'
+                                      ? {
+                                          field: 'nodeNumber',
+                                          operation: 'between',
+                                          isNot: true,
+                                          value: startValue,
+                                        }
+                                      : fieldName === 'collectionRelTypeId'
+                                        ? {
+                                            field: 'id',
+                                            operation: 'in',
+                                            isNot: false,
+                                            value: startValue,
+                                          }
+                                        : f.error(
+                                            `extended filter not created`,
+                                            {
+                                              fieldName,
+                                              startValue,
+                                            }
+                                          )
+                                )
+                            ),
+                          })
+                      : undefined
+                  }
+                />
+              )}
+              {hasViewButton && hasTablePermission(relatedTable.name, 'read')
+                ? viewButton
+                : undefined}
+            </>
+          )}
+        </span>
+        {state.type === 'AccessDeniedState' && (
+          <Dialog
+            buttons={commonText.close()}
+            header={userText.collectionAccessDenied()}
+            onClose={(): void => setState({ type: 'MainState' })}
+          >
+            {userText.collectionAccessDeniedDescription({
+              collectionName: state.collectionName,
+            })}
+          </Dialog>
+        )}
+        {typeof formatted?.resource === 'object' &&
+        state.type === 'ViewResourceState' ? (
+          <ReadOnlyContext.Provider value={state.isReadOnly}>
+            <ResourceView
+              dialog="nonModal"
+              isDependent={field.isDependent()}
+              isSubForm={false}
+              resource={formatted.resource}
+              onAdd={undefined}
+              onClose={(): void => {
+                setState({ type: 'MainState' });
+              }}
+              onDeleted={(): void => {
+                resource?.set(field.name, null as never);
+                setState({ type: 'MainState' });
+              }}
+              onSaved={undefined}
+              onSaving={
+                field.isDependent()
+                  ? f.never
+                  : (): void => setState({ type: 'MainState' })
+              }
+            />
+          </ReadOnlyContext.Provider>
+        ) : state.type === 'AddResourceState' ? (
+          <ResourceView
+            dialog="nonModal"
+            isDependent={false}
+            isSubForm={false}
+            resource={state.resource}
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'MainState' })}
+            onDeleted={undefined}
+            onSaved={(): void => {
+              resource?.set(field.name, state.resource as never);
+              setState({ type: 'MainState' });
+            }}
+            onSaving={
+              field.isDependent()
+                ? (): false => {
+                    resource?.set(field.name, state.resource as never);
+                    setState({ type: 'MainState' });
+                    return false;
+                  }
+                : undefined
+            }
+          />
+        ) : undefined}
+        {state.type === 'SearchState' ? (
+          <SearchDialog
+            extraFilters={state.extraConditions}
+            forceCollection={forceCollection ?? relatedCollectionId}
+            multiple={false}
+            searchView={searchView}
+            table={relatedTable}
+            onClose={(): void => setState({ type: 'MainState' })}
+            onSelected={([selectedResource]): void =>
+              // @ts-expect-error Need to refactor this to use generics
+              void resource.set(field.name, selectedResource)
+            }
+          />
+        ) : undefined}
       </TreeDefinitionContext.Provider>
     </div>
   );

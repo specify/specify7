@@ -84,6 +84,7 @@ export function useTreeData(
  * Context for passing down the tree definition of a CollectionObjectType.
  * Used for filtering Taxon values by tree.
  */
-export const TreeDefinitionContext =
-  React.createContext<string | undefined>(undefined);
+export const TreeDefinitionContext = React.createContext<string | undefined>(
+  undefined
+);
 TreeDefinitionContext.displayName = 'TreeDefinitionContext';
