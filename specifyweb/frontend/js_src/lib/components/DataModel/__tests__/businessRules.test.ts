@@ -11,12 +11,7 @@ import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type {
-  CollectionObjectType,
-  Determination,
-  Taxon,
-  TaxonTreeDefItem,
-} from '../types';
+import type { CollectionObjectType, Taxon, TaxonTreeDefItem } from '../types';
 
 mockTime();
 requireContext();
@@ -92,7 +87,7 @@ describe('Collection Object business rules', () => {
           taxon: getResourceApiUrl('Taxon', otherTaxonId),
           preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
           isCurrent: true,
-        } as SerializedResource<Determination>,
+        },
       ],
       resource_uri: collectionObjectUrl,
       description: 'Base collection object',

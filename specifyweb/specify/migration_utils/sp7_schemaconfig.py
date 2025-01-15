@@ -72,3 +72,11 @@ MIGRATION_0012_FIELDS = {
 MIGRATION_0013_FIELDS = {
     'CollectionObjectGroup': ['parentCog']
 }
+
+MIGRATION_0020_FIELDS = {
+    'PaleoContext': ['tectonicUnit'],
+}
+
+MIGRATION_0021_FIELDS = {
+    'CollectionObject': ['relativeAges', 'absoluteAges', 'cojo'],
+}
