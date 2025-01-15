@@ -540,6 +540,8 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     # Recalculate the total quantity returned and resolved for the loan preparation
     # based on the modified loan return preparation data.
     for loan_prep_idx in range(len(updated_interaction_data["loanpreparations"])):
+        if type(updated_interaction_data["loanpreparations"]) is str:
+            continue
         loan_return_data = updated_interaction_data["loanpreparations"][loan_prep_idx]["loanreturnpreparations"]
         total_quantity_returned = sum(
             [loan_return["quantityreturned"] for loan_return in loan_return_data])
