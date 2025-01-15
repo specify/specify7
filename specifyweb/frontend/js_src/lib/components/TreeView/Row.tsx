@@ -87,11 +87,15 @@ export function TreeRow<SCHEMA extends AnyTree>({
     void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
       const sortedRows = Array.from(fetchedRows).sort(
         sortFunction<Row, number | string>(
-          orderByField === 'rankId' ? (row) => row.rankId :
-          orderByField === 'nodeNumber' ? (row) => row.nodeNumber :
-          orderByField === 'name' ? (row) => row.name :
-          orderByField === 'fullName' ? (row) => row.fullName :
-          () => 0 
+          orderByField === 'rankId'
+            ? (row) => row.rankId
+            : orderByField === 'nodeNumber'
+              ? (row) => row.nodeNumber
+              : orderByField === 'name'
+                ? (row) => row.name
+                : orderByField === 'fullName'
+                  ? (row) => row.fullName
+                  : () => 0
         )
       );
       destructorCalled ? undefined : setRows(sortedRows);
