@@ -138,4 +138,4 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
 
     def op_age_period(self, field, value, query, is_strict=False):
         time_period_name = value
-        return field.in_(search_co_ids_in_time_period(time_period_name, require_full_overlap=False))
+        return field.in_(search_co_ids_in_time_period(time_period_name, require_full_overlap=is_strict))
