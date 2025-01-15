@@ -144,8 +144,6 @@ export function getQueryComboBoxConditions({
   }
 
   if (
-    resource.specifyTable === tables.Determination &&
-    fieldName === 'fullName' &&
     treeDefinition !== undefined
   ) {
     fields.push(

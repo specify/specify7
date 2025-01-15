@@ -52,6 +52,7 @@ import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { TreeDefinitionContext } from './useTreeData';
 
 /*
  * REFACTOR: split this component
@@ -263,7 +264,7 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
-  const [treeDefinition] = useAsyncState(
+  const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(
       async () =>
         resource?.specifyTable === tables.Determination &&
@@ -282,6 +283,10 @@ export function QueryComboBox({
     ),
     false
   );
+
+  // Tree Definition passed by a parent QCBX in the component tree
+  const parentTreeDefinition = React.useContext(TreeDefinitionContext);
+  const treeDefinition = fetchedTreeDefinition ?? parentTreeDefinition;
 
   // FEATURE: use main table field if type search is not defined
   const fetchSource = React.useCallback(
@@ -359,7 +364,8 @@ export function QueryComboBox({
       relatedCollectionId,
       resource,
       treeData,
-      treeDefinition,
+      fetchedTreeDefinition,
+      parentTreeDefinition
     ]
   );
 
@@ -382,6 +388,7 @@ export function QueryComboBox({
   );
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
+      <TreeDefinitionContext.Provider value={treeDefinition}>
       <AutoComplete<string>
         aria-label={undefined}
         disabled={
@@ -626,6 +633,7 @@ export function QueryComboBox({
           }
         />
       ) : undefined}
+      </TreeDefinitionContext.Provider>
     </div>
   );
 }
