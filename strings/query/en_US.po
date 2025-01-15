@@ -189,12 +189,12 @@ msgstr "Create {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Save As"
 
-#: components/WbPlanView/navigator.ts:431
+#: components/WbPlanView/navigator.ts:432
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(any rank)"
 
-#: components/WbPlanView/navigator.ts:383
+#: components/WbPlanView/navigator.ts:384
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr "(any tree)"
@@ -247,12 +247,12 @@ msgstr "Negate"
 msgid "showButtonDescription"
 msgstr "Show in results"
 
-#: components/WbPlanView/navigator.ts:489
+#: components/WbPlanView/navigator.ts:490
 #. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(aggregated)"
 
-#: components/WbPlanView/navigator.ts:490
+#: components/WbPlanView/navigator.ts:491
 #. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(formatted)"

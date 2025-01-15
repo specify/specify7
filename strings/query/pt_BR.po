@@ -224,13 +224,13 @@ msgstr ""
 msgid "saveAs"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:431
+#: components/WbPlanView/navigator.ts:432
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyRank"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:383
+#: components/WbPlanView/navigator.ts:384
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyTree"
@@ -291,13 +291,13 @@ msgstr ""
 msgid "showButtonDescription"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:489
+#: components/WbPlanView/navigator.ts:490
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "aggregatedInline"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:490
+#: components/WbPlanView/navigator.ts:491
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "formattedInline"
