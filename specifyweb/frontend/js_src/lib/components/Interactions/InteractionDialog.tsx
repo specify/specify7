@@ -280,32 +280,6 @@ export function InteractionDialog({
             </details>
             <InteractionTextEntry
               label={interactionsText.byEnteringNumbers({
-                fieldName: `${tables.CollectionObjectGroup.label} ${tables.CollectionObjectGroup.strictGetField('name').label}`,
-              })}
-              searchField={tables.CollectionObjectGroup.strictGetLiteralField(
-                'name'
-              )}
-              onSubmit={(parsed, handleMissing): void => {
-                if (parsed === undefined) return;
-                loading(
-                  (parsed.length === 0
-                    ? Promise.resolve([])
-                    : getPrepsForCoOrCog(
-                        'CollectionObjectGroup',
-                        'name',
-                        parsed,
-                        isLoan
-                      )
-                  ).then((data) => {
-                    const results = availablePrepsReady(parsed, data, 12);
-                    if (results !== undefined)
-                      handleMissing(results.missing, results.unavailable);
-                  })
-                );
-              }}
-            />
-            <InteractionTextEntry
-              label={interactionsText.byEnteringNumbers({
                 fieldName: searchField?.label ?? '',
               })}
               searchField={searchField}
