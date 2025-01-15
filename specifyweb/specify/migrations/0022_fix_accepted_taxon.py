@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0019_remove_parentCog'),
+        ('specify', '0021_update_hidden_geo_tables'),
     ]
 
     operations = [
