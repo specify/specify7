@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
         Collectionobject = apps.get_model('specify', 'Collectionobject')
         Collectionobject.objects.all().update(collectionobjecttype=None)
 
-        # Set all the collectionobject records of the collection
-        # NOTE: Do we want to do this?
-        Collectionobject.objects.update(collectionobjecttype=None)
+        # Set all the collection records to have a null collectionobjecttype
+        Collection = apps.get_model('specify', 'Collection')
+        Collection.objects.all().update(collectionobjecttype=None)
 
         # Delete all CollectionObjectType records
         Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
