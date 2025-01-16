@@ -129,13 +129,13 @@ MIGRATION_0023_FIELDS = {
     'tectonicunit': [
         ('guid', 'GUID', 'GUID'),
         ('yesno1', 'YesNo1', 'YesNo1'),
-        ('tectonicUnitId', 'Tectonic Unit Id', 'Tectonic Unit Id'),
+        ('tectonicUnitId', 'Tectonic Unit ID', 'Tectonic Unit Id'),
         ('yesno2', 'YesNo2', 'YesNo2'),
     ],
 
     'tectonicunittreedefitem': [
         ('createdbyagent', 'Created By Agent', 'Created By Agent'),
-        ('rankId', 'Rank Id', 'Rank Id'),
+        ('rankId', 'Rank ID', 'Rank Id'),
     ]
 }
 
@@ -150,8 +150,6 @@ MIGRATION_0023_FIELDS_BIS = {
 
     'absoluteage': ['collectionDate', 'absoluteAgeId', 'date1', 'date2', 'yesno1', 'yesno2', 'agent1', 'number1', 'number2', 'collectionObject', 'absoluteAgeCitations', 'text1', 'text2'],
 
-    'paleocontext': ['yesNo1', 'text2', 'discipline', 'yesNo4', 'text2', 'yesNo2', 'number1', 'text3', 'number4', 'number5', 'yesNo3', 'text1', 'text5', 'number3', 'collectionObjects', 'text4', 'number2', 'chronosStratEnd', 'yesNo5'],
-
     'relativeage': ['number2', 'yesno2', 'relativeAgeId', 'relativeAgePeriod', 'text1', 'agent1', 'collectionDate', 'text2', 'agent2', 'date1', 'date2', 'collectionObject', 'relativeAgeCitations', 'number1', 'yesno1'],
 
     'collectionobject': ['collectionObjectType', 'relativeAges', 'absoluteAges', 'cojo'],
@@ -160,7 +158,7 @@ MIGRATION_0023_FIELDS_BIS = {
 
     'relativeagecitation': ['absoluteAgeCitationId', 'collectionMember'],
 
-    'tectonicunit': ['collectionMember', 'nodeNumber', 'yesno1', 'tectonicUnitId', 'number1', 'yesno2', 'number2', 'reankId', 'text1'],
+    'tectonicunit': ['collectionMember', 'nodeNumber', 'yesno1', 'tectonicUnitId', 'number1', 'yesno2', 'number2', 'rankId', 'text1'],
 
     'tectonicunittreedefitem': ['children', 'rankId', 'parent', 'treeDef', 'treeEntries', 'tectonicUnitTreeDefItemId'],
 
