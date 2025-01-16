@@ -81,9 +81,27 @@ export function PrepDialogRow({
           </Link.NewTab>
         </td>
         <td>
-          <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
-            {localized(preparation.taxon)}
-          </Link.NewTab>
+          {preparation.taxon !== undefined &&
+          preparation.taxonId !== undefined ? (
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {localized(preparation.taxon)}
+            </Link.NewTab>
+          ) : undefined}
+        </td>
+        <td>
+          {preparation.cogName !== undefined &&
+          preparation.cogId !== undefined ? (
+            <Link.NewTab
+              href={getResourceViewUrl(
+                'CollectionObjectGroup',
+                preparation.cogId
+              )}
+            >
+              {localized(preparation.cogName)}
+            </Link.NewTab>
+          ) : undefined}
         </td>
         <td>{preparation.prepType}</td>
         <td>

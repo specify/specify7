@@ -1,11 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -28,7 +27,6 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type {
   AnyInteractionPreparation,
   AnySchema,
-  SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -39,7 +37,6 @@ import type {
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
-  RecordSet,
 } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
@@ -50,10 +47,10 @@ import type {
   PreparationData,
   PreparationRow,
 } from './helpers';
-import { interactionsWithPrepTables } from './helpers';
 import {
-  getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
+  getPrepsForCoOrCog,
+  interactionsWithPrepTables,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
 
@@ -74,20 +71,15 @@ export function InteractionDialog({
   const searchField = itemTable.strictGetLiteralField(
     itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
   );
-  const { parser, split, attributes } = useParser(searchField);
 
   const [state, setState] = React.useState<
     | State<
-        'InvalidState',
-        {
-          readonly invalid: RA<string>;
-        }
-      >
-    | State<
         'MissingState',
         {
+          // No preparations found for these records
           readonly missing: RA<string>;
-          readonly unavailableBis: RA<string>;
+          // No preparations for at least one type of prep for these records
+          readonly unavailable: RA<string>;
         }
       >
     | State<
@@ -100,88 +92,43 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const { validationRef, inputRef, setValidation } =
-    useValidation<HTMLTextAreaElement>();
-  const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
-
   const loading = React.useContext(LoadingContext);
 
   const isLoan = actionTable.name === 'Loan';
 
-  function handleProceed(
-    recordSet: SerializedResource<RecordSet> | undefined
-  ): void {
-    const catalogNumbers = handleParse();
-    if (catalogNumbers === undefined) return undefined;
-    if (isLoanReturn)
-      loading(
-        ajax<readonly [preprsReturned: number, loansClosed: number]>(
-          '/interactions/loan_return_all/',
-          {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData({
-              recordSetId: recordSet?.id ?? undefined,
-              loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
-            }),
-            errorMode: 'dismissible',
-          }
-        ).then(({ data }) =>
-          setState({
-            type: 'LoanReturnDoneState',
-            result: data[0],
-          })
-        )
-      );
-    else if (typeof recordSet === 'object')
-      loading(
-        getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
-          availablePrepsReady(undefined, data)
-        )
-      );
-    else
-      loading(
-        (catalogNumbers.length === 0
-          ? Promise.resolve([])
-          : getPrepsAvailableForLoanCoIds(
-              'CatalogNumber',
-              catalogNumbers,
-              isLoan
-            )
-        ).then((data) => availablePrepsReady(catalogNumbers, data))
-      );
-  }
-
   const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
 
   function availablePrepsReady(
-    entries: RA<string> | undefined,
-    prepsData: RA<PreparationRow>
+    parsed: RA<string> | undefined,
+    prepsData: RA<PreparationRow>,
+    entryIndex: number = 0
   ) {
-    const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
-    const missing =
-      typeof entries === 'object'
-        ? entries.filter(
-            (entry) => !catalogNumbers.some((data) => data.includes(entry))
-          )
-        : [];
+    const prepEntries = prepsData.map((prepData) => prepData[entryIndex]);
+
+    const missing = Array.isArray(parsed)
+      ? parsed.filter(
+          (entry) =>
+            !prepEntries.some((data) => data?.toString().includes(entry))
+        )
+      : [];
     const unavailablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) === 0
     );
-    const availablePrep = prepsData.filter(
+    const availablePreps = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) > 0
     );
     const unavailable =
-      typeof entries === 'object'
-        ? entries.filter((entry) =>
+      typeof parsed === 'object'
+        ? parsed.filter((entry) =>
             unavailablePrep.some((item) => entry === item[0])
           )
         : [];
 
     if (missing.length > 0 || unavailable.length > 0) {
-      setState({ type: 'MissingState', missing, unavailableBis: unavailable });
-      setPrepsData(availablePrep);
-    } else showPrepSelectDlg(availablePrep);
+      setState({ type: 'MissingState', missing, unavailable });
+      setPrepsData(availablePreps);
+      return { missing, unavailable };
+    } else return void showPrepSelectDlg(availablePreps);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -190,8 +137,8 @@ export function InteractionDialog({
       entries: prepsData.map((prepData) => ({
         catalogNumber: prepData[0],
         collectionObjectId: prepData[1],
-        taxon: prepData[2],
-        taxonId: prepData[3],
+        taxon: prepData[2] ?? undefined,
+        taxonId: prepData[3] ?? undefined,
         preparationId: prepData[4],
         prepType: prepData[5],
         countAmount: prepData[6],
@@ -199,36 +146,11 @@ export function InteractionDialog({
         gifted: f.parseInt(prepData[8] ?? undefined) ?? 0,
         exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
         available: f.parseInt(prepData[10] ?? undefined) ?? 0,
+        cogId: prepData[11] ?? undefined,
+        cogName: prepData[12] ?? undefined,
+        isConsolidated: prepData[13] === 1,
       })),
     });
-
-  function handleParse(): RA<string> | undefined {
-    const parseResults = split(catalogNumbers).map((value) =>
-      parseValue(parser, inputRef.current ?? undefined, value)
-    );
-    const errorMessages = parseResults
-      .filter((result): result is InvalidParseResult => !result.isValid)
-      .map(({ reason, value }) => `${reason} (${value})`);
-    if (errorMessages.length > 0) {
-      setValidation(errorMessages);
-      setState({
-        type: 'InvalidState',
-        invalid: errorMessages,
-      });
-      return undefined;
-    }
-
-    const parsed = f.unique(
-      (parseResults as RA<ValidParseResult>)
-        .filter(({ parsed }) => parsed !== null)
-        .map(({ parsed }) => (parsed as number | string).toString())
-        .sort(sortFunction(f.id))
-    );
-    setCatalogNumbers(parsed.join('\n'));
-
-    setState({ type: 'MainState' });
-    return parsed;
-  }
 
   const addInteractionResource = (): void => {
     itemCollection?.add(
@@ -238,9 +160,9 @@ export function InteractionDialog({
     );
   };
 
-  const collectionObjectGroupResourceTableId = React.useMemo(
-    () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
-    []
+  const recordSetTables = React.useMemo(
+    () => [itemTable, tables.CollectionObjectGroup],
+    [itemTable]
   );
 
   return state.type === 'LoanReturnDoneState' ? (
@@ -298,12 +220,15 @@ export function InteractionDialog({
   ) : (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
-        collectionObjectGroupResourceTableId={
-          collectionObjectGroupResourceTableId
-        }
-        table={itemTable}
+        tables={recordSetTables}
         onClose={handleClose}
-        onSelect={handleProceed}
+        onSelect={(recordSet): void =>
+          loading(
+            getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
+              availablePrepsReady(undefined, data)
+            )
+          )
+        }
       >
         {({ children, totalCount }): JSX.Element => (
           <Dialog
@@ -353,67 +278,165 @@ export function InteractionDialog({
               </summary>
               {children}
             </details>
-            <details>
-              <summary>
-                {interactionsText.byEnteringNumbers({
-                  fieldName: searchField?.label ?? '',
-                })}
-              </summary>
-              <div className="flex flex-col gap-2">
-                <AutoGrowTextArea
-                  forwardRef={validationRef}
-                  spellCheck={false}
-                  value={catalogNumbers}
-                  onValueChange={setCatalogNumbers}
-                  {...attributes}
-                />
-                <div>
-                  <Button.Info
-                    disabled={catalogNumbers.length === 0}
-                    onClick={(): void => handleProceed(undefined)}
-                  >
-                    {state.type === 'MissingState' ||
-                    state.type === 'InvalidState'
-                      ? commonText.update()
-                      : commonText.next()}
-                  </Button.Info>
-                </div>
-                {state.type === 'InvalidState' && (
-                  <>
-                    {interactionsText.problemsFound()}
-                    {state.invalid.map((error, index) => (
-                      <p key={index}>{error}</p>
-                    ))}
-                  </>
-                )}
-                {state.type === 'MissingState' && (
-                  <>
-                    {state.missing.length > 0 && (
-                      <>
-                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                        {state.missing.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                    {state.unavailableBis.length > 0 && (
-                      <>
-                        <H3>
-                          {interactionsText.preparationsNotAvailableFor()}
-                        </H3>
-                        {state.unavailableBis.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </details>
+            <InteractionTextEntry
+              label={interactionsText.byEnteringNumbers({
+                fieldName: searchField?.label ?? '',
+              })}
+              searchField={searchField}
+              onSubmit={(parsed, handleMissing): void => {
+                if (parsed === undefined) return;
+                loading(
+                  (parsed.length === 0
+                    ? Promise.resolve([])
+                    : getPrepsForCoOrCog(
+                        'CollectionObject',
+                        'catalogNumber',
+                        parsed,
+                        isLoan
+                      )
+                  ).then((data) => {
+                    const results = availablePrepsReady(parsed, data);
+                    if (results !== undefined)
+                      handleMissing(results.missing, results.unavailable);
+                  })
+                );
+              }}
+            />
           </Dialog>
         )}
       </RecordSetsDialog>
     </ReadOnlyContext.Provider>
+  );
+}
+
+function InteractionTextEntry({
+  label,
+  searchField,
+  onSubmit,
+}: {
+  readonly label: LocalizedString;
+  readonly searchField: LiteralField;
+  readonly onSubmit: (
+    parsed: RA<string> | undefined,
+    handleMissing: (missing: RA<string>, unavailable: RA<string>) => void
+  ) => void;
+}): JSX.Element {
+  const [input, setInput] = React.useState<string>('');
+  const { validationRef, inputRef, setValidation } =
+    useValidation<HTMLTextAreaElement>();
+
+  const { parser, split, attributes } = useParser(searchField);
+
+  const [state, setState] = React.useState<
+    | State<
+        'InvalidState',
+        {
+          readonly invalid: RA<string>;
+        }
+      >
+    | State<
+        'MissingState',
+        {
+          // No preparations found for these records
+          readonly missing: RA<string>;
+          // No preparations for at least one type of prep for these records
+          readonly unavailable: RA<string>;
+        }
+      >
+    | State<'MainState'>
+  >({
+    type: 'MainState',
+  });
+
+  function handleParse(input: string): RA<string> | undefined {
+    const parseResults = split(input).map((value) =>
+      parseValue(parser, inputRef.current ?? undefined, value)
+    );
+    const errorMessages = parseResults
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
+    if (errorMessages.length > 0) {
+      setValidation(errorMessages);
+      setState({
+        type: 'InvalidState',
+        invalid: errorMessages,
+      });
+      return undefined;
+    }
+
+    const parsed = f.unique(
+      (parseResults as RA<ValidParseResult>)
+        .filter(({ parsed }) => parsed !== null)
+        .map(({ parsed }) => (parsed as number | string).toString())
+        .sort(sortFunction(f.id))
+    );
+    setInput(parsed.join('\n'));
+
+    setState({ type: 'MainState' });
+    return parsed;
+  }
+
+  return (
+    <details>
+      <summary>{label}</summary>
+      <div className="flex flex-col gap-2">
+        <AutoGrowTextArea
+          forwardRef={validationRef}
+          spellCheck={false}
+          value={input}
+          onValueChange={setInput}
+          {...attributes}
+        />
+        <div>
+          <Button.Info
+            disabled={input.length === 0}
+            onClick={(): void =>
+              onSubmit(
+                handleParse(input),
+                (missing: RA<string>, unavailable: RA<string>) =>
+                  setState({
+                    type: 'MissingState',
+                    missing,
+                    unavailable,
+                  })
+              )
+            }
+          >
+            {state.type === 'InvalidState' || state.type === 'MissingState'
+              ? commonText.update()
+              : commonText.next()}
+          </Button.Info>
+        </div>
+        {state.type === 'InvalidState' && (
+          <>
+            {interactionsText.problemsFound()}
+            {state.invalid.map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </>
+        )}
+        {state.type === 'MissingState' && (
+          <>
+            {state.missing.length > 0 && (
+              <>
+                <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                {state.missing.map((problem, index) => (
+                  <p key={index}>{problem}</p>
+                ))}
+              </>
+            )}
+            {state.unavailable.length > 0 && (
+              <>
+                <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
+                {state.unavailable.map((problem, index) => (
+                  <p key={index}>{problem}</p>
+                ))}
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </details>
   );
 }
 
@@ -444,7 +467,10 @@ function useParser(searchField: LiteralField): {
   );
 
   return React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField));
+    const parser = pluralizeParser({
+      ...resolveParser(searchField),
+      required: false,
+    });
     // Determine which delimiters are allowed
     const formatter = searchField.getUiFormatter();
     const formatted =

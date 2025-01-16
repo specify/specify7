@@ -22,6 +22,7 @@ type SystemInfo = {
   readonly institution_guid: LocalizedString;
   readonly isa_number: LocalizedString;
   readonly stats_url: string | null;
+  readonly discipline_type: string
 };
 
 let systemInfo: SystemInfo;
@@ -44,6 +45,7 @@ export const fetchContext = load<SystemInfo>(
           collection: systemInfo.collection,
           collectionGUID: systemInfo.collection_guid,
           isaNumber: systemInfo.isa_number,
+          disciplineType: systemInfo.discipline_type
         },
         /*
          * I don't know if the receiving server handles GET parameters in a
