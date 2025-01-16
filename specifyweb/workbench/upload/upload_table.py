@@ -518,6 +518,9 @@ class BoundUploadTable(NamedTuple):
 
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
+        # Like to-many relationships, remote to-one relationships can not be 
+        # directly inserted with the main base record, and instead are 
+        # uploaded with a reference to the base record 
         remoteToOneResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, [upload_table])[0]
             for fieldname, upload_table in 
