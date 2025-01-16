@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:48+0000\n"
+"PO-Revision-Date: 2025-01-16 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -191,7 +191,7 @@ msgstr "plusieurs à plusieurs"
 #: components/SchemaViewer/schemaToTsv.tsx:28
 #, fuzzy
 msgid "fieldLength"
-msgstr "Sans Table"
+msgstr "Longueur"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:74
@@ -233,7 +233,7 @@ msgstr "Défini par l'utilisateur"
 #: components/SchemaConfig/Languages.tsx:78
 #, fuzzy
 msgid "addLanguage"
-msgstr "Champs uniques"
+msgstr "Ajouter une langue"
 
 #. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:65
@@ -397,7 +397,7 @@ msgstr "Exporter les doublons"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
 #, fuzzy
 msgid "numberOfDuplicates"
-msgstr "Nombre de champs"
+msgstr "Nombre de doublons"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
