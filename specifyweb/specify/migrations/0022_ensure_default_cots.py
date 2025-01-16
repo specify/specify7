@@ -6,11 +6,14 @@ class Migration(migrations.Migration):
     def handle_default_collection_types(apps, schema_editor):
         create_default_collection_types(apps)
 
+    def revert_default_collection_types(apps, schema_editor):
+        pass
+
     dependencies = [
         ('specify', '0021_update_hidden_geo_tables'),
     ]
 
     operations = [
-        migrations.RunPython(handle_default_collection_types, atomic=True),
+        migrations.RunPython(handle_default_collection_types, revert_default_collection_types, atomic=True),
     ]
 
