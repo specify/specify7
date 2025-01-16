@@ -90,6 +90,7 @@ MIGRATION_0023_FIELDS = {
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('yesno1', 'YesNo1', 'YesNo1'),
         ],
+
     'collectionobjectgroupjoin' : [
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('isSubstrate', 'Is Substrate?', 'The Collection Object that serves as the physical base for other items within the COG. This designation is useful for COGs with shared substrates.'),
@@ -100,31 +101,38 @@ MIGRATION_0023_FIELDS = {
         ('ParentCog', 'Parent', 'Parent Collection Object Group'),
         ('yesno3', 'YesNo3', 'YesNo3'),
     ],
+
     'collectionobjectgrouptype' : [
         ('cogTypeId', 'Collection Object Group Type ID', 'Collection Object Group Type ID'),
         ('yesno3', 'YesNo3', 'YesNo3'),
     ],
+
     'collectionobjecttype': [
         ('collectionObjectTypeId', 'Collection Object Type ID', 'Collection Object Type ID'),
         ('taxonTreeDef', 'Taxon Tree', 'The Taxon Tree associated with this Collection Object Type'),
     ],
+
     'absoluteage': [
         ('yesno2', 'YesNo2', 'YesNo2'),
     ],
+
     'relativeage': [
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('yesno1', 'YesNo1', 'YesNo1'),
     ],
+
     'collectionobject': [
         ('collectionObjectType', 'Type', 'The type of object, such as a fish, mammal, mineral, rock, or meteorite.'),
         ('cojo', 'Collection Object Group', 'Connects a Collection Object to its Collection Object Group'),
     ],
+
     'tectonicunit': [
         ('guid', 'GUID', 'GUID'),
         ('yesno1', 'YesNo1', 'YesNo1'),
         ('tectonicUnitId', 'Tectonic Unit Id', 'Tectonic Unit Id'),
         ('yesno2', 'YesNo2', 'YesNo2'),
     ],
+
     'tectonicunittreedefitem': [
         ('createdbyagent', 'Created By Agent', 'Created By Agent'),
         ('rankId', 'Rank Id', 'Rank Id'),
