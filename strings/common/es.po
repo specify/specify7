@@ -63,7 +63,7 @@ msgstr "No"
 #: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
 #: components/SearchDialog/SelectRecordSet.tsx:133
-#: components/SearchDialog/index.tsx:222
+#: components/SearchDialog/index.tsx:226
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:91
 #: components/Security/Role.tsx:195
@@ -227,14 +227,14 @@ msgstr "Crear"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:558
+#: components/QueryComboBox/index.tsx:576
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
-#: components/SearchDialog/index.tsx:350
+#: components/SearchDialog/index.tsx:354
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:456
@@ -438,14 +438,14 @@ msgstr "Herramientas"
 #: components/QueryBuilder/Formatter.tsx:148
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
-#: components/QueryComboBox/index.tsx:414
+#: components/QueryComboBox/index.tsx:422
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
-#: components/SearchDialog/index.tsx:284
+#: components/SearchDialog/index.tsx:288
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
-#: components/Security/CollectionRole.tsx:232
+#: components/Security/CollectionRole.tsx:233
 #: components/Security/Institution.tsx:99
 #: components/Security/Institution.tsx:191
 #: components/Security/Policies.tsx:190
@@ -508,9 +508,9 @@ msgstr "Eliminar"
 #: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:138
 #: components/HomePage/index.tsx:33
-#: components/SearchDialog/index.tsx:234
-#: components/SearchDialog/index.tsx:239
-#: components/SearchDialog/index.tsx:338
+#: components/SearchDialog/index.tsx:238
+#: components/SearchDialog/index.tsx:243
+#: components/SearchDialog/index.tsx:342
 #: components/WbUtils/index.tsx:58
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 msgid "search"
@@ -518,7 +518,7 @@ msgstr "Buscar"
 
 #: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
-#: components/SearchDialog/index.tsx:286
+#: components/SearchDialog/index.tsx:290
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 msgid "noResults"
 msgstr "Sin resultados"
@@ -604,7 +604,7 @@ msgid "update"
 msgstr "Actualizar"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:648
+#: components/WbPlanView/navigator.ts:647
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
 msgstr "Fecha completa"
@@ -898,7 +898,7 @@ msgid "reset"
 msgstr "Reiniciar"
 
 #: components/FormEditor/Create.tsx:210
-#: components/SearchDialog/index.tsx:359
+#: components/SearchDialog/index.tsx:363
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 msgid "select"
 msgstr "Seleccionar"
