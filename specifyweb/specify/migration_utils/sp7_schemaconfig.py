@@ -111,13 +111,6 @@ MIGRATION_0023_FIELDS = {
     'absoluteage': [
         ('yesno2', 'YesNo2', 'YesNo2'),
     ],
-    'paleocontext': [
-        ('yesno1', 'YesNo1', 'YesNo1'),
-        ('yesno3', 'YesNo3', 'YesNo3'),
-        ('yesno4', 'YesNo4', 'YesNo4'),
-        ('yesno2', 'YesNo2', 'YesNo2'),
-        ('yesno5', 'YesNo5', 'YesNo5'),
-    ],
     'relativeage': [
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('yesno1', 'YesNo1', 'YesNo1'),
