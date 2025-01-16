@@ -522,7 +522,7 @@ class BoundUploadTable(NamedTuple):
         # directly inserted with the main base record, and instead are 
         # uploaded with a reference to the base record 
         remoteToOneResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, [upload_table])[0]
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, [upload_table])
             for fieldname, upload_table in 
             sorted(remoteToOnes.items(), key=lambda kv: kv[0])
         }
@@ -532,7 +532,7 @@ class BoundUploadTable(NamedTuple):
             for fieldname, records in
             sorted(self.toMany.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
-        return UploadResult(Uploaded(uploaded.id, info, picklist_additions), {**toOneResults, **remoteToOneResults}, toManyResults)
+        return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, {**remoteToOneResults, **toManyResults})
 
     def _do_insert(self, model, **attrs) -> Any:
         return model.objects.create(**attrs)
