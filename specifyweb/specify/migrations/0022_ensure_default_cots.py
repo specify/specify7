@@ -7,11 +7,11 @@ class Migration(migrations.Migration):
         create_default_collection_types(apps)
 
     def revert_default_collection_types(apps, schema_editor):
-        # Set all collection records to have a null collectionobjecttype
+        # Set all CollectionObject records to have a null CollectionObjectType
         Collectionobject = apps.get_model('specify', 'Collectionobject')
         Collectionobject.objects.all().update(collectionobjecttype=None)
 
-        # Set all the collection records to have a null collectionobjecttype
+        # Set all the Collection records to have a null CollectionObjectType
         Collection = apps.get_model('specify', 'Collection')
         Collection.objects.all().update(collectionobjecttype=None)
 
