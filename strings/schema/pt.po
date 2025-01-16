@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 18:15+0000\n"
+"PO-Revision-Date: 2025-01-16 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "schema/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:388
@@ -18,7 +18,7 @@ msgstr ""
 #: components/SchemaConfig/Languages.tsx:78
 #, fuzzy
 msgid "addLanguage"
-msgstr "Campos Únicos"
+msgstr "Adicionar idioma"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:240
@@ -51,7 +51,7 @@ msgstr "Exportar Duplicatas"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
 #, fuzzy
 msgid "numberOfDuplicates"
-msgstr "Contagem de campos"
+msgstr "Número de duplicatas"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
@@ -251,7 +251,7 @@ msgstr "muitos para muitos"
 #: components/SchemaViewer/schemaToTsv.tsx:28
 #, fuzzy
 msgid "fieldLength"
-msgstr "Sem Mesa"
+msgstr "Comprimento"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:74
