@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, Tuple, cast
 
 from django.db import transaction, IntegrityError
 
@@ -518,7 +518,11 @@ class BoundUploadTable(NamedTuple):
 
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
-        remoteToOneResults = _upload_remote_to_ones(model, uploaded.id, remoteToOnes)
+        remoteToOneResults = {
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, [upload_table])[0]
+            for fieldname, upload_table in 
+            sorted(remoteToOnes.items(), key=lambda kv: kv[0])
+        }
 
         toManyResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, records)
@@ -593,17 +597,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
         for record in records
     ]
 
-def _upload_remote_to_ones(parent_model, parent_id, remoteToOnes: Dict[str, BoundUploadTable]) -> Dict[str, UploadResult]: 
-    toOnes: Dict[str, UploadResult] = dict()
-    for field_name, upload_table in sorted(remoteToOnes.items(), key=lambda kv: kv[0]): 
-        related_field = parent_model._meta.get_field(field_name).field
-        related_column = related_field.attname
-        static = {**upload_table.static, related_column: parent_id}
-        toOnes[field_name] = upload_table._replace(static=static).process_row()
-    return toOnes
-
-
-def separate_to_ones(parent_model, toOnes: Dict[str, BoundUploadable]): 
+def separate_to_ones(parent_model, toOnes: Dict[str, BoundUploadable]) -> Tuple[Dict[str, BoundUploadable], Dict[str, BoundUploadable]]: 
     remote_to_ones = dict()
     local_to_ones = dict()
 
