@@ -41,7 +41,7 @@ def _blank_nulls(element: blank_nulls, compiler: MySQLCompiler_mysqldb, **kwargs
         return expr
     elif re.search(r'CAST.+\`CatalogNumber\`\sAS\sDECIMAL.+', expr) is not None:
         # NOTE: Temporary expiriment, this fixes CatalogNumber casting to DECIMAL instead of string
-        # return "IFNULL(%s, NULL)" % expr
-        return expr
+        # return expr
+        return "IFNULL(%s, NULL)" % expr
     else:
         return "IFNULL(%s, '')" % expr
