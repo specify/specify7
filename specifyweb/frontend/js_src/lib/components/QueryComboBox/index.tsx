@@ -524,34 +524,41 @@ export function QueryComboBox({
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
                                   fieldName === 'rankId'
+                                ? {
+                                    field: 'rankId',
+                                    isRelationship: false,
+                                    isNot: false,
+                                    operation: 'less',
+                                    value: startValue,
+                                  }
+                                : fieldName === 'nodeNumber'
+                                  ? {
+                                      field: 'nodeNumber',
+                                      isRelationship: false,
+                                      operation: 'between',
+                                      isNot: true,
+                                      value: startValue,
+                                    }
+                                  : fieldName === 'collectionRelTypeId'
                                     ? {
-                                        field: 'rankId',
+                                        field: 'id',
+                                        isRelationship: false,
+                                        operation: 'in',
                                         isNot: false,
-                                        operation: 'less',
                                         value: startValue,
                                       }
-                                    : fieldName === 'nodeNumber'
+                                    : fieldName === 'taxonTreeDefId'
                                       ? {
-                                          field: 'nodeNumber',
-                                          operation: 'between',
-                                          isNot: true,
-                                          value: startValue,
+                                          field: 'definition',
+                                          isRelationship: true,
+                                          operation: 'in',
+                                          isNot: false,
+                                          value: startValue
                                         }
-                                      : fieldName === 'collectionRelTypeId'
-                                        ? {
-                                            field: 'id',
-                                            operation: 'in',
-                                            isNot: false,
-                                            value: startValue,
-                                          }
-                                        : f.error(
-                                            `extended filter not created`,
-                                            {
-                                              fieldName,
-                                              startValue,
-                                            }
-                                          )
-                                )
+                                    : f.error(`extended filter not created`, {
+                                        fieldName,
+                                        startValue,
+                                      }))
                             ),
                           })
                       : undefined
