@@ -71,7 +71,7 @@ export function ReportRecordSets({
   return state.type === 'Main' ? (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
-        table={table}
+        tables={table}
         onClose={handleClose}
         onConfigure={(recordSet): void =>
           setState({

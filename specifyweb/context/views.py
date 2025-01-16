@@ -650,6 +650,7 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
+        discipline_type=discipline and discipline.type
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 

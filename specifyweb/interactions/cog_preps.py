@@ -1,4 +1,3 @@
-import re
 import logging
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
@@ -17,6 +16,7 @@ from specifyweb.specify.models import (
     Recordsetitem,
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+from specifyweb.specify.api import strict_uri_to_model
 
 logger = logging.getLogger(__name__)
 
@@ -266,13 +266,6 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     Add all sibling preparations to the loan that were added to the interaction.
     Return the modified updated interaction object.
     """
-    def parse_preparation_id(uri: str) -> int:
-        match = re.search(r'^/api/specify/preparation/(\d+)/$', uri)
-        if match:
-            return int(match.group(1))
-        else:
-            raise ValueError("No preparation ID found in the URL")
-
     interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
@@ -302,7 +295,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     interaction_prep_data = updated_interaction_data[interaction_prep_name]
     updated_prep_ids = set(
         [
-            parse_preparation_id(interaction_prep["preparation"])
+            # BUG: the preparation can be provided as an object in the request
+            strict_uri_to_model(interaction_prep["preparation"], "preparation")[1]
             for interaction_prep in interaction_prep_data
             if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
         ]
@@ -335,7 +329,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         for interaction_prep in interaction_prep_data
         if "preparation" in interaction_prep.keys()
         and interaction_prep["preparation"] is not None
-        and parse_preparation_id(interaction_prep["preparation"]) not in removed_prep_ids
+        # BUG: the preparation can be provided as a dict in the request
+        and strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
     ]
 
     # Add preps
@@ -354,5 +349,180 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
 
     # Add back the unassociated preparation data
     updated_interaction_data[interaction_prep_name].extend(unassociated_prep_data)
+
+    return updated_interaction_data
+
+def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated_interaction_data):
+    if 'loanpreparations' not in updated_interaction_data:
+        return updated_interaction_data
+
+    # Parse and map loan preparation data
+    map_prep_id_to_loan_prep_idx = {} # Map preparation ID to loan preparation index
+    map_prep_id_to_loan_prep_id = {} # Map preparation ID to loan preparation ID
+    map_prep_id_to_new_loan_return_prep_data = {} # Map preparation ID to new loan return preparation data
+    target_preps = set() # Preparations that the user explicitly requested to create a new loan return record
+    target_prep_ids = set() # Preparation IDs that the user explicitly requested to create a new loan return record
+    loan_prep_idx = 0
+    for loan_prep_data in updated_interaction_data["loanpreparations"]:
+        if type(loan_prep_data) is str:
+            continue
+        loan_prep_id = int(loan_prep_data["id"]) if "id" in loan_prep_data.keys() else None
+        
+        # BUG: the preparation can be provided as a dict in the request
+        prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys() else None
+        _, prep_id = strict_uri_to_model(prep_uri, "preparation") if prep_uri is not None else [None, None]
+        map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
+        loan_prep_idx += 1
+        loan_return_prep_data_lst = loan_prep_data["loanreturnpreparations"]
+
+        # Continue if the loan preparation has no new loan return preparation data,
+        # or if there are more than one loan return preparation data (consolidated COG prep have no partial returns)
+        if (
+            loan_return_prep_data_lst is None
+            or len(loan_return_prep_data_lst) != 1
+            or "id" in loan_return_prep_data_lst[0].keys()
+        ):
+            continue
+
+        loan_return_prep_data = loan_return_prep_data_lst[0]
+        # BUG: the loanpreparation can be provided as an object in the request
+        loan_return_loan_prep_id = strict_uri_to_model(loan_return_prep_data["loanpreparation"], "loanpreparation")[1]
+        if loan_return_loan_prep_id == loan_prep_id:
+            target_prep_ids.update({prep_id})
+            prep = Preparation.objects.filter(id=prep_id).first()
+            if prep is not None:
+                target_preps.update({prep})
+                map_prep_id_to_loan_prep_id[prep_id] = loan_prep_id
+                map_prep_id_to_new_loan_return_prep_data[prep_id] = loan_return_prep_data
+        else:
+            loan_prep = Loanpreparation.objects.filter(id=loan_return_loan_prep_id).first()
+            prep = loan_prep.preparation if loan_prep is not None else None
+            if prep is not None:
+                target_prep_ids.update({prep.id})
+                target_preps.update({prep})
+
+    # Get the sibling preparations
+    map_sibling_prep_ids_to_original_prep_ids = {} # Map sibling preparation ID to original preparation IDs
+    consolidated_target_preps_with_siblings = set() # Set of consolidated target preparations with siblings
+    for target_prep in target_preps:
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(target_prep)
+        if sibling_preps is None or len(sibling_preps) == 0 or target_prep.id is None:
+            continue
+        consolidated_target_preps_with_siblings.update({target_prep})
+        for sibling_prep in sibling_preps:
+            if sibling_prep.id not in map_sibling_prep_ids_to_original_prep_ids.keys():
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id] = set({target_prep.id})
+            else:
+                map_sibling_prep_ids_to_original_prep_ids[sibling_prep.id].update({target_prep.id})
+
+    sibling_prep_ids = set(map_sibling_prep_ids_to_original_prep_ids.keys())
+    added_prep_ids = sibling_prep_ids - target_prep_ids
+    new_loan_return_prep_ids = {prep_id for prep_id in added_prep_ids if prep_id in map_prep_id_to_loan_prep_idx.keys()}
+
+    # Set all the consolidated target loan returns to the max returned and resolved quantity
+    for prep in consolidated_target_preps_with_siblings:
+        if get_the_top_consolidated_parent_cog_of_prep(prep) is None:
+            continue
+        loan_prep = Loanpreparation.objects.filter(preparation=prep).first()
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep.id]
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ][-1]["quantityreturned"] = loan_prep.quantity
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ][-1]["quantityresolved"] = loan_prep.quantity
+
+    # Create new loan return preparation data
+    for prep_id in new_loan_return_prep_ids:
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
+
+        # Determine the original loan return preparation data that this new sibling loan return preparation data should be based on
+        orginal_prep_ids = map_sibling_prep_ids_to_original_prep_ids[prep_id]
+        original_loan_prep_idx = None
+        original_loan_prep_data = None
+        original_loan_return_data_lst = None
+        original_loan_return_data = None
+        if len(orginal_prep_ids) == 1:
+            original_prep_id = orginal_prep_ids.pop()
+            original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
+            original_loan_prep_data = updated_interaction_data["loanpreparations"][original_loan_prep_idx]
+            original_loan_return_data_lst = original_loan_prep_data["loanreturnpreparations"]
+            original_loan_return_data = (
+                original_loan_return_data_lst[-1]
+                if original_loan_return_data_lst is not None
+                and len(original_loan_return_data_lst) > 0
+                else None
+            )
+            if original_loan_return_data is None:
+                logger.warning("No loan return preparation data found for this consolidated COG preparation.")
+                continue
+        elif len(orginal_prep_ids) > 1:
+            logger.warning("Multiple partial loan returns found for this consolidated COG preparation.")
+        else:
+            continue
+
+        # Set the return and resolved quantity to the max amount.
+        # In the future, maybe have more complex logic for partial returns/resolves of consolidated cogs.
+        loan_prep_data_lst = updated_interaction_data["loanpreparations"]
+        loan_prep_idx = map_prep_id_to_loan_prep_idx[prep_id]
+        loan_prep_data = loan_prep_data_lst[loan_prep_idx]
+        loan_prep_max_quantity = loan_prep_data_lst[loan_prep_idx]["quantity"]
+        quantity_returned = loan_prep_max_quantity
+        quantity_resolved = loan_prep_max_quantity
+
+        # Add new loan return preparation data to the loan prep
+        loan_prep_id = loan_prep_data["id"]
+        
+        # BUG: the discipline can be provided as an object in the request
+        discipline_uri = (
+            loan_prep_data["discipline"]
+            if original_loan_return_data is not None
+            else original_loan_return_data["discipline"]
+        )
+        return_date = (
+            original_loan_return_data["returneddate"]
+            if "returneddate" in original_loan_return_data.keys()
+            else None
+        )
+        # BUG: the receivedby can be provided as an object in the request
+        received_by_agent_uri = ( # Use the target agent, but review this, maybe use this sibling prep's loan agent?
+            original_loan_return_data["receivedby"]
+            if "receivedby" in original_loan_return_data.keys()
+            else None
+        )
+        new_loan_return_data = {
+            "quantityreturned": quantity_returned,
+            "quantityresolved": quantity_resolved,
+            "discipline": discipline_uri,
+            "loanpreparation": f"/api/specify/loanpreparation/{loan_prep_id}/",
+            "remarks": "",
+            "receivedby": received_by_agent_uri,
+            "returneddate": return_date,
+            "_tableName": "LoanReturnPreparation"
+        }
+        updated_interaction_data["loanpreparations"][loan_prep_idx][
+            "loanreturnpreparations"
+        ].extend([new_loan_return_data])
+
+    # Recalculate the total quantity returned and resolved for the loan preparation
+    # based on the modified loan return preparation data.
+    for loan_prep_idx in range(len(updated_interaction_data["loanpreparations"])):
+        if type(updated_interaction_data["loanpreparations"]) is str:
+            continue
+        loan_return_data = updated_interaction_data["loanpreparations"][loan_prep_idx]["loanreturnpreparations"]
+        total_quantity_returned = sum([loan_return["quantityreturned"] for loan_return in loan_return_data])
+        total_quantity_resolved = sum([loan_return["quantityresolved"] for loan_return in loan_return_data])
+        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = total_quantity_resolved
+        updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = total_quantity_returned
+
+        # Set the modified loan prep isresolved to True if all the preparations are resolved
+        prep_uri = updated_interaction_data["loanpreparations"][loan_prep_idx]["preparation"]
+        prep_id = strict_uri_to_model(prep_uri, "preparation")[1]
+        if prep_id in sibling_prep_ids or prep_id in new_loan_return_prep_ids or prep_id in target_prep_ids:
+            quantity = updated_interaction_data["loanpreparations"][loan_prep_idx]["quantity"]
+            if total_quantity_resolved >= quantity:
+                updated_interaction_data["loanpreparations"][loan_prep_idx]["isresolved"] = True
+
+    # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data

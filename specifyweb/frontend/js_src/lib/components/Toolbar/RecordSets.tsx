@@ -13,7 +13,7 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { FormsDialog } from '../DataEntryTables';
 import { fetchCollection } from '../DataModel/collection';
-import { getField } from '../DataModel/helpers';
+import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -54,14 +54,13 @@ const defaultRenderer: Renderer = ({ children, dialog }): JSX.Element =>
 
 export function RecordSetsDialog({
   onClose: handleClose,
-  table,
+  tables: recordSetTables,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = defaultRenderer,
-  collectionObjectGroupResourceTableId,
 }: {
   readonly onClose: () => void;
-  readonly table?: SpecifyTable;
+  readonly tables?: RA<SpecifyTable> | SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: Renderer;
@@ -87,53 +86,29 @@ export function RecordSetsDialog({
        * DomainFilter does filter for tables that are
        * scoped using the collectionMemberId field
        */
-      async () =>
-        fetchCollection('RecordSet', {
+      async () => {
+        const tableIdFilter = Array.isArray(recordSetTables)
+          ? backendFilter('dbTableId').isIn(
+              recordSetTables.map((table) => table.tableId)
+            )
+          : {
+              dbTableId: recordSetTables?.tableId,
+            };
+        return fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
           type: 0,
           limit,
           domainFilter: true,
           orderBy,
           offset,
-          dbTableId: table?.tableId,
           collectionMemberId: schema.domainLevelIds.collection,
-        }),
-      [table, limit, offset, orderBy]
+          ...tableIdFilter,
+        });
+      },
+      [recordSetTables, limit, offset, orderBy]
     ),
     false
   );
-
-  const [collectionObjectGroupData] = useAsyncState(
-    React.useCallback(
-      /**
-       * DomainFilter does filter for tables that are
-       * scoped using the collectionMemberId field
-       */
-      async () =>
-        fetchCollection('RecordSet', {
-          specifyUser: userInformation.id,
-          type: 0,
-          limit,
-          domainFilter: true,
-          orderBy,
-          offset,
-          dbTableId: collectionObjectGroupResourceTableId,
-          collectionMemberId: schema.domainLevelIds.collection,
-        }),
-      [collectionObjectGroupResourceTableId, limit, offset, orderBy]
-    ),
-    false
-  );
-
-  const concatenatedRecordSets = [
-    ...(data?.records ?? []),
-    ...(collectionObjectGroupData?.records ?? []),
-  ];
-
-  const RSToUse =
-    typeof collectionObjectGroupResourceTableId === 'number'
-      ? concatenatedRecordSets
-      : data?.records;
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
   totalCountRef.current = data?.totalCount ?? totalCountRef.current;
@@ -174,7 +149,7 @@ export function RecordSetsDialog({
               </tr>
             </thead>
             <tbody>
-              {RSToUse?.map((recordSet) => (
+              {data?.records.map((recordSet) => (
                 <Row
                   key={recordSet.id}
                   recordSet={recordSet}
