@@ -210,6 +210,13 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Long',
         isLegacy: true,
       },
+      'TreeEditor.Rank.Threshold.Drainage': {
+        description:
+          'Show Collection Object count only for nodes with RankID >= than this value',
+        defaultValue: 99_999,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
 
       /*
        * This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
