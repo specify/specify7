@@ -1539,6 +1539,27 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      drainage: {
+        title: () => tableLabel('Drainage'),
+        items: {
+          treeAccentColor: definePref({
+            title: preferencesText.treeAccentColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#000',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          synonymColor: definePref({
+            title: preferencesText.synonymColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#dc2626',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
     },
   },
   queryBuilder: {
