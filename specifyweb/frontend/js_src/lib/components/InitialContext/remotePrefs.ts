@@ -299,6 +299,13 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.Drainage': {
+        description:
+          'Allowed to add children to synopsized Drainage records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       // This is actually stored in Global Prefs:
       /*
        * 'AUDIT_LIFESPAN_MONTHS': {
