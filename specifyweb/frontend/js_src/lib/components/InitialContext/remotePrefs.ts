@@ -162,6 +162,12 @@ export const remotePrefsDefinitions = f.store(
         formatters: [formatter.trim],
         isLegacy: false,
       },
+      'Drainage.treeview_sort_field': {
+        description: 'Sort order for nodes in the tree viewer',
+        defaultValue: 'name',
+        formatters: [formatter.trim],
+        isLegacy: false,
+      },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',

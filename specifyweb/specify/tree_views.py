@@ -28,12 +28,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 TREE_TABLE = Literal['Taxon', 'Storage',
-                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit', 'Drainage']
 
 GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
-                                        'Geography']
+                                        'Geography', 'Drainage']
 
 ALL_TRESS: Tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
@@ -570,6 +570,14 @@ class TectonicunitMutationPT(PermissionTarget):
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
+class DrainageMutationPT(PermissionTarget):
+    resource = "/tree/edit/drainageunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
 def perm_target(tree):
     return {
         'taxon': TaxonMutationPT,
@@ -577,5 +585,6 @@ def perm_target(tree):
         'storage': StorageMutationPT,
         'geologictimeperiod': GeologictimeperiodMutationPT,
         'lithostrat': LithostratMutationPT,
-        'tectonicunit':TectonicunitMutationPT
+        'tectonicunit':TectonicunitMutationPT,
+        'drainage':DrainageMutationPT
     }[tree]
