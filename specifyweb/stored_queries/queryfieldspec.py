@@ -186,10 +186,13 @@ class QueryFieldSpec(
         if field is None:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
-                tree_rank = TreeRankQuery(name=tree_rank_name)
+                tree_rank = TreeRankQuery(
+                    name=tree_rank_name, 
+                    relatedModelName=node.name, 
+                    type="many-to-one",
+                    column=node.idField.column
+                )
                 # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
-                tree_rank.relatedModelName = node.name
-                tree_rank.type = "many-to-one"
                 join_path.append(tree_rank)
                 assert field is not None
                 field = node.get_field(field)
