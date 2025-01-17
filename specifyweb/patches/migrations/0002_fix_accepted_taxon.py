@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0021_update_hidden_geo_tables'),
+        ('patches', '0001_restore_separators'),
     ]
 
     operations = [
