@@ -127,6 +127,15 @@ export function ShowLoansCommand({
     true
   );
 
+  const hasAnyInteractions = data && [
+    data.openLoans,
+    data.resolvedLoans,
+    data.gifts,
+    data.exchangeOuts,
+    data.exchangeIns,
+    data.disposals,
+  ].some(interactions => Array.isArray(interactions) && interactions.length > 0);
+
   return typeof data === 'object' ? (
     <Dialog
       buttons={commonText.close()}
@@ -134,87 +143,102 @@ export function ShowLoansCommand({
       icon={icons.chat}
       onClose={handleClose}
     >
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.Loan.name} />
-        {interactionsText.openLoans({
-          loanTable: tables.Loan.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="loanNumber"
-        fieldName="loan"
-        resources={data.openLoans ?? []}
-      />
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.Loan.name} />
-        {interactionsText.resolvedLoans({
-          loanTable: tables.Loan.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="loanNumber"
-        fieldName="loan"
-        resources={data.resolvedLoans ?? []}
-      />
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.Gift.name} />
-        {interactionsText.gifts({
-          giftTable: tables.Gift.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="giftNumber"
-        fieldName="gift"
-        resources={data.gifts ?? []}
-      />
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.Disposal.name} />
-        {interactionsText.disposals({
-          disposalTable: tables.Disposal.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="disposalNumber"
-        fieldName="disposal"
-        resources={data.disposals ?? []}
-      />
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.ExchangeOut.name} />
-        {interactionsText.exchangeOut({
-          exchangeOutTable: tables.ExchangeOut.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="exchangeOutNumber"
-        fieldName="exchangeOut"
-        resources={data.exchangeOuts ?? []}
-      />
-      <H3 className="flex items-center gap-2">
-        <TableIcon label name={tables.ExchangeIn.name} />
-        {interactionsText.exchangeIn({
-          exchangeInTable: tables.ExchangeIn.label,
-        })}
-      </H3>
-      <List
-        displayFieldName="exchangeInNumber"
-        fieldName="exchangeIn"
-        resources={data.exchangeIns ?? []}
-      />
-      {/* {Array.isArray(data.exchangeOuts) && data.exchangeOuts.length > 0 && (
+      {!hasAnyInteractions ? (
+        <>{interactionsText.noInteractions()}</>
+      ) : (
         <>
-          <H3>
-            {interactionsText.exchanges({
-              exchangeInTable: tables.ExchangeIn.label,
-              exchangeOutTable: tables.ExchangeOut.label,
-            })}
-          </H3>
-          <List
-            displayFieldName="exchangeOutNumber"
-            fieldName="exchange"
-            resources={data.exchangeOuts}
-          />
+          {Array.isArray(data.openLoans) && data.openLoans.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.Loan.name} />
+                {interactionsText.openLoans({
+                  loanTable: tables.Loan.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="loanNumber"
+                fieldName="loan"
+                resources={data.openLoans}
+              />
+            </>
+          )}
+          {Array.isArray(data.resolvedLoans) && data.resolvedLoans.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.Loan.name} />
+                {interactionsText.resolvedLoans({
+                  loanTable: tables.Loan.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="loanNumber"
+                fieldName="loan"
+                resources={data.resolvedLoans}
+              />
+            </>
+          )}
+          {Array.isArray(data.gifts) && data.gifts.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.Gift.name} />
+                {interactionsText.gifts({
+                  giftTable: tables.Gift.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="giftNumber"
+                fieldName="gift"
+                resources={data.gifts}
+              />
+            </>
+          )}
+          {Array.isArray(data.disposals) && data.disposals.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.Disposal.name} />
+                {interactionsText.disposals({
+                  disposalTable: tables.Disposal.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="disposalNumber"
+                fieldName="disposal"
+                resources={data.disposals}
+              />
+            </>
+          )}
+          {Array.isArray(data.exchangeOuts) && data.exchangeOuts.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.ExchangeOut.name} />
+                {interactionsText.exchangeOut({
+                  exchangeOutTable: tables.ExchangeOut.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="exchangeOutNumber"
+                fieldName="exchangeOut"
+                resources={data.exchangeOuts}
+              />
+            </>
+          )}
+          {Array.isArray(data.exchangeIns) && data.exchangeIns.length > 0 && (
+            <>
+              <H3 className="flex items-center gap-2">
+                <TableIcon label name={tables.ExchangeIn.name} />
+                {interactionsText.exchangeIn({
+                  exchangeInTable: tables.ExchangeIn.label,
+                })}
+              </H3>
+              <List
+                displayFieldName="exchangeInNumber"
+                fieldName="exchangeIn"
+                resources={data.exchangeIns}
+              />
+            </>
+          )}
         </>
-      )} */}
+      )}
     </Dialog>
   ) : null;
-}
+}  
