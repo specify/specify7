@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-17 10:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -271,7 +271,7 @@ msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 #: components/TreeView/index.tsx:387
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Entomologie"
+msgstr "Nur Knoten mit verknüpften Objekten anzeigen"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:319
@@ -346,7 +346,7 @@ msgstr "Botanik"
 #: components/TreeView/defaults.ts:441
 #, fuzzy
 msgid "entomology"
-msgstr "Botanik"
+msgstr "Entomologie"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:469
@@ -382,7 +382,7 @@ msgstr "Mammalogie"
 #: components/TreeView/defaults.ts:578
 #, fuzzy
 msgid "ornithology"
-msgstr "Synonyme: [X10X]"
+msgstr "Vogelkunde"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:599
