@@ -571,7 +571,7 @@ class TectonicunitMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class DrainageMutationPT(PermissionTarget):
-    resource = "/tree/edit/drainageunit"
+    resource = "/tree/edit/drainage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
