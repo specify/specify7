@@ -125,6 +125,11 @@ class Migration(migrations.Migration):
             name='drainagetreedef',
             field=models.ForeignKey(db_column='DrainageTreeDefID', null=True, on_delete=protect_with_blockers, related_name='disciplines', to='specify.drainagetreedef'),
         ),
+        migrations.AddField(
+            model_name='locality',
+            name='drainage',
+            field=models.ForeignKey(db_column='DrainageID', null=True, on_delete=protect_with_blockers, related_name='localities', to='specify.drainage'),
+        ),
 
         migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]
