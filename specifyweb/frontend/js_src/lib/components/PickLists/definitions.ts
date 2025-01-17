@@ -225,6 +225,7 @@ export const getFrontEndPickLists = f.store<{
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
+    DrainageUnitTreeDef: { fullNameDirection },
     PrepType: {
       name: definePicklist('_PrepType', [])
         .set('type', PickListTypes.FIELDS)
