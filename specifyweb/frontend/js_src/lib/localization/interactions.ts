@@ -298,16 +298,6 @@ export const interactionsText = createDictionary({
     'uk-ua': '{exchangeInTable:string} записи',
     'de-ch': '{exchangeInTable:string} Datensätze',
   },
-  exchanges: {
-    comment: 'Example: Exchange In / Exchnage Out records',
-    'en-us': '{exchangeInTable:string} / {exchangeOutTable:string} records',
-    'es-es': 'Registros {exchangeInTable:string} / {exchangeOutTable:string}',
-    'fr-fr':
-      'Enregistrements {exchangeInTable:string} / {exchangeOutTable:string}',
-    'ru-ru': '{exchangeInTable:string} / {exchangeOutTable:string} записи',
-    'uk-ua': 'Записи {exchangeInTable:string} / {exchangeOutTable:string}.',
-    'de-ch': '{exchangeInTable:string} / {exchangeOutTable:string} Datensätze',
-  },
   unCataloged: {
     'en-us': 'uncataloged',
     'ru-ru': 'не внесенный в каталог',
