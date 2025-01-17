@@ -89,4 +89,5 @@ MIGRATION_0023_TABLES = {
 
 MIGRATION_0023_FIELDS = {
     'Discipline': ['drainageTreeDef'],
+    'Locality': ['drainage'],
 }
