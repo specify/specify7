@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-17 10:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/tree/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -64,7 +64,7 @@ msgstr "A operação falhou"
 #: components/TreeView/Actions.tsx:406
 #, fuzzy
 msgid "actionFailedDescription"
-msgstr "Contagem direta [X7X]"
+msgstr "A operação não pôde ser concluída devido aos seguintes erros:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:425
@@ -77,7 +77,7 @@ msgstr "Mover nó"
 #: components/TreeView/Actions.tsx:153
 #, fuzzy
 msgid "addChild"
-msgstr "Dessinonimizar nó"
+msgstr "Adicionar criança"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
@@ -205,8 +205,8 @@ msgstr "Selecione um alvo para \"{nodeName:string}\" para ser sinonimizado"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"O nó {treeName:string} \"{nodeName:string}\" será transformado em sinônimo "
-"de \"{synonymName:string}\"."
+"O nó {treeName:string} \"{nodeName:string}\" se tornará sinônimo de "
+"\"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:395
@@ -291,7 +291,7 @@ msgstr "Contagem direta {collectionObjectTable:string}"
 #: components/TreeView/helpers.ts:205
 #, fuzzy
 msgid "indirectCollectionObjectCount"
-msgstr "Paleobotânica"
+msgstr "Contagem indireta {collectionObjectTable:string}"
 
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:189
@@ -399,7 +399,7 @@ msgstr "Herpetologia"
 #: components/TreeView/defaults.ts:491
 #, fuzzy
 msgid "ichthyology"
-msgstr "Adicionar árvore"
+msgstr "Ictiologia"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:515
@@ -429,7 +429,7 @@ msgstr "Ornitologia"
 #: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Colhedor de árvores"
+msgstr "Paleobotânica"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
