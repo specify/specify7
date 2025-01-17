@@ -92,6 +92,14 @@ def filter_by_collection(model, query, collection):
     if model is models.TectonicUnitTreeDefItem:
         logger.info("filtering tectonic unit rank to discipline: %s", collection.discipline.name)
         return query.filter(model.TectonicUnitTreeDefID == collection.discipline.tectonicunittreedef_id)
+    
+    if model is models.Drainage:
+        logger.info("filtering drainage to discipline: %s", collection.discipline.name)
+        return query.filter(model.DrainageTreeDefID == collection.discipline.Drainagetreedef_id)
+
+    if model is models.DrainageTreeDefItem:
+        logger.info("filtering drainage rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.DrainageTreeDefID == collection.discipline.Drainagetreedef_id)
 
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
