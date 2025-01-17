@@ -77,7 +77,7 @@ class Table(object):
     fieldAliases: List[Dict[str, str]]
     sp7_only: bool = False
     django_app: str = 'specify'
-    virtual_fiels: List['Field'] = []
+    virtual_fields: List['Field'] = []
 
     def __init__(self, classname: str = None, table: str = None, tableId: int = None, 
                 idColumn: str = None, idFieldName: str = None, idField: 'Field' = None, 
