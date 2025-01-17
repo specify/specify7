@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-17 10:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/tree/"
 "ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -65,7 +65,7 @@ msgstr "Операция не удалась"
 #: components/TreeView/Actions.tsx:406
 #, fuzzy
 msgid "actionFailedDescription"
-msgstr "Прямой [X7X] счет"
+msgstr "Операция не может быть завершена из-за следующих ошибок:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:425
@@ -78,7 +78,7 @@ msgstr "Переместить узел"
 #: components/TreeView/Actions.tsx:153
 #, fuzzy
 msgid "addChild"
-msgstr "Узел десиномизации"
+msgstr "Добавить ребенка"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
@@ -290,7 +290,7 @@ msgstr "Прямой {collectionObjectTable:string} счет"
 #: components/TreeView/helpers.ts:205
 #, fuzzy
 msgid "indirectCollectionObjectCount"
-msgstr "Палеоботаника"
+msgstr "Косвенный {collectionObjectTable:string} Количество"
 
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:189
@@ -398,7 +398,7 @@ msgstr "Герпетология"
 #: components/TreeView/defaults.ts:491
 #, fuzzy
 msgid "ichthyology"
-msgstr "Добавить дерево"
+msgstr "Ихтиология"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:515
@@ -428,7 +428,7 @@ msgstr "Орнитология"
 #: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Сборщик деревьев"
+msgstr "Палеоботаника"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
