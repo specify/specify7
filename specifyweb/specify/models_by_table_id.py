@@ -216,6 +216,9 @@ model_names_by_table_id = {
     1025:'Tectonicunittreedef',
     1026:'Tectonicunittreedefitem',
     1027:'Tectonicunit', 
+    1028:'Drainagetreedef',
+    1029:'Drainagetreedefitem',
+    1030:'Drainage', 
 }
 
 model_names_by_app = {
@@ -445,6 +448,9 @@ model_names_by_app = {
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
+        'Drainagetreedef',
+        'Drainagetreedefitem',
+        'Drainage', 
     }
 }
 
