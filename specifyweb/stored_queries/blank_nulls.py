@@ -1,4 +1,3 @@
-import re
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String
@@ -39,9 +38,5 @@ def _blank_nulls(element: blank_nulls, compiler: MySQLCompiler_mysqldb, **kwargs
     expr = compiler.process(element.clauses.clauses[0])
     if isinstance(element.clauses.clauses[0], blank_nulls):
         return expr
-    elif re.search(r'CAST.+\`CatalogNumber\`\sAS\sDECIMAL.+', expr) is not None:
-        # NOTE: Temporary expiriment, this fixes CatalogNumber casting to DECIMAL instead of string
-        # return expr
-        return "IFNULL(%s, NULL)" % expr
     else:
         return "IFNULL(%s, '')" % expr
