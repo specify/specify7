@@ -2823,6 +2823,7 @@ class Discipline(model_extras.Discipline):
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     geographytreedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
+    drainagetreedef = models.ForeignKey('DrainageTreeDef', db_column='DrainageTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     tectonicunittreedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
@@ -4515,6 +4516,7 @@ class Locality(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    drainage = models.ForeignKey('Drainage', db_column='DrainageID', related_name='localities', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'locality'
@@ -7905,6 +7907,102 @@ class Tectonicunit(model_extras.Tectonicunit):
     
     class Meta:
         db_table = 'tectonicunit'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Drainagetreedef(models.Model):
+    specify_model = datamodel.get_table_strict('drainagetreedef')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='drainagetreedefid')
+
+    # Fields
+    fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False, default=0)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='drainagetreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'drainagetreedef'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Drainagetreedefitem(model_extras.Drainagetreedefitem):
+    specify_model = datamodel.get_table_strict('drainagetreedefitem')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='drainagetreedefitemid')
+
+    # Fields
+    fullnameseparator = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullNameSeparator', db_index=False)
+    isenforced = models.BooleanField(blank=True, null=True, unique=False, db_column='IsEnforced', db_index=False)
+    isinfullname = models.BooleanField(blank=True, null=True, unique=False, db_column='IsInFullName', db_index=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    rankid = models.IntegerField(blank=True, null=True, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    textafter = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextAfter', db_index=False)
+    textbefore = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='TextBefore', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('DrainageTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
+    treedef = models.ForeignKey('DrainageTreeDef', db_column='DrainageTreeDefID', related_name='treedefitems', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'drainagetreedefitem'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class Drainage(model_extras.Drainage):
+    specify_model = datamodel.get_table_strict('drainage')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='drainageid')
+
+    # Fields
+    fullname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='FullName', db_index=False)
+    guid = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='GUID', db_index=False)
+    highestchildnodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='HighestChildNodeNumber', db_index=False)
+    isaccepted = models.BooleanField(blank=False, null=False, unique=False, db_column='IsAccepted', db_index=False, default=False)
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    nodenumber = models.IntegerField(blank=True, null=True, unique=False, db_column='NodeNumber', db_index=False)   
+    number1 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=20, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    rankid = models.IntegerField(blank=False, null=False, unique=False, db_column='RankID', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    
+    # Relationships: Many-to-One
+    accepteddrainage = models.ForeignKey('Drainage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('DrainageTreeDefItem', db_column='DrainageTreeDefItemID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('Drainage', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
+    definition = models.ForeignKey('DrainageTreeDef', db_column='DrainageTreeDefID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'drainage'
         ordering = ()
 
     save = partialmethod(custom_save)

@@ -2988,6 +2988,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='dataType', type='many-to-one',required=True, relatedModelName='DataType', column='DataTypeID'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID', otherSideName='disciplines'),
+            Relationship(name='drainageTreeDef', type='many-to-one',required=True, relatedModelName='DrainageTreeDef', column='DrainageTreeDefID', otherSideName='disciplines'),
             Relationship(name='geographyTreeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='disciplines'),
             Relationship(name='taxonTreeDef', type='many-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='disciplines'),
             Relationship(name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
@@ -4792,6 +4793,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality', dependent=True),
             Relationship(name='geography', type='many-to-one',required=False, relatedModelName='Geography', column='GeographyID', otherSideName='localities'),
+            Relationship(name='drainage', type='many-to-one',required=False, relatedModelName='Drainage', column='DrainageID', otherSideName='localities'),
             Relationship(name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality', dependent=True),
             Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality', dependent=True),
             Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality', dependent=True),
@@ -8705,6 +8707,121 @@ datamodel = Datamodel(tables=[
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
+        ],
+    ),
+    Table( # DrainageTreeDef
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.DrainageTreeDef',
+        table='drainagetreedef',
+        tableId=1028,
+        idColumn='DrainageTreeDefID',
+        idFieldName='drainageTreeDefId',
+        idField=IdField(name='drainageTreeDefId', column='DrainageTreeDefID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullNameDirection', column='FullNameDirection', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='drainageTreeDefs'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='DrainageTreeDefItem', otherSideName='treeDef', dependent=True),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Drainage', otherSideName='definition')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # DrainageTreeDefItem
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.DrainageTreeDefItem',
+        table='drainagetreedefitem',
+        tableId=1029,
+        idColumn='DrainageTreeDefItemID',
+        idFieldName='drainageTreeDefItemId',
+        idField=IdField(name='drainageTreeDefItemId', column='DrainageTreeDefItemID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullNameSeparator', column='FullNameSeparator', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='isEnforced', column='IsEnforced', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isInFullName', column='IsInFullName', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='textAfter', column='TextAfter', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='textBefore', column='TextBefore', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='DrainageTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one', required=False, relatedModelName='DrainageTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one', required=True, relatedModelName='DrainageTreeDef', column='DrainageTreeDefID',
+            otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Drainage', otherSideName='definitionItem')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Drainage
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.Drainage',
+        table='drainage',
+        tableId=1030,
+        idColumn='DrainageID',
+        idFieldName='drainageId',
+        idField=IdField(name='drainageId', column='DrainageID', type='java.lang.Integer'),
+        fields=[
+            Field(name='fullName', column='FullName', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
+            Field(name='highestChildNodeNumber', column='HighestChildNodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isAccepted', column='IsAccepted', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='nodeNumber', column='NodeNumber', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='rankId', column='RankID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Drainage', otherSideName='acceptedDrainage'),
+            Relationship(name='acceptedDrainage', type='many-to-one', required=False, relatedModelName='Drainage', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one', required=True, relatedModelName='Drainage', column='ParentID'),
+            Relationship(name='definition', type='many-to-one', required=True, relatedModelName='DrainageTreeDef', column='DrainageTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='DrainageTreeDefItem', column='DrainageTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='drainage'),
+        ],
+        fieldAliases=[
+            {'vname':'acceptedParent', 'aname':'acceptedDrainage'}
         ],
     ),
 ])

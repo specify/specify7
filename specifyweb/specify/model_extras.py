@@ -210,3 +210,15 @@ class Taxontreedefitem(TreeRank):
 class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True
+
+class Drainage(Tree):
+    class Meta:
+        abstract = True
+
+class Drainageunit(Tree):
+    class Meta:
+        abstract = True
+
+class Drainagetreedefitem(TreeRank):
+    class Meta:
+        abstract = True

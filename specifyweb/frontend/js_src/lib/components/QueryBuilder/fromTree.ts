@@ -86,6 +86,28 @@ const defaultFields: RR<
       startValue: nodeId.toString(),
     }),
   ],
+  Drainage: async (nodeId, rankName) => [
+    makeField('catalogNumber', {}),
+    makeField('determinations.taxon.fullName', {
+      sortType: flippedSortTypes.ascending,
+    }),
+    makeField('determinations.isCurrent', {
+      isDisplay: false,
+      operStart: queryFieldFilters.trueOrNull.id,
+    }),
+    makeField('collectingEvent.locality.localityName', {}),
+    makeField('collectingEvent.locality.geography.fullName', {
+      sortType: flippedSortTypes.ascending,
+    }),
+    makeField('collectingEvent.locality.drainage.fullName', {
+      sortType: flippedSortTypes.ascending,
+    }),
+    makeField(`collectingEvent.locality.drainage.${rankName}.drainageId`, {
+      isDisplay: false,
+      operStart: queryFieldFilters.equal.id,
+      startValue: nodeId.toString(),
+    }),
+  ],
   Storage: async (nodeId, rankId) => [
     makeField('catalogNumber', {
       sortType: flippedSortTypes.ascending,

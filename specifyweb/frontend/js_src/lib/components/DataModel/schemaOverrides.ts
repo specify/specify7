@@ -93,6 +93,8 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   TaxonTreeDefItem: 'system',
   TectonicUnitTreeDef: 'system',
   TectonicUnitTreeDefItem: 'system',
+  DrainageTreeDef: 'system',
+  DrainageTreeDefItem: 'system',
 };
 
 // These field overrides apply to entire front-end
@@ -161,6 +163,12 @@ const globalFieldOverrides: {
     acceptedTectonicUnit: { visibility: 'readOnly' },
     fullName: { visibility: 'readOnly' },
   },
+  Drainage: {
+    parent: { visibility: 'required' },
+    isAccepted: { visibility: 'readOnly' },
+    acceptedDrainage: { visibility: 'readOnly' },
+    fullName: { visibility: 'readOnly' },
+  },
   Storage: {
     parent: { visibility: 'required' },
     isAccepted: { visibility: 'readOnly' },
@@ -205,6 +213,12 @@ const globalFieldOverrides: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   LithoStratTreeDefItem: {
+    fullNameSeparator: { whiteSpaceSensitive: true },
+  },
+  DrainageTreeDef: {
+    fullNameDirection: { visibility: 'readOnly' },
+  },
+  DrainageTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
   },
 };

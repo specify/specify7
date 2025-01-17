@@ -73,6 +73,13 @@ export const operationPolicies = {
     'desynonymize',
     'repair',
   ],
+  '/tree/edit/drainage': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
   '/workbench/dataset': [
     'create',
     'update',
