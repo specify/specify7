@@ -1546,7 +1546,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#000',
+            defaultValue: '#89CFF0',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
