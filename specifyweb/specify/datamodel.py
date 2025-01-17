@@ -4793,6 +4793,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality', dependent=True),
             Relationship(name='geography', type='many-to-one',required=False, relatedModelName='Geography', column='GeographyID', otherSideName='localities'),
+            Relationship(name='drainage', type='many-to-one',required=False, relatedModelName='Drainage', column='DrainageID', otherSideName='localities'),
             Relationship(name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality', dependent=True),
             Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality', dependent=True),
             Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality', dependent=True),
@@ -8803,8 +8804,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
         indexes=[
 
@@ -8817,7 +8818,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='parent', type='many-to-one', required=True, relatedModelName='Drainage', column='ParentID'),
             Relationship(name='definition', type='many-to-one', required=True, relatedModelName='DrainageTreeDef', column='DrainageTreeDefID', otherSideName='treeEntries'),
             Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='DrainageTreeDefItem', column='DrainageTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(name='paleoContexts', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='drainage'),
+            Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='drainage'),
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedDrainage'}
