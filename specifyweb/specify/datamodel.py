@@ -8822,12 +8822,12 @@ Table( # TectonicUnitTreeDef
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
         ],
     ),
-Table( # DrainageTreeDef
+    Table( # DrainageTreeDef
         sp7_only=True,
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.DrainageTreeDef',
         table='drainagetreedef',
-        tableId=1025,
+        tableId=1028,
         idColumn='DrainageTreeDefID',
         idFieldName='drainageTreeDefId',
         idField=IdField(name='drainageTreeDefId', column='DrainageTreeDefID', type='java.lang.Integer'),
@@ -8858,7 +8858,7 @@ Table( # DrainageTreeDef
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.DrainageTreeDefItem',
         table='drainagetreedefitem',
-        tableId=1026,
+        tableId=1029,
         idColumn='DrainageTreeDefItemID',
         idFieldName='drainageTreeDefItemId',
         idField=IdField(name='drainageTreeDefItemId', column='DrainageTreeDefItemID', type='java.lang.Integer'),
@@ -8897,7 +8897,7 @@ Table( # DrainageTreeDef
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.Drainage',
         table='drainage',
-        tableId=1027,
+        tableId=1030,
         idColumn='DrainageID',
         idFieldName='drainageId',
         idField=IdField(name='drainageId', column='DrainageID', type='java.lang.Integer'),
