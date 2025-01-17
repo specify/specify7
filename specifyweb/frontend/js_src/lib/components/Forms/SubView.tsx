@@ -16,7 +16,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
@@ -247,6 +247,6 @@ export function SubView({
   );
 }
 
-const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable<AnySchema>>([
+const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable>([
   tables.CollectionObjectGroup,
 ]);
