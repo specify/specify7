@@ -1,7 +1,7 @@
 """
 These represent changes to the SchemaConfig tables 
 SpLocaleContainer, SpLocaleContainerItem, and SpLocaleItemStr
-in migrations from 0002-0016
+in migrations from 0002-0023.
 
 These are needed in this file because there was a bug in migrations which was 
 later resolved in migration 0016, so both the migration files and the bug-fix 
@@ -79,4 +79,14 @@ MIGRATION_0020_FIELDS = {
 
 MIGRATION_0021_FIELDS = {
     'CollectionObject': ['relativeAges', 'absoluteAges', 'cojo'],
+}
+
+MIGRATION_0023_TABLES = {
+    ('DrainageTreeDef', None),
+    ('DrainageTreeDefItem', None),
+    ('Drainage', None),
+}
+
+MIGRATION_0023_FIELDS = {
+    'Discipline': ['drainageTreeDef'],
 }
