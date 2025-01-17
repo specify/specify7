@@ -100,8 +100,22 @@ export function ShowLoansCommand({
                 domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
-          exchanges: hasTablePermission('ExchangeOutPrep', 'read')
+          exchangeOuts: hasTablePermission('ExchangeOutPrep', 'read')
             ? fetchCollection('ExchangeOutPrep', {
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+                domainFilter: false,
+              }).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+          exchangeIns: hasTablePermission('ExchangeInPrep', 'read')
+            ? fetchCollection('ExchangeInPrep', {
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+                domainFilter: false,
+              }).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+          disposals: hasTablePermission('Disposal', 'read')
+            ? fetchCollection('DisposalPreparation', {
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
                 domainFilter: false,
@@ -153,21 +167,54 @@ export function ShowLoansCommand({
         fieldName="gift"
         resources={data.gifts ?? []}
       />
-      {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Disposal.name} />
+        {interactionsText.disposals({
+          disposalTable: tables.Disposal.label,
+        })}
+      </H3>
+      <List
+        displayFieldName="disposalNumber"
+        fieldName="disposal"
+        resources={data.disposals ?? []}
+      />
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.ExchangeOut.name} />
+        {interactionsText.exchangeOut({
+          exchangeOutTable: tables.ExchangeOut.label,
+        })}
+      </H3>
+      <List
+        displayFieldName="exchangeOutNumber"
+        fieldName="exchangeOut"
+        resources={data.exchangeOuts ?? []}
+      />
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.ExchangeIn.name} />
+        {interactionsText.exchangeIn({
+          exchangeInTable: tables.ExchangeIn.label,
+        })}
+      </H3>
+      <List
+        displayFieldName="exchangeInNumber"
+        fieldName="exchangeIn"
+        resources={data.exchangeIns ?? []}
+      />
+      {/* {Array.isArray(data.exchangeOuts) && data.exchangeOuts.length > 0 && (
         <>
           <H3>
             {interactionsText.exchanges({
-              exhangeInTable: tables.ExchangeIn.label,
-              exhangeOutTable: tables.ExchangeOut.label,
+              exchangeInTable: tables.ExchangeIn.label,
+              exchangeOutTable: tables.ExchangeOut.label,
             })}
           </H3>
           <List
             displayFieldName="exchangeOutNumber"
             fieldName="exchange"
-            resources={data.exchanges}
+            resources={data.exchangeOuts}
           />
         </>
-      )}
+      )} */}
     </Dialog>
   ) : null;
 }
