@@ -42,10 +42,7 @@ export function useResults({
     const colsToInclude = new Set<number>();
     Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
       rowMeta.forEach((metaArray, physicalCol) => {
-        if (workbench.cells.getCellMetaFromArray(metaArray, 'isNew') || 
-          workbench.cells.getCellMetaFromArray(metaArray, 'isUpdated') || 
-          workbench.cells.getCellMetaFromArray(metaArray, 'isDeleted') || 
-          workbench.cells.getCellMetaFromArray(metaArray, 'isMatchedAndChanged')) {
+        if (workbench.cells.isResultCell(metaArray)) {
             rowsToInclude.add(f.fastParseInt(physicalRow));
             colsToInclude.add(physicalCol);
           }

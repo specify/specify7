@@ -407,5 +407,12 @@ export class WbCellMeta {
       }
     }
   }
+
+  public isResultCell(metaArray: WbMetaArray): boolean {
+    return this.cellIsType(metaArray, 'newCells') || 
+      this.cellIsType(metaArray, 'updatedCells') || 
+        this.cellIsType(metaArray, 'deletedCells') || 
+          this.cellIsType(metaArray, 'matchedAndChangedCells')
+  }
 }
 /* eslint-enable functional/no-this-expression */
