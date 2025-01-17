@@ -1010,13 +1010,14 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
 
         filters.update({param: val})
 
-    if model.__name__ == 'Geologictimeperiod':
-        # Filter out invalid chronostrats
-        filters.update({
-            'startperiod__isnull': False,
-            'endperiod__isnull': False,
-            'startperiod__gte': F('endperiod')
-        })
+#code repsonsible for issue 6086, this snipet is called to display the children of GeologicTimePeriod node. Need to refine to be applied only in the context of extended age query 
+    # if model.__name__ == 'Geologictimeperiod':
+    #     # Filter out invalid chronostrats
+    #     filters.update({
+    #         'startperiod__isnull': False,
+    #         'endperiod__isnull': False,
+    #         'startperiod__gte': F('endperiod')
+    #     })
 
     try:
         objs = model.objects.filter(**filters)
