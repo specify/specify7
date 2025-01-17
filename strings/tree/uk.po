@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-17 10:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -352,7 +352,7 @@ msgstr "Герпетологія"
 #: components/TreeView/defaults.ts:491
 #, fuzzy
 msgid "ichthyology"
-msgstr "Додати дерево"
+msgstr "Іхтіологія"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:515
@@ -382,7 +382,7 @@ msgstr "Орнітологія"
 #: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Збирач дерев"
+msgstr "Палеоботаніка"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
