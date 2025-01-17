@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-17 10:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -64,7 +64,7 @@ msgstr "Operación fallida"
 #: components/TreeView/Actions.tsx:406
 #, fuzzy
 msgid "actionFailedDescription"
-msgstr "Recuento directo [X7X]"
+msgstr "La operación no se pudo completar debido a los siguientes errores:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:425
@@ -77,7 +77,7 @@ msgstr "Mover nodo"
 #: components/TreeView/Actions.tsx:153
 #, fuzzy
 msgid "addChild"
-msgstr "Desinonimizar nodo"
+msgstr "Agregar niño"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:385
@@ -399,7 +399,7 @@ msgstr "Herpetología"
 #: components/TreeView/defaults.ts:491
 #, fuzzy
 msgid "ichthyology"
-msgstr "Agregar árbol"
+msgstr "Ictiología"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:515
@@ -423,13 +423,13 @@ msgstr "Mastozoología"
 #: components/TreeView/defaults.ts:578
 #, fuzzy
 msgid "ornithology"
-msgstr "Árbol vacío"
+msgstr "Ornitología"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Recolector de árboles"
+msgstr "Paleobotánica"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:618
