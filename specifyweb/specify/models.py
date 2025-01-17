@@ -4516,6 +4516,7 @@ class Locality(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    drainage = models.ForeignKey('Drainage', db_column='DrainageID', related_name='localities', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'locality'
