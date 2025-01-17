@@ -19,7 +19,7 @@ def update_schema_config_field_desc(apps, schema_editor):
         )
 
         for container in containers:
-         for field_name, new_name, new_desc in fields:
+            for field_name, new_name, new_desc in fields:
                 #i.e: COType
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
@@ -31,7 +31,7 @@ def update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
 
                     if localized_items_desc is None or localized_items_name is None:
-                     continue
+                        continue
 
                     localized_items_desc.text = new_desc
                     localized_items_desc.save() 
@@ -88,7 +88,7 @@ def reverse_update_schema_config_field_desc(apps, schema_editor):
         )
 
         for container in containers:
-         for field_name, new_name, new_desc in fields:
+            for field_name, new_name, new_desc in fields:
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
                     name=field_name.lower()
@@ -99,7 +99,7 @@ def reverse_update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
 
                     if localized_items_desc is None or localized_items_name is None:
-                     continue
+                        continue
 
                     localized_items_desc.text = item.name
                     localized_items_desc.save() 
