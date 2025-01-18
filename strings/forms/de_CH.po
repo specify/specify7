@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-18 15:00+0000\n"
+"PO-Revision-Date: 2025-01-18 15:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -100,9 +100,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische "
-"Koordinaten hat und dass der Paläokontext ein geografisches Alter mit "
-"mindestens einer ausgefüllten Start- und Endzeit hat."
+"Das Paleo Map-Plugin erfordert, dass {localityTable:string} über "
+"geografische Koordinaten verfügt und dass im Paläokontext ein geografisches "
+"Alter mit mindestens einer ausgefüllten Start- oder Endzeit angegeben ist."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -744,7 +744,7 @@ msgstr "Deaktivieren des Nur-Lese-Modus"
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
-msgstr "Aktivieren Sie den Nur-Lese-Modus"
+msgstr "Aktivieren Sie den schreibgeschützten Modus"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:129
