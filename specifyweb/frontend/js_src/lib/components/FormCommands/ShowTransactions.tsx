@@ -143,13 +143,7 @@ export function ShowLoansCommand({
       icon={icons.chat}
       onClose={handleClose}
     >
-    {!hasAnyInteractions ? (
-        <>
-        {interactionsText.noInteractions({
-                  preparationTable: String(tables.Preparation.label).toLowerCase(),
-                })}
-        </>
-      ) : (
+    {hasAnyInteractions ? (
         <>
           {Array.isArray(data.openLoans) && data.openLoans.length > 0 && (
             <>
@@ -241,6 +235,12 @@ export function ShowLoansCommand({
               />
             </>
           )}
+        </>
+      ) : (
+        <>
+        {interactionsText.noInteractions({
+                  preparationTable: String(tables.Preparation.label).toLowerCase(),
+                })}
         </>
       )}
     </Dialog>
