@@ -12,13 +12,13 @@ import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
-
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
 import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
 import audioXGenericIcon from './MimetypeIcons/audio-x-generic.svg';
 import imageXGenericIcon from './MimetypeIcons/image-x-generic.svg';
 import modelIcon from './MimetypeIcons/model.svg';
+import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
 import textHtmlIcon from './MimetypeIcons/text-html.svg';
 import textXGenericIcon from './MimetypeIcons/text-x-generic.svg';
 import textXMakefileIcon from './MimetypeIcons/text-x-makefile.svg';
@@ -26,7 +26,6 @@ import videoXGenericIcon from './MimetypeIcons/video-x-generic.svg';
 import xOfficeDocumentIcon from './MimetypeIcons/x-office-document.svg';
 import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
 import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
-import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -62,7 +61,7 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  const iconMap: Record<string, { alt: string; src: string }> = {
+  const iconMap: Record<string, { readonly alt: string; readonly src: string }> = {
     'application/json': { alt: 'json', src: applicationJsonIcon },
     'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
     'audio/x-generic': { alt: 'audio', src: audioXGenericIcon },
