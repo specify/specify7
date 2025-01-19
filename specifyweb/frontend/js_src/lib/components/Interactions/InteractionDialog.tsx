@@ -465,7 +465,9 @@ export function InteractionDialog({
                   </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
-                    {interactionsText.withoutPreparations()}
+                    {interactionsText.withoutPreparations({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                    })}
                   </Link.Secondary>
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
@@ -501,73 +503,166 @@ export function InteractionDialog({
               </summary>
               {children}
             </details>
-            <details>
-              <summary>
-                {isLoanReturnLike
-                  ? interactionsText.enterLoanNumbers({
-                      fieldName: searchField?.label ?? '',
-                    })
-                  : interactionsText.byEnteringNumbers({
-                      tableName: tables.CollectionObject.label,
-                      fieldName: searchField?.label ?? '',
-                    })}
-              </summary>
-              <div className="flex flex-col gap-2">
-                <AutoGrowTextArea
-                  forwardRef={validationRef}
-                  spellCheck={false}
-                  value={catalogNumbers}
-                  onValueChange={setCatalogNumbers}
-                  {...attributes}
-                />
-                <div>
-                  <Button.Info
-                    disabled={catalogNumbers.length === 0}
-                    onClick={(): void => handleProceed(undefined)}
-                  >
-                    {state.type === 'MissingState' ||
-                    state.type === 'InvalidState'
-                      ? commonText.update()
-                      : commonText.next()}
-                  </Button.Info>
-                </div>
-              </div>
-            </details>
-            {isLoanReturnLike ? null : (
-              <details>
-                <summary>
-                  {interactionsText.byEnteringNumbers({
-                    tableName: preparationField.table.label,
-                    fieldName: preparationField?.label ?? '',
+            <InteractionTextEntry
+              label={interactionsText.byEnteringNumbers({
+                fieldName: searchField?.label ?? '',
+              })}
+              searchField={searchField}
+              onSubmit={(parsed, handleMissing): void => {
+                if (parsed === undefined) return;
+                loading(
+                  (parsed.length === 0
+                    ? Promise.resolve([])
+                    : getPrepsForCoOrCog(
+                        'CollectionObject',
+                        'catalogNumber',
+                        parsed,
+                        isLoan
+                      )
+                  ).then((data) => {
+                    const results = availablePrepsReady(parsed, data);
+                    if (results !== undefined)
+                      handleMissing(results.missing, results.unavailable);
+                  })
+                );
+              }}
+            />
+          </Dialog>
+        )}
+      </RecordSetsDialog>
+    </ReadOnlyContext.Provider>
+  );
+}
+
+function InteractionTextEntry({
+  label,
+  searchField,
+  onSubmit,
+}: {
+  readonly label: LocalizedString;
+  readonly searchField: LiteralField;
+  readonly onSubmit: (
+    parsed: RA<string> | undefined,
+    handleMissing: (missing: RA<string>, unavailable: RA<string>) => void
+  ) => void;
+}): JSX.Element {
+  const [input, setInput] = React.useState<string>('');
+  const { validationRef, inputRef, setValidation } =
+    useValidation<HTMLTextAreaElement>();
+
+  const { parser, split, attributes } = useParser(searchField);
+
+  const [state, setState] = React.useState<
+    | State<
+        'InvalidState',
+        {
+          readonly invalid: RA<string>;
+        }
+      >
+    | State<
+        'MissingState',
+        {
+          // No preparations found for these records
+          readonly missing: RA<string>;
+          // No preparations for at least one type of prep for these records
+          readonly unavailable: RA<string>;
+        }
+      >
+    | State<'MainState'>
+  >({
+    type: 'MainState',
+  });
+
+  function handleParse(input: string): RA<string> | undefined {
+    const parseResults = split(input).map((value) =>
+      parseValue(parser, inputRef.current ?? undefined, value)
+    );
+    const errorMessages = parseResults
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
+    if (errorMessages.length > 0) {
+      setValidation(errorMessages);
+      setState({
+        type: 'InvalidState',
+        invalid: errorMessages,
+      });
+      return undefined;
+    }
+
+    const parsed = f.unique(
+      (parseResults as RA<ValidParseResult>)
+        .filter(({ parsed }) => parsed !== null)
+        .map(({ parsed }) => (parsed as number | string).toString())
+        .sort(sortFunction(f.id))
+    );
+    setInput(parsed.join('\n'));
+
+    setState({ type: 'MainState' });
+    return parsed;
+  }
+
+  return (
+    <details>
+      <summary>{label}</summary>
+      <div className="flex flex-col gap-2">
+        <AutoGrowTextArea
+          forwardRef={validationRef}
+          spellCheck={false}
+          value={input}
+          onValueChange={setInput}
+          {...attributes}
+        />
+        <div>
+          <Button.Info
+            disabled={input.length === 0}
+            onClick={(): void =>
+              onSubmit(
+                handleParse(input),
+                (missing: RA<string>, unavailable: RA<string>) =>
+                  setState({
+                    type: 'MissingState',
+                    missing,
+                    unavailable,
+                  })
+              )
+            }
+          >
+            {state.type === 'InvalidState' || state.type === 'MissingState'
+              ? commonText.update()
+              : commonText.next()}
+          </Button.Info>
+        </div>
+        {state.type === 'InvalidState' && (
+          <>
+            {interactionsText.problemsFound()}
+            {state.invalid.map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </>
+        )}
+        {state.type === 'MissingState' && (
+          <>
+            {state.missing.length > 0 && (
+              <>
+                <H3>
+                    {interactionsText.preparationsNotFoundFor({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
                   })}
-                </summary>
-                <div className="flex flex-col gap-2">
-                  <AutoGrowTextArea
-                    forwardRef={prepValidationRef}
-                    spellCheck={false}
-                    value={preparationValues}
-                    onValueChange={setPreparationValues}
-                    {...prepAttributes}
-                  />
-                  <div>
-                    <Button.Info
-                      disabled={preparationValues.length === 0}
-                      onClick={(): void => handleProceedPreparationField()}
-                    >
-                      {state.type === 'MissingState' ||
-                      state.type === 'InvalidState'
-                        ? commonText.update()
-                        : commonText.next()}
-                    </Button.Info>
-                  </div>
-                </div>
-              </details>
+                </H3>
+                {state.missing.map((problem, index) => (
+                  <p key={index}>{problem}</p>
+                ))}
+              </>
             )}
-            {state.type === 'InvalidState' && (
-              <div className="mt-2 space-y-1">
-                <H3>{interactionsText.problemsFound()}</H3>
-                {state.invalid.map((error, index) => (
-                  <p key={index}>{error}</p>
+            {state.unavailable.length > 0 && (
+              <>
+                <H3>
+                  {interactionsText.preparationsNotAvailableFor({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                  })}
+                </H3>
+                {state.unavailable.map((problem, index) => (
+                  <p key={index}>{problem}</p>
                 ))}
               </div>
             )}

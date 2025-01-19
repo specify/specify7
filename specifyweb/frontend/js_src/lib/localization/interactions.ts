@@ -41,29 +41,14 @@ export const interactionsText = createDictionary({
     'pt-br': '{table:string} Retornar',
   },
   preparationsNotFoundFor: {
-    'en-us': 'No preparations were found for the following records:',
-    'de-ch': 'Für die folgenden Datensätze wurden keine Präparate gefunden:',
-    'es-es': 'No se encontraron preparaciones para los siguientes registros:',
-    'fr-fr':
-      "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
-    'ru-ru': 'Препаратов для следующих записей не обнаружено:',
-    'uk-ua': 'Для наступних записів не знайдено жодних підготовчих матеріалів:',
-    'pt-br': 'Não foram encontradas preparações para os seguintes registros:',
+    comment: 'Example: No preparation records were found for the following records:',
+    'en-us': 'No {preparationTable:string} records were found for the following records:',
   },
   preparationsNotAvailableFor: {
-    'en-us':
-      'No preparations are available for at least one type of preparation in the following records:',
-    'de-ch':
-      'Für mindestens eine Präparateart sind in folgenden Datensätzen keine Präparate vorhanden:',
-    'es-es':
-      'No hay preparaciones disponibles para al menos un tipo de preparación en los siguientes registros:',
-    'fr-fr':
-      "Aucune préparation n'est disponible pour au moins un type de préparation dans les enregistrements suivants :",
-    'ru-ru': 'В следующих записях отсутствуют препараты хотя бы одного типа:',
-    'uk-ua':
-      'У наступних записах відсутні препарати принаймні для одного типу препарату:',
-    'pt-br':
-      'Não há preparações disponíveis para pelo menos um tipo de preparação nos seguintes registros:',
+    'en-us': `
+      No {preparationTable:string} records are available for at least one type of preparation in the
+      following records:
+    `,
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -102,22 +87,10 @@ export const interactionsText = createDictionary({
     'pt-br': 'Ao inserir {fieldName:string}s',
   },
   withoutPreparations: {
-    'en-us': 'Without preparations',
-    'ru-ru': 'Без подготовки',
-    'es-es': 'Sin preparativos',
-    'fr-fr': 'Sans préparations',
-    'uk-ua': 'Без підготовки',
-    'de-ch': 'Ohne Präparate',
-    'pt-br': 'Sem preparativos',
+    'en-us': 'No {preparationTable:string}',
   },
   continueWithoutPreparations: {
-    'en-us': 'Continue without preparations',
-    'de-ch': 'Ohne Vorbereitungen weitermachen',
-    'es-es': 'Continuar sin preparativos',
-    'fr-fr': 'Continuer sans préparation',
-    'ru-ru': 'Продолжить без подготовки',
-    'uk-ua': 'Продовжуйте без підготовки',
-    'pt-br': 'Continuar sem preparações',
+    'en-us': 'Continue without {preparationTable:string}',
   },
   addUnassociated: {
     'en-us': 'Add unassociated item',
@@ -129,33 +102,13 @@ export const interactionsText = createDictionary({
     'pt-br': 'Adicionar item não associado',
   },
   preparations: {
-    'en-us': 'Preparations',
-    'ru-ru': 'Препараты',
-    'es-es': 'Preparativos',
-    'fr-fr': 'Preparations',
-    'uk-ua': 'Підготовка',
-    'de-ch': 'Präparate',
-    'pt-br': 'Preparativos',
+    'en-us': 'Add {preparationTable:string}',
   },
   preparationsCanNotBeReturned: {
-    'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'Препараты в данном случае возврату не подлежат.',
-    'es-es': 'En este contexto no es posible retomar los preparativos.',
-    'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не можна повернути.',
-    'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
-    'pt-br': 'Os preparativos não podem ser devolvidos neste contexto.',
+    'en-us': '{preparationTable:string} records cannot be returned in this context.',
   },
   noUnresolvedPreparations: {
-    'en-us': 'There are no unresolved preparations for this loan.',
-    'ru-ru':
-      'Никаких нерешенных подготовительных вопросов по данному кредиту нет.',
-    'es-es': 'No existen preparativos pendientes para este préstamo.',
-    'fr-fr': 'Il n’y a pas de preparations non retournées pour ce prêt.',
-    'uk-ua':
-      'Немає жодних невирішених питань щодо підготовки до цього кредиту.',
-    'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
-    'pt-br': 'Não há preparativos não resolvidos para este empréstimo.',
+    'en-us': 'There are no unresolved {loanPreparationsLabel:string}.',
   },
   unresolved: {
     'en-us': 'Unresolved',
