@@ -159,7 +159,10 @@ export function QueryLoanReturn({
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 <Submit.Success
                   form={id('form')}
-                  title={interactionsText.returnSelectedPreparations()}
+                  title=
+                    {interactionsText.returnSelectedPreparations({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                    })}
                 >
                   {interactionsText.return()}
                 </Submit.Success>
