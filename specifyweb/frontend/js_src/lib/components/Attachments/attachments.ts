@@ -72,6 +72,7 @@ function iconForMimeType(mimeType: string): {
     'text/xml': { alt: 'html', src: textHtmlIcon },
     'text/plain': { alt: 'text', src: textXGenericIcon },
     'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
+    'application/x-yaml': { alt: 'yaml', src: textXMakefileIcon },
     'video/x-generic': { alt: 'video', src: videoXGenericIcon },
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { alt: 'MSWord', src: xOfficeDocumentIcon },
     'application/vnd.openxmlformats-officedocument.presentationml.presentation': { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
@@ -83,8 +84,11 @@ function iconForMimeType(mimeType: string): {
     iconMap[mimeType] 
     ?? (mimeType.startsWith('video/') ? { alt: 'video', src: videoXGenericIcon } : null)
     ?? (mimeType.startsWith('audio/') ? { alt: 'audio', src: audioXGenericIcon } : null)
-    ?? (mimeType.includes('presentation/') || mimeType.includes('powerpoint') ? { alt: 'presentation', src: xOfficePresentationIcon } : null)
-    ?? { alt:commonText.unknown(), src: textXGenericIcon }
+    ?? (mimeType.startsWith('image/') ? { alt: 'image', src: imageXGenericIcon } : null)
+    ?? (mimeType.endsWith('presentation') || mimeType.includes('powerpoint') ? { alt: 'presentation', src: xOfficePresentationIcon } : null)
+    ?? (mimeType.includes('wordprocessing') || mimeType.endsWith('word') ? { alt: 'document', src: xOfficeDocumentIcon } : null)
+    ?? (mimeType == null ? { alt: 'image', src: textXGenericIcon } : null)
+    ?? { alt: commonText.unknown(), src: textXGenericIcon }
   );
 }
 
