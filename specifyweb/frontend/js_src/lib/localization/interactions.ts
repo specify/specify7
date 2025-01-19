@@ -19,7 +19,8 @@ export const interactionsText = createDictionary({
   },
   noInteractions: {
     comment: 'Example: There are no interactions linked to this {preparation}',
-    'en-us': 'There are no interactions linked to this {preparationTable:string}.',
+    'en-us':
+      'There are no interactions linked to this {preparationTable:string}.',
   },
   addItems: {
     'en-us': 'Add Items',

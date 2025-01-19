@@ -144,11 +144,6 @@ export function ShowLoansCommand({
       onClose={handleClose}
     >
     {!hasAnyInteractions ? (
-        <>
-        {interactionsText.noInteractions({
-                  preparationTable: String(tables.Preparation.label).toLowerCase(),
-                })}
-        </>
       ) : (
         <>
           {Array.isArray(data.openLoans) && data.openLoans.length > 0 && (
@@ -241,6 +236,12 @@ export function ShowLoansCommand({
               />
             </>
           )}
+        </>
+      ) : (
+        <>
+        {interactionsText.noInteractions({
+                  preparationTable: String(tables.Preparation.label).toLowerCase(),
+                })}
         </>
       )}
     </Dialog>
