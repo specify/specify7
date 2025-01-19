@@ -422,11 +422,15 @@ export function InteractionDialog({
                   handleClose();
                 }}
               >
-                {interactionsText.continueWithoutPreparations()}
+                {interactionsText.continueWithoutPreparations({
+                  preparationTable: String(tables.Preparation.label).toLowerCase(),
+                })}
               </Button.Info>
             ) : (
               <Link.Info href={getResourceViewUrl(actionTable.name)}>
-                {interactionsText.continueWithoutPreparations()}
+                {interactionsText.continueWithoutPreparations({
+                  preparationTable: String(tables.Preparation.label).toLowerCase(),
+                })}
               </Link.Info>
             )}
             {}
@@ -437,7 +441,9 @@ export function InteractionDialog({
         })}
         onClose={handleClose}
       >
-        {interactionsText.noPreparationsWarning()}
+        {interactionsText.noPreparationsWarning({
+          preparationTable: String(tables.Preparation.label).toLowerCase(),
+        })}
       </Dialog>
     )
   ) : (

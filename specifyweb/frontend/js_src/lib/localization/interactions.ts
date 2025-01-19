@@ -143,7 +143,7 @@ export const interactionsText = createDictionary({
   returnAllPreparations: {
     'en-us': 'Return all {preparationTable:string} records',
   },
-  returnSelectedPreparations: {
+  returnSelectedPreparations: { 
     'en-us': 'Return selected {preparationTable:string} records',
   },
   selectAllAvailablePreparations: {
@@ -188,7 +188,6 @@ export const interactionsText = createDictionary({
   prepReturnFormatter: {
     comment: 'Used to format preparations in the prep return dialog',
     'en-us': '{tableName:string}: {resource:string}',
-    'ru-ru': '{tableName:string}: {resource:string}',
     'es-es': '{tableName:string}: {resource:string}',
     'fr-fr': '{tableName:string}: {resource:string}',
     'uk-ua': "{tableName:string}': {resource:string}",
@@ -337,14 +336,7 @@ export const interactionsText = createDictionary({
   },
   noPreparationsWarning: {
     'en-us':
-      'None of these objects have preparations. Would you like to continue?',
-    'de-ch':
-      'Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?',
-    'es-es': 'Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?',
-    'fr-fr': "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
-    'ru-ru': 'Ни один из этих объектов не имеет подготовки. Хотите продолжить?',
-    'uk-ua': "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
-    'pt-br': 'Nenhum destes objetos possui preparação. Deseja continuar?',
+      'None of these objects have {preparationTable:string} records. Would you like to continue?',
   },
   continue: {
     'en-us': 'Continue',
