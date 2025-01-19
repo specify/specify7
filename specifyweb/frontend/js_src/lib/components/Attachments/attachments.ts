@@ -78,23 +78,14 @@ function iconForMimeType(mimeType: string): {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { alt: 'MSExcel', src: xOfficeSpreadsheetIcon },
     'application/zip': { alt: 'zip', src: packageXgeneric },
   };
-  
-  if (mimeType.startsWith('video/')) {
-    return { alt: 'video', src: videoXGenericIcon };
-  }
-  
-  if (mimeType.startsWith('audio/')) {
-    return { alt: 'audio', src: audioXGenericIcon };
-  }
-  
-  if (mimeType.includes('presentation/') || mimeType.includes('powerpoint')) {
-    return { alt: 'presentation', src: xOfficePresentationIcon };
-  }
 
-  // If the MIME type does not exists in the iconMap, show the unknown icon
-  const icon = iconMap[mimeType] || { alt: commonText.unknown(), src: textXGenericIcon };
-
-  return icon;
+  return (
+    iconMap[mimeType] 
+    ?? (mimeType.startsWith('video/') ? { alt: 'video', src: videoXGenericIcon } : null)
+    ?? (mimeType.startsWith('audio/') ? { alt: 'audio', src: audioXGenericIcon } : null)
+    ?? (mimeType.includes('presentation/') || mimeType.includes('powerpoint') ? { alt: 'presentation', src: xOfficePresentationIcon } : null)
+    ?? { alt:commonText.unknown(), src: textXGenericIcon }
+  );
 }
 
 export const fetchAssetToken = async (
@@ -130,7 +121,7 @@ export async function fetchThumbnail(
       : iconForMimeType(mimeType);
 
   // Display an icon for resources that don't have a custom thumbnail
-  if (typeof thumbnail === 'object' && thumbnail?.src !== textXGenericIcon)
+  if (typeof thumbnail === 'object')
     return {
       ...thumbnail,
       width: scale,
