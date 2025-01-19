@@ -28,9 +28,6 @@ import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
 import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
 import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
 
-// Loading icon as well
-import imageLoading from './MimetypeIcons/image-loading.svg';
-
 type AttachmentSettings = {
   readonly collection: string;
   readonly delete: string;
