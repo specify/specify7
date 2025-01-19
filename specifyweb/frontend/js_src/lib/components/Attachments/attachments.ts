@@ -14,7 +14,6 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 
 // Import SVG icons, but better than in Icons.tsx
-// It would be nice to do the same for all icons...
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
 import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
 import audioXGenericIcon from './MimetypeIcons/audio-x-generic.svg';
@@ -23,11 +22,14 @@ import modelIcon from './MimetypeIcons/model.svg';
 import textHtmlIcon from './MimetypeIcons/text-html.svg';
 import textXGenericIcon from './MimetypeIcons/text-x-generic.svg';
 import textXMakefileIcon from './MimetypeIcons/text-x-makefile.svg';
-import unknownIcon from './MimetypeIcons/unknown.svg';
 import videoXGenericIcon from './MimetypeIcons/video-x-generic.svg';
 import xOfficeDocumentIcon from './MimetypeIcons/x-office-document.svg';
 import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
 import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
+import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
+
+// Loading icon as well
+import imageLoading from './MimetypeIcons/image-loading.svg';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -63,7 +65,6 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  // This simplifies the MIME type checking
   const iconMap: Record<string, { alt: string; src: string }> = {
     'application/json': { alt: 'json', src: applicationJsonIcon },
     'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
@@ -71,16 +72,30 @@ function iconForMimeType(mimeType: string): {
     'image/x-generic': { alt: 'image', src: imageXGenericIcon },
     'model': { alt: 'model', src: modelIcon },
     'text/html': { alt: 'html', src: textHtmlIcon },
+    'text/xml': { alt: 'html', src: textHtmlIcon },
     'text/plain': { alt: 'text', src: textXGenericIcon },
     'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
     'video/x-generic': { alt: 'video', src: videoXGenericIcon },
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { alt: 'MSWord', src: xOfficeDocumentIcon },
     'application/vnd.openxmlformats-officedocument.presentationml.presentation': { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { alt: 'MSExcel', src: xOfficeSpreadsheetIcon },
+    'application/zip': { alt: 'zip', src: packageXgeneric },
   };
+  
+  if (mimeType.startsWith('video/')) {
+    return { alt: 'video', src: videoXGenericIcon };
+  }
+  
+  if (mimeType.startsWith('audio/')) {
+    return { alt: 'audio', src: audioXGenericIcon };
+  }
+  
+  if (mimeType.includes('presentation/') || mimeType.includes('powerpoint')) {
+    return { alt: 'audio', src: audioXGenericIcon };
+  }
 
   // If the MIME type does not exists in the iconMap, show the unknown icon
-  const icon = iconMap[mimeType] || { alt: commonText.unknown(), src: unknownIcon };
+  const icon = iconMap[mimeType] || { alt: commonText.unknown(), src: textXGenericIcon };
 
   return icon;
 }
@@ -118,7 +133,7 @@ export async function fetchThumbnail(
       : iconForMimeType(mimeType);
 
   // Display an icon for resources that don't have a custom thumbnail
-  if (typeof thumbnail === 'object' && thumbnail?.src !== unknownIcon)
+  if (typeof thumbnail === 'object' && thumbnail?.src !== textXGenericIcon)
     return {
       ...thumbnail,
       width: scale,
