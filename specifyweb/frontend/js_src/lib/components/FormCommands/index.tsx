@@ -18,6 +18,7 @@ import { LoanReturn } from '../Interactions/LoanReturn';
 import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
+import { tables } from '../DataModel/tables';
 
 export function GenerateLabel({
   resource,
