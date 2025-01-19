@@ -104,7 +104,10 @@ export function PrepDialog({
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             <Button.Info
               disabled={!canSelectAll}
-              title={interactionsText.selectAllAvailablePreparations()}
+              title=
+                {interactionsText.selectAllAvailablePreparations({
+                  preparationTable: String(tables.Preparation.label).toLowerCase(),
+                  })}
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
