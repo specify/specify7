@@ -133,7 +133,10 @@ export function PrepDialog({
           </>
         )
       }
-      header={interactionsText.preparations()}
+      header=
+          {interactionsText.preparations({
+            preparationTable: tables.Preparation.label,
+        })}
       onClose={handleClose}
     >
       <Label.Inline className="gap-2">

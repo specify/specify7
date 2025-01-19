@@ -72,7 +72,9 @@ export function LoanReturn({
         header={tables.LoanPreparation.label}
         onClose={handleClose}
       >
-        {interactionsText.noUnresolvedPreparations()}
+        {interactionsText.noUnresolvedPreparations({
+                loanPreparationsLabel: String(getField(tables.Loan, 'loanPreparations').label).toLowerCase()
+            })}
       </Dialog>
     ) : (
       <PreparationReturn preparations={preparations} onClose={handleClose} />

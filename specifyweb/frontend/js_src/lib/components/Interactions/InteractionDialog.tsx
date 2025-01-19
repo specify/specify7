@@ -245,7 +245,9 @@ export function InteractionDialog({
                   </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
-                    {interactionsText.withoutPreparations()}
+                    {interactionsText.withoutPreparations({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                    })}
                   </Link.Secondary>
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
@@ -419,7 +421,11 @@ function InteractionTextEntry({
           <>
             {state.missing.length > 0 && (
               <>
-                <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                <H3>
+                    {interactionsText.preparationsNotFoundFor({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                  })}
+                </H3>
                 {state.missing.map((problem, index) => (
                   <p key={index}>{problem}</p>
                 ))}
@@ -427,7 +433,11 @@ function InteractionTextEntry({
             )}
             {state.unavailable.length > 0 && (
               <>
-                <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
+                <H3>
+                  {interactionsText.preparationsNotAvailableFor({
+                      preparationTable: String(tables.Preparation.label).toLowerCase(),
+                  })}
+                </H3>
                 {state.unavailable.map((problem, index) => (
                   <p key={index}>{problem}</p>
                 ))}
