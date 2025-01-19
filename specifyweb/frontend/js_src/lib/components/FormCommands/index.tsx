@@ -12,13 +12,13 @@ import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { UiCommands } from '../FormParse/commands';
 import { LoanReturn } from '../Interactions/LoanReturn';
 import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
-import { tables } from '../DataModel/tables';
 
 export function GenerateLabel({
   resource,
