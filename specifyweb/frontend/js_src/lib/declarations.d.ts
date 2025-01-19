@@ -103,6 +103,12 @@ declare module 'history' {
   export type SafeLocation = Location<SafeLocationState>;
 }
 
+// Allow SVGs to be imported as strings
+declare module '*.svg' {
+  const content: string;
+  export default content;
+}
+
 /* eslint-enable @typescript-eslint/method-signature-style */
 /* eslint-enable functional/no-method-signature */
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
