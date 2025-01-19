@@ -91,7 +91,7 @@ function iconForMimeType(mimeType: string): {
   }
   
   if (mimeType.includes('presentation/') || mimeType.includes('powerpoint')) {
-    return { alt: 'audio', src: audioXGenericIcon };
+    return { alt: 'presentation', src: xOfficePresentationIcon };
   }
 
   // If the MIME type does not exists in the iconMap, show the unknown icon
