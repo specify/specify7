@@ -10,9 +10,24 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
+
+// Import SVG icons, but better than in Icons.tsx
+// It would be nice to do the same for all icons...
+import applicationJsonIcon from './MimetypeIcons/application-json.svg';
+import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
+import audioXGenericIcon from './MimetypeIcons/audio-x-generic.svg';
+import imageXGenericIcon from './MimetypeIcons/image-x-generic.svg';
+import modelIcon from './MimetypeIcons/model.svg';
+import textHtmlIcon from './MimetypeIcons/text-html.svg';
+import textXGenericIcon from './MimetypeIcons/text-x-generic.svg';
+import textXMakefileIcon from './MimetypeIcons/text-x-makefile.svg';
+import unknownIcon from './MimetypeIcons/unknown.svg';
+import videoXGenericIcon from './MimetypeIcons/video-x-generic.svg';
+import xOfficeDocumentIcon from './MimetypeIcons/x-office-document.svg';
+import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
+import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -48,31 +63,26 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  if (mimeType === 'text/plain')
-    return { alt: 'text', src: getIcon('text') ?? unknownIcon };
-  if (mimeType === 'text/html')
-    return { alt: 'html', src: getIcon('html') ?? unknownIcon };
+  // This simplifies the MIME type checking
+  const iconMap: Record<string, { alt: string; src: string }> = {
+    'application/json': { alt: 'json', src: applicationJsonIcon },
+    'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
+    'audio/x-generic': { alt: 'audio', src: audioXGenericIcon },
+    'image/x-generic': { alt: 'image', src: imageXGenericIcon },
+    'model': { alt: 'model', src: modelIcon },
+    'text/html': { alt: 'html', src: textHtmlIcon },
+    'text/plain': { alt: 'text', src: textXGenericIcon },
+    'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
+    'video/x-generic': { alt: 'video', src: videoXGenericIcon },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { alt: 'MSWord', src: xOfficeDocumentIcon },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { alt: 'MSExcel', src: xOfficeSpreadsheetIcon },
+  };
 
-  const parts = mimeType.split('/');
-  const type = parts[0];
-  const subtype = parts[1];
+  // If the MIME type does not exists in the iconMap, show the unknown icon
+  const icon = iconMap[mimeType] || { alt: commonText.unknown(), src: unknownIcon };
 
-  if (['audio', 'video', 'image', 'text'].includes(type))
-    return { alt: type, src: getIcon(type) ?? unknownIcon };
-
-  if (type === 'application') {
-    const iconName = {
-      pdf: 'pdf',
-      'vnd.ms-excel': 'MSExcel',
-      'vnd.ms-word': 'MSWord',
-      'vnd.ms-powerpoint': 'MSPowerPoint',
-    }[subtype];
-
-    if (typeof iconName === 'string')
-      return { alt: iconName, src: getIcon(iconName) ?? unknownIcon };
-  }
-
-  return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
+  return icon;
 }
 
 export const fetchAssetToken = async (
