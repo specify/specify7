@@ -169,7 +169,10 @@ function PreparationReturn({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Info
             disabled={!canSelectAll}
-            title={interactionsText.returnAllPreparations()}
+            title=
+            {interactionsText.returnAllPreparations({
+              preparationTable: String(tables.Preparation.label).toLowerCase(),
+          })}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -200,7 +203,10 @@ function PreparationReturn({
           </Button.Info>
           <Submit.Success
             form={id('form')}
-            title={interactionsText.returnSelectedPreparations()}
+            title=
+              {interactionsText.returnSelectedPreparations({
+                preparationTable: String(tables.Preparation.label).toLowerCase(),
+               })}
           >
             {commonText.apply()}
           </Submit.Success>
