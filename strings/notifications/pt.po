@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-11 16:45+0000\n"
+"PO-Revision-Date: 2025-01-19 11:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "notifications/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:96
@@ -41,7 +41,7 @@ msgstr "(Ordenados do mais recente para o mais antigo.)"
 #: components/Notifications/NotificationRenderers.tsx:90
 #, fuzzy
 msgid "exception"
-msgstr "Notificações: …"
+msgstr "Erro"
 
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/AppResources/EditorComponents.tsx:159
