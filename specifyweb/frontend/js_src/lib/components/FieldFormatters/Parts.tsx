@@ -156,7 +156,7 @@ function Part({
           required
           value={
             part.type === 'regex'
-              ? part.regexPlaceholder ?? ''
+              ? (part.regexPlaceholder ?? '')
               : part.placeholder
           }
           onValueChange={(placeholder): void =>
@@ -251,6 +251,7 @@ function RegexField({
           // eslint-disable-next-line require-unicode-regexp
           void new RegExp(target.value);
           handleChange(target.value as LocalizedString);
+          target.setCustomValidity('');
         } catch (error: unknown) {
           target.setCustomValidity(String(error));
           target.reportValidity();
