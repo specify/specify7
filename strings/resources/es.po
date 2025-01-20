@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-20 23:00+0000\n"
+"PO-Revision-Date: 2025-01-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -219,13 +219,13 @@ msgstr "Tablas de entrada de datos"
 #: components/AppResources/types.tsx:183
 #, fuzzy
 msgid "interactionsTables"
-msgstr "Debes guardar este formulario antes de editar otro."
+msgstr "Tablas de interacciones"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:190
 #, fuzzy
 msgid "otherXmlResource"
-msgstr "Seleccionar el tipo de recurso"
+msgstr "Otros recursos XML"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
@@ -362,7 +362,7 @@ msgstr "Límite"
 #: components/QueryBuilder/Formatter.tsx:92
 #, fuzzy
 msgid "defaultInline"
-msgstr "Vista previa del formato"
+msgstr "(por defecto)"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
@@ -398,7 +398,7 @@ msgstr "El editor visual no está disponible para este recurso"
 #: components/WebLinks/Definition.tsx:44
 #, fuzzy
 msgid "definition"
-msgstr "Agregación de tablas"
+msgstr "Definición"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
@@ -413,7 +413,7 @@ msgstr "Añadir definición"
 #: components/Formatters/Definitions.tsx:252
 #, fuzzy
 msgid "deleteDefinition"
-msgstr "Formato de tabla"
+msgstr "Eliminar definición"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
