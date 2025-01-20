@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-20 23:00+0000\n"
+"PO-Revision-Date: 2025-01-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -319,7 +319,7 @@ msgstr "Standard"
 #: components/Formatters/Fields.tsx:163
 #, fuzzy
 msgid "separator"
-msgstr "Bedingtes Feld reduzieren"
+msgstr "Separator"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
@@ -488,7 +488,7 @@ msgstr "In Sammlung ausführen"
 #: components/FormEditor/Create.tsx:73
 #, fuzzy
 msgid "createNewForm"
-msgstr "Definition"
+msgstr "Erstellen einer neuen Ansichtsdefinition"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
@@ -530,7 +530,7 @@ msgstr "Bedingtes Format"
 #: components/Formatters/Fields.tsx:129
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr "Bedingungsfeldwert"
+msgstr "Feldformate anpassen"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:261
