@@ -42,8 +42,10 @@ export const interactionsText = createDictionary({
     'pt-br': '{table:string} Retornar',
   },
   preparationsNotFoundFor: {
-    comment: 'Example: No preparation records were found for the following records:',
-    'en-us': 'No {preparationTable:string} records were found for the following records:',
+    comment:
+      'Example: No preparation records were found for the following records:',
+    'en-us':
+      'No {preparationTable:string} records were found for the following records:',
   },
   preparationsNotAvailableFor: {
     'en-us': `
@@ -106,7 +108,8 @@ export const interactionsText = createDictionary({
     'en-us': 'Add {preparationTable:string}',
   },
   preparationsCanNotBeReturned: {
-    'en-us': '{preparationTable:string} records cannot be returned in this context.',
+    'en-us':
+      '{preparationTable:string} records cannot be returned in this context.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved {loanPreparationsLabel:string}.',
@@ -143,7 +146,7 @@ export const interactionsText = createDictionary({
   returnAllPreparations: {
     'en-us': 'Return all {preparationTable:string} records',
   },
-  returnSelectedPreparations: { 
+  returnSelectedPreparations: {
     'en-us': 'Return selected {preparationTable:string} records',
   },
   selectAllAvailablePreparations: {
@@ -214,42 +217,9 @@ export const interactionsText = createDictionary({
     'de-ch': '{loanTable:string}-Datensätze öffnen',
     'pt-br': 'Abrir registros {loanTable:string}',
   },
-  gifts: {
-    comment: 'Example: Gift records',
-    'en-us': '{giftTable:string} records',
-    'es-es': '{giftTable:string} registros',
-    'fr-fr': '{giftTable:string} enregistrements',
-    'ru-ru': '{giftTable:string} записей',
-    'uk-ua': '{giftTable:string} записи',
-    'de-ch': '{giftTable:string} Datensätze',
-    'pt-br': '{giftTable:string} registros',
-  },
-  disposals: {
-    comment: 'Example: Disposal records',
-    'en-us': '{disposalTable:string} records',
-    'es-es': '{disposalTable:string} registros',
-    'fr-fr': '{disposalTable:string} enregistrements',
-    'ru-ru': '{disposalTable:string} записи',
-    'uk-ua': '{disposalTable:string} записи',
-    'de-ch': '{disposalTable:string} Datensätze',
-  },
-  exchangeOut: {
-    comment: 'Example: Exchange Out records',
-    'en-us': '{exchangeOutTable:string} records',
-    'es-es': '{exchangeOutTable:string} registros',
-    'fr-fr': '{exchangeOutTable:string} enregistrements',
-    'ru-ru': '{exchangeOutTable:string} записи',
-    'uk-ua': '{exchangeOutTable:string} записи',
-    'de-ch': '{exchangeOutTable:string} Datensätze',
-  },
-  exchangeIn: {
+  tableLabelRecords: {
     comment: 'Example: Exchange In records',
-    'en-us': '{exchangeInTable:string} records',
-    'es-es': '{exchangeInTable:string} registros',
-    'fr-fr': '{exchangeInTable:string} enregistrements',
-    'ru-ru': '{exchangeInTable:string} записи',
-    'uk-ua': '{exchangeInTable:string} записи',
-    'de-ch': '{exchangeInTable:string} Datensätze',
+    'en-us': '{tableLabel:string} records',
   },
   unCataloged: {
     'en-us': 'uncataloged',

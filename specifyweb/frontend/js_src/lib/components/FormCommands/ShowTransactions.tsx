@@ -1,71 +1,34 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
-import { H3, Ul } from '../Atoms';
+import { H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import type { AnySchema } from '../DataModel/helperTypes';
+import { formatNumber } from '../Atoms/Internationalization';
+import type { CollectionFetchFilters } from '../DataModel/collection';
+import { fetchCollection } from '../DataModel/collection';
+import { backendFilter, formatRelationshipPath } from '../DataModel/helpers';
+import type {
+  AnyInteractionPreparation,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type { Preparation } from '../DataModel/types';
+import type { Preparation, Tables } from '../DataModel/types';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import type { InteractionWithPreps } from '../Interactions/helpers';
+import {
+  interactionPrepTables,
+  interactionsWithPrepTables,
+} from '../Interactions/helpers';
 import { Dialog } from '../Molecules/Dialog';
-import { ResourceLink } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-
-function List({
-  resources,
-  fieldName,
-  displayFieldName,
-}: {
-  readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly fieldName: string;
-  readonly displayFieldName: string;
-}): JSX.Element {
-  const [entries] = useAsyncState(
-    React.useCallback(async () => {
-      const interactions: RA<SpecifyResource<AnySchema>> = await Promise.all(
-        resources.map(async (resource) => resource.rgetPromise(fieldName))
-      );
-      return interactions
-        .map((resource) => ({
-          label: resource.get(displayFieldName),
-          resource,
-        }))
-        .sort(sortFunction(({ label }) => label));
-    }, [resources, fieldName, displayFieldName]),
-    false
-  );
-
-  return resources.length === 0 ? (
-    <>{commonText.noResults()}</>
-  ) : Array.isArray(entries) ? (
-    <Ul>
-      {entries.map(({ label, resource }, index) => (
-        <li key={index}>
-          <ResourceLink
-            component={Link.Default}
-            props={{}}
-            resource={resource}
-            resourceView={{ onDeleted: undefined }}
-          >
-            {label}
-          </ResourceLink>
-        </li>
-      ))}
-    </Ul>
-  ) : (
-    <>{commonText.loading()}</>
-  );
-}
-
 export function ShowLoansCommand({
   preparation,
   onClose: handleClose,
@@ -73,176 +36,113 @@ export function ShowLoansCommand({
   readonly preparation: SpecifyResource<Preparation>;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () =>
-        f.all({
-          openLoans: hasTablePermission('LoanPreparation', 'read')
-            ? fetchCollection('LoanPreparation', {
-                isResolved: false,
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-          resolvedLoans: hasTablePermission('LoanPreparation', 'read')
-            ? fetchCollection('LoanPreparation', {
-                isResolved: true,
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-          gifts: hasTablePermission('GiftPreparation', 'read')
-            ? fetchCollection('GiftPreparation', {
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-          exchangeOuts: hasTablePermission('ExchangeOutPrep', 'read')
-            ? fetchCollection('ExchangeOutPrep', {
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-          exchangeIns: hasTablePermission('ExchangeInPrep', 'read')
-            ? fetchCollection('ExchangeInPrep', {
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-          disposals: hasTablePermission('Disposal', 'read')
-            ? fetchCollection('DisposalPreparation', {
-                limit: DEFAULT_FETCH_LIMIT,
-                preparation: preparation.get('id'),
-                domainFilter: false,
-              }).then(({ records }) => records.map(deserializeResource))
-            : undefined,
-        }),
-      [preparation]
-    ),
-    true
-  );
-
-  const hasAnyInteractions = data && [
-    data.openLoans,
-    data.resolvedLoans,
-    data.gifts,
-    data.exchangeOuts,
-    data.exchangeIns,
-    data.disposals,
-  ].some(interactions => Array.isArray(interactions) && interactions.length > 0);
-
-  return typeof data === 'object' ? (
+  return (
     <Dialog
       buttons={commonText.close()}
       header={interactionsText.interactions()}
       icon={icons.chat}
+      modal={false}
       onClose={handleClose}
     >
-    {!hasAnyInteractions ? (
-        <>
-        {interactionsText.noInteractions({
-                  preparationTable: String(tables.Preparation.label).toLowerCase(),
-                })}
-        </>
-      ) : (
-        <>
-          {Array.isArray(data.openLoans) && data.openLoans.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.Loan.name} />
-                {interactionsText.openLoans({
-                  loanTable: tables.Loan.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="loanNumber"
-                fieldName="loan"
-                resources={data.openLoans}
-              />
-            </>
-          )}
-          {Array.isArray(data.resolvedLoans) && data.resolvedLoans.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.Loan.name} />
-                {interactionsText.resolvedLoans({
-                  loanTable: tables.Loan.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="loanNumber"
-                fieldName="loan"
-                resources={data.resolvedLoans}
-              />
-            </>
-          )}
-          {Array.isArray(data.gifts) && data.gifts.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.Gift.name} />
-                {interactionsText.gifts({
-                  giftTable: tables.Gift.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="giftNumber"
-                fieldName="gift"
-                resources={data.gifts}
-              />
-            </>
-          )}
-          {Array.isArray(data.disposals) && data.disposals.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.Disposal.name} />
-                {interactionsText.disposals({
-                  disposalTable: tables.Disposal.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="disposalNumber"
-                fieldName="disposal"
-                resources={data.disposals}
-              />
-            </>
-          )}
-          {Array.isArray(data.exchangeOuts) && data.exchangeOuts.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.ExchangeOut.name} />
-                {interactionsText.exchangeOut({
-                  exchangeOutTable: tables.ExchangeOut.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="exchangeOutNumber"
-                fieldName="exchangeOut"
-                resources={data.exchangeOuts}
-              />
-            </>
-          )}
-          {Array.isArray(data.exchangeIns) && data.exchangeIns.length > 0 && (
-            <>
-              <H3 className="flex items-center gap-2">
-                <TableIcon label name={tables.ExchangeIn.name} />
-                {interactionsText.exchangeIn({
-                  exchangeInTable: tables.ExchangeIn.label,
-                })}
-              </H3>
-              <List
-                displayFieldName="exchangeInNumber"
-                fieldName="exchangeIn"
-                resources={data.exchangeIns}
-              />
-            </>
-          )}
-        </>
-      )}
+      {interactionsWithPrepTables
+        .filter((interactionTable) =>
+          hasTablePermission(interactionTable, 'read')
+        )
+        .map((interactionTable) => (
+          <InterationWithPreps
+            preparation={preparation}
+            tableName={interactionTable}
+          />
+        ))}
     </Dialog>
-  ) : null;
-}  
+  );
+}
+function InterationWithPreps({
+  preparation,
+  tableName,
+}: {
+  readonly preparation: SpecifyResource<Preparation>;
+  readonly tableName: InteractionWithPreps['tableName'];
+}): JSX.Element | null {
+  const [isOpen, handleOpen, handleClose, _] = useBooleanState(false);
+
+  const [relatedInteractionIds] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchRelatedInterations(preparation, tableName).then((records) =>
+          records.map(({ id }) => id)
+        ),
+      [preparation, tableName]
+    ),
+    false
+  );
+
+  return (
+    <>
+      {relatedInteractionIds === undefined ? (
+        <>
+          <H3>
+            <div className="flex">
+              <TableIcon label name={tables[tableName].name} />
+              <span className="p-1" />
+              {interactionsText.tableLabelRecords({
+                tableLabel: tables[tableName].label,
+              })}
+            </div>
+          </H3>
+          {commonText.loading()}
+        </>
+      ) : relatedInteractionIds.length === 0 ? null : (
+        <Button.LikeLink onClick={handleOpen}>
+          <div className="flex">
+            <TableIcon label name={tables[tableName].name} />
+            <span className="p-1" />
+            {`${interactionsText.tableLabelRecords({
+              tableLabel: tables[tableName].label,
+            })} (${formatNumber(relatedInteractionIds.length)})`}
+          </div>
+        </Button.LikeLink>
+      )}
+      {isOpen && Array.isArray(relatedInteractionIds) ? (
+        <RecordSelectorFromIds
+          dialog="nonModal"
+          ids={relatedInteractionIds}
+          isDependent={false}
+          newResource={undefined}
+          table={tables[tableName] as SpecifyTable}
+          title={undefined}
+          onAdd={undefined}
+          onClone={undefined}
+          onClose={handleClose}
+          onDelete={undefined}
+          onSaved={(): void => undefined}
+          onSlide={undefined}
+        />
+      ) : null}
+    </>
+  );
+}
+
+async function fetchRelatedInterations<
+  INTERACTION_TABLE extends InteractionWithPreps['tableName'],
+>(
+  preparation: SpecifyResource<Preparation>,
+  interactionTable: INTERACTION_TABLE
+): Promise<RA<SerializedResource<Tables[INTERACTION_TABLE]>>> {
+  const preparationField = tables[interactionTable].relationships.find(
+    (relationship) =>
+      interactionPrepTables.includes(
+        relationship.relatedTable.name as AnyInteractionPreparation['tableName']
+      )
+  );
+
+  return fetchCollection(interactionTable, {
+    ...backendFilter(
+      formatRelationshipPath(preparationField!.name, 'preparation')
+    ).equals(preparation.get('id')),
+    domainFilter: false,
+    limit: 0,
+  } as CollectionFetchFilters<Tables[INTERACTION_TABLE]>).then(
+    ({ records }) => records
+  );
+}
