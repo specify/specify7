@@ -13,6 +13,7 @@ import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fieldFormatterLocalization } from '.';
 import type { FieldFormatter, FieldFormatterPart } from './spec';
 import {
@@ -62,6 +63,7 @@ export function FieldFormatterParts({
                   part,
                   (part): void => setParts(replaceItem(parts, index, part)),
                 ]}
+                table={fieldFormatter.table}
                 onRemove={(): void => setParts(removeItem(parts, index))}
               />
             ))}
@@ -96,9 +98,11 @@ export function FieldFormatterParts({
 function Part({
   part: [part, handleChange],
   onRemove: handleRemove,
+  table,
 }: {
   readonly part: GetSet<FieldFormatterPart>;
   readonly onRemove: () => void;
+  readonly table: SpecifyTable | undefined;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -175,6 +179,7 @@ function Part({
           <Label.Inline>
             <Input.Checkbox
               checked={part.autoIncrement}
+              disabled={table?.getScopingRelationship() === undefined}
               isReadOnly={isReadOnly}
               onValueChange={(autoIncrement): void =>
                 handleChange({
