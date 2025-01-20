@@ -48,8 +48,9 @@ export function ShowLoansCommand({
         .filter((interactionTable) =>
           hasTablePermission(interactionTable, 'read')
         )
-        .map((interactionTable) => (
+        .map((interactionTable, index) => (
           <InterationWithPreps
+            key={index}
             preparation={preparation}
             tableName={interactionTable}
           />
@@ -143,6 +144,18 @@ async function fetchRelatedInterations<
     domainFilter: false,
     limit: 0,
   } as CollectionFetchFilters<Tables[INTERACTION_TABLE]>).then(
-    ({ records }) => records
+    ({ records }) => {
+      /**
+       * If there are multiple InteractionPreparations in an Interaction that
+       * reference the same Preparation, remove the duplicated Interaction
+       * records from response
+       */
+      const recordIds: Record<number, true> = {};
+      return records.filter(({ id }) => {
+        if (recordIds[id]) return false;
+        recordIds[id] = true;
+        return true;
+      });
+    }
   );
 }
