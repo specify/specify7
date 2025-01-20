@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-20 23:00+0000\n"
+"PO-Revision-Date: 2025-01-20 23:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -85,7 +85,7 @@ msgstr "Ressources"
 #: components/AppResources/Aside.tsx:264
 #, fuzzy
 msgid "subCategories"
-msgstr "Filtres"
+msgstr "Sous-catégories"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
@@ -140,7 +140,7 @@ msgstr "Formateurs de champs"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Valeur du champ conditionnel"
+msgstr "Formateurs d'enregistrement"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -232,13 +232,13 @@ msgstr "Tableaux d'interactions"
 #: components/AppResources/types.tsx:190
 #, fuzzy
 msgid "otherXmlResource"
-msgstr "Sélectionner le type de ressource"
+msgstr "Autre ressource XML"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
 #, fuzzy
 msgid "otherJsonResource"
-msgstr "Publier"
+msgstr "Autre ressource JSON"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -446,9 +446,7 @@ msgstr "Ce champ"
 #: components/WebLinks/Definition.tsx:166
 #, fuzzy
 msgid "selectTableFirst"
-msgstr ""
-"Recherchez dans vos enregistrements de collection pour prévisualiser le "
-"formateur d'enregistrements"
+msgstr "Sélectionnez d'abord la table"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
