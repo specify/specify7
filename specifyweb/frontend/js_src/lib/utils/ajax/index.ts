@@ -7,7 +7,11 @@ import { handleAjaxResponse } from './response';
 
 // FEATURE: make all back-end endpoints accept JSON
 
-export type MimeType = 'application/json' | 'text/plain' | 'text/xml' | 'application/octet-stream';
+export type MimeType =
+  | 'application/json'
+  | 'application/octet-stream'
+  | 'text/plain'
+  | 'text/xml';
 
 export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*
@@ -137,18 +141,21 @@ export async function ajax<RESPONSE_TYPE = string>(
       ...(typeof accept === 'string' ? { Accept: accept } : {}),
     },
   })
-    .then(async (response) => 
-        Promise.all([response, acceptBlobResponse ? response.blob() : response.text()]
-    ))
+    .then(async (response) =>
+      Promise.all([
+        response,
+        acceptBlobResponse ? response.blob() : response.text(),
+      ])
+    )
     .then(
-      ([response, text]: readonly [Response, string | Blob]) => {
+      ([response, text]: readonly [Response, Blob | string]) => {
         extractAppResourceId(url, response);
         return handleAjaxResponse<RESPONSE_TYPE>({
           expectedErrors,
           accept,
           errorMode,
           response,
-          text: typeof text === 'string' ? text : "",
+          text: typeof text === 'string' ? text : '',
           data: typeof text === 'string' ? undefined : text,
         });
       },
