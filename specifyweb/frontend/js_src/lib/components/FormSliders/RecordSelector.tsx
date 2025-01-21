@@ -84,9 +84,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const isToOne =
-    field === undefined
-      ? false
-      : !relationshipIsToMany(field) || field.type === 'zero-to-one';
+    field === undefined ? false : !field.type.includes('-to-many');
 
   const handleResourcesSelected = React.useMemo(
     () =>

@@ -58,8 +58,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = !relationship.type.includes('-to-many');
 
   // Listen for changes to collection
   React.useEffect(
