@@ -137,7 +137,7 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  data: string | Blob,
+  data: Blob | string
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;
@@ -150,7 +150,7 @@ export const downloadFile = async (
       if (typeof data === 'string') {
         element.setAttribute(
           'href',
-          `data:text/plain;charset=utf-8,${encodeURIComponent(data as string)}`
+          `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`
         );
         element.setAttribute('download', fileName);
       } else {

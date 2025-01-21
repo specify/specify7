@@ -5,22 +5,22 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { Http } from '../../utils/ajax/definitions';
+import { ajax } from '../../utils/ajax/index';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
-import { ajax } from '../../utils/ajax/index';
-import { keysToLowerCase } from '../../utils/utils';
-import { downloadFile } from '../Molecules/FilePicker';
-import { Http } from '../../utils/ajax/definitions';
 
 const haltIncrementSize = 300;
 
