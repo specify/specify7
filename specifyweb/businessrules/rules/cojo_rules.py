@@ -16,11 +16,11 @@ class COGType(Enum):
 @orm_signal_handler('pre_save', 'Collectionobjectgroupjoin')
 def cojo_pre_save(cojo):
     # Ensure the both the childcog and childco fields are not null.
-    if cojo.childcog == None and cojo.childco == None:
+    if cojo.childcog is None and cojo.childco is None:
         raise BusinessRuleException('Both childcog and childco cannot be null.')
 
     # Ensure the childcog and childco fields are not both set.
-    if cojo.childcog != None and cojo.childco != None:
+    if cojo.childcog is not None and cojo.childco is not None:
         raise BusinessRuleException('Both childcog and childco cannot be set.')
 
     # For records with the same parentcog field, there can be only one isPrimare field set to True.
