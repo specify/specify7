@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-23 14:15+0000\n"
+"PO-Revision-Date: 2025-01-21 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
@@ -80,7 +80,7 @@ msgstr "valor de data inválido: {value:string}. esperado: {format:string}"
 #: components/WorkBench/resultsParser.ts:207
 #, fuzzy
 msgid "coordinateBadFormat"
-msgstr "[X0X] nó \"[X25X]\" para pai sinonimizado \"[X67X]\""
+msgstr "valor de latitude ou longitude incorreto: {value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:211
@@ -162,7 +162,8 @@ msgstr "O nó pai da árvore tem uma classificação maior que a sua"
 #: components/Errors/JsonError.tsx:158
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
-msgstr "Nenhuma coleção encontrada na consulta para a tabela [X39X]"
+msgstr ""
+"A classificação do nó da árvore é maior do que a de alguns de seus filhos"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:160
@@ -191,7 +192,7 @@ msgstr "Sinonímia do nó \"{nodeName:string}\" que tem filhos"
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Estrutura de árvore ruim: encontrados {badRanks:number|formatted} casos em "
-"que a classificação do nó não é maior que a do nó pai"
+"que a classificação do nó não é maior que a do pai"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:175
