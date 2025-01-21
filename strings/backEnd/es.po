@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-23 14:15+0000\n"
+"PO-Revision-Date: 2025-01-21 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
@@ -178,7 +178,7 @@ msgstr ""
 #: components/Errors/JsonError.tsx:181
 #, fuzzy
 msgid "operationAcrossTrees"
-msgstr "El valor [X6X] no coincide con el formateador [X46X]"
+msgstr "{operation:string} a través de los árboles"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:185
