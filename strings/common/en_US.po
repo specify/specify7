@@ -416,8 +416,8 @@ msgstr "Tools"
 #: components/Formatters/Preview.tsx:143
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:123
-#: components/Forms/SubView.tsx:171
-#: components/Forms/SubView.tsx:238
+#: components/Forms/SubView.tsx:174
+#: components/Forms/SubView.tsx:241
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
 #: components/HomePage/AboutSpecify.tsx:220
