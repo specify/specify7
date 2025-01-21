@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-23 14:15+0000\n"
+"PO-Revision-Date: 2025-01-21 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
@@ -77,8 +77,7 @@ msgstr "ungültiger Datumswert: {value:string}. erwartet: {format:string}"
 #: components/WorkBench/resultsParser.ts:207
 #, fuzzy
 msgid "coordinateBadFormat"
-msgstr ""
-"[X0X] Knoten \"[X25X]\" zum synonymisierten übergeordneten Knoten \"[X67X]\""
+msgstr "falscher Breiten- oder Längengradwert: {value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:211
@@ -164,7 +163,9 @@ msgstr ""
 #: components/Errors/JsonError.tsx:158
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
-msgstr "Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden"
+msgstr ""
+"Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten "
+"Knoten."
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:160
