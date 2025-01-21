@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-21 02:00+0000\n"
+"PO-Revision-Date: 2025-01-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -168,7 +168,9 @@ msgstr "Das Passwort war falsch."
 #: components/Forms/OtherCollectionView.tsx:66
 #, fuzzy
 msgid "noAccessToResource"
-msgstr "Dieser Agent ist bereits einem anderen Benutzer zugeordnet."
+msgstr ""
+"Sie haben über das aktuell angemeldete Konto keinen Zugriff auf "
+"{collectionTable:string}, das diese Ressource enthält"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -455,7 +457,7 @@ msgstr "Ressource"
 #: components/Security/PreviewComponents.tsx:176
 #, fuzzy
 msgid "allCollections"
-msgstr "Optionen zur Kontoeinrichtung"
+msgstr "Alle Kollektionen"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:177
@@ -541,7 +543,9 @@ msgstr "Link zur Benutzereinladung"
 #: components/Security/UserInviteLink.tsx:61
 #, fuzzy
 msgid "userInviteLinkDescription"
-msgstr "Ausgeschlossene institutionelle Richtlinien:"
+msgstr ""
+"Senden Sie den folgenden Link an {userName:string}, um ihm die erste "
+"Anmeldung zu ermöglichen."
 
 #. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:72
@@ -549,7 +553,7 @@ msgstr "Ausgeschlossene institutionelle Richtlinien:"
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in "
-"den Servereinstellungen festlegen."
+"den 7 Servereinstellungen konfigurieren."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -587,7 +591,7 @@ msgstr "Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:"
 #: components/Security/UserComponents.tsx:211
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Wählen Sie eine der folgenden Sammlungen aus:"
+msgstr "Externe Identitätsanbieter:"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:116
