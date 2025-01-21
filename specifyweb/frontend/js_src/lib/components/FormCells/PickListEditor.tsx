@@ -10,7 +10,6 @@ import type { Collection } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { PickList } from '../DataModel/types';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function PickListEditor({
   resource,

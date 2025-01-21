@@ -14,7 +14,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   RecordSelectorProps,
   RecordSelectorState,

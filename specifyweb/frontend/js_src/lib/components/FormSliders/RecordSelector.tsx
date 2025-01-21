@@ -8,7 +8,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { useSearchDialog } from '../SearchDialog';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Slider } from './Slider';
 
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
