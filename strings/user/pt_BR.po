@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/user/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -111,7 +111,7 @@ msgstr ""
 #: components/Login/index.tsx:121
 #, fuzzy
 msgid "helloMessage"
-msgstr "Nova Senha"
+msgstr "Olá, {userName:string}!"
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:48
@@ -144,7 +144,7 @@ msgstr ""
 #: components/Toolbar/MasterKey.tsx:43
 #, fuzzy
 msgid "generateMasterKey"
-msgstr "Deve haver pelo menos um administrador da instituição na instituição"
+msgstr "Gerar Chave Mestra"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:71
@@ -181,8 +181,8 @@ msgstr "A senha estava incorreta."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Você não tem acesso a nenhum {collectionTable:string} contendo este recurso "
-"por meio da conta atualmente conectada"
+"Você não tem acesso a nenhum {collectionTable:string} que contenha este "
+"recurso por meio da conta atualmente conectada"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -209,7 +209,7 @@ msgstr "Você pode fazer login no {collectionTable:string}, para prosseguir:"
 #: components/Permissions/PermissionDenied.tsx:232
 #, fuzzy
 msgid "sessionTimeOut"
-msgstr "Privilégios Insuficientes"
+msgstr "Privilégios insuficientes"
 
 #. Used in: Components > Permissions > Permission Denied
 #: components/Permissions/PermissionDenied.tsx:239
@@ -302,9 +302,7 @@ msgstr "Salvar usuário primeiro"
 #: components/Security/AdminStatusPlugin.tsx:55
 #, fuzzy
 msgid "mustBeManager"
-msgstr ""
-"Políticas personalizadas em nível de instituição (aplica-se a todas as "
-"coleções atribuídas)"
+msgstr "O usuário deve ser salvo como gerente primeiro"
 
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:227
@@ -605,7 +603,7 @@ msgstr "Defina os seguintes agentes antes de prosseguir:"
 #: components/Security/UserComponents.tsx:211
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Selecione uma das seguintes coleções:"
+msgstr "Provedores de identidade externos:"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:116
@@ -675,7 +673,7 @@ msgstr "Mudar para layout horizontal"
 #: components/Security/Policies.tsx:43
 #, fuzzy
 msgid "switchToVerticalLayout"
-msgstr "Salvar usuário primeiro"
+msgstr "Mudar para layout vertical"
 
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #: components/Security/Preview.tsx:78
@@ -723,4 +721,4 @@ msgstr "Adicionar função"
 #: components/Security/Collection.tsx:215
 #, fuzzy
 msgid "addUser"
-msgstr "Políticas de permissão de função"
+msgstr "Adicionar usuário"
