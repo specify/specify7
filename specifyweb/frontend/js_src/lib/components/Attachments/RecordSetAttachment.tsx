@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -21,17 +22,20 @@ import { ajax } from '../../utils/ajax/index';
 import { keysToLowerCase } from '../../utils/utils';
 import { downloadFile } from '../Molecules/FilePicker';
 import { Http } from '../../utils/ajax/definitions';
+import { LoadingContext } from '../Core/Contexts';
 
 const haltIncrementSize = 300;
 
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
+  title,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
+  readonly title: LocalizedString | undefined;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -85,6 +89,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
+  const downloadAllAttachmentsDisabled = fetchedCount.current !== records.length || records.length <= 1 || fetchedCount.current <= 1;
   const handleDownloadAllAttachments = async (): Promise<void> => {
     if (attachmentsRef.current === undefined) return;
     const attachmentLocations = attachmentsRef.current.attachments
@@ -108,12 +113,16 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       });
 
       if (response.status === Http.OK) {
-        downloadFile('attachments.zip', response.data);
+        downloadFile(`${title}_attachments.zip`, response.data);
+      } else {
+        console.error('Attachment archive download failed', response);
       }
     } catch (error) {
       console.error('Attachment archive download failed', error);
     }
+    return Promise.resolve();
   };
+  const loading = React.useContext(LoadingContext);
 
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
 
@@ -146,8 +155,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.Info
-                disabled={fetchedCount.current !== records.length || records.length <= 1}
-                onClick={handleDownloadAllAttachments}
+                disabled={downloadAllAttachmentsDisabled}
+                onClick={() => loading(handleDownloadAllAttachments())}
+                title={attachmentsText.downloadAllDescription()}
               >
                 {attachmentsText.downloadAll()}
               </Button.Info>
