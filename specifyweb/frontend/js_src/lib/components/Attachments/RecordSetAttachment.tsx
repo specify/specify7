@@ -13,6 +13,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
@@ -22,7 +23,6 @@ import { downloadFile } from '../Molecules/FilePicker';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
-import { LoadingContext } from '../Core/Contexts';
 
 const haltIncrementSize = 300;
 
@@ -120,7 +120,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     } catch (error) {
       console.error('Attachment archive download failed', error);
     }
-    return Promise.resolve();
+    
   };
   const loading = React.useContext(LoadingContext);
 
@@ -156,8 +156,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             <>
               <Button.Info
                 disabled={downloadAllAttachmentsDisabled}
-                onClick={() => loading(handleDownloadAllAttachments())}
                 title={attachmentsText.downloadAllDescription()}
+                onClick={() => loading(handleDownloadAllAttachments())}
               >
                 {attachmentsText.downloadAll()}
               </Button.Info>
