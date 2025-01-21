@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, Tuple, cast
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast
 
 from django.db import transaction, IntegrityError
 
@@ -367,9 +367,7 @@ class BoundUploadTable(NamedTuple):
 
         info = ReportInfo(tableName=self.name, columns=[pr.column for pr in self.parsedFields], treeInfo=None)
 
-        local_to_ones, remote_to_ones = separate_to_ones(model, self.toOne)
-
-        toOneResults_ = self._process_to_ones(local_to_ones)
+        toOneResults_ = self._process_to_ones()
 
         multi_one_to_one = lambda field, result: self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple)
 
@@ -414,13 +412,13 @@ class BoundUploadTable(NamedTuple):
             if match:
                 return UploadResult(match, toOneResults, {})
 
-        return self._do_upload(model, toOneResults, remote_to_ones, info)
+        return self._do_upload(model, toOneResults, info)
 
-    def _process_to_ones(self, toOnes: Dict[str, BoundUploadable]) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
             fieldname: to_one_def.process_row()
             for fieldname, to_one_def in
-            sorted(toOnes.items(), key=lambda kv: kv[0]) # make the upload order deterministic
+            sorted(self.toOne.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
 
     def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
@@ -465,7 +463,7 @@ class BoundUploadTable(NamedTuple):
         else:
             return None
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], remoteToOnes: Dict[str, BoundUploadable], info: ReportInfo) -> UploadResult:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
@@ -518,21 +516,12 @@ class BoundUploadTable(NamedTuple):
 
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
-        # Like to-many relationships, remote to-one relationships can not be 
-        # directly inserted with the main base record, and instead are 
-        # uploaded with a reference to the base record 
-        remoteToOneResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, [upload_table])
-            for fieldname, upload_table in 
-            sorted(remoteToOnes.items(), key=lambda kv: kv[0])
-        }
-
         toManyResults = {
             fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, records)
             for fieldname, records in
             sorted(self.toMany.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
-        return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, {**remoteToOneResults, **toManyResults})
+        return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
 
     def _do_insert(self, model, **attrs) -> Any:
         return model.objects.create(**attrs)
@@ -558,13 +547,13 @@ class BoundMustMatchTable(BoundUploadTable):
     def force_upload_row(self) -> UploadResult:
         raise Exception('trying to force upload of must-match table')
 
-    def _process_to_ones(self, toOnes: Dict[str, BoundUploadable]) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
             fieldname: to_one_def.match_row()
-            for fieldname, to_one_def in toOnes.items()
+            for fieldname, to_one_def in self.toOne.items()
         }
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], remoteToOnes: Dict[str, BoundUploadable], info: ReportInfo) -> UploadResult:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
@@ -599,15 +588,3 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
         ).force_upload_row()
         for record in records
     ]
-
-def separate_to_ones(parent_model, toOnes: Dict[str, BoundUploadable]) -> Tuple[Dict[str, BoundUploadable], Dict[str, BoundUploadable]]: 
-    remote_to_ones = dict()
-    local_to_ones = dict()
-
-    for field_name, uploadable in toOnes.items(): 
-        field = parent_model._meta.get_field(field_name)
-        if field.concrete: 
-            local_to_ones[field_name] = uploadable
-        else: 
-            remote_to_ones[field_name] = uploadable
-    return local_to_ones, remote_to_ones

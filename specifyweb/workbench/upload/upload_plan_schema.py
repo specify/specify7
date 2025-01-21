@@ -1,12 +1,13 @@
 from functools import reduce
-from typing import Dict, Union, Tuple
+from os import name
+from typing import Dict, Any, Optional, Union, Tuple
 import logging
 
-from specifyweb.specify.datamodel import datamodel, Table
+from specifyweb.specify.datamodel import datamodel, Table, Relationship
 
 from .upload_table import DeferredScopeUploadTable, UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
-from .treerecord import TreeRank, TreeRecord, MustMatchTreeRecord
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
 from .scoping import DEFERRED_SCOPING
