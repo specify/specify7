@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-10-23 14:15+0000\n"
+"PO-Revision-Date: 2025-01-21 08:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
@@ -155,7 +155,9 @@ msgstr "Le rang du nœud d'arbre est supérieur à celui de certains de ses enfa
 #: components/Errors/JsonError.tsx:160
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
-msgstr "le champ est requis par le mappage du plan de téléchargement"
+msgstr ""
+"{operation:string} nœud « {nodeName:string} » vers le parent synonymisé « "
+"{parentName:string} »"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:166
