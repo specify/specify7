@@ -145,7 +145,7 @@ export const downloadFile = async (
     iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null || fileDownloaded) return;
-      let url;
+      let url: string | undefined;
       const element = iframe.contentWindow.document.createElement('a');
       if (typeof data === 'string') {
         element.setAttribute(
@@ -154,7 +154,7 @@ export const downloadFile = async (
         );
         element.setAttribute('download', fileName);
       } else {
-        url = window.URL.createObjectURL(data);
+        url = URL.createObjectURL(data);
         element.setAttribute('href', url);
         element.setAttribute('download', fileName);
       }
@@ -164,7 +164,7 @@ export const downloadFile = async (
 
       element.click();
       fileDownloaded = true;
-      if (url !== undefined) window.URL.revokeObjectURL(url);
+      if (url !== undefined) URL.revokeObjectURL(url);
       globalThis.setTimeout(() => {
         iframe.remove();
         resolve();

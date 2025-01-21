@@ -87,10 +87,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const handleDownloadAllAttachments = async (): Promise<void> => {
     if (attachmentsRef.current === undefined) return;
-    const attachmentLocations: readonly string[] = attachmentsRef.current.attachments
+    const attachmentLocations = attachmentsRef.current.attachments
       .map((attachment) => attachment.attachmentLocation)
       .filter((name): name is string => name !== null);
-    const origFilenames: readonly string[] = attachmentsRef.current.attachments
+    const origFilenames = attachmentsRef.current.attachments
       .map((attachment) => attachment.origFilename)
       .filter((name): name is string => name !== null);
 

@@ -138,9 +138,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     },
   })
     .then(async (response) => 
-       (acceptBlobResponse ?
-        Promise.all([response, response.blob()]) : 
-        Promise.all([response, response.text()])
+        Promise.all([response, acceptBlobResponse ? response.blob() : response.text()]
     ))
     .then(
       ([response, text]: readonly [Response, string | Blob]) => {
