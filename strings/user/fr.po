@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/fr/"
 ">\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -180,7 +180,7 @@ msgstr ""
 #: components/Forms/OtherCollectionView.tsx:74
 #, fuzzy
 msgid "selectCollection"
-msgstr "L'utilisateur actuel n'a pas d'agent attribué"
+msgstr "Sélectionnez l'une des collections suivantes :"
 
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:92
@@ -284,9 +284,7 @@ msgstr "Enregistrer l'utilisateur en premier"
 #: components/Security/AdminStatusPlugin.tsx:55
 #, fuzzy
 msgid "mustBeManager"
-msgstr ""
-"Politiques personnalisées au niveau de l'institution (s'appliquent à toutes "
-"les collections attribuées)"
+msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire"
 
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:227
@@ -553,9 +551,7 @@ msgstr "Cet agent est déjà associé à un autre utilisateur."
 #: components/Security/MissingAgentsDialog.tsx:102
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
-msgstr ""
-"L'utilisateur connecté n'a pas accès aux collections de cette base de "
-"données. Vous devez vous connecter sous un autre nom d'utilisateur."
+msgstr "Veuillez définir les agents suivants avant de continuer :"
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:211
