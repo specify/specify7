@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-21 02:00+0000\n"
+"PO-Revision-Date: 2025-01-21 02:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
 "uk/>\n"
@@ -111,7 +111,7 @@ msgstr "Будь ласка, увійдіть як адміністратор і
 #: components/Login/index.tsx:121
 #, fuzzy
 msgid "helloMessage"
-msgstr "Новий пароль"
+msgstr "Привіт, {userName:string}!"
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:48
@@ -144,7 +144,7 @@ msgstr ""
 #: components/Toolbar/MasterKey.tsx:43
 #, fuzzy
 msgid "generateMasterKey"
-msgstr "У закладі має бути принаймні один адміністратор установи"
+msgstr "Створити головний ключ"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:71
@@ -302,9 +302,7 @@ msgstr "Спочатку збережіть користувача"
 #: components/Security/AdminStatusPlugin.tsx:55
 #, fuzzy
 msgid "mustBeManager"
-msgstr ""
-"Спеціальна політика на рівні установи (застосовується до всіх призначених "
-"колекцій)"
+msgstr "Спочатку потрібно зберегти користувача як менеджера"
 
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:227
@@ -603,7 +601,7 @@ msgstr "Перш ніж продовжити, установіть такі аг
 #: components/Security/UserComponents.tsx:211
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Виберіть одну з наступних колекцій:"
+msgstr "Зовнішні постачальники ідентифікаційної інформації:"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:116
@@ -673,7 +671,7 @@ msgstr "Перейти до горизонтального розташуван�
 #: components/Security/Policies.tsx:43
 #, fuzzy
 msgid "switchToVerticalLayout"
-msgstr "Спочатку збережіть користувача"
+msgstr "Переключитися на вертикальне розташування"
 
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #: components/Security/Preview.tsx:78
@@ -721,4 +719,4 @@ msgstr "Додати роль"
 #: components/Security/Collection.tsx:215
 #, fuzzy
 msgid "addUser"
-msgstr "Політики дозволів на роль"
+msgstr "Додати користувача"
