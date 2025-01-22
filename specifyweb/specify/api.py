@@ -216,11 +216,14 @@ class GetCollectionForm(forms.Form):
 
     orderby = forms.CharField(required=False)
 
+    filterchronostrat = forms.BooleanField(required=False)
+
     defaults = dict(
         domainfilter=None,
         limit=0,
         offset=0,
         orderby=None,
+        filterchronostrat=False,
     )
 
     def clean_limit(self):
@@ -840,7 +843,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     else:
         obj.modifiedbyagent = agent
 
-    _handle_special_update_priors(obj, data)
+    data = _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
@@ -1010,7 +1013,7 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
 
         filters.update({param: val})
 
-    if model.__name__ == 'Geologictimeperiod':
+    if control_params['filterchronostrat'] == True:
         # Filter out invalid chronostrats
         filters.update({
             'startperiod__isnull': False,
@@ -1081,6 +1084,7 @@ class RowsForm(GetCollectionForm):
         orderby=None,
         distinct=False,
         fields=None,
+        filterchronostrat=False,
     )
 
 def rows(request, model_name: str) -> HttpResponse:
@@ -1123,4 +1127,5 @@ def _handle_special_update_priors(obj, data):
         modify_update_of_loan_return_sibling_preps,
     )
     data = modify_update_of_interaction_sibling_preps(obj, data)
-    modify_update_of_loan_return_sibling_preps(obj, data)
+    data = modify_update_of_loan_return_sibling_preps(obj, data)
+    return data
