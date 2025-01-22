@@ -35,7 +35,7 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { MappingPath } from '../WbPlanView/Mapper';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { queryCbxExtendedSearch } from './helpers';
 import { SelectRecordSets } from './SelectRecordSet';
 
@@ -158,7 +158,7 @@ function testFilter<SCHEMA extends AnySchema>(
         ? // Cast numbers to strings
           values.some((value) => {
             const fieldValue = resource.get(field);
-            // eslint-disable-next-line eqeqeq
+
             return isRelationship
               ? value == strictIdFromUrl(fieldValue!).toString()
               : value == fieldValue;
