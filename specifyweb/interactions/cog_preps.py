@@ -193,21 +193,6 @@ def add_consolidated_sibling_co_ids(request_co_ids: List[Any], id_fld: Optional[
     return list(set(request_co_ids).union(set(cog_sibling_co_idfld_ids)))
 
 
-def get_consolidated_co_siblings_from_rs(rs: Recordset) -> Set[Collectionobject]:
-    """
-    Get the consolidated sibling CO IDs of the COs in the recordset
-    """
-    cog_sibling_co_ids = set()
-    if is_co_recordset(rs):
-        cogs = get_cogs_from_co_recordset(rs)
-        for cog in cogs:
-            cog_sibling_co_ids = cog_sibling_co_ids.union(
-                get_cog_consolidated_preps_co_ids(cog))
-        # cog_sibling_co_ids -= set(rs.recordsetitems.values_list('recordid', flat=True))
-
-    return cog_sibling_co_ids
-
-
 def get_co_ids_from_shared_cog_rs(rs: Recordset) -> Set[Collectionobject]:
     """
     Get the CO IDs from the shared COGs in the recordset
