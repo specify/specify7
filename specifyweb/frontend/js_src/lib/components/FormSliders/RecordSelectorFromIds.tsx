@@ -35,6 +35,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   defaultIndex,
   table,
   viewName,
+  recordSetName,
   title,
   headerButtons,
   dialog,
@@ -58,6 +59,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
+  readonly recordSetName?: string | undefined;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -233,7 +235,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {hasAttachments &&
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
-                <RecordSetAttachments records={records} onFetch={handleFetch} title={title} />
+                <RecordSetAttachments records={records} onFetch={handleFetch} recordSetName={recordSetName} />
               ) : undefined}
               {table.view === 'GeologicTimePeriod' ? (
                 <ChronoChart />

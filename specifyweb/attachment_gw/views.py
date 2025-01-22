@@ -338,6 +338,7 @@ def download_all(request):
 def make_attachment_zip(attachmentLocations, origFileNames, collection, output_file):
     output_dir = mkdtemp()
     try:
+        fileNameAppearances = {}
         for i, attachmentLocation in enumerate(attachmentLocations):
             data = {
                 'filename': attachmentLocation,
@@ -348,11 +349,11 @@ def make_attachment_zip(attachmentLocations, origFileNames, collection, output_f
             response = requests.get(server_urls['read'], params=data)
             if response.status_code == 200:
                 downloadFileName = origFileNames[i]
-                if os.path.exists(os.path.join(output_dir, downloadFileName)):
+                fileNameAppearances[downloadFileName] = fileNameAppearances.get(downloadFileName, 0) + 1
+                if fileNameAppearances[downloadFileName] > 1:
                     downloadOrigName = os.path.splitext(downloadFileName)[0]
-                    downloadName = os.path.splitext(attachmentLocation)[0]
                     downloadExtension = os.path.splitext(downloadFileName)[1]
-                    downloadFileName = f'{downloadOrigName}_{downloadName}{downloadExtension}'
+                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]}{downloadExtension}'
                 with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
                     f.write(response.content)
         

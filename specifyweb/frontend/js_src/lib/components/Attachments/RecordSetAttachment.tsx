@@ -1,5 +1,4 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -29,13 +28,13 @@ const haltIncrementSize = 300;
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
-  title,
+  recordSetName,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
-  readonly title: LocalizedString | undefined;
+  readonly recordSetName: string | undefined;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -113,7 +112,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       });
 
       if (response.status === Http.OK) {
-        downloadFile(`${title}_attachments.zip`, response.data);
+        downloadFile(`Attachments - ${recordSetName || new Date().toDateString()}.zip`, response.data);
       } else {
         console.error('Attachment archive download failed', response);
       }
@@ -156,7 +155,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             <>
               <Button.Info
                 disabled={downloadAllAttachmentsDisabled}
-                onClick={() => loading(handleDownloadAllAttachments())}
+                onClick={(): void => loading(handleDownloadAllAttachments())}
                 title={attachmentsText.downloadAllDescription()}
               >
                 {attachmentsText.downloadAll()}
