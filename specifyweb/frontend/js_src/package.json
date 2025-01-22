@@ -63,7 +63,7 @@
     "react-zoom-pan-pinch": "^3.6.1",
     "typesafe-i18n": "^5.17.1",
     "typesafe-reducer": "^1.0.3",
-    "underscore": "~1.8.3",
+    "underscore": "~1.13.7",
     "xlsx": "~0.16.8"
   },
   "devDependencies": {
