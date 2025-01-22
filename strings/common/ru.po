@@ -66,7 +66,7 @@ msgstr "Нет"
 #: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
 #: components/SearchDialog/SelectRecordSet.tsx:133
-#: components/SearchDialog/index.tsx:226
+#: components/SearchDialog/index.tsx:234
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:91
 #: components/Security/Role.tsx:195
@@ -234,14 +234,14 @@ msgstr "Создать"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:576
+#: components/QueryComboBox/index.tsx:580
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
-#: components/SearchDialog/index.tsx:354
+#: components/SearchDialog/index.tsx:362
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:456
@@ -360,7 +360,7 @@ msgstr "Сохранить"
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:145
-#: components/WbPlanView/navigator.ts:335
+#: components/WbPlanView/navigator.ts:339
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
@@ -436,8 +436,8 @@ msgstr "Инструменты"
 #: components/Formatters/Preview.tsx:143
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:123
-#: components/Forms/SubView.tsx:174
-#: components/Forms/SubView.tsx:241
+#: components/Forms/SubView.tsx:175
+#: components/Forms/SubView.tsx:242
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
 #: components/HomePage/AboutSpecify.tsx:220
@@ -462,7 +462,7 @@ msgstr "Инструменты"
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
-#: components/SearchDialog/index.tsx:288
+#: components/SearchDialog/index.tsx:296
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
 #: components/Security/CollectionRole.tsx:233
@@ -531,9 +531,9 @@ msgstr "Удалить"
 #: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:138
 #: components/HomePage/index.tsx:33
-#: components/SearchDialog/index.tsx:238
-#: components/SearchDialog/index.tsx:243
-#: components/SearchDialog/index.tsx:342
+#: components/SearchDialog/index.tsx:246
+#: components/SearchDialog/index.tsx:251
+#: components/SearchDialog/index.tsx:350
 #: components/WbUtils/index.tsx:58
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 #, fuzzy
@@ -542,7 +542,7 @@ msgstr "Искать"
 
 #: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
-#: components/SearchDialog/index.tsx:290
+#: components/SearchDialog/index.tsx:298
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 #, fuzzy
 msgid "noResults"
@@ -637,7 +637,7 @@ msgid "update"
 msgstr "Обновлять"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:647
+#: components/WbPlanView/navigator.ts:656
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "fullDate"
@@ -879,7 +879,7 @@ msgstr "Отклонить"
 
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
-#: components/WbPlanView/navigator.ts:526
+#: components/WbPlanView/navigator.ts:530
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "id"
@@ -971,7 +971,7 @@ msgid "reset"
 msgstr "Перезагрузить"
 
 #: components/FormEditor/Create.tsx:210
-#: components/SearchDialog/index.tsx:363
+#: components/SearchDialog/index.tsx:371
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 #, fuzzy
 msgid "select"

@@ -35,8 +35,8 @@ msgstr ""
 
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1545
-#: components/SearchDialog/index.tsx:229
-#: components/SearchDialog/index.tsx:371
+#: components/SearchDialog/index.tsx:237
+#: components/SearchDialog/index.tsx:379
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #, fuzzy
@@ -224,13 +224,13 @@ msgstr ""
 msgid "saveAs"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:432
+#: components/WbPlanView/navigator.ts:436
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyRank"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:384
+#: components/WbPlanView/navigator.ts:388
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyTree"
@@ -291,13 +291,13 @@ msgstr ""
 msgid "showButtonDescription"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:490
+#: components/WbPlanView/navigator.ts:494
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "aggregatedInline"
 msgstr ""
 
-#: components/WbPlanView/navigator.ts:491
+#: components/WbPlanView/navigator.ts:495
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "formattedInline"

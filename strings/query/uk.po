@@ -34,8 +34,8 @@ msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1545
-#: components/SearchDialog/index.tsx:229
-#: components/SearchDialog/index.tsx:371
+#: components/SearchDialog/index.tsx:237
+#: components/SearchDialog/index.tsx:379
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -198,12 +198,12 @@ msgstr "Створити {modelName:string}"
 msgid "saveAs"
 msgstr "Зберегти як"
 
-#: components/WbPlanView/navigator.ts:432
+#: components/WbPlanView/navigator.ts:436
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(будь-який ранг)"
 
-#: components/WbPlanView/navigator.ts:384
+#: components/WbPlanView/navigator.ts:388
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr ""
@@ -256,12 +256,12 @@ msgstr "Заперечувати"
 msgid "showButtonDescription"
 msgstr "Показати в результатах"
 
-#: components/WbPlanView/navigator.ts:490
+#: components/WbPlanView/navigator.ts:494
 #. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(узагальнено)"
 
-#: components/WbPlanView/navigator.ts:491
+#: components/WbPlanView/navigator.ts:495
 #. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(відформатований)"

@@ -35,8 +35,8 @@ msgstr "Requêtes"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1545
-#: components/SearchDialog/index.tsx:229
-#: components/SearchDialog/index.tsx:371
+#: components/SearchDialog/index.tsx:237
+#: components/SearchDialog/index.tsx:379
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #, fuzzy
@@ -232,13 +232,13 @@ msgstr "Créer {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Impossible d'exporter vers KML"
 
-#: components/WbPlanView/navigator.ts:432
+#: components/WbPlanView/navigator.ts:436
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyRank"
 msgstr "(n'importe quel rang)"
 
-#: components/WbPlanView/navigator.ts:384
+#: components/WbPlanView/navigator.ts:388
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyTree"
@@ -299,13 +299,13 @@ msgstr "Nier"
 msgid "showButtonDescription"
 msgstr "Afficher dans les résultats"
 
-#: components/WbPlanView/navigator.ts:490
+#: components/WbPlanView/navigator.ts:494
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "aggregatedInline"
 msgstr "(agrégé)"
 
-#: components/WbPlanView/navigator.ts:491
+#: components/WbPlanView/navigator.ts:495
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "formattedInline"
