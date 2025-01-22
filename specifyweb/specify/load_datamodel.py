@@ -248,12 +248,12 @@ class Field(object):
         if not column and not is_relationship:
             raise ValueError("column is required")
         self.is_relationship = is_relationship
-        self.name = name or ""
-        self.column = column or ""
+        self.name = name
+        self.column = column
         self.indexed = indexed if indexed is not None else False
         self.unique = unique if unique is not None else False
         self.required = required if required is not None else False
-        self.type = type if type is not None else ""
+        self.type = type
         self.length = length if length is not None else None
 
     def __repr__(self) -> str:
@@ -315,12 +315,8 @@ class Relationship(Field):
     type: str
     required: bool
     relatedModelName: str
-    column: str
-    otherSideName: str
-
-    @property
-    def is_to_many(self) -> bool:
-        return "to_many" in self.type
+    column: Optional[str]
+    otherSideName: Optional[str]
 
     def __init__(
         self,
@@ -352,9 +348,9 @@ class Relationship(Field):
             raise ValueError('column is required')
         
         self.dependent = dependent if dependent is not None else False
-        self.relatedModelName = relatedModelName or ""
-        self.otherSideName = otherSideName or ""
-        # self.is_to_many = is_to_many if is_to_many is not None else 'to_many' in self.type
+        self.column = column
+        self.relatedModelName = relatedModelName
+        self.otherSideName = otherSideName
 
 
 def make_table(tabledef: ElementTree.Element) -> Table:
