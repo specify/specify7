@@ -159,7 +159,9 @@ async function fetchFromField(
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
     domainFilter: true,
-    filterChronostrat: tableName === tables.GeologicTimePeriod.name.toLowerCase() && fieldName === "name", // Prop for age filter in QueryBuilder
+    filterChronostrat:
+      tableName === tables.GeologicTimePeriod.name.toLowerCase() &&
+      fieldName === 'name', // Prop for age filter in QueryBuilder
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')

@@ -524,41 +524,45 @@ export function QueryComboBox({
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
                                   fieldName === 'rankId'
-                                ? {
-                                    field: 'rankId',
-                                    isRelationship: false,
-                                    isNot: false,
-                                    operation: 'less',
-                                    value: startValue,
-                                  }
-                                : fieldName === 'nodeNumber'
-                                  ? {
-                                      field: 'nodeNumber',
-                                      isRelationship: false,
-                                      operation: 'between',
-                                      isNot: true,
-                                      value: startValue,
-                                    }
-                                  : fieldName === 'collectionRelTypeId'
                                     ? {
-                                        field: 'id',
+                                        field: 'rankId',
                                         isRelationship: false,
-                                        operation: 'in',
                                         isNot: false,
+                                        operation: 'less',
                                         value: startValue,
                                       }
-                                    : fieldName === 'taxonTreeDefId'
+                                    : fieldName === 'nodeNumber'
                                       ? {
-                                          field: 'definition',
-                                          isRelationship: true,
-                                          operation: 'in',
-                                          isNot: false,
-                                          value: startValue
+                                          field: 'nodeNumber',
+                                          isRelationship: false,
+                                          operation: 'between',
+                                          isNot: true,
+                                          value: startValue,
                                         }
-                                    : f.error(`extended filter not created`, {
-                                        fieldName,
-                                        startValue,
-                                      }))
+                                      : fieldName === 'collectionRelTypeId'
+                                        ? {
+                                            field: 'id',
+                                            isRelationship: false,
+                                            operation: 'in',
+                                            isNot: false,
+                                            value: startValue,
+                                          }
+                                        : fieldName === 'taxonTreeDefId'
+                                          ? {
+                                              field: 'definition',
+                                              isRelationship: true,
+                                              operation: 'in',
+                                              isNot: false,
+                                              value: startValue,
+                                            }
+                                          : f.error(
+                                              `extended filter not created`,
+                                              {
+                                                fieldName,
+                                                startValue,
+                                              }
+                                            )
+                                )
                             ),
                           })
                       : undefined
