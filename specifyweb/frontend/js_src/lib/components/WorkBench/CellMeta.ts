@@ -13,7 +13,7 @@ const metaKeys = [
   'originalValue',
   'isUpdated',
   'isDeleted',
-  'isMatchedAndChanged'
+  'isMatchedAndChanged',
 ] as const;
 
 export type WbMeta = {
@@ -47,7 +47,7 @@ export type WbMetaArray = [
   originalValue: string | undefined,
   isUpdated: boolean,
   isDeleted: boolean,
-  isMatchedAndChanged: boolean
+  isMatchedAndChanged: boolean,
 ];
 
 const defaultMetaValues = Object.freeze([
@@ -58,7 +58,7 @@ const defaultMetaValues = Object.freeze([
   undefined,
   false,
   false,
-  false
+  false,
 ] as const);
 
 /* eslint-disable functional/no-this-expression */
@@ -115,7 +115,14 @@ export class WbCellMeta {
     const metaValueChanged =
       issuesChanged ||
       cellValueChanged ||
-      (['isNew', 'isModified', 'isSearchResult', 'isUpdated', 'isDeleted', 'isMatchedAndChanged'].includes(key) &&
+      ([
+        'isNew',
+        'isModified',
+        'isSearchResult',
+        'isUpdated',
+        'isDeleted',
+        'isMatchedAndChanged',
+      ].includes(key) &&
         currentValue !== value);
 
     if (!metaValueChanged) return false;
@@ -217,7 +224,9 @@ export class WbCellMeta {
     else if (key === 'isModified')
       cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell');
     else if (key === 'isMatchedAndChanged')
-      cell?.classList[value === true ? 'add' : 'remove']('wb-matched-and-changed-cell');
+      cell?.classList[value === true ? 'add' : 'remove'](
+        'wb-matched-and-changed-cell'
+      );
     else if (key === 'isSearchResult')
       cell?.classList[value === true ? 'add' : 'remove'](
         'wb-search-match-cell'
@@ -369,14 +378,21 @@ export class WbCellMeta {
         0
       ),
       updatedCells: cellMeta.reduce(
-        (count, info)=>count + (this.getCellMetaFromArray(info, 'isUpdated') ? 1 : 0), 0
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isUpdated') ? 1 : 0),
+        0
       ),
       deletedCells: cellMeta.reduce(
-        (count, info)=>count + (this.getCellMetaFromArray(info, 'isDeleted') ? 1 : 0), 0
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isDeleted') ? 1 : 0),
+        0
       ),
       matchedAndChangedCells: cellMeta.reduce(
-        (count, info)=>count + (this.getCellMetaFromArray(info, 'isMatchedAndChanged') ? 1 : 0), 0
-      )
+        (count, info) =>
+          count +
+          (this.getCellMetaFromArray(info, 'isMatchedAndChanged') ? 1 : 0),
+        0
+      ),
     });
   }
 
@@ -400,8 +416,9 @@ export class WbCellMeta {
       case 'deletedCells': {
         return this.getCellMetaFromArray(metaArray, 'isDeleted');
       }
-      case 'matchedAndChangedCells':
+      case 'matchedAndChangedCells': {
         return this.getCellMetaFromArray(metaArray, 'isMatchedAndChanged');
+      }
       default: {
         return false;
       }
@@ -409,10 +426,12 @@ export class WbCellMeta {
   }
 
   public isResultCell(metaArray: WbMetaArray): boolean {
-    return this.cellIsType(metaArray, 'newCells') || 
-      this.cellIsType(metaArray, 'updatedCells') || 
-        this.cellIsType(metaArray, 'deletedCells') || 
-          this.cellIsType(metaArray, 'matchedAndChangedCells')
+    return (
+      this.cellIsType(metaArray, 'newCells') ||
+      this.cellIsType(metaArray, 'updatedCells') ||
+      this.cellIsType(metaArray, 'deletedCells') ||
+      this.cellIsType(metaArray, 'matchedAndChangedCells')
+    );
   }
 }
 /* eslint-enable functional/no-this-expression */

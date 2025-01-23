@@ -43,9 +43,9 @@ export function useResults({
     Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
       rowMeta.forEach((metaArray, physicalCol) => {
         if (workbench.cells.isResultCell(metaArray)) {
-            rowsToInclude.add(f.fastParseInt(physicalRow));
-            colsToInclude.add(physicalCol);
-          }
+          rowsToInclude.add(f.fastParseInt(physicalRow));
+          colsToInclude.add(physicalCol);
+        }
       })
     );
     const rowsToHide = workbench.data
