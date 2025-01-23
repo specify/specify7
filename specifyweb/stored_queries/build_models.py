@@ -119,9 +119,8 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
         map_class(tabledef)
 
 
-# NOTE: Possible new functions with process_boolean_field
+# NOTE: Possible new functions with process_boolean_field, use database connection to check column type
 from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import BIT
 from sqlalchemy.types import Boolean
 
 def process_boolean_field(field, engine):
@@ -147,7 +146,7 @@ def process_boolean_field(field, engine):
     for column in columns:
         if column['name'] == column_name:
             # Check for BIT type
-            if isinstance(column['type'], BIT):
+            if isinstance(column['type'], mysql_bit_type):
                 return CustomBIT()
             # Check for TINYINT type (interpreted as Boolean by SQLAlchemy)
             elif isinstance(column['type'], Boolean):
