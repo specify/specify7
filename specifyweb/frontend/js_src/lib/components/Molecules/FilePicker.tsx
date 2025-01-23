@@ -137,7 +137,8 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  data: Blob | string
+  data: Blob | string,
+  isUrl?: boolean
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;
@@ -145,17 +146,20 @@ export const downloadFile = async (
     iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null || fileDownloaded) return;
-      let url: string | undefined;
+      let dataUrl: string | undefined;
       const element = iframe.contentWindow.document.createElement('a');
-      if (typeof data === 'string') {
+      if (isUrl === true) {
+        element.setAttribute('href', data as string);
+        element.setAttribute('download', fileName);
+      } else if (typeof data === 'string') {
         element.setAttribute(
           'href',
           `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`
         );
         element.setAttribute('download', fileName);
-      } else {
-        url = URL.createObjectURL(data);
-        element.setAttribute('href', url);
+      } else if (data instanceof Blob) {
+        dataUrl = URL.createObjectURL(data);
+        element.setAttribute('href', dataUrl);
         element.setAttribute('download', fileName);
       }
 
@@ -164,7 +168,7 @@ export const downloadFile = async (
 
       element.click();
       fileDownloaded = true;
-      if (url !== undefined) URL.revokeObjectURL(url);
+      if (dataUrl !== undefined) URL.revokeObjectURL(dataUrl);
       globalThis.setTimeout(() => {
         iframe.remove();
         resolve();

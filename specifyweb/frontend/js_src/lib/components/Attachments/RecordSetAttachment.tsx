@@ -13,28 +13,29 @@ import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
-import type { CollectionObjectAttachment } from '../DataModel/types';
+import type { CollectionObjectAttachment, Attachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
+import { fetchOriginalUrl } from './attachments';
 
 const haltIncrementSize = 300;
 
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
-  recordSetName,
+  name,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
-  readonly recordSetName: string | undefined;
+  readonly name: string | undefined;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -88,9 +89,19 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
-  const downloadAllAttachmentsDisabled = fetchedCount.current !== records.length || records.length <= 1 || fetchedCount.current <= 1;
   const handleDownloadAllAttachments = async (): Promise<void> => {
     if (attachmentsRef.current === undefined) return;
+    if (attachments?.attachments.length === 1) {
+      const attachment = attachmentsRef.current.attachments[0];
+      if (attachment === undefined) return;
+      const serialized = serializeResource(attachment)
+      fetchOriginalUrl(serialized as SerializedResource<Attachment>).then(
+        (url) => {
+          downloadFile(attachment.origFilename, `/attachment_gw/proxy/${new URL(url as string).search}`, true)
+        }
+      )
+      return;
+    }
     const attachmentLocations = attachmentsRef.current.attachments
       .map((attachment) => attachment.attachmentLocation)
       .filter((name): name is string => name !== null);
@@ -112,7 +123,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       });
 
       if (response.status === Http.OK) {
-        downloadFile(`Attachments - ${recordSetName || new Date().toDateString()}.zip`, response.data);
+        const fileName = `Attachments - ${(name || new Date().toDateString()).replace(/:/g, '')}.zip`
+        downloadFile(fileName, response.data);
       } else {
         console.error('Attachment archive download failed', response);
       }
@@ -140,6 +152,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === records.length;
+  const downloadAllAttachmentsDisabled = !isComplete || attachments?.attachments.length === 0;
 
   return (
     <>

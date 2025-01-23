@@ -374,7 +374,6 @@ function RecordSet<SCHEMA extends AnySchema>({
         isInRecordSet
         isLoading={isLoading}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
-        recordSetName={recordSet.isNew() ? undefined : recordSet.get('name')}
         table={currentRecord.specifyTable}
         title={
           recordSet.isNew()
