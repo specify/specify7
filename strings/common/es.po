@@ -40,10 +40,10 @@ msgstr "No"
 #: components/Forms/ResourceView.tsx:361
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:194
+#: components/Interactions/InteractionDialog.tsx:272
 #: components/Interactions/InteractionsDialog.tsx:56
 #: components/Interactions/LoanReturn.tsx:161
-#: components/Interactions/PrepDialog.tsx:104
+#: components/Interactions/PrepDialog.tsx:112
 #: components/LocalityUpdate/Status.tsx:142
 #: components/LocalityUpdate/Status.tsx:188
 #: components/Merging/Status.tsx:119
@@ -76,8 +76,8 @@ msgstr "No"
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
-#: components/Toolbar/RecordSets.tsx:190
-#: components/Toolbar/RecordSets.tsx:229
+#: components/Toolbar/RecordSets.tsx:215
+#: components/Toolbar/RecordSets.tsx:254
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:402
@@ -198,10 +198,10 @@ msgstr "Crear"
 #: components/Forms/Save.tsx:382
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:170
-#: components/Interactions/InteractionDialog.tsx:263
+#: components/Interactions/InteractionDialog.tsx:248
+#: components/Interactions/InteractionDialog.tsx:338
 #: components/Interactions/LoanReturn.tsx:71
-#: components/Interactions/PrepDialog.tsx:101
+#: components/Interactions/PrepDialog.tsx:109
 #: components/Leaflet/Map.tsx:103
 #: components/LocalityUpdate/Status.tsx:153
 #: components/LocalityUpdate/Status.tsx:222
@@ -275,7 +275,7 @@ msgstr "Cerrar"
 
 #: components/DataEntryTables/Edit.tsx:47
 #: components/Interactions/LoanReturn.tsx:197
-#: components/Interactions/PrepDialog.tsx:131
+#: components/Interactions/PrepDialog.tsx:139
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:423
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -291,7 +291,7 @@ msgid "applyAll"
 msgstr "Aplicar todo"
 
 #: components/Interactions/LoanReturn.tsx:180
-#: components/Interactions/PrepDialog.tsx:116
+#: components/Interactions/PrepDialog.tsx:124
 #: components/Notifications/Notifications.tsx:85
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 msgid "clearAll"
@@ -379,7 +379,7 @@ msgid "delete"
 msgstr "Eliminar"
 
 #: components/Attachments/Dialog.tsx:113
-#: components/Interactions/InteractionDialog.tsx:407
+#: components/Interactions/InteractionDialog.tsx:378
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 msgid "next"
@@ -421,10 +421,9 @@ msgstr "Herramientas"
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
 #: components/HomePage/AboutSpecify.tsx:220
-#: components/Interactions/PrepReturnRow.tsx:120
-#: components/Interactions/PrepReturnRow.tsx:121
-#: components/Interactions/PrepReturnRow.tsx:122
-#: components/Interactions/PrepReturnRow.tsx:124
+#: components/Interactions/PrepReturnRow.tsx:93
+#: components/Interactions/PrepReturnRow.tsx:94
+#: components/Interactions/PrepReturnRow.tsx:96
 #: components/Leaflet/index.ts:194
 #: components/Merging/Usages.tsx:69
 #: components/Molecules/AutoComplete.tsx:440
@@ -541,7 +540,7 @@ msgstr "N/D"
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
-#: components/Toolbar/RecordSets.tsx:195
+#: components/Toolbar/RecordSets.tsx:220
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "Nuevo"
@@ -564,7 +563,7 @@ msgstr "Nuevo"
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:609
-#: components/Toolbar/RecordSets.tsx:295
+#: components/Toolbar/RecordSets.tsx:320
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:121
@@ -596,7 +595,7 @@ msgid "end"
 msgstr "Fin"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:406
+#: components/Interactions/InteractionDialog.tsx:377
 #: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
@@ -686,18 +685,18 @@ msgstr "Descendente"
 #: components/Router/OverlayRoutes.tsx:136
 #: components/SearchDialog/SelectRecordSet.tsx:98
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:203
-#: components/Toolbar/RecordSets.tsx:230
+#: components/Toolbar/RecordSets.tsx:228
+#: components/Toolbar/RecordSets.tsx:255
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 msgid "recordSets"
 msgstr "Conjuntos de registros"
 
-#: components/Toolbar/RecordSets.tsx:285
+#: components/Toolbar/RecordSets.tsx:310
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Número de registros"
 
-#: components/Toolbar/RecordSets.tsx:147
+#: components/Toolbar/RecordSets.tsx:172
 #. Used in: Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Tamaño"
@@ -854,7 +853,7 @@ msgstr "¡Copiado!"
 msgid "copyToClipboard"
 msgstr "Copiar al portapapeles"
 
-#: components/Interactions/PrepDialog.tsx:219
+#: components/Interactions/PrepDialog.tsx:250
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 msgid "selected"
@@ -934,7 +933,7 @@ msgstr "Ninguno disponible"
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:220
-#: components/Toolbar/RecordSets.tsx:202
+#: components/Toolbar/RecordSets.tsx:227
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WbActions/WbValidate.tsx:53
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Actions > Wb Validate
@@ -1010,7 +1009,7 @@ msgstr "{label:string}: {value:string}"
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 
-#: components/Interactions/PrepDialog.tsx:140
+#: components/Interactions/PrepDialog.tsx:148
 #. Used in: Components > Interactions > Prep Dialog
 msgid "bulkSelect"
 msgstr "Selección masiva"
