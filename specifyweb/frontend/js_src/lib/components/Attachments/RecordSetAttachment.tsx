@@ -16,13 +16,13 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
-import type { CollectionObjectAttachment, Attachment } from '../DataModel/types';
+import type { Attachment,CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { defaultAttachmentScale } from '.';
+import { fetchOriginalUrl } from './attachments';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
-import { fetchOriginalUrl } from './attachments';
 
 const haltIncrementSize = 300;
 
@@ -97,7 +97,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       const serialized = serializeResource(attachment)
       fetchOriginalUrl(serialized as SerializedResource<Attachment>).then(
         (url) => {
-          downloadFile(attachment.origFilename, `/attachment_gw/proxy/${new URL(url as string).search}`, true)
+          downloadFile(attachment.origFilename, `/attachment_gw/proxy/${new URL(url!).search}`, true)
         }
       )
       return;
@@ -123,7 +123,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       });
 
       if (response.status === Http.OK) {
-        const fileName = `Attachments - ${(name || new Date().toDateString()).replace(/:/g, '')}.zip`
+        const fileName = `Attachments - ${(name || new Date().toDateString()).replaceAll(':', '')}.zip`
         downloadFile(fileName, response.data);
       } else {
         console.error('Attachment archive download failed', response);

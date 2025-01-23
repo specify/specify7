@@ -234,8 +234,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
                 <RecordSetAttachments
-                  records={records}
                   name={title as string}
+                  records={records}
                   onFetch={handleFetch}
                 />
               ) : undefined}
