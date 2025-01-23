@@ -15,9 +15,9 @@ questions you may have about configuration or deployment.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 7.10.x  | :white_check_mark: |
 | 7.9.x   | :white_check_mark: |
-| 7.8.x   | :white_check_mark: |
-| < 7.8   | :x:                |
+| < 7.8.x | :x:                |
 
 We support the latest version of Specify 6 only. You can report vulnerabilities
 or other issues for that application on the
@@ -28,9 +28,9 @@ or other issues for that application on the
 ### Specify 7
 
 Please contact [support@specifysoftware.org](mailto:support@specifysoftware.org)
-immediately if you encounter any security vulnerability in Specify 7 in addition
-to creating a
-[new bug report](https://github.com/specify/specify7/issues/new?assignees=&labels=type%3Abug%2C+pri%3Aunknown&template=bug_report.md&title=)
+immediately if you encounter any security vulnerability in Specify 7.
+
+If it is **not** a security vulnerability, you can create a [new bug report](https://github.com/specify/specify7/issues/new?assignees=&labels=type%3Abug%2C+pri%3Aunknown&template=bug_report.md&title=)
 in the GitHub repository where it will be reviewed by the development team
 within 24 hours.
 

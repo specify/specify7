@@ -237,6 +237,13 @@ const fieldOverwrites: typeof globalFieldOverrides = {
   CollectionObject: {
     collectionObjectType: { visibility: 'optional' },
   },
+  CollectionObjectGroupType: {
+    type: { visibility: 'optional' },
+  },
+  CollectionObjectGroupJoin: {
+    precedence: { visibility: 'optional' },
+    isSubstrate: { visibility: 'optional' },
+  },
   LoanPreparation: {
     isResolved: { visibility: 'optional' },
   },
