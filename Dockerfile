@@ -66,7 +66,7 @@ RUN python3.8 -m venv ve \
  && ve/bin/pip install --no-cache-dir --upgrade pip \
  && ve/bin/pip wheel --no-cache-dir python-ldap==3.4.0 -w /tmp/wheels \
  && ve/bin/pip install --no-cache-dir --find-links=/tmp/wheels python-ldap==3.4.0 \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+ && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
