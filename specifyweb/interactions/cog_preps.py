@@ -19,7 +19,6 @@ from specifyweb.specify.api import strict_uri_to_model
 
 logger = logging.getLogger(__name__)
 
-
 def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
     """
     Check if the CollectionObjectGroup is consolidated.
