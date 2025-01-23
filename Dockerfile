@@ -9,6 +9,7 @@ RUN apt-get update \
         libldap-2.4-2 \
         libmariadbclient18 \
         rsync \
+        sudo \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -33,6 +34,7 @@ WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package*.json ./
 RUN npm ci
+# RUN npm install
 RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack --mode production
@@ -48,6 +50,7 @@ RUN apt-get update \
         ca-certificates \
         curl \
         git \
+        sudo \
         libldap2-dev \
         libmariadbclient-dev \
         libsasl2-dev \
@@ -58,9 +61,15 @@ RUN apt-get update \
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
+ENV PATH="/opt/specify7/ve/bin:$PATH"
+
 WORKDIR /opt/specify7
-RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+# RUN python3.8 -m venv ve \
+#  && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+RUN python3.8 -m venv ve
+# RUN ve/bin/pip install --no-cache-dir backports.zoneinfo[tzdata]>=0.2.1
+RUN ve/bin/pip install --no-cache-dir --upgrade pip \
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
@@ -85,7 +94,8 @@ RUN date > specifyweb/frontend/static/build_date.txt
 # try to import the Specify datamodel which isn't defined yet.
 RUN echo "SECRET_KEY = 'bogus'" > specifyweb/settings/secret_key.py
 RUN echo "INSTALLED_APPS = ['specifyweb.frontend']" >> specifyweb/settings/__init__.py
-RUN (cd specifyweb && ../ve/bin/python ../manage.py compilemessages)
+# RUN (cd specifyweb && ../ve/bin/python ../manage.py compilemessages)
+RUN ve/bin/python manage.py compilemessages
 
 # Now put things back the way they were.
 RUN rm specifyweb/settings/secret_key.py
@@ -109,6 +119,8 @@ COPY --from=build-backend /opt/specify7 /opt/specify7
 
 WORKDIR /opt/specify7
 RUN cp -r specifyweb/settings .
+
+RUN echo 'export PATH="/opt/specify7/ve/bin:$PATH"' > ~/.bashrc
 
 RUN echo \
         "import os" \
@@ -161,7 +173,23 @@ USER specify
 
 COPY requirements-testing.txt /home/specify/
 
-#RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+COPY --chown=specify:specify requirements-testing.txt /home/specify/
+COPY --chown=specify:specify requirements.txt /home/specify/
+
+COPY --chown=specify:specify .vscode/launch.json /opt/specify/
+COPY --chown=specify:specify .vscode/settings.json /opt/specify/
+
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+
+# RUN python3.8 -m venv ve \
+#  && ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt \
+#  && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+
+RUN mkdir /opt/specify7/.vscode
+RUN echo "[pytest]\nDJANGO_SETTINGS_MODULE=specifyweb.settings\npython_files=*test*.py testparsing.py\naddopts = --ignore=specifyweb/specify/selenium_tests.py" > /opt/specify7/specifyweb/pytest.ini 
+# RUN echo -e "{\"name\":\"Django: Run All Tests\",\"type\":\"python\",\"request\":\"launch\",\"program\":\"${workspaceFolder}/manage.py\",\"args\":[\"test\"],\"django\":true,\"console\":\"integratedTerminal\"}" > /opt/specify7/specifyweb/.vscoode/launch.json
+RUN echo "{\n\t\"python.pythonPath\": \"ve/bin/python/\",\n\t\"python.testing.pytestArgs\": [\n\t\t\"specifyweb\",\n\t\t\"-s\",\n\t\t\"-vv\"\n\t],\n\t\"python.testing.pytestEnabled\": true,\n\t\"python.testing.nosetestsEnabled\": false,\n\t\"python.testing.unittestEnabled\": false\n}" > /opt/specify7/.vscode/settings.json
 
 COPY mypy.ini ./
 
@@ -173,5 +201,3 @@ FROM run-common AS run
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
-
