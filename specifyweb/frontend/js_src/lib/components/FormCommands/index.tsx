@@ -12,6 +12,7 @@ import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { UiCommands } from '../FormParse/commands';
 import { LoanReturn } from '../Interactions/LoanReturn';
@@ -98,7 +99,9 @@ const commandRenderers: {
               header={label}
               onClose={handleHide}
             >
-              {interactionsText.preparationsCanNotBeReturned()}
+              {interactionsText.preparationsCanNotBeReturned({
+                preparationTable: tables.Preparation.label.toLowerCase(),
+               })}
             </Dialog>
           ) : (
             <LoanReturn resource={loan} onClose={handleHide} />
