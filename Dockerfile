@@ -60,7 +60,7 @@ COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
 RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+ && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
