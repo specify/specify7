@@ -19,7 +19,7 @@ import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
-from specifyweb.specify.models import datamodel, Splocalecontainer
+from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
@@ -38,7 +38,7 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 
 class ObjectFormatter(object):
-    def __init__(self, collection, user, replace_nulls, format_agent_type=False):
+    def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False):
 
         formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
@@ -49,6 +49,7 @@ class ObjectFormatter(object):
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
         self.format_agent_type = format_agent_type
+        self.format_picklist = format_picklist
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
@@ -309,7 +310,7 @@ class ObjectFormatter(object):
                 pass
 
             else:
-                field = self._fieldformat(field_spec.get_field(), field, query_field.format_name)
+                field = self._fieldformat(field_spec.table, field_spec.get_field(), field, query_field.format_name)
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
@@ -326,7 +327,7 @@ class ObjectFormatter(object):
 
         return func.date_format(field, format_expr)
 
-    def _fieldformat(self, specify_field: Field,
+    def _fieldformat(self, table: Table, specify_field: Field,
                      field: Union[InstrumentedAttribute, Extract],
                      format_name: Optional[str] = None):
         
@@ -334,6 +335,21 @@ class ObjectFormatter(object):
             cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
             _case = case(cases)
             return blank_nulls(_case) if self.replace_nulls else _case
+        
+        if self.format_picklist:
+            schema_items = Splocalecontaineritem.objects.filter(
+                container__discipline=self.collection.discipline,
+                container__schematype=0,
+                container__name=table.table.lower(),
+                name=specify_field.name.lower(),
+            )
+
+            if len(schema_items) > 0 and schema_items[0].picklistname:
+                picklist = Picklist.objects.filter(name=schema_items[0].picklistname).first()
+                cases = [(field == item.value, item.title) for item in picklist.picklistitems.all()]
+                _case = case(cases)
+            
+                return blank_nulls(_case) if self.replace_nulls else _case
         
         if specify_field.type == "java.lang.Boolean":
             return field != 0

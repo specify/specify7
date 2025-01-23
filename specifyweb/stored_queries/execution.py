@@ -57,6 +57,7 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     implicit_or: bool = True
     format_agent_type: bool = False
+    format_picklist: bool = False
 
 
 def set_group_concat_max_len(connection):
@@ -738,6 +739,7 @@ def execute(
     format_agent_type=False,
     recordsetid=None,
     formatauditobjs=False,
+    format_picklist=False,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -753,6 +755,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             format_agent_type=format_agent_type,
+            format_picklist=format_picklist,
         ),
     )
 
@@ -815,6 +818,7 @@ def build_query(
             user,
             props.replace_nulls,
             format_agent_type=props.format_agent_type,
+            format_picklist=props.format_picklist,
         ),
         query=(
             session.query(func.group_concat(id_field.distinct(), separator=","))

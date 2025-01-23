@@ -1067,6 +1067,7 @@ def run_batch_edit_query(props: BatchEditProps):
             True,
             recordsetid,
             False,
+            True,
         )
 
     to_many_planner = indexed.to_many_planner()
