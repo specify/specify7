@@ -158,7 +158,6 @@ function testFilter<SCHEMA extends AnySchema>(
         ? // Cast numbers to strings
           values.some((value) => {
             const fieldValue = resource.get(field);
-
             return isRelationship
               ? value == strictIdFromUrl(fieldValue!).toString()
               : value == fieldValue;
