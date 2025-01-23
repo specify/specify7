@@ -48,12 +48,17 @@ RUN apt-get update \
         ca-certificates \
         curl \
         git \
-        libldap2-dev \
-        libmariadbclient-dev \
         libsasl2-dev \
+        libsasl2-modules-gssapi-mit \
+        libldap2-dev \
+        libssl-dev \
+        libgmp-dev \
+        libffi-dev \
         python3.8-venv \
         python3.8-distutils \
-        python3.8-dev
+        python3.8-dev \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
