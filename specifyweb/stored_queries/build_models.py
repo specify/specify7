@@ -119,68 +119,68 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
         map_class(tabledef)
 
 
-# NOTE: Possible new functions with process_boolean_field, use database connection to check column type
-from sqlalchemy import inspect
-from sqlalchemy.types import Boolean
+# # NOTE: Possible new functions with process_boolean_field, use database connection to check column type
+# from sqlalchemy import inspect
+# from sqlalchemy.types import Boolean
 
-def process_boolean_field(field, engine):
-    """
-    Dynamically determines the type of a boolean field (BIT(1) or TINYINT)
-    and returns the appropriate SQLAlchemy type.
+# def process_boolean_field(field, engine):
+#     """
+#     Dynamically determines the type of a boolean field (BIT(1) or TINYINT)
+#     and returns the appropriate SQLAlchemy type.
 
-    Args:
-        field: The SQLAlchemy column object to process.
-        engine: The SQLAlchemy engine connected to the database.
+#     Args:
+#         field: The SQLAlchemy column object to process.
+#         engine: The SQLAlchemy engine connected to the database.
 
-    Returns:
-        The appropriate SQLAlchemy type (CustomBIT or Boolean).
-    """
-    # Use SQLAlchemy's inspector to get column details
-    inspector = inspect(engine)
-    table_name = field.table.name
-    column_name = field.name
+#     Returns:
+#         The appropriate SQLAlchemy type (CustomBIT or Boolean).
+#     """
+#     # Use SQLAlchemy's inspector to get column details
+#     inspector = inspect(engine)
+#     table_name = field.table.name
+#     column_name = field.name
 
-    # Get the column metadata from the table
-    columns = inspector.get_columns(table_name)
+#     # Get the column metadata from the table
+#     columns = inspector.get_columns(table_name)
 
-    for column in columns:
-        if column['name'] == column_name:
-            # Check for BIT type
-            if isinstance(column['type'], mysql_bit_type):
-                return CustomBIT()
-            # Check for TINYINT type (interpreted as Boolean by SQLAlchemy)
-            elif isinstance(column['type'], Boolean):
-                return Boolean
-            else:
-                raise ValueError(f"Unsupported boolean column type: {column['type']}")
-    raise ValueError(f"Column {column_name} not found in table {table_name}.")
+#     for column in columns:
+#         if column['name'] == column_name:
+#             # Check for BIT type
+#             if isinstance(column['type'], mysql_bit_type):
+#                 return CustomBIT()
+#             # Check for TINYINT type (interpreted as Boolean by SQLAlchemy)
+#             elif isinstance(column['type'], Boolean):
+#                 return Boolean
+#             else:
+#                 raise ValueError(f"Unsupported boolean column type: {column['type']}")
+#     raise ValueError(f"Column {column_name} not found in table {table_name}.")
 
-def new_make_column(flddef: Field, engine):
-    # Dynamically process boolean fields
-    if flddef.type == 'java.lang.Boolean':
-        field_type = process_boolean_field(flddef, engine)
-    else:
-        field_type = field_type_map[flddef.type]
+# def new_make_column(flddef: Field, engine):
+#     # Dynamically process boolean fields
+#     if flddef.type == 'java.lang.Boolean':
+#         field_type = process_boolean_field(flddef, engine)
+#     else:
+#         field_type = field_type_map[flddef.type]
 
-    if hasattr(flddef, 'length') and flddef.length and field_type in (types.Text, types.String):
-        field_type = field_type(flddef.length)
+#     if hasattr(flddef, 'length') and flddef.length and field_type in (types.Text, types.String):
+#         field_type = field_type(flddef.length)
 
-    return Column(flddef.column,
-                  field_type,
-                  index=flddef.indexed,
-                  unique=flddef.unique,
-                  nullable=not flddef.required)
+#     return Column(flddef.column,
+#                   field_type,
+#                   index=flddef.indexed,
+#                   unique=flddef.unique,
+#                   nullable=not flddef.required)
 
-def new_make_table(datamodel: Datamodel, tabledef: Table, engine):
-    columns = [Column(tabledef.idColumn, types.Integer, primary_key=True)]
+# def new_make_table(datamodel: Datamodel, tabledef: Table, engine):
+#     columns = [Column(tabledef.idColumn, types.Integer, primary_key=True)]
 
-    # Pass the engine to `make_column`
-    columns.extend(make_column(field, engine) for field in tabledef.fields)
+#     # Pass the engine to `make_column`
+#     columns.extend(make_column(field, engine) for field in tabledef.fields)
 
-    for reldef in tabledef.relationships:
-        if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column:
-            fk = make_foreign_key(datamodel, reldef)
-            if fk is not None:
-                columns.append(fk)
+#     for reldef in tabledef.relationships:
+#         if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column:
+#             fk = make_foreign_key(datamodel, reldef)
+#             if fk is not None:
+#                 columns.append(fk)
 
-    return Table_Sqlalchemy(tabledef.table, metadata, *columns)
+#     return Table_Sqlalchemy(tabledef.table, metadata, *columns)
