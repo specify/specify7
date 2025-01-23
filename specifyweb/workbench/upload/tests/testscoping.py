@@ -130,7 +130,7 @@ class ScopingTests(UploadTestsBase):
         result = do_upload(self.collection, rows, scoped_plan, self.agent.id)
 
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
-        right_side_cat_nums = '999 888'.split()
+        right_side_cat_nums = [n.zfill(9) for n in '999 888'.split()]
         left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
         right_side_query = models.Collectionobject.objects.filter(collection_id=self.right_side_collection.id, catalognumber__in=right_side_cat_nums)
 
