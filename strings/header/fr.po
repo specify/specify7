@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-24 04:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:63
@@ -120,7 +120,7 @@ msgstr "Réparer l'arbre"
 #: components/Toolbar/TreeRepair.tsx:168
 #, fuzzy
 msgid "treeRepairComplete"
-msgstr "Outil de mise à jour de la localité"
+msgstr "La réparation de l'arbre est terminée."
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
