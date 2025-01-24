@@ -139,7 +139,13 @@ const filterResults = <SCHEMA extends AnySchema>(
 
 function testFilter<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, value, isNot, isRelationship }: QueryComboBoxFilter<SCHEMA>
+  {
+    operation,
+    field,
+    value,
+    isNot,
+    isRelationship,
+  }: QueryComboBoxFilter<SCHEMA>
 ): boolean {
   const values = value.split(',').map(f.trim);
   const result =
@@ -150,8 +156,10 @@ function testFilter<SCHEMA extends AnySchema>(
         ? // Cast numbers to strings
           values.some((value) => {
             const fieldValue = resource.get(field);
-            // eslint-disable-next-line eqeqeq
-            return isRelationship ? value == strictIdFromUrl(fieldValue!).toString() : value == fieldValue
+
+            return isRelationship
+              ? value == strictIdFromUrl(fieldValue!).toString()
+              : value == fieldValue;
           })
         : operation === 'less'
           ? values.every((value) => (resource.get(field) ?? 0) < value)
