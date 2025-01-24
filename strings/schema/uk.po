@@ -43,7 +43,7 @@ msgstr "Назва таблиці"
 msgid "withoutTable"
 msgstr "Без таблиці"
 
-#: components/Header/userToolDefinitions.ts:52
+#: components/Header/userToolDefinitions.ts:61
 #: components/Preferences/UserDefinitions.tsx:721
 #: components/Router/Routes.tsx:373
 #: components/SchemaConfig/Components.tsx:30
@@ -313,7 +313,7 @@ msgstr "Підрахунок полів"
 msgid "relationshipCount"
 msgstr "Кількість стосунків"
 
-#: components/Header/userToolDefinitions.ts:129
+#: components/Header/userToolDefinitions.ts:138
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes

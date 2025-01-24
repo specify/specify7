@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:39
+#: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
@@ -49,7 +49,7 @@ msgstr ""
 "Das aktuell angemeldete Konto hat keinen Zugriff auf die "
 "{collectionName:string}-Sammlung."
 
-#: components/Header/userToolDefinitions.ts:33
+#: components/Header/userToolDefinitions.ts:42
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -72,8 +72,8 @@ msgstr "Neues Kennwort"
 msgid "repeatPassword"
 msgstr "Wiederhole das neue Kennwort"
 
-#: components/Core/Main.tsx:94
-#: components/Header/userToolDefinitions.ts:27
+#: components/Core/Main.tsx:95
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Ausloggen"
@@ -84,13 +84,13 @@ msgstr "Ausloggen"
 msgid "setUserAgents"
 msgstr "Benutzeragenten festlegen"
 
-#: components/Core/Main.tsx:101
+#: components/Core/Main.tsx:102
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "Dem aktuellen Benutzer ist kein Agent zugewiesen."
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:105
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -130,7 +130,7 @@ msgstr ""
 "„Specify“ haben, können Sie diese unten eingeben, um diesen Benutzer bei "
 "zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen."
 
-#: components/Header/userToolDefinitions.ts:83
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/OverlayRoutes.tsx:173
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -253,7 +253,7 @@ msgstr ""
 "Dem angemeldeten Benutzer wurde kein Zugriff auf Sammlungen in dieser "
 "Datenbank gewährt. Sie müssen sich als anderer Benutzer anmelden."
 
-#: components/Header/userToolDefinitions.ts:25
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userAccount"
@@ -343,7 +343,7 @@ msgstr "Sammlungen"
 msgid "configureCollectionAccess"
 msgstr "Auswählen des Benutzersammlungszugriffs"
 
-#: components/Header/userToolDefinitions.ts:69
+#: components/Header/userToolDefinitions.ts:78
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

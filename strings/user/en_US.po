@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:39
+#: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
@@ -38,7 +38,7 @@ msgstr ""
 "The currently logged in account does not have access to the "
 "{collectionName:string} collection."
 
-#: components/Header/userToolDefinitions.ts:33
+#: components/Header/userToolDefinitions.ts:42
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -61,8 +61,8 @@ msgstr "New password"
 msgid "repeatPassword"
 msgstr "Repeat new password"
 
-#: components/Core/Main.tsx:94
-#: components/Header/userToolDefinitions.ts:27
+#: components/Core/Main.tsx:95
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Log Out"
@@ -72,12 +72,12 @@ msgstr "Log Out"
 msgid "setUserAgents"
 msgstr "Set User Agents"
 
-#: components/Core/Main.tsx:101
+#: components/Core/Main.tsx:102
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "Current user does not have an agent assigned"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:105
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
@@ -110,7 +110,7 @@ msgstr ""
 "password, you can enter them below to associate that user with your "
 "{providerName:string} account for future logins."
 
-#: components/Header/userToolDefinitions.ts:83
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/OverlayRoutes.tsx:173
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -219,7 +219,7 @@ msgstr ""
 "The logged in user has not been given access to any collections in this "
 "database. You must login as another user."
 
-#: components/Header/userToolDefinitions.ts:25
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "User Account"
@@ -295,7 +295,7 @@ msgstr "Collections"
 msgid "configureCollectionAccess"
 msgstr "Select user collection access"
 
-#: components/Header/userToolDefinitions.ts:69
+#: components/Header/userToolDefinitions.ts:78
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

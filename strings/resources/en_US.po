@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/AppResources/Filters.tsx:70
 #: components/AppResources/Filters.tsx:117
-#: components/Header/userToolDefinitions.ts:59
+#: components/Header/userToolDefinitions.ts:68
 #: components/Preferences/UserDefinitions.tsx:1900
 #: components/Router/Routes.tsx:243
 #: components/Security/registry.ts:218

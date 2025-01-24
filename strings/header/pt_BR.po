@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.9-dev\n"
 
-#: components/Core/Main.tsx:63
+#: components/Core/Main.tsx:64
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #, fuzzy
 msgid "skipToContent"
@@ -38,14 +38,14 @@ msgstr ""
 msgid "dataEntry"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:90
+#: components/Header/userToolDefinitions.ts:99
 #: components/Router/OverlayRoutes.tsx:181
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "makeDwca"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:96
+#: components/Header/userToolDefinitions.ts:105
 #: components/Router/OverlayRoutes.tsx:189
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -88,7 +88,7 @@ msgstr ""
 msgid "dwcaExportStartedDescription"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:104
+#: components/Header/userToolDefinitions.ts:113
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #, fuzzy
@@ -119,7 +119,7 @@ msgstr ""
 msgid "createReport"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:74
+#: components/Header/userToolDefinitions.ts:83
 #: components/Router/OverlayRoutes.tsx:165
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -238,13 +238,13 @@ msgstr ""
 msgid "incompleteLocalizationDescription"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:139
+#: components/Header/userToolDefinitions.ts:148
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:144
+#: components/Header/userToolDefinitions.ts:153
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
@@ -254,33 +254,33 @@ msgstr ""
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:234
-#: components/Header/userToolDefinitions.ts:110
+#: components/Header/userToolDefinitions.ts:119
 #: components/Preferences/UserDefinitions.tsx:540
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "documentation"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:57
+#: components/Header/userToolDefinitions.ts:66
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "administration"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:127
+#: components/Header/userToolDefinitions.ts:136
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:117
+#: components/Header/userToolDefinitions.ts:126
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:134
+#: components/Header/userToolDefinitions.ts:143
 #: components/Router/Routes.tsx:435
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -294,7 +294,7 @@ msgstr ""
 msgid "cacheCleared"
 msgstr ""
 
-#: components/Header/userToolDefinitions.ts:122
+#: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

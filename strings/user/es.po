@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:39
+#: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
@@ -48,7 +48,7 @@ msgstr ""
 "La cuenta actualmente iniciada no tiene acceso a la colección "
 "{collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:33
+#: components/Header/userToolDefinitions.ts:42
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -71,8 +71,8 @@ msgstr "Nueva contraseña"
 msgid "repeatPassword"
 msgstr "repita la nueva contraseña"
 
-#: components/Core/Main.tsx:94
-#: components/Header/userToolDefinitions.ts:27
+#: components/Core/Main.tsx:95
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Cerrar sesión"
@@ -82,12 +82,12 @@ msgstr "Cerrar sesión"
 msgid "setUserAgents"
 msgstr "Establecer agentes usuarios"
 
-#: components/Core/Main.tsx:101
+#: components/Core/Main.tsx:102
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "El usuario actual no tiene un agente asignado"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:105
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Iniciar sesión como administrador y asignar un agente a este usuario"
@@ -120,7 +120,7 @@ msgstr ""
 "Specify, puede ingresarlos a continuación para asociar ese usuario con su "
 "cuenta {providerName:string} para futuros inicios de sesión."
 
-#: components/Header/userToolDefinitions.ts:83
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/OverlayRoutes.tsx:173
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -231,7 +231,7 @@ msgstr ""
 "Al usuario que inició sesión no se le ha dado acceso a ninguna colección de "
 "esta base de datos. Debe iniciar sesión como otro usuario."
 
-#: components/Header/userToolDefinitions.ts:25
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "Cuenta de usuario"
@@ -307,7 +307,7 @@ msgstr "Colecciones"
 msgid "configureCollectionAccess"
 msgstr "Seleccionar acceso a la colección del usuario"
 
-#: components/Header/userToolDefinitions.ts:69
+#: components/Header/userToolDefinitions.ts:78
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

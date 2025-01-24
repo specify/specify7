@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:39
+#: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
@@ -54,7 +54,7 @@ msgstr ""
 "Обліковий запис, який зараз увійшов, не має доступу до колекції "
 "{collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:33
+#: components/Header/userToolDefinitions.ts:42
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -81,8 +81,8 @@ msgstr "Новий пароль"
 msgid "repeatPassword"
 msgstr "Повторіть новий пароль"
 
-#: components/Core/Main.tsx:94
-#: components/Header/userToolDefinitions.ts:27
+#: components/Core/Main.tsx:95
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #, fuzzy
 msgid "logOut"
@@ -94,13 +94,13 @@ msgstr "Вийти"
 msgid "setUserAgents"
 msgstr "Встановити агентів користувача"
 
-#: components/Core/Main.tsx:101
+#: components/Core/Main.tsx:102
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "Поточний користувач не має призначеного агента"
 
-#: components/Core/Main.tsx:104
+#: components/Core/Main.tsx:105
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -138,7 +138,7 @@ msgstr ""
 "можете ввести їх нижче, щоб пов’язати цього користувача з вашим обліковим "
 "записом {providerName:string} для майбутніх входів."
 
-#: components/Header/userToolDefinitions.ts:83
+#: components/Header/userToolDefinitions.ts:92
 #: components/Router/OverlayRoutes.tsx:173
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -267,7 +267,7 @@ msgstr ""
 "Увійшовши в систему користувач не отримав доступ до жодної колекції в цій "
 "базі даних. Ви повинні увійти як інший користувач."
 
-#: components/Header/userToolDefinitions.ts:25
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userAccount"
@@ -359,7 +359,7 @@ msgstr "Колекції"
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
-#: components/Header/userToolDefinitions.ts:69
+#: components/Header/userToolDefinitions.ts:78
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

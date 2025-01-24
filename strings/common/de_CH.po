@@ -786,7 +786,7 @@ msgstr "Unbenutzt"
 msgid "ordinal"
 msgstr "Reihenfolge"
 
-#: components/Header/userToolDefinitions.ts:88
+#: components/Header/userToolDefinitions.ts:97
 #: components/QueryBuilder/Edit.tsx:80
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
@@ -797,7 +797,7 @@ msgid "export"
 msgstr "Export"
 
 #: components/Attachments/index.tsx:238
-#: components/Header/userToolDefinitions.ts:102
+#: components/Header/userToolDefinitions.ts:111
 #: components/LocalityUpdate/Status.tsx:229
 #: components/LocalityUpdate/index.tsx:135
 #: components/QueryBuilder/Import.tsx:70
