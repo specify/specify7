@@ -106,7 +106,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       .map((attachment) => attachment.attachmentLocation)
       .filter((name): name is string => name !== null);
     const origFilenames = attachmentsRef.current.attachments
-      .map((attachment) => attachment.origFilename)
+      .map((attachment) => attachment.origFilename ?? attachment.attachmentLocation)
       .filter((name): name is string => name !== null);
 
     try {
