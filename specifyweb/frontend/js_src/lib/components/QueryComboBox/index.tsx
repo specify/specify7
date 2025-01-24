@@ -550,6 +550,10 @@ export function QueryComboBox({
                                         : fieldName === 'taxonTreeDefId'
                                           ? {
                                               field: 'definition',
+                                              queryBuilderFieldPath: [
+                                                'definition',
+                                                'id',
+                                              ],
                                               isRelationship: true,
                                               operation: 'in',
                                               isNot: false,
