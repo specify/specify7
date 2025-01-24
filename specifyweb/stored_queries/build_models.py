@@ -4,6 +4,18 @@ from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
+# Custom BIT type to handle both BIT(1) and TINYINT
+class CustomBIT(mysql_bit_type):
+    def result_processor(self, dialect, coltype):
+        def process(value):
+            # Handle TINYINT (integer values) and BIT(1) (byte values)
+            if isinstance(value, int):
+                return value != 0  # Convert integer to boolean
+            if isinstance(value, (bytes, bytearray)):
+                return value != b'\x00'  # Convert BIT(1) to boolean
+            return value
+        return process
+
 def make_table(datamodel: Datamodel, tabledef: Table):
     columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
 
@@ -40,21 +52,23 @@ def make_column(flddef: Field):
                   nullable = not flddef.required)
 
 
-field_type_map = {'text'                 : types.Text,
-                  'json'                 : types.JSON,
-                  'blob'                 : types.LargeBinary, # mediumblob
-                  'java.lang.String'     : types.String,
-                  'java.lang.Integer'    : types.Integer,
-                  'java.lang.Long'       : types.Integer,
-                  'java.lang.Byte'       : types.Integer,
-                  'java.lang.Short'      : types.Integer,
-                  'java.util.Calendar'   : types.Date,
-                  'java.util.Date'       : types.Date,
-                  'java.lang.Float'      : types.Float,
-                  'java.lang.Double'     : types.Float,
-                  'java.sql.Timestamp'   : types.DateTime,
-                  'java.math.BigDecimal' : types.Numeric,
-                  'java.lang.Boolean'    : mysql_bit_type}
+field_type_map = {
+    'text'                 : types.Text,
+    'json'                 : types.JSON,
+    'blob'                 : types.LargeBinary, # mediumblob
+    'java.lang.String'     : types.String,
+    'java.lang.Integer'    : types.Integer,
+    'java.lang.Long'       : types.Integer,
+    'java.lang.Byte'       : types.Integer,
+    'java.lang.Short'      : types.Integer,
+    'java.util.Calendar'   : types.Date,
+    'java.util.Date'       : types.Date,
+    'java.lang.Float'      : types.Float,
+    'java.lang.Double'     : types.Float,
+    'java.sql.Timestamp'   : types.DateTime,
+    'java.math.BigDecimal' : types.Numeric,
+    'java.lang.Boolean'    : CustomBIT
+}
 
 def make_tables(datamodel: Datamodel):
     return {td.table: make_table(datamodel, td) for td in datamodel.tables}
@@ -64,7 +78,6 @@ def make_classes(datamodel: Datamodel):
         return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': tabledef.idFieldName })
 
     return {td.name: make_class(td) for td in datamodel.tables}
-
 
 def map_classes(datamodel: Datamodel, tables: List[Table], classes):
 
