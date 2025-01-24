@@ -143,11 +143,11 @@ export function getQueryComboBoxConditions({
     }
   }
 
-  if (
-    resource.specifyTable === tables.Determination &&
-    fieldName === 'fullName' &&
-    treeDefinition !== undefined
-  ) {
+  /**
+   * Filter values by tree definition if provided through context.
+   * Used for filtering Taxon values by COT tree definition.
+   */
+  if (treeDefinition !== undefined) {
     fields.push(
       QueryFieldSpec.fromPath(tables.Taxon.name, ['definition', 'id'])
         .toSpQueryField()

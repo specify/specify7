@@ -477,7 +477,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   LoanPreparation: {
     customInit: (resource: SpecifyResource<LoanPreparation>): void => {
       if (!resource.isNew())
-        resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
+        resource
+          .rgetCollection('loanReturnPreparations')
+          .then((preps) => updateLoanPrep(preps, true));
     },
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -500,7 +502,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         previousLoanPreparations.previousResolved[resource.cid] =
           Number(resolved);
       }
-      updateLoanPrep(resource.collection);
+      updateLoanPrep(resource.collection, true);
     },
     fieldChecks: {
       quantityReturned: (
