@@ -2,11 +2,7 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import type { RA, RestrictedTuple } from '../../utils/types';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
-import type {
-  CollectionObject,
-  CollectionObjectGroup,
-  Tables,
-} from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 
 export const interactionPrepTables: RestrictedTuple<
   AnyInteractionPreparation['tableName']
@@ -32,8 +28,8 @@ export const interactionsWithPrepTables: RestrictedTuple<
 export type PreparationData = {
   readonly catalogNumber: string;
   readonly collectionObjectId: number;
-  readonly taxon: string | undefined;
-  readonly taxonId: number | undefined;
+  readonly taxon: string;
+  readonly taxonId: number;
   readonly preparationId: number;
   readonly prepType: string;
   readonly countAmount: number;
@@ -41,26 +37,20 @@ export type PreparationData = {
   readonly gifted: number;
   readonly exchanged: number;
   readonly available: number;
-  readonly cogId: number | undefined;
-  readonly cogName: string | undefined;
-  readonly isConsolidated: boolean;
 };
 
 export type PreparationRow = readonly [
-  catalogNumber: string, // 0
-  collectionObjectId: number, // 1
-  taxonFullName: string | null, // 2
-  taxonId: number | null, // 3
-  preparationId: number, // 4
-  prepType: string, // 5
-  preparationCountAmt: number, // 6
-  amountLoaned: string | null, // 7
-  amountedGifted: string | null, // 8
-  amountExchanged: string | null, // 9
-  amountAvailable: string, // 10
-  cogId: number | null, // 11
-  cogName: string | null, // 12
-  isConsolidated: 0 | 1, // 13
+  catalogNumber: string,
+  collectionObjectId: number,
+  taxonFullName: string,
+  taxonId: number,
+  preparationId: number,
+  prepType: string,
+  preparationCountAmt: number,
+  amountLoaned: string | null,
+  amountedGifted: string | null,
+  amountExchanged: string | null,
+  amountAvailable: string,
 ];
 
 export const getPrepsAvailableForLoanRs = async (
@@ -76,20 +66,19 @@ export const getPrepsAvailableForLoanRs = async (
     }
   ).then(({ data }) => data);
 
-export const getPrepsForCoOrCog = async (
-  model: CollectionObject['tableName'] | CollectionObjectGroup['tableName'],
-  fieldName: string,
-  records: RA<string>,
+export const getPrepsAvailableForLoanCoIds = async (
+  idField: string,
+  collectionObjectIds: RA<string>,
   isLoan: boolean
 ) =>
-  ajax<RA<PreparationRow>>(`/interactions/associated_preps/${model}/`, {
+  ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
-    body: {
-      fieldName,
-      records,
+    body: formData({
+      id_fld: idField,
+      co_ids: collectionObjectIds,
       isLoan,
-    },
+    }),
   }).then(({ data }) => data);
 
 export const getInteractionsForPrepId = async (prepId: number) =>
