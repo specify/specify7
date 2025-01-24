@@ -283,15 +283,12 @@ function PreparationReturn({
             />
           </Label.Inline>
         </div>
-        <table className="grid-table grid-cols-[repeat(9,auto)] gap-2">
+        <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
               <td />
               <th className="text-center" scope="col">
                 {getField(tables.CollectionObject, 'catalogNumber').label}
-              </th>
-              <th className="text-center" scope="col">
-                {tables.CollectionObjectGroup.label}
               </th>
               <th className="text-center" scope="col">
                 {getField(tables.Determination, 'taxon').label}
