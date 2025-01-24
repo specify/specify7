@@ -1104,8 +1104,7 @@ export const userPreferenceDefinitions = {
         },
       },
       recordSet: {
-        title: () =>
-          tableLabel('RecordSet'),
+        title: () => tableLabel('RecordSet'),
         items: {
           recordToOpen: definePref<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1349,7 +1348,9 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          orderByField: definePref<'fullName' | 'name' | 'nodeNumber' | 'rankId'>({
+          orderByField: definePref<
+            'fullName' | 'name' | 'nodeNumber' | 'rankId'
+          >({
             title: preferencesText.sortByField(),
             requiresReload: false,
             visible: true,
@@ -1414,8 +1415,7 @@ export const userPreferenceDefinitions = {
          * This would be replaced with labels from schema once
          * schema is loaded
          */
-        title: () =>
-            tableLabel('Geography'),
+        title: () => tableLabel('Geography'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1436,8 +1436,7 @@ export const userPreferenceDefinitions = {
         },
       },
       taxon: {
-        title: () =>
-          tableLabel('Taxon'),
+        title: () => tableLabel('Taxon'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1458,8 +1457,7 @@ export const userPreferenceDefinitions = {
         },
       },
       storage: {
-        title: () =>
-          tableLabel('Storage'),
+        title: () => tableLabel('Storage'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1480,8 +1478,7 @@ export const userPreferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: () =>
-          tableLabel('GeologicTimePeriod'),
+        title: () => tableLabel('GeologicTimePeriod'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1502,8 +1499,7 @@ export const userPreferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: () =>
-          tableLabel('LithoStrat'),
+        title: () => tableLabel('LithoStrat'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1524,8 +1520,7 @@ export const userPreferenceDefinitions = {
         },
       },
       tectonicUnit: {
-        title: () =>
-          tableLabel('TectonicUnit'),
+        title: () => tableLabel('TectonicUnit'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -2087,10 +2082,7 @@ import('../DataModel/tables')
           ),
           'Unable to find tree full name value'
         );
-        overwriteReadOnly(
-          name, 
-          'title', 
-          getField(tables.Taxon, 'name').label);
+        overwriteReadOnly(name, 'title', getField(tables.Taxon, 'name').label);
         overwriteReadOnly(
           fullName,
           'title',
@@ -2102,7 +2094,8 @@ import('../DataModel/tables')
 
       // Update titles for orderByField
       const treeOrderByBehavior =
-        userPreferenceDefinitions.treeEditor.subCategories.behavior.items.orderByField;
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items
+          .orderByField;
       if ('values' in treeOrderByBehavior) {
         const orderByValues = treeOrderByBehavior.values as RA<{
           readonly value: string;
@@ -2147,7 +2140,7 @@ import('../DataModel/tables')
         overwriteReadOnly(
           rankId,
           'title',
-          getField(tables.Taxon,'rankId').label
+          getField(tables.Taxon, 'rankId').label
         );
         overwriteReadOnly(
           nodeNumber,
@@ -2155,11 +2148,13 @@ import('../DataModel/tables')
           getField(tables.Taxon, 'nodeNumber').label
         );
       } else {
-        softError('Unable to replace the tree preferences item title for orderByField');
+        softError(
+          'Unable to replace the tree preferences item title for orderByField'
+        );
       }
     })
   )
-  
+
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 

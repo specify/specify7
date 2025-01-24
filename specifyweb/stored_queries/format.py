@@ -101,7 +101,12 @@ class ObjectFormatter(object):
         if result is not None:
             return result
 
-        return lookup('class', specify_model.classname)
+        result = lookup('class', specify_model.classname)
+        if result is not None:
+            return result
+        
+        logger.warning("no dataobjformatter for %s", specify_model.classname)
+        return None
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
         if formatter_name is None:
