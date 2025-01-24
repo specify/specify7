@@ -36,6 +36,7 @@ import {
   getNameFromTreeDefinitionName,
   getNameFromTreeRankName,
   parsePartialField,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsPartialField,
   valueIsToManyIndex,
@@ -121,7 +122,8 @@ function navigator({
   if (next === undefined) return;
 
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationship) &&
+    (relationshipIsToMany(parentRelationship) ||
+      relationshipIsRemoteToOne(parentRelationship)) &&
     !valueIsToManyIndex(parentPartName) &&
     !valueIsTreeMeta(parentPartName);
 
@@ -328,7 +330,9 @@ export function getMappingLineData({
         internalState.defaultValue,
       ]);
 
-      const isToOne = parentRelationship?.type === 'zero-to-one';
+      const isToOne =
+        parentRelationship?.type === 'one-to-one' ||
+        parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
@@ -588,8 +592,10 @@ export function getMappingLineData({
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
                   !(
-                    relationshipIsToMany(field) &&
-                    relationshipIsToMany(parentRelationship)
+                    (relationshipIsToMany(field) ||
+                      relationshipIsRemoteToOne(field)) &&
+                    (relationshipIsToMany(parentRelationship) ||
+                      relationshipIsRemoteToOne(parentRelationship))
                   ));
 
               isIncluded &&=
@@ -611,7 +617,10 @@ export function getMappingLineData({
                  * Hide -to-many relationships to a tree table as they are
                  * not supported by the WorkBench
                  */
-                !relationshipIsToMany(field) ||
+                !(
+                  relationshipIsToMany(field) ||
+                  relationshipIsRemoteToOne(field)
+                ) ||
                 !isTreeTable(field.relatedTable.name);
             }
 

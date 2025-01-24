@@ -7,7 +7,7 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    Callable, TypedDict, cast
+    Callable, TypedDict, Literal, cast
 
 from urllib.parse import urlencode
 
@@ -216,11 +216,14 @@ class GetCollectionForm(forms.Form):
 
     orderby = forms.CharField(required=False)
 
+    filterchronostrat = forms.BooleanField(required=False)
+
     defaults = dict(
         domainfilter=None,
         limit=0,
         offset=0,
         orderby=None,
+        filterchronostrat=False,
     )
 
     def clean_limit(self):
@@ -510,7 +513,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
 
     data = cleanData(model, data, parent_relationship)
     obj = model()
-    _, remote_to_ones, _ = handle_fk_fields(collection, agent, obj, data)
+    _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
@@ -523,9 +526,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
         check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
 
-    for (field, related) in remote_to_ones:
-        setattr(related, field.name, obj)
-        related.save()
+    handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -602,8 +603,7 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
     for key in data.keys() - {put_first}:
         yield (key, data[key])
 
-
-def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List, List[FieldChangeInfo]]:
+def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List[FieldChangeInfo], Callable[[Any], None]]:
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -619,54 +619,122 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         field = obj._meta.get_field(field_name)
         if not field.many_to_one and not field.one_to_one: continue
 
-        old_related = get_related_or_none(obj, field_name)
-        dependent = is_dependent_field(obj, field_name)
-        old_related_id = None if old_related is None else old_related.id
-        new_related_id = None
-
-        if val is None:
-            setattr(obj, field_name, None)
-            rel_obj = None
-            if dependent and old_related:
-                dependents_to_delete.append(old_related)
-
-        elif isinstance(val, field.related_model):
-            # The related value was patched into the data by a parent object.
-            setattr(obj, field_name, val)
-            rel_obj = val
-            new_related_id = val.id
-
-        elif isinstance(val, str):
-            # The related object is given by a URI reference.
-            assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
-            fk_model, fk_id = strict_uri_to_model(val, field.related_model.__name__)
-            rel_obj = get_object_or_404(fk_model, id=fk_id)
-            setattr(obj, field_name, rel_obj)
-            new_related_id = fk_id
-
-        elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
-            # The related object is represented by a nested dict of data.
-            rel_model = field.related_model
-            datamodel_field = obj.specify_model.get_relationship(field_name)
-            rel_obj = update_or_create_resource(collection, agent, rel_model, val, obj if dependent else None, datamodel_field)
-
-            setattr(obj, field_name, rel_obj)
-            if dependent and old_related and old_related.id != rel_obj.id:
-                dependents_to_delete.append(old_related)
-            new_related_id = rel_obj.id
-            data[field_name] = _obj_to_data(rel_obj, read_checker)
+        if field.concrete: 
+            some_remote_to_ones = []
+            extra_data, some_dependents_to_delete, some_dirty = _handle_fk_field(collection, agent, obj, field, val, read_checker)
         else:
-            raise Exception(f'bad foreign key field in data: {field_name}')
-
-        if str(old_related_id) != str(new_related_id):
-            dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+            extra_data = dict()
+            some_dependents_to_delete, some_dirty, some_remote_to_ones = _handle_remote_fk_field(obj, field, val, read_checker)
         
-        # If the field is remote, the obj must be set on the remote side once 
-        # the obj exists
-        if not field.concrete and rel_obj is not None: 
-                remote_to_ones.append((field.remote_field, rel_obj))
+        data.update(extra_data)
+        dirty += some_dirty
+        dependents_to_delete += some_dependents_to_delete
+        remote_to_ones += some_remote_to_ones
 
-    return dependents_to_delete, remote_to_ones, dirty
+    def _set_remote_to_ones(created_obj): 
+        for field, related_data, is_dependent in remote_to_ones: 
+            related_data[field.name] = created_obj
+            rel_obj = update_or_create_resource(collection, agent, field.model, related_data, created_obj if is_dependent else None)
+            setattr(obj, field.remote_field.name, rel_obj)
+
+    return dependents_to_delete, dirty, _set_remote_to_ones
+
+def _handle_fk_field(collection, agent, obj, field, value, read_checker): 
+    field_name = field.name
+    old_related = get_related_or_none(obj, field_name)
+    dependent = is_dependent_field(obj, field_name)
+    old_related_id = None if old_related is None else old_related.id
+    new_related_id = None
+
+    dependents_to_delete = []
+    dirty: List[FieldChangeInfo] = []
+    data = dict()
+
+    if value is None:
+        setattr(obj, field_name, None)
+        rel_obj = None
+        if dependent and old_related:
+            dependents_to_delete.append(old_related)
+
+    elif isinstance(value, field.related_model):
+        # The related value was patched into the data by a parent object.
+        setattr(obj, field_name, value)
+        rel_obj = value
+        new_related_id = value.id
+
+    elif isinstance(value, str):
+        # The related object is given by a URI reference.
+        assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, value)
+        fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        rel_obj = get_object_or_404(fk_model, id=fk_id)
+        setattr(obj, field_name, rel_obj)
+        new_related_id = fk_id
+
+    elif hasattr(value, 'items'):  # i.e. it's a dict of some sort
+        # The related object is represented by a nested dict of data.
+        rel_model = field.related_model
+        datamodel_field = obj.specify_model.get_relationship(field_name)
+        rel_obj = update_or_create_resource(collection, agent, rel_model, value, obj if dependent else None, datamodel_field)
+
+        setattr(obj, field_name, rel_obj)
+        if dependent and old_related and old_related.id != rel_obj.id:
+            dependents_to_delete.append(old_related)
+        new_related_id = rel_obj.id
+        data[field_name] = _obj_to_data(rel_obj, read_checker)
+    else:
+        raise Exception(f'bad foreign key field in data: {field_name}')
+
+    if str(old_related_id) != str(new_related_id):
+        dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+    return data, dependents_to_delete, dirty
+
+def _handle_remote_fk_field(obj, field, value, read_checker): 
+    field_name = field.name
+    old_related = get_related_or_none(obj, field_name)
+    dependent = is_dependent_field(obj, field_name)
+    old_related_id = None if old_related is None else old_related.id
+    new_related_id = None
+
+    remote_to_ones = []
+    dependents_to_delete = []
+    dirty: List[FieldChangeInfo] = []
+
+    if value is None:
+        rel_data = None
+        setattr(obj, field_name, None)
+        if dependent and old_related:
+            dependents_to_delete.append(old_related)
+
+    elif isinstance(value, field.related_model):
+        # The related value was patched into the data by a parent object.
+        setattr(obj, field_name, value)
+        rel_data = _obj_to_data(value, read_checker)
+        new_related_id = value.id
+
+    elif isinstance(value, str):
+        # The related object is given by a URI reference.
+        assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, value)
+        fk_model, fk_id = strict_uri_to_model(value, field.related_model.__name__)
+        rel_obj = get_object_or_404(fk_model, id=fk_id)
+        setattr(obj, field_name, rel_obj)
+        rel_data = _obj_to_data(rel_obj, read_checker)
+        new_related_id = rel_obj.pk
+
+    elif hasattr(value, 'items'):  # i.e. it's a dict of some sort
+        # The related object is represented by a nested dict of data.
+        rel_data = value
+        new_related_id = value.get("id", None)
+        if dependent and old_related and new_related_id and old_related.id != new_related_id:
+            dependents_to_delete.append(old_related)
+    else:
+        raise Exception(f'bad foreign key field in data: {field_name}')
+
+    if str(old_related_id) != str(new_related_id):
+        dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+
+    if not rel_data is None: 
+        remote_to_ones.append((field.remote_field, rel_data, dependent))
+    return dependents_to_delete, dirty, remote_to_ones
 
 def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     """For every key in the dict 'data' which is a *-to-many field in the
@@ -702,7 +770,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
 def _handle_dependent_to_many(collection, agent, obj, field, value):
     if not isinstance(value, list): 
         assert isinstance(value, list), "didn't get inline data for dependent field %s in %s: %r" % (field.name, obj, value)
-        
+
     rel_model = field.related_model
     ids = [] # Ids not in this list will be deleted at the end.
 
@@ -828,7 +896,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     check_table_permissions(collection, agent, obj, "update")
 
     data = cleanData(obj.__class__, data, parent_relationship)
-    dependents_to_delete, remote_to_ones, fk_dirty = handle_fk_fields(collection, agent, obj, data)
+    dependents_to_delete, fk_dirty, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
@@ -846,9 +914,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
         delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
-    for (field, related) in remote_to_ones:
-        setattr(related, field.name, obj)
-        related.save()
+    handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -1010,7 +1076,7 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
 
         filters.update({param: val})
 
-    if model.__name__ == 'Geologictimeperiod':
+    if control_params['filterchronostrat'] == True:
         # Filter out invalid chronostrats
         filters.update({
             'startperiod__isnull': False,
@@ -1081,6 +1147,7 @@ class RowsForm(GetCollectionForm):
         orderby=None,
         distinct=False,
         fields=None,
+        filterchronostrat=False,
     )
 
 def rows(request, model_name: str) -> HttpResponse:
