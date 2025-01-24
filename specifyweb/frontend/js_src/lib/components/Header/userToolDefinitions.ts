@@ -29,13 +29,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/accounts/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
-      onClick: async () => clearAllCache()
-        .then(() => {
-          console.log('Cache cleared successfully.');
-        })
-        .catch((error) => {
-          console.error('Error occurred during cache clearing:', error);
-        }),
+      onClick: async () =>
+        clearAllCache()
+          .then(() => {
+            console.log('Cache cleared successfully.');
+          })
+          .catch((error) => {
+            console.error('Error occurred during cache clearing:', error);
+          }),
     },
     changePassword: {
       title: userText.changePassword(),
