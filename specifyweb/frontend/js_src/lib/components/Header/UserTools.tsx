@@ -18,6 +18,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { locationToState } from '../Router/RouterState';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { MenuButton } from './index';
 import { useUserTools } from './menuItemProcessing';
 
@@ -144,6 +145,18 @@ function UserToolsColumn({
               const isExternalLink = isExternalUrl(url);
               // Make links to another entrypoint trigger page reload
               const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
+
+              const handleClick = async (): Promise<void> => {
+                if (url === '/accounts/logout/') {
+                  await clearAllCache();
+                }
+              };
+      
+              const handleOnClick = ():void => {
+                handleClick().catch((error) => {
+                  console.error('Error occurred during cache clearing:', error);
+                });
+              };
               return (
                 <li key={url}>
                   <LinkComponent
@@ -154,6 +167,7 @@ function UserToolsColumn({
                         : undefined
                     }
                     href={url}
+                    onClick={handleOnClick}
                   >
                     {icon}
                     {title}
