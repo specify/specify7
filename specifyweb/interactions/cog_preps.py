@@ -380,7 +380,11 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             prep_uri, "preparation") if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
-        loan_return_prep_data_lst = loan_prep_data["loanreturnpreparations"]
+        loan_return_prep_data_lst = (
+            loan_prep_data["loanreturnpreparations"]
+            if "loanreturnpreparations" in loan_prep_data.keys()
+            else []
+        )
 
         # Continue if the loan preparation has no new loan return preparation data,
         # or if there are more than one loan return preparation data (consolidated COG prep have no partial returns)
@@ -527,7 +531,14 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     for loan_prep_idx in range(len(updated_interaction_data["loanpreparations"])):
         if type(updated_interaction_data["loanpreparations"]) is str:
             continue
-        loan_return_data = updated_interaction_data["loanpreparations"][loan_prep_idx]["loanreturnpreparations"]
+        loan_return_data = (
+            updated_interaction_data["loanpreparations"][loan_prep_idx][
+                "loanreturnpreparations"
+            ]
+            if "loanreturnpreparations"
+            in updated_interaction_data["loanpreparations"][loan_prep_idx].keys()
+            else []
+        )
         total_quantity_returned = sum(
             [loan_return["quantityreturned"] for loan_return in loan_return_data])
         total_quantity_resolved = sum(
@@ -536,8 +547,13 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = total_quantity_returned
 
         # Set the modified loan prep isresolved to True if all the preparations are resolved
-        prep_uri = updated_interaction_data["loanpreparations"][loan_prep_idx]["preparation"]
-        prep_id = strict_uri_to_model(prep_uri, "preparation")[1]
+        prep_uri = (
+            updated_interaction_data["loanpreparations"][loan_prep_idx]["preparation"]
+            if "preparation"
+            in updated_interaction_data["loanpreparations"][loan_prep_idx].keys()
+            else None
+        )
+        prep_id = strict_uri_to_model(prep_uri, "preparation")[1] if prep_uri is not None else None
         if prep_id in sibling_prep_ids or prep_id in new_loan_return_prep_ids or prep_id in target_prep_ids:
             quantity = updated_interaction_data["loanpreparations"][loan_prep_idx]["quantity"]
             if total_quantity_resolved >= quantity:
