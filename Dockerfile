@@ -57,7 +57,7 @@ RUN apt-get update \
         python3.8-venv \
         python3.8-distutils \
         python3.8-dev \
-        default-libmysqlclient-dev \
+        libmariadbclient-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
