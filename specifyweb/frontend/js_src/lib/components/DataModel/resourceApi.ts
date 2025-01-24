@@ -11,7 +11,11 @@ import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
-import { isRelationshipCollection } from './collectionApi';
+import {
+  DependentCollection,
+  IndependentCollection,
+  isRelationshipCollection,
+} from './collectionApi';
 import { backboneFieldSeparator } from './helpers';
 import type {
   AnySchema,
@@ -475,19 +479,46 @@ export const ResourceBase = Backbone.Model.extend({
 
     switch (field.type) {
       case 'one-to-many': {
-        // Should we handle passing in an schema.Model.Collection instance here??
+        /*
+         * Should we handle preserving collection events when a
+         * tables.Table.Collection instance is passed here??
+         */
         const collectionOptions = { related: this, field: field.getReverse() };
+        if (!Array.isArray(value) && !isRelationshipCollection(value)) {
+          console.warn(
+            'Expected array of resources or collection when setting one-to-many',
+            { fieldName, value }
+          );
+          return undefined;
+        }
+        if (
+          isRelationshipCollection(value) &&
+          value.field !== collectionOptions.field
+        ) {
+          softFail(
+            new Error(
+              `Trying to set collection of ${value.table.name}.${value.field.name}. Expected ${collectionOptions.field?.table}.${collectionOptions.field?.name}`,
+              {
+                resource: this,
+                fieldName,
+                value,
+                expectedCollectionOptions: collectionOptions,
+              }
+            )
+          );
+          return undefined;
+        }
 
         if (field.isDependent()) {
           const collection = new relatedTable.DependentCollection(
             collectionOptions,
-            value
+            value instanceof DependentCollection ? value.models : value
           );
           this.storeDependent(field, collection);
         } else {
           const collection = new relatedTable.IndependentCollection(
             collectionOptions,
-            value
+            value instanceof IndependentCollection ? value.models : value
           );
           this.storeIndependent(field, collection);
         }
@@ -551,28 +582,33 @@ export const ResourceBase = Backbone.Model.extend({
       });
     return value;
   },
-  _handleUri(value, fieldName) {
-    const field = this.specifyTable.getField(fieldName);
-    const oldRelated = this.dependentResources[fieldName];
+  _handleUri(value: string, fieldName: string) {
+    const field: Relationship | undefined =
+      this.specifyTable.getRelationship(fieldName);
 
-    if (field.isDependent()) {
-      console.warn(
-        'expected inline data for dependent field',
-        fieldName,
-        'in',
-        this
-      );
+    if (field === undefined) {
+      console.warn('Setting uri', value, 'on unknown field', fieldName);
     }
 
-    if (oldRelated && field.type === 'many-to-one') {
-      /*
-       * Probably should never get here since the presence of an oldRelated
-       * value implies a dependent field which wouldn't be receiving a URI value
-       */
-      console.warn('unexpected condition');
+    const oldRelated =
+      this.dependentResources[fieldName] ??
+      this.independentResources[fieldName];
+
+    if (field.isDependent()) {
+      console.warn('expected inline data for dependent field', {
+        resource: this,
+        fieldName,
+        value,
+      });
+    }
+    if (oldRelated && relationshipIsToMany(field)) {
+      console.warn('Setting uri on to-many relationship', { fieldName, value });
+    } else if (oldRelated && !relationshipIsToMany(field)) {
+      if (field.isDependent()) console.warn('unexpected condition');
       if (oldRelated.url() !== value) {
         // The reference changed
         delete this.dependentResources[fieldName];
+        delete this.independentResources[fieldName];
         oldRelated.off('all', null, this);
       }
     }
