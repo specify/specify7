@@ -135,8 +135,10 @@ def field_path_with_value(instance, model_name: str, field_path: str, default):
         if '__' in field_path or hasattr(object_or_field, 'id'):
             return None
 
-        table = datamodel.get_table_strict(model_name)
-        field = table.get_field_strict(field_path)
+        table = datamodel.get_table(model_name)
+        if table is None: return None
+        
+        field = table.get_field(field_path)
         field_required = field.required if field is not None else False
         if not field_required:
             return None
@@ -161,7 +163,8 @@ def apply_default_uniqueness_rules(discipline, registry=None):
 
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         _discipline = discipline
-        model_name = datamodel.get_table_strict(table).django_name
+        model_name = getattr(datamodel.get_table(table), "django_name", None)
+        if model_name is None: continue
         for rule in rules:
             fields, scopes = rule["rule"]
             isDatabaseConstraint = rule["isDatabaseConstraint"]

@@ -72,10 +72,10 @@ function Interactions({
                   table.name === 'LoanReturnPreparation'
                     ? `/specify/overlay/interactions/return-loan/`
                     : interactionsWithPrepTables.includes(
-                        (table as SpecifyTable<InteractionWithPreps>).name
-                      )
-                    ? `/specify/overlay/interactions/create/${table.name}/`
-                    : getResourceViewUrl(table.name)
+                          (table as SpecifyTable<InteractionWithPreps>).name
+                        )
+                      ? `/specify/overlay/interactions/create/${table.name}/`
+                      : getResourceViewUrl(table.name)
                 }
               >
                 <TableIcon label={false} name={table.name} />

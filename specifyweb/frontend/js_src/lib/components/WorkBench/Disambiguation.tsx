@@ -99,6 +99,7 @@ function Row({
               .then((parent) =>
                 wbText.ambiguousTaxaChild({
                   node: resource.get('fullname'),
+                  author: resource.get('author'),
                   parent: parent.get('fullName'),
                 })
               )

@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^specify/bulk/(?P<model>\w+)/(?P<copies>\d+)/$', views.collection_bulk_copy), # permissions added
     url(r'^specify/bulk/(?P<model>\w+)/$', views.collection_bulk), # permissions added
     url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
-    url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
+    url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 

@@ -115,14 +115,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                   idFromUrl(treeDefinitionItem.get('treeDef'))!
                 )
               : typeof resource.get('definitionItem') === 'string' &&
-                !resource.isNew()
-              ? ([
-                  await fetchTreeRoot(
-                    resource.specifyTable.name,
-                    idFromUrl(resource.get('definition'))!
-                  ),
-                ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
-              : undefined
+                  !resource.isNew()
+                ? ([
+                    await fetchTreeRoot(
+                      resource.specifyTable.name,
+                      idFromUrl(resource.get('definition'))!
+                    ),
+                  ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
+                : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;

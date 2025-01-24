@@ -77,7 +77,7 @@ const markerLayerName = [
   'polygonBoundary',
   'errorRadius',
 ] as const;
-export type MarkerLayerName = typeof markerLayerName[number];
+export type MarkerLayerName = (typeof markerLayerName)[number];
 const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
   marker: true,
   polygon: true,
@@ -143,7 +143,7 @@ export function addMarkersToMap(
       (groupName) =>
         [groupName, L.featureGroup.subGroup(cluster)] as readonly [
           MarkerLayerName,
-          L.FeatureGroup
+          L.FeatureGroup,
         ]
     )
   );

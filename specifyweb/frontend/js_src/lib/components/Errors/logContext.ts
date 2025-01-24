@@ -49,8 +49,8 @@ function modifyContext(
   const path: RA<BasePathPart> = Array.isArray(rawPath)
     ? rawPath
     : rawPath === undefined
-    ? []
-    : [rawPath];
+      ? []
+      : [rawPath];
   const newPath = callback(path);
   setLogContext({
     ...getLogContext(),

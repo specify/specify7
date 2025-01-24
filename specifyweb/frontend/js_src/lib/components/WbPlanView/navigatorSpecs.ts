@@ -28,7 +28,7 @@ export type NavigatorSpec = {
   // Whether to include all tree fields for non "any rank"
   readonly includeAllTreeFields: boolean;
   readonly allowNestedToMany: boolean;
-  readonly ensurePermission: () => typeof tableActions[number] | undefined;
+  readonly ensurePermission: () => (typeof tableActions)[number] | undefined;
   // Whether can execute query/do workbench upload
   readonly hasActionPermission: () => boolean;
   readonly includeRelationshipsFromTree: boolean;

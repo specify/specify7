@@ -24,7 +24,7 @@ import { defaultTreeDefs } from './defaults';
 
 export function CreateTree<
   SCHEMA extends AnyTree,
-  TREE_NAME extends AnyTree['tableName']
+  TREE_NAME extends AnyTree['tableName'],
 >({
   tableName,
   treeDefinitions,

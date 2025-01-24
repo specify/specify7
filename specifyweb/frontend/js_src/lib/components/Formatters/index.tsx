@@ -109,12 +109,14 @@ function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   );
 }
 
-export type XmlEditorContext<SPEC extends BaseSpec<SimpleXmlNode>> =
-  | Omit<AppResourceTabProps, 'data'> & {
-      readonly xmlNode: XmlNode;
-      readonly syncer: Syncer<SimpleXmlNode, SpecToJson<SPEC>>;
-      readonly parsed: GetOrSet<SpecToJson<SPEC>>;
-    };
+export type XmlEditorContext<SPEC extends BaseSpec<SimpleXmlNode>> = Omit<
+  AppResourceTabProps,
+  'data'
+> & {
+  readonly xmlNode: XmlNode;
+  readonly syncer: Syncer<SimpleXmlNode, SpecToJson<SPEC>>;
+  readonly parsed: GetOrSet<SpecToJson<SPEC>>;
+};
 
 export function createXmlContext<SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC

@@ -89,7 +89,7 @@ export class ErrorBoundary extends React.Component<
           {this.state.errorInfo.componentStack}
         </ErrorDialog>
       ) : (
-        this.props.children ?? null
+        (this.props.children ?? null)
       );
   }
 }

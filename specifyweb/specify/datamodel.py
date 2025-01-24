@@ -8246,7 +8246,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='catalogNumberFormatName', column='CatalogNumberFormatName', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
         indexes=[
 
@@ -8297,7 +8298,6 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='cogType', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
-            Relationship(name='parentCog', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ParentCogID'),
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin',otherSideName='childCog', dependent=True),
             Relationship(name='children', type='one-to-many', required=False, dependent=True, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentCog'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
@@ -8701,6 +8701,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='parent', type='many-to-one', required=True, relatedModelName='TectonicUnit', column='ParentID'),
             Relationship(name='definition', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDef', column='TectonicUnitTreeDefID', otherSideName='treeEntries'),
             Relationship(name='definitionItem', type='many-to-one', required=True, relatedModelName='TectonicUnitTreeDefItem', column='TectonicUnitTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='paleoContexts', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='tectonicUnit'),
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}

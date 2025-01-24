@@ -238,6 +238,11 @@ export function InteractionDialog({
     );
   };
 
+  const collectionObjectGroupResourceTableId = React.useMemo(
+    () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
+    []
+  );
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -293,6 +298,9 @@ export function InteractionDialog({
   ) : (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
+        collectionObjectGroupResourceTableId={
+          collectionObjectGroupResourceTableId
+        }
         table={itemTable}
         onClose={handleClose}
         onSelect={handleProceed}
@@ -334,8 +342,8 @@ export function InteractionDialog({
               typeof itemCollection === 'object'
                 ? interactionsText.addItems()
                 : itemTable.name === 'Loan'
-                ? interactionsText.recordReturn({ table: itemTable.label })
-                : interactionsText.createRecord({ table: actionTable.name })
+                  ? interactionsText.recordReturn({ table: itemTable.label })
+                  : interactionsText.createRecord({ table: actionTable.name })
             }
             onClose={handleClose}
           >
