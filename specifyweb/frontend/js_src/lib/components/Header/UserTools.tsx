@@ -18,7 +18,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { locationToState } from '../Router/RouterState';
-import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { MenuButton } from './index';
 import { useUserTools } from './menuItemProcessing';
 
@@ -141,22 +140,11 @@ function UserToolsColumn({
         <div className="flex flex-col gap-2" key={groupName}>
           <H3>{groupName}</H3>
           <Ul className="flex flex-col gap-1">
-            {userTools.map(({ title, url, icon }) => {
+            {userTools.map(({ title, url, icon, onClick }) => {
               const isExternalLink = isExternalUrl(url);
               // Make links to another entrypoint trigger page reload
               const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
 
-              const handleClick = async (): Promise<void> => {
-                if (url === '/accounts/logout/') {
-                  await clearAllCache();
-                }
-              };
-      
-              const handleOnClick = ():void => {
-                handleClick().catch((error) => {
-                  console.error('Error occurred during cache clearing:', error);
-                });
-              };
               return (
                 <li key={url}>
                   <LinkComponent
@@ -167,7 +155,7 @@ function UserToolsColumn({
                         : undefined
                     }
                     href={url}
-                    onClick={handleOnClick}
+                    onClick={onClick}
                   >
                     {icon}
                     {title}
