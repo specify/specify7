@@ -6,6 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
@@ -53,7 +54,6 @@ import {
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { definePref } from './types';
-import { batchEditText } from '../../localization/batchEdit';
 
 const isLightMode = ({
   isDarkMode,
@@ -2033,12 +2033,12 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 5000,
-            type: "java.lang.Double",
+            type: 'java.lang.Double',
             parser: {
-              min: 0
-            }
-          })
-        }
+              min: 0,
+            },
+          }),
+        },
       },
       editor: {
         title: preferencesText.general(),
@@ -2047,15 +2047,14 @@ export const userPreferenceDefinitions = {
             title: batchEditText.showRollback(),
             requiresReload: false,
             defaultValue: true,
-            type: "java.lang.Boolean",
+            type: 'java.lang.Boolean',
             visible: true,
-            description: batchEditText.showRollbackDescription()
-          })
-        }
-      }
-
-    }
-  }
+            description: batchEditText.showRollbackDescription(),
+          }),
+        },
+      },
+    },
+  },
 } as const;
 
 // Use tree table labels as titles for the tree editor sections
