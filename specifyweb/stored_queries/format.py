@@ -6,6 +6,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
+from specifyweb.specify.utils import get_picklists
 from sqlalchemy import orm, Table as SQLTable, inspect
 from sqlalchemy.sql.expression import case, func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
@@ -342,16 +343,9 @@ class ObjectFormatter(object):
             return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_picklist:
-            schema_items = Splocalecontaineritem.objects.filter(
-                container__discipline=self.collection.discipline,
-                container__schematype=0,
-                container__name=table.table.lower(),
-                name=specify_field.name.lower(),
-            )
-
-            if len(schema_items) > 0 and schema_items[0].picklistname:
-                picklist = Picklist.objects.filter(name=schema_items[0].picklistname).first()
-                cases = [(field == item.value, item.title) for item in picklist.picklistitems.all()]
+            picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
+            if picklists:
+                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
                 _case = case(cases)
             
                 return blank_nulls(_case) if self.replace_nulls else _case

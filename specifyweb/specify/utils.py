@@ -1,4 +1,5 @@
 import logging
+
 from specifyweb.accounts import models as acccounts_models
 from specifyweb.attachment_gw import models as attachment_gw_models
 from specifyweb.businessrules import models as businessrules_models
@@ -79,3 +80,19 @@ def create_default_collection_types(apps):
                 except BusinessRuleException as e:
                     logger.warning(f'Problem saving collection {collection}: {e}')
             continue
+
+
+def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: str):
+    schema_items = spmodels.Splocalecontaineritem.objects.filter(
+        container__discipline=collection.discipline,
+        container__schematype=0,
+        container__name=tablename.lower(),
+        name=fieldname.lower(),
+    )
+
+    schemaitem = schema_items and schema_items[0]
+    picklists = None
+    if len(schema_items) > 0 and schema_items[0].picklistname:
+        picklists = spmodels.Picklist.objects.filter(name=schema_items[0].picklistname)
+
+    return picklists, schemaitem
