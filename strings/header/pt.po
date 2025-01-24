@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-24 04:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "header/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:63
@@ -160,7 +160,7 @@ msgstr "Ferramenta de atualização de localidade"
 #: components/QueryBuilder/Edit.tsx:211
 #, fuzzy
 msgid "labelName"
-msgstr "Ferramentas Administrativas"
+msgstr "Nome do rótulo"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:211
@@ -273,7 +273,7 @@ msgstr "Ferramentas do usuário ({userName:string})"
 #: components/Toolbar/Language.tsx:155
 #, fuzzy
 msgid "helpLocalizeSpecify"
-msgstr "Recursos para desenvolvedores"
+msgstr "Ajudar a localizar especificar 7"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
@@ -294,7 +294,7 @@ msgstr "(incompleto)"
 #: components/Toolbar/Language.tsx:115
 #, fuzzy
 msgid "incompleteLocalization"
-msgstr "Atualizar Feed RSS"
+msgstr "Localização incompleta"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
