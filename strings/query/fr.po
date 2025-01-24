@@ -35,8 +35,8 @@ msgstr "Requêtes"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1545
-#: components/SearchDialog/index.tsx:237
-#: components/SearchDialog/index.tsx:379
+#: components/SearchDialog/index.tsx:238
+#: components/SearchDialog/index.tsx:380
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #, fuzzy
