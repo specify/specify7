@@ -16,6 +16,8 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
@@ -137,9 +139,11 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {parentContext
-        .map(({ relationship }) => relationship)
-        .includes(relationship) || collection === false ? undefined : (
+      {(!RECURSIVE_RENDERING_EXCEPTIONS.has(parentResource.specifyTable) &&
+        parentContext
+          .map(({ relationship }) => relationship)
+          .includes(relationship)) ||
+      collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray
@@ -243,3 +247,7 @@ export function SubView({
     </SubViewContext.Provider>
   );
 }
+
+const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable>([
+  tables.CollectionObjectGroup,
+]);
