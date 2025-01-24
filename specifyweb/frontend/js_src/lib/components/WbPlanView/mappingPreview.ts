@@ -142,6 +142,7 @@ export function generateMappingPathPreview(
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
+      databaseTableOrRankName !== 'childCog' &&
       databaseFieldName === 'name' &&
       !isAnyRank)
       ? undefined
@@ -155,22 +156,23 @@ export function generateMappingPathPreview(
   const fieldIsGeneric =
     genericFields.has(baseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
-      !nonGenericFields.has(baseFieldName));
+      !nonGenericFields.has(baseFieldName) &&
+      databaseTableOrRankName !== 'childCog');
 
   const tableNameNonEmpty =
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
-      ? tableOrRankName
-      : undefined;
+        ? tableOrRankName
+        : undefined;
 
   const tableNameFormatted =
     tablesToHide.has(databaseTableOrRankName) &&
     databaseFieldName !== formattedEntry
       ? [parentTableOrTreeName || tableNameNonEmpty]
       : genericTables.has(databaseTableOrRankName)
-      ? [parentTableOrTreeName, tableNameNonEmpty]
-      : [tableNameNonEmpty];
+        ? [parentTableOrTreeName, tableNameNonEmpty]
+        : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)

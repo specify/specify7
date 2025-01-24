@@ -115,8 +115,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? returned > quantity
               ? quantity
               : returned > resolved
-              ? resolved
-              : returned
+                ? resolved
+                : returned
             : undefined;
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
@@ -135,8 +135,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? resolved > quantity
               ? quantity
               : resolved < returned
-              ? returned
-              : resolved
+                ? returned
+                : resolved
             : undefined;
 
         if (typeof adjustedResolved === 'number')
@@ -287,19 +287,25 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         };
       },
     },
-    onAdded: (CollectionObjectGroupJoin) => {
+    onAdded: (cojo, collection) => {
       if (
-        CollectionObjectGroupJoin.get('childCog') ===
-          CollectionObjectGroupJoin.get('parentCog') &&
-        typeof CollectionObjectGroupJoin.get('childCog') === 'string' &&
-        typeof CollectionObjectGroupJoin.get('parentCog') === 'string'
+        cojo.get('childCog') === cojo.get('parentCog') &&
+        typeof cojo.get('childCog') === 'string' &&
+        typeof cojo.get('parentCog') === 'string'
       ) {
         setSaveBlockers(
-          CollectionObjectGroupJoin,
-          CollectionObjectGroupJoin.specifyTable.field.childCog,
+          cojo,
+          cojo.specifyTable.field.childCog,
           [resourcesText.cogAddedToItself()],
           COG_TOITSELF
         );
+      }
+
+      // Trigger Consolidated COGs field check when a child is added
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
       }
     },
     onRemoved(_, collection) {
@@ -471,7 +477,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   LoanPreparation: {
     customInit: (resource: SpecifyResource<LoanPreparation>): void => {
       if (!resource.isNew())
-        resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
+        resource
+          .rgetCollection('loanReturnPreparations')
+          .then((preps) => updateLoanPrep(preps, true));
     },
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -494,7 +502,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         previousLoanPreparations.previousResolved[resource.cid] =
           Number(resolved);
       }
-      updateLoanPrep(resource.collection);
+      updateLoanPrep(resource.collection, true);
     },
     fieldChecks: {
       quantityReturned: (

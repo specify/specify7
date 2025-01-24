@@ -163,11 +163,10 @@ export function IntegratedRecordSelector({
   const isTaxonTreeDefItemTable =
     collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
-  const isCOJOFull =
-    relationship.relatedTable.name === 'CollectionObjectGroupJoin'
-      ? typeof collection.models[0] === 'object' &&
-        typeof collection.models[0].get('parentCog') === 'string'
-      : false;
+  const isLoanPrep = relationship.relatedTable.name === 'LoanPreparation';
+  const disableRemove =
+    isLoanPrep &&
+    (collection.related?.isNew() === true || collection.related?.needsSaved);
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -306,16 +305,15 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) &&
-                      typeof handleRemove === 'function' &&
-                      !isCOJOFull ? (
+                      ) && typeof handleRemove === 'function' ? (
                         <DataEntry.Remove
                           disabled={
                             isReadOnly ||
                             collection.models.length === 0 ||
                             resource === undefined ||
                             (renderedResourceId !== undefined &&
-                              resource?.id === renderedResourceId)
+                              resource?.id === renderedResourceId) ||
+                            disableRemove
                           }
                           onClick={(): void => {
                             handleRemove('minusButton');
@@ -361,6 +359,7 @@ export function IntegratedRecordSelector({
               <FormTableCollection
                 collection={collection}
                 dialog={dialog}
+                disableRemove={disableRemove}
                 isCollapsed={isCollapsed}
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}

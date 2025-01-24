@@ -2858,7 +2858,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="acceptedParent"/>
-					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false" name="acceptedParent" colspan="5"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=TectonicUnit;editbtn=false;newbtn=false" name="acceptedParent" colspan="5"/>
 					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
 				</row>
 				<row>

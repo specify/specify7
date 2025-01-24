@@ -108,22 +108,22 @@ export class QueryFieldSpec {
       field === undefined
         ? undefined
         : overrideIsRelationship
-        ? field.name === 'fullName' || field.isRelationship
-          ? undefined
-          : field === field.table.idField
-          ? /*
-             * Back-end expects "taxonId" and other id fields for tree ranks
-             * to be called "ID" (case-sensitive)
-             */
-            'ID'
-          : field.name === 'author'
-          ? 'Author'
-          : field.name
-        : `${field.name}${
-            typeof this.datePart === 'string' && this.datePart !== 'fullDate'
-              ? `Numeric${capitalize(this.datePart)}`
-              : ''
-          }`,
+          ? field.name === 'fullName' || field.isRelationship
+            ? undefined
+            : field === field.table.idField
+              ? /*
+                 * Back-end expects "taxonId" and other id fields for tree ranks
+                 * to be called "ID" (case-sensitive)
+                 */
+                'ID'
+              : field.name === 'author'
+                ? 'Author'
+                : field.name
+          : `${field.name}${
+              typeof this.datePart === 'string' && this.datePart !== 'fullDate'
+                ? `Numeric${capitalize(this.datePart)}`
+                : ''
+            }`,
     ]).join(' ');
 
     const tableList = this.makeTableList();
@@ -162,12 +162,12 @@ export class QueryFieldSpec {
           ? relationshipIsToMany(field)
             ? formatToManyIndex(1)
             : isTreeTable(field.relatedTable.name)
-            ? formatTreeRank(
-                index + 1 === length
-                  ? this.treeRank ?? anyTreeRank
-                  : anyTreeRank
-              )
-            : undefined
+              ? formatTreeRank(
+                  index + 1 === length
+                    ? (this.treeRank ?? anyTreeRank)
+                    : anyTreeRank
+                )
+              : undefined
           : undefined,
       ])
     );
@@ -307,16 +307,16 @@ export class QueryFieldSpec {
         typeof parsedField === 'object'
           ? parts.slice(0, -1).join(' ') || anyTreeRank
           : typeof field === 'object'
-          ? anyTreeRank
-          : fieldName || anyTreeRank;
+            ? anyTreeRank
+            : fieldName || anyTreeRank;
       fieldSpec.joinPath = filterArray([
         ...fieldSpec.joinPath,
         field === undefined
-          ? parsedField ??
+          ? (parsedField ??
             // If no field provided, use fullName
             (fieldSpec.treeRank === anyTreeRank
               ? undefined
-              : fieldSpec.table.strictGetLiteralField('fullName'))
+              : fieldSpec.table.strictGetLiteralField('fullName')))
           : undefined,
       ]);
     }
@@ -327,7 +327,7 @@ export class QueryFieldSpec {
         ? resolveParser(newField, { datePart: fieldSpec.datePart })
         : {};
     fieldSpec.datePart =
-      newField?.isTemporal() === true ? datePart ?? 'fullDate' : undefined;
+      newField?.isTemporal() === true ? (datePart ?? 'fullDate') : undefined;
 
     return fieldSpec;
   }

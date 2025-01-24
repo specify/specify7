@@ -117,7 +117,7 @@ const _backendFilters = (field: string, ...fieldTransforms: RA<string>) =>
           ? value
           : caseInsensitiveHash(weekDayMap, value),
     }),
-  } as const);
+  }) as const;
 
 /**
  * Use this to construct a query using a lookup for Django.
@@ -170,7 +170,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  */
 export const getField = <
   SCHEMA extends ValueOf<Tables>,
-  FIELD extends TableFields<SCHEMA>
+  FIELD extends TableFields<SCHEMA>,
 >(
   table: SpecifyTable<SCHEMA>,
   name: FIELD
@@ -228,13 +228,13 @@ export async function fetchDistantRelated(
     fields === undefined || fields.length === 0
       ? resource
       : fields.length === 1
-      ? await resource.fetch()
-      : await resource.rgetPromise(
-          fields
-            .slice(0, -1)
-            .map(({ name }) => name)
-            .join(backboneFieldSeparator)
-        );
+        ? await resource.fetch()
+        : await resource.rgetPromise(
+            fields
+              .slice(0, -1)
+              .map(({ name }) => name)
+              .join(backboneFieldSeparator)
+          );
 
   const field = fields?.at(-1);
   const relatedResource = related ?? undefined;

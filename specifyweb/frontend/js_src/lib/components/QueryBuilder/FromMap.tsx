@@ -233,7 +233,6 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[latitudeLineIndex] as Partial<QueryField>),
-    dataObjFormatter: undefined,
     filters: [
       {
         type: 'between',
@@ -253,7 +252,6 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[longitudeLineIndex] as Partial<QueryField>),
-    dataObjFormatter: undefined,
     filters:
       operator === 'between'
         ? [

@@ -217,9 +217,8 @@ export async function queryFromTree(
     tables.CollectionObject
   );
 
-  const rank: SpecifyResource<TaxonTreeDefItem> = await node.rgetPromise(
-    'definitionItem'
-  );
+  const rank: SpecifyResource<TaxonTreeDefItem> =
+    await node.rgetPromise('definitionItem');
   query.set(
     'fields',
     await defaultFields[tree.name](

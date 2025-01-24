@@ -73,9 +73,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -91,7 +91,7 @@ export type Parser = Partial<{
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
-    : (value as number)?.toString() ?? '';
+    : ((value as number)?.toString() ?? '');
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
 
@@ -116,8 +116,8 @@ export const parsers = f.store(
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText.yes()
-          : commonText.no(),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -401,6 +401,10 @@ export function formatterToParser(
         value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
+    type:
+      field.type === undefined
+        ? undefined
+        : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
     value: canAutoNumber ? formatter.valueOrWild() : undefined,

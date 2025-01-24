@@ -134,7 +134,8 @@ class RelatedSearch(object, metaclass=RelatedSearchMeta):
             negate=False,
             display=False,
             format_name=None,
-            sort_type=0)
+            sort_type=0,
+            strict=False)
 
         logger.debug("primary queryfield: %s", primary_field)
         logger.debug("display queryfields: %s", self.display_fields)

@@ -35,7 +35,7 @@ export type WbMetaArray = [
   isModified: boolean,
   isSearchResult: boolean,
   issues: RA<string>,
-  originalValue: string | undefined
+  originalValue: string | undefined,
 ];
 
 const defaultMetaValues = Object.freeze([

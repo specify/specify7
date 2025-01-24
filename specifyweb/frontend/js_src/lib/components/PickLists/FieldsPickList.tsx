@@ -14,12 +14,12 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const getItems = React.useCallback(
     () =>
       props.resource?.get('type') === PickListTypes.FIELDS
-        ? getTable(props.resource.get('tableName') ?? '')?.fields.map(
+        ? (getTable(props.resource.get('tableName') ?? '')?.fields.map(
             (field) => ({
               value: field.name,
               title: field.label,
             })
-          ) ?? []
+          ) ?? [])
         : [],
     [props.resource]
   );
