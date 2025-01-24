@@ -12,7 +12,11 @@ import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnyTree, FilterTablesByEndsWith, SerializedResource } from '../DataModel/helperTypes';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
@@ -92,7 +96,8 @@ export function BatchEditFromQuery({
       <Button.Small
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable)
+          queryFieldSpecs.some(hasHierarchyBaseTable) ||
+          queryFieldSpecs.some(containsTreeTable) // TODO: Remove this when we have batch edit for tree tables #6127
         }
         onClick={() => {
           loading(
@@ -138,8 +143,8 @@ export function BatchEditFromQuery({
 
 type QueryError = {
   readonly missingRanks: {
-    readonly // Query can contain relationship to multiple trees
-    [KEY in AnyTree['tableName']]: RA<string>;
+    // Query can contain relationship to multiple trees
+    readonly [KEY in AnyTree['tableName']]: RA<string>;
   };
   readonly invalidFields: RA<string>;
 };
@@ -161,6 +166,9 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
+
+const containsTreeTable = (queryFieldSpec: QueryFieldSpec) =>
+  queryFieldSpec.joinPath.some((field) => isTreeTable(field.table.name));
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 

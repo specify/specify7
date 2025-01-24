@@ -591,8 +591,7 @@ function Wrapped({
                 }
                 extraButtons={
                   <>
-                    {/* TODO: Renable batch edit for trees in #6127 */}
-                    {!isTreeTable(table.name) && datasetVariants.batchEdit.canCreate() && (
+                    {datasetVariants.batchEdit.canCreate() && (
                       <BatchEditFromQuery
                         baseTableName={state.baseTableName}
                         fields={state.fields}
