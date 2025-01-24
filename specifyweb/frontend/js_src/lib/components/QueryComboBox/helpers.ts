@@ -239,55 +239,52 @@ const DEFAULT_RECORD_PRESETS = {
 type DefaultRecordPreset = keyof typeof DEFAULT_RECORD_PRESETS;
 
 export function useQueryComboBoxDefaults({
-	resource,
-	field,
-	defaultRecord,
+  resource,
+  field,
+  defaultRecord,
 }: {
-	readonly resource: SpecifyResource<AnySchema> | undefined;
-	readonly field: Relationship;
-	readonly defaultRecord?: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
+  readonly defaultRecord?: string | undefined;
 }): void {
-	if (resource === undefined || !resource.isNew()) return;
+  if (resource === undefined || !resource.isNew()) return;
 
-	if (defaultRecord !== undefined) {
-		let defaultUri: string | null = (defaultRecord in DEFAULT_RECORD_PRESETS)
-    ? DEFAULT_RECORD_PRESETS[defaultRecord as DefaultRecordPreset]()
-    : defaultRecord;
+  if (defaultRecord !== undefined) {
+    const defaultUri: string | null =
+      defaultRecord in DEFAULT_RECORD_PRESETS
+        ? DEFAULT_RECORD_PRESETS[defaultRecord as DefaultRecordPreset]()
+        : defaultRecord;
 
-		resource.set(
-		field.name,
-		resource.get(field.name) ?? defaultUri,
-		{
-			silent: true,
-		}
-		);
-	// The following cases need to be kept for outdated forms that do not use the defaultRecord property.
-	} else if (field.name === 'cataloger') {
-		const record = toTable(resource, 'CollectionObject');
-		record?.set(
-		'cataloger',
-		record?.get('cataloger') ?? userInformation.agent.resource_uri,
-		{
-			silent: true,
-		}
-		);
-	} else if (field.name === 'specifyUser') {
-		const record = toTable(resource, 'RecordSet');
-		record?.set(
-		'specifyUser',
-		record?.get('specifyUser') ?? userInformation.resource_uri,
-		{
-			silent: true,
-		}
-		);
-	} else if (field.name === 'receivedBy') {
-		const record = toTable(resource, 'LoanReturnPreparation');
-		record?.set(
-		'receivedBy',
-		record?.get('receivedBy') ?? userInformation.agent.resource_uri,
-		{
-			silent: true,
-		}
-		);
-	}
-};
+    resource.set(field.name, resource.get(field.name) ?? defaultUri, {
+      silent: true,
+    });
+    // The following cases need to be kept for outdated forms that do not use the defaultRecord property.
+  } else if (field.name === 'cataloger') {
+    const record = toTable(resource, 'CollectionObject');
+    record?.set(
+      'cataloger',
+      record?.get('cataloger') ?? userInformation.agent.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  } else if (field.name === 'specifyUser') {
+    const record = toTable(resource, 'RecordSet');
+    record?.set(
+      'specifyUser',
+      record?.get('specifyUser') ?? userInformation.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  } else if (field.name === 'receivedBy') {
+    const record = toTable(resource, 'LoanReturnPreparation');
+    record?.set(
+      'receivedBy',
+      record?.get('receivedBy') ?? userInformation.agent.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  }
+}
