@@ -22,6 +22,21 @@ export const relationshipIsToMany = (
   relationship?.type.includes('-to-many') === true ||
   relationship?.type === 'zero-to-one';
 
+/**
+ * Returns whether the relatation is one-to-one from the remote side
+ * (the foreign key exists on the other table of the relationship)
+ *
+ * In the WorkBench, remote one-to-one relationships are parsed as to-many
+ * in the upload plan
+ *
+ * See https://github.com/specify/specify7/pull/6073#discussion_r1915397675
+ */
+export const relationshipIsRemoteToOne = (
+  relationship: Relationship | undefined
+): boolean =>
+  relationship?.type === 'one-to-one' &&
+  relationship.databaseColumn === undefined;
+
 export type FieldType = Exclude<keyof CollectionObject, 'tableName'>;
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */

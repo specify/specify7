@@ -255,7 +255,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
 
         if self.is_relationship():
             # will be formatting or aggregating related objects
-            if self.get_field().type == 'many-to-one':
+            if self.get_field().type in {'many-to-one', 'one-to-one'}:
                 query, orm_model, table, field = self.build_join(query, self.join_path)
                 query, orm_field = query.objectformatter.objformat(query, orm_model, formatter, cycle_detector)
             else:
