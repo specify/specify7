@@ -5,6 +5,7 @@ from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
+from specifyweb.specify.utils import get_picklists
 from specifyweb.stored_queries.format import get_date_format
 from specifyweb.workbench.upload.predicates import SPECIAL_TREE_FIELDS_TO_SKIP
 
@@ -100,20 +101,11 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
 
 def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
     toOne = {} if _toOne is None else _toOne
-    schema_items = models.Splocalecontaineritem.objects.filter(
-        container__discipline=collection.discipline,
-        container__schematype=0,
-        container__name=tablename.lower(),
-        name=fieldname.lower(),
-    )
+    picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
-    schemaitem = schema_items and schema_items[0]
-    picklistname = schemaitem and schemaitem.picklistname
-
-    if not isinstance(picklistname, str):
+    if not picklists:
         picklist = None
     else:
-        picklists = models.Picklist.objects.filter(name=picklistname)
         collection_picklists = picklists.filter(collection=collection)
 
         picklist = (
