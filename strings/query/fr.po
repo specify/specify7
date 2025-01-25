@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-25 21:00+0000\n"
+"PO-Revision-Date: 2025-01-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -31,7 +31,7 @@ msgstr "Requête"
 #: components/Toolbar/Query.tsx:221
 #, fuzzy
 msgid "queries"
-msgstr "Semaines"
+msgstr "Requêtes"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #: components/Preferences/CollectionDefinitions.tsx:72
@@ -229,7 +229,7 @@ msgstr "Créer {recordSetTable:string}"
 #: components/QueryBuilder/Components.tsx:122
 #, fuzzy
 msgid "saveAs"
-msgstr "Impossible d'exporter vers KML"
+msgstr "Enregistrer sous"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:431
@@ -251,7 +251,7 @@ msgstr "(n'importe quel arbre)"
 #: components/Toolbar/ListEdit.tsx:111
 #, fuzzy
 msgid "moveUp"
-msgstr "Choisir le formateur"
+msgstr "Monter"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:212
@@ -441,7 +441,7 @@ msgstr "Oui"
 #: components/QueryBuilder/LoanReturn.tsx:173
 #, fuzzy
 msgid "noPreparationsToReturn"
-msgstr "Moins que"
+msgstr "Il n'y a aucun élément non résolu à retourner"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
@@ -454,7 +454,7 @@ msgstr "Les articles ont été retournés"
 #: components/QueryBuilder/ToForms.tsx:56
 #, fuzzy
 msgid "queryResults"
-msgstr "[X0X] Créé"
+msgstr "Résultats de la requête"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #: components/LocalityUpdate/Status.tsx:318
