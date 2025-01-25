@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-25 21:00+0000\n"
+"PO-Revision-Date: 2025-01-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -32,7 +32,7 @@ msgstr "Запрос"
 #: components/Toolbar/Query.tsx:221
 #, fuzzy
 msgid "queries"
-msgstr "Недели"
+msgstr "Запросы"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #: components/Preferences/CollectionDefinitions.tsx:72
@@ -225,7 +225,7 @@ msgstr "Создать {recordSetTable:string}"
 #: components/QueryBuilder/Components.tsx:122
 #, fuzzy
 msgid "saveAs"
-msgstr "Невозможно экспортировать в KML"
+msgstr "Сохранить как"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:431
@@ -247,7 +247,7 @@ msgstr "(любое дерево)"
 #: components/Toolbar/ListEdit.tsx:111
 #, fuzzy
 msgid "moveUp"
-msgstr "Выбрать форматировщик"
+msgstr "Двигаться вверх"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:212
@@ -257,7 +257,7 @@ msgstr "Выбрать форматировщик"
 #: components/Toolbar/ListEdit.tsx:117
 #, fuzzy
 msgid "moveDown"
-msgstr "Двигаться вниз"
+msgstr "Переместить вниз"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:81
@@ -437,7 +437,7 @@ msgstr "Да"
 #: components/QueryBuilder/LoanReturn.tsx:173
 #, fuzzy
 msgid "noPreparationsToReturn"
-msgstr "Меньше, чем"
+msgstr "Нет нерешенных вопросов для возврата."
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
@@ -450,7 +450,7 @@ msgstr "Товары были возвращены"
 #: components/QueryBuilder/ToForms.tsx:56
 #, fuzzy
 msgid "queryResults"
-msgstr "[X0X] Создано"
+msgstr "Результаты запроса"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #: components/LocalityUpdate/Status.tsx:318
