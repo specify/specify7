@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-25 21:00+0000\n"
+"PO-Revision-Date: 2025-01-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -227,7 +227,7 @@ msgstr "Erstellen {recordSetTable:string}"
 #: components/QueryBuilder/Components.tsx:122
 #, fuzzy
 msgid "saveAs"
-msgstr "Export in KML nicht möglich"
+msgstr "Speichern unter"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:431
@@ -374,7 +374,7 @@ msgstr "Wahr oder leer"
 #: components/QueryBuilder/FieldFilter.tsx:562
 #, fuzzy
 msgid "falseOrNull"
-msgstr "Nach oben"
+msgstr "Falsch oder leer"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:506
@@ -465,7 +465,7 @@ msgstr "In Formularen stöbern"
 #: components/Toolbar/QueryTablesEdit.tsx:32
 #, fuzzy
 msgid "configureQueryTables"
-msgstr "(jeder Baum)"
+msgstr "Konfigurieren sichtbarer Abfragetabellen"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:96
@@ -508,7 +508,7 @@ msgstr "Baum synonymisieren"
 #: components/PickLists/definitions.ts:46
 #, fuzzy
 msgid "treeDesynonymize"
-msgstr "in der Vergangenheit"
+msgstr "Baum Desynonymisieren"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
@@ -611,7 +611,7 @@ msgstr "Zum Editor scrollen"
 #: components/QueryBuilder/ResultsTable.tsx:187
 #, fuzzy
 msgid "viewRecords"
-msgstr "Gleich"
+msgstr "Datensätze anzeigen"
 
 #. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:65
