@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-26 13:00+0000\n"
+"PO-Revision-Date: 2025-01-26 13:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -83,7 +83,7 @@ msgstr "Показати форму"
 #: components/Molecules/FilePicker.tsx:51
 #, fuzzy
 msgid "multipleFilesSelected"
-msgstr "Вибрано кілька файлів"
+msgstr "Вибрано декілька файлів"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:205
@@ -145,7 +145,7 @@ msgstr "Виконувався {action:string}, коли сталася пере
 #: components/AttachmentsBulkImport/utils.ts:473
 #, fuzzy
 msgid "matchError"
-msgstr "Помилка відповідності"
+msgstr "Помилка збігу"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:481
@@ -353,7 +353,7 @@ msgstr "Зупинено через помилку завантаження по
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #, fuzzy
 msgid "chooseFilesToGetStarted"
-msgstr "Виберіть файли або перетягніть їх сюди, щоб почати."
+msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
