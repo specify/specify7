@@ -24,6 +24,7 @@ from specifyweb.workbench.upload.predicates import (
     safe_fetch,
 )
 from specifyweb.specify.tree_utils import SPECIFY_TREES
+from specifyweb.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 from .parsing import (
@@ -48,7 +49,6 @@ from .uploadable import (
     Row,
     Disambiguation as DA,
     Auditor,
-    ScopeGenerator,
     BatchEditJson,
 )
 
@@ -277,7 +277,7 @@ class TreeRecord(NamedTuple):
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
 
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
@@ -495,7 +495,6 @@ class ScopedTreeRecord(NamedTuple):
 
     def bind(
         self,
-        collection,
         row: Row,
         uploadingAgentId: Optional[int],
         auditor: Auditor,
@@ -510,7 +509,7 @@ class ScopedTreeRecord(NamedTuple):
 
         for tree_rank_record, cols in self.ranks.items():
             nameColumn = cols['name']
-            presults, pfails = parse_many(collection, self.name, cols, row)
+            presults, pfails = parse_many(self.name, cols, row)
             parsedFields[tree_rank_record] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
@@ -544,7 +543,7 @@ class ScopedTreeRecord(NamedTuple):
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTreeRecord":
         s = super().apply_scoping(collection)
         return ScopedMustMatchTreeRecord(*s)
@@ -553,13 +552,12 @@ class MustMatchTreeRecord(TreeRecord):
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
     def bind(
         self,
-        collection,
         row: Row,
         uploadingAgentId: Optional[int],
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+        b = super().bind(row, uploadingAgentId, auditor, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 

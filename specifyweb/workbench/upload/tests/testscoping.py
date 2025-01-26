@@ -1,14 +1,13 @@
 from specifyweb.specify.func import Func
-from ..upload_plan_schema import schema, parse_plan
-from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, ColumnOptions, ExtendedColumnOptions
+from specifyweb.workbench.upload.scope_context import ScopeContext
+from ..upload_plan_schema import parse_plan
+from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
 from ..upload import do_upload
 
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from . import example_plan
-
-from django.conf import settings
 
 class ScopingTests(UploadTestsBase):
 
@@ -112,14 +111,14 @@ class ScopingTests(UploadTestsBase):
         self.assertIsInstance(plan.toOne['paleocontext'], ScopedOneToOneTable)
 
     def test_caching_scoped_false(self) -> None:
-        generator = Func.make_generator()
-        plan = Func.tap_call(lambda: parse_plan(self.collection_rel_plan).apply_scoping(self.collection, generator), generator)
-        self.assertTrue(plan[0], 'contains collection relationship, should never be cached')
+        context = ScopeContext()
+        plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection, context)
+        self.assertTrue(context.is_variable, 'contains collection relationship, should never be cached')
 
     def test_caching_true(self):
-        generator = Func.make_generator()
-        plan = Func.tap_call(lambda: self.example_plan.apply_scoping(self.collection), generator)
-        self.assertFalse(plan[0], 'caching is possible here, since no dynamic scope is being used')
+        context = ScopeContext()
+        plan = self.example_plan.apply_scoping(self.collection, context)
+        self.assertFalse(context.is_variable, 'caching is possible here, since no dynamic scope is being used')
 
     def test_collection_rel_uploaded_in_correct_collection(self):
         scoped_plan = parse_plan(self.collection_rel_plan)
@@ -130,7 +129,9 @@ class ScopingTests(UploadTestsBase):
         result = do_upload(self.collection, rows, scoped_plan, self.agent.id)
 
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
-        right_side_cat_nums = [n.zfill(9) for n in '999 888'.split()]
+        # STOP. If this test fails, and you have the need of using zfill to get it work for right side catalog numbers,
+        # it's likely a bug in the way formatters work.
+        right_side_cat_nums = '999 888'.split()
         left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
         right_side_query = models.Collectionobject.objects.filter(collection_id=self.right_side_collection.id, catalognumber__in=right_side_cat_nums)
 

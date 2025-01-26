@@ -897,5 +897,5 @@ def build_query(
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
-    logger.warning("query: %s", query.query)
+    logger.debug("query: %s", query.query)
     return query.query, order_by_exprs

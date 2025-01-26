@@ -7,7 +7,6 @@ from datetime import datetime, timezone
 from typing import (
     List,
     Dict,
-    NamedTuple,
     Union,
     Callable,
     Optional,
@@ -52,6 +51,7 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
+from .scope_context import ScopeContext
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -286,7 +286,6 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
-
 def do_upload(
     collection,
     rows: Rows,
@@ -312,8 +311,7 @@ def do_upload(
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
 
-    # I'd make this a generator (so "global" variable is internal, rather than a rogue callback setting a global variable)
-    gen = Func.make_generator()
+    scope_context = ScopeContext()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -325,12 +323,11 @@ def do_upload(
             with savepoint("row upload") if allow_partial else no_savepoint():
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
+
                 if cached_scope_table is None:
-                    cannot_cache, scoped_table = Func.tap_call(
-                        lambda: upload_plan.apply_scoping(collection, gen, row), gen
-                    )
-                    can_cache = not cannot_cache
-                    if can_cache:
+                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
+                    if not scope_context.is_variable:
+                        # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table
                 else:
                     scoped_table = cached_scope_table
@@ -338,7 +335,7 @@ def do_upload(
                 bind_result = (
                     scoped_table.disambiguate(da)
                     .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(collection, row, uploading_agent_id, _auditor, cache)
+                    .bind(row, uploading_agent_id, _auditor, cache)
                 )
                 if isinstance(bind_result, ParseFailures):
                     result = UploadResult(bind_result, {}, {})
@@ -390,7 +387,6 @@ def validate_row(
             with savepoint("row validation"):
                 bind_result = upload_plan.disambiguate(da).bind(
                     # TODO: Handle auditor props better
-                    collection,
                     row,
                     uploading_agent_id,
                     Auditor(collection, props=DEFAULT_AUDITOR_PROPS, audit_log=None),

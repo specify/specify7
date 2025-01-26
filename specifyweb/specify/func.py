@@ -35,27 +35,12 @@ class Func:
         return _generator(step)
 
     @staticmethod
-    def tap_call(
-        callback: Callable[[], O], generator: Generator[int, None, None]
-    ) -> Tuple[bool, O]:
-        init_1 = next(generator)
-        init_2 = next(generator)
-        step = init_2 - init_1
-        to_return = callback()
-        post = next(generator)
-        called = (post - init_2) != step
-        assert (
-            post - init_2
-        ) % step == 0, "(sanity check failed): made irregular generator"
-        return called, to_return
-
-    @staticmethod
     def remove_keys(source: Dict[I, O], callback: Callable[[O], bool]) -> Dict[I, O]:
         return {key: value for key, value in source.items() if callback(key, value)}
 
     @staticmethod
-    def is_not_empty(key, val):
-        return val
+    def is_not_empty(key, val) -> bool:
+        return bool(val)
 
     @staticmethod
     def first(source: List[Tuple[I, O]]) -> List[I]:
@@ -64,3 +49,14 @@ class Func:
     @staticmethod
     def second(source: List[Tuple[I, O]]) -> List[O]:
         return [second for (_, second) in source]
+
+class CustomRepr:
+    def __init__(self, func, new_repr):
+        self.new_repr = new_repr
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return None if self.func is None else self.func(*args, **kwargs)
+
+    def __repr__(self):
+        return self.new_repr

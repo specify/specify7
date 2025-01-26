@@ -12,12 +12,12 @@ from specifyweb.specify.field_change_info import FieldChangeInfo
 
 logger = logging.getLogger(__name__)
 
-
+# TODO: Improve documentation of this
 class BatchEditPrefs(TypedDict):
     deferForMatch: bool
     deferForNullCheck: bool
 
-
+# TODO: Improve documentation of these props
 class AuditorProps(NamedTuple):
     allow_delete_dependents: bool
     batch_edit_prefs: BatchEditPrefs

@@ -1,10 +1,9 @@
-from typing import Dict, Generator, Callable, Any, List, Optional, TypedDict, Union, Set
+from typing import Dict, Callable, Any, List, Optional, TypedDict, Union, Set
 from typing_extensions import Protocol
 
-from specifyweb.specify.load_datamodel import Table
 from specifyweb.workbench.upload.predicates import DjangoPredicates, ToRemove
 
-from django.db.models import Model
+from specifyweb.workbench.upload.scope_context import ScopeContext
 
 from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor
@@ -31,8 +30,6 @@ Disambiguation = Optional["DisambiguationInfo"]
 
 NULL_RECORD = "null_record"
 
-ScopeGenerator = Optional[Generator[int, None, None]]
-
 Progress = Callable[[int, Optional[int]], None]
 
 Row = Dict[str, str]
@@ -46,7 +43,7 @@ class Uploadable(Protocol):
     # we cannot cache. well, we can make this more complicated by recursviely caching
     # static parts of even a non-entirely-cachable uploadable.
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedUploadable": ...
 
     def get_cols(self) -> Set[str]: ...
@@ -73,7 +70,11 @@ class ScopedUploadable(Protocol):
 
     def bind(
         self,
-        collection,
+        # STOP. Think more before allowing collection in bind.
+        # This is because collection can be arbitrary based on collection relationships.
+        # You may be in a collection relationship (not necessarily even CR as the basetable)
+        # You probably want to move all the relevant logic to apply_scoping (where the usage of collection is safe)
+        # collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
