@@ -112,7 +112,6 @@ def extend_columnoptions(
         ) -> ExtendedColumnOptions:
 
     context = context or ScopeContext()
-    row = row or {}
     toOne = toOne or {}
     schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
@@ -206,7 +205,7 @@ def get_or_defer_formatter(
         collection, 
         tablename: str, 
         fieldname: str, 
-        row: Row,
+        row: Optional[Row],
         _toOne: Dict[str, Uploadable],
         context: Optional[ScopeContext] = None,
         ) -> Optional[UIFormatter]:
@@ -242,8 +241,9 @@ def get_or_defer_formatter(
                 # I guess we could 
                 context.cache["cotypes"][collection] = co_type_cache
 
-            # At this point, we now look at the row.
-            formatter = co_type_cache.get(row[wb_col.column]) if row[wb_col.column] is not None else None
+            if row:
+                # At this point, we now look at the row.
+                formatter = co_type_cache.get(row[wb_col.column]) if row[wb_col.column] is not None else None
         
     
     if formatter is None:
