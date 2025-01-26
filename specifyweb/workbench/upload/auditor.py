@@ -12,13 +12,19 @@ from specifyweb.specify.field_change_info import FieldChangeInfo
 
 logger = logging.getLogger(__name__)
 
-# TODO: Improve documentation of this
+
 class BatchEditPrefs(TypedDict):
+    # If set to True, it means the value from the database of a record
+    # is not used to match the record
     deferForMatch: bool
+    # If set to True, it means value from the database of a record 
+    # is not used to determine if the record is "null". If a record is Null
+    # it can possibly be deleted (depending on if it is a dependent or not)
     deferForNullCheck: bool
 
-# TODO: Improve documentation of these props
 class AuditorProps(NamedTuple):
+    # If set to True, dependents are allowed to be deleted.
+    # Otherwise, if they _can_ be deleted, they are instead force-saved.
     allow_delete_dependents: bool
     batch_edit_prefs: BatchEditPrefs
 

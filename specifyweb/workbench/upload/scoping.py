@@ -266,13 +266,14 @@ def apply_scoping_to_uploadtable(
     ut: UploadTable, collection, context: Optional[ScopeContext] = None, row=None
 ) -> ScopedUploadTable:
     # IMPORTANT:
-    # Before this comment, collection is UNTRUSTED (you'd not necessarily have the correct side of a collection relationship)
+    # before this comment, collection is untrusted and unreliable
+    # (you'd not necessarily have the correct side of a collection relationship)
     
     table = datamodel.get_table_strict(ut.name)
     if ut.overrideScope is not None and isinstance(ut.overrideScope["collection"], int):
         collection = models.Collection.objects.get(id=ut.overrideScope["collection"])
     
-    # After this comment, collection CAN be trusted (even if you are in collection relationships)
+    # After this comment, collection can be trusted and is safe to use (even if you are in collection relationships)
     to_one_fields = get_to_one_fields(collection)
     adjuster = reduce(
         lambda accum, curr: _make_one_to_one(curr, accum),

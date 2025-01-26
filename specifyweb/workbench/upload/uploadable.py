@@ -68,13 +68,12 @@ class DisambiguationInfo(Protocol):
 class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable": ...
 
+    # We don't pass in collection in bind() anymore since it can cause
+    # unintended behaviour in the case of collection relationship.
+    # Previously, formatters used to depend on collection, but they are now
+    # instead determined in apply_scoping (where the usage of collection is safer)
     def bind(
         self,
-        # STOP. Think more before allowing collection in bind.
-        # This is because collection can be arbitrary based on collection relationships.
-        # You may be in a collection relationship (not necessarily even CR as the basetable)
-        # You probably want to move all the relevant logic to apply_scoping (where the usage of collection is safe)
-        # collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
