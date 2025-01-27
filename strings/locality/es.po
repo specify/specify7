@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-27 06:00+0000\n"
+"PO-Revision-Date: 2025-01-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
@@ -174,7 +174,7 @@ msgstr "Cambiar a pantalla completa"
 #: components/WbToolkit/CoordinateConverter.tsx:82
 #, fuzzy
 msgid "degrees"
-msgstr "Sin localidad con guid: '{guid:string}'"
+msgstr "DD.DDDD (32.7619)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:87
@@ -230,7 +230,7 @@ msgstr ""
 #: components/LocalityUpdate/index.tsx:169
 #, fuzzy
 msgid "localityUpdateAcceptedHeaders"
-msgstr "Línea"
+msgstr "Solo se aceptan los siguientes encabezados"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
@@ -332,7 +332,10 @@ msgstr ""
 #: components/LocalityUpdate/Status.tsx:239
 #, fuzzy
 msgid "localityUpdateEffectCounts"
-msgstr "Polígonos"
+msgstr ""
+"La siguiente cantidad de registros {localityTabelLabel: string} se verá "
+"afectada por la actualización y se crearán registros "
+"{geoCoordDetailTableLabel: string}:"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:289
