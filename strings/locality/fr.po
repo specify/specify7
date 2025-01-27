@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-27 06:00+0000\n"
+"PO-Revision-Date: 2025-01-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "locality/fr/>\n"
@@ -296,7 +296,7 @@ msgstr "L'ensemble de données doit contenir un en-tête « guid »"
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Le processus de mise à jour de la localité a commencé"
+msgstr "Aucune localité avec guid : '{guid:string}'"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
@@ -366,7 +366,4 @@ msgstr "La latitude doit avoir une valeur comprise entre -90° et 90°"
 #: components/FormPlugins/LatLongUi.tsx:93
 #, fuzzy
 msgid "validLongitude"
-msgstr ""
-"Le nombre suivant d'enregistrements {localityTabelLabel: string} sera "
-"affecté par la mise à jour et des enregistrements {geoCoordDetailTableLabel: "
-"string} seront créés :"
+msgstr "La longitude doit avoir une valeur comprise entre -180° et 180°"
