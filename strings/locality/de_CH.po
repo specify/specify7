@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-27 06:00+0000\n"
+"PO-Revision-Date: 2025-01-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -292,7 +292,7 @@ msgstr "Der Datensatz muss einen GUID-Header enthalten"
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Der Locality Update-Prozess hat begonnen"
+msgstr "Kein Ort mit GUID: '{guid:string}'"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
@@ -362,7 +362,4 @@ msgstr "Der Breitengrad muss einen Wert zwischen -90° und 90° haben"
 #: components/FormPlugins/LatLongUi.tsx:93
 #, fuzzy
 msgid "validLongitude"
-msgstr ""
-"Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen ist von der "
-"Aktualisierung betroffen und es werden {geoCoordDetailTableLabel: string}-"
-"Datensätze erstellt:"
+msgstr "Der Längengrad muss einen Wert zwischen -180° und 180° haben"
