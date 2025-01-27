@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/locality/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -270,7 +270,7 @@ msgstr "Conjunto de dados de atualização de localidade analisado"
 #: components/Notifications/NotificationRenderers.tsx:253
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Linha"
+msgstr "Falha na atualização de localidade"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
@@ -291,7 +291,7 @@ msgstr "Atualização de localidade cancelada"
 #: components/Notifications/NotificationRenderers.tsx:297
 #, fuzzy
 msgid "localityUpdateSucceeded"
-msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
+msgstr "Atualização de localidade bem-sucedida"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
@@ -394,4 +394,4 @@ msgstr "A latitude precisa ter um valor entre -90° e 90°"
 #: components/FormPlugins/LatLongUi.tsx:93
 #, fuzzy
 msgid "validLongitude"
-msgstr "Raio de erro"
+msgstr "A longitude precisa ter um valor entre -180° e 180°"
