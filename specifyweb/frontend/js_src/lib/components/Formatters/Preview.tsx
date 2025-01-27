@@ -97,7 +97,9 @@ export function useResourcePreview(
                       setResources(removeItem(resources, index)),
                   }}
                 />
-                <output className="whitespace-pre-wrap">{output}</output>
+                <output className="whitespace-pre-wrap break-all">
+                  {output}
+                </output>
               </div>
             );
           })
