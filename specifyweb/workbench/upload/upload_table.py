@@ -971,12 +971,7 @@ class BoundUpdateTable(BoundUploadTable):
             reference_record, attrs
         )
 
-        # Edge case: Scope change is allowed for Loan -> division.
-        # See: https://github.com/specify/specify7/pull/5417#issuecomment-2613245552
-        if any(
-            scoping_attr in concrete_field_changes
-            for scoping_attr in self.scopingAttrs.keys()
-        ) and not (self.name == "Loan" and "division_id" in concrete_field_changes):
+        if self._has_scoping_changes(concrete_field_changes) and not self._is_scope_change_allowed(concrete_field_changes):
             # I don't know what else to do. I don't think this will ever get raised. I don't know what I'll need to debug this, so showing everything.
             raise Exception(
                 f"Attempting to change the scope of the record: {reference_record} at {self}. \n\n Diff: {concrete_field_changes}"
@@ -1048,6 +1043,20 @@ class BoundUpdateTable(BoundUploadTable):
         )
 
         return UploadResult(record, to_one_adjusted, to_many_adjusted)
+    
+    def _has_scoping_changes(self, concrete_field_changes):
+        return any(
+            scoping_attr in concrete_field_changes
+            for scoping_attr in self.scopingAttrs.keys()
+        )
+    
+    # Edge case: Scope change is allowed for Loan -> division.
+    # See: https://github.com/specify/specify7/pull/5417#issuecomment-2613245552
+    def _is_scope_change_allowed(self, concrete_field_changes):
+        if self.name == "Loan" and "division_id" in concrete_field_changes:
+            return True
+        
+        return False
 
     def _do_update(self, reference_obj, dirty_fields, **attrs):
         # TODO: Try handling parent_obj. Quite complicated and ugly.
