@@ -49,7 +49,7 @@ RUN apt-get update \
         curl \
         git \
         libsasl2-dev \
-        libsasl2-modules-gssapi-mit \
+        libsasl2-modules \
         libldap2-dev \
         libssl-dev \
         libgmp-dev \
