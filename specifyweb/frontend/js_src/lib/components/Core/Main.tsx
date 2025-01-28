@@ -25,6 +25,7 @@ export type MenuItem = {
   readonly enabled?: () => Promise<boolean> | boolean;
   readonly icon: JSX.Element;
   readonly name: string;
+  readonly onClick?: () => Promise<void>;
 };
 
 /*
