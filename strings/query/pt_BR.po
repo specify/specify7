@@ -34,7 +34,7 @@ msgid "queries"
 msgstr ""
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1545
+#: components/Preferences/UserDefinitions.tsx:1546
 #: components/SearchDialog/index.tsx:238
 #: components/SearchDialog/index.tsx:380
 #: components/Security/registry.ts:210
@@ -387,7 +387,7 @@ msgstr ""
 msgid "inDescription"
 msgstr ""
 
-#: components/Preferences/UserDefinitions.tsx:1406
+#: components/Preferences/UserDefinitions.tsx:1407
 #: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -406,7 +406,7 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: components/Preferences/UserDefinitions.tsx:1402
+#: components/Preferences/UserDefinitions.tsx:1403
 #: components/QueryBuilder/FieldFilter.tsx:537
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

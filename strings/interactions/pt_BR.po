@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:60
 #: components/Interactions/InteractionsDialog.tsx:60
-#: components/Preferences/UserDefinitions.tsx:611
+#: components/Preferences/UserDefinitions.tsx:612
 #: components/Router/OverlayRoutes.tsx:86
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"

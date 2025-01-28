@@ -33,7 +33,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1545
+#: components/Preferences/UserDefinitions.tsx:1546
 #: components/SearchDialog/index.tsx:238
 #: components/SearchDialog/index.tsx:380
 #: components/Security/registry.ts:210
@@ -338,7 +338,7 @@ msgstr "в"
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1406
+#: components/Preferences/UserDefinitions.tsx:1407
 #: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -354,7 +354,7 @@ msgstr "Порожній"
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1402
+#: components/Preferences/UserDefinitions.tsx:1403
 #: components/QueryBuilder/FieldFilter.tsx:537
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
