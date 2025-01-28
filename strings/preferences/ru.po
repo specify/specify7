@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-28 18:00+0000\n"
+"PO-Revision-Date: 2025-01-28 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -48,7 +48,7 @@ msgstr "Настройки пользователя по умолчанию"
 #: components/Preferences/UserDefinitions.tsx:1702
 #, fuzzy
 msgid "general"
-msgstr "Пользовательское изображение"
+msgstr "Общий"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:82
@@ -187,7 +187,7 @@ msgstr "(шрифт по умолчанию)"
 #: components/Preferences/UserDefinitions.tsx:846
 #, fuzzy
 msgid "maxFormWidth"
-msgstr "Максимальная ширина формы"
+msgstr "Макс. ширина формы"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:895
@@ -235,7 +235,7 @@ msgstr "Отключен фон поля (тёмная тема)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Гибкая ширина столбца сетки подвидов"
+msgstr "Недопустимый фон поля (тёмная тема)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -709,7 +709,9 @@ msgstr "Направление движения при нажатии клави
 #: components/Preferences/UserDefinitions.tsx:1761
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Синоним цвет"
+msgstr ""
+"Вы можете двигаться в противоположном направлении, нажав "
+"<key>Shift</key>+<key>Enter</key>."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1786
@@ -786,7 +788,8 @@ msgstr "Показывать фильтры запросов при запуск
 #: components/Preferences/UserDefinitions.tsx:1045
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Направление движения при нажатии клавиши [X27X]Tab[X35X]"
+msgstr ""
+"Разрешить автозаполнению расширяться настолько, насколько это необходимо"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:753
@@ -828,7 +831,7 @@ msgstr "Инерция сковороды"
 #: components/Preferences/UserDefinitions.tsx:1981
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Выделить совпавшую подстроку"
+msgstr "Перетаскивание мышью"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1988
@@ -852,7 +855,7 @@ msgstr "Гибкая ширина столбца сетки подвидов"
 #: components/Preferences/UserDefinitions.tsx:469
 #, fuzzy
 msgid "closeOnEsc"
-msgstr "Значок и название таблицы"
+msgstr "Закрыть при нажатии клавиши <key>ESC</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:476
@@ -931,7 +934,9 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Используйте доступный выбор месяца"
+msgstr ""
+"<key>{altKeyName:string}</key>+<key>Нажмите</key> на ссылку, которая обычно "
+"открывается в новой вкладке, чтобы открыть ее в текущей вкладке."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
@@ -991,7 +996,7 @@ msgstr "Максимальная высота"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Определяет заголовки полей, примечания по использованию и заголовки таблиц."
+msgstr "Автозаполнение"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1065,7 +1070,7 @@ msgstr "Использовать"
 #: components/Preferences/UserDefinitions.tsx:688
 #, fuzzy
 msgid "dontUse"
-msgstr "Колесо прокрутки масштабирует"
+msgstr "Не использовать"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:569
@@ -1138,7 +1143,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr "Настройка"
+msgstr "Настройки коллекции"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
