@@ -97,7 +97,7 @@ export function BatchEditFromQuery({
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
           queryFieldSpecs.some(hasHierarchyBaseTable) ||
-          queryFieldSpecs.some(containsTreeTable) // TODO: Remove this when we have batch edit for tree tables #6127
+          queryFieldSpecs.some(containsTreeTableOrSpecificRank) // TODO: Remove this when we have batch edit for tree tables #6127
         }
         onClick={() => {
           loading(
@@ -167,8 +167,10 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
 
-const containsTreeTable = (queryFieldSpec: QueryFieldSpec) =>
-  isTreeTable(queryFieldSpec.baseTable.name);
+const containsTreeTableOrSpecificRank = (queryFieldSpec: QueryFieldSpec) =>
+  isTreeTable(queryFieldSpec.baseTable.name) ||
+  (typeof queryFieldSpec.treeRank === 'string' &&
+    queryFieldSpec.treeRank !== '-any');
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
