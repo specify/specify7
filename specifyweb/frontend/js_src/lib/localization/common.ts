@@ -15,7 +15,7 @@ export const commonText = createDictionary({
       translators.
     `,
     'en-us': 'Specify 7',
-    //'ru-ru': 'Specify 7',
+    'ru-ru': 'Specify 7',
     'es-es': 'Specify 7',
     'fr-fr': 'Specify 7',
     'uk-ua': 'Вкажіть 7',
@@ -736,6 +736,7 @@ export const commonText = createDictionary({
   },
   zoom: {
     'en-us': 'Zoom',
+    'fr-fr': 'Zoom',
   },
   unzoom: {
     'en-us': 'Unzoom',
