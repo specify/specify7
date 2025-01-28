@@ -16,6 +16,7 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
+from specifyweb.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
 
@@ -39,7 +40,6 @@ from .upload_result import (
 from .uploadable import (
     NULL_RECORD,
     Row,
-    ScopeGenerator,
     Uploadable,
     ScopedUploadable,
     BoundUploadable,
@@ -67,11 +67,11 @@ class UploadTable(NamedTuple):
     overrideScope: Optional[Dict[Literal["collection"], Optional[int]]] = None
 
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
 
-        return apply_scoping_to_uploadtable(self, collection, generator, row)
+        return apply_scoping_to_uploadtable(self, collection, context, row)
 
     def get_cols(self) -> Set[str]:
         return (
@@ -205,7 +205,6 @@ class ScopedUploadTable(NamedTuple):
 
     def bind(
         self,
-        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
@@ -221,11 +220,11 @@ class ScopedUploadTable(NamedTuple):
             parseFails: List[WorkBenchParseFailure] = []
             current_id = None
         else:
-            parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
+            parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache)
+            result = uploadable.bind(row, uploadingAgentId, auditor, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -235,7 +234,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundUploadable] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache)
+                result_ = record.bind(row, uploadingAgentId, auditor, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -270,9 +269,9 @@ class ScopedUploadTable(NamedTuple):
 
 class OneToOneTable(UploadTable):
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedOneToOneTable":
-        s = super().apply_scoping(collection, generator, row)
+        s = super().apply_scoping(collection, context, row)
         return ScopedOneToOneTable(*s)
 
     def to_json(self) -> Dict:
@@ -282,21 +281,20 @@ class OneToOneTable(UploadTable):
 class ScopedOneToOneTable(ScopedUploadTable):
     def bind(
         self,
-        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+        b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
 class MustMatchTable(UploadTable):
     def apply_scoping(
-        self, collection, generator: ScopeGenerator = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTable":
-        s = super().apply_scoping(collection, generator, row)
+        s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTable(*s)
 
     def to_json(self) -> Dict:
@@ -306,13 +304,12 @@ class MustMatchTable(UploadTable):
 class ScopedMustMatchTable(ScopedUploadTable):
     def bind(
         self,
-        collection,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
         cache: Optional[Dict] = None,
     ) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+        b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 

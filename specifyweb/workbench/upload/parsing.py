@@ -51,10 +51,10 @@ def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column, None)
 
 
-def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[WorkBenchParseFailure]]:
+def parse_many(tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[WorkBenchParseFailure]]:
     results = [
-        parse_value(collection, tablename, fieldname,
-                    row[colopts.column], colopts, row)
+        parse_value(tablename, fieldname,
+                    row[colopts.column], colopts)
         for fieldname, colopts in mapping.items()
     ]
     return (
@@ -63,7 +63,7 @@ def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOpti
     )
 
 
-def parse_value(collection, tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions, row: Row) -> Union[ParseResult, WorkBenchParseFailure]:
+def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
     required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
     result: Union[ParseResult, WorkBenchParseFailure]
@@ -78,11 +78,11 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
             result = ParseResult({fieldname: None}, {fieldname: None},
                                  None, colopts.column, missing_required)
         else:
-            result = _parse(collection, tablename, fieldname,
-                            colopts, colopts.default, row)
+            result = _parse(tablename, fieldname,
+                            colopts, colopts.default)
     else:
-        result = _parse(collection, tablename, fieldname,
-                        colopts, value_in.strip(), row)
+        result = _parse(tablename, fieldname,
+                        colopts, value_in.strip())
 
     if isinstance(result, WorkBenchParseFailure):
         return result
@@ -100,7 +100,7 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
         assertNever(colopts.matchBehavior)
 
 
-def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str, row: Row) -> Union[ParseResult, WorkBenchParseFailure]:
+def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
@@ -117,8 +117,8 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
                     colopts.column
                 )
             return result
-    formatter = colopts.uiformatter(row) if callable(colopts.uiformatter) else colopts.uiformatter
-    parsed = parse_field(collection, tablename, fieldname, value, with_formatter=formatter)
+    
+    parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text'
