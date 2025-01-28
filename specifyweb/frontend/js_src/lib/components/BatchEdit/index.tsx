@@ -168,7 +168,7 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   );
 
 const containsTreeTable = (queryFieldSpec: QueryFieldSpec) =>
-  queryFieldSpec.joinPath.some((field) => isTreeTable(field.table.name));
+  isTreeTable(queryFieldSpec.baseTable.name);
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
