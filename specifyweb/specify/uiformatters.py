@@ -78,18 +78,6 @@ class FormatMismatch(ValueError):
         self.formatter = formatter
     pass
 
-class CustomRepr:
-    def __init__(self, func, new_repr):
-        self.new_repr = new_repr
-        self.func = func
-
-    def __call__(self, *args, **kwargs):
-        return None if self.func is None else self.func(*args, **kwargs)
-
-    def __repr__(self):
-        return self.new_repr
-
-
 class UIFormatter(NamedTuple):
     model_name: str
     field_name: str
