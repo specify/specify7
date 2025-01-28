@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-28 18:00+0000\n"
+"PO-Revision-Date: 2025-01-28 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -23,7 +23,7 @@ msgstr "Preferências"
 #: components/Header/userToolDefinitions.ts:45
 #, fuzzy
 msgid "customization"
-msgstr "Começa com (sem distinção entre maiúsculas e minúsculas)"
+msgstr "Personalização"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:93
@@ -234,7 +234,7 @@ msgstr "Fundo de campo desabilitado (tema escuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Largura de coluna de grade de subvisualização flexível"
+msgstr "Fundo de campo inválido (tema escuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -317,7 +317,7 @@ msgstr "Cor de destaque da árvore"
 #: components/Preferences/UserDefinitions.tsx:1507
 #, fuzzy
 msgid "synonymColor"
-msgstr "Reduzir"
+msgstr "Sinônimo de cor"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1839
@@ -465,13 +465,13 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1038
 #, fuzzy
 msgid "highlightMatch"
-msgstr "Cor de destaque 5"
+msgstr "Destacar substring correspondente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:725
 #, fuzzy
 msgid "languageDescription"
-msgstr "Recuo com [X12X]Tab[X20X]"
+msgstr "Determina legendas de campo, notas de uso e legendas de tabela."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:462
@@ -515,13 +515,13 @@ msgstr "Especificar logotipo"
 #: components/Preferences/Renderers.tsx:250
 #, fuzzy
 msgid "customImage"
-msgstr "Reduzir a transparência"
+msgstr "Imagem personalizada"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
 #, fuzzy
 msgid "embeddedWebpage"
-msgstr "Navegue para o outro lado ao atingir a fileira de bordas"
+msgstr "Página da web incorporada"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:257
@@ -729,13 +729,13 @@ msgstr "Filtrar itens da lista de seleção"
 #: components/Preferences/UserDefinitions.tsx:1806
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Limite de largura máxima do campo"
+msgstr "Delimitador de arquivo de exportação"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1597
 #, fuzzy
 msgid "exportCsvUtf8Bom"
-msgstr "Ícone e nome da tabela"
+msgstr "Adicionar UTF-8 BOM às exportações de arquivos CSV"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1599
@@ -842,7 +842,7 @@ msgstr "Inércia da panela"
 #: components/Preferences/UserDefinitions.tsx:1981
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Arrastos do mouse"
+msgstr "O mouse arrasta"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1988
@@ -860,7 +860,7 @@ msgstr "Largura de coluna flexível"
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largura de coluna de grade de subvisualização flexível"
+msgstr "Largura flexível da coluna da grade de subvisualização"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
@@ -884,13 +884,13 @@ msgstr "Especificar emblema de rede"
 #: components/Preferences/UserDefinitions.tsx:872
 #, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr "Use um seletor de data completo acessível"
+msgstr "Use o seletor de data completo acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:879
 #, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr "Largura de coluna flexível"
+msgstr "Use o seletor de mês acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:886
