@@ -1142,7 +1142,7 @@ msgstr "Choisissez des fichiers ou faites-les glisser ici"
 #. Used in: Components > Attachments > Chrono Chart
 #, fuzzy
 msgid "zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: components/Attachments/ChronoChart.tsx:66
 #. Used in: Components > Attachments > Chrono Chart
