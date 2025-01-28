@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-28 18:00+0000\n"
+"PO-Revision-Date: 2025-01-28 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -325,7 +325,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1054
 #, fuzzy
 msgid "queryComboBox"
-msgstr "Abfrage-Kombinationsfeld"
+msgstr "Kombinationsfeld für Abfragen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1009
@@ -707,7 +707,7 @@ msgstr "Groß-/Kleinschreibung wird nicht beachtet"
 #: components/Preferences/UserDefinitions.tsx:1537
 #, fuzzy
 msgid "showNoReadTables"
-msgstr "Benutzerdefiniertes Bild"
+msgstr "Tabellen ohne Lesezugriff anzeigen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1863
@@ -761,7 +761,7 @@ msgstr "Konzentrieren Sie sich auf das erste Feld"
 #: components/Preferences/UserDefinitions.tsx:1953
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Doppelklicken zum Vergrößern"
+msgstr "Doppelklicken zum Zoomen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1960
@@ -785,7 +785,7 @@ msgstr "Schwenkträgheit"
 #: components/Preferences/UserDefinitions.tsx:1981
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Übereinstimmende Teilzeichenfolge hervorheben"
+msgstr "Maus zieht"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1988
@@ -875,9 +875,7 @@ msgstr "Dies bestimmt die visuelle Reihenfolge der Sammlungen."
 #: components/Preferences/UserDefinitions.tsx:1109
 #, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr ""
-"Beim Zusammenführen von Agenten werden automatisch [X42X] Datensätze "
-"basierend auf den Variationen von Vorname/Nachname erstellt."
+msgstr "Standardmäßig zu öffnender Datensatz"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
@@ -966,13 +964,13 @@ msgstr "Groß-/Kleinschreibung beachten"
 #: components/Preferences/UserDefinitions.tsx:1351
 #, fuzzy
 msgid "searchField"
-msgstr "Textfelder werden automatisch vergrößert"
+msgstr "Suchfeld"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:627
 #, fuzzy
 msgid "createInteractions"
-msgstr "Eine URL zu einer Seite, die auf der Startseite eingebettet werden würde:"
+msgstr "Erstellen einer Interaktion"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:630
@@ -1125,7 +1123,7 @@ msgstr "Medien automatisch wiedergeben"
 #: components/Preferences/UserDefinitions.tsx:225
 #, fuzzy
 msgid "useCustomTooltips"
-msgstr "Farbe der Infoschaltfläche"
+msgstr "Moderne Tooltips verwenden"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1097
@@ -1175,7 +1173,7 @@ msgstr "Wählen Sie ein Bild aus"
 #: components/Preferences/UserDefinitions.tsx:592
 #, fuzzy
 msgid "customLogo"
-msgstr "Abgerundete Ecken"
+msgstr "Erweiterte Bild-URL"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:600
@@ -1195,7 +1193,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1626
 #, fuzzy
 msgid "showLineNumber"
-msgstr "Farbe der Gefahrenschaltfläche"
+msgstr "Abfrageergebniszeilennummer anzeigen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:305
