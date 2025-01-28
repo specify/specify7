@@ -140,7 +140,7 @@ function WbSpreadsheetComponent({
                 },
                 remove_row: {
                   disabled: () => {
-                    if (isReadOnly || dataset.isupdate) return true;
+                    if (isReadOnly) return true;
                     // Or if called on the last row
                     const selectedRegions = getSelectedRegions(hot);
                     return (
