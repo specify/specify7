@@ -48,19 +48,26 @@ RUN apt-get update \
         ca-certificates \
         curl \
         git \
-        libldap2-dev \
-        libmariadbclient-dev \
         libsasl2-dev \
+        libsasl2-modules-gssapi-mit \
+        libldap2-dev \
+        libssl-dev \
+        libgmp-dev \
+        libffi-dev \
         python3.8-venv \
         python3.8-distutils \
-        python3.8-dev
+        python3.8-dev \
+        libmariadbclient-dev \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
 RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+ && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js

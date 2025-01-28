@@ -63,7 +63,7 @@ const fieldColumns = f.store(
       type: getField(tables.SpLocaleContainerItem, 'type').label,
       length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
-    } as const)
+    }) as const
 );
 
 const getFields = (table: SpecifyTable) =>
@@ -91,6 +91,6 @@ const getFields = (table: SpecifyTable) =>
             </span>,
           ],
           databaseColumn: field.databaseColumn,
-        } as const)
+        }) as const
     )
   );

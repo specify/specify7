@@ -87,7 +87,7 @@ function fetchBucket(formattedKey: string): void {
  */
 export const getCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY
@@ -116,7 +116,7 @@ function genericGet<TYPE>(
 
 export const setCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY,

@@ -121,18 +121,18 @@ export function useResourceView<SCHEMA extends AnySchema>({
     resource === undefined
       ? localized('')
       : resource.isNew()
-      ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
-      : resource.specifyTable.label;
+        ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
+        : resource.specifyTable.label;
   const title =
     formatted.length === 0
       ? formattedTableName
       : resource?.specifyTable.name &&
-        tableNamesToHide.has(resource.specifyTable.name)
-      ? formatted
-      : commonText.colonLine({
-          label: formattedTableName,
-          value: formatted,
-        });
+          tableNamesToHide.has(resource.specifyTable.name)
+        ? formatted
+        : commonText.colonLine({
+            label: formattedTableName,
+            value: formatted,
+          });
 
   const formRef = React.useRef(form);
   formRef.current = form;
@@ -207,7 +207,7 @@ export const FormContext = React.createContext<
       | ((
           newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
         ) => void)
-      | undefined
+      | undefined,
   ]
 >([
   {

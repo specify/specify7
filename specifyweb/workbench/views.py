@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional
+from typing import List, Optional, Dict, Literal, get_args as get_typing_args
 from uuid import uuid4
 
 from django import http
@@ -12,8 +12,8 @@ from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
-    toJson, uri_for_model
+from specifyweb.celery_tasks import CELERY_TASK_STATE
+from specifyweb.specify.api import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify.models import Recordset, Specifyuser
 from specifyweb.notifications.models import Message
@@ -34,6 +34,9 @@ class DataSetPT(PermissionTarget):
     validate = PermissionTargetAction()
     transfer = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
+
+WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
+
 
 def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
     n = ncols + 1 # extra row info such as disambiguation in hidden col at end
@@ -93,11 +96,7 @@ open_api_components = {
                         },
                         "taskstatus": {
                             "type": "string",
-                            "enum": [
-                                "PROGRESS",
-                                "PENDING",
-                                "FAILURE",
-                            ]
+                            "enum": list(get_typing_args(WorkbenchUpdateStatus))
                         },
                         "uploaderstatus": {
                             "type": "object",
@@ -729,16 +728,26 @@ def status(request, ds_id: int) -> http.HttpResponse:
 
     if ds.uploaderstatus is None:
         return http.JsonResponse(None, safe=False)
+    
+    task_status_map: Dict[str, WorkbenchUpdateStatus]  = {
+        CELERY_TASK_STATE.RECEIVED: "PENDING",
+        CELERY_TASK_STATE.STARTED: "PENDING",
+        CELERY_TASK_STATE.SUCCESS: "PENDING",
+        CELERY_TASK_STATE.RETRY: "FAILURE",
+        CELERY_TASK_STATE.REVOKED: "FAILURE",
+    }
 
     task = {
         'uploading': tasks.upload,
         'validating': tasks.upload,
         'unuploading': tasks.unupload,
     }[ds.uploaderstatus['operation']]
+
     result = task.AsyncResult(ds.uploaderstatus['taskid'])
+
     status = {
         'uploaderstatus': ds.uploaderstatus,
-        'taskstatus': result.state,
+        'taskstatus': task_status_map.get(result.state, result.state),
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
     return http.JsonResponse(status)

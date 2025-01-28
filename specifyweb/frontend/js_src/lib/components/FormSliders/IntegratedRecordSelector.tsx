@@ -163,6 +163,11 @@ export function IntegratedRecordSelector({
   const isTaxonTreeDefItemTable =
     collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
+  const isLoanPrep = relationship.relatedTable.name === 'LoanPreparation';
+  const disableRemove =
+    isLoanPrep &&
+    (collection.related?.isNew() === true || collection.related?.needsSaved);
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -307,7 +312,8 @@ export function IntegratedRecordSelector({
                             collection.models.length === 0 ||
                             resource === undefined ||
                             (renderedResourceId !== undefined &&
-                              resource?.id === renderedResourceId)
+                              resource?.id === renderedResourceId) ||
+                            disableRemove
                           }
                           onClick={(): void => {
                             handleRemove('minusButton');
@@ -353,6 +359,7 @@ export function IntegratedRecordSelector({
               <FormTableCollection
                 collection={collection}
                 dialog={dialog}
+                disableRemove={disableRemove}
                 isCollapsed={isCollapsed}
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
