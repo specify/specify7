@@ -16,7 +16,7 @@ msgstr ""
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #, fuzzy
 msgid "specifySeven"
-msgstr "Specify 7"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1820
 #: components/WorkBench/DataSetMeta.tsx:282
