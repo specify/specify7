@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-28 18:00+0000\n"
+"PO-Revision-Date: 2025-01-28 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -23,7 +23,7 @@ msgstr "Preferencias"
 #: components/Header/userToolDefinitions.ts:45
 #, fuzzy
 msgid "customization"
-msgstr "Comienza con (sin distinguir entre mayúsculas y minúsculas)"
+msgstr "Personalización"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:93
@@ -234,7 +234,7 @@ msgstr "Fondo de campo deshabilitado (tema oscuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Ancho de columna de cuadrícula de subvista flexible"
+msgstr "Fondo de campo no válido (tema oscuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:954
@@ -317,7 +317,7 @@ msgstr "Color de acento de árbol"
 #: components/Preferences/UserDefinitions.tsx:1507
 #, fuzzy
 msgid "synonymColor"
-msgstr "Reducir"
+msgstr "Sinónimo color"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1839
@@ -465,13 +465,15 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1038
 #, fuzzy
 msgid "highlightMatch"
-msgstr "Fondo de campo deshabilitado (tema oscuro)"
+msgstr "Resaltar la subcadena coincidente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:725
 #, fuzzy
 msgid "languageDescription"
-msgstr "Sangría con [X12X]Tab[X20X]"
+msgstr ""
+"Determina los títulos de los campos, las notas de uso y los títulos de las "
+"tablas."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:462
@@ -515,13 +517,13 @@ msgstr "Especificar logotipo"
 #: components/Preferences/Renderers.tsx:250
 #, fuzzy
 msgid "customImage"
-msgstr "Reducir la transparencia"
+msgstr "Imagen personalizada"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
 #, fuzzy
 msgid "embeddedWebpage"
-msgstr "Navegue hacia el otro lado al llegar a la fila del borde."
+msgstr "Página web incrustada"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:257
@@ -729,13 +731,13 @@ msgstr "Filtrar elementos de la lista de selección"
 #: components/Preferences/UserDefinitions.tsx:1806
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Limitar el ancho máximo del campo"
+msgstr "Delimitador de archivo de exportación"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1597
 #, fuzzy
 msgid "exportCsvUtf8Bom"
-msgstr "Icono y nombre de la tabla"
+msgstr "Agregar BOM UTF-8 a las exportaciones de archivos CSV"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1599
@@ -891,7 +893,7 @@ msgstr "Utilice el selector de fecha completo y accesible"
 #: components/Preferences/UserDefinitions.tsx:879
 #, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr "Ancho de columna flexible"
+msgstr "Utilice el selector de meses accesible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:886
