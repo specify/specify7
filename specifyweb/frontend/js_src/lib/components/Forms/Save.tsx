@@ -272,7 +272,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                         tables.CollectionObject.strictGetLiteralField(
                           'catalogNumber'
                         ).getUiFormatter()!;
-                      const wildCard = formatter.valueOrWild();
 
                       const clonePromises = Array.from(
                         { length: carryForwardAmount },
@@ -283,7 +282,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                           );
                           clonedResource.set(
                             'catalogNumber',
-                            wildCard as never
+                            formatter.defaultValue as never
                           );
                           return clonedResource;
                         }

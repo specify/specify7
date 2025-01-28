@@ -28,10 +28,8 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import { strictGetTable, tables } from '../DataModel/tables';
-import type { SpQuery, Tables } from '../DataModel/types';
-import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObject, SpQuery, Tables } from '../DataModel/types';
 import type { UiFormatter } from '../FieldFormatters';
-import { formatterTypeMapper } from '../FieldFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
@@ -105,7 +103,7 @@ function generateInQueryResource(
           };
     const { path, ...field } = rawField;
     return serializeResource(
-      makeQueryField(baseTable, rawField.path, { ...field, position: index })
+      makeQueryField(baseTable, path, { ...field, position: index })
     );
   });
 
@@ -232,24 +230,15 @@ export function resolveFileNames(
   // BUG: Won't catch if formatters begin or end with a space
   const splitName = stripFileExtension(fileName).trim();
   let nameToParse = splitName;
-  if (
-    formatter !== undefined &&
-    formatter.fields.every(
-      (field) => !(field instanceof formatterTypeMapper.regex)
-    )
-  ) {
-    const formattedLength = formatter.fields.reduce(
-      (length, field) => length + field.size,
-      0
-    );
-    nameToParse = fileName.trim().slice(0, formattedLength);
+  if (formatter?.parts.every((field) => field.type !== 'regex') === true) {
+    nameToParse = fileName.trim().slice(0, formatter.size);
   }
   let formatted = nameToParse === '' ? undefined : getFormatted(nameToParse);
-  const numericFields = formatter?.fields.filter(
-    (field) => field instanceof formatterTypeMapper.numeric
+  const numericFields = formatter?.parts.filter(
+    (field) => field.type === 'numeric'
   );
   if (
-    formatter?.fields?.length === 1 &&
+    formatter?.parts?.length === 1 &&
     numericFields?.length === 1 &&
     formatted === undefined &&
     splitName !== ''

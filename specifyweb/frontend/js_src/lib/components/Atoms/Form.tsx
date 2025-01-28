@@ -257,6 +257,7 @@ export const Input = {
               props.onChange?.(event);
             },
             readOnly: isReadOnly,
+            ...withPreventWheel(props.onWheel),
           }
   ),
   Float: wrap<

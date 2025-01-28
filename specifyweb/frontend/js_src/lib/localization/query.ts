@@ -758,7 +758,7 @@ export const queryText = createDictionary({
     'ru-ru': 'в прошлом',
     'uk-ua': 'в минулому',
   },
-  day: {
+  days: {
     'en-us': 'Days',
     'es-es': 'Días',
     'fr-fr': 'Jours',
@@ -766,7 +766,7 @@ export const queryText = createDictionary({
     'uk-ua': 'днів',
     'de-ch': 'Tage',
   },
-  week: {
+  weeks: {
     'en-us': 'Weeks',
     'de-ch': 'Wochen',
     'es-es': 'Semanas',
@@ -774,7 +774,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Недели',
     'uk-ua': 'тижнів',
   },
-  month: {
+  months: {
     'en-us': 'Months',
     'de-ch': 'Monate',
     'es-es': 'Meses',
@@ -782,7 +782,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Месяцы',
     'uk-ua': 'Місяці',
   },
-  year: {
+  years: {
     'en-us': 'Years',
     'de-ch': 'Jahre',
     'es-es': 'Años',
@@ -790,40 +790,36 @@ export const queryText = createDictionary({
     'ru-ru': 'Годы',
     'uk-ua': 'років',
   },
+  year: {
+    'en-us': 'Year',
+    'de-ch': 'Jahr',
+    'es-es': 'Año',
+    'fr-fr': 'Année',
+    'ru-ru': 'Год',
+    'uk-ua': 'рік',
+  },
   relativeDate: {
     comment: `
       Used in query builder lines, will be shown as a number followed by a
       period of time (ie: day, month or week) then a direction (past or future)
     `,
     'en-us': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'de-ch': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'es-es': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'fr-fr': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'ru-ru': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'uk-ua': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
   },
   importHiddenFields: {

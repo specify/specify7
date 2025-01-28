@@ -237,7 +237,16 @@ class AnyCharField(Field):
 
 class RegexField(Field):
     def value_regexp(self) -> str:
-        return self.value
+        pattern = self.value
+        if pattern.startswith('/'):
+            pattern = pattern[1:]
+        if pattern.startswith('^'):
+            pattern = pattern[1:]
+        if pattern.endswith('/'):
+            pattern = pattern[:-1]
+        if pattern.endswith('$'):
+            pattern = pattern[:-1]
+        return pattern
 
 class AlphaField(Field):
     def value_regexp(self) -> str:

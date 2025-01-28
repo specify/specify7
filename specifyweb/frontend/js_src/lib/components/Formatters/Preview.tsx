@@ -9,6 +9,7 @@ import type { GetOrSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -39,7 +40,8 @@ export function useResourcePreview(
           table.name,
           {
             limit: defaultPreviewSize,
-            domainFilter: false, // REFACTOR: set to true after scoping reimplementation
+            // REFACTOR: set to true after scoping re-implementation
+            domainFilter: false,
           },
           {
             orderBy: [
@@ -57,6 +59,7 @@ export function useResourcePreview(
   const [resources, setResources] = getSetResources;
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
   return {
     resources: getSetResources,
@@ -64,7 +67,7 @@ export function useResourcePreview(
       <div
         // Setting width prevents dialog resizing when output is loaded
         className={`flex ${
-          isAggregator ? 'w-[min(40rem,50vw)] break-all' : undefined
+          isAggregator ? 'w-[min(40rem,50vw)] break-all' : ''
         } flex-col gap-2`}
       >
         <span className="font-bold">{resourcesText.preview()}</span>
@@ -94,7 +97,9 @@ export function useResourcePreview(
                       setResources(removeItem(resources, index)),
                   }}
                 />
-                <output className="whitespace-pre-wrap">{output}</output>
+                <output className="whitespace-pre-wrap break-all">
+                  {output}
+                </output>
               </div>
             );
           })
@@ -109,7 +114,13 @@ export function useResourcePreview(
             onlyUseQueryBuilder
             table={table}
             onClose={handleClose}
-            onSelected={setResources}
+            onSelected={(selected): void =>
+              void loading(
+                Promise.all(
+                  selected.map(async (resource) => resource.fetch())
+                ).then(setResources)
+              )
+            }
           />
         )}
       </div>
@@ -125,7 +136,7 @@ export function ResourcePreview({
   readonly table: SpecifyTable;
   readonly doFormatting: (
     resources: RA<SpecifyResource<AnySchema>>
-  ) => Promise<RA<React.ReactNode>>;
+  ) => Promise<RA<React.ReactNode>> | RA<React.ReactNode>;
   readonly isAggregator?: boolean;
 }): JSX.Element | null {
   const {

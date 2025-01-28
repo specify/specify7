@@ -20,7 +20,7 @@ import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import type { MappingPath } from './Mapper';
@@ -284,7 +284,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
-    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<readonly [string, MapperComponentData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,

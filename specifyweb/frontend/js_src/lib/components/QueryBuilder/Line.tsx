@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import type { Parser } from '../../utils/parser/definitions';
 import {
-  formatterToParser,
+  fieldFormatterToParser,
   resolveParser,
 } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -160,7 +160,7 @@ export function QueryLine({
           required: false,
         };
         // Remove autoNumbering wildCard from default values
-        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+        if (dataModelField.getUiFormatter()?.defaultValue === parser.value)
           parser = { ...parser, value: undefined };
 
         fieldType =
@@ -434,8 +434,10 @@ export function QueryLine({
                   (terminatingField === undefined ||
                   fieldFormatter === undefined
                     ? undefined
-                    : formatterToParser(terminatingField, fieldFormatter)) ??
-                  fieldMeta.parser;
+                    : fieldFormatterToParser(
+                        terminatingField,
+                        fieldFormatter
+                      )) ?? fieldMeta.parser;
 
                 return (
                   <div

@@ -35,7 +35,7 @@
 
    `'es'` is the Weblate language code
 
-8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
+8. Open [`/specifyweb/settings/__init__.py`](/specifyweb/settings/__init__.py)
 9. Add newly created language to `LANGUAGES` array.
 10. Push the changes to `production` branch (weblate is setup to only look at
     that branch).

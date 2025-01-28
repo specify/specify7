@@ -166,10 +166,10 @@ function DateSplit({
                 handleChanging?.();
               }}
             >
-              <option value="day">{queryText.day()}</option>
-              <option value="week">{queryText.week()}</option>
-              <option value="month">{queryText.month()}</option>
-              <option value="year">{queryText.year()}</option>
+              <option value="day">{queryText.days()}</option>
+              <option value="week">{queryText.weeks()}</option>
+              <option value="month">{queryText.months()}</option>
+              <option value="year">{queryText.years()}</option>
             </Select>
           ),
           direction: (direction) => (
