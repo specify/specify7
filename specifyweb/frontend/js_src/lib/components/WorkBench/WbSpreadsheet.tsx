@@ -20,7 +20,11 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
-import { getPhysicalColToMappingCol, getSelectedRegions, setHotData } from './hotHelpers';
+import {
+  getPhysicalColToMappingCol,
+  getSelectedRegions,
+  setHotData,
+} from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
@@ -75,9 +79,9 @@ function WbSpreadsheetComponent({
                     const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
                     const createdRecords =
-                      validation.uploadResults.interestingRecords[physicalRow]?.[
-                        physicalCol
-                      ];
+                      validation.uploadResults.interestingRecords[
+                        physicalRow
+                      ]?.[physicalCol];
 
                     if (
                       visualRow === undefined ||
@@ -129,14 +133,14 @@ function WbSpreadsheetComponent({
               } as const)
             : ({
                 row_above: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 row_below: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 remove_row: {
                   disabled: () => {
-                    if (isReadOnly) return true;
+                    if (isReadOnly || dataset.isupdate) return true;
                     // Or if called on the last row
                     const selectedRegions = getSelectedRegions(hot);
                     return (

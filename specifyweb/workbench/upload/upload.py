@@ -558,7 +558,10 @@ def rollback_batch_edit(
     packs = []
     # Yes, we don't care about reverse here.
     for row in range(len(parent.data)):
-        r, be = look_up_in_backer(row)
+        pack = look_up_in_backer(row)
+        if pack is None: continue
+        
+        r, be = pack
         rows_to_backup.append(dict(zip(parent.columns, r)))
         packs.append(be)
 
