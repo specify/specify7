@@ -970,10 +970,13 @@ class BoundUpdateTable(BoundUploadTable):
         concrete_field_changes = BoundUpdateTable._field_changed(
             reference_record, attrs
         )
+
+        # Edge case: Scope change is allowed for Loan -> division.
+        # See: https://github.com/specify/specify7/pull/5417#issuecomment-2613245552
         if any(
             scoping_attr in concrete_field_changes
             for scoping_attr in self.scopingAttrs.keys()
-        ):
+        ) and not (self.name == "Loan" and "division_id" in concrete_field_changes):
             # I don't know what else to do. I don't think this will ever get raised. I don't know what I'll need to debug this, so showing everything.
             raise Exception(
                 f"Attempting to change the scope of the record: {reference_record} at {self}. \n\n Diff: {concrete_field_changes}"
