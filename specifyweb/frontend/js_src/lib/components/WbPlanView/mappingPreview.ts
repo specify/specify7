@@ -142,7 +142,8 @@ export function generateMappingPathPreview(
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseTableOrRankName !== 'childCog' &&
+      databaseTableOrRankName !== 'childCog' && 
+      databaseTableOrRankName !== 'parentCog' &&
       databaseFieldName === 'name' &&
       !isAnyRank)
       ? undefined
@@ -157,7 +158,8 @@ export function generateMappingPathPreview(
     genericFields.has(baseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
       !nonGenericFields.has(baseFieldName) &&
-      databaseTableOrRankName !== 'childCog');
+      databaseTableOrRankName !== 'childCog' && 
+      databaseTableOrRankName !== 'parentCog');
 
   const tableNameNonEmpty =
     fieldNameFormatted === undefined
