@@ -82,6 +82,7 @@ def query(request, id):
     with models.session_context() as session:
         sp_query = session.query(models.SpQuery).get(int(id))
         distinct = sp_query.selectDistinct
+        series = sp_query.selectSeries if sp_query.selectSeries else None
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
@@ -89,7 +90,7 @@ def query(request, id):
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
         data = execute(session, request.specify_collection, request.specify_user,
-                       tableid, distinct, count_only, field_specs, limit, offset)
+                       tableid, distinct, series, count_only, field_specs, limit, offset)
 
     return HttpResponse(toJson(data), content_type='application/json')
 
