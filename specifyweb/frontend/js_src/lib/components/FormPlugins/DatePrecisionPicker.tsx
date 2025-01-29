@@ -19,7 +19,7 @@ export function DatePrecisionPicker({
 }: ReturnType<typeof useDatePrecision> & {
   readonly moment: readonly [
     ReturnType<typeof dayjs> | undefined,
-    (value: ReturnType<typeof dayjs>) => void
+    (value: ReturnType<typeof dayjs>) => void,
   ];
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);

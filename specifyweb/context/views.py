@@ -26,7 +26,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Institution, \
-    Specifyuser, Spprincipal, Spversion
+    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.api import uri_for_model
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
@@ -341,7 +341,10 @@ def domain(request):
         'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         'catalogNumFormatName': collection.catalognumformatname,
-        'defaultCollectionObjectType': uri_for_model(collection.collectionobjecttype.__class__, collection.collectionobjecttype.id) if collection.collectionobjecttype is not None else None
+        'defaultCollectionObjectType': uri_for_model(collection.collectionobjecttype.__class__, collection.collectionobjecttype.id) if collection.collectionobjecttype is not None else None,
+        'collectionObjectTypeCatalogNumberFormats': {
+            uri_for_model(cot.__class__, cot.id): cot.catalognumberformatname for cot in collection.cotypes.all()
+        }
     }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
@@ -647,6 +650,7 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
+        discipline_type=discipline and discipline.type
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 

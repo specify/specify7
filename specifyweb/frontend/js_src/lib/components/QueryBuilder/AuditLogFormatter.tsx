@@ -81,19 +81,19 @@ export function getAuditRecordFormatter(
           if (fields[index]?.name === 'fieldName') {
             const tableId = row[tableIdIndex];
             return typeof tableId === 'number'
-              ? getTableById(tableId).getField(stringValue)?.label ??
-                  stringValue
-              : tableId ?? '';
+              ? (getTableById(tableId).getField(stringValue)?.label ??
+                  stringValue)
+              : (tableId ?? '');
           } else if (fields[index]?.name === 'recordId') {
             const tableId = row[tableIdIndex];
             return typeof tableId === 'number'
               ? resourceToLink(getTableById(tableId), Number(value))
-              : tableId ?? '';
+              : (tableId ?? '');
           } else if (fields[index]?.name === 'parentRecordId') {
             const tableId = row[parentTableIdIndex];
             return typeof tableId === 'number'
               ? resourceToLink(getTableById(tableId), Number(value))
-              : tableId ?? '';
+              : (tableId ?? '');
           } else
             return fieldFormat(
               fields[index],

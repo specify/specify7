@@ -4,13 +4,18 @@ import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
-import { isRelationshipCollection } from './collectionApi';
+import {
+  DependentCollection,
+  IndependentCollection,
+  isRelationshipCollection,
+} from './collectionApi';
 import { backboneFieldSeparator } from './helpers';
 import type {
   AnySchema,
@@ -46,10 +51,6 @@ function eventHandlerForToOne(related, field) {
         this.set(field.name, related.url());
         return;
       }
-      case 'changing': {
-        this.trigger.apply(this, args);
-        return;
-      }
     }
 
     // Pass change:field events up the tree, updating fields with dot notation
@@ -65,10 +66,6 @@ function eventHandlerForToMany(related, field) {
   return function (event) {
     const args = _.toArray(arguments);
     switch (event) {
-      case 'changing': {
-        this.trigger.apply(this, args);
-        break;
-      }
       case 'saverequired': {
         this.handleChanged();
         break;
@@ -89,7 +86,7 @@ function eventHandlerForToMany(related, field) {
 // Always returns a resource
 const maybeMakeResource = <
   TABLE extends SpecifyTable,
-  TABLE_SCHEMA extends Tables[TABLE['name']]
+  TABLE_SCHEMA extends Tables[TABLE['name']],
 >(
   value:
     | Partial<SerializedRecord<TABLE_SCHEMA> | SerializedResource<TABLE_SCHEMA>>
@@ -182,6 +179,7 @@ export const ResourceBase = Backbone.Model.extend({
           if (exemptFields.includes(fieldName)) return;
           const field = self.specifyTable.getField(fieldName);
           switch (field.type) {
+            case 'one-to-one':
             case 'many-to-one': {
               /*
                * Many-to-one wouldn't ordinarily be dependent, but
@@ -271,7 +269,11 @@ export const ResourceBase = Backbone.Model.extend({
     related.parent = this; // REFACTOR: this doesn't belong here
 
     switch (field.type) {
-      case 'one-to-one':
+      case 'one-to-one': {
+        this.dependentResources[field.name.toLowerCase()] = related;
+        related.set(field.otherSideName, this.url()); // REFACTOR: this logic belongs somewhere else. up probably
+        break;
+      }
       case 'many-to-one': {
         this.dependentResources[field.name.toLowerCase()] = related;
         break;
@@ -360,9 +362,9 @@ export const ResourceBase = Backbone.Model.extend({
     const newValue = value ?? undefined;
     const oldValue =
       typeof key === 'string'
-        ? this.attributes[key.toLowerCase()] ??
+        ? (this.attributes[key.toLowerCase()] ??
           this.dependentResources[key.toLowerCase()] ??
-          undefined
+          undefined)
         : undefined;
     // Don't needlessly trigger unload protect if value didn't change
     if (
@@ -460,12 +462,12 @@ export const ResourceBase = Backbone.Model.extend({
       value = _.isString(value)
         ? this._handleUri(value, fieldName)
         : typeof value === 'number'
-        ? this._handleUri(
-            // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-            getResourceApiUrl(field.table.name, value),
-            fieldName
-          )
-        : this._handleInlineDataOrResource(value, fieldName);
+          ? this._handleUri(
+              // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+              getResourceApiUrl(field.table.name, value),
+              fieldName
+            )
+          : this._handleInlineDataOrResource(value, fieldName);
     }
     return [fieldName, value];
   },
@@ -477,19 +479,46 @@ export const ResourceBase = Backbone.Model.extend({
 
     switch (field.type) {
       case 'one-to-many': {
-        // Should we handle passing in an schema.Model.Collection instance here??
+        /*
+         * Should we handle preserving collection events when a
+         * tables.Table.Collection instance is passed here??
+         */
         const collectionOptions = { related: this, field: field.getReverse() };
+        if (!Array.isArray(value) && !isRelationshipCollection(value)) {
+          console.warn(
+            'Expected array of resources or collection when setting one-to-many',
+            { fieldName, value }
+          );
+          return undefined;
+        }
+        if (
+          isRelationshipCollection(value) &&
+          value.field !== collectionOptions.field
+        ) {
+          softFail(
+            new Error(
+              `Trying to set collection of ${value.table.name}.${value.field.name}. Expected ${collectionOptions.field?.table}.${collectionOptions.field?.name}`,
+              {
+                resource: this,
+                fieldName,
+                value,
+                expectedCollectionOptions: collectionOptions,
+              }
+            )
+          );
+          return undefined;
+        }
 
         if (field.isDependent()) {
           const collection = new relatedTable.DependentCollection(
             collectionOptions,
-            value
+            value instanceof DependentCollection ? value.models : value
           );
           this.storeDependent(field, collection);
         } else {
           const collection = new relatedTable.IndependentCollection(
             collectionOptions,
-            value
+            value instanceof IndependentCollection ? value.models : value
           );
           this.storeIndependent(field, collection);
         }
@@ -506,6 +535,7 @@ export const ResourceBase = Backbone.Model.extend({
          */
         return undefined;
       }
+      case 'one-to-one':
       case 'many-to-one': {
         if (!value) {
           /*
@@ -543,12 +573,6 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger('change', this);
         return undefined;
       }
-      /*
-       * Needed for taxonTreeDef on discipline because field.isVirtual equals false
-       */
-      case 'one-to-one': {
-        return value;
-      }
     }
     if (!field.isVirtual)
       softFail('Unhandled setting of relationship field', {
@@ -558,28 +582,33 @@ export const ResourceBase = Backbone.Model.extend({
       });
     return value;
   },
-  _handleUri(value, fieldName) {
-    const field = this.specifyTable.getField(fieldName);
-    const oldRelated = this.dependentResources[fieldName];
+  _handleUri(value: string, fieldName: string) {
+    const field: Relationship | undefined =
+      this.specifyTable.getRelationship(fieldName);
 
-    if (field.isDependent()) {
-      console.warn(
-        'expected inline data for dependent field',
-        fieldName,
-        'in',
-        this
-      );
+    if (field === undefined) {
+      console.warn('Setting uri', value, 'on unknown field', fieldName);
     }
 
-    if (oldRelated && field.type === 'many-to-one') {
-      /*
-       * Probably should never get here since the presence of an oldRelated
-       * value implies a dependent field which wouldn't be receiving a URI value
-       */
-      console.warn('unexpected condition');
+    const oldRelated =
+      this.dependentResources[fieldName] ??
+      this.independentResources[fieldName];
+
+    if (field.isDependent()) {
+      console.warn('expected inline data for dependent field', {
+        resource: this,
+        fieldName,
+        value,
+      });
+    }
+    if (oldRelated && relationshipIsToMany(field)) {
+      console.warn('Setting uri on to-many relationship', { fieldName, value });
+    } else if (oldRelated && !relationshipIsToMany(field)) {
+      if (field.isDependent()) console.warn('unexpected condition');
       if (oldRelated.url() !== value) {
         // The reference changed
         delete this.dependentResources[fieldName];
+        delete this.independentResources[fieldName];
         oldRelated.off('all', null, this);
       }
     }
@@ -613,12 +642,12 @@ export const ResourceBase = Backbone.Model.extend({
     };
     return this.getRelated(fieldName, options);
   },
-  async getRelated(fieldName, options) {
+  async getRelated(fieldName: RA<string> | string, options) {
     options ||= {
       prePop: false,
       noBusinessRules: false,
     };
-    const path = _(fieldName).isArray()
+    const path = Array.isArray(fieldName)
       ? fieldName
       : fieldName.split(backboneFieldSeparator);
 
@@ -632,7 +661,8 @@ export const ResourceBase = Backbone.Model.extend({
          * or collection
          */
         if (options.prePop) {
-          if (!value) return value; // Ok if the related resource doesn't exist
+          if (!value)
+            return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
           /*
@@ -684,22 +714,30 @@ export const ResourceBase = Backbone.Model.extend({
         // A foreign key field.
         if (!value) return value; // No related object
 
-        // Is the related resource a cached dependent?
-        let toOne = this.dependentResources[fieldName];
+        // Is the related resource cached?
+        let toOne =
+          this.dependentResources[fieldName] ??
+          this.independentResources[fieldName];
 
         if (!toOne) {
-          _(value).isString() || softFail('expected URI, got', value);
-          toOne = resourceFromUrl(value, {
-            noBusinessRules: options.noBusinessRules,
-          });
+          if (typeof value === 'string') {
+            toOne = resourceFromUrl(value, {
+              noBusinessRules: options.noBusinessRules,
+            });
+            if (toOne === undefined) softFail('expected URI, got', value);
+          } else if (typeof value === 'object') {
+            toOne = new field.relatedTable.Resource({ ...value });
+          }
 
           if (field.isDependent()) {
             console.warn('expected dependent resource to be in cache');
             this.storeDependent(field, toOne);
-          } else {
-            // Always store and refetch independent related resources
-            this.storeIndependent(field, toOne);
           }
+        }
+
+        // Always store and refetch independent related resources
+        if (!field.isDependent()) {
+          this.storeIndependent(field, toOne);
         }
         // If we want a field within the related resource then recur
         return path.length > 1 ? toOne.rget(_.tail(path)) : toOne;
@@ -720,7 +758,7 @@ export const ResourceBase = Backbone.Model.extend({
          */
 
         // Is it already cached?
-        if (!_.isUndefined(this.dependentResources[fieldName])) {
+        if (this.dependentResources[fieldName] !== undefined) {
           value = this.dependentResources[fieldName];
           if (value == null) return null;
           // Recur if we need to traverse more
@@ -893,14 +931,17 @@ export const ResourceBase = Backbone.Model.extend({
       }
     });
 
+    // Check added to avoid infinite loop in following forEach for collectionRelationship see https://github.com/specify/specify7/issues/6025
+    if (self.specifyTable.name === 'CollectionRelationship') return json;
+
     Object.entries(self.independentResources).forEach(
       ([fieldName, related]) => {
         if (related) {
           json[fieldName] = isRelationshipCollection(related)
             ? related.toApiJSON(options)
             : related.isNew() || related.needsSaved
-            ? related.toJSON(options)
-            : related.url();
+              ? related.toJSON(options)
+              : related.url();
         }
       }
     );

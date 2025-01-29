@@ -156,24 +156,25 @@ export function QueryExportButtons({
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
-        <QueryButton
-          disabled={fields.length === 0}
-          showConfirmation={showConfirmation}
-          onClick={(): void => {
-            selectedRows.size === 0
-              ? doQueryExport(
-                  '/stored_query/exportcsv/',
-                  separator,
-                  utf8Bom,
-                  undefined
-                )
-              : exportCsvSelected().catch(softFail);
-          }}
-        >
-          {queryText.createCsv()}
-        </QueryButton>
-      )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_csv') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void => {
+              selectedRows.size === 0
+                ? doQueryExport(
+                    '/stored_query/exportcsv/',
+                    separator,
+                    utf8Bom,
+                    undefined
+                  )
+                : exportCsvSelected().catch(softFail);
+            }}
+          >
+            {queryText.createCsv()}
+          </QueryButton>
+        )}
       {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}

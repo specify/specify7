@@ -54,7 +54,7 @@ export function useUserRoles(
   userRoles: IR<RA<RoleBase> | undefined> | undefined,
   setUserRoles: (value: IR<RA<RoleBase> | undefined>) => void,
   initialRoles: React.MutableRefObject<IR<RA<RoleBase> | undefined>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialUserRoles = React.useRef<IR<RA<RoleBase> | undefined>>({});
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<RoleBase> | undefined>>(

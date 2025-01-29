@@ -52,8 +52,8 @@ export function WbConvertCoordinates({
             ? isUploaded
               ? wbText.unavailableWhenUploaded()
               : isResultsOpen
-              ? wbText.unavailableWhileViewingResults()
-              : undefined
+                ? wbText.unavailableWhileViewingResults()
+                : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openConvertCoords}
@@ -167,10 +167,10 @@ function CoordinateConverter({
       showDirection
         ? finalValue
         : 'SW'.includes(finalValue.at(-1)!)
-        ? `-${finalValue.slice(0, -1)}`
-        : 'NE'.includes(finalValue.at(-1)!)
-        ? finalValue.slice(0, -1)
-        : finalValue;
+          ? `-${finalValue.slice(0, -1)}`
+          : 'NE'.includes(finalValue.at(-1)!)
+            ? finalValue.slice(0, -1)
+            : finalValue;
 
     const originalState = columnsToWorkWith.flatMap((visualCol) =>
       Array.from({ length: hot.countRows() }, (_, visualRow) => {

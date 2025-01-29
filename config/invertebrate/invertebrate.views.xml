@@ -131,9 +131,9 @@
             <desc><![CDATA[Subform within the CollectionObject form.]]></desc>
             <altviews>
                 <altview name="CollectionRelRight Table View" viewdef="CollectionRelRight Table" mode="view"/>
-                <!--altview name="CollectionRelRight Table Edit" viewdef="CollectionRelRight Table" mode="edit"/-->
+                <!--<altview name="CollectionRelRight Table Edit" viewdef="CollectionRelRight Table" mode="edit"/>-->
                 <altview name="CollectionRelRight View" viewdef="CollectionRelRight" mode="view"/>
-                <!--altview name="CollectionRelRight Edit" viewdef="CollectionRelRight" mode="edit" default="true"/-->
+                <!--<altview name="CollectionRelRight Edit" viewdef="CollectionRelRight" mode="edit" default="true"/>-->
             </altviews>
         </view>
         
@@ -251,7 +251,7 @@
                     <cell type="label" labelfor="cdv"/>
                     <cell type="field" id="cdv" name="catalogedDateVerbatim" uitype="text"/>
                     <cell type="label" labelfor="ca"/>
-                    <cell type="field" id="ca" name="countAmt" uitype="text"/>
+                    <cell type="field" id="ca" name="countAmt" initialize="min=0" uitype="text"/>
                 </row>
                 <row>
                     <cell type="subview" id="7" name="collectionObjectCitations" viewname="CollectionObjectCitation" colspan="15"/>                    
@@ -789,7 +789,7 @@
                     <cell type="label" labelfor="7"/>
                     <cell type="field" id="7" name="prepType" uitype="combobox" picklist="PrepType"/>
                     <cell type="label" labelfor="3"/>
-                    <cell type="field" id="3" name="countAmt" uitype="text"/>
+                    <cell type="field" id="3" name="countAmt" uitype="text" initialize="min=0"/>
 					<cell type="label" label="Current Count:" initialize="align=right"/>
 					<cell type="field" id="ti" name="actualCountAmt" uitype="text" readonly="true"/>
                     <cell type="field" id="isOnLoan" name="isOnLoan" uitype="checkbox" label="IS_ON_LOAN" readonly="true"/>
@@ -803,9 +803,6 @@
                     <cell type="field" id="1" uitype="plugin" name="this" initialize="name=PartialDateUI;df=preparedDate;tp=preparedDatePrecision" uifieldformatter="Date" colspan="5"/>
                     <cell type="label" labelfor="4"/>
                     <cell type="field" id="4" name="storage" uitype="querycbx" initialize="name=Storage" colspan="3"/>
-                </row>
-                <row>
-                    <cell type="subview" viewname="DeaccessionPreparation2" id="deaccprep" name="deaccessionPreparations" colspan="12"/>
                 </row>
                 <!--<row>
                     <cell type="label" labelfor="desc"/>
