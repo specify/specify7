@@ -174,7 +174,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           return;
 
         const taxons = await Promise.all(
-          determinations.models.map((det) => det.rgetPromise('taxon'))
+          determinations.models.map(async (det) => det.rgetPromise('taxon'))
         );
         const coType = await resource.rgetPromise('collectionObjectType');
         const coTypeTreeDef = coType.get('taxonTreeDef');
