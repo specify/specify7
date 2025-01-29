@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-29 20:00+0000\n"
+"PO-Revision-Date: 2025-01-29 20:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "interactions/pt/>\n"
@@ -128,7 +128,7 @@ msgstr "Resolver"
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "[X0X] Retornar"
+msgstr "Retorne todos os preparativos"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:96
@@ -273,7 +273,7 @@ msgstr "Nenhum desses objetos tem preparações. Você gostaria de continuar?"
 #: components/TreeView/AddRank.tsx:62
 #, fuzzy
 msgid "continue"
-msgstr "Continuar sem preparações"
+msgstr "Continuar"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
