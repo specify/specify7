@@ -459,18 +459,6 @@ class RowPlanMap(NamedTuple):
         )
         return plan
 
-    # def skim_plan(self: "RowPlanMap", parent_is_naive=True) -> "RowPlanMap":
-    #     is_current_naive = parent_is_naive and self.is_naive
-    #     to_one = {
-    #         key: value.skim_plan(is_current_naive)
-    #         for (key, value) in self.to_one.items()
-    #     }
-    #     to_many = {
-    #         key: value.skim_plan(is_current_naive)
-    #         for (key, value) in self.to_many.items()
-    #     }
-    #     return self._replace(to_one=to_one, to_many=to_many, is_naive=is_current_naive)
-
     @staticmethod
     def _bind_null(value: "RowPlanCanonical") -> List["RowPlanCanonical"]:
         if value.batch_edit_pack.id.value is None:
