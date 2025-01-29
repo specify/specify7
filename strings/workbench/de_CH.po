@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-03 18:49+0000\n"
+"PO-Revision-Date: 2025-01-29 07:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
@@ -250,9 +250,9 @@ msgstr "Mit dem Zurücksetzen des Datensatzes beginnen?"
 msgid "beginRollbackDescription"
 msgstr ""
 "Durch das Zurücksetzen werden die neuen Datensätze gelöscht, die dieser "
-"Datensatz zur angegebenen Datenbank hinzugefügt hat. Das gesamte "
-"Zurücksetzen wird abgebrochen, wenn seit dem Hochladen auf hochgeladene "
-"Daten von anderen Datensätzen verwiesen (wiederverwendet) wurde."
+"Datensatz zur Datenbank „Specify“ hinzugefügt hat. Das gesamte Zurücksetzen "
+"wird abgebrochen, wenn seit dem Hochladen auf hochgeladene Daten von anderen "
+"Datensätzen verwiesen (wiederverwendet) wurde."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:66
@@ -340,7 +340,7 @@ msgstr ""
 #: components/WbActions/index.tsx:301
 #, fuzzy
 msgid "validationNoErrors"
-msgstr "Upload-Status des Datensatzes"
+msgstr "Validierung ohne Fehler abgeschlossen"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:304
@@ -452,7 +452,7 @@ msgstr "Datensatz-Rollback abgebrochen."
 #: components/WbActions/index.tsx:216
 #, fuzzy
 msgid "uploadCanceled"
-msgstr "Datensatzvalidierung abgebrochen."
+msgstr "Hochladen abgebrochen"
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Upload.tsx:110
@@ -600,7 +600,7 @@ msgstr "Cursorpriorität"
 #: components/WorkBench/AdvancedSearch.tsx:131
 #, fuzzy
 msgid "columnFirst"
-msgstr "Rollback"
+msgstr "Spalte zuerst"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
@@ -752,13 +752,13 @@ msgstr "Rohr"
 #: components/Preferences/UserDefinitions.tsx:679
 #, fuzzy
 msgid "determineAutomatically"
-msgstr "Groß-/Kleinschreibung beachten"
+msgstr "Automatisch ermitteln"
 
 #. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:118
 #, fuzzy
 msgid "chooseDataSetName"
-msgstr "Reihe zuerst"
+msgstr "Name für neuen Datensatz:"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:242
@@ -980,4 +980,4 @@ msgstr "WB-Upload von „{dataSet:string}“"
 #: components/WorkBench/Disambiguation.tsx:100
 #, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr "Datensatz erfolgreich gelöscht."
+msgstr "{node:string} (in {parent:string})"
