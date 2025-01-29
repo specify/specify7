@@ -66,8 +66,11 @@ def get_collection(request=None):
     # do any better than using the first collection
     # and hoping that all the assets are in the same
     # folder.
-    from specifyweb.specify.models import Collection
-    return Collection.objects.all()[0].collectionname
+    # from specifyweb.specify.models import Collection
+    # return Collection.objects.all()[0].collectionname
+
+    # The default coll parameter to assets is the database name
+    return settings.DATABASE_NAME
 
 @openapi(schema={
     "get": {
