@@ -1,8 +1,6 @@
 # Based on stackoverflow answer from Wolph:
 # https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
 
-import re
-from attr import has
 import sqlalchemy
 from sqlalchemy.sql import expression
 from sqlalchemy.ext import compiler
