@@ -7,7 +7,6 @@ import {
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
-  PRIMARY_RECORD,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -316,7 +315,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           collection.related ?? cojo,
           cojo.specifyTable.field.parentCog,
           [resourcesText.deletePrimaryRecord()],
-          [resourcesText.primaryDeletionErrorMessage()]
+          resourcesText.primaryDeletionErrorMessage()
         );
       }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
