@@ -26,6 +26,7 @@ from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.utils import log_sqlalchemy_query
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +129,6 @@ def filter_by_collection(model, query, collection):
 
     logger.warn("query not filtered by scope")
     return query
-
 
 
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict")
@@ -405,7 +405,7 @@ def run_ephemeral_query(collection, user, spquery):
     offset = spquery.get('offset', 0)
     recordsetid = spquery.get('recordsetid', None)
     distinct = spquery['selectdistinct']
-    series = spquery['selectseries']
+    series = spquery.get('selectseries', None)
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
     try:
@@ -546,57 +546,35 @@ def return_loan_preps(collection, user, agent, data):
                 ])
         return to_return
 
-def execute(session, collection, user, tableid, distinct, series, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
+def execute(session, collection, user, tableid, distinct, series, count_only,
+            field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session.connection())
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct, series=series)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid,
+                                        formatauditobjs=formatauditobjs, distinct=distinct, series=series)
 
     if count_only:
         return {'count': query.count()}
     else:
         logger.debug("order by: %s", order_by_exprs)
-
-        if series: 
+        if series: # maybe add - and catalog_number_field exists, and id_field doen't exist
             query = query.order_by('catalognumber')
-
+        
         query = query.order_by(*order_by_exprs).offset(offset)
-
+        
         if limit:
             query = query.limit(limit)
 
-        def is_consecutive(a, b):
-            return int(b) == int(a) + 1
-        newListQuery = []
-        if series: 
-            resultsFormList = list(query)
+        if series:
+            return {'results': series_post_query(query)}
 
-            for item in resultsFormList:
-                #need to dertermine which item is the cat number and which is the id than group
-                fields = item[1:]  # Get all fields except the first one
-                catalog_numbers = item[0].split(',')
-                if len(catalog_numbers) == 1:
-                    newListQuery.append(item)
-                    continue
-
-                grouped_numbers = [catalog_numbers[0]]
-                for i in range(1, len(catalog_numbers)):
-                    if is_consecutive(catalog_numbers[i - 1], catalog_numbers[i]):
-                        grouped_numbers[-1] = f"{grouped_numbers[-1]},{catalog_numbers[i]}"
-                    else:
-                        newListQuery.append((grouped_numbers.pop(), *fields))
-                        grouped_numbers.append(catalog_numbers[i])
-
-                if grouped_numbers:
-                    newListQuery.append((grouped_numbers.pop(), *fields))
-
-        print(newListQuery)
-
-
+        log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs,
-                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, series=False, implicit_or=True):
+                recordsetid=None, replace_nulls=False, formatauditobjs=False,
+                distinct=False, series=False, implicit_or=True):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -622,19 +600,30 @@ def build_query(session, collection, user, tableid, field_specs,
 
     distinct = if True, group by all display fields, and return all record IDs associated with a row
 
-    series = (only for CO) if True, group by all display fields. Group catalog numbers that fall within the same range together. Return all record IDs associated with a row.
+    series = (only for CO) if True, group by all display fields.
+    Group catalog numbers that fall within the same range together.
+    Return all record IDs associated with a row.
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
+    catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
     field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
     field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
-
+    query_construct_query = None
+    if series and catalog_number_field:
+        query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','),
+                                              func.group_concat(catalog_number_field.distinct(), separator=','))
+    elif distinct:
+        query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','))
+    else:
+        query_construct_query = query_construct_query = session.query(id_field)
+    
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct or series else session.query(id_field),
+        query=query_construct_query,
     )
 
     tables_to_read = set([
@@ -662,10 +651,12 @@ def build_query(session, collection, user, tableid, field_specs,
     order_by_exprs = []
     selected_fields = []
     predicates_by_field = defaultdict(list)
-    #augment_field_specs(field_specs, formatauditobjs)
-    catalog_number_field = None
+    # augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
+
+        if series and fs.fieldspec.get_field().name.lower() == 'catalognumber':
+            continue
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
@@ -673,6 +664,11 @@ def build_query(session, collection, user, tableid, field_specs,
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
         
+        
+        if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
+                catalog_number_field = formatted_field
+
+
         if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
                 catalog_number_field = formatted_field
 
@@ -697,25 +693,88 @@ def build_query(session, collection, user, tableid, field_specs,
         query = query.filter(where)
 
     if series:
-        selected_fields_without_cat_number = []
-        for field in selected_fields:
-            if hasattr(field, 'clause') and hasattr(field.clause, 'key') and field.clause.key == 'CatalogNumber':
-                continue
-            selected_fields_without_cat_number.append(field)
-
-        if catalog_number_field is not None:
-            query = query.add_columns(
-                func.group_concat(catalog_number_field, separator=',')
-            )
-
-    if distinct:
+        query = group_by_displayed_fields(query, selected_fields, ignore_cat_num=True)
+    elif distinct:
         query = group_by_displayed_fields(query, selected_fields)
-
-    if series: 
-        query = group_by_displayed_fields(query, selected_fields_without_cat_number)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
     logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
+
+def series_post_query(query, co_id_col_index = 0, co_cat_num_col_index = 1):
+    def process_group_by_result(group_by_query_result, id_col_index = 0, group_col_index = 1):
+        def find_consecutive_ranges(lst):
+            def group_consecutives(acc, x):
+                if not acc or acc[-1][-1] + 1 != x:
+                    acc.append([x])
+                else:
+                    acc[-1].append(x)
+                return acc
+            
+            grouped = reduce(group_consecutives, lst, [])
+            
+            return [f"{g[0]:04d} - {g[-1]:04d}" if len(g) > 1 else f"{g[0]:04d}" for g in grouped]
+
+        def parse_numbers(num_str):
+            return sorted(map(int, filter(None, map(str.strip, num_str.replace(',', ' ').split()))))
+        
+        def format_record(record):
+            id_part = record[id_col_index]
+            id_values = id_part.split(',')
+            
+            num_ranges = find_consecutive_ranges(parse_numbers(record[group_col_index]))
+            formatted_records = [[id_values[0]] + [num_ranges[0]] + list(record[2:])] if len(id_values) == 1 else []
+            
+            if len(num_ranges) > 1:
+                for num_range in num_ranges[1:]:
+                    formatted_records.append([id_values.pop()] + [num_range] + list(record[2:]))
+            
+            return formatted_records if formatted_records else [[id_part] + [num_ranges[0]] + list(record[2:])]
+        
+        formatted_records = [format_record(record[:]) for record in group_by_query_result]
+        
+        result = [item for sublist in formatted_records for item in sublist]
+        result.sort(key=lambda x: int(x[1].split(' - ')[0]))
+        
+        return result
+
+    return process_group_by_result(list(query), co_id_col_index, co_cat_num_col_index)
+
+def series_post_query_test(query): # TODO: Remove after adding unit tests
+
+    query_results = list(query)
+    series_query_results = []
+
+    input = [["0012,0013,0014", "SomeText1", "Vial"],
+     ["0015", "OtherText", "Vial"],
+     ["0016,", "AnotherText", "Vial"],
+     ["0017,0018", "SomeText2", "Vial"],
+     ["0020, 0021, 0022", "SomeText3", "Vial"]]
+    
+    output = [["0012 - 0014", "SomeText1", "Vial"],
+     ["0015", "OtherText", "Vial"],
+     ["0016", "AnotherText", "Vial"],
+     ["0017 - 0018", "SomeText2", "Vial"],
+     ["0020 - 0022", "SomeText3", "Vial"]]
+
+
+    input = [
+        ["1,2,3", "0021,0022,0043", "SomeText1", "Vial"],
+        ["4", "0023", "OtherText", "Vial"],
+        ["5", "0024", "AnotherText", "Vial"],
+        ["6,7", "0025,0026", "SomeText2", "Vial"],
+        ["8,9,10", "0027,0028,0029", "SomeText3", "Vial"]
+    ]
+
+    output = [
+        ["1,2", "0021 - 0022", "SomeText1", "Vial"],
+        ["4", "0023", "OtherText", "Vial"],
+        ["5", "0024", "AnotherText", "Vial"],
+        ["6,7", "0025 - 0026", "SomeText2", "Vial"],
+        ["8,9,10", "0027 - 0029", "SomeText3", "Vial"],
+        ["3", "0043", "SomeText1", "Vial"]
+    ]
+
+    return series_query_results
