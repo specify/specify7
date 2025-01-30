@@ -313,7 +313,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       // Trigger Consolidated COGs field check when a child is deleted
       if (cojo.get('isPrimary')) {
         setSaveBlockers(
-          collection.related!,
+          collection.related ?? cojo,
           cojo.specifyTable.field.parentCog,
           [resourcesText.deletePrimaryRecord()],
           PRIMARY_RECORD
