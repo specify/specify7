@@ -846,7 +846,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
   },
-  deletePrimaryRecord:{
-    'en-us': 'Primary record CO cannot be deleted.'
-  }
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+  },
 } as const);
