@@ -316,7 +316,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           collection.related ?? cojo,
           cojo.specifyTable.field.parentCog,
           [resourcesText.deletePrimaryRecord()],
-          PRIMARY_RECORD
+          [resourcesText.primaryDeletionErrorMessage()]
         );
       }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
