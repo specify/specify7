@@ -48,6 +48,7 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isSeries}
+                isReadOnly={isDistinct}
                 onChange={handleToggleSeries}
               />
               {queryText.series()}
@@ -61,6 +62,7 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isDistinct}
+                isReadOnly={isSeries}
                 onChange={handleToggleDistinct}
               />
               {queryText.distinct()}
