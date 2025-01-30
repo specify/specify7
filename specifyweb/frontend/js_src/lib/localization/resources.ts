@@ -851,6 +851,6 @@ export const resourcesText = createDictionary({
   },
   primaryDeletionErrorMessage: {
     'en-us':
-    'This record cannot be deleted as it is the primary record of the Collection Object Group. Please reload the page, then assign another CO as the primary record if a change is desired.'
-  }
+      'This record cannot be deleted as it is the primary record of the Collection Object Group. Please reload the page, then assign another CO as the primary record if a change is desired.',
+  },
 } as const);
