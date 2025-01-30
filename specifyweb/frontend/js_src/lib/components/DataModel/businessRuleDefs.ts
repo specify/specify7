@@ -7,6 +7,7 @@ import {
   CURRENT_DETERMINATION_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PRIMARY_RECORD,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -308,8 +309,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         cog.businessRuleManager?.checkField('cogType');
       }
     },
-    onRemoved(_, collection) {
+    onRemoved(cojo, collection) {
       // Trigger Consolidated COGs field check when a child is deleted
+      if (cojo.get('isPrimary')) {
+        setSaveBlockers(
+          collection.related!,
+          cojo.specifyTable.field.parentCog,
+          [resourcesText.deletePrimaryRecord()],
+          PRIMARY_RECORD
+        );
+      }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
         const cog =
           collection.related as SpecifyResource<CollectionObjectGroup>;

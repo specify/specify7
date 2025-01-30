@@ -7610,7 +7610,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
 
     # Relationships: One-to-One
     childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
-    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
