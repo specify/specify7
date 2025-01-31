@@ -668,10 +668,6 @@ def build_query(session, collection, user, tableid, field_specs,
         if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
                 catalog_number_field = formatted_field
 
-
-        if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
-                catalog_number_field = formatted_field
-
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
