@@ -30,7 +30,7 @@ WEB_ATTACHMENT_URL = None
 WEB_ATTACHMENT_KEY = None
 
 # The collection name to use with the web attachment server.
-WEB_ATTACHMENT_COLLECTION = None
+WEB_ATTACHMENT_COLLECTION = os.environ.get('WEB_ATTACHMENT_COLLECTION', DATABASE_NAME)
 
 # If True, and WEB_ATTACHMENT_COLLECTION is None, attachments for each
 # collection would be stored in separate folders
