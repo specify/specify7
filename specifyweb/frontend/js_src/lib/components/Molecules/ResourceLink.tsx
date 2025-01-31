@@ -113,7 +113,7 @@ export function ResourceEdit({
       }}
       resource={resource}
       resourceView={{
-        onDeleted: undefined,
+        onDeleted: (): void => globalThis.location.replace('/specify/'),
         onSaved: handleSaved,
       }}
     />
