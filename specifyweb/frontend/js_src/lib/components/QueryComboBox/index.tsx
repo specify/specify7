@@ -279,8 +279,8 @@ export function QueryComboBox({
                 )
             : undefined;
         } else if (resource?.specifyTable === tables.Taxon) {
-          return resource.get('definition');
-        }
+          return resource.get('definition') || resource.independentResources?.parent?.get('definition');
+      }
         return undefined;
       }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
       false
