@@ -567,7 +567,7 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
             query = query.limit(limit)
 
         if series:
-            return {'results': series_post_query(query, limit)}
+            return {'results': series_post_query(query)}
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
@@ -672,8 +672,6 @@ def build_query(session, collection, user, tableid, field_specs,
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
         
-        # if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
-        #         catalog_number_field = formatted_field
         if hasattr(field, 'key') and field.key and field.key.lower() == 'catalognumber':
             catalog_number_field = formatted_field
 
@@ -709,7 +707,7 @@ def build_query(session, collection, user, tableid, field_specs,
     logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
 
-def series_post_query(query, limit=40, co_id_cat_num_pair_col_index=0):
+def series_post_query(query, co_id_cat_num_pair_col_index=0):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
@@ -745,5 +743,5 @@ def series_post_query(query, limit=40, co_id_cat_num_pair_col_index=0):
             for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
         ]
 
-    limit = limit if limit is not None else 40
-    return [item for sublist in map(process_row, list(query)) for item in sublist][:limit]
+    MAX_ROWS = 500
+    return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
