@@ -264,25 +264,27 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
-  const [fetchedTreeDefinition] = useAsyncState(
-    React.useCallback(
-      async () =>
-        resource?.specifyTable === tables.Determination &&
-        resource.collection?.related?.specifyTable === tables.CollectionObject
-          ? (resource.collection?.related as SpecifyResource<CollectionObject>)
-              .rgetPromise('collectionObjectType')
-              .then(
-                (
-                  collectionObjectType:
-                    | SpecifyResource<CollectionObjectType>
-                    | undefined
-                ) => collectionObjectType?.get('taxonTreeDef')
-              )
-          : undefined,
-      [resource, resource?.collection?.related?.get('collectionObjectType')]
-    ),
-    false
-  );
+    const [fetchedTreeDefinition] = useAsyncState(
+      React.useCallback(async () => {
+        if (resource?.specifyTable === tables.Determination) {
+          return resource.collection?.related?.specifyTable === tables.CollectionObject
+            ? (resource.collection?.related as SpecifyResource<CollectionObject>)
+                .rgetPromise('collectionObjectType')
+                .then(
+                  (
+                    collectionObjectType:
+                      | SpecifyResource<CollectionObjectType>
+                      | undefined
+                  ) => collectionObjectType?.get('taxonTreeDef')
+                )
+            : undefined;
+        } else if (resource?.specifyTable === tables.Taxon) {
+          return resource.get('definition');
+        }
+        return undefined;
+      }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+      false
+    );
 
   // Tree Definition passed by a parent QCBX in the component tree
   const parentTreeDefinition = React.useContext(TreeDefinitionContext);
