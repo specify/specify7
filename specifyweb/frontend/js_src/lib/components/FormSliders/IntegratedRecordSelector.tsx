@@ -69,8 +69,7 @@ export function IntegratedRecordSelector({
   const focusFirstField = useFirstFocus(containerRef);
 
   const isDependent = collection instanceof DependentCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = !relationship.type.includes('-to-many');
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     false,

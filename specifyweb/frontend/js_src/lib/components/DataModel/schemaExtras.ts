@@ -3,12 +3,15 @@
  */
 
 import type { IR, RA, RR } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
 import { getField } from './helpers';
-import type { TableFields } from './helperTypes';
+import type { AnyPaleoContextChild, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
+import { tables } from './tables';
 import type { CollectionObject, Tables } from './types';
 
 export const schemaAliases: RR<'', IR<string>> & {
@@ -123,6 +126,36 @@ export const schemaExtras: {
         ] ??
           schema.catalogNumFormatName) ||
         LiteralField.prototype.getFormat.call(catalognumber);
+    },
+  ],
+  CollectingEvent: (table) => [
+    [],
+    (): void => {
+      const collectionObjectsField = getField(table, 'collectionObjects');
+      overwriteReadOnly(
+        collectionObjectsField,
+        'type',
+        schema.embeddedCollectingEvent
+          ? 'zero-to-one'
+          : collectionObjectsField.type
+      );
+    },
+  ],
+  PaleoContext: () => [
+    [],
+    (): void => {
+      const childTable = caseInsensitiveHash(
+        tables,
+        schema.paleoContextChildTable
+      ) as SpecifyTable<AnyPaleoContextChild>;
+      if (schema.embeddedPaleoContext && childTable !== undefined) {
+        const paleoContextField = getField(
+          childTable,
+          'paleoContext'
+        ).getReverse();
+        if (paleoContextField)
+          overwriteReadOnly(paleoContextField, 'type', 'zero-to-one');
+      }
     },
   ],
   Division: (table) => [
