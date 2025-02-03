@@ -10,7 +10,11 @@ import { getResourceApiUrl } from '../resource';
 import { deserializeResource, serializeResource } from '../serializers';
 import type { Collection } from '../specifyTable';
 import { tables } from '../tables';
-import type { CollectionObjectAttribute, Determination } from '../types';
+import type {
+  CollectionObjectAttribute,
+  CollectionObjectType,
+  Determination,
+} from '../types';
 
 requireContext();
 
@@ -40,6 +44,21 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
     number1: null,
   },
 ];
+
+const collectionObjectTypeResponse: Partial<
+  SerializedRecord<CollectionObjectType>
+> = {
+  id: 1,
+  name: 'TestType',
+  taxontreedef: getResourceApiUrl('TaxonTreeDef', 1),
+  collection: getResourceApiUrl('Collection', 4),
+  resource_uri: getResourceApiUrl('CollectionObjectType', 1),
+};
+
+overrideAjax(
+  getResourceApiUrl('CollectionObjectType', 1),
+  collectionObjectTypeResponse
+);
 
 const collectionObjectResponse = {
   id: collectionObjectId,
@@ -230,6 +249,11 @@ describe('rgetCollection', () => {
 });
 
 describe('eventHandlerForToMany', () => {
+  overrideAjax(getResourceApiUrl('Taxon', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Taxon', 1),
+  });
+
   test('saverequired', () => {
     const resource = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {
