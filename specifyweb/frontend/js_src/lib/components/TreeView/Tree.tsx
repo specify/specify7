@@ -4,12 +4,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { Link } from '../Atoms/Link';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -221,13 +223,6 @@ export function Tree<
           })}
         </div>
       </div>
-      {rows.length === 0 ? (
-        <Button.Icon
-          icon="plus"
-          title={treeText.addRootNode()}
-          onClick={createRootNode}
-        />
-      ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
           <TreeRow
@@ -282,6 +277,22 @@ export function Tree<
           />
         ))}
       </ul>
+      <div className='flex flex-col m-4'>
+      {rows.length === 0 ? (
+        <Button.Icon
+          icon="plus"
+          title={treeText.addRootNode()}
+          onClick={createRootNode}
+        />
+      ) : undefined}
+      {rows.length === 0 || rows[0].children === 0 ? 
+      <Button.Icon
+      icon="folderArrowDown"
+      title={treeText.downloadTreeDefault()}
+      onClick={() => window.open("https://files.specifysoftware.org/taxonfiles/", "_blank")}
+    />
+      : undefined}
+      </div>
     </div>
   );
 }
