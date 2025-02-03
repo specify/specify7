@@ -4,14 +4,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
-import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { Link } from '../Atoms/Link';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
