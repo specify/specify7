@@ -279,7 +279,9 @@ export function QueryComboBox({
                 )
             : undefined;
         } else if (resource?.specifyTable === tables.Taxon) {
-          return resource.get('definition') || resource.independentResources?.parent?.get('definition');
+          const definition = resource.get('definition')
+          const parentDefinition = (resource?.independentResources?.parent as SpecifyResource<AnySchema>)?.get?.('definition');
+          return definition || parentDefinition;
       }
         return undefined;
       }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
