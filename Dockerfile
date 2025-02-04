@@ -49,7 +49,7 @@ RUN apt-get update \
         curl \
         git \
         libsasl2-dev \
-        libsasl2-modules-gssapi-mit \
+        libsasl2-modules \
         libldap2-dev \
         libssl-dev \
         libgmp-dev \
@@ -57,7 +57,7 @@ RUN apt-get update \
         python3.8-venv \
         python3.8-distutils \
         python3.8-dev \
-        default-libmysqlclient-dev \
+        libmariadbclient-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
