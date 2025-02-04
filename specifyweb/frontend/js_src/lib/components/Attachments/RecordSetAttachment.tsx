@@ -109,29 +109,26 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       .map((attachment) => attachment.origFilename ?? attachment.attachmentLocation)
       .filter((name): name is string => name !== null);
 
-    try {
-      const response = await ajax<Blob>('/attachment_gw/download_all/', {
-        method: 'POST',
-        body: keysToLowerCase({
-          attachmentLocations,
-          origFilenames,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/octet-stream',
-        },
-      });
+    const response = await ajax<Blob>('/attachment_gw/download_all/', {
+      method: 'POST',
+      body: keysToLowerCase({
+        attachmentLocations,
+        origFilenames,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/octet-stream',
+      },
+      errorMode: 'silent',
+    });
 
-      if (response.status === Http.OK) {
-        const fileName = `Attachments - ${(name || new Date().toDateString()).replaceAll(':', '')}.zip`
-        downloadFile(fileName, response.data);
-      } else {
-        console.error('Attachment archive download failed', response);
-      }
-    } catch (error) {
-      console.error('Attachment archive download failed', error);
+    if (response.status === Http.OK) {
+      const fileName = `Attachments - ${(name || new Date().toDateString()).replaceAll(':', '')}.zip`
+      downloadFile(fileName, response.data);
+    } else {
+      throw new Error(`Attachment archive download failed: ${response}`);
     }
-    
+
   };
   const loading = React.useContext(LoadingContext);
 

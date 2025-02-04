@@ -321,7 +321,10 @@ def download_all(request):
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
 
-    make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
+    try:
+        make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
+    except Exception as e:
+        return HttpResponseBadRequest(e)
     
     if not os.path.exists(path):
         return HttpResponseBadRequest('Attachment archive not found')
