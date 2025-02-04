@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is to test that the sp7_only config files are beind used in the static files api -->
+<!-- Root element representing the main container -->
+<test_sp7>
+    <!-- Comment explaining the purpose of this section -->
+    <section1>
+        <!-- Placeholder for a title -->
+        <title>SP7 Test</title>
+        
+        <!-- Placeholder for a description -->
+        <description>SP7 Test</description>
+        
+        <!-- Placeholder for a date -->
+        <date>YYYY-MM-DD</date>
+    </section1>
+</test_sp7>
