@@ -14,7 +14,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import { strictGetTable } from '../DataModel/tables';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
@@ -159,6 +159,9 @@ async function fetchFromField(
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
     domainFilter: true,
+    filterChronostrat:
+      tableName === tables.GeologicTimePeriod.name.toLowerCase() &&
+      fieldName === 'name', // Prop for age filter in QueryBuilder
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')

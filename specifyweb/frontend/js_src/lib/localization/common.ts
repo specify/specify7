@@ -736,6 +736,7 @@ export const commonText = createDictionary({
   },
   zoom: {
     'en-us': 'Zoom',
+    'fr-fr': 'Zoom',
   },
   unzoom: {
     'en-us': 'Unzoom',

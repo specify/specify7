@@ -35,6 +35,7 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { queryCbxExtendedSearch } from './helpers';
 import { SelectRecordSets } from './SelectRecordSet';
 
@@ -42,6 +43,7 @@ const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: string & (keyof CommonFields | keyof SCHEMA['fields']);
+  readonly queryBuilderFieldPath?: MappingPath;
   readonly isRelationship: boolean;
   readonly isNot: boolean;
   readonly operation: QueryFieldFilter & ('between' | 'in' | 'less');
@@ -395,8 +397,8 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
   filters: RA<QueryComboBoxFilter<SCHEMA>>
 ): RA<SpecifyResource<SpQueryField>> =>
-  filters.map(({ field, operation, isNot, value }) =>
-    QueryFieldSpec.fromPath(table.name, [field])
+  filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
+    QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
       .set('operStart', queryFieldFilters[operation].id)
       .set('isNot', isNot)
