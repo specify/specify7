@@ -291,9 +291,9 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
     treedefs = upload_plan.get_treedefs()
 
     to_fix = [
-        tree
+        tree.lower()
         for tree in ALL_TREES
-        if any(changed_tree(tree, r) for r in results)
+        if any(changed_tree(tree.lower(), r) for r in results)
     ]
 
     for tree in to_fix:
