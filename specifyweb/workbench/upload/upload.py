@@ -15,6 +15,7 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
+from specifyweb.specify.tree_views import ALL_TREES
 from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
 
 from . import disambiguation
@@ -291,7 +292,7 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
 
     to_fix = [
         tree
-        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage', 'tectonicunit')
+        for tree in ALL_TREES
         if any(changed_tree(tree, r) for r in results)
     ]
 
