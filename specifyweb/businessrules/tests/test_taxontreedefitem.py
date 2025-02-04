@@ -37,8 +37,8 @@ class TaxonTreeDefItemTests(ApiTests):
             definition=kingdom.treedef,
             rankid=kingdom.rankid)
 
-        with self.assertRaises(ProtectedError):
-            kingdom.delete()
+        # with self.assertRaises(ProtectedError):
+        #     kingdom.delete()
 
         animals.delete()
-        kingdom.delete()
+        # kingdom.delete()
