@@ -1,3 +1,4 @@
+import os
 
 # Specify 7 requires the files from a Specify 6 install.
 # This setting should point to a directory containing an installation
