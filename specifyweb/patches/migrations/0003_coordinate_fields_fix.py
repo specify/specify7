@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0011_cascading_tree_nodes'),
+        ('patches', '0002_fix_accepted_taxon'),
     ]
 
     operations = [
