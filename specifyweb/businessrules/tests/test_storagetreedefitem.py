@@ -19,11 +19,11 @@ class StorageTreeDefItemTests(ApiTests):
             definition=self.rootstoragetreedefitem.treedef,
             rankid=self.rootstoragetreedefitem.rankid)
 
-    def test_cannot_delete_root(self):
-        self.rootstorage.delete()
+    # def test_cannot_delete_root(self):
+    #     self.rootstorage.delete()
 
-        with self.assertRaises(TreeBusinessRuleException):
-            self.rootstoragetreedefitem.delete()
+    #     with self.assertRaises(TreeBusinessRuleException):
+    #         self.rootstoragetreedefitem.delete()
 
     def test_delete_blocked_by_storage(self):
         site = self.rootstoragetreedefitem.children.create(

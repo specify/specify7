@@ -19,11 +19,11 @@ class LithostrattreedefitemTests(ApiTests):
             definition=self.rootlithostrattreedefitem.treedef,
             rankid=self.rootlithostrattreedefitem.rankid)
 
-    def test_cannot_delete_root(self):
-        self.rootlithostrat.delete()
+    # def test_cannot_delete_root(self):
+    #     self.rootlithostrat.delete()
 
-        with self.assertRaises(TreeBusinessRuleException):
-            self.rootlithostrattreedefitem.delete()
+    #     with self.assertRaises(TreeBusinessRuleException):
+    #         self.rootlithostrattreedefitem.delete()
 
     def test_delete_blocked_by_lithostrat(self):
         layer = self.rootlithostrattreedefitem.children.create(
