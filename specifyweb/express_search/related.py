@@ -35,7 +35,8 @@ class RelatedSearchMeta(type):
                        negate=False,
                        display=True,
                        format_name=None,
-                       sort_type=0)
+                       sort_type=0,
+                       strict=False)
             for col in Rs.columns]
 
         if Rs.link:
@@ -46,7 +47,8 @@ class RelatedSearchMeta(type):
                 negate=False,
                 display=True,
                 format_name=None,
-                sort_type=0))
+                sort_type=0,
+                strict=False))
 
         def make_filter(f, negate):
             field, op, val = f
@@ -56,7 +58,8 @@ class RelatedSearchMeta(type):
                               negate=negate,
                               display=False,
                               format_name=None,
-                              sort_type=0)
+                              sort_type=0,
+                              strict=False)
 
         Rs.filter_fields = [make_filter(f, False) for f in Rs.filters] + \
                            [make_filter(f, True) for f in Rs.excludes]
@@ -131,7 +134,8 @@ class RelatedSearch(object, metaclass=RelatedSearchMeta):
             negate=False,
             display=False,
             format_name=None,
-            sort_type=0)
+            sort_type=0,
+            strict=False)
 
         logger.debug("primary queryfield: %s", primary_field)
         logger.debug("display queryfields: %s", self.display_fields)

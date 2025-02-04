@@ -1,5 +1,6 @@
 import { f } from '../../utils/functools';
 import type { RA, ValueOf } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -40,76 +41,104 @@ const weekDayMap = {
   Thursday: 5,
   Friday: 6,
   Saturday: 7,
-};
+} as const;
+
+const _backendFilters = (field: string, ...fieldTransforms: RA<string>) =>
+  ({
+    equals: (value: number | string) => ({
+      [[field, ...fieldTransforms, 'exact'].join(djangoLookupSeparator)]: value,
+    }),
+    contains: (value: string) => ({
+      [[field, ...fieldTransforms, 'contains'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveContains: (value: string) => ({
+      [[field, ...fieldTransforms, 'icontains'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveStartsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'istartswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    startsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'startswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveEndsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'iendswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    endsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'endswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    isIn: (value: RA<number | string>) => ({
+      [[field, ...fieldTransforms, 'in'].join(djangoLookupSeparator)]:
+        value.join(','),
+    }),
+    isNull: (value: 'false' | 'true' = 'true') => ({
+      [[field, ...fieldTransforms, 'isnull'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    greaterThan: (value: number) => ({
+      [[field, ...fieldTransforms, 'gt'].join(djangoLookupSeparator)]: value,
+    }),
+    greaterThanOrEqualTo: (value: number) => ({
+      [[field, ...fieldTransforms, 'gte'].join(djangoLookupSeparator)]: value,
+    }),
+    lessThan: (value: number) => ({
+      [[field, ...fieldTransforms, 'lt'].join(djangoLookupSeparator)]: value,
+    }),
+    lessThanOrEqualTo: (value: number) => ({
+      [[field, ...fieldTransforms, 'lte'].join(djangoLookupSeparator)]: value,
+    }),
+    matchesRegex: (value: string) => ({
+      [[field, ...fieldTransforms, 'regex'].join(djangoLookupSeparator)]:
+        encodeURIComponent(value),
+    }),
+
+    dayEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'day'].join(djangoLookupSeparator)]: value,
+    }),
+    monthEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'month'].join(djangoLookupSeparator)]: value,
+    }),
+    yearEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'year'].join(djangoLookupSeparator)]: value,
+    }),
+    weekEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'week'].join(djangoLookupSeparator)]: value,
+    }),
+    weekDayEquals: (
+      value: ValueOf<typeof weekDayMap> | keyof typeof weekDayMap
+    ) => ({
+      [[field, ...fieldTransforms, 'week_day'].join(djangoLookupSeparator)]:
+        typeof value === 'number'
+          ? value
+          : caseInsensitiveHash(weekDayMap, value),
+    }),
+  }) as const;
 
 /**
  * Use this to construct a query using a lookup for Django.
  * Returns an object which can be used as a filter when fetched from the backend.
- * Example: backendFilter('number1').isIn([1, 2, 3]) is the equivalent
- * of {number1__in: [1, 2, 3].join(',')}
+ * Example:
+ * ```ts
+ * backendFilter('number1').isIn([1, 2, 3])
+ * // is the equivalent of
+ * {number1__in: [1, 2, 3].join(',')}
+ *
+ * // Filters can be negated using not
+ * backendFilter('text1').not.contains('someText')
+ * ```
+ *
  *
  * See the Django docs at:
  * https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
  */
 export const backendFilter = (field: string) => ({
-  equals: (value: number | string) => ({
-    [[field, 'exact'].join(djangoLookupSeparator)]: value,
-  }),
-  contains: (value: string) => ({
-    [[field, 'contains'].join(djangoLookupSeparator)]: value,
-  }),
-  caseInsensitiveContains: (value: string) => ({
-    [[field, 'icontains'].join(djangoLookupSeparator)]: value,
-  }),
-  caseInsensitiveStartsWith: (value: string) => ({
-    [[field, 'istartswith'].join(djangoLookupSeparator)]: value,
-  }),
-  startsWith: (value: string) => ({
-    [[field, 'startswith'].join(djangoLookupSeparator)]: value,
-  }),
-  caseInsensitiveEndsWith: (value: string) => ({
-    [[field, 'iendswith'].join(djangoLookupSeparator)]: value,
-  }),
-  endsWith: (value: string) => ({
-    [[field, 'endswith'].join(djangoLookupSeparator)]: value,
-  }),
-  isIn: (value: RA<number | string>) => ({
-    [[field, 'in'].join(djangoLookupSeparator)]: value.join(','),
-  }),
-  isNull: (value: 'false' | 'true' = 'true') => ({
-    [[field, 'isnull'].join(djangoLookupSeparator)]: value,
-  }),
-  greaterThan: (value: number) => ({
-    [[field, 'gt'].join(djangoLookupSeparator)]: value,
-  }),
-  greaterThanOrEqualTo: (value: number) => ({
-    [[field, 'gte'].join(djangoLookupSeparator)]: value,
-  }),
-  lessThan: (value: number) => ({
-    [[field, 'lt'].join(djangoLookupSeparator)]: value,
-  }),
-  lessThanOrEqualTo: (value: number) => ({
-    [[field, 'lte'].join(djangoLookupSeparator)]: value,
-  }),
-  matchesRegex: (value: string) => ({
-    [[field, 'regex'].join(djangoLookupSeparator)]: value,
-  }),
-
-  dayEquals: (value: number) => ({
-    [[field, 'day'].join(djangoLookupSeparator)]: value,
-  }),
-  monthEquals: (value: number) => ({
-    [[field, 'lte'].join(djangoLookupSeparator)]: value,
-  }),
-  yearEquals: (value: number) => ({
-    [[field, 'year'].join(djangoLookupSeparator)]: value,
-  }),
-  weekEquals: (value: number) => ({
-    [[field, 'week'].join(djangoLookupSeparator)]: value,
-  }),
-  weekDayEquals: (value: keyof typeof weekDayMap) => ({
-    [[field, 'week_day'].join(djangoLookupSeparator)]: weekDayMap[value],
-  }),
+  not: _backendFilters(field, 'not'),
+  ..._backendFilters(field),
 });
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
@@ -141,7 +170,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  */
 export const getField = <
   SCHEMA extends ValueOf<Tables>,
-  FIELD extends TableFields<SCHEMA>
+  FIELD extends TableFields<SCHEMA>,
 >(
   table: SpecifyTable<SCHEMA>,
   name: FIELD
@@ -199,13 +228,13 @@ export async function fetchDistantRelated(
     fields === undefined || fields.length === 0
       ? resource
       : fields.length === 1
-      ? await resource.fetch()
-      : await resource.rgetPromise(
-          fields
-            .slice(0, -1)
-            .map(({ name }) => name)
-            .join(backboneFieldSeparator)
-        );
+        ? await resource.fetch()
+        : await resource.rgetPromise(
+            fields
+              .slice(0, -1)
+              .map(({ name }) => name)
+              .join(backboneFieldSeparator)
+          );
 
   const field = fields?.at(-1);
   const relatedResource = related ?? undefined;
@@ -216,3 +245,10 @@ export async function fetchDistantRelated(
         field,
       };
 }
+
+// Cog types: Discrete, Consolidated, Drill Core
+export const cogTypes = {
+  DISCRETE: 'Discrete',
+  CONSOLIDATED: 'Consolidated',
+  DRILL_CORE: 'Drill Core',
+};

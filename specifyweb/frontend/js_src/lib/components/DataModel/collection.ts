@@ -10,6 +10,7 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
+import type { Collection } from './specifyTable';
 import { genericTables, tables } from './tables';
 import type { Tables } from './types';
 
@@ -23,14 +24,16 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
       number
     >
 > & {
-  readonly limit: number;
+  readonly limit?: number;
+  readonly reset?: boolean;
   readonly offset?: number;
-  readonly domainFilter: boolean;
+  readonly domainFilter?: boolean;
   readonly orderBy?:
     | keyof CommonFields
     | keyof SCHEMA['fields']
     | `-${string & keyof CommonFields}`
     | `-${string & keyof SCHEMA['fields']}`;
+  readonly success?: (collection: Collection<SCHEMA>) => void;
 };
 
 export const DEFAULT_FETCH_LIMIT = 20;
@@ -45,7 +48,7 @@ export type SerializedCollection<SCHEMA extends AnySchema> = {
  */
 export const fetchCollection = async <
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
 >(
   tableName: TABLE_NAME,
   // Basic filters. Type-safe
@@ -122,7 +125,7 @@ function mapValue(
  */
 export async function fetchRelated<
   SCHEMA extends AnySchema,
-  RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']
+  RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent'],
 >(
   resource: SerializedResource<SCHEMA>,
   relationshipName: RELATIONSHIP,
@@ -156,17 +159,17 @@ export async function fetchRelated<
 }
 
 type FieldsToTypes<
-  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
+  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>,
 > = {
   readonly [FIELD in keyof FIELDS]: FIELDS[FIELD][number] extends 'boolean'
     ? boolean
     : FIELDS[FIELD][number] | never extends 'null'
-    ? null
-    : FIELDS[FIELD][number] | never extends 'number'
-    ? number
-    : FIELDS[FIELD][number] | never extends 'string'
-    ? string
-    : never;
+      ? null
+      : FIELDS[FIELD][number] | never extends 'number'
+        ? number
+        : FIELDS[FIELD][number] | never extends 'string'
+          ? string
+          : never;
 };
 
 /**
@@ -178,7 +181,7 @@ export const fetchRows = async <
   FIELDS extends RR<
     Exclude<keyof SCHEMA['fields'], 'fields'> | string,
     RA<'boolean' | 'null' | 'number' | 'string'>
-  >
+  >,
 >(
   tableName: TABLE_NAME,
   // Basic filters. Type-safe
@@ -190,6 +193,7 @@ export const fetchRows = async <
     readonly fields: FIELDS;
     readonly distinct?: boolean;
     readonly limit?: number;
+    readonly filterChronostrat?: boolean;
   },
   /**
    * Advanced filters, not type-safe.

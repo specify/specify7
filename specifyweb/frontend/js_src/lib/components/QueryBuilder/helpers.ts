@@ -43,11 +43,20 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
-  readonly dataObjFormatter: string | undefined;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
+    readonly isStrict: boolean;
+    /**
+     * Can either be a Record Formatter (for formatted/aggregated query fields)
+     * or a Field Formatter that can be set for each filter
+     *
+     * Currently the only configurable Field Formatter in the UI is
+     * CollectionObject -> catalogNumber
+     * See https://github.com/specify/specify7/issues/5474
+     */
+    readonly fieldFormat?: string;
   }>;
 };
 
@@ -58,7 +67,7 @@ export function parseQueryFields(
   return group(
     Array.from(queryFields)
       .sort(sortFunction(({ position }) => position))
-      .map(({ isNot, isDisplay, ...field }, index) => {
+      .map(({ isNot, isDisplay, isStrict, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
           field.isRelFld ?? false
@@ -84,7 +93,7 @@ export function parseQueryFields(
                 .map((parsed) =>
                   parsed?.isValid
                     ? (parsed.parsed as string)
-                    : field.startValue ?? ''
+                    : (field.startValue ?? '')
                 )
                 .join(',')
             : field.startValue;
@@ -96,7 +105,6 @@ export function parseQueryFields(
             id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
-            dataObjFormatter: field.formatName ?? undefined,
             filter: {
               type: defined(
                 Object.entries(queryFieldFilters).find(
@@ -104,7 +112,9 @@ export function parseQueryFields(
                 ),
                 `Unknown SpQueryField.operStart value: ${field.operStart}`
               )[KEY],
+              fieldFormat: field.formatName ?? undefined,
               isNot,
+              isStrict,
               startValue,
             },
             isDisplay,
@@ -162,8 +172,8 @@ export const augmentQueryFields = (
   isDistinct
     ? fields
     : baseTableName === 'SpAuditLog'
-    ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields);
+      ? addQueryFields(fields, auditLogMappingPaths, true)
+      : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -209,15 +219,15 @@ const addQueryFields = (
           sortType: undefined,
           isDisplay: true,
           parser: undefined,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
-        } as const)
+        }) as const
     ),
 ];
 
@@ -279,12 +289,12 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
           mappingPath: [formattedEntry],
           sortType: undefined,
           isDisplay: true,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
         },
@@ -300,7 +310,6 @@ export const unParseQueryFields = (
     ([field, fieldSpec], index) => {
       const commonData = {
         ...fieldSpec.toSpQueryAttributes(),
-        formatName: field.dataObjFormatter,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,
@@ -313,9 +322,10 @@ export const unParseQueryFields = (
           hasFilters ? filter.type !== 'any' : index === 0
         )
         .map(
-          ({ type, startValue, isNot }, index) =>
+          ({ type, startValue, isNot, isStrict, fieldFormat }, index) =>
             ({
               ...commonData,
+              formatName: fieldFormat,
               operStart: defined(
                 // Back-end treats "equal" with blank startValue as "any"
                 Object.entries(queryFieldFilters).find(
@@ -325,13 +335,14 @@ export const unParseQueryFields = (
               )[VALUE].id,
               startValue,
               isNot,
+              isStrict,
               /*
                * Prevent OR conditions from returning separate column in the
                * results
                */
               isDisplay: commonData.isDisplay && index === 0,
               // REFACTOR: add missing nullable fields here
-            } as unknown as SerializedResource<SpQueryField>)
+            }) as unknown as SerializedResource<SpQueryField>
         );
     }
   );

@@ -89,7 +89,7 @@ export function GenericFormatterPickList<
   ITEM extends {
     readonly title: LocalizedString | undefined;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 >({
   table,
   value = localized(''),
@@ -172,8 +172,8 @@ export function ResourceMapping({
       ...(rawPath.length === 0
         ? [emptyMapping]
         : relationship?.isRelationship === false
-        ? []
-        : [formattedEntry]),
+          ? []
+          : [formattedEntry]),
     ]);
   }, [mapping, table.name]);
   const [mappingPath, setMappingPath] = React.useState(sourcePath);

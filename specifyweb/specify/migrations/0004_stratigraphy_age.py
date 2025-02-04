@@ -5,26 +5,10 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 from specifyweb.specify.models import protect_with_blockers
-from specifyweb.specify.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
-SCHEMA_CONFIG_TABLES = [
-    ('AbsoluteAge', None),
-    ('RelativeAge', None),
-    ('TectonicUnitTreeDef', None),
-    ('TectonicUnitTreeDefItem', None),
-    ('TectonicUnit', None),
-    ('RelativeAgeCitation', None),
-    ('RelativeAgeAttachment', None),
-    ('AbsoluteAgeCitation', None),
-    ('AbsoluteAgeAttachment', None),
-]
-SCHEMA_CONFIG_MOD_TABLE_FIELDS = { # TODO: make schema config corrections in new migration
-    'Collectionobject': ['relativeAges', 'absoluteAges', 'collectionObjectType'],
-    'Collection': ['collectionObjectType'],
-    'Geographytreedef': ['discipline'],
-    'Geologictimeperiodtreedef': ['discipline'],
-    'Lithostrattreedef': ['discipline'],
-}
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0004_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0004_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
+
 PICKLIST_NAME = 'AgeType'
 DEFAULT_AGE_TYPES = [
     'Sedimentation', 
@@ -207,7 +191,7 @@ class Migration(migrations.Migration):
                 #relationships
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parentitem', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=protect_with_blockers, related_name='children', to='specify.tectonicunittreedefitem')),
+                ('parentitem', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=models.DO_NOTHING, related_name='children', to='specify.tectonicunittreedefitem')),
                 ('tectonicunittreedef', models.ForeignKey(db_column='TectonicUnitTreeDefID', on_delete=protect_with_blockers, related_name='tectonicunittreedefitems', to='specify.tectonicunittreedef')),
             ],
             options={

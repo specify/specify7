@@ -29,6 +29,7 @@ export function COJODialog({
     tables.CollectionObject,
     tables.CollectionObjectGroup,
   ];
+  // REFACTOR: use the useSearchDialog hook here
   const [state, setState] = React.useState<'Add' | 'Search' | undefined>(
     undefined
   );
@@ -144,6 +145,12 @@ export function COJODialog({
           multiple
           searchView={undefined}
           table={resourceTable as SpecifyTable<CollectionObject>}
+          onAdd={(rsResources): void => {
+            rsResources.forEach((resource) => {
+              handleCOJOCreation(resource);
+            });
+            handleStates();
+          }}
           onClose={(): void => setState(undefined)}
           onSelected={(selectedResources): void => {
             selectedResources.forEach((selectedResource) => {

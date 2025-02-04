@@ -1577,11 +1577,11 @@ export const wbText = createDictionary({
     'de-ch': 'WB-Upload von „{dataSet:string}“',
   },
   ambiguousTaxaChild: {
-    'en-us': '{node:string} (in {parent:string})',
-    'ru-ru': '{node:string} (в {parent:string})',
-    'es-es': '{node:string} (en {parent:string})',
-    'de-ch': 'Datensatz erfolgreich gelöscht.',
-    'fr-fr': '{node:string} (dans {parent:string})',
-    'uk-ua': '{node:string} (у {parent:string})',
+    'en-us': '{node:string} {author:string} (in {parent:string})',
+    'ru-ru': '{node:string} {author:string} (в {parent:string})',
+    'es-es': '{node:string} {author:string} (en {parent:string})',
+    'de-ch': '{node:string} {author:string} (in {parent:string})',
+    'fr-fr': '{node:string} {author:string} (dans {parent:string})',
+    'uk-ua': '{node:string} {author:string} (у {parent:string})',
   },
 } as const);

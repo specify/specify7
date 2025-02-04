@@ -481,7 +481,9 @@ class InlineApiTests(ApiTests):
         even_dets = [d for d in data['determinations'] if d['number1'] % 2 == 0]
         for d in even_dets: data['determinations'].remove(d)
 
-        data['collectionobjectattribute'] = {'text1': 'look! an attribute'}
+        text1_data = 'look! an attribute'
+
+        data['collectionobjectattribute'] = {'text1': text1_data}
 
         api.update_obj(self.collection, self.agent, 'collectionobject',
                        data['id'], data['version'], data)
@@ -491,9 +493,290 @@ class InlineApiTests(ApiTests):
         for d in obj.determinations.all():
             self.assertFalse(d.number1 % 2 == 0)
 
-        self.assertEqual(obj.collectionobjectattribute.text1, 'look! an attribute')
+        self.assertEqual(obj.collectionobjectattribute.text1, text1_data)
 
+    def test_independent_to_many_set_inline(self):
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    api.obj_to_data(self.collectionobjects[0]),
+                    api.uri_for_model('collectionobject', self.collectionobjects[1].id)
+                ]
+            }
+        }
 
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+        self.assertEqual(accession, self.collectionobjects[1].accession)
+
+    def test_independent_to_one_set_inline(self):
+        collection_object_data = {
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'accession': {
+                'accessionnumber': "a",
+                'division': api.uri_for_model('division', self.division.id),
+            }
+        }
+
+        created_co = api.create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        self.assertIsNotNone(created_co.accession)
+
+    def test_indepenent_to_many_removing_from_inline(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="a",
+            version="0",
+            division=self.division
+        )
+
+        accession.collectionobjects.set(self.collectionobjects)
+
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+
+        collection_objects_to_remove = [self.collectionobjects[0], self.collectionobjects[3]]
+
+        cos_to_keep = [collection_object for collection_object in self.collectionobjects if not collection_object in collection_objects_to_remove]
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "remove": [
+                    api.uri_for_model('collectionobject', collection_object.id) 
+                    for collection_object in collection_objects_to_remove
+                ]
+            }
+        }
+        accession = api.update_obj(self.collection, self.agent, 'Accession', accession.id, accession.version, accession_data)
+
+        self.assertEqual(list(accession.collectionobjects.all()), cos_to_keep)
+
+        # ensure the other CollectionObjects have not been deleted
+        self.assertEqual(len(models.Collectionobject.objects.all()), len(self.collectionobjects))
+
+    def test_updating_independent_to_many_resource(self): 
+        co_to_modify = api.obj_to_data(self.collectionobjects[2])
+        co_to_modify.update({
+            'integer1': 10,
+            'determinations': [
+                {
+                    'iscurrent': True,
+                    'collectionmemberid': self.collection.id,
+                    'collectionobject': api.uri_for_model('Collectionobject', self.collectionobjects[2].id) 
+                }
+            ]
+        })
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                co_to_modify
+                ]
+            }
+        }
+
+        self.assertEqual(self.collectionobjects[2].integer1, None)
+        self.assertEqual(list(self.collectionobjects[2].determinations.all()), [])
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[2].refresh_from_db()
+        self.assertEqual(self.collectionobjects[2].integer1, 10)
+        self.assertEqual(len(self.collectionobjects[2].determinations.all()), 1)
+
+    def test_updating_independent_to_one_resource(self): 
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id)
+        }
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+
+        accession_text = 'someText'
+        accession_data.update({
+            'id': accession.id,
+            'accessionnumber': "a1",
+            'text1': accession_text,
+            'version': accession.version
+        })
+
+        collection_object_data = {
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'accession': accession_data
+        }
+
+        self.assertEqual(accession.text1, None)
+        self.assertEqual(accession.accessionnumber, 'a')
+        created_co = api.create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        accession.refresh_from_db()
+        self.assertEqual(accession.text1, accession_text)
+        self.assertEqual(accession.accessionnumber, 'a1')
+
+    def test_independent_to_many_creating_from_remoteside(self):
+        new_catalognumber = f'num-{len(self.collectionobjects)}'
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                {
+                    'catalognumber': new_catalognumber,
+                    'collection': api.uri_for_model('Collection', self.collection.id)
+                }
+                ]
+            }
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertTrue(models.Collectionobject.objects.filter(catalognumber=new_catalognumber).exists())
+
+    def test_reassigning_independent_to_many(self): 
+        acc1 = models.Accession.objects.create(
+            accessionnumber="a",
+            division = self.division
+        )
+
+        self.collectionobjects[0].accession = acc1
+        self.collectionobjects[0].save()
+        self.collectionobjects[1].accession = acc1
+        self.collectionobjects[1].save()
+
+        accession_data = {
+            'accessionnumber': "b",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                api.obj_to_data(self.collectionobjects[0]),
+                api.uri_for_model('collectionobject', self.collectionobjects[1].id)
+                ]
+            }
+        }
+        acc2 = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
+        self.assertEqual(self.collectionobjects[0].accession, acc2)
+        self.assertEqual(self.collectionobjects[1].accession, acc2)
+
+    def test_skipping_redundant_resources(self): 
+        catalog_number = f'num-{len(self.collectionobjects)}'
+        redundant_catalog_number = f'num-{len(self.collectionobjects) + 1}'
+        redundant_accession_number = 'c'
+        accession_data = {
+            'accessionnumber': "b",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    {
+                        "catalogNumber": catalog_number,
+                        'accession': {
+                            "accessionNumber": redundant_accession_number,
+                        },
+                        "determinations": [
+                            {
+                                "text1": "test determination",
+                                "collectionObject": {
+                                    "catalogNumber": redundant_catalog_number
+                                },
+                            }
+                        ],
+                        'collection': api.uri_for_model('Collection', self.collection.id),
+                    }
+                ]
+            }
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertFalse(models.Accession.objects.filter(accessionnumber=redundant_accession_number).exists())
+        self.assertFalse(models.Collectionobject.objects.filter(catalognumber=redundant_catalog_number).exists())
+
+class InlineApiRemoteToOneTests(ApiTests): 
+    def setUp(self): 
+        super(InlineApiRemoteToOneTests, self).setUp()
+        cog_type_picklist = Picklist.objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST,
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection
+        )
+        Picklistitem.objects.create(
+            title='Discrete',
+            value='Discrete',
+            picklist=cog_type_picklist
+        )
+        self.cogtype = models.Collectionobjectgrouptype.objects.create(
+            name="Discrete", type="Discrete", collection=self.collection
+        )
+        self.cog_parent = models.Collectionobjectgroup.objects.create(
+            name="Parent",
+            cogtype=self.cogtype,
+            collection=self.collection,
+        )
+
+    def test_setting_remote_to_one_from_new(self):
+        co_data = {
+            "catalognumber": f'num-{len(self.collectionobjects)}',
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": api.uri_for_model("Collectionobjectgroup", self.cog_parent.id)
+            },
+            'collection': api.uri_for_model('Collection', self.collection.id),
+        }
+        co = api.create_obj(self.collection, self.agent, "Collectionobject", co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog_id=self.cog_parent.id, childco=co)
+        self.assertEqual(co.cojo, cojo)
+    
+    def test_setting_remote_to_one_from_existing(self): 
+        existing_co = self.collectionobjects[0]
+        co_data = {
+            **api.obj_to_data(existing_co),
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": api.uri_for_model("Collectionobjectgroup", self.cog_parent.id)
+            },
+        }
+        co = api.update_obj(self.collection, self.agent, "Collectionobject", existing_co.id, existing_co.version, co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog_id=self.cog_parent.id, childco=co)
+        self.assertEqual(co.cojo, cojo)
+
+    def test_creating_independent_from_remote_one_to_one(self):
+        new_parent_name = "ParentTwo"
+        co_data = {
+            "catalognumber": f'num-{len(self.collectionobjects)}',
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": {
+                    "name": new_parent_name,
+                    "cogtype": api.uri_for_model("Collectionobjectgrouptype", self.cogtype.id),
+                    'collection': api.uri_for_model('Collection', self.collection.id)
+                }
+            },
+            'collection': api.uri_for_model('Collection', self.collection.id),
+        }
+        co = api.create_obj(self.collection, self.agent, "Collectionobject", co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog__name=new_parent_name, childco=co)
+
+        self.assertEqual(co.cojo, cojo)
+        self.assertEqual(co.cojo.parentcog.name, new_parent_name)
+
+    def test_unsetting_dependent_remote_one_to_one(self): 
+        existing_co = self.collectionobjects[1]
+        cojo = models.Collectionobjectgroupjoin.objects.create(isprimary=False, parentcog=self.cog_parent,childco=existing_co)
+        existing_co.refresh_from_db()
+        self.assertEqual(existing_co.cojo, cojo)
+        co_data = {
+            **api.obj_to_data(existing_co),
+            "cojo": None,
+        }
+        co = api.update_obj(self.collection, self.agent, "Collectionobject", existing_co.id, existing_co.version, co_data)
+        self.assertIsNone(api.get_related_or_none(co, "cojo"))
+        self.assertFalse(models.Collectionobjectgroupjoin.objects.filter(childco_id=co.id).exists())
+    
     # version control on inlined resources should be tested
 
 

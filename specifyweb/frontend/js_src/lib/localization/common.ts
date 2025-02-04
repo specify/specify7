@@ -734,4 +734,11 @@ export const commonText = createDictionary({
     'ru-ru': 'Выберите файлы или перетащите их сюда',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди',
   },
+  zoom: {
+    'en-us': 'Zoom',
+    'fr-fr': 'Zoom',
+  },
+  unzoom: {
+    'en-us': 'Unzoom',
+  },
 } as const);

@@ -68,10 +68,10 @@ test('getFields and extractQueryTaxonId', async () => {
   expect(addedFields).toMatchInlineSnapshot(`
     [
       {
-        "dataObjFormatter": undefined,
         "filters": [
           {
             "isNot": false,
+            "isStrict": false,
             "startValue": "",
             "type": "any",
           },
