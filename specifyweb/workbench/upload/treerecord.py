@@ -339,17 +339,23 @@ class ScopedTreeRecord(NamedTuple):
         def validate_trees_with_cotype(row: Row, treedefs_in_row: Set[int]):
             # TODO: Need a better way to do this
             # Find a way to send cotype column when ScopedTreeRecord instance is created?
-            COL_NAME = "Type"
+            COL_NAMES = ["Type", "Collection Object Type"]
             def find_cotype_in_row(row: Row):
-                return row.get(COL_NAME, None)
+                for col_name, value in row.items():
+                    if col_name in COL_NAMES:
+                        return col_name, value
+                    
+                return None
             
             def get_cotype_tree_def(cotype_name: str):
                 # TODO: Need to scope by collection?
                 cotypes = models.Collectionobjecttype.objects.filter(name=cotype_name)
                 return cotypes[0].taxontreedef.id if len(cotypes) > 0 else None
         
-            cotype_value = find_cotype_in_row(row)
-            if not cotype_value: return None
+            cotype = find_cotype_in_row(row)
+            if not cotype: return None
+
+            cotype_column, cotype_value = cotype
 
             cotype_treedef = get_cotype_tree_def(cotype_value)
             if not cotype_treedef: return None
@@ -359,7 +365,7 @@ class ScopedTreeRecord(NamedTuple):
             if len(treedefs_in_row) > 0 and cotype_treedef == list(treedefs_in_row)[0]:
                 return None
             
-            return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, COL_NAME)
+            return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, cotype_column)
 
         # Get models based on the name
         def get_models(name: str):
