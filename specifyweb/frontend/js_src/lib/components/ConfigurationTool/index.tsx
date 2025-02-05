@@ -2,7 +2,9 @@ import React from 'react';
 
 import { configurationText } from '../../localization/configurationText';
 import { Container, H2 } from '../Atoms';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
+import type { Collection } from '../DataModel/types';
 import { adminUser, collection, discipline, division, institution } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 
@@ -27,7 +29,7 @@ console.log('close')
             isDependent={false}
             isSubForm={false}
             key={index}
-            resource={resource.resource}
+            resource={resource.resource as SpecifyResource<Collection>}
             viewName={resource.viewName}
             onAdd={undefined}
             onClose={() => onClose()}
