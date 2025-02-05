@@ -94,13 +94,13 @@ export const webOnlyViews = f.store(() =>
       tables.Institution,
       'form',
       'edit',
-      ['name', 'code', 'address', 'isAccessionsGlobal', 'isSingleGeographyTree']
+      ['name', 'code', 'isAccessionsGlobal', 'isSingleGeographyTree']
     ),
     [division]: autoGenerateViewDefinition(
       tables.Division,
       'form',
       'edit',
-      ['name']
+      ['name', 'abbrev']
     ),
     [discipline]: autoGenerateViewDefinition(
       tables.Discipline,
@@ -112,7 +112,7 @@ export const webOnlyViews = f.store(() =>
       tables.Collection,
       'form',
       'edit',
-      ['collectionName', 'code']
+      ['collectionName', 'code', 'catalogNumFormatName']
     ),
   } as const)
 );

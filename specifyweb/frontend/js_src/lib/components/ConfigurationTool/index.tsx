@@ -2,9 +2,11 @@ import React from 'react';
 
 import { configurationText } from '../../localization/configurationText';
 import { Container, H2 } from '../Atoms';
+import { Form } from '../Atoms/Form';
 import { tables } from '../DataModel/tables';
 import { adminUser, collection, discipline, division, institution } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { PickListComboBox } from '../PickLists';
 
 export function ConfigurationTool(): JSX.Element {
  const resources = [
@@ -18,12 +20,9 @@ const onClose = ():void => {
 console.log('close')
 }
 /*
- * Need geography scope after division ==> isSingleGeographyTree
- * Need Accession scope after division ==> isAccessionsGlobal
- * Need Accession Number Format after discipline 
- * Need cat num format after collection 
- * Need accession level after collection
+ * Need Accession Number Format after discipline ==> schema config show on the form the picklist for the default format from splocalcontaineritem or something like that. make similar for accession format the component catalogNumberFormatters line 163 in definitiion.ts
  */
+ 
  return (
       <Container.FullGray>
         <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
@@ -41,6 +40,10 @@ console.log('close')
            onSaved={() => resource.onClick()}
          />
     ))}
+         <Form onSubmit={() => console.log('submit')}>
+          <H2>{configurationText.accessionNumberFormat()}</H2>
+          <PickListComboBox pickListName={accessionNumberFormatters}/>
+         </Form>
       </Container.FullGray>
  )
 }

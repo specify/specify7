@@ -160,6 +160,19 @@ export const getFrontEndPickLists = f.store<{
     )
   );
 
+  const accessionNumberFormatters =  definePicklist(
+    '_AccessionNumberUIFormatters',
+    Object.entries(getUiFormatters())
+      .filter(
+        ([_, formatter]) =>
+          formatter.field ===
+          tables.Accession.strictGetLiteralField('accessionNumber')
+      )
+      .map(([formatterName, _]) =>
+        createPickListItem(formatterName, formatterName)
+      )
+  );
+
   const catalogNumberFormatters = definePicklist(
     '_CatalogNumberUIFormatters',
     Object.entries(getUiFormatters())
