@@ -14,6 +14,13 @@ export function ConfigurationTool(): JSX.Element {
   { resource: new tables.Collection.Resource(), viewName: collection },
   { resource: new tables.SpecifyUser.Resource(), viewName: adminUser }
 ];
+/*
+ * Need geography scope after division 
+ * Need Accession scope after division 
+ * Need Accession Number Format after discipline 
+ * Need cat num format after collection 
+ * Need accession level after collection
+ */
  return (
       <Container.FullGray>
         <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
