@@ -8,15 +8,18 @@ import { ResourceView } from '../Forms/ResourceView';
 
 export function ConfigurationTool(): JSX.Element {
  const resources = [
-  { resource: new tables.Institution.Resource(), viewName: institution },
-  { resource: new tables.Division.Resource(), viewName: division },
-  { resource: new tables.Discipline.Resource(), viewName: discipline },
-  { resource: new tables.Collection.Resource(), viewName: collection },
-  { resource: new tables.SpecifyUser.Resource(), viewName: adminUser }
+  { resource: new tables.Institution.Resource(), viewName: institution, onClick: () => console.log('click') },
+  { resource: new tables.Division.Resource(), viewName: division, onClick: () => console.log('click')  },
+  { resource: new tables.Discipline.Resource(), viewName: discipline, onClick: () => console.log('click')  },
+  { resource: new tables.Collection.Resource(), viewName: collection, onClick: () => console.log('click')  },
+  { resource: new tables.SpecifyUser.Resource(), viewName: adminUser, onClick: () => console.log('click')  }
 ];
+const onClose = ():void => {
+console.log('close')
+}
 /*
- * Need geography scope after division 
- * Need Accession scope after division 
+ * Need geography scope after division ==> isSingleGeographyTree
+ * Need Accession scope after division ==> isAccessionsGlobal
  * Need Accession Number Format after discipline 
  * Need cat num format after collection 
  * Need accession level after collection
@@ -33,9 +36,9 @@ export function ConfigurationTool(): JSX.Element {
            resource={resource.resource}
            viewName={resource.viewName}
            onAdd={undefined}
-           onClose={() => console.log('close')}
+           onClose={() => onClose()}
            onDeleted={undefined}
-           onSaved={() => console.log('save')}
+           onSaved={() => resource.onClick()}
          />
     ))}
       </Container.FullGray>
