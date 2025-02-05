@@ -1,4 +1,5 @@
 import { commonText } from '../../localization/common';
+import { configurationText } from '../../localization/configurationText';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
@@ -63,7 +64,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.adjustments,
     },
     configurationTool: {
-      title: preferencesText.configurationTool(),
+      title: configurationText.configurationTool(),
       url: '/specify/configuration-tool/',
       icon: icons.cog,
     },

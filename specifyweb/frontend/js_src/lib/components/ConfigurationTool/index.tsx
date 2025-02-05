@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { preferencesText } from '../../localization/preferences';
+import { configurationText } from '../../localization/configurationText';
 import { Container, H2 } from '../Atoms';
 
 export function ConfigurationTool(): JSX.Element {
  return (
       <Container.FullGray>
-        <H2 className="text-2xl">{preferencesText.preferences()}</H2>
+        <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
       </Container.FullGray>
  )
 }
