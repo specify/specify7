@@ -73,7 +73,7 @@ SA_POOL_RECYCLE = 3600
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
-SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', os.path.join(SPECIFY_THICK_CLIENT, "config"))
 
 RO_MODE = False
 

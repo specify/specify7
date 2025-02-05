@@ -64,7 +64,8 @@ const isDarkMode = ({
   isRedirecting,
 }: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
+// Navigator may not be defined in some environments, like non-browser environments
+const altKeyName = typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
   ? 'Option'
   : 'Alt';
 
