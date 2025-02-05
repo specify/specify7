@@ -15,7 +15,4 @@ configurationTool: {
 specifySetUp: {
   'en-us': 'Specify Setup'
 },
-accessionNumberFormat: {
-  'en-us': 'Accession Number Format'
-}
 } as const)
