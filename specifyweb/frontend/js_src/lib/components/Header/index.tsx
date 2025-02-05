@@ -96,6 +96,10 @@ export function Header({
   );
 
   const activeMenuItem = React.useContext(MenuContext);
+
+  // To chnage once we added the feature for setup detection
+  const isSetupMode = true
+
   return (
     <header
       className={`
@@ -123,6 +127,7 @@ export function Header({
         className={`
           flex flex-1 overflow-auto
           ${isHorizontal ? '' : 'flex-col'}
+          ${isSetupMode? 'invisible': ''}
         `}
       >
         <HeaderItems
