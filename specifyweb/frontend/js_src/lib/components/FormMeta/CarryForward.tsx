@@ -407,6 +407,8 @@ function CarryForwardCategory({
                 title={
                   isUnique
                     ? formsText.carryForwardUniqueField()
+                    : isRequired
+                    ? formsText.carryForwardRequiredField()
                     : field.getLocalizedDesc()
                 }
               >

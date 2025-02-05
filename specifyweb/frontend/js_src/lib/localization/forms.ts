@@ -883,6 +883,14 @@ export const formsText = createDictionary({
     'uk-ua': 'Це поле має бути унікальним. Його не можна переносити',
     'de-ch': 'Dieses Feld muss eindeutig sein. Es kann nicht übertragen werden',
   },
+  carryForwardRequiredField: {
+    'en-us': 'This field is required. It must be carried forward',
+    'ru-ru': 'Это поле обязательно. Его необходимо перенести',
+    'es-es': 'Este campo es obligatorio. Debe ser transferido',
+    'fr-fr': 'Ce champ est obligatoire. Il doit être reporté',
+    'uk-ua': "Це поле обов'язкове. Його потрібно перенести",
+    'de-ch': 'Dieses Feld ist erforderlich. Es muss übertragen werden',
+  },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
     'ru-ru': 'Показать кнопку клонировать',
