@@ -96,8 +96,7 @@ export function BatchEditFromQuery({
       <Button.Small
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable) ||
-          queryFieldSpecs.some(containsTreeTableOrSpecificRank) // TODO: Remove this when we have batch edit for tree tables #6127
+          queryFieldSpecs.some(hasHierarchyBaseTable)
         }
         onClick={() => {
           loading(
@@ -167,11 +166,6 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
 
-const containsTreeTableOrSpecificRank = (queryFieldSpec: QueryFieldSpec) =>
-  isTreeTable(queryFieldSpec.baseTable.name) ||
-  (typeof queryFieldSpec.treeRank === 'string' &&
-    queryFieldSpec.treeRank !== '-any');
-
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
 const getTreeDefFromName = (
@@ -222,7 +216,8 @@ function findMissingRanks(
 ): RA<string> {
   const allTreeDefItems = strictGetTreeDefinitionItems(
     treeTable.name as 'Geography',
-    false
+    false,
+    'all'
   );
 
   // Duplicates don't affect any logic here

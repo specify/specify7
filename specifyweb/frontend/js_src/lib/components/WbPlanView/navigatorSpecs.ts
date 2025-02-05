@@ -96,7 +96,7 @@ const queryBuilder: NavigatorSpec = {
   allowTransientToMany: true,
   useSchemaOverrides: false,
   // All tree fields are only available for "any rank"
-  includeAllTreeFields: false,
+  includeAllTreeFields: true,
   allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('queryBuilder', 'general', 'showNoReadTables')
