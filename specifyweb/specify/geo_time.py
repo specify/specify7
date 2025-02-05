@@ -1,4 +1,5 @@
 from typing import List, Set
+from django.db import connection
 from django.db.models import Case, FloatField, F, Q, Value, When
 from django.db.models.functions import Coalesce, Greatest, Least, Cast
 from sqlalchemy import func, literal, or_, and_, exists
@@ -578,3 +579,180 @@ def query_co_in_time_range(query, start_time, end_time, require_full_overlap=Fal
     ))
 
     return filtered_query
+
+
+def search_co_ids_in_time_range_mysql(
+    start_time: float, end_time: float, require_full_overlap: bool = False
+) -> set:
+    """
+    Returns the collection object IDs that overlap the given time range by executing
+    a single MySQL query which unions three subqueries (absolute, relative, and paleocontext ages).
+
+    Note: This example assumes the following table names and columns (which correspond
+    roughly to the Django models and fields):
+
+      - absoluteage: columns absoluteage, ageuncertainty, collectionobject_id
+      - relativeage: columns ageuncertainty, collectionobject_id, agename_id, agenameend_id
+      - agename: columns id, startperiod, endperiod, startuncertainty, enduncertainty
+      - paleocontext: columns id, chronosstrat_id, chronosstratend_id
+      - chronosstrat: columns id, startperiod, endperiod, startuncertainty, enduncertainty
+      - collectionobject: columns id, paleocontext_id, collectingevent_id
+      - collectingevent: columns id, paleocontext_id, locality_id
+      - locality: columns id, paleocontext_id
+
+    In addition, “valid” chronostrat filters are implemented by requiring that
+    startperiod/endperiod are not NULL and that startperiod >= endperiod.
+
+    (Adjust the table/column names as needed for your schema.)
+    """
+
+    # For the relative-age subquery, we need to compute the “adjusted time”
+    # conditions. The Django code uses different annotations for full vs.
+    # partial overlap. In MySQL we can “inline” these computations.
+    if require_full_overlap:
+        rel_time_condition = f"""(
+  IF(r.agenameendid IS NOT NULL,
+     GREATEST(
+       CAST(a.startperiod AS DECIMAL(10,6)) - COALESCE(a.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0),
+       CAST(aend.startperiod AS DECIMAL(10,6)) - COALESCE(aend.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0)
+     ),
+     CAST(a.startperiod AS DECIMAL(10,6)) - COALESCE(a.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0)
+  ) <= {start_time}
+  AND
+  IF(r.agenameendid IS NOT NULL,
+     LEAST(
+       CAST(a.endperiod AS DECIMAL(10,6)) + COALESCE(a.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0),
+       CAST(aend.endperiod AS DECIMAL(10,6)) + COALESCE(aend.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0)
+     ),
+     CAST(a.endperiod AS DECIMAL(10,6)) + COALESCE(a.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0)
+  ) >= {end_time}
+)"""
+
+        paleo_time_condition = f"""(
+  IF(p.chronosstratendid IS NOT NULL,
+     GREATEST(
+       CAST(cs.startperiod AS DECIMAL(10,6)) - COALESCE(cs.startuncertainty, 0),
+       CAST(csend.startperiod AS DECIMAL(10,6)) - COALESCE(csend.startuncertainty, 0)
+     ),
+     CAST(cs.startperiod AS DECIMAL(10,6)) - COALESCE(cs.startuncertainty, 0)
+  ) <= {start_time}
+  AND
+  IF(p.chronosstratendid IS NOT NULL,
+     LEAST(
+       CAST(cs.endperiod AS DECIMAL(10,6)) + COALESCE(cs.enduncertainty, 0),
+       CAST(csend.endperiod AS DECIMAL(10,6)) + COALESCE(csend.enduncertainty, 0)
+     ),
+     CAST(cs.endperiod AS DECIMAL(10,6)) + COALESCE(cs.enduncertainty, 0)
+  ) >= {end_time}
+)"""
+    else:
+        rel_time_condition = f"""(
+  IF(r.agenameendid IS NOT NULL,
+     LEAST(
+       CAST(a.endperiod AS DECIMAL(10,6)) - COALESCE(a.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0),
+       CAST(aend.endperiod AS DECIMAL(10,6)) - COALESCE(aend.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0)
+     ),
+     CAST(a.endperiod AS DECIMAL(10,6)) - COALESCE(a.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0)
+  ) <= {start_time}
+  AND
+  IF(r.agenameendid IS NOT NULL,
+     GREATEST(
+       CAST(a.startperiod AS DECIMAL(10,6)) + COALESCE(a.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0),
+       CAST(aend.startperiod AS DECIMAL(10,6)) + COALESCE(aend.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0)
+     ),
+     CAST(a.startperiod AS DECIMAL(10,6)) + COALESCE(a.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0)
+  ) >= {end_time}
+)"""
+
+        paleo_time_condition = f"""(
+  IF(p.chronosstratendid IS NOT NULL,
+     LEAST(
+       CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0),
+       CAST(csend.endperiod AS DECIMAL(10,6)) - COALESCE(csend.enduncertainty, 0)
+     ),
+     CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0)
+  ) <= {start_time}
+  AND
+  IF(p.chronosstratendid IS NOT NULL,
+     GREATEST(
+       CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0),
+       CAST(csend.startperiod AS DECIMAL(10,6)) + COALESCE(csend.startuncertainty, 0)
+     ),
+     CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0)
+  ) >= {end_time}
+)"""
+
+    # Build the complete union query
+    co_id_query = f"""
+    SELECT DISTINCT coid FROM (
+      -- Absolute ages subquery:
+      SELECT collectionobjectid AS coid
+      FROM absoluteage
+      WHERE (CAST(absoluteage AS DECIMAL(10,6)) - COALESCE(ageuncertainty, 0)) <= {start_time}
+        AND (CAST(absoluteage AS DECIMAL(10,6)) + COALESCE(ageuncertainty, 0)) >= {end_time}
+
+      UNION
+
+      -- Relative ages subquery:
+      SELECT r.collectionobjectid AS coid
+      FROM relativeage r
+      JOIN geologictimeperiod a ON r.agenameid = a.geologictimeperiodid
+      LEFT JOIN geologictimeperiod aend ON r.agenameendid = aend.geologictimeperiodid
+      WHERE a.startperiod IS NOT NULL
+        AND a.endperiod IS NOT NULL
+        AND a.startperiod >= a.endperiod
+        -- Validity condition for agenameend (if present)
+        AND (r.agenameendid IS NULL OR (aend.startperiod IS NOT NULL AND aend.endperiod IS NOT NULL AND aend.startperiod >= aend.endperiod))
+        AND {rel_time_condition}
+
+      UNION
+
+      -- Paleocontext subquery: fetch collectionobject IDs where either
+      -- the collectionobject, its collecting event, or its locality links to a paleocontext
+      -- meeting the required conditions.
+      SELECT c.collectionobjectid AS coid
+      FROM collectionobject c
+      LEFT JOIN collectingevent ce ON c.collectingeventid = ce.collectingeventid
+      LEFT JOIN locality l ON ce.localityid = l.localityid
+      WHERE c.paleocontextid IN (
+          SELECT p.paleocontextid
+          FROM paleocontext p
+          JOIN geologictimeperiod cs ON p.chronosstratid = cs.geologictimeperiodid
+          LEFT JOIN geologictimeperiod csend ON p.chronosstratendid = csend.geologictimeperiodid
+          WHERE cs.startperiod IS NOT NULL
+            AND cs.endperiod IS NOT NULL
+            AND cs.startperiod >= cs.endperiod
+            AND (p.chronosstratendid IS NULL OR (csend.startperiod IS NOT NULL AND csend.endperiod IS NOT NULL AND csend.startperiod >= csend.endperiod))
+            AND {paleo_time_condition}
+      )
+      OR ce.paleocontextid IN (
+          SELECT p.paleocontextid
+          FROM paleocontext p
+          JOIN geologictimeperiod cs ON p.chronosstratid = cs.geologictimeperiodid
+          LEFT JOIN geologictimeperiod csend ON p.chronosstratendid = csend.geologictimeperiodid
+          WHERE cs.startperiod IS NOT NULL
+            AND cs.endperiod IS NOT NULL
+            AND cs.startperiod >= cs.endperiod
+            AND (p.chronosstratendid IS NULL OR (csend.startperiod IS NOT NULL AND csend.endperiod IS NOT NULL AND csend.startperiod >= csend.endperiod))
+            AND {paleo_time_condition}
+      )
+      OR l.paleocontextid IN (
+          SELECT p.paleocontextid
+          FROM paleocontext p
+          JOIN geologictimeperiod cs ON p.chronosstratid = cs.geologictimeperiodid
+          LEFT JOIN geologictimeperiod csend ON p.chronosstratendid = csend.geologictimeperiodid
+          WHERE cs.startperiod IS NOT NULL
+            AND cs.endperiod IS NOT NULL
+            AND cs.startperiod >= cs.endperiod
+            AND (p.chronosstratendid IS NULL OR (csend.startperiod IS NOT NULL AND csend.endperiod IS NOT NULL AND csend.startperiod >= csend.endperiod))
+            AND {paleo_time_condition}
+      )
+    ) AS unioned;
+    """
+
+    # print(co_id_query)
+    with connection.cursor() as cursor:
+        cursor.execute(co_id_query)
+        rows = cursor.fetchall()
+        co_ids = {row[0] for row in rows if row[0] is not None}
+        return co_ids
