@@ -62,6 +62,11 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/schema-config/',
       icon: icons.adjustments,
     },
+    configurationTool: {
+      title: preferencesText.configurationTool(),
+      url: '/specify/configuration-tool/',
+      icon: icons.cog,
+    },
   },
   [headerText.administration()]: {
     resources: {

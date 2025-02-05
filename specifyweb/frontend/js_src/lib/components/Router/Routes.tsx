@@ -365,7 +365,16 @@ export const routes: RA<EnhancedRoute> = [
     title: preferencesText.preferences(),
     element: () =>
       import('../Preferences').then(
+        
         ({ PreferencesWrapper }) => PreferencesWrapper
+      ),
+  },
+  {
+    path: 'configuration-tool',
+    title: preferencesText.preferences(),
+    element: () =>
+      import('../ConfigurationTool').then(
+        ({ ConfigurationTool }) => ConfigurationTool
       ),
   },
   {
