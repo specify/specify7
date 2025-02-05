@@ -144,7 +144,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     .then(async (response) =>
       Promise.all([
         response,
-        acceptBlobResponse ? response.blob() : response.text(),
+        acceptBlobResponse && response.ok ? response.blob() : response.text(),
       ])
     )
     .then(
