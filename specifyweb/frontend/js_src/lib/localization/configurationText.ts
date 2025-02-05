@@ -9,7 +9,7 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const configurationText = createDictionary({
- configurationTool: {
+configurationTool: {
   'en-us': 'Configuration Tool'
 },
 specifySetUp: {
