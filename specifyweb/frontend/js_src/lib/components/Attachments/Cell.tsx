@@ -1,11 +1,14 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -19,12 +22,9 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
+import { fetchOriginalUrl } from './attachments';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
-import { fetchOriginalUrl } from './attachments';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Link } from '../Atoms/Link';
-import { notificationsText } from '../../localization/notifications';
 
 export function AttachmentCell({
   attachment,
@@ -77,10 +77,10 @@ export function AttachmentCell({
             'downloadname'
           )}
           href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-          target="_blank"
-          onClick={undefined}
           icon="download"
+          target="_blank"
           title={notificationsText.download()}
+          onClick={undefined}
         />
       )}
     </div>
