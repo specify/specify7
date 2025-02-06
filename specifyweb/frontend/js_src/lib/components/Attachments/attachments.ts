@@ -3,6 +3,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -12,9 +13,8 @@ import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
-import { formatUrl } from '../Router/queryString';
 import { downloadFile } from '../Molecules/FilePicker';
-import { keysToLowerCase } from '../../utils/utils';
+import { formatUrl } from '../Router/queryString';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -135,10 +135,8 @@ export async function fetchThumbnail(
   };
 }
 
-export const cleanAttachmentDownloadName = (
-  origFilename: string
-): string =>
-  origFilename.replace(/^.*[/\\]/u, '')
+export const cleanAttachmentDownloadName = (origFilename: string): string =>
+  origFilename.replace(/^.*[/\\]/u, '');
 
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
@@ -149,7 +147,9 @@ export const formatAttachmentUrl = (
         coll: settings.collection,
         type: 'O',
         fileName: attachment.attachmentLocation,
-        downloadName: attachment.origFilename ? cleanAttachmentDownloadName(attachment.origFilename) : undefined,
+        downloadName: attachment.origFilename
+          ? cleanAttachmentDownloadName(attachment.origFilename)
+          : undefined,
         token,
       })
     : undefined;
@@ -266,8 +266,14 @@ export function downloadAttachment(
 ): void {
   fetchOriginalUrl(attachment).then((url) => {
     if (typeof url === 'string') {
-      const fileName = cleanAttachmentDownloadName(attachment.origFilename ?? attachment.attachmentLocation);
-      downloadFile(fileName, `/attachment_gw/proxy/${new URL(url!).search}`, true);
+      const fileName = cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      );
+      downloadFile(
+        fileName,
+        `/attachment_gw/proxy/${new URL(url).search}`,
+        true
+      );
     }
   });
 }
@@ -286,7 +292,11 @@ export async function downloadAllAttachments(
     .map((attachment) => attachment.attachmentLocation)
     .filter((name): name is string => name !== null);
   const origFilenames = attachments
-    .map((attachment) => cleanAttachmentDownloadName(attachment.origFilename ?? attachment.attachmentLocation))
+    .map((attachment) =>
+      cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      )
+    )
     .filter((name): name is string => name !== null);
 
   const response = await ajax<Blob>('/attachment_gw/download_all/', {
@@ -297,13 +307,13 @@ export async function downloadAllAttachments(
     }),
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/octet-stream',
+      Accept: 'application/octet-stream',
     },
     errorMode: 'dismissible',
   });
 
   if (response.status === Http.OK) {
-    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`
+    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
     downloadFile(fileName, response.data);
   } else {
     throw new Error(`Attachment archive download failed: ${response}`);

@@ -9,7 +9,9 @@ import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
+import { downloadAllAttachments } from '../Attachments/attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection } from '../DataModel/specifyTable';
@@ -18,8 +20,6 @@ import type {
   CollectionObjectAttachment,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { downloadAllAttachments } from '../Attachments/attachments';
-import { LoadingContext } from '../Core/Contexts';
 
 export function AttachmentsCollection({
   collection,
@@ -77,7 +77,9 @@ export function AttachmentsCollection({
               <Button.Info
                 disabled={isAttachmentsNotLoaded}
                 title={attachmentsText.downloadAllDescription()}
-                onClick={(): void => loading(downloadAllAttachments(attachments))}
+                onClick={(): void =>
+                  loading(downloadAllAttachments(attachments))
+                }
               >
                 {attachmentsText.downloadAll()}
               </Button.Info>
