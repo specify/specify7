@@ -359,7 +359,7 @@ def make_attachment_zip(attachmentLocations, origFileNames, collection, output_f
                 if fileNameAppearances[downloadFileName] > 1:
                     downloadOrigName = os.path.splitext(downloadFileName)[0]
                     downloadExtension = os.path.splitext(downloadFileName)[1]
-                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]}{downloadExtension}'
+                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]-1}{downloadExtension}'
                 with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
                     f.write(response.content)
         

@@ -18,6 +18,8 @@ import type {
   CollectionObjectAttachment,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { downloadAllAttachments } from '../Attachments/attachments';
+import { LoadingContext } from '../Core/Contexts';
 
 export function AttachmentsCollection({
   collection,
@@ -57,6 +59,7 @@ export function AttachmentsCollection({
   const isAttachmentsNotLoaded = attachments.some(
     (attachment) => attachment.attachmentLocation === null
   );
+  const loading = React.useContext(LoadingContext);
 
   return attachments.length > 0 ? (
     <>
@@ -70,9 +73,18 @@ export function AttachmentsCollection({
       {showAllAttachments && (
         <Dialog
           buttons={
-            <Button.Info onClick={handleCloseAttachments}>
-              {commonText.close()}
-            </Button.Info>
+            <>
+              <Button.Info
+                disabled={isAttachmentsNotLoaded}
+                title={attachmentsText.downloadAllDescription()}
+                onClick={(): void => loading(downloadAllAttachments(attachments))}
+              >
+                {attachmentsText.downloadAll()}
+              </Button.Info>
+              <Button.Info onClick={handleCloseAttachments}>
+                {commonText.close()}
+              </Button.Info>
+            </>
           }
           header={attachmentsText.attachments()}
           icon={icons.gallery}

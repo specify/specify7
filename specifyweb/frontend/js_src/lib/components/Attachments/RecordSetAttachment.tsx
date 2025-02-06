@@ -5,22 +5,18 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { Http } from '../../utils/ajax/definitions';
-import { ajax } from '../../utils/ajax/index';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
-import type { Attachment,CollectionObjectAttachment } from '../DataModel/types';
+import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { downloadFile } from '../Molecules/FilePicker';
 import { defaultAttachmentScale } from '.';
-import { fetchOriginalUrl } from './attachments';
+import { downloadAllAttachments } from './attachments';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
 
@@ -89,47 +85,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
-  const handleDownloadAllAttachments = async (): Promise<void> => {
-    if (attachmentsRef.current === undefined) return;
-    if (attachments?.attachments.length === 1) {
-      const attachment = attachmentsRef.current.attachments[0];
-      if (attachment === undefined) return;
-      const serialized = serializeResource(attachment)
-      fetchOriginalUrl(serialized as SerializedResource<Attachment>).then(
-        (url) => {
-          downloadFile(attachment.origFilename, `/attachment_gw/proxy/${new URL(url!).search}`, true)
-        }
-      )
-      return;
-    }
-    const attachmentLocations = attachmentsRef.current.attachments
-      .map((attachment) => attachment.attachmentLocation)
-      .filter((name): name is string => name !== null);
-    const origFilenames = attachmentsRef.current.attachments
-      .map((attachment) => attachment.origFilename ?? attachment.attachmentLocation)
-      .filter((name): name is string => name !== null);
-
-    const response = await ajax<Blob>('/attachment_gw/download_all/', {
-      method: 'POST',
-      body: keysToLowerCase({
-        attachmentLocations,
-        origFilenames,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/octet-stream',
-      },
-      errorMode: 'silent',
-    });
-
-    if (response.status === Http.OK) {
-      const fileName = `Attachments - ${(name || new Date().toDateString()).replaceAll(':', '')}.zip`
-      downloadFile(fileName, response.data);
-    } else {
-      throw new Error(`Attachment archive download failed: ${response}`);
-    }
-
-  };
   const loading = React.useContext(LoadingContext);
 
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
@@ -166,7 +121,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               <Button.Info
                 disabled={downloadAllAttachmentsDisabled}
                 title={attachmentsText.downloadAllDescription()}
-                onClick={(): void => loading(handleDownloadAllAttachments())}
+                onClick={(): void => loading(downloadAllAttachments(attachmentsRef.current?.attachments ?? [], name))}
               >
                 {attachmentsText.downloadAll()}
               </Button.Info>
