@@ -354,7 +354,6 @@ def make_attachment_zip(attachmentLocations, origFileNames, collection, output_f
             response = requests.get(server_urls['read'], params=data)
             if response.status_code == 200:
                 downloadFileName = origFileNames[i] if i < len(origFileNames) else attachmentLocation
-                raise Exception("Test")
                 fileNameAppearances[downloadFileName] = fileNameAppearances.get(downloadFileName, 0) + 1
                 if fileNameAppearances[downloadFileName] > 1:
                     downloadOrigName = os.path.splitext(downloadFileName)[0]
