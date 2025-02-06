@@ -5,9 +5,6 @@ from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import TreeBusinessRuleException
 
 class GeographyTreeDefItem(ApiTests):
-    # def test_cannot_delete_root(self):
-    #     with self.assertRaises(TreeBusinessRuleException):
-    #         self.geographytreedef.treedefitems.filter(parent=None).delete()
 
     def test_delete_blocked_by_geography(self):
         earth = models.Geography.objects.create(

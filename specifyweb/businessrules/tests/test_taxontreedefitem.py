@@ -19,12 +19,6 @@ class TaxonTreeDefItemTests(ApiTests):
             definition=self.roottaxontreedefitem.treedef,
             rankid=self.roottaxontreedefitem.rankid)
 
-    # def test_cannot_delete_root(self):
-    #     self.roottaxon.delete()
-
-    #     with self.assertRaises(TreeBusinessRuleException):
-    #         self.roottaxontreedefitem.delete()
-
     def test_delete_blocked_by_taxon(self):
         kingdom = self.roottaxontreedefitem.children.create(
             name="Kingdom",
@@ -37,8 +31,4 @@ class TaxonTreeDefItemTests(ApiTests):
             definition=kingdom.treedef,
             rankid=kingdom.rankid)
 
-        # with self.assertRaises(ProtectedError):
-        #     kingdom.delete()
-
         animals.delete()
-        # kingdom.delete()
