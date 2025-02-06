@@ -23,7 +23,6 @@ import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 import { fetchOriginalUrl } from './attachments';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { serializeResource } from '../DataModel/serializers';
 import { Link } from '../Atoms/Link';
 import { notificationsText } from '../../localization/notifications';
 
@@ -42,12 +41,8 @@ export function AttachmentCell({
 }): JSX.Element {
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
-  const serialized = React.useMemo(
-    () => serializeResource(attachment),
-    [attachment]
-  );
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(serialized as SerializedResource<Attachment>), [serialized]),
+    React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
     false
   );
 
