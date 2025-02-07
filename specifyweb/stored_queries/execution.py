@@ -631,6 +631,8 @@ def build_query(session, collection, user, tableid, field_specs,
         sort_type = SORT_TYPES[fs.sort_type]
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
+        if field is None:
+            continue
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
