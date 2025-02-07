@@ -80,7 +80,12 @@ RUN set -eux; \
         echo "pip install failed, retrying in 5 seconds..."; sleep 5; \
     done
 
-RUN ve/bin/pip install --no-cache-dir gunicorn
+# Retry loop for gunicorn installation
+RUN set -eux; \
+    for i in 1 2 3; do \
+        ve/bin/pip install --no-cache-dir gunicorn && break; \
+        echo "gunicorn install failed, retrying in 5 seconds..."; sleep 5; \
+    done
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
 COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
