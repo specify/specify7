@@ -1,8 +1,9 @@
+import logging
 from typing import List, Set
 from django.db import connection
 from django.db.models import Case, FloatField, F, Q, Value, When
 from django.db.models.functions import Coalesce, Greatest, Least, Cast
-from sqlalchemy import func, literal, or_, and_, exists
+from sqlalchemy import select, union_all, func, cast, DECIMAL, case, or_, and_, String, join
 from sqlalchemy.orm import aliased
 
 from specifyweb.specify.models import (
@@ -15,6 +16,8 @@ from specifyweb.specify.models import (
     Locality,
 )
 from specifyweb.stored_queries import models as sq_models
+
+logger = logging.getLogger(__name__)
 
 # Table paths from CollectionObject to Absoluteage or GeologicTimePeriod:
 # - collectionobject->absoluteage
@@ -580,30 +583,12 @@ def query_co_in_time_range(query, start_time, end_time, require_full_overlap=Fal
 
     return filtered_query
 
-
 def search_co_ids_in_time_range_mysql(
     start_time: float, end_time: float, require_full_overlap: bool = False
 ) -> set:
     """
     Returns the collection object IDs that overlap the given time range by executing
     a single MySQL query which unions three subqueries (absolute, relative, and paleocontext ages).
-
-    Note: This example assumes the following table names and columns (which correspond
-    roughly to the Django models and fields):
-
-      - absoluteage: columns absoluteage, ageuncertainty, collectionobject_id
-      - relativeage: columns ageuncertainty, collectionobject_id, agename_id, agenameend_id
-      - agename: columns id, startperiod, endperiod, startuncertainty, enduncertainty
-      - paleocontext: columns id, chronosstrat_id, chronosstratend_id
-      - chronosstrat: columns id, startperiod, endperiod, startuncertainty, enduncertainty
-      - collectionobject: columns id, paleocontext_id, collectingevent_id
-      - collectingevent: columns id, paleocontext_id, locality_id
-      - locality: columns id, paleocontext_id
-
-    In addition, “valid” chronostrat filters are implemented by requiring that
-    startperiod/endperiod are not NULL and that startperiod >= endperiod.
-
-    (Adjust the table/column names as needed for your schema.)
     """
 
     # For the relative-age subquery, we need to compute the “adjusted time”
@@ -664,22 +649,30 @@ def search_co_ids_in_time_range_mysql(
   ) >= {end_time}
 )"""
 
-        paleo_time_condition = f"""(
+        paleo_start_time = f"""
   IF(p.chronosstratendid IS NOT NULL,
      LEAST(
        CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0),
        CAST(csend.endperiod AS DECIMAL(10,6)) - COALESCE(csend.enduncertainty, 0)
      ),
      CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0)
-  ) <= {start_time}
-  AND
+  )
+"""
+        paleo_end_time = f"""
   IF(p.chronosstratendid IS NOT NULL,
      GREATEST(
        CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0),
        CAST(csend.startperiod AS DECIMAL(10,6)) + COALESCE(csend.startuncertainty, 0)
      ),
      CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0)
-  ) >= {end_time}
+  )
+"""
+        paleo_start_time_condition = f"{paleo_start_time} <= {start_time}"
+        paleo_end_time_condition = f"{paleo_end_time} <= {end_time}"
+        paleo_time_condition = f"""(
+  {paleo_start_time_condition}
+  AND
+  {paleo_end_time_condition}
 )"""
 
     # Build the complete union query
@@ -756,3 +749,358 @@ def search_co_ids_in_time_range_mysql(
         rows = cursor.fetchall()
         co_ids = {row[0] for row in rows if row[0] is not None}
         return co_ids
+
+def search_co_ids_in_time_range_mysql_with_age_range(
+    start_time: float, end_time: float, require_full_overlap: bool = False
+) -> list:
+    """
+    Returns a list of tuples (coid, min_end_period, max_start_period) for collection objects
+    that overlap the given time range by executing a single MySQL query which unions three subqueries:
+      - Absolute ages,
+      - Relative ages, and
+      - Paleocontext ages.
+    """
+
+    # Build filtering conditions
+    if require_full_overlap:
+        # Relative ages query expressions
+        rel_start_expr = (
+            "IF(r.agenameendid IS NOT NULL, "
+            "   GREATEST( "
+            "       CAST(a.startperiod AS DECIMAL(10,6)) - COALESCE(a.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0), "
+            "       CAST(aend.startperiod AS DECIMAL(10,6)) - COALESCE(aend.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0) "
+            "   ), "
+            "   CAST(a.startperiod AS DECIMAL(10,6)) - COALESCE(a.startuncertainty, 0) - COALESCE(r.ageuncertainty, 0) "
+            ")"
+        )
+        rel_end_expr = (
+            "IF(r.agenameendid IS NOT NULL, "
+            "   LEAST( "
+            "       CAST(a.endperiod AS DECIMAL(10,6)) + COALESCE(a.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0), "
+            "       CAST(aend.endperiod AS DECIMAL(10,6)) + COALESCE(aend.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0) "
+            "   ), "
+            "   CAST(a.endperiod AS DECIMAL(10,6)) + COALESCE(a.enduncertainty, 0) + COALESCE(r.ageuncertainty, 0) "
+            ")"
+        )
+        rel_start_time_condition = f"{rel_start_expr} <= {start_time}"
+        rel_end_time_condition = f"{rel_end_expr} >= {end_time}"
+        rel_time_condition = f"({rel_start_time_condition} AND {rel_end_time_condition})"
+
+        # Paleocontext query expressions
+        paleo_start_expr = (
+            "IF(p.chronosstratendid IS NOT NULL, "
+            "   GREATEST( "
+            "       CAST(cs.startperiod AS DECIMAL(10,6)) - COALESCE(cs.startuncertainty, 0), "
+            "       CAST(csend.startperiod AS DECIMAL(10,6)) - COALESCE(csend.startuncertainty, 0) "
+            "   ), "
+            "   CAST(cs.startperiod AS DECIMAL(10,6)) - COALESCE(cs.startuncertainty, 0) "
+            ")"
+        )
+        paleo_end_expr = (
+            "IF(p.chronosstratendid IS NOT NULL, "
+            "   LEAST( "
+            "       CAST(cs.endperiod AS DECIMAL(10,6)) + COALESCE(cs.enduncertainty, 0), "
+            "       CAST(csend.endperiod AS DECIMAL(10,6)) + COALESCE(csend.enduncertainty, 0) "
+            "   ), "
+            "   CAST(cs.endperiod AS DECIMAL(10,6)) + COALESCE(cs.enduncertainty, 0) "
+            ")"
+        )
+        paleo_start_time_condition = f"{paleo_start_expr} <= {start_time}"
+        paleo_end_time_condition = f"{paleo_end_expr} >= {end_time}"
+        paleo_time_condition = f"({paleo_start_time_condition} AND {paleo_end_time_condition})"
+    else:
+        # Relative ages: alternate expressions for partial overlap.
+        rel_start_expr = (
+            "IF(r.agenameendid IS NOT NULL, "
+            "   GREATEST( "
+            "       CAST(a.startperiod AS DECIMAL(10,6)) + COALESCE(a.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0), "
+            "       CAST(aend.startperiod AS DECIMAL(10,6)) + COALESCE(aend.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0) "
+            "   ), "
+            "   CAST(a.startperiod AS DECIMAL(10,6)) + COALESCE(a.startuncertainty, 0) + COALESCE(r.ageuncertainty, 0) "
+            ")"
+        )
+        rel_end_expr = (
+            "IF(r.agenameendid IS NOT NULL, "
+            "   LEAST( "
+            "       CAST(a.endperiod AS DECIMAL(10,6)) - COALESCE(a.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0), "
+            "       CAST(aend.endperiod AS DECIMAL(10,6)) - COALESCE(aend.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0) "
+            "   ), "
+            "   CAST(a.endperiod AS DECIMAL(10,6)) - COALESCE(a.enduncertainty, 0) - COALESCE(r.ageuncertainty, 0) "
+            ")"
+        )
+        rel_start_time_condition = f"{rel_start_expr} <= {start_time}"
+        rel_end_time_condition = f"{rel_end_expr} >= {end_time}"
+        rel_time_condition = f"({rel_start_time_condition} AND {rel_end_time_condition})"
+
+        # Paleocontext: alternate expressions.
+        paleo_start_expr = (
+            "IF(p.chronosstratendid IS NOT NULL, "
+            "   LEAST( "
+            "       CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0), "
+            "       CAST(csend.startperiod AS DECIMAL(10,6)) + COALESCE(csend.startuncertainty, 0) "
+            "   ), "
+            "   CAST(cs.startperiod AS DECIMAL(10,6)) + COALESCE(cs.startuncertainty, 0) "
+            ")"
+        )
+        paleo_end_expr = (
+            "IF(p.chronosstratendid IS NOT NULL, "
+            "   GREATEST( "
+            "       CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0), "
+            "       CAST(csend.endperiod AS DECIMAL(10,6)) - COALESCE(csend.enduncertainty, 0) "
+            "   ), "
+            "   CAST(cs.endperiod AS DECIMAL(10,6)) - COALESCE(cs.enduncertainty, 0) "
+            ")"
+        )
+        paleo_start_time_condition = f"{paleo_start_expr} <= {start_time}"
+        paleo_end_time_condition = f"{paleo_end_expr} >= {end_time}"
+        paleo_time_condition = f"({paleo_start_time_condition} AND {paleo_end_time_condition})"
+
+    # Build the complete union query.
+    co_id_query = (
+        "SELECT coid, "
+        "-- MIN(endperiod) AS min_end_period, "
+        "-- MAX(startperiod) AS max_start_period "
+        "FROM ("
+            "SELECT collectionobjectid AS coid, "
+                   "CAST(absoluteage AS DECIMAL(10,6)) - COALESCE(ageuncertainty, 0) AS startperiod, "
+                   "CAST(absoluteage AS DECIMAL(10,6)) + COALESCE(ageuncertainty, 0) AS endperiod "
+            "FROM absoluteage "
+            f"WHERE (CAST(absoluteage AS DECIMAL(10,6)) - COALESCE(ageuncertainty, 0)) <= {start_time} "
+            f"AND (CAST(absoluteage AS DECIMAL(10,6)) + COALESCE(ageuncertainty, 0)) >= {end_time} "
+            "UNION "
+            "SELECT r.collectionobjectid AS coid, "
+                   f"{rel_start_expr} AS startperiod, "
+                   f"{rel_end_expr} AS endperiod "
+            "FROM relativeage r "
+            "JOIN geologictimeperiod a ON r.agenameid = a.geologictimeperiodid "
+            "LEFT JOIN geologictimeperiod aend ON r.agenameendid = aend.geologictimeperiodid "
+            "WHERE a.startperiod IS NOT NULL "
+              "AND a.endperiod IS NOT NULL "
+              "AND a.startperiod >= a.endperiod "
+              "AND (r.agenameendid IS NULL OR (aend.startperiod IS NOT NULL AND aend.endperiod IS NOT NULL AND aend.startperiod >= aend.endperiod)) "
+            f"AND {rel_time_condition} "
+            "UNION "
+            "SELECT DISTINCT c.collectionobjectid AS coid, "
+                   f"{paleo_start_expr} AS startperiod, "
+                   f"{paleo_end_expr} AS endperiod "
+            "FROM collectionobject c "
+            "LEFT JOIN collectingevent ce ON c.collectingeventid = ce.collectingeventid "
+            "LEFT JOIN locality l ON ce.localityid = l.localityid "
+            "LEFT JOIN paleocontext p ON (c.paleocontextid = p.paleocontextid OR ce.paleocontextid = p.paleocontextid OR l.paleocontextid = p.paleocontextid) "
+            "LEFT JOIN geologictimeperiod cs ON p.chronosstratid = cs.geologictimeperiodid "
+            "LEFT JOIN geologictimeperiod csend ON p.chronosstratendid = csend.geologictimeperiodid "
+            "WHERE p.paleocontextid IS NOT NULL "
+              "AND cs.startperiod IS NOT NULL "
+              "AND cs.endperiod IS NOT NULL "
+              "AND cs.startperiod >= cs.endperiod "
+              "AND (p.chronosstratendid IS NULL OR (csend.startperiod IS NOT NULL AND csend.endperiod IS NOT NULL AND csend.startperiod >= csend.endperiod)) "
+            f"AND {paleo_time_condition} "
+        ") AS unioned "
+        "GROUP BY coid;"
+    )
+
+    logger.debug(co_id_query)
+
+    with connection.cursor() as cursor:
+        cursor.execute(co_id_query)
+        rows = cursor.fetchall()
+        return rows
+
+
+def modify_query_add_age_range(query, start_time: float, end_time: float, require_full_overlap: bool = False):
+    """
+    Given an existing SQLAlchemy query whose base entity is Collectionobject,
+    this function adds an inner join to an aggregated subquery that computes,
+    for each collection object (by its CollectionObjectID), the minimum end period and
+    maximum start period (aggregated from three sources: AbsoluteAge, RelativeAge, and Paleocontext).
+    """
+
+    AbsoluteAge = sq_models.AbsoluteAge
+    RelativeAge = sq_models.RelativeAge
+    GeologicTimePeriod = sq_models.GeologicTimePeriod
+    Paleocontext = sq_models.PaleoContext
+    Collectingevent = sq_models.CollectingEvent
+    Locality = sq_models.Locality
+    Collectionobject = sq_models.CollectionObject
+
+    # Build the three subqueries.
+    # --- AbsoluteAge subquery ---
+    abs_sel = select([
+        AbsoluteAge.CollectionObjectID.label("coid"),
+        (cast(AbsoluteAge.absoluteAge, DECIMAL(10,6)) - func.coalesce(AbsoluteAge.ageUncertainty, 0)).label("startperiod"),
+        (cast(AbsoluteAge.absoluteAge, DECIMAL(10,6)) + func.coalesce(AbsoluteAge.ageUncertainty, 0)).label("endperiod")
+    ]).where(
+        and_(
+            (cast(AbsoluteAge.absoluteAge, DECIMAL(10,6)) - func.coalesce(AbsoluteAge.ageUncertainty, 0)) <= start_time,
+            (cast(AbsoluteAge.absoluteAge, DECIMAL(10,6)) + func.coalesce(AbsoluteAge.ageUncertainty, 0)) >= end_time
+        )
+    )
+    
+    # --- RelativeAge subquery ---
+    r = aliased(RelativeAge, name="r")
+    a = aliased(GeologicTimePeriod, name="a")
+    aend = aliased(GeologicTimePeriod, name="aend")
+    if require_full_overlap:
+        rel_start_expr = case(
+            [(r.AgeNameEndID != None,
+              func.greatest(
+                  cast(a.startPeriod, DECIMAL(10,6)) - func.coalesce(a.startUncertainty, 0) - func.coalesce(r.ageUncertainty, 0),
+                  cast(aend.startPeriod, DECIMAL(10,6)) - func.coalesce(aend.startUncertainty, 0) - func.coalesce(r.ageUncertainty, 0)
+              ))],
+            else_= cast(a.startPeriod, DECIMAL(10,6)) - func.coalesce(a.startUncertainty, 0) - func.coalesce(r.ageUncertainty, 0)
+        )
+        rel_end_expr = case(
+            [(r.AgeNameEndID != None,
+              func.least(
+                  cast(a.endPeriod, DECIMAL(10,6)) + func.coalesce(a.endUncertainty, 0) + func.coalesce(r.ageUncertainty, 0),
+                  cast(aend.endPeriod, DECIMAL(10,6)) + func.coalesce(aend.endUncertainty, 0) + func.coalesce(r.ageUncertainty, 0)
+              ))],
+            else_= cast(a.endPeriod, DECIMAL(10,6)) + func.coalesce(a.endUncertainty, 0) + func.coalesce(r.ageUncertainty, 0)
+        )
+    else:
+        rel_start_expr = case(
+            [(r.AgeNameEndID != None,
+              func.greatest(
+                  cast(a.startPeriod, DECIMAL(10,6)) + func.coalesce(a.startUncertainty, 0) + func.coalesce(r.ageUncertainty, 0),
+                  cast(aend.startPeriod, DECIMAL(10,6)) + func.coalesce(aend.startUncertainty, 0) + func.coalesce(r.ageUncertainty, 0)
+              ))],
+            else_= cast(a.startPeriod, DECIMAL(10,6)) + func.coalesce(a.startUncertainty, 0) + func.coalesce(r.ageUncertainty, 0)
+        )
+        rel_end_expr = case(
+            [(r.AgeNameEndID != None,
+              func.least(
+                  cast(a.endPeriod, DECIMAL(10,6)) - func.coalesce(a.endUncertainty, 0) - func.coalesce(r.ageUncertainty, 0),
+                  cast(aend.endPeriod, DECIMAL(10,6)) - func.coalesce(aend.endUncertainty, 0) - func.coalesce(r.ageUncertainty, 0)
+              ))],
+            else_= cast(a.endPeriod, DECIMAL(10,6)) - func.coalesce(a.endUncertainty, 0) - func.coalesce(r.ageUncertainty, 0)
+        )
+    
+    rel_join = join(r, a, r.AgeNameID == a.geologicTimePeriodId).outerjoin(aend, r.AgeNameEndID == aend.geologicTimePeriodId)
+    rel_sel = select([
+        r.CollectionObjectID.label("coid"),
+        rel_start_expr.label("startperiod"),
+        rel_end_expr.label("endperiod")
+    ]).select_from(rel_join).where(
+        and_(
+            a.startPeriod != None,
+            a.endPeriod != None,
+            a.startPeriod >= a.endPeriod,
+            or_(
+                r.AgeNameEndID == None,
+                and_(aend.startPeriod != None, aend.endPeriod != None, aend.startPeriod >= aend.endPeriod)
+            ),
+            rel_start_expr <= start_time,
+            rel_end_expr >= end_time
+        )
+    )
+    
+    # --- Paleocontext subquery ---
+    c = aliased(Collectionobject, name="c")
+    ce = aliased(Collectingevent, name="ce")
+    l = aliased(Locality, name="l")
+    p = aliased(Paleocontext, name="p")
+    cs = aliased(GeologicTimePeriod, name="cs")
+    csend = aliased(GeologicTimePeriod, name="csend")
+    if require_full_overlap:
+        paleo_start_expr = case(
+            [(p.ChronosStratEndID != None,
+              func.greatest(
+                  cast(cs.startPeriod, DECIMAL(10,6)) - func.coalesce(cs.startUncertainty, 0),
+                  cast(csend.startPeriod, DECIMAL(10,6)) - func.coalesce(csend.startUncertainty, 0)
+              ))],
+            else_= cast(cs.startPeriod, DECIMAL(10,6)) - func.coalesce(cs.startUncertainty, 0)
+        )
+        paleo_end_expr = case(
+            [(p.ChronosStratEndID != None,
+              func.least(
+                  cast(cs.endPeriod, DECIMAL(10,6)) + func.coalesce(cs.endUncertainty, 0),
+                  cast(csend.endPeriod, DECIMAL(10,6)) + func.coalesce(csend.endUncertainty, 0)
+              ))],
+            else_= cast(cs.endPeriod, DECIMAL(10,6)) + func.coalesce(cs.endUncertainty, 0)
+        )
+    else:
+        paleo_start_expr = case(
+            [(p.ChronosStratEndID != None,
+              func.least(
+                  cast(cs.startPeriod, DECIMAL(10,6)) + func.coalesce(cs.startUncertainty, 0),
+                  cast(csend.startPeriod, DECIMAL(10,6)) + func.coalesce(csend.startUncertainty, 0)
+              ))],
+            else_= cast(cs.startPeriod, DECIMAL(10,6)) + func.coalesce(cs.startUncertainty, 0)
+        )
+        paleo_end_expr = case(
+            [(p.ChronosStratEndID != None,
+              func.greatest(
+                  cast(cs.endPeriod, DECIMAL(10,6)) - func.coalesce(cs.endUncertainty, 0),
+                  cast(csend.endPeriod, DECIMAL(10,6)) - func.coalesce(csend.endUncertainty, 0)
+              ))],
+            else_= cast(cs.endPeriod, DECIMAL(10,6)) - func.coalesce(cs.endUncertainty, 0)
+        )
+    
+    join_structure = join(c, ce, c.CollectingEventID == ce.collectingEventId, isouter=True)
+    join_structure = join(join_structure, l, ce.LocalityID == l.localityId, isouter=True)
+    join_structure = join(join_structure, p, or_(
+        c.PaleoContextID == p.paleoContextId,
+        ce.PaleoContextID == p.paleoContextId,
+        l.PaleoContextID == p.paleoContextId
+    ), isouter=True)
+    join_structure = join(join_structure, cs, p.ChronosStratID == cs.geologicTimePeriodId, isouter=True)
+    join_structure = join(join_structure, csend, p.ChronosStratEndID == csend.geologicTimePeriodId, isouter=True)
+
+    paleo_sel = select([
+        c.collectionObjectId.label("coid"),
+        paleo_start_expr.label("startperiod"),
+        paleo_end_expr.label("endperiod")
+    ]).select_from(join_structure).where(
+        and_(
+            p.paleoContextId != None,
+            cs.startPeriod != None,
+            cs.endPeriod != None,
+            cs.startPeriod >= cs.endPeriod,
+            or_(
+                p.ChronosStratEndID == None,
+                and_(csend.startPeriod != None, csend.endPeriod != None, csend.startPeriod >= csend.endPeriod)
+            ),
+            paleo_start_expr <= start_time,
+            paleo_end_expr >= end_time
+        )
+    ).distinct()
+    
+    # Union the three subqueries and aggregate.
+    union_subq = union_all(abs_sel, rel_sel, paleo_sel).alias("unioned")
+    agg_subq = select([
+        union_subq.c.coid,
+        func.min(union_subq.c.endperiod).label("min_end_period"),
+        func.max(union_subq.c.startperiod).label("max_start_period")
+    ]).group_by(union_subq.c.coid).alias("agg_subq")
+    
+    # Build the formatted "age" column expression.
+    age_expr = func.concat_ws(
+        " - ",
+        func.ifnull(func.regexp_replace(cast(agg_subq.c.max_start_period, String), "\\.(0+)$", ""), ""),
+        func.ifnull(func.regexp_replace(cast(agg_subq.c.min_end_period, String), "\\.(0+)$", ""), "")
+    ).label("age")
+    
+    # Modify the incoming query by joining the aggregated subquery.
+    base_entity = query.column_descriptions[0]["entity"] # The base entity is CollectionObject
+    new_query = query.join(agg_subq, base_entity.collectionObjectId == agg_subq.c.coid)
+    new_query = new_query.add_columns(age_expr)
+    return new_query
+
+def query_co_ids_in_time_period(query, time_period_name: str, require_full_overlap: bool = False) -> Set[int]:
+    """
+    Query for collection object IDs that overlap with the given geologic time period.
+
+    :param time_period_name: The name of the time period.
+    :param require_full_overlap: If True, only collections that fully overlap with the range are returned.
+    :return: A set of collection object IDs.
+    """
+    time_period = Geologictimeperiod.objects.filter(name=time_period_name).first()
+    if not time_period:
+        return set()
+    start_time = time_period.startperiod
+    end_time = time_period.endperiod
+    if start_time is None:
+        start_time = 13800
+    if end_time is None:
+        end_time = 0
+    return modify_query_add_age_range(query, start_time, end_time, require_full_overlap)
