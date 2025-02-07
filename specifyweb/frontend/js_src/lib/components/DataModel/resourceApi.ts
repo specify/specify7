@@ -45,6 +45,7 @@ function eventHandlerForToOne(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
+        this.trigger.apply(this, args);
         return;
       }
       case 'change:id': {
