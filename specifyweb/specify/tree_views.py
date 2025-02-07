@@ -37,7 +37,7 @@ GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
 COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
-ALL_TRESS: Tuple[TREE_TABLE, ...] = [
+ALL_TREES: Tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 
@@ -476,7 +476,7 @@ def tree_rank_item_count(request, tree, rankid):
                         "schema": {
                             "type": "object",
                             'properties': {
-                                tree: {"$ref": "#/components/schemas/tree_info"} for tree in ALL_TRESS
+                                tree: {"$ref": "#/components/schemas/tree_info"} for tree in ALL_TREES
                             }
                         }
                     }
@@ -518,7 +518,7 @@ def all_tree_information(request):
     is_paleo_or_geo_discipline = request.specify_collection.discipline.is_paleo_geo()
 
     accessible_trees = tuple(filter(
-        has_tree_read_permission, ALL_TRESS if is_paleo_or_geo_discipline else COMMON_TREES))
+        has_tree_read_permission, ALL_TREES if is_paleo_or_geo_discipline else COMMON_TREES))
 
     result = {}
 

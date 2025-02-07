@@ -30,6 +30,8 @@ from specifyweb.workbench.upload.auditor import (
     AuditorProps,
     BatchEditPrefs,
 )
+from specifyweb.specify.tree_views import ALL_TREES
+
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import (
@@ -414,16 +416,9 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
     treedefs = upload_plan.get_treedefs()
 
     to_fix = [
-        tree
-        for tree in (
-            "taxon",
-            "geography",
-            "geologictimeperiod",
-            "lithostrat",
-            "storage",
-            "tectonicunit",
-        )
-        if any(changed_tree(tree, r) for r in results)
+        tree.lower()
+        for tree in ALL_TREES
+        if any(changed_tree(tree.lower(), r) for r in results)
     ]
 
     for tree in to_fix:
