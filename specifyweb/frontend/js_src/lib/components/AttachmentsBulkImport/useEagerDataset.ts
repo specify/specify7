@@ -84,8 +84,8 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
       baseDataSet.uploaderstatus === 'uploading'
         ? 'uploadInterrupted'
         : baseDataSet.uploaderstatus === 'deleting'
-        ? 'deletingInterrupted'
-        : 'main',
+          ? 'deletingInterrupted'
+          : 'main',
     needsSaved: baseDataSet.uploaderstatus !== 'main',
     rows: baseDataSet.rows ?? [],
     save: false,

@@ -658,6 +658,124 @@ class InlineApiTests(ApiTests):
         self.collectionobjects[1].refresh_from_db()
         self.assertEqual(self.collectionobjects[0].accession, acc2)
         self.assertEqual(self.collectionobjects[1].accession, acc2)
+
+    def test_skipping_redundant_resources(self): 
+        catalog_number = f'num-{len(self.collectionobjects)}'
+        redundant_catalog_number = f'num-{len(self.collectionobjects) + 1}'
+        redundant_accession_number = 'c'
+        accession_data = {
+            'accessionnumber': "b",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    {
+                        "catalogNumber": catalog_number,
+                        'accession': {
+                            "accessionNumber": redundant_accession_number,
+                        },
+                        "determinations": [
+                            {
+                                "text1": "test determination",
+                                "collectionObject": {
+                                    "catalogNumber": redundant_catalog_number
+                                },
+                            }
+                        ],
+                        'collection': api.uri_for_model('Collection', self.collection.id),
+                    }
+                ]
+            }
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertFalse(models.Accession.objects.filter(accessionnumber=redundant_accession_number).exists())
+        self.assertFalse(models.Collectionobject.objects.filter(catalognumber=redundant_catalog_number).exists())
+
+class InlineApiRemoteToOneTests(ApiTests): 
+    def setUp(self): 
+        super(InlineApiRemoteToOneTests, self).setUp()
+        cog_type_picklist = Picklist.objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST,
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection
+        )
+        Picklistitem.objects.create(
+            title='Discrete',
+            value='Discrete',
+            picklist=cog_type_picklist
+        )
+        self.cogtype = models.Collectionobjectgrouptype.objects.create(
+            name="Discrete", type="Discrete", collection=self.collection
+        )
+        self.cog_parent = models.Collectionobjectgroup.objects.create(
+            name="Parent",
+            cogtype=self.cogtype,
+            collection=self.collection,
+        )
+
+    def test_setting_remote_to_one_from_new(self):
+        co_data = {
+            "catalognumber": f'num-{len(self.collectionobjects)}',
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": api.uri_for_model("Collectionobjectgroup", self.cog_parent.id)
+            },
+            'collection': api.uri_for_model('Collection', self.collection.id),
+        }
+        co = api.create_obj(self.collection, self.agent, "Collectionobject", co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog_id=self.cog_parent.id, childco=co)
+        self.assertEqual(co.cojo, cojo)
+    
+    def test_setting_remote_to_one_from_existing(self): 
+        existing_co = self.collectionobjects[0]
+        co_data = {
+            **api.obj_to_data(existing_co),
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": api.uri_for_model("Collectionobjectgroup", self.cog_parent.id)
+            },
+        }
+        co = api.update_obj(self.collection, self.agent, "Collectionobject", existing_co.id, existing_co.version, co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog_id=self.cog_parent.id, childco=co)
+        self.assertEqual(co.cojo, cojo)
+
+    def test_creating_independent_from_remote_one_to_one(self):
+        new_parent_name = "ParentTwo"
+        co_data = {
+            "catalognumber": f'num-{len(self.collectionobjects)}',
+            "cojo": {
+                "isPrimary": True,
+                "isSubstrate": False,
+                "parentCog": {
+                    "name": new_parent_name,
+                    "cogtype": api.uri_for_model("Collectionobjectgrouptype", self.cogtype.id),
+                    'collection': api.uri_for_model('Collection', self.collection.id)
+                }
+            },
+            'collection': api.uri_for_model('Collection', self.collection.id),
+        }
+        co = api.create_obj(self.collection, self.agent, "Collectionobject", co_data)
+        cojo = models.Collectionobjectgroupjoin.objects.get(parentcog__name=new_parent_name, childco=co)
+
+        self.assertEqual(co.cojo, cojo)
+        self.assertEqual(co.cojo.parentcog.name, new_parent_name)
+
+    def test_unsetting_dependent_remote_one_to_one(self): 
+        existing_co = self.collectionobjects[1]
+        cojo = models.Collectionobjectgroupjoin.objects.create(isprimary=False, parentcog=self.cog_parent,childco=existing_co)
+        existing_co.refresh_from_db()
+        self.assertEqual(existing_co.cojo, cojo)
+        co_data = {
+            **api.obj_to_data(existing_co),
+            "cojo": None,
+        }
+        co = api.update_obj(self.collection, self.agent, "Collectionobject", existing_co.id, existing_co.version, co_data)
+        self.assertIsNone(api.get_related_or_none(co, "cojo"))
+        self.assertFalse(models.Collectionobjectgroupjoin.objects.filter(childco_id=co.id).exists())
     
     # version control on inlined resources should be tested
 

@@ -839,7 +839,15 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Требуется текущее определение.',
     'uk-ua': 'Потрібне поточне визначення.',
   },
-  parentCogSameAsChild: {
-    'en-us': 'A Collection Object Group cannot be a parent to itself',
+  cogAddedToItself: {
+    'en-us': 'A COG cannot be added to itself.',
+  },
+  primaryCogChildRequired: {
+    'en-us':
+      'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
+  invalidDeterminationTaxon: {
+    'en-us':
+      'Determination does not belong to the taxon tree associated with the Collection Object Type',
   },
 } as const);

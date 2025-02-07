@@ -145,6 +145,12 @@ export function COJODialog({
           multiple
           searchView={undefined}
           table={resourceTable as SpecifyTable<CollectionObject>}
+          onAdd={(rsResources): void => {
+            rsResources.forEach((resource) => {
+              handleCOJOCreation(resource);
+            });
+            handleStates();
+          }}
           onClose={(): void => setState(undefined)}
           onSelected={(selectedResources): void => {
             selectedResources.forEach((selectedResource) => {

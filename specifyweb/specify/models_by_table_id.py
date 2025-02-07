@@ -201,21 +201,21 @@ model_names_by_table_id = {
     1010:'RolePolicy',
     1011:'LibraryRolePolicy',
     1012:'Spdataset',
-    1013: 'LocalityUpdate',
-    1014: 'LocalityUpdateRowResult',
-    1015: 'Collectionobjecttype',
-    1016: 'Collectionobjectgroup',
-    1017: 'Collectionobjectgroupjoin',
-    1018: 'Collectionobjectgrouptype',
-    1019: 'Absoluteage', 
-    1020: 'Relativeage', 
-    1021: 'Absoluteageattachment',
-    1022: 'Relativeageattachment', 
-    1023: 'Absoluteagecitation', 
-    1024: 'Relativeagecitation',
-    1025: 'Tectonicunittreedef',
-    1026: 'Tectonicunittreedefitem',
-    1027: 'Tectonicunit', 
+    1013:'LocalityUpdate',
+    1014:'LocalityUpdateRowResult',
+    1015:'Collectionobjecttype',
+    1016:'Collectionobjectgroup',
+    1017:'Collectionobjectgroupjoin',
+    1018:'Collectionobjectgrouptype',
+    1019:'Absoluteage', 
+    1020:'Relativeage', 
+    1021:'Absoluteageattachment',
+    1022:'Relativeageattachment', 
+    1023:'Absoluteagecitation', 
+    1024:'Relativeagecitation',
+    1025:'Tectonicunittreedef',
+    1026:'Tectonicunittreedefitem',
+    1027:'Tectonicunit', 
 }
 
 model_names_by_app = {
@@ -479,6 +479,12 @@ def get_model_by_table_id(tableid):
     if callable(model):
         model = model()
     return model
+    
+def get_table_id_by_model_name(model_name):
+    for tableid, name in model_names_by_table_id.items():
+        if name == model_name:
+            return tableid
+    raise ValueError(f"Model {model_name} not found in model_names_by_table_id")
 
 def models_iterator():
     for tableid, _ in model_names_by_table_id.items():

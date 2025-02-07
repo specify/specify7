@@ -264,6 +264,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </ErrorBoundary>
     ) : undefined;
 
+  const hasNoData =
+    !resource || (Array.isArray(resource) && resource.length === 0);
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -313,7 +316,17 @@ export function ResourceView<SCHEMA extends AnySchema>({
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
-        <div className={isCollapsed ? 'hidden' : ''}>{formattedChildren}</div>
+        <div
+          className={
+            isCollapsed
+              ? 'hidden'
+              : hasNoData
+                ? ''
+                : 'border border-gray-500 border-t-0 rounded-b p-1'
+          }
+        >
+          {formattedChildren}
+        </div>
       </DataEntry.SubForm>
     ) : (
       <Container.FullGray>
