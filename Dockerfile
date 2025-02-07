@@ -42,7 +42,8 @@ RUN npx webpack --mode production
 
 FROM common AS build-backend
 
-RUN set -eux; \ # in retry-loop to help github arm64 build
+# Retry loop to help GitHub arm64 build
+RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \
       apt-get -y install --no-install-recommends \
@@ -59,7 +60,8 @@ RUN set -eux; \ # in retry-loop to help github arm64 build
             python3.8-venv \
             python3.8-distutils \
             python3.8-dev \
-            libmariadbclient-dev && break || sleep 5; \
+            libmariadbclient-dev && break; \
+      echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
     done; \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -68,13 +70,16 @@ COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
 
-RUN set -eux; \ # in retry-loop to help github arm64 build
+# Retry loop to help GitHub arm64 build
+RUN set -eux; \
     for i in 1 2 3; do \
         python3.8 -m venv ve && \
         ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
         ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
-        break || sleep 5; \
+        break; \
+        echo "pip install failed, retrying in 5 seconds..."; sleep 5; \
     done
+
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
