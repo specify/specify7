@@ -265,10 +265,10 @@ export function QueryComboBox({
     field.relatedTable;
 
   const [fetchedTreeDefinition] = useAsyncState(
-    React.useCallback(
-      async () =>
-        resource?.specifyTable === tables.Determination &&
-        resource.collection?.related?.specifyTable === tables.CollectionObject
+    React.useCallback(async () => {
+      if (resource?.specifyTable === tables.Determination) {
+        return resource.collection?.related?.specifyTable ===
+          tables.CollectionObject
           ? (resource.collection?.related as SpecifyResource<CollectionObject>)
               .rgetPromise('collectionObjectType')
               .then(
@@ -278,9 +278,16 @@ export function QueryComboBox({
                     | undefined
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
-          : undefined,
-      [resource, resource?.collection?.related?.get('collectionObjectType')]
-    ),
+          : undefined;
+      } else if (resource?.specifyTable === tables.Taxon) {
+        const definition = resource.get('definition');
+        const parentDefinition = (
+          resource?.independentResources?.parent as SpecifyResource<AnySchema>
+        )?.get?.('definition');
+        return definition || parentDefinition;
+      }
+      return undefined;
+    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
     false
   );
 

@@ -346,7 +346,7 @@ class ObjectFormatter(object):
             picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
             if picklists:
                 cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
-                _case = case(cases)
+                _case = case(cases, else_=field)
             
                 return blank_nulls(_case) if self.replace_nulls else _case
         

@@ -388,6 +388,37 @@ class ScopedTreeRecord(NamedTuple):
 
     def rescope_tree_from_row(self, row: Row) -> Tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         """Rescope tree from row data."""
+        
+        def validate_trees_with_cotype(row: Row, treedefs_in_row: Set[int]):
+            # TODO: Need a better way to do this
+            # Find a way to send cotype column when ScopedTreeRecord instance is created?
+            COL_NAMES = ["Type", "Collection Object Type"]
+            def find_cotype_in_row(row: Row):
+                for col_name, value in row.items():
+                    if col_name in COL_NAMES:
+                        return col_name, value
+                    
+                return None
+            
+            def get_cotype_tree_def(cotype_name: str):
+                # TODO: Need to scope by collection?
+                cotypes = models.Collectionobjecttype.objects.filter(name=cotype_name)
+                return cotypes[0].taxontreedef.id if len(cotypes) > 0 else None
+        
+            cotype = find_cotype_in_row(row)
+            if not cotype: return None
+
+            cotype_column, cotype_value = cotype
+
+            cotype_treedef = get_cotype_tree_def(cotype_value)
+            if not cotype_treedef: return None
+
+            # Check only the first treedef assuming all ranks belong to same tree
+            # Validation for multiple ranks is done elsewhere
+            if len(treedefs_in_row) > 0 and cotype_treedef == list(treedefs_in_row)[0]:
+                return None
+            
+            return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, cotype_column)
 
         # Get models based on the name
         def get_models(name: str):
@@ -473,16 +504,10 @@ class ScopedTreeRecord(NamedTuple):
         result = handle_multiple_or_no_treedefs(unique_treedef_ids, targeted_treedefids, ranks_columns_in_row_not_null)
         if result:
             return result
-
-        # Determine the target treedef based on the columns that are not null
-        targeted_treedefids = {rank_column.treedef_id for rank_column in ranks_columns_in_row_not_null}
-        if not targeted_treedefids:
-            # return self, WorkBenchParseFailure('noRanksInRow', {}, None)
-            return self, None
-        elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
-            logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
-            error_col_name = list(ranks_columns_in_row_not_null)[0].column_fullname
-            return self, WorkBenchParseFailure("multipleRanksInRow", {}, error_col_name)
+        
+        result = validate_trees_with_cotype(row, targeted_treedefids)
+        if result:
+            return result
 
         target_rank_treedef_id = targeted_treedefids.pop()
         target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
