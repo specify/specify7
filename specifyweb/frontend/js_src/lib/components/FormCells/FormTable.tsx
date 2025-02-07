@@ -38,8 +38,6 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
-import { schema } from '../DataModel/schema';
-import { tables } from '../DataModel/tables';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -154,22 +152,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRow?.focus();
   }, [resources]);
 
-  // TODO: Remove after #6193
-  const isCollectingEventToOne =
-    schema.embeddedCollectingEvent &&
-    relationship.table === tables.CollectingEvent &&
-    relationship.name === 'collectionObjects';
-  const reversePaleoContextField: IR<string> = {
-    collectionobject: 'collectionObjects',
-    collectingevent: 'collectingEvents',
-    locality: 'localities',
-  };
-  const isPaleoContextToOne =
-    schema.embeddedPaleoContext &&
-    relationship.table === tables.PaleoContext &&
-    relationship.name ===
-      reversePaleoContextField[schema.paleoContextChildTable];
-
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
   const header = commonText.countLine({
@@ -177,11 +159,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     count: totalCount ?? resources.length,
   });
 
-  // TODO: Remove readonly for embedded CE and paleo context after #6193
-  const isReadOnly =
-    React.useContext(ReadOnlyContext) ||
-    isCollectingEventToOne ||
-    isPaleoContextToOne;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
   const collapsedViewDefinition = useViewDefinition({

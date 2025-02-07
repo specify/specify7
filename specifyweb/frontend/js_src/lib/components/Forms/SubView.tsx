@@ -5,7 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCollection } from '../../hooks/useCollection';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
@@ -24,6 +24,7 @@ import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelecto
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { schema } from '../DataModel/schema';
 
 type SubViewContextType =
   | {
@@ -124,7 +125,27 @@ export function SubView({
     ]
   );
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  // TODO: Remove after #6193
+  const isCollectingEventToOne =
+    schema.embeddedCollectingEvent &&
+    relationship.table === tables.CollectingEvent &&
+    relationship.name === 'collectionObjects';
+  const reversePaleoContextField: IR<string> = {
+    collectionobject: 'collectionObjects',
+    collectingevent: 'collectingEvents',
+    locality: 'localities',
+  };
+  const isPaleoContextToOne =
+    schema.embeddedPaleoContext &&
+    relationship.table === tables.PaleoContext &&
+    relationship.name ===
+      reversePaleoContextField[schema.paleoContextChildTable];
+
+  // TODO: Remove readonly for embedded CE and paleo context after #6193
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    isCollectingEventToOne ||
+    isPaleoContextToOne;
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
