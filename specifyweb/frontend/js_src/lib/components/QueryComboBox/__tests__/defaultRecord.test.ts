@@ -1,8 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
-import { useQueryComboBoxDefaults } from '../helpers';
 import { tables } from '../../DataModel/tables';
 import { userInformation } from '../../InitialContext/userInformation';
+import { useQueryComboBoxDefaults } from '../helpers';
 
 requireContext();
 
