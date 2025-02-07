@@ -18,10 +18,11 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count param_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
+        kwargs['param_count'] = 0
         # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
         # In that case, the cycle will end (unlike other cyclical cases).
         kwargs['tree_rank_count'] = 0
@@ -71,48 +72,40 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
-        column_name = next_join_path[0].name
+        treedefitem_params = []
+        for _, rank_id in treedefs_with_ranks:
+            treedefitem_param = sql.bindparam(
+                'tdi_%s' % query.param_count,
+                value=rank_id
+            )
+            treedefitem_params.append(treedefitem_param)
+            param_count = self.param_count + 1
+            query = query._replace(param_count=param_count)
 
-        # NOTE: Code from #4929
-        # def make_tree_field_spec(tree_node):
-        #     return current_field_spec._replace(
-        #         root_table=table, # rebasing the query
-        #         root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
-        #         join_path=next_join_path, # slicing join path to begin from after the tree
-        #     )
+        def make_tree_field_spec(tree_node):
+            return current_field_spec._replace(
+                root_table=table, # rebasing the query
+                root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
+                join_path=next_join_path, # slicing join path to begin from after the tree
+            )
 
-        # cases = []
-        # field = None # just to stop mypy from complaining.
-        # for ancestor in ancestors:
-        #     field_spec = make_tree_field_spec(ancestor)
-        #     query, orm_field, field, table = field_spec.add_spec_to_query(query)
-        #     #field and table won't matter. rank acts as fork, and these two will be same across siblings
-        #     cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
+        cases = []
+        field = None # just to stop mypy from complaining.
+        for ancestor in ancestors:
+            field_spec = make_tree_field_spec(ancestor)
+            query, orm_field, field, table = field_spec.add_spec_to_query(query)
+            # Field and table won't matter. Rank acts as fork, and these two will be same across siblings
+            for treedefitem_param in treedefitem_params:
+                cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
 
-        # column = sql.case(cases)
-
-        # return query, column, field, table
-
-        def _predicates_for_node(_node):
-            return [
-                # TEST: consider taking the treedef_id comparison just to the first node, if it speeds things up (matching for higher is redundant..)
-                (sql.and_(getattr(_node, treedef_column)==treedef_id, getattr(_node, treedefitem_column)==treedefitem_id), getattr(_node, column_name))
-                for (treedef_id, treedefitem_id) in treedefs_with_ranks
-            ]
-        
-        cases_per_ancestor = [
-            _predicates_for_node(ancestor)
-            for ancestor in ancestors
-            ]
-        
-        column = sql.case([case for per_ancestor in cases_per_ancestor for case in per_ancestor])
+        column = sql.case(cases)
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
         # We don't want to include treedef if the rank is not present.
         new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
-        
-        return query, column, current_field_spec.get_field(), table
+
+        return query, column, field, table
 
     def tables_in_path(self, table, join_path):
         path = deque(join_path)
