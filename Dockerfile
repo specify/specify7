@@ -42,32 +42,39 @@ RUN npx webpack --mode production
 
 FROM common AS build-backend
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        curl \
-        git \
-        libsasl2-dev \
-        libsasl2-modules \
-        libldap2-dev \
-        libssl-dev \
-        libgmp-dev \
-        libffi-dev \
-        python3.8-venv \
-        python3.8-distutils \
-        python3.8-dev \
-        libmariadbclient-dev \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \ # in retry-loop to help github arm64 build
+    for i in 1 2 3; do \
+      apt-get update && \
+      apt-get -y install --no-install-recommends \
+            build-essential \
+            ca-certificates \
+            curl \
+            git \
+            libsasl2-dev \
+            libsasl2-modules \
+            libldap2-dev \
+            libssl-dev \
+            libgmp-dev \
+            libffi-dev \
+            python3.8-venv \
+            python3.8-distutils \
+            python3.8-dev \
+            libmariadbclient-dev && break || sleep 5; \
+    done; \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
+
+RUN set -eux; \ # in retry-loop to help github arm64 build
+    for i in 1 2 3; do \
+        python3.8 -m venv ve && \
+        ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+        ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
+        break || sleep 5; \
+    done
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
