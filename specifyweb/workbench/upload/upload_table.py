@@ -1,3 +1,4 @@
+from decimal import Decimal
 import logging
 from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Literal, Tuple
 
@@ -1111,8 +1112,14 @@ class BoundUpdateTable(BoundUploadTable):
 
     @staticmethod
     def _field_changed(reference_record, attrs: Dict[str, Any]):
+        def is_equal(old, new):
+            if isinstance(old, Decimal):
+                return float(old) == new
+            
+            return old == new
+                
         return {
             key: FieldChangeInfo(field_name=key, old_value=getattr(reference_record, key), new_value=new_value)  # type: ignore
             for (key, new_value) in attrs.items()
-            if getattr(reference_record, key) != new_value
+            if not is_equal(getattr(reference_record, key), new_value)
         }
