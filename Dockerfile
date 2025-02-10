@@ -42,33 +42,50 @@ RUN npx webpack --mode production
 
 FROM common AS build-backend
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        curl \
-        git \
-        libsasl2-dev \
-        libsasl2-modules \
-        libldap2-dev \
-        libssl-dev \
-        libgmp-dev \
-        libffi-dev \
-        python3.8-venv \
-        python3.8-distutils \
-        python3.8-dev \
-        libmariadbclient-dev \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+# Retry loop to help GitHub arm64 build
+RUN set -eux; \
+    for i in 1 2 3; do \
+      apt-get update && \
+      apt-get -y install --no-install-recommends \
+            build-essential \
+            ca-certificates \
+            curl \
+            git \
+            libsasl2-dev \
+            libsasl2-modules \
+            libldap2-dev \
+            libssl-dev \
+            libgmp-dev \
+            libffi-dev \
+            python3.8-venv \
+            python3.8-distutils \
+            python3.8-dev \
+            libmariadbclient-dev && break; \
+      echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
+    done; \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
-RUN ve/bin/pip install --no-cache-dir gunicorn
+
+# Retry loop to help GitHub arm64 build
+RUN set -eux; \
+    for i in 1 2 3; do \
+        python3.8 -m venv ve && \
+        ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+        ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
+        break; \
+        echo "pip install failed, retrying in 5 seconds..."; sleep 5; \
+    done
+
+# Retry loop for gunicorn installation
+RUN set -eux; \
+    for i in 1 2 3; do \
+        ve/bin/pip install --no-cache-dir gunicorn && break; \
+        echo "gunicorn install failed, retrying in 5 seconds..."; sleep 5; \
+    done
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
 COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
@@ -180,5 +197,4 @@ FROM run-common AS run
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
 
