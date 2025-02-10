@@ -205,7 +205,7 @@ msgstr ""
 
 #: components/Formatters/formatters.ts:196
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:214
+#: components/QueryComboBox/index.tsx:211
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
