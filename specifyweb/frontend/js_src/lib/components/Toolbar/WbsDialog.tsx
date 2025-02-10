@@ -180,6 +180,9 @@ export function DataSetsDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport && (
             <>
+              <Link.Info href="/specify/workbench/import-attachments/">
+                {wbText.importAttachments()}
+              </Link.Info>
               <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Info>

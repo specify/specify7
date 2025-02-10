@@ -209,6 +209,12 @@ export const routes: RA<EnhancedRoute> = [
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
       {
+        path: 'import-attachments',
+        title: wbText.importAttachments(),
+        element: () =>
+          import('../WbImportAttachments').then(({ WbImportAttachmentsView }) => WbImportAttachmentsView),
+      },
+      {
         path: 'plan/:id',
         element: () =>
           import('../WbPlanView').then(

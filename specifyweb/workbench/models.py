@@ -44,7 +44,7 @@ class Dataset(models.Model):
             collection=request.specify_collection,
             **(extra_filters if extra_filters is not None else {})
         ).only(*attrs)
-        return [{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}, 'uploadplan': json.loads(ds.uploadplan) if ds.uploadplan else None} for ds in dss]
+        return [{}]
 
     # raise_404: Whether to raise 404 or return http 404.
     # lock_object: Whether to run a "select for update" or "select"

@@ -1246,6 +1246,9 @@ export const wbText = createDictionary({
     'uk-ua': 'Імпорт файлу',
     'de-ch': 'Datei importieren',
   },
+  importAttachments: {
+    'en-us': 'Import Attachments',
+  },
   columnName: {
     'en-us': 'Column {columnIndex:number}',
     'ru-ru': 'Столбец {columnIndex:number}',

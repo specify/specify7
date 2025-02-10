@@ -8707,6 +8707,38 @@ datamodel = Datamodel(tables=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
         ],
     ),
+    Table( # SpDataSetAttachment
+        sp7_only=True,
+        classname='edu.ku.brc.specify.datamodel.SpdatasetAttachment',
+        table='spadatasetattachment',
+        tableId=1018,
+        system=True,
+        idColumn='SpdatasetAttachmentID',
+        idFieldName='SpdatasetAttachmentId',
+        idField=IdField(name='SpdatasetAttachmentId', column='SpdatasetAttachmentID', type='java.lang.Integer'),
+        fields=[
+            Field(name='collectionMemberId', column='CollectionMemberID', indexed=True, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='CEAColMemIDX', column_names=['CollectionMemberID'])
+        ],
+        relationships=[
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='SpdatasetAttachments', dependent=True),
+            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='SpDataSetID', otherSideName='SpdatasetAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ],
+        view='ObjectAttachment',
+        searchDialog=None
+    ),
 ])
 
 # add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions
