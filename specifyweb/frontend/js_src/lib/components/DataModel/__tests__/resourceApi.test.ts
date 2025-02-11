@@ -250,7 +250,8 @@ describe('eventHandlerForToMany', () => {
       ?.models[0].set('text1', 'helloWorld');
 
     expect(resource.needsSaved).toBe(true);
-    expect(testFunction).toHaveBeenCalledTimes(1);
+    // Change to 2 in issue-6214
+    expect(testFunction).toHaveBeenCalledTimes(2);
   });
   test('changing collection propagates to related', () => {
     const resource = new tables.CollectionObject.Resource(

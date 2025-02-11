@@ -69,6 +69,7 @@ function eventHandlerForToMany(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
+        this.trigger.apply(this, args);
         break;
       }
       case 'change':
