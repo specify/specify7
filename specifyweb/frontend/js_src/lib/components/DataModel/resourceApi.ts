@@ -69,7 +69,7 @@ function eventHandlerForToMany(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
-        if (field.name !== 'leftSideRels') {this.trigger.apply(this, args)}
+        if (related.models[0].specifyTable.name !== 'CollectionRelationship') {this.trigger.apply(this, args)}
         break;
       }
       case 'change':
