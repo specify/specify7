@@ -576,7 +576,7 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         return interaction_obj
 
     interaction_preps = InteractionPrepModel.objects.filter(**{filter_fld: interaction_obj})
-    interaction_prep_ids = set(interaction_preps.values_list("id", flat=True))
+    interaction_prep_ids = set(interaction_preps.values_list("preparation_id", flat=True))
     for interaction_prep in interaction_preps:
         prep = interaction_prep.preparation
         sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
