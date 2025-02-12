@@ -461,27 +461,20 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         original_loan_prep_data = None
         original_loan_return_data_lst = None
         original_loan_return_data = None
-        if len(orginal_prep_ids) == 1:
-            original_prep_id = orginal_prep_ids.pop()
-            original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
-            original_loan_prep_data = updated_interaction_data[
-                "loanpreparations"][original_loan_prep_idx]
-            original_loan_return_data_lst = original_loan_prep_data["loanreturnpreparations"]
-            original_loan_return_data = (
-                original_loan_return_data_lst[-1]
-                if original_loan_return_data_lst is not None
-                and len(original_loan_return_data_lst) > 0
-                else None
-            )
-            if original_loan_return_data is None:
-                logger.warning(
-                    "No loan return preparation data found for this consolidated COG preparation.")
-                continue
-        elif len(orginal_prep_ids) > 1:
-            logger.warning(
-                "Multiple partial loan returns found for this consolidated COG preparation.")
-        else:
+        if len(orginal_prep_ids) < 1:
             continue
+        if len(orginal_prep_ids) > 1:
+            logger.warning("Multiple partial loan returns found for this consolidated COG preparation.")
+        original_prep_id = orginal_prep_ids.pop()
+        original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
+        original_loan_prep_data = updated_interaction_data["loanpreparations"][original_loan_prep_idx]
+        original_loan_return_data_lst = original_loan_prep_data["loanreturnpreparations"]
+        original_loan_return_data = (
+            original_loan_return_data_lst[-1]
+            if original_loan_return_data_lst is not None
+            and len(original_loan_return_data_lst) > 0
+            else None
+        )
 
         # Set the return and resolved quantity to the max amount.
         # In the future, maybe have more complex logic for partial returns/resolves of consolidated cogs.
