@@ -596,5 +596,8 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         if is_max_quntity_used:
             interaction_prep.quantity = interaction_prep.preparation.countamt
             interaction_prep.save()
+        if len(sibling_preps) > 1:
+            interaction_prep.quantity = interaction_prep.preparation.countamt
+            interaction_prep.save()
 
     return interaction_obj
