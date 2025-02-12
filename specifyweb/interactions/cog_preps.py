@@ -1,4 +1,3 @@
-import re
 import logging
 from typing import Any, List, Optional, Set
 from django.db.models import Subquery
@@ -267,6 +266,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
+    if original_interaction_obj is None:
+        return updated_interaction_data
     if original_interaction_obj._meta.model_name == 'loan':
         if 'loanpreparations' in updated_interaction_data:
             interaction_prep_name = "loanpreparations"
@@ -555,3 +556,45 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data
+
+def enforce_interaction_sibling_prep_max_count(interaction_obj):
+    InteractionPrepModel = None
+    filter_fld = None
+    if interaction_obj is None:
+        return interaction_obj
+    if interaction_obj._meta.model_name == 'loan':
+        if hasattr(interaction_obj, 'loanpreparations'):
+            filter_fld = "loan"
+            InteractionPrepModel = Loanpreparation
+    elif interaction_obj._meta.model_name == 'gift':
+        filter_fld = "gift"
+        InteractionPrepModel = Giftpreparation
+    elif interaction_obj._meta.model_name == 'disposal':
+        filter_fld = "disposal"
+        InteractionPrepModel = Disposalpreparation
+    else:
+        return interaction_obj
+
+    interaction_preps = InteractionPrepModel.objects.filter(**{filter_fld: interaction_obj})
+    interaction_prep_ids = set(interaction_preps.values_list("id", flat=True))
+    for interaction_prep in interaction_preps:
+        prep = interaction_prep.preparation
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+        is_max_quntity_used = False 
+        for sibling_prep in sibling_preps:
+            if sibling_prep.id not in interaction_prep_ids:
+                continue
+            count = sibling_prep.countamt
+            quantity = 0
+            interaction_sibling_prep = InteractionPrepModel.objects.filter(preparation=sibling_prep).first()
+            if interaction_sibling_prep is not None:
+                quantity = interaction_sibling_prep.quantity
+            if quantity == count:
+                is_max_quntity_used = True
+                break
+
+        if is_max_quntity_used:
+            interaction_prep.quantity = interaction_prep.preparation.countamt
+            interaction_prep.save()
+
+    return interaction_obj
