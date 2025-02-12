@@ -277,6 +277,15 @@ theories(getMappingLineData, [
         customSelectSubtype: 'simple',
         selectLabel: localized('Determination'),
         fieldsData: {
+          collectionObject: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: true,
+            optionLabel: 'Collection Object',
+            tableName: 'CollectionObject',
+          },
           determinedDate: {
             optionLabel: 'Date',
             isEnabled: true,
@@ -284,6 +293,15 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
+          },
+          determiners: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Determiners',
+            tableName: 'Determiner',
           },
           guid: {
             optionLabel: 'GUID',
