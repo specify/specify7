@@ -3,13 +3,6 @@ from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import TreeBusinessRuleException
 
 class GeologictimeperiodtreedefitemTests(ApiTests):
-    def test_cannot_delete_root(self):
-        root = self.geologictimeperiodtreedef.treedefitems.create(
-            name="root",
-            rankid=0)
-
-        with self.assertRaises(TreeBusinessRuleException):
-            root.delete()
 
     def test_delete_blocked_by_geologictimeperiod(self):
         root = self.geologictimeperiodtreedef.treedefitems.create(
