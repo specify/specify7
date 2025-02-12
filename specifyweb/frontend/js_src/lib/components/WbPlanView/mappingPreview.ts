@@ -22,6 +22,7 @@ import {
   parsePartialField,
   valueIsPartialField,
   valueIsToManyIndex,
+  valueIsTreeDefinition,
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
@@ -120,8 +121,11 @@ export function generateMappingPathPreview(
     : 1;
   const toManyIndexFormatted = toManyIndexNumber > 1 ? toManyIndex : undefined;
 
-  const [databaseFieldName, databaseTableOrRankName, databaseParentTableName] =
-    mappingPathSubset([baseTableName, ...mappingPath]);
+  const [
+    databaseFieldName,
+    databaseTableOrRankName,
+    databaseParentTableOrTreeName,
+  ] = mappingPathSubset([baseTableName, ...mappingPath]);
 
   // Attributes parts of filedLables to each variable or creates one if empty
   const [
@@ -129,7 +133,7 @@ export function generateMappingPathPreview(
     tableOrRankName = camelToHuman(
       getNameFromTreeRankName(databaseTableOrRankName)
     ),
-    parentTableName = camelToHuman(databaseParentTableName),
+    parentTableOrTreeName = camelToHuman(databaseParentTableOrTreeName),
   ] = mappingPathSubset(fieldLabels);
 
   const isAnyRank = databaseTableOrRankName === formatTreeRank(anyTreeRank);
@@ -138,6 +142,7 @@ export function generateMappingPathPreview(
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
+      databaseTableOrRankName !== 'childCog' &&
       databaseFieldName === 'name' &&
       !isAnyRank)
       ? undefined
@@ -151,28 +156,33 @@ export function generateMappingPathPreview(
   const fieldIsGeneric =
     genericFields.has(baseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
-      !nonGenericFields.has(baseFieldName));
+      !nonGenericFields.has(baseFieldName) &&
+      databaseTableOrRankName !== 'childCog');
 
   const tableNameNonEmpty =
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
-      ? tableOrRankName
-      : undefined;
+        ? tableOrRankName
+        : undefined;
 
   const tableNameFormatted =
     tablesToHide.has(databaseTableOrRankName) &&
     databaseFieldName !== formattedEntry
-      ? [parentTableName || tableNameNonEmpty]
+      ? [parentTableOrTreeName || tableNameNonEmpty]
       : genericTables.has(databaseTableOrRankName)
-      ? [parentTableName, tableNameNonEmpty]
-      : [tableNameNonEmpty];
+        ? [parentTableOrTreeName, tableNameNonEmpty]
+        : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)
-      ? [isAnyRank ? parentTableName : tableOrRankName]
+      ? [isAnyRank ? parentTableOrTreeName : tableOrRankName]
       : tableNameFormatted),
     fieldNameFormatted,
+    ...(valueIsTreeRank(databaseTableOrRankName) &&
+    valueIsTreeDefinition(databaseParentTableOrTreeName)
+      ? [parentTableOrTreeName]
+      : []),
     toManyIndexFormatted,
   ])
     .filter(Boolean)

@@ -10,7 +10,6 @@ import type { Collection } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { PickList } from '../DataModel/types';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function PickListEditor({
   resource,
@@ -56,8 +55,7 @@ export function PickListEditor({
         relationship={relationship}
         sortField={undefined}
         onAdd={
-          relationshipIsToMany(relationship) &&
-          relationship.type !== 'zero-to-one'
+          relationship.type.includes('-to-many')
             ? undefined
             : ([resource]): void =>
                 void resource.set(relationship.name, resource as never)

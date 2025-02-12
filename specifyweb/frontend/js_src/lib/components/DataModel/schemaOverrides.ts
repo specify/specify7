@@ -91,6 +91,8 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   StorageTreeDefItem: 'system',
   TaxonTreeDef: 'system',
   TaxonTreeDefItem: 'system',
+  TectonicUnitTreeDef: 'system',
+  TectonicUnitTreeDefItem: 'system',
 };
 
 // These field overrides apply to entire front-end
@@ -153,6 +155,12 @@ const globalFieldOverrides: {
     acceptedGeologicTimePeriod: { visibility: 'readOnly' },
     fullName: { visibility: 'readOnly' },
   },
+  TectonicUnit: {
+    parent: { visibility: 'required' },
+    isAccepted: { visibility: 'readOnly' },
+    acceptedTectonicUnit: { visibility: 'readOnly' },
+    fullName: { visibility: 'readOnly' },
+  },
   Storage: {
     parent: { visibility: 'required' },
     isAccepted: { visibility: 'readOnly' },
@@ -185,6 +193,12 @@ const globalFieldOverrides: {
     fullNameDirection: { visibility: 'readOnly' },
   },
   GeologicTimePeriodTreeDefItem: {
+    fullNameSeparator: { whiteSpaceSensitive: true },
+  },
+  TectonicUnitTreeDef: {
+    fullNameDirection: { visibility: 'readOnly' },
+  },
+  TectonicUnitTreeDefItem: {
     fullNameSeparator: { whiteSpaceSensitive: true },
   },
   LithoStratTreeDef: {
@@ -222,6 +236,13 @@ const fieldOverwrites: typeof globalFieldOverrides = {
   },
   CollectionObject: {
     collectionObjectType: { visibility: 'optional' },
+  },
+  CollectionObjectGroupType: {
+    type: { visibility: 'optional' },
+  },
+  CollectionObjectGroupJoin: {
+    precedence: { visibility: 'optional' },
+    isSubstrate: { visibility: 'optional' },
   },
   LoanPreparation: {
     isResolved: { visibility: 'optional' },

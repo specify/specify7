@@ -66,8 +66,8 @@ export function ShowResource({
     typeof recordSetId === 'number'
       ? 'recordSets'
       : interactionTables.has(resource.specifyTable.name)
-      ? 'interactions'
-      : 'dataEntry'
+        ? 'interactions'
+        : 'dataEntry'
   );
 
   const navigate = useNavigate();
@@ -109,7 +109,7 @@ export function ViewResourceById({
   const resource = React.useMemo(
     () =>
       typeof table === 'object'
-        ? record ?? new table.Resource({ id: numericId })
+        ? (record ?? new table.Resource({ id: numericId }))
         : undefined,
     [table, record, numericId]
   );

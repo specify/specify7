@@ -44,7 +44,7 @@ export function CollectionPicker({
 }: {
   readonly collectionId: readonly [
     number | undefined,
-    (collectionId: number) => void
+    (collectionId: number) => void,
   ];
   readonly isReadOnly?: boolean;
 }): JSX.Element {

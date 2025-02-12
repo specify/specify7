@@ -118,6 +118,7 @@ SPECIAL_DELETION_RULES = {
     'Lithostrattreedefitem.parent': models.DO_NOTHING,
     'Storagetreedefitem.parent': models.DO_NOTHING,
     'Taxontreedefitem.parent': models.DO_NOTHING,
+    'Tectonicunittreedefitem.parent': models.DO_NOTHING,
 }
 
 def make_relationship(modelname, rel, datamodel):

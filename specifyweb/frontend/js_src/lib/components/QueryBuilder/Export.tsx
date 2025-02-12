@@ -54,7 +54,8 @@ export function QueryExportButtons({
   function doQueryExport(
     url: string,
     delimiter: string | undefined,
-    bom: boolean | undefined
+    bom: boolean | undefined,
+    selectedRows: ReadonlySet<number> | undefined
   ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
@@ -70,6 +71,8 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
+        selectedRows:
+          selectedRows === undefined ? undefined : Array.from(selectedRows),
         delimiter,
         bom,
       }),
@@ -93,7 +96,8 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  async function exportSelected(): Promise<void> {
+
+  async function exportCsvSelected(): Promise<void> {
     const name = `${
       queryResource.isNew()
         ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
@@ -152,26 +156,37 @@ export function QueryExportButtons({
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
-        <QueryButton
-          disabled={fields.length === 0}
-          showConfirmation={showConfirmation}
-          onClick={(): void => {
-            selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, utf8Bom)
-              : exportSelected().catch(softFail);
-          }}
-        >
-          {queryText.createCsv()}
-        </QueryButton>
-      )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_csv') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void => {
+              selectedRows.size === 0
+                ? doQueryExport(
+                    '/stored_query/exportcsv/',
+                    separator,
+                    utf8Bom,
+                    undefined
+                  )
+                : exportCsvSelected().catch(softFail);
+            }}
+          >
+            {queryText.createCsv()}
+          </QueryButton>
+        )}
       {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
+              ? doQueryExport(
+                  '/stored_query/exportkml/',
+                  undefined,
+                  undefined,
+                  selectedRows.size === 0 ? undefined : selectedRows
+                )
               : setState('warning')
           }
         >

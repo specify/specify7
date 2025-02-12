@@ -261,7 +261,7 @@ function Cell({
       typeof fieldSpec === 'object' &&
       !field.isTemporal()
         ? syncFieldFormat(field, (value ?? '').toString(), fieldSpec.parser)
-        : value ?? '',
+        : (value ?? ''),
     [field, fieldSpec, value]
   );
 
@@ -283,8 +283,8 @@ function Cell({
       {value === null
         ? undefined
         : fieldSpec === undefined || typeof value === 'object'
-        ? value
-        : formatted}
+          ? value
+          : formatted}
     </div>
   );
 }

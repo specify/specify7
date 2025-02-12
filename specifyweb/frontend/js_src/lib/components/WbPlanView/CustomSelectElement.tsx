@@ -580,12 +580,12 @@ export function CustomSelectElement({
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
-              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
+                ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                 dark:!border-solid`
-              : customSelectType === 'OPTIONS_LIST' &&
-                defaultOption?.isRelationship === true
-              ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
+                : customSelectType === 'OPTIONS_LIST' &&
+                    defaultOption?.isRelationship === true
+                  ? 'bg-yellow-250 dark:bg-yellow-900'
+                  : customSelectElementBackground
           }
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
           ${handleClick === undefined ? '' : 'border border-gray-500'}

@@ -1,20 +1,17 @@
 import { act, renderHook } from '@testing-library/react';
 
+import { resourcesText } from '../../../localization/resources';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
+import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type {
-  CollectionObjectType,
-  Determination,
-  Taxon,
-  TaxonTreeDefItem,
-} from '../types';
+import type { CollectionObjectType, Taxon, TaxonTreeDefItem } from '../types';
 
 mockTime();
 requireContext();
@@ -85,13 +82,12 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
-      collectionobjecttype: collectionObjectTypeUrl,
       determinations: [
         {
           taxon: getResourceApiUrl('Taxon', otherTaxonId),
           preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
           isCurrent: true,
-        } as SerializedResource<Determination>,
+        },
       ],
       resource_uri: collectionObjectUrl,
       description: 'Base collection object',
@@ -116,25 +112,9 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
-  });
-
-  test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {
-    const collectionObject = getBaseCollectionObject();
-
-    const determination =
-      collectionObject.getDependentResource('determinations')?.models[0];
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(determination, tables.Determination.getField('taxon'))
+    expect(collectionObject.get('collectionObjectType')).toEqual(
+      schema.defaultCollectionObjectType
     );
-
-    await act(async () => {
-      await determination?.businessRuleManager?.checkField('taxon');
-    });
-
-    expect(result.current[0]).toStrictEqual([
-      'Taxon does not belong to the same tree as this Object Type',
-    ]);
   });
 
   const otherCollectionObjectTypeUrl = getResourceApiUrl(
@@ -150,6 +130,41 @@ describe('Collection Object business rules', () => {
     resource_uri: otherCollectionObjectTypeUrl,
   };
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
+
+  test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 1)
+    );
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+    );
+
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.invalidDeterminationTaxon(),
+    ]);
+
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([]);
+  });
 
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
@@ -207,6 +222,84 @@ describe('Collection Object business rules', () => {
     });
 
     expect(result.current[0]).toStrictEqual([]);
+  });
+});
+
+describe('CollectionObjectGroup business rules', () => {
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 1), {
+    name: 'Discrete type',
+    type: cogTypes.DISCRETE,
+  });
+
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 2), {
+    name: 'Consolidated type',
+    type: cogTypes.CONSOLIDATED,
+  });
+
+  const getBaseCog = () => {
+    const cog = new tables.CollectionObjectGroup.Resource({
+      id: 1,
+      cogType: getResourceApiUrl('CollectionObjectGroupType', 1),
+      resource_uri: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    const cojo1 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: false,
+      isSubstrate: true,
+      childCo: getResourceApiUrl('CollectionObject', 1),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+    const cojo2 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: true,
+      isSubstrate: false,
+      childCo: getResourceApiUrl('CollectionObject', 2),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    cog.set('children', [cojo1, cojo2]);
+    return { cog, cojo1, cojo2 };
+  };
+
+  test('Only one CO COJO can be primary', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo1.set('isPrimary', true);
+
+    expect(cojo1.get('isPrimary')).toBe(true);
+    expect(cojo2.get('isPrimary')).toBe(false);
+  });
+
+  test('Only one CO COJO can be substrate', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo2.set('isSubstrate', true);
+
+    expect(cojo1.get('isSubstrate')).toBe(false);
+    expect(cojo2.get('isSubstrate')).toBe(true);
+  });
+
+  test('Save blocked when a Consolidated COG has no primary CO child', async () => {
+    const { cog, cojo2 } = getBaseCog();
+    cog.set('cogType', getResourceApiUrl('CollectionObjectGroupType', 2));
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(cog, tables.CollectionObjectGroupJoin.field.isPrimary)
+    );
+
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save not blocked initially
+    expect(result.current[0]).toStrictEqual([]);
+
+    cojo2.set('isPrimary', false);
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save blocked after second child is marked as not primary
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.primaryCogChildRequired(),
+    ]);
   });
 });
 
@@ -279,6 +372,11 @@ describe('uniqueness rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Value must be unique to Collection',
     ]);
+  });
+
+  overrideAjax(getResourceApiUrl('Agent', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Agent', 1),
   });
 
   test('rule with local collection', async () => {

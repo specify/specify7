@@ -50,15 +50,15 @@ type TypeOf<DEFINITION extends Definition> =
   DEFINITION['defaultValue'] extends string
     ? string
     : DEFINITION['defaultValue'] extends number
-    ? number
-    : boolean;
+      ? number
+      : boolean;
 
 type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
   KEY extends keyof Definitions
     ? Definitions[KEY]
     : KEY extends keyof CollectionDefinitions
-    ? CollectionDefinitions[KEY]
-    : never;
+      ? CollectionDefinitions[KEY]
+      : never;
 
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
@@ -101,7 +101,7 @@ function parsePref(
       ? parsed.isValid
         ? parsed.parsed
         : defaultValue
-      : value ?? defaultValue
+      : (value ?? defaultValue)
   ) as boolean | number | string;
 }
 
@@ -156,6 +156,12 @@ export const remotePrefsDefinitions = f.store(
         formatters: [formatter.trim],
         isLegacy: true,
       },
+      'TectonicUnit.treeview_sort_field': {
+        description: 'Sort order for nodes in the tree viewer',
+        defaultValue: 'name',
+        formatters: [formatter.trim],
+        isLegacy: false,
+      },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
@@ -185,6 +191,13 @@ export const remotePrefsDefinitions = f.store(
         isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.Storage': {
+        description:
+          'Show Collection Object count only for nodes with RankID >= than this value',
+        defaultValue: 99_999,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+      'TreeEditor.Rank.Threshold.TectonicUnit': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
@@ -266,6 +279,13 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
+        description:
+          'Allowed to add children to synopsized TectonicUnit records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       // This is actually stored in Global Prefs:
       /*
        * 'AUDIT_LIFESPAN_MONTHS': {
@@ -275,7 +295,7 @@ export const remotePrefsDefinitions = f.store(
        *   isLegacy: true,
        * },
        */
-    } as const)
+    }) as const
 );
 
 /**

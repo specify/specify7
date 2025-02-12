@@ -1,16 +1,16 @@
-from typing import Dict, Any, Optional, Tuple, Callable, Union
+from typing import Dict, Any, Optional, Tuple, Callable, Union, cast
 
-from specifyweb.specify.datamodel import datamodel, Table, Relationship
+from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
-from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.stored_queries.format import get_date_format
 
 from .uploadable import Uploadable, ScopedUploadable
-from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
+from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
-from .treerecord import TreeRecord, ScopedTreeRecord
-from .column_options import ColumnOptions, ExtendedColumnOptions
+from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
+from .column_options import ColumnOptions, ExtendedColumnOptions, DeferredUIFormatter
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
 
@@ -85,7 +85,8 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     return adjust_to_ones
 
 
-def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str) -> ExtendedColumnOptions:
+def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
+    toOne = {} if _toOne is None else _toOne
     schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
@@ -109,10 +110,32 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
         schemaitem=schemaitem,
-        uiformatter=get_uiformatter(collection, tablename, fieldname),
+        uiformatter=get_or_defer_formatter(collection, tablename, fieldname, toOne),
         picklist=picklist,
         dateformat=get_date_format(),
     )
+
+def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, Uploadable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
+    """ The CollectionObject -> catalogNumber format can be determined by the 
+    CollectionObjectType -> catalogNumberFormatName for the CollectionObject
+
+    Similarly to PrepType, CollectionObjectType in the WorkBench is resolvable 
+    by the 'name' field
+
+    See https://github.com/specify/specify7/issues/5473 
+    """
+    toOne = {key.lower():value for key, value in _toOne.items()}
+    if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne.keys():
+        uploadTable = toOne['collectionobjecttype']
+
+        wb_col = cast(UploadTable, uploadTable).wbcols.get('name', None) if hasattr(uploadTable, 'wbcols') else None
+        optional_col_name = None if wb_col is None else wb_col.column
+        if optional_col_name is not None: 
+            col_name = cast(str, optional_col_name)
+            formats: Dict[str, Optional[UIFormatter]] = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
+            return lambda row: formats.get(row[col_name], get_uiformatter(collection, tablename, fieldname))
+
+    return get_uiformatter(collection, tablename, fieldname)
 
 def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable], collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
@@ -125,7 +148,7 @@ def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable
 
     return ScopedUploadTable(
         name=ut.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
+        wbcols={f: extend_columnoptions(colopts, collection, table.name, f, ut.toOne) for f, colopts in ut.wbcols.items()},
         static=static_adjustments(table, ut.wbcols, ut.static),
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
         toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
@@ -177,7 +200,7 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
 
     return ScopedToManyRecord(
         name=tmr.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in tmr.wbcols.items()},
+        wbcols={f: extend_columnoptions(colopts, collection, table.name, f, tmr.toOne) for f, colopts in tmr.wbcols.items()},
         static=static_adjustments(table, tmr.wbcols, tmr.static),
         toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in tmr.toOne.items()},
         scopingAttrs=scoping_relationships(collection, table),
@@ -186,10 +209,10 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
+    treedef = None
     if table.name == 'Taxon':
-        # TODO: Add scoping in the workbench via the Upload Plan
-        # treedef = get_taxon_treedef(collection)
-        treedef = collection.discipline.taxontreedef
+        if treedef is None:
+            treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
         treedef = collection.discipline.geographytreedef
@@ -203,22 +226,43 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     elif table.name == 'Storage':
         treedef = collection.discipline.division.institution.storagetreedef
 
+    elif table.name == 'TectonicUnit':
+        treedef = collection.discipline.tectonicunittreedef
+
     else:
         raise Exception(f'unexpected tree type: {table.name}')
+
+    if treedef is None:
+        raise ValueError(f"Could not find treedef for table {table.name}")
 
     treedefitems = list(treedef.treedefitems.order_by('rankid'))
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
-        if rank not in treedef_ranks:
+        is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
+        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
+    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+        (
+            TreeRank.create(
+                r, table.name, treedef.id if treedef else None
+            ).tree_rank_record()
+            if isinstance(r, str)
+            else r
+        ): {
+            f: extend_columnoptions(colopts, collection, table.name, f)
+            for f, colopts in cols.items()
+        }
+        for r, cols in tr.ranks.items()
+    }
+
     return ScopedTreeRecord(
         name=tr.name,
-        ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
+        ranks=scoped_ranks,
         treedef=treedef,
-        treedefitems=list(treedef.treedefitems.order_by('rankid')),
+        treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
     )

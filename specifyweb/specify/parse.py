@@ -43,11 +43,11 @@ class ParseSucess(NamedTuple):
 ParseResult = Union[ParseSucess, ParseFailure]
 
 
-def parse_field(collection, table_name: str, field_name: str, raw_value: str) -> ParseResult:
+def parse_field(collection, table_name: str, field_name: str, raw_value: str, with_formatter = None) -> ParseResult:
     table = datamodel.get_table_strict(table_name)
     field = table.get_field_strict(field_name)
 
-    formatter = get_uiformatter(collection, table_name, field_name)
+    formatter = get_uiformatter(collection, table_name, field_name) if with_formatter is None else with_formatter
 
     if field.is_relationship:
         return parse_integer(field.name, raw_value)

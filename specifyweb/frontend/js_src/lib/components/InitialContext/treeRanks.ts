@@ -39,7 +39,12 @@ let treeDefinitions: TreeInformation = undefined!;
  */
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
-export const allTrees = [...commonTrees, ...treesForPaleo] as const;
+const treesForGeo = ['TectonicUnit'] as const;
+export const allTrees = [
+  ...commonTrees,
+  ...treesForPaleo,
+  ...treesForGeo,
+] as const;
 /*
  * Until discipline information is loaded, assume all trees are appropriate in
  * this discipline
@@ -95,7 +100,7 @@ export const treeRanksPromise = Promise.all([
 
 function getTreeScope(
   treeName: AnyTree['tableName']
-): keyof typeof schema['domainLevelIds'] | undefined {
+): keyof (typeof schema)['domainLevelIds'] | undefined {
   const treeRelationships = new Set(
     genericTables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
       relatedTable.name.toLowerCase()
@@ -118,11 +123,14 @@ export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
     tableName
   );
 
-  return typeof treeDefinitionId === 'number'
-    ? specificTreeDefinitions.filter(
-        ({ definition }) => definition.id === treeDefinitionId
-      )
-    : specificTreeDefinitions;
+  if (typeof treeDefinitionId === 'number') {
+    const resolvedDefinition = specificTreeDefinitions.find(
+      ({ definition }) => definition.id === treeDefinitionId
+    );
+    return resolvedDefinition === undefined
+      ? specificTreeDefinitions
+      : [resolvedDefinition];
+  } else return specificTreeDefinitions;
 }
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
@@ -141,16 +149,16 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   return specificTreeDefinitions === undefined
     ? undefined
     : typeof treeDefinitionId === 'number'
-    ? specificTreeDefinitions
-        .find(({ definition }) => definition.id === treeDefinitionId)
-        ?.ranks.slice(includeRoot ? 0 : 1)
-    : specificTreeDefinitions.flatMap(({ ranks }) =>
-        ranks.slice(includeRoot ? 0 : 1)
-      );
+      ? specificTreeDefinitions
+          .find(({ definition }) => definition.id === treeDefinitionId)
+          ?.ranks.slice(includeRoot ? 0 : 1)
+      : specificTreeDefinitions.flatMap(({ ranks }) =>
+          ranks.slice(includeRoot ? 0 : 1)
+        );
 }
 
 export const strictGetTreeDefinitionItems = <
-  TREE_NAME extends AnyTree['tableName']
+  TREE_NAME extends AnyTree['tableName'],
 >(
   tableName: TREE_NAME,
   includeRoot: boolean,

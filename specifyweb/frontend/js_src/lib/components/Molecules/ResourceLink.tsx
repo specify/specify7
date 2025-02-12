@@ -19,7 +19,7 @@ import type { ResourceView } from '../Forms/ResourceView';
 export const IsNotReadOnly = React.createContext(false);
 IsNotReadOnly.displayName = 'IsNotReadOnly';
 
-export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
+export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
   resource,
   component: Component,
   props: rawProps,

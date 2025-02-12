@@ -254,27 +254,27 @@ function getFieldDefinition(
             printOnSave: false,
           }
         : typeof parser.pickListName === 'string'
-        ? {
-            type: 'ComboBox',
-            defaultValue: undefined,
-            pickList: parser.pickListName,
-          }
-        : field.type === 'text'
-        ? {
-            type: 'TextArea',
-            defaultValue: undefined,
-            rows: undefined,
-          }
-        : {
-            type: 'Text',
-            defaultValue: undefined,
-            min: parser.min,
-            max: parser.max,
-            step: parser.step,
-            minLength: parser.minLength,
-            maxLength: parser.maxLength,
-            whiteSpaceSensitive: parser.whiteSpaceSensitive,
-          }),
+          ? {
+              type: 'ComboBox',
+              defaultValue: undefined,
+              pickList: parser.pickListName,
+            }
+          : field.type === 'text'
+            ? {
+                type: 'TextArea',
+                defaultValue: undefined,
+                rows: undefined,
+              }
+            : {
+                type: 'Text',
+                defaultValue: undefined,
+                min: parser.min,
+                max: parser.max,
+                step: parser.step,
+                minLength: parser.minLength,
+                maxLength: parser.maxLength,
+                whiteSpaceSensitive: parser.whiteSpaceSensitive,
+              }),
     },
   };
 }

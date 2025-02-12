@@ -31,6 +31,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { MergeRecordSets } from './MergeRecordSets';
 import { EditRecordSet } from './RecordSetEdit';
 
 export function RecordSetsOverlay(): JSX.Element {
@@ -57,12 +58,14 @@ export function RecordSetsDialog({
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = defaultRenderer,
+  collectionObjectGroupResourceTableId,
 }: {
   readonly onClose: () => void;
   readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: Renderer;
+  readonly collectionObjectGroupResourceTableId?: number;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
     | State<'CreateState'>
@@ -99,6 +102,38 @@ export function RecordSetsDialog({
     ),
     false
   );
+
+  const [collectionObjectGroupData] = useAsyncState(
+    React.useCallback(
+      /**
+       * DomainFilter does filter for tables that are
+       * scoped using the collectionMemberId field
+       */
+      async () =>
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          limit,
+          domainFilter: true,
+          orderBy,
+          offset,
+          dbTableId: collectionObjectGroupResourceTableId,
+          collectionMemberId: schema.domainLevelIds.collection,
+        }),
+      [collectionObjectGroupResourceTableId, limit, offset, orderBy]
+    ),
+    false
+  );
+
+  const concatenatedRecordSets = [
+    ...(data?.records ?? []),
+    ...(collectionObjectGroupData?.records ?? []),
+  ];
+
+  const RSToUse =
+    typeof collectionObjectGroupResourceTableId === 'number'
+      ? concatenatedRecordSets
+      : data?.records;
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
   totalCountRef.current = data?.totalCount ?? totalCountRef.current;
@@ -139,7 +174,7 @@ export function RecordSetsDialog({
               </tr>
             </thead>
             <tbody>
-              {data?.records.map((recordSet) => (
+              {RSToUse?.map((recordSet) => (
                 <Row
                   key={recordSet.id}
                   recordSet={recordSet}
@@ -173,6 +208,10 @@ export function RecordSetsDialog({
         <Dialog
           buttons={
             <>
+              {!isReadOnly && hasToolPermission('recordSets', 'create') && (
+                <MergeRecordSets recordSets={data?.records} />
+              )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                 <Button.Info

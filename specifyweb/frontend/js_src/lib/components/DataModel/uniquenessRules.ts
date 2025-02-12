@@ -8,12 +8,13 @@ import {
   type IR,
   type RA,
   type RR,
+  filterArray,
   setDevelopmentGlobal,
 } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
 import type { LiteralField, Relationship } from './specifyField';
-import { strictGetTable } from './tables';
+import { getTable } from './tables';
 import type { Tables } from './types';
 
 export type UniquenessRule = {
@@ -60,24 +61,26 @@ export const fetchContext = f
   )
   .then((data) =>
     Object.fromEntries(
-      Object.entries(data).map(([lowercaseTableName, rules]) => {
-        // Convert all lowercase table names from backend to PascalCase
-        const tableName = strictGetTable(lowercaseTableName).name;
-        const getDuplicates = (
-          uniqueRule: UniquenessRule
-        ): UniquenessRuleValidation =>
-          uniquenessRules[tableName]?.find(
-            ({ rule }) => rule.id === uniqueRule.id
-          )?.duplicates ?? { totalDuplicates: 0, fields: [] };
-
-        return [
-          tableName,
-          rules?.map(({ rule }) => ({
-            rule: { ...rule },
-            duplicates: getDuplicates(rule),
-          })),
-        ];
-      })
+      filterArray(
+        Object.entries(data).map(([lowercaseTableName, rules]) => {
+          // Convert all lowercase table names from backend to PascalCase
+          const table = getTable(lowercaseTableName);
+          if (table === undefined) return undefined;
+          return [
+            table.name,
+            rules
+              ?.filter(({ rule }) =>
+                rule.fields.every(
+                  (field) => table.getField(field) !== undefined
+                )
+              )
+              .map(({ rule }) => ({
+                rule,
+                duplicates: { totalDuplicates: 0, fields: [] },
+              })),
+          ];
+        })
+      )
     )
   )
   .then((data) => {
@@ -96,15 +99,15 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   return Object.keys(uniquenessRules).length === 0
     ? undefined
     : tableName === undefined
-    ? uniquenessRules
-    : uniquenessRules[tableName];
+      ? uniquenessRules
+      : uniquenessRules[tableName];
 }
 
 export function useTableUniquenessRules(
   tableName: keyof Tables
 ): readonly [
   ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
-  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void
+  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void,
 ] {
   const [rawModelRules = [], setTableUniquenessRules] = React.useState(
     uniquenessRules[tableName]
@@ -145,7 +148,7 @@ export function getUniqueInvalidReason(
 
 export async function validateUniqueness<
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
 >(
   table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,

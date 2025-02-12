@@ -74,7 +74,7 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
     ...(typeof node.tagName === 'string'
       ? { [node.tagName]: node.children }
       : {}),
-  } as ParsedDom[number]);
+  }) as ParsedDom[number];
 
 /**
  * It's important to use the same setting for parser and builder
