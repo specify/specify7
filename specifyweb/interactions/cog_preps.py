@@ -1,7 +1,8 @@
 import logging
 from typing import Any, List, Optional, Set
-from django.db.models import Subquery
+from django.db.models import Subquery, Sum, F, Value, IntegerField, ExpressionWrapper, Q
 from django.db.models.query import QuerySet
+from django.db.models.functions import Coalesce
 from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjectgroup,
@@ -558,46 +559,109 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     return updated_interaction_data
 
 def enforce_interaction_sibling_prep_max_count(interaction_obj):
-    InteractionPrepModel = None
-    filter_fld = None
+    def get_interaction_prep_model_and_filter_field(interaction_obj):
+        model_map = {
+            'loan': (Loanpreparation, 'loan'),
+            'gift': (Giftpreparation, 'gift'),
+            'disposal': (Disposalpreparation, 'disposal')
+        }
+        return model_map.get(interaction_obj._meta.model_name, (None, None))
+
+    def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, InteractionPrepModel):
+        for sibling_prep in sibling_preps:
+            if sibling_prep.id not in interaction_prep_ids:
+                continue
+            # count = sibling_prep.countamt
+            available_count = get_availability_count(sibling_prep, interaction_prep_id, "loanpreparations__id") or 0
+            interaction_sibling_prep = InteractionPrepModel.objects.filter(preparation=sibling_prep).first()
+            if interaction_sibling_prep and interaction_sibling_prep.quantity == available_count:
+                return True
+        return False
+
     if interaction_obj is None:
         return interaction_obj
-    if interaction_obj._meta.model_name == 'loan':
-        if hasattr(interaction_obj, 'loanpreparations'):
-            filter_fld = "loan"
-            InteractionPrepModel = Loanpreparation
-    elif interaction_obj._meta.model_name == 'gift':
-        filter_fld = "gift"
-        InteractionPrepModel = Giftpreparation
-    elif interaction_obj._meta.model_name == 'disposal':
-        filter_fld = "disposal"
-        InteractionPrepModel = Disposalpreparation
-    else:
+
+    InteractionPrepModel, filter_fld = get_interaction_prep_model_and_filter_field(interaction_obj)
+    if InteractionPrepModel is None:
         return interaction_obj
 
     interaction_preps = InteractionPrepModel.objects.filter(**{filter_fld: interaction_obj})
     interaction_prep_ids = set(interaction_preps.values_list("preparation_id", flat=True))
+
     for interaction_prep in interaction_preps:
         prep = interaction_prep.preparation
         sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
-        is_max_quntity_used = False 
-        for sibling_prep in sibling_preps:
-            if sibling_prep.id not in interaction_prep_ids:
-                continue
-            count = sibling_prep.countamt
-            quantity = 0
-            interaction_sibling_prep = InteractionPrepModel.objects.filter(preparation=sibling_prep).first()
-            if interaction_sibling_prep is not None:
-                quantity = interaction_sibling_prep.quantity
-            if quantity == count:
-                is_max_quntity_used = True
-                break
 
-        if is_max_quntity_used:
-            interaction_prep.quantity = interaction_prep.preparation.countamt
-            interaction_prep.save()
-        if len(sibling_preps) > 1:
-            interaction_prep.quantity = interaction_prep.preparation.countamt
+        if is_max_quantity_used(
+            sibling_preps, interaction_prep.id, interaction_prep_ids, InteractionPrepModel
+        ) or (sibling_preps is not None and len(sibling_preps) > 0):
+            if interaction_prep.quantity == interaction_prep.preparation.countamt:
+                continue
+            available_count = get_availability_count(prep, interaction_prep.id, "loanpreparations__id") or 0
+            interaction_prep.quantity = available_count
             interaction_prep.save()
 
     return interaction_obj
+
+def get_availability_count(prep, iprepid, iprepid_fld):
+    """
+    Computes:
+       preparation.countamt
+       - sum(loanpreparations.quantity - loanpreparations.quantityresolved)
+       - sum(giftpreparations.quantity)
+       - sum(exchangeoutpreps.quantity)
+    
+    If iprepid is given then for the join that uses the field specified by
+    iprepid_fld we exclude rows where that field equals iprepid.
+    
+    Note: iprepid_fld is assumed to be a string like 'loanpreparations__id' or 'giftpreparations__id' etc.
+    """
+    loan_filter = Q()
+    gift_filter = Q()
+    exchange_filter = Q()
+
+    if iprepid is not None and iprepid_fld:
+        if iprepid_fld.startswith('loanpreparations__'):
+            loan_filter = ~Q(**{iprepid_fld: iprepid})
+        elif iprepid_fld.startswith('giftpreparations__'):
+            gift_filter = ~Q(**{iprepid_fld: iprepid})
+        elif iprepid_fld.startswith('exchangeoutpreps__'):
+            exchange_filter = ~Q(**{iprepid_fld: iprepid})
+        else:
+            loan_filter = ~Q(**{iprepid_fld: iprepid})
+            gift_filter = ~Q(**{iprepid_fld: iprepid})
+            exchange_filter = ~Q(**{iprepid_fld: iprepid})
+
+    qs = (prep.__class__.objects
+          .filter(id=prep.id)
+          .annotate(
+              loan_sum=Coalesce(
+                  Sum(
+                      ExpressionWrapper(
+                          F('loanpreparations__quantity') - F('loanpreparations__quantityresolved'),
+                          output_field=IntegerField()
+                      ),
+                      filter=loan_filter
+                  ),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+              gift_sum=Coalesce(
+                  Sum('giftpreparations__quantity', filter=gift_filter, output_field=IntegerField()),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+              exchange_sum=Coalesce(
+                  Sum('exchangeoutpreps__quantity', filter=exchange_filter, output_field=IntegerField()),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+          )
+          .values('countamt', 'loan_sum', 'gift_sum', 'exchange_sum')
+         )
+
+    row = qs.first()
+    if row is None:
+        return prep.countamt
+    else:
+        return row['countamt'] - row['loan_sum'] - row['gift_sum'] - row['exchange_sum']
