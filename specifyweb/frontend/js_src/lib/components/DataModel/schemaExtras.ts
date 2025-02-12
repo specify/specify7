@@ -128,36 +128,6 @@ export const schemaExtras: {
         LiteralField.prototype.getFormat.call(catalognumber);
     },
   ],
-  CollectingEvent: (table) => [
-    [],
-    (): void => {
-      const collectionObjectsField = getField(table, 'collectionObjects');
-      overwriteReadOnly(
-        collectionObjectsField,
-        'type',
-        schema.embeddedCollectingEvent
-          ? 'zero-to-one'
-          : collectionObjectsField.type
-      );
-    },
-  ],
-  PaleoContext: () => [
-    [],
-    (): void => {
-      const childTable = caseInsensitiveHash(
-        tables,
-        schema.paleoContextChildTable
-      ) as SpecifyTable<AnyPaleoContextChild>;
-      if (schema.embeddedPaleoContext && childTable !== undefined) {
-        const paleoContextField = getField(
-          childTable,
-          'paleoContext'
-        ).getReverse();
-        if (paleoContextField)
-          overwriteReadOnly(paleoContextField, 'type', 'zero-to-one');
-      }
-    },
-  ],
   Division: (table) => [
     [
       new Relationship(table, {

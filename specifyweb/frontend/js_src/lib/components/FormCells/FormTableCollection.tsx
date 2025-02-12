@@ -6,6 +6,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyTable';
+import { shouldBeToOne } from '../FormSliders/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
 
@@ -61,7 +62,7 @@ export function FormTableCollection({
     return null;
   }
   const isToOne =
-    typeof relationship === 'object' && !relationshipIsToMany(relationship);
+    typeof relationship === 'object' && shouldBeToOne(relationship);
   const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
