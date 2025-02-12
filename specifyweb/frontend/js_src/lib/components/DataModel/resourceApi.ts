@@ -45,6 +45,7 @@ function eventHandlerForToOne(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
+        this.trigger.apply(this, args);
         return;
       }
       case 'change:id': {
@@ -68,6 +69,7 @@ function eventHandlerForToMany(related, field) {
     switch (event) {
       case 'saverequired': {
         this.handleChanged();
+        if (related.models?.[0]?.specifyTable?.name !== 'CollectionRelationship') {this.trigger.apply(this, args)}
         break;
       }
       case 'change':
