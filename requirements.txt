@@ -1,6 +1,6 @@
 kombu==5.2.4
 celery[redis]==5.2.7
-Django==3.2.15
+Django==4.2.18
 mysqlclient==2.1.1
 SQLAlchemy==1.2.11
 requests==2.32.2
