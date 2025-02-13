@@ -16,7 +16,7 @@ from django.db.models import Max
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import crypto
-from django.utils.http import is_safe_url, urlencode
+from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
 from typing import Union, Optional, Dict, cast
 from typing_extensions import TypedDict
@@ -362,7 +362,7 @@ def choose_collection(request) -> http.HttpResponse:
 
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = http.HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
+        redirect_to if url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts=request.get_host())
         else settings.LOGIN_REDIRECT_URL
     )
 
