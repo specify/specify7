@@ -162,7 +162,7 @@ def resource_dispatch(request, model, id) -> HttpResponse:
         version = request_params['version']
     except KeyError:
         try:
-            version = request.META['HTTP_IF_MATCH']
+            version = request.headers['if-match']
         except KeyError:
             version = None
 
