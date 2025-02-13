@@ -51,22 +51,30 @@ FORM_RESOURCE_EXCLUDED_LST = [
 ]
 
 # get_app_resource is the main interface provided by this module
-def get_app_resource(collection, user, resource_name):
+def get_app_resource(collection, user, resource_name, additional_default=False):
     """Fetch the named app resource in the context of the given user and collection.
     Returns the resource data and mimetype as a pair.
     """
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
-    # Traverse the hierarchy.
-    for level in DIR_LEVELS:
-        # First look in the database.
-        from_db = get_app_resource_from_db(collection, user, level, resource_name)
-        if from_db is not None: return from_db
+    
+    if not additional_default:
+        # Traverse the hierarchy.
+        for level in DIR_LEVELS:
+            # First look in the database.
+            from_db = get_app_resource_from_db(collection, user, level, resource_name)
+            if from_db is not None: return from_db
 
-        # If resource was not found, look on the filesystem.
-        from_fs = load_resource_at_level(collection, user, level, resource_name)
+            # If resource was not found, look on the filesystem.
+            from_fs = load_resource_at_level(collection, user, level, resource_name)
+            if from_fs is not None: return from_fs
+            # Continue to next higher level of hierarchy.
+
+    # If additional_default is True, add the resource from the Backstop level.
+    if additional_default:
+        # Then check the backstop level in the filesystem.
+        from_fs = load_resource_at_level(collection, user, 'Backstop', resource_name)
         if from_fs is not None: return from_fs
-        # Continue to next higher level of hierarchy.
 
     # resource was not found
     return None
