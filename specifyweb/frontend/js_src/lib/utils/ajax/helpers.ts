@@ -75,5 +75,5 @@ export const getAppResourceUrl = (
 ): string => formatUrl('/context/app.resource', {
     name,
     quiet: quiet === 'quiet' ? '' : undefined,
-    additionaldefault: additionalDefault ? 'true' : 'false'
+    additionaldefault: additionalDefault ? 'true' : undefined
   });
