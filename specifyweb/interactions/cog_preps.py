@@ -561,18 +561,18 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 def enforce_interaction_sibling_prep_max_count(interaction_obj):
     def get_interaction_prep_model_and_filter_field(interaction_obj):
         model_map = {
-            'loan': (Loanpreparation, 'loan'),
-            'gift': (Giftpreparation, 'gift'),
-            'disposal': (Disposalpreparation, 'disposal')
+            'loan': (Loanpreparation, 'loan', 'loanpreparations__id'),
+            'gift': (Giftpreparation, 'gift', 'giftpreparations__id'),
+            'disposal': (Disposalpreparation, 'disposal', 'disposalpreparations__id'),
         }
-        return model_map.get(interaction_obj._meta.model_name, (None, None))
+        return model_map.get(interaction_obj._meta.model_name, (None, None, None))
 
-    def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, InteractionPrepModel):
+    def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, prep_id_fld, InteractionPrepModel):
         for sibling_prep in sibling_preps:
             if sibling_prep.id not in interaction_prep_ids:
                 continue
             # count = sibling_prep.countamt
-            available_count = get_availability_count(sibling_prep, interaction_prep_id, "loanpreparations__id") or 0
+            available_count = get_availability_count(sibling_prep, interaction_prep_id, prep_id_fld) or 0
             interaction_sibling_prep = InteractionPrepModel.objects.filter(preparation=sibling_prep).first()
             if interaction_sibling_prep and interaction_sibling_prep.quantity == available_count:
                 return True
@@ -581,7 +581,7 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
     if interaction_obj is None:
         return interaction_obj
 
-    InteractionPrepModel, filter_fld = get_interaction_prep_model_and_filter_field(interaction_obj)
+    InteractionPrepModel, filter_fld, id_fld = get_interaction_prep_model_and_filter_field(interaction_obj)
     if InteractionPrepModel is None:
         return interaction_obj
 
@@ -593,7 +593,7 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
 
         if is_max_quantity_used(
-            sibling_preps, interaction_prep.id, interaction_prep_ids, InteractionPrepModel
+            sibling_preps, interaction_prep.id, interaction_prep_ids, id_fld, InteractionPrepModel
         ) or (sibling_preps is not None and len(sibling_preps) > 0):
             if interaction_prep.quantity == interaction_prep.preparation.countamt:
                 continue
@@ -604,18 +604,6 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
     return interaction_obj
 
 def get_availability_count(prep, iprepid, iprepid_fld):
-    """
-    Computes:
-       preparation.countamt
-       - sum(loanpreparations.quantity - loanpreparations.quantityresolved)
-       - sum(giftpreparations.quantity)
-       - sum(exchangeoutpreps.quantity)
-    
-    If iprepid is given then for the join that uses the field specified by
-    iprepid_fld we exclude rows where that field equals iprepid.
-    
-    Note: iprepid_fld is assumed to be a string like 'loanpreparations__id' or 'giftpreparations__id' etc.
-    """
     loan_filter = Q()
     gift_filter = Q()
     exchange_filter = Q()
