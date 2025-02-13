@@ -1,13 +1,13 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^query/(?P<id>\d+)/$', views.query),
-    url(r'^ephemeral/$', views.ephemeral),
-    url(r'^exportcsv/$', views.export_csv),
-    url(r'^exportkml/$', views.export_kml),
-    url(r'^make_recordset/$', views.make_recordset),
-    url(r'^merge_recordsets/$', views.merge_recordsets),
-    url(r'^return_loan_preps/$', views.return_loan_preps),
+    path('query/<int:id>/', views.query),
+    path('ephemeral/', views.ephemeral),
+    path('exportcsv/', views.export_csv),
+    path('exportkml/', views.export_kml),
+    path('make_recordset/', views.make_recordset),
+    path('merge_recordsets/', views.merge_recordsets),
+    path('return_loan_preps/', views.return_loan_preps),
 ]
