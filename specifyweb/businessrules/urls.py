@@ -1,8 +1,8 @@
-from django.conf.urls import include, url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^uniqueness_rules/(?P<discipline_id>\d+)/$', views.uniqueness_rule),
-    url(r'^uniqueness_rules/validate/$', views.validate_uniqueness),
+    path('uniqueness_rules/<int:discipline_id>/', views.uniqueness_rule),
+    path('uniqueness_rules/validate/', views.validate_uniqueness),
 ]
