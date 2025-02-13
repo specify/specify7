@@ -18,11 +18,10 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count param_count internal_filters')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
-        kwargs['param_count'] = 0
         # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
         # In that case, the cycle will end (unlike other cyclical cases).
         kwargs['tree_rank_count'] = 0
@@ -72,15 +71,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
-        treedefitem_params = []
-        for _, rank_id in treedefs_with_ranks:
-            treedefitem_param = sql.bindparam(
-                'tdi_%s' % query.param_count,
-                value=rank_id
-            )
-            treedefitem_params.append(treedefitem_param)
-            param_count = self.param_count + 1
-            query = query._replace(param_count=param_count)
+        treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
 
         def make_tree_field_spec(tree_node):
             return current_field_spec._replace(
