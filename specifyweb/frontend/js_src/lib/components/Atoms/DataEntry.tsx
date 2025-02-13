@@ -65,7 +65,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `items-center p-1 -ml-1 gap-2`,
+    `items-center p-1 gap-2`,
     ({
       viewDefinition,
       display,
@@ -138,7 +138,7 @@ export const DataEntry = {
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
     'legend',
-    'gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
+    'gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center',
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
       children: <div {...props}>{children}</div>,

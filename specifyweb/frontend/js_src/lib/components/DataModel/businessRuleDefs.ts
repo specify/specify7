@@ -1,10 +1,10 @@
 import { resourcesText } from '../../localization/resources';
-import { f } from '../../utils/functools';
 import type { BusinessRuleResult } from './businessRules';
 import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   CURRENT_DETERMINATION_KEY,
+  DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
 } from './businessRuleUtils';
@@ -19,7 +19,6 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { fetchResource, idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { Collection } from './specifyTable';
@@ -170,38 +169,31 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
-        /*
-         * TEST: write tests for this
-         *  Delete all determinations
-         */
         const determinations = resource.getDependentResource('determinations');
-        const currentDetermination = determinations?.models.find(
-          (determination) => determination.get('isCurrent')
+        if (determinations === undefined || determinations.models.length === 0)
+          return;
+
+        const taxons = await Promise.all(
+          determinations.models.map(async (det) => det.rgetPromise('taxon'))
         );
+        const coType = await resource.rgetPromise('collectionObjectType');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
 
-        const taxonId = idFromUrl(currentDetermination?.get('taxon') ?? '');
-        const COTypeID = idFromUrl(resource.get('collectionObjectType') ?? '');
-        if (
-          taxonId !== undefined &&
-          COTypeID !== undefined &&
-          currentDetermination !== undefined &&
-          determinations !== undefined
-        )
-          await f
-            .all({
-              fetchedTaxon: fetchResource('Taxon', taxonId),
-              fetchedCOType: fetchResource('CollectionObjectType', COTypeID),
-            })
-            .then(({ fetchedTaxon, fetchedCOType }) => {
-              const taxonTreeDefinition = fetchedTaxon.definition;
-              const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
+        // Block save when a Determination -> Taxon does not belong to the COType's tree definition
+        determinations.models.forEach((determination, index) => {
+          const taxon = taxons[index];
+          const taxonTreeDef = taxon?.get('definition');
+          const isValid =
+            typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
 
-              if (taxonTreeDefinition !== COTypeTreeDefinition)
-                resource.set('determinations', []);
-            })
-            .catch((error) => {
-              console.error('Error fetching resources:', error);
-            });
+          setSaveBlockers(
+            determination,
+            determination.specifyTable.field.taxon,
+            isValid ? [] : [resourcesText.invalidDeterminationTaxon()],
+            DETERMINATION_TAXON_KEY
+          );
+        });
+
         return undefined;
       },
     },
@@ -477,7 +469,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   LoanPreparation: {
     customInit: (resource: SpecifyResource<LoanPreparation>): void => {
       if (!resource.isNew())
-        resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
+        resource
+          .rgetCollection('loanReturnPreparations')
+          .then((preps) => updateLoanPrep(preps, true));
     },
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -500,7 +494,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         previousLoanPreparations.previousResolved[resource.cid] =
           Number(resolved);
       }
-      updateLoanPrep(resource.collection);
+      updateLoanPrep(resource.collection, true);
     },
     fieldChecks: {
       quantityReturned: (

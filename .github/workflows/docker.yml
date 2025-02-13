@@ -87,6 +87,7 @@ jobs:
             GIT_SHA=${{ github.sha }}
           tags: ${{ steps.prep.outputs.tags }}
           push: true
+          retries: 3
 
       - name: Export digest
         run: |

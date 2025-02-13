@@ -158,6 +158,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     resource: relationship.label,
     count: totalCount ?? resources.length,
   });
+
   const isReadOnly = React.useContext(ReadOnlyContext);
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
@@ -237,7 +238,11 @@ export function FormTable<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     ) : (
       <div
-        className={isCollapsed ? 'hidden' : 'overflow-x-auto'}
+        className={
+          isCollapsed
+            ? 'hidden'
+            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+        }
         onScroll={handleScroll}
       >
         <DataEntry.Grid

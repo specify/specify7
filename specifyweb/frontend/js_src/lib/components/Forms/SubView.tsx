@@ -5,7 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCollection } from '../../hooks/useCollection';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
@@ -15,7 +15,10 @@ import type { CollectionFetchFilters } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
@@ -122,7 +125,27 @@ export function SubView({
     ]
   );
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  // TODO: Remove after #6193
+  const isCollectingEventToOne =
+    schema.embeddedCollectingEvent &&
+    relationship.table === tables.CollectingEvent &&
+    relationship.name === 'collectionObjects';
+  const reversePaleoContextField: IR<string> = {
+    collectionobject: 'collectionObjects',
+    collectingevent: 'collectingEvents',
+    locality: 'localities',
+  };
+  const isPaleoContextToOne =
+    schema.embeddedPaleoContext &&
+    relationship.table === tables.PaleoContext &&
+    relationship.name ===
+      reversePaleoContextField[schema.paleoContextChildTable];
+
+  // TODO: Remove readonly for embedded CE and paleo context after #6193
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    isCollectingEventToOne ||
+    isPaleoContextToOne;
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
@@ -137,9 +160,11 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {parentContext
-        .map(({ relationship }) => relationship)
-        .includes(relationship) || collection === false ? undefined : (
+      {(!RECURSIVE_RENDERING_EXCEPTIONS.has(parentResource.specifyTable) &&
+        parentContext
+          .map(({ relationship }) => relationship)
+          .includes(relationship)) ||
+      collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray
@@ -243,3 +268,7 @@ export function SubView({
     </SubViewContext.Provider>
   );
 }
+
+const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable>([
+  tables.CollectionObjectGroup,
+]);

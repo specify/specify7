@@ -14,7 +14,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   RecordSelectorProps,
   RecordSelectorState,
@@ -58,8 +57,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = !relationship.type.includes('-to-many');
 
   // Listen for changes to collection
   React.useEffect(
@@ -82,13 +80,17 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
      *   don't need to fetch all records in between)
      */
     if (
-      typeof handleFetch === 'function' &&
       !isToOne &&
       isLazy &&
       collection.related?.isNew() !== true &&
       collection.models[index] === undefined
-    )
-      handleFetch();
+    ) {
+      if (typeof handleFetch === 'function') {
+        handleFetch?.();
+      } else {
+        void collection.fetch();
+      }
+    }
   }, [collection, isLazy, index, records.length, isToOne, handleFetch]);
 
   const state = useRecordSelector({
