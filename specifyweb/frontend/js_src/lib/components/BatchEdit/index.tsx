@@ -18,6 +18,7 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -25,6 +26,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
+  getTreeDefinitions,
   isTreeTable,
   strictGetTreeDefinitionItems,
   treeRanksPromise,
@@ -236,24 +238,30 @@ function findMissingRanks(
 
   const highestRank = currentRanksSorted[0];
 
-  return allTreeDefItems.flatMap(({ rankId, name }) =>
+  return allTreeDefItems.flatMap(({ treeDef, rankId, name }) =>
     rankId < highestRank.specifyRank.rankId
       ? []
       : filterArray(
-          requiredTreeFields.map((requiredField) =>
-            currentTreeRanks.some(
+          requiredTreeFields.map((requiredField) => {
+            const treeDefinition = getTreeDefinitions(
+              treeTable.name as 'Geography',
+              idFromUrl(treeDef)
+            );
+            const treeDefinitionName = treeDefinition[0].definition.name;
+
+            return currentTreeRanks.some(
               (rank) =>
                 rank.specifyRank.name === name &&
                 rank.field !== undefined &&
                 requiredField === rank.field.name
             )
               ? undefined
-              : `${name} ${
+              : `${treeDefinitionName}: ${name} - ${
                   defined(
                     strictGetTable(treeTable.name).getField(requiredField)
                   ).label
-                }`
-          )
+                }`;
+          })
         )
   );
 }
