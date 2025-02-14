@@ -1,4 +1,4 @@
-import type { IR, RA, RR } from '../../utils/types';
+import type { IR, PartialBy, RA, RR } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -23,7 +23,9 @@ export type ColumnDefinition =
   | string
   | (ColumnOptions & { readonly column: string });
 
-export type NestedUploadTable = Omit<UploadTable, 'toMany'>;
+// NOTE: This comment was added after workbench supports nested-to-manys.
+// Type is made Partial to not chock on legacy upload plans
+export type NestedUploadTable = PartialBy<UploadTable, 'toMany'>;
 
 export type UploadTable = {
   readonly wbcols: IR<ColumnDefinition>;
@@ -146,23 +148,21 @@ const parseUploadTable = (
       [...mappingPath, table.strictGetRelationship(relationshipName).name]
     )
   ),
-  ...('toMany' in uploadPlan
-    ? Object.entries(uploadPlan.toMany).flatMap(
-        ([relationshipName, mappings]) =>
-          Object.values(mappings).flatMap((mapping, index) =>
-            parseUploadTable(
-              table.strictGetRelationship(relationshipName).relatedTable,
-              mapping,
-              makeMustMatch,
-              [
-                ...mappingPath,
-                table.strictGetRelationship(relationshipName).name,
-                formatToManyIndex(index + 1),
-              ]
-            )
-          )
+  ...Object.entries(uploadPlan.toMany ?? []).flatMap(
+    ([relationshipName, mappings]) =>
+      Object.values(mappings).flatMap((mapping, index) =>
+        parseUploadTable(
+          table.strictGetRelationship(relationshipName).relatedTable,
+          mapping,
+          makeMustMatch,
+          [
+            ...mappingPath,
+            table.strictGetRelationship(relationshipName).name,
+            formatToManyIndex(index + 1),
+          ]
+        )
       )
-    : []),
+  ),
 ];
 
 function parseUploadTableTypes(

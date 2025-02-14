@@ -21,12 +21,20 @@ export function WorkBench(): JSX.Element {
   const datasetId = f.parseInt(id);
 
   const [dataset, setDataset] = useDataset(datasetId);
-  return datasetId === undefined ?
-   <NotFoundView/> : 
-   dataset === undefined ? <LoadingScreen/> : <WorkBenchSafe getSetDataset={[dataset, setDataset]}/>;
+  return datasetId === undefined ? (
+    <NotFoundView />
+  ) : dataset === undefined ? (
+    <LoadingScreen />
+  ) : (
+    <WorkBenchSafe getSetDataset={[dataset, setDataset]} />
+  );
 }
 
-export function WorkBenchSafe({getSetDataset}: {readonly getSetDataset: GetSet<Dataset>}): JSX.Element {
+export function WorkBenchSafe({
+  getSetDataset,
+}: {
+  readonly getSetDataset: GetSet<Dataset>;
+}): JSX.Element {
   const [dataset, setDataset] = getSetDataset;
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
 
@@ -50,7 +58,9 @@ export function WorkBenchSafe({getSetDataset}: {readonly getSetDataset: GetSet<D
       triggerDatasetRefresh={triggerDatasetRefresh}
       onDatasetDeleted={handleDeleted}
     />
-  ) : <LoadingScreen/> ;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
