@@ -23,8 +23,10 @@ export type ColumnDefinition =
   | string
   | (ColumnOptions & { readonly column: string });
 
-// NOTE: This comment was added after workbench supports nested-to-manys.
-// Type is made Partial to not chock on legacy upload plans
+/*
+ * NOTE: This comment was added after workbench supports nested-to-manys.
+ * Type is made Partial to not chock on legacy upload plans
+ */
 export type NestedUploadTable = PartialBy<UploadTable, 'toMany'>;
 
 export type UploadTable = {
