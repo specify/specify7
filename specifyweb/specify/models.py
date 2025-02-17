@@ -6593,6 +6593,7 @@ class Storageattachment(models.Model):
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    guid = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='GUID', db_index=False)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='storageattachments', null=False, on_delete=protect_with_blockers)

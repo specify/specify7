@@ -6905,7 +6905,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampVersion', column='TimestampVersion', indexed=False, unique=False, required=False, type='java.util.Date'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='guid', column='GUID', indexed=True, unique=False, required=False, type='java.lang.String', length=128),
         ],
         indexes=[
             Index(name='StorNameIDX', column_names=['Name']),

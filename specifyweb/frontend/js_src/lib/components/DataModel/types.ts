@@ -5531,6 +5531,7 @@ export type Storage = {
     readonly timestampModified: string | null;
     readonly timestampVersion: string | null;
     readonly version: number | null;
+    readonly guid: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
