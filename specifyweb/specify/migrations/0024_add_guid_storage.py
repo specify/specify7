@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='storage',
             name='guid',
-            field=models.IntegerField(blank=True, db_column='GUID', default=0, null=True),
+            field=models.CharField(blank=True, db_column='GUID', max_length=255, null=True),
         ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
     ]
