@@ -144,7 +144,7 @@ function FormatSelect({
   const id = useId('formatters-selection');
 
   const compositeValue = React.useMemo(() => {
-    if (availableFormatters && availableFormatters.length) {
+    if (availableFormatters && availableFormatters.length > 0) {
       if (selectedIndex !== null && availableFormatters[selectedIndex]) {
         return `${availableFormatters[selectedIndex].name}|||${selectedIndex}`;
       }
@@ -192,9 +192,9 @@ function FormatSelect({
             onValueChange={(value) => {
               const parts = value.split('|||');
               if (parts.length === 2) {
-                const [name, indexStr] = parts;
-                const idx = parseInt(indexStr, 10);
-                setSelectedIndex(idx);
+                const [name, indexString] = parts;
+                const index = Number.parseInt(indexString, 10);
+                setSelectedIndex(index);
                 if (handleChange) {
                   handleChange(name);
                 }
