@@ -140,8 +140,23 @@ function FormatSelect({
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
-
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
   const id = useId('formatters-selection');
+
+  const compositeValue = React.useMemo(() => {
+    if (availableFormatters && availableFormatters.length) {
+      if (selectedIndex !== null && availableFormatters[selectedIndex]) {
+        return `${availableFormatters[selectedIndex].name}|||${selectedIndex}`;
+      }
+      const foundIndex = availableFormatters.findIndex(
+        (f) => f.name === currentFormat
+      );
+      if (foundIndex !== -1) {
+        return `${availableFormatters[foundIndex].name}|||${foundIndex}`;
+      }
+    }
+    return '';
+  }, [selectedIndex, availableFormatters, currentFormat]);
 
   return availableFormatters === undefined ? (
     typeof currentFormat === 'string' ? (
@@ -173,13 +188,28 @@ function FormatSelect({
             className={customSelectElementBackground}
             disabled={handleChange === undefined}
             id={id('list')}
-            value={currentFormat}
-            onValueChange={handleChange}
+            value={compositeValue}
+            onValueChange={(value) => {
+              const parts = value.split('|||');
+              if (parts.length === 2) {
+                const [name, indexStr] = parts;
+                const idx = parseInt(indexStr, 10);
+                setSelectedIndex(idx);
+                if (handleChange) {
+                  handleChange(name);
+                }
+              } else {
+                setSelectedIndex(null);
+                if (handleChange) {
+                  handleChange(value);
+                }
+              }
+            }}
           >
-            <option />
-            {availableFormatters.map(({ name, title, isDefault }, index) => (
-              <option key={index} value={name}>
-                {`${title} ${isDefault ? resourcesText.defaultInline() : ''}`}
+            <option value="" />
+            {availableFormatters.map((formatter, index) => (
+              <option key={index} value={`${formatter.name}|||${index}`}>
+                {`${formatter.title} ${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
             {currentFormat !== undefined &&
