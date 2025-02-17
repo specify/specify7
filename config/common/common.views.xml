@@ -2093,8 +2093,8 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/>
+					<!-- <cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/> -->
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
@@ -7016,100 +7016,6 @@
 				<row>
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" name="remarks" uitype="text" colspan="3"/>
-				</row>
-			</rows>
-		</viewdef>
-		<viewdef name="Collection Object" class="edu.ku.brc.specify.datamodel.CollectionObject" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The Collection Object form.</desc>
-			<enableRules/>
-			<columnDef>100px,2px,195px,5px,96px,2px,50px,10px,150px,5px,94px,2px,176px,15px,p:g</columnDef>
-			<columnDef os="lnx">100px,2px,195px,5px,60px,2px,60px,10px,140px,5px,70px,2px,181px,15px,50px,2px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,215px,5px,128px,2px,105px,10px,145px,5px,138px,2px,195px,15px,p:g</columnDef>
-			<columnDef os="exp">p,2px,min(p;250px),5px:g,p,2px,p:g(2),10px,p:g(2),5px:g,p,2px,p:g,p,p:g</columnDef>
-			<rowDef auto="true" cell="p" sep="2px"/>
-			<rows>
-				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
-					<cell type="label" labelfor="cot"/>
-					<cell type="field" id="cot" name="collectionObjectType" uitype="combobox" colspan="3"/>
-					<cell type="label" labelfor="14"/>
-					<cell type="field" id="14" name="altCatalogNumber" uitype="text"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="accession" uitype="querycbx" initialize="name=AccessionCO;title=AccessionCO" isrequired="false"/>
-					<cell type="label" labelfor="4"/>
-					<cell type="field" id="4" name="cataloger" uitype="querycbx" initialize="name=Agent;title=Catalog Agent" colspan="3"/>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" uifieldformatter="Date"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="21"/>
-					<cell type="field" id="21" name="collectingEvent" uitype="querycbx" colspan="12"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="43"/>
-					<cell type="field" id="43" name="paleoContext" uitype="querycbx" colspan="12"/>
-				</row>
-				<row>
-					<cell type="separator" label="Collection Object Metadata" colspan="18"/>
-				</row>
-				<row>
-					<cell type="panel" colspan="18">
-						<rows>
-							<row>
-								<cell type="label" label="Determinations"/>
-								<cell type="subview" viewname="MineralDetermination" id="6" name="determinations" initialize="btn=true;verticalAlign=center"/>
-								<cell type="panel" colspan="3">
-									<row>
-										<cell type="label" label="Collection Object Attributes"/>
-										<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="AllAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-									</row>
-									<rows condition="text8=Mineral">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MineralAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Rock">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="RockAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Meteorite">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MeteoriteAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Fossil">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="FossilAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-								</cell>
-								<!-- 						<cell type="label" label="Collecting Event"/>
-						<cell type="subview" viewname="CollectingEventSub" id="21" name="collectingEvent" initialize="btn=true;align=left;verticalAlign=center" colspan="1" rows="5"/> -->
-								<cell type="label" label="Geologic Context"/>
-								<cell type="subview" uitype="querycbx" id="pcsh" name="paleoContext" initialize="name=PaleoContext;btn=true;align=left;verticalAlign=center" colspan="1"/>
-								<cell type="label" label="Relative Ages"/>
-								<cell type="subview" id="ageData" name="relativeAges" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Absolute Ages"/>
-								<cell type="subview" id="ageData" name="absoluteAges" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Treatment Events"/>
-								<cell type="subview" id="treatmentEvents" name="treatmentEvents" viewname="TreatmentEvent" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Preparation"/>
-								<cell type="subview" viewname="Preparation" id="8" name="preparations" initialize="btn=true;align=left;verticalAlign=center" defaulttype="table" colspan="1" rows="3"/>
-								<cell type="label" label="Citations"/>
-								<cell type="subview" id="7" name="collectionObjectCitations" viewname="CollectionObjectCitation" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Attachments"/>
-								<cell type="subview" id="attachments" viewname="ObjectAttachment" name="collectionObjectAttachments" initialize="icon=CollectionObjectAttachment;btn=true;align=left;verticalAlign=center" defaulttype="icon"/>
-							</row>
-						</rows>
-					</cell>
 				</row>
 			</rows>
 		</viewdef>
