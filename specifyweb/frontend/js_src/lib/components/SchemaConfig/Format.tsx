@@ -194,14 +194,17 @@ function FormatterLine({
           isReadOnly={isReadOnly}
           name={id('format')}
           value="none"
-          onChange={(): void =>
-            handleFormatted(
-              name,
-              typeof values === 'object'
-                ? (Object.values(values)[0][0][0]! ?? null)
-                : null
-            )
-          }
+          onChange={(): void => {
+            if (typeof values === 'object' && values !== null) {
+              const fieldFormattersArray = values["Field Formatters"];
+
+              const firstValue = fieldFormattersArray?.[0]?.[0] ?? Object.values(values)?.[0]?.[0]?.[0]  ?? null;
+
+              handleFormatted(name, firstValue);
+            } else {
+              handleFormatted(name, null);
+            }
+          }}
         />
         {label}
       </Label.Inline>
