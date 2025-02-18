@@ -195,15 +195,11 @@ function FormatterLine({
           name={id('format')}
           value="none"
           onChange={(): void => {
-            if (typeof values === 'object' && values !== null) {
-              const fieldFormattersArray = values["Field Formatters"];
+            const firstValue = (typeof values === 'object' && values !== null)
+              ? values["Field Formatters"]?.[0]?.[0] ?? Object.values(values)?.[0]?.[0]?.[0] ?? null
+              : null;
 
-              const firstValue = fieldFormattersArray?.[0]?.[0] ?? Object.values(values)?.[0]?.[0]?.[0]  ?? null;
-
-              handleFormatted(name, firstValue);
-            } else {
-              handleFormatted(name, null);
-            }
+            handleFormatted(name, firstValue);
           }}
         />
         {label}
