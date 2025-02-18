@@ -77,6 +77,12 @@
       "isDatabaseConstraint": true
     }
   ],
+  "Storage": [
+    {
+      "rule": [["guid"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
   "Collector": [
     {
       "rule": [["agent"], ["collectingEvent"]],
