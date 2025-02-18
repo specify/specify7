@@ -15,9 +15,9 @@ def update_fields(apps):
 
 def revert_update_fields(apps):
     # Remove guid -> storage
-        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
-            for field in fields: 
-                revert_table_field_schema_config(table, field, apps)
+    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
+        for field in fields: 
+            revert_table_field_schema_config(table, field, apps)
 
 class Migration(migrations.Migration):
 
