@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { userText } from '../../localization/user';
+import type { RA } from '../../utils/types';
 import { Container, H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { load } from '../InitialContext';
@@ -10,7 +11,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
 
   React.useEffect(() => {
-    fetchAllSystemData.then(setAllInfo);
+    fetchAllSystemData.then(setAllInfo).catch(() => console.warn('Error when fetching institution info'));
   }, []);
 
   const renderHierarchy = (data: InstitutionData | null): JSX.Element => {
@@ -20,15 +21,15 @@ export function SystemConfigurationTool(): JSX.Element | null {
       <Ul className="m-4">
         <li>
           <div className='flex'>
-          <H2>{`Institution: ${data.institution.name}`}</H2>
+          <H2>{`Institution: ${data.name}`}</H2>
           <Button.Icon
                   icon="plus"
                   title="Add new division to institution"
-                  onClick={() => console.log(`'Add new division to institution' ${data.institution.id}`)}
+                  onClick={() => console.log(`'Add new division to institution' ${data.id}`)}
                 />
                 </div>
             <Ul className="m-6">
-              {data.institution.children.map((division) => (
+              {data.children.map((division) => (
                 <li key={division.id}>
                   <div className='flex'>
                   <H3>{`Division: ${division.name}`}</H3>
@@ -75,27 +76,31 @@ export function SystemConfigurationTool(): JSX.Element | null {
     <Container.FullGray>
       <H2 className="text-2xl">{userText.systemConfigurationTool()}</H2>
       <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
-      {allInfo === undefined || allInfo === null ? undefined : renderHierarchy(allInfo)}
+      {allInfo === undefined || allInfo === null ? <LoadingScreen /> : renderHierarchy(allInfo)}
       </div>
     </Container.FullGray>
   );
 }
 
 type InstitutionData = {
+  // Institution
   readonly id: number;
   readonly name: string;
-  readonly children: readonly {
+  readonly children: RA<{
+    // Division
     readonly id: number;
     readonly name: string;
-    readonly children: readonly {
+    readonly children: RA<{
+      // Discipline
       readonly id: number;
       readonly name: string;
-      readonly children: readonly {
+      readonly children: RA<{
+        // Collection
         readonly id: number;
         readonly name: string;
-      }[];
-    }[];
-  }[];
+      }>;
+    }>;
+  }>;
 };
 
 let institutionData: InstitutionData;
