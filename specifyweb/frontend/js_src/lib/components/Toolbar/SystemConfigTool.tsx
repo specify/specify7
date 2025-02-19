@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { userText } from '../../localization/user';
-import { Container, H2 } from '../Atoms';
+import { Container, H2, H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { load } from '../InitialContext';
+import { LoadingScreen } from '../Molecules/Dialog';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -12,39 +14,60 @@ export function SystemConfigurationTool(): JSX.Element | null {
   }, []);
 
   const renderHierarchy = (data: InstitutionData | null): JSX.Element => {
-    if (!data) return <p>Loading...</p>;
+    if (!data) return <LoadingScreen />;
   
     return (
-      <ul className="ml-4 list-disc">
+      <Ul className="m-4">
         <li>
-          <strong>{data.institution.name}</strong>
-            <ul className="ml-6 list-circle">
+          <div className='flex'>
+          <H2>{`Institution: ${data.institution.name}`}</H2>
+          <Button.Icon
+                  icon="plus"
+                  title="Add new division to institution"
+                  onClick={() => console.log(`'Add new division to institution' ${data.institution.id}`)}
+                />
+                </div>
+            <Ul className="m-6">
               {data.institution.children.map((division) => (
                 <li key={division.id}>
-                  <strong>{division.name}</strong>
+                  <div className='flex'>
+                  <H3>{`Division: ${division.name}`}</H3>
+                  <Button.Icon
+                  icon="plus"
+                  title="Add new discipline to institution"
+                  onClick={() => console.log(`'Add new discipline to division' ${division.id}`)}
+                />
+                </div>
                   {division.children.length > 0 && (
-                    <ul className="ml-6 list-square">
+                    <Ul className="m-6">
                       {division.children.map((discipline) => (
                         <li key={discipline.id}>
-                          {discipline.name}
+                          <div className='flex'>
+                          <h4>{`Discipline: ${discipline.name}`}</h4>
+                          <Button.Icon
+                            icon="plus"
+                            title="Add new collection to discipline"
+                            onClick={() => console.log(`'Add new collection to discipline' ${discipline.id}`)}/>
+                          </div>
                           {discipline.children.length > 0 && (
-                            <ul className="ml-6 list-none">
+                            <Ul className="m-6">
                               {discipline.children.map((collection) => (
-                                <li className="ml-4" key={collection.id}>
-                                  - {collection.name}
+                                <li className="m-4 list-disc" key={collection.id}>
+                                  <p>{collection.name}</p>
                                 </li>
                               ))}
-                            </ul>
+                            </Ul>
                           )}
                         </li>
                       ))}
-                    </ul>
+                    </Ul>
                   )}
+                  
                 </li>
               ))}
-            </ul>
+            </Ul>
         </li>
-      </ul>
+      </Ul>
     );
   };
 
