@@ -106,7 +106,16 @@ def make_stringid(fs, table_list):
 class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
     original_field: str
-    pass
+
+    def __hash__(self):
+        return hash((TreeRankQuery, self.relatedModelName, self.name))
+
+    def __eq__(self, value):
+        return (
+            isinstance(value, TreeRankQuery)
+            and value.name == self.name
+            and value.relatedModelName == self.relatedModelName
+        )
 
 
 QueryNode = Union[Field, Relationship, TreeRankQuery]
