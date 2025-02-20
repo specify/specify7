@@ -107,7 +107,7 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     # Get the topmost consolidated parent cog of the preparation
     top_consolidated_cog = get_the_top_consolidated_parent_cog_of_prep(prep)
     if top_consolidated_cog is None:
-        return [prep]
+        return []
 
     # Get all the sibling preparations
     sibling_preps = get_cog_consolidated_preps(top_consolidated_cog)
@@ -115,7 +115,7 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     # Remove the prep.id from the sibling preparations
     sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
-    return sibling_preps
+    return [prep, *sibling_preps]
 
 
 def is_cog_recordset(rs: Recordset) -> bool:
@@ -563,6 +563,19 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     return updated_interaction_data
 
 def enforce_interaction_sibling_prep_max_count(interaction_obj):
+    # if interaction_obj._meta.model_name == 'preparation' or interaction_obj._meta.model_name == 'loanpreparation' : 
+
+    #     if interaction_obj._meta.model_name == 'preparation': 
+    #         collection_object = interaction_obj.collectionobject
+
+    #     if interaction_obj._meta.model_name == 'loanpreparation': 
+    #         collection_object = interaction_obj.preparation.collectionobject
+
+    #     cojo = Collectionobjectgroupjoin.objects.filter(childco=collection_object).first()
+
+    #     if cojo is None: 
+    #         return interaction_obj
+
     def get_interaction_prep_model_and_filter_field(interaction_obj):
         model_map = {
             'loan': (Loanpreparation, 'loan', 'loanpreparations__id'),
