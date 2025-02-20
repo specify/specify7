@@ -12,6 +12,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import { attachmentsText } from '../../localization/attachments';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -181,7 +182,7 @@ export function DataSetsDialog({
           {canImport && (
             <>
               <Link.Info href="/specify/workbench/import-attachments/">
-                {wbText.importAttachments()}
+                {attachmentsText.importAttachments()}
               </Link.Info>
               <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}

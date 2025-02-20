@@ -210,7 +210,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'import-attachments',
-        title: wbText.importAttachments(),
+        title: attachmentsText.importAttachments(),
         element: () =>
           import('../WbImportAttachments').then(({ WbImportAttachmentsView }) => WbImportAttachmentsView),
       },
