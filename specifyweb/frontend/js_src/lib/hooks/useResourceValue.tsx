@@ -12,9 +12,9 @@ import type { Input } from '../components/Forms/validationHelpers';
 import type { Parser } from '../utils/parser/definitions';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
+import { useFieldDefaultValue } from './useFieldDefaultValue';
 import { useFieldParser } from './useFieldParser';
 import { useFieldValidation } from './useFieldValidation';
-import { useFieldDefaultValue } from './useFieldDefaultValue';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

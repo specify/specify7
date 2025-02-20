@@ -10,11 +10,11 @@ import type {
 import type { Input } from '../components/Forms/validationHelpers';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
-import {
+import type {
   InvalidParseResult,
-  parseValue,
   ValidParseResult,
 } from '../utils/parser/parse';
+import { parseValue } from '../utils/parser/parse';
 
 export function useFieldParser<
   T extends boolean | number | string | null,
@@ -29,11 +29,11 @@ export function useFieldParser<
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  inputRef: React.MutableRefObject<INPUT | null>;
+  readonly inputRef: React.MutableRefObject<INPUT | null>;
   readonly parser: Parser;
   readonly trim?: boolean;
   readonly onParse: (
-    parseResult: ValidParseResult | InvalidParseResult
+    parseResult: InvalidParseResult | ValidParseResult
   ) => void;
 }): readonly [
   value: T | undefined,
@@ -128,7 +128,7 @@ export function useFieldParser<
     [resource, field, parser, inputRef]
   );
 
-  //REFACTOR: move this?
+  // REFACTOR: move this?
   /*
    * Resource changes when sliding in a record selector, but react reuses
    * the DOM component, thus need to manually add back the "notTouchedInput"

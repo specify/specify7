@@ -1,6 +1,6 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
-import { ValueOf } from '../../utils/types';
+import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
   COG_PRIMARY_KEY,
@@ -23,7 +23,7 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
-import { LiteralField, Relationship } from './specifyField';
+import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
