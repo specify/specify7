@@ -79,7 +79,7 @@
   ],
   "Storage": [
     {
-      "rule": [["guid"], []],
+      "rule": [["uniqueIdentifier"], []],
       "isDatabaseConstraint": true
     }
   ],

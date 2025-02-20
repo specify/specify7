@@ -166,5 +166,5 @@ MIGRATION_0023_FIELDS_BIS = {
 }
 
 MIGRATION_0024_FIELDS = {
-    'Storage': ['guid'],
+    'Storage': ['uniqueIdentifier'],
 }

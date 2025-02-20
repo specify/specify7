@@ -28,7 +28,7 @@ def revert_migration(apps, schema_editor):
             uniquenessrule__modelName=model_name,
             uniquenessrule__isDatabaseConstraint=True,
             uniquenessrule__discipline_id=discipline.id,
-            fieldPath="GUID",
+            fieldPath="uniqueIdentifier",
             isScope=False
         )
 
@@ -40,7 +40,7 @@ def revert_migration(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0024_add_guid_storage'),
+        ('specify', '0024_add_uniqueIdentifier_storage'),
         ('businessrules', '0005_cojo'),
     ]
 
