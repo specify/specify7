@@ -187,8 +187,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           undefined,
           resource
         );
-        // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker
-        resource.set('catalogNumber', parser.value as never, { silent: true });
+        // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
+        resource.set('catalogNumber', parser.value as never, {
+          silent: (parser.value ?? '') === '',
+        });
 
         const determinations = resource.getDependentResource('determinations');
         if (determinations === undefined || determinations.models.length === 0)
