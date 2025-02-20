@@ -493,7 +493,7 @@ def cleanData(model, data: Dict[str, Any], parent_relationship: Optional[Relatio
         _maybe_delete(cleaned, 'specifyuser')
 
     # guid should only be updatable for taxon and geography
-    if model not in (models.Taxon, models.Geography, models.Storage):
+    if model not in (models.Taxon, models.Geography):
         _maybe_delete(cleaned, 'guid')
 
     # timestampcreated should never be updated.
