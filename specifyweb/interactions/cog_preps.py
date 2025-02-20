@@ -70,6 +70,10 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
     """
     Get the topmost consolidated parent CollectionObjectGroup of the preparation.
     """
+
+    if prep is None:
+        return None  
+
     # Get the CollectionObject of the preparation
     co = prep.collectionobject
     if co is None:
@@ -568,7 +572,10 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         return model_map.get(interaction_obj._meta.model_name, (None, None, None))
 
     def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, prep_id_fld, InteractionPrepModel):
+
         for sibling_prep in sibling_preps:
+            if sibling_prep is None:
+                return False
             if sibling_prep.id not in interaction_prep_ids:
                 continue
             # count = sibling_prep.countamt
@@ -595,6 +602,9 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         if is_max_quantity_used(
             sibling_preps, interaction_prep.id, interaction_prep_ids, id_fld, InteractionPrepModel
         ) or (sibling_preps is not None and len(sibling_preps) > 0):
+            if interaction_prep.preparation is None: 
+                continue
+
             if interaction_prep.quantity == interaction_prep.preparation.countamt:
                 continue
             available_count = get_availability_count(prep, interaction_prep.id, "loanpreparations__id") or 0
