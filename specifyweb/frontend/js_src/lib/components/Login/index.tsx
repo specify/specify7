@@ -5,11 +5,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { devLanguage, LANGUAGE } from '../../localization/utils/config';
+import { ajax } from '../../utils/ajax';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
@@ -22,9 +24,40 @@ import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
 export function Login(): JSX.Element {
+  const [institutions] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<RA<string>>(`/api/specify/institutions/`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => {
+            if (data.length === 0) {
+              console.warn("No institutions found.");
+            }
+            return data;
+          })
+          .catch((error) => {
+            console.error("Failed to fetch institutions:", error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
+
+    if (institutions?.length === 0) {
+      // Display here the new setup pages 
+      return <p>Welcome! No institutions are available at the moment.</p>;
+    }
+
     return providers.length > 0 ? (
       <OicLogin
         data={{
