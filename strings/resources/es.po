@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-20 23:00+0000\n"
+"PO-Revision-Date: 2025-02-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.1-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -237,7 +237,7 @@ msgstr "Otros recursos JSON"
 #: components/AppResources/types.tsx:204
 #, fuzzy
 msgid "otherPropertiesResource"
-msgstr "Recursos de otras propiedades"
+msgstr "Otros recursos de propiedades"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:211
