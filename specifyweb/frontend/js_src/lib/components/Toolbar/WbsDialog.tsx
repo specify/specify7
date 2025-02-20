@@ -9,10 +9,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import { attachmentsText } from '../../localization/attachments';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
