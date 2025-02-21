@@ -23,6 +23,21 @@ type SimpleFormatter = {
   readonly isDefault: boolean;
 };
 
+export const formatterSeparator = '|||';
+
+export function createCompositeFormatter(name: string, index: number): string {
+  return `${name}${formatterSeparator}${index}`;
+}
+
+export function parseFormatterValue(value: string): { name: string; index: number } | null {
+  const [name, indexStr] = value.split(formatterSeparator);
+  const index = parseInt(indexStr, 10);
+  
+  if (!name || isNaN(index)) return null;
+  
+  return { name, index };
+}
+
 export function QueryFieldRecordFormatter({
   type,
   tableName,
@@ -146,13 +161,13 @@ function FormatSelect({
   const compositeValue = React.useMemo(() => {
     if (availableFormatters && availableFormatters.length > 0) {
       if (selectedIndex !== null && availableFormatters[selectedIndex]) {
-        return `${availableFormatters[selectedIndex].name}|||${selectedIndex}`;
+        return createCompositeFormatter(availableFormatters[selectedIndex].name, selectedIndex);
       }
       const foundIndex = availableFormatters.findIndex(
         (f) => f.name === currentFormat
       );
       if (foundIndex !== -1) {
-        return `${availableFormatters[foundIndex].name}|||${foundIndex}`;
+        return createCompositeFormatter(availableFormatters[foundIndex].name, foundIndex);
       }
     }
     return '';
@@ -190,13 +205,11 @@ function FormatSelect({
             id={id('list')}
             value={compositeValue}
             onValueChange={(value) => {
-              const parts = value.split('|||');
-              if (parts.length === 2) {
-                const [name, indexString] = parts;
-                const index = Number.parseInt(indexString, 10);
-                setSelectedIndex(index);
+              const parsed = parseFormatterValue(value);
+              if (parsed) {
+                setSelectedIndex(parsed.index);
                 if (handleChange) {
-                  handleChange(name);
+                  handleChange(parsed.name);
                 }
               } else {
                 setSelectedIndex(null);
@@ -208,7 +221,7 @@ function FormatSelect({
           >
             <option value="" />
             {availableFormatters.map((formatter, index) => (
-              <option key={index} value={`${formatter.name}|||${index}`}>
+              <option key={index} value={createCompositeFormatter(formatter.name, index)}>
                 {`${formatter.title} ${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
