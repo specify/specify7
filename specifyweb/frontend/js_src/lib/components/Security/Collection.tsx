@@ -44,6 +44,7 @@ export type UserRoles = RA<{
   readonly userId: number;
   readonly userName: LocalizedString;
   readonly roles: RA<RoleBase>;
+  readonly isLoggedIn: boolean
 }>;
 
 export type SecurityCollectionOutlet = SecurityOutlet & {
@@ -158,7 +159,7 @@ export function CollectionView({
                 ) : (
                   <>
                     <Ul>
-                      {mergedUsers.map(({ userId, userName, roles }) => {
+                      {mergedUsers.map(({ userId, userName, roles, isLoggedIn }) => {
                         const canRead =
                           userId === userInformation.id ||
                           hasTablePermission('SpecifyUser', 'read');
@@ -172,6 +173,11 @@ export function CollectionView({
                                 )})`}
                               </span>
                             )}
+                              <span
+                                className={`ml-2 inline-block w-2.5 h-2.5 rounded-full  
+                                  ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}
+                                `}
+                              />
                           </>
                         );
                         return (

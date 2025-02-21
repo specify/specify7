@@ -36,10 +36,12 @@ export function useCollectionUsersWithPolicies(
                     userName: await fetchResource('SpecifyUser', userId).then(
                       ({ name }) => localized(name)
                     ),
+                    isLoggedIn: await fetchResource('SpecifyUser', userId).then(
+                      ({ isLoggedIn }) => isLoggedIn)
                   }))
               )
             )
-          : [{ userId: userInformation.id, userName: userInformation.name }],
+          : [{ userId: userInformation.id, userName: userInformation.name,  isLoggedIn: userInformation.isloggedin}],
       [collectionId]
     ),
     false
