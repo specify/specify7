@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-21 02:00+0000\n"
+"PO-Revision-Date: 2025-02-21 02:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/user/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.1-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -181,8 +181,8 @@ msgstr "A senha estava incorreta."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Você não tem acesso a nenhum {collectionTable:string} que contenha este "
-"recurso por meio da conta atualmente conectada"
+"Você não tem acesso a nenhum {collectionTable:string} contendo este recurso "
+"por meio da conta atualmente conectada"
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -209,7 +209,7 @@ msgstr "Você pode fazer login no {collectionTable:string}, para prosseguir:"
 #: components/Permissions/PermissionDenied.tsx:232
 #, fuzzy
 msgid "sessionTimeOut"
-msgstr "Privilégios insuficientes"
+msgstr "Privilégios Insuficientes"
 
 #. Used in: Components > Permissions > Permission Denied
 #: components/Permissions/PermissionDenied.tsx:239
