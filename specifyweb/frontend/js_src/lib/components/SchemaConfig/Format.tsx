@@ -196,7 +196,7 @@ function FormatterLine({
           value="none"
           onChange={(): void => {
             const firstValue = (typeof values === 'object' && values !== null)
-              ? values["Field Formatters"]?.[0]?.[0] ?? Object.values(values)?.[0]?.[0]?.[0] ?? null
+              ? Object.values(values)?.[0]?.[0]?.[0] ?? values["Field Formatters"]?.[0]?.[0] ??  null
               : null;
 
             handleFormatted(name, firstValue);
