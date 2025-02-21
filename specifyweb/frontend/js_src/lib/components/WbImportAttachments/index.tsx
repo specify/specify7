@@ -19,9 +19,8 @@ import { ChooseName } from '../WbImport/index';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
-  const [files, setFiles] = React.useState<FileList | undefined>();
-
-  // TODO: Preview files and a separate "Import Attachments" button
+  const [files, setFiles] = React.useState<File[] | undefined>();
+  
   return (
     <Container.Full>
       <H2>{commonText.multipleFilePickerMessage()}</H2>
@@ -29,28 +28,25 @@ export function WbImportAttachmentsView(): JSX.Element {
         <FilePicker
           acceptedFormats={undefined}
           showFileNames
-          onFilesSelected={(selectedFiles) => setFiles(selectedFiles)}
+          onFilesSelected={(selectedFiles) => {
+            setFiles(Array.from(selectedFiles));
+          }}
         />
-        {files !== undefined && files.length > 0 && (
-          <FilePicked files={files} />
-        )}
       </div>
+      {files !== undefined && files.length > 0 && (
+        <FilesPicked files={files} />
+      )}
     </Container.Full>
   );
 }
 
-function FilePicked({ files }: { readonly files: FileList }): JSX.Element {
+function FilesPicked({ files }: { readonly files: File[] }): JSX.Element {
   const navigate = useNavigate();
 
   const handleFilesSelected = async (
-    files: FileList,
+    files: File[],
     dataSetName: string
   ): Promise<void> => {
-    // TODO: Remove
-    for (const file of files) {
-      console.log(file);
-    }
-
     /*
      * TODO: Upload attachments to spdatasetAttachments
      * Then this attachment column will be set to the ID of the attachment
@@ -74,8 +70,9 @@ function FilePicked({ files }: { readonly files: FileList }): JSX.Element {
     attachmentsText.attachments()
   );
 
+  // TODO: Preview files
   return (
-    <div className="grid w-96 grid-cols-2 items-center gap-2">
+    <div className="grid w-96 grid-cols-2 items-center gap-2 mt-2">
       <ChooseName name={dataSetName} onChange={setDataSetName} />
       <Button.Secondary
         className="col-span-full justify-center text-center"
