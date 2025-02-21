@@ -62,9 +62,10 @@ export function useCollectionUserRoles(
                 headers: { Accept: 'application/json' },
               }
             ).then(({ data }) =>
-              data.map(({ userid, username, roles }) => ({
+              data.map(({ userid, username, roles, isloggedin }) => ({
                 userId: userid,
                 userName: username,
+                isLoggedIn: isloggedin,
                 roles: roles
                   .map(({ roleid, rolename }) => ({
                     roleId: roleid,
@@ -100,6 +101,8 @@ export const mergeCollectionUsers = (
             ({ userId, userName }) =>
               ({
                 userId,
+                // Need to chnage this
+                isLoggedIn: false,
                 userName,
                 roles: [],
               }) as const
