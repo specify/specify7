@@ -19,7 +19,7 @@ import { ChooseName } from '../WbImport/index';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
-  const [files, setFiles] = React.useState<File[] | undefined>();
+  const [files, setFiles] = React.useState<readonly File[] | undefined>();
   
   return (
     <Container.Full>
@@ -40,11 +40,11 @@ export function WbImportAttachmentsView(): JSX.Element {
   );
 }
 
-function FilesPicked({ files }: { readonly files: File[] }): JSX.Element {
+function FilesPicked({ files }: { readonly files: readonly File[] }): JSX.Element {
   const navigate = useNavigate();
 
   const handleFilesSelected = async (
-    files: File[],
+    files: readonly File[],
     dataSetName: string
   ): Promise<void> => {
     /*
