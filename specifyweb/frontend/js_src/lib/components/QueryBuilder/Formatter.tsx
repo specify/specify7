@@ -29,9 +29,9 @@ export function createCompositeFormatter(name: string, index: number): string {
   return `${name}${formatterSeparator}${index}`;
 }
 
-export function parseFormatterValue(value: string): { name: string; index: number } | null {
-  const [name, indexStr] = value.split(formatterSeparator);
-  const index = parseInt(indexStr, 10);
+export function parseFormatterValue(value: string): { readonly name: string; readonly index: number } | null {
+  const [name, indexString] = value.split(formatterSeparator);
+  const index = Number.parseInt(indexString, 10);
   
   if (!name || isNaN(index)) return null;
   
