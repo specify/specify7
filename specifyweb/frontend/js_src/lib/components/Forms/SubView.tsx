@@ -15,6 +15,7 @@ import type { CollectionFetchFilters } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -24,7 +25,6 @@ import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelecto
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { schema } from '../DataModel/schema';
 
 type SubViewContextType =
   | {
