@@ -206,17 +206,10 @@ function FormatSelect({
             value={compositeValue}
             onValueChange={(value) => {
               const parsed = parseFormatterValue(value);
-              if (parsed) {
-                setSelectedIndex(parsed.index);
-                if (handleChange) {
-                  handleChange(parsed.name);
-                }
-              } else {
-                setSelectedIndex(null);
-                if (handleChange) {
-                  handleChange(value);
-                }
-              }
+              const index = parsed?.index ?? null;
+              const name = parsed?.name ?? value;
+              setSelectedIndex(index);
+              handleChange?.(name);
             }}
           >
             <option value="" />
