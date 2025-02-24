@@ -588,33 +588,33 @@ def modify_query_add_age_range(query, start_time: float, end_time: float, requir
     )
 
     # Build the RelativeAge subquery
-    r = aliased(RelativeAge, name="r")
-    a = aliased(GeologicTimePeriod, name="a")
-    aend = aliased(GeologicTimePeriod, name="aend")
+    ra = aliased(RelativeAge, name="ra")
+    csa = aliased(GeologicTimePeriod, name="csa")
+    csaend = aliased(GeologicTimePeriod, name="csaend")
 
-    rel_start_expr = build_relative_expr(is_start=True, a=a, aend=aend, r=r)
-    rel_end_expr = build_relative_expr(is_start=False, a=a, aend=aend, r=r)
+    rel_start_expr = build_relative_expr(is_start=True, a=csa, aend=csaend, r=ra)
+    rel_end_expr = build_relative_expr(is_start=False, a=csa, aend=csaend, r=ra)
 
     rel_join = join(
-        r, a, r.AgeNameID == a.geologicTimePeriodId
+        ra, csa, ra.AgeNameID == csa.geologicTimePeriodId
     ).outerjoin(
-        aend, r.AgeNameEndID == aend.geologicTimePeriodId
+        csaend, ra.AgeNameEndID == csaend.geologicTimePeriodId
     )
     rel_sel = select([
-        r.CollectionObjectID.label("coid"),
+        ra.CollectionObjectID.label("coid"),
         rel_start_expr.label("startperiod"),
         rel_end_expr.label("endperiod")
     ]).select_from(rel_join).where(
         and_(
-            a.startPeriod != None,
-            a.endPeriod != None,
-            a.startPeriod >= a.endPeriod,
+            csa.startPeriod != None,
+            csa.endPeriod != None,
+            csa.startPeriod >= csa.endPeriod,
             or_(
-                r.AgeNameEndID == None,
+                ra.AgeNameEndID == None,
                 and_(
-                    aend.startPeriod != None,
-                    aend.endPeriod != None,
-                    aend.startPeriod >= aend.endPeriod
+                    csaend.startPeriod != None,
+                    csaend.endPeriod != None,
+                    csaend.startPeriod >= csaend.endPeriod
                 )
             ),
             rel_start_expr <= start_time,
@@ -733,7 +733,6 @@ def geo_time_period_query(time_period_name: str, require_full_overlap: bool = Fa
         return set()
     start_time = time_period.startperiod
     end_time = time_period.endperiod
-    # if not require_full_overlap:
     start_time += Decimal(time_period.startuncertainty) if time_period.startuncertainty else Decimal('0.1')
     end_time += Decimal(time_period.enduncertainty) if time_period.enduncertainty else Decimal('0.1')
     if start_time is None:
