@@ -6,6 +6,7 @@ from django.db.models import Case, FloatField, F, Q, Value, When
 from django.db.models.functions import Coalesce, Greatest, Least, Cast
 from sqlalchemy import select, union_all, func, cast, DECIMAL, case, or_, and_, String, join
 from sqlalchemy.orm import aliased
+from decimal import Decimal
 
 from specifyweb.specify.models import (
     Absoluteage,
@@ -699,25 +700,6 @@ def modify_query_add_age_range(query, start_time: float, end_time: float, requir
     new_query = new_query.add_columns(age_expr)
     return new_query
 
-def query_co_ids_in_time_period(query, time_period_name: str, require_full_overlap: bool = False):
-    """
-    Query for collection object IDs that overlap with the given geologic time period.
-
-    :param time_period_name: The name of the time period.
-    :param require_full_overlap: If True, only collections that fully overlap with the range are returned.
-    :return: A set of collection object IDs.
-    """
-    time_period = Geologictimeperiod.objects.filter(name=time_period_name).first()
-    if not time_period:
-        return set()
-    start_time = time_period.startperiod
-    end_time = time_period.endperiod
-    if start_time is None:
-        start_time = 13800
-    if end_time is None:
-        end_time = 0
-    return modify_query_add_age_range(query, start_time, end_time, require_full_overlap)
-
 def geo_time_query(start_time: float, end_time: float, require_full_overlap: bool = False, query = None):
     """
     Search for collection object IDs that overlap with the given time range.
@@ -751,6 +733,9 @@ def geo_time_period_query(time_period_name: str, require_full_overlap: bool = Fa
         return set()
     start_time = time_period.startperiod
     end_time = time_period.endperiod
+    # if not require_full_overlap:
+    start_time += Decimal(time_period.startuncertainty) if time_period.startuncertainty else Decimal('0.1')
+    end_time += Decimal(time_period.enduncertainty) if time_period.enduncertainty else Decimal('0.1')
     if start_time is None:
         start_time = 13800 # max start time, 13800 is the age of the Universe
     if end_time is None:
