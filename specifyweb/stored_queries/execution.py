@@ -419,31 +419,6 @@ def run_ephemeral_query(collection, user, spquery):
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
-def augment_field_specs(field_specs, formatauditobjs=False):
-    print("augment_field_specs ######################################")
-    new_field_specs = []
-    for fs in field_specs:
-        print(fs)
-        print(fs.fieldspec.table.tableId)
-        field = fs.fieldspec.join_path[-1]
-        model = models.models_by_tableid[fs.fieldspec.table.tableId]
-        if field.type == 'java.util.Calendar':
-            precision_field = field.name + "Precision"
-            has_precision = hasattr(model, precision_field)
-            if has_precision:
-                new_field_specs.append(make_augmented_field_spec(fs, model, precision_field))
-        elif formatauditobjs and model.name.lower.startswith('spauditlog'):
-            if field.name.lower() in 'newvalue, oldvalue':
-                log_model = models.models_by_tableid[530];
-                new_field_specs.append(make_augmented_field_spec(fs, log_model, 'TableNum'))
-                new_field_specs.append(make_augmented_field_spec(fs, model, 'FieldName'))
-            elif field.name.lower() == 'recordid':
-                new_field_specs.append(make_augmented_field_spec(fs, model, 'TableNum'))
-    print("################################ sceps_dleif_tnemgua")
-
-def make_augmented_field_spec(field_spec, model, field_name):
-    print("make_augmented_field_spec ######################################")
-
 def recordset(collection, user, user_agent, recordset_info):
     "Create a record set from the records matched by a query."
     spquery = recordset_info['fromquery']
@@ -628,10 +603,7 @@ def build_query(session, collection, user, tableid, field_specs,
     order_by_exprs = []
     selected_fields = []
     predicates_by_field = defaultdict(list)
-    # NOTE: Remove if unused?
-    # augment_field_specs(field_specs, formatauditobjs)
 
-    cot_formatters = []
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
@@ -641,17 +613,11 @@ def build_query(session, collection, user, tableid, field_specs,
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
 
-        if fs.fieldspec.get_field() is datamodel.get_table('CollectionObject').get_field('catalogNumber') and fs.format_name is not None:
-            cot_formatters.append(fs.format_name)
-
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
         if predicate is not None:
             predicates_by_field[fs.fieldspec].append(predicate)
-
-    if len(cot_formatters) > 0:
-        query = filter_by_cot_formatter(model, query, collection, cot_formatters)
 
     if implicit_or:
         implicit_ors = [
@@ -675,32 +641,3 @@ def build_query(session, collection, user, tableid, field_specs,
 
     logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
-
-
-def filter_by_cot_formatter(model, query, collection, formatter_names):
-    cotype = aliased(models.CollectionObjectType)
-    query = query.join(cotype, getattr(model, 'collectionObjectType'))
-
-    # Get cotype.catalogNumberFormatName
-    catalog_number_format_name = getattr(cotype, 'catalogNumberFormatName')
-
-    filters = [catalog_number_format_name == formatter_name for formatter_name in formatter_names]
-
-    # Check if formatter matches collection's default
-    # This is done to make sure we include COs that have COTs with no catalogNumberFormatName
-    collection_formatter = getattr(collection, 'catalognumformatname')
-    if any(formatter_name == collection_formatter for formatter_name in formatter_names):
-        collection_alias = aliased(models.Collection)
-        query = query.join(collection_alias, getattr(model, 'collection'))
-        catalog_number_format_name_collection = getattr(collection_alias, 'catalogNumFormatName')
-
-        filters.append(
-            sql.and_(
-                catalog_number_format_name == None,
-                catalog_number_format_name_collection == collection_formatter
-            )
-        )
-
-    query = query.filter(sql.or_(*filters))
-
-    return query
