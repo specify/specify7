@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
+import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
@@ -18,7 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import { SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl } from '../DataModel/resource';
+import { getResourceViewUrl, strictIdFromUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -34,12 +35,16 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { queryCbxExtendedSearch } from './helpers';
+import { SelectRecordSets } from './SelectRecordSet';
 
 const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: string & (keyof CommonFields | keyof SCHEMA['fields']);
+  readonly queryBuilderFieldPath?: MappingPath;
+  readonly isRelationship: boolean;
   readonly isNot: boolean;
   readonly operation: QueryFieldFilter & ('between' | 'in' | 'less');
   readonly value: string;
@@ -49,10 +54,7 @@ const viewNameExceptions: Partial<RR<keyof Tables, string>> = {
   GeologicTimePeriod: 'ChronosStratSearch',
 };
 
-/**
- * Display a resource search dialog
- */
-export function SearchDialog<SCHEMA extends AnySchema>(props: {
+type SearchDialogProps<SCHEMA extends AnySchema> = {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly table: SpecifyTable<SCHEMA>;
@@ -61,7 +63,17 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onlyUseQueryBuilder?: boolean;
-}): JSX.Element | null {
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
+};
+
+/**
+ * Display a resource search dialog
+ */
+export function SearchDialog<SCHEMA extends AnySchema>(
+  props: SearchDialogProps<SCHEMA>
+): JSX.Element | null {
   const [alwaysUseQueryBuilder] = userPreferences.use(
     'form',
     'queryComboBox',
@@ -84,6 +96,41 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   );
 }
 
+/**
+ * Displays a SearchDialog whenever `showSearchDialog` is invoked
+ */
+export function useSearchDialog<SCHEMA extends AnySchema>({
+  onSelected: handleSelected,
+  onClose: handleClosed,
+  ...rest
+}: Omit<SearchDialogProps<SCHEMA>, 'onClose' | 'onSelected'> &
+  Partial<Pick<SearchDialogProps<SCHEMA>, 'onClose' | 'onSelected'>>): {
+  readonly searchDialog: JSX.Element | null;
+  readonly showSearchDialog: () => void;
+} {
+  const [state, setState] = React.useState<State<'Main'> | State<'Search'>>({
+    type: 'Main',
+  });
+
+  return {
+    searchDialog:
+      state.type === 'Search' && typeof handleSelected === 'function' ? (
+        <SearchDialog
+          {...rest}
+          onClose={(): void => {
+            handleClosed?.();
+            setState({ type: 'Main' });
+          }}
+          onSelected={handleSelected}
+        />
+      ) : null,
+    showSearchDialog: () =>
+      typeof handleSelected === 'function'
+        ? setState({ type: 'Search' })
+        : undefined,
+  };
+}
+
 const filterResults = <SCHEMA extends AnySchema>(
   results: RA<SpecifyResource<SCHEMA>>,
   extraFilters: RA<QueryComboBoxFilter<SCHEMA>>
@@ -94,7 +141,13 @@ const filterResults = <SCHEMA extends AnySchema>(
 
 function testFilter<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>
+  {
+    operation,
+    field,
+    value,
+    isNot,
+    isRelationship,
+  }: QueryComboBoxFilter<SCHEMA>
 ): boolean {
   const values = value.split(',').map(f.trim);
   const result =
@@ -102,19 +155,23 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? // Cast numbers to strings
-        // eslint-disable-next-line eqeqeq
-        values.some((value) => value == resource.get(field))
-      : operation === 'less'
-      ? values.every((value) => (resource.get(field) ?? 0) < value)
-      : error('Invalid Query Combo Box search filter', {
-          filter: {
-            operation,
-            field,
-            values,
-          },
-          resource,
-        });
+        ? // Cast numbers to strings
+          values.some((value) => {
+            const fieldValue = resource.get(field);
+            return isRelationship
+              ? value == strictIdFromUrl(fieldValue!).toString()
+              : value == fieldValue;
+          })
+        : operation === 'less'
+          ? values.every((value) => (resource.get(field) ?? 0) < value)
+          : error('Invalid Query Combo Box search filter', {
+              filter: {
+                operation,
+                field,
+                values,
+              },
+              resource,
+            });
   return isNot ? !result : result;
 }
 
@@ -126,6 +183,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onSelected: handleSelected,
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
+  onAdd: handleAdd,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -134,6 +192,9 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;
+  readonly onAdd?:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -177,6 +238,11 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
+          <SelectRecordSets
+            handleParentClose={handleClose}
+            table={table}
+            onAdd={handleAdd}
+          />
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>
@@ -330,8 +396,8 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
   filters: RA<QueryComboBoxFilter<SCHEMA>>
 ): RA<SpecifyResource<SpQueryField>> =>
-  filters.map(({ field, operation, isNot, value }) =>
-    QueryFieldSpec.fromPath(table.name, [field])
+  filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
+    QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
       .set('operStart', queryFieldFilters[operation].id)
       .set('isNot', isNot)

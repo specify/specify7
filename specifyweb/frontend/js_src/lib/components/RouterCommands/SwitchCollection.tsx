@@ -7,6 +7,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { toLocalUrl } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { formatUrl } from '../Router/queryString';
+import { clearAllCache } from './CacheBuster';
 
 export const switchCollection = (
   navigate: SafeNavigateFunction,
@@ -40,7 +41,9 @@ export function SwitchCollectionCommand(): null {
           method: 'POST',
           body: collectionId!.toString(),
           errorMode: 'dismissible',
-        }).then(() => globalThis.location.replace(nextUrl)),
+        })
+        .then(clearAllCache)
+        .then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),
     true

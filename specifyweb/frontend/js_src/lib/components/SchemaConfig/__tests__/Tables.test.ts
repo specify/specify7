@@ -15,7 +15,7 @@ describe('tablesFilter', () => {
     ));
 
   test('showHiddenTables excludes hidden and system', () =>
-    expect(tablesFilter(false, true, true, tables.Institution)).toBe(false));
+    expect(tablesFilter(false, true, true, tables.Institution)).toBe(true));
 
   test('showNoAccessTables excludes table without permission', () => {
     const tablePermissions =

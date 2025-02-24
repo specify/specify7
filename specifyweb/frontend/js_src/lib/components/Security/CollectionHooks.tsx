@@ -100,7 +100,7 @@ export const mergeCollectionUsers = (
                 userId,
                 userName,
                 roles: [],
-              } as const)
+              }) as const
           ),
       ].sort(sortFunction(({ userName }) => userName))
     : undefined;

@@ -150,10 +150,6 @@ function ProtectedStatsPage(): JSX.Element | null {
         }
       >
     | State<
-        'DeletingCategoryState',
-        { readonly categoryContainsCustom: boolean }
-      >
-    | State<
         'PageRenameState',
         {
           readonly pageIndex: number | undefined;
@@ -314,8 +310,8 @@ function ProtectedStatsPage(): JSX.Element | null {
       ? undefined
       : sharedLayout[activePage.pageIndex]
     : personalLayout?.[activePage.pageIndex].categories === undefined
-    ? undefined
-    : personalLayout[activePage.pageIndex];
+      ? undefined
+      : personalLayout[activePage.pageIndex];
 
   const handleChange = React.useCallback(
     (

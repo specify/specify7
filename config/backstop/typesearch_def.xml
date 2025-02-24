@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 
+  Table IDs are defined in this list: https://github.com/specify/specify7/blob/production/specifyweb/specify/models_by_table_id.py
+  The `displaycols` attribute is ignored and the Table Format is used instead.
+  The HQL queries cannot be custom defined in this file and will be ignored.
+
+ -->
+<typesearches>
+    <typesearch tableid="7"   name="AccessionCO"              searchfield="accessionNumber" displaycols="accessionNumber"    format="%s"     dataobjformatter="">
+        SELECT %s1 FROM Accession ac JOIN ac.division as dv WHERE dv.divisionId = DIVID AND %s2 ORDER BY accessionNumber
+    </typesearch>
+    <typesearch tableid="5"   name="Agent"                  searchfield="lastName"        displaycols="lastName,firstName,middleInitial" format="%s, %s %s" dataobjformatter="Agent">
+        SELECT %s1 FROM Agent ag WHERE ag.division.id = DIVID AND %s2 ORDER BY ag.lastName,ag.firstName
+    </typesearch>
+    <typesearch tableid="5"   name="AgentSSPU"              searchfield="lastName"        displaycols="lastName,firstName" format="%s, %s" dataobjformatter="Agent">
+        SELECT %s1 FROM Agent ag LEFT JOIN ag.specifyUser s WHERE s = null AND %s2 ORDER BY ag.lastName,ag.firstName
+    </typesearch>
+    <typesearch tableid="67"  name="Appraisal"              searchfield="appraisalNumber" displaycols="appraisalNumber"    format="%s"     dataobjformatter=""/>
+    <typesearch tableid="97"  name="AutoNumberingScheme"    searchfield="schemeName"      displaycols="schemeName"         format="%s"     dataobjformatter=""/>
+    <typesearch tableid="46"  name="BioStrat"               searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter="">
+        SELECT %s1 FROM GeologicTimePeriod gtp JOIN gtp.definition as gtpd WHERE gtpd.geologicTimePeriodTreeDefId = GTPTREEDEFID AND gtp.isBioStrat = 1 AND %s2 ORDER BY fullName
+    </typesearch>
+    <typesearch tableid="97"  name="CatAutoNumberingScheme" searchfield="schemeName"      displaycols="schemeName"         format="%s"     dataobjformatter=""/>
+    <typesearch tableid="46"  name="ChronosStrat"           searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="1"   name="CollectionObject"       searchfield="catalogNumber"   displaycols="catalogNumber"      uifieldformatter="CatalogNumber" dataobjformatter="CollectionObject"/>
+    <typesearch tableid="1016"   name="CollectionObjectGroup" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
+    <typesearch tableid="1018"   name="CollectionObjectGroupType" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
+    <typesearch tableid="98" name="CollectionRelType"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>  
+    <typesearch tableid="10"  name="CollectingEvent"        searchfield="stationFieldNumber" displaycols="stationFieldNumber,startDate,loc.localityName,geo.fullName" format="%s; %s; %s; %s" dataobjformatter="">
+        SELECT %s1 FROM CollectingEvent ce LEFT JOIN ce.locality loc LEFT JOIN loc.geography geo JOIN ce.discipline as dsp WHERE dsp.disciplineId = DSPLNID AND %s2 ORDER BY stationFieldNumber
+    </typesearch>
+    <typesearch tableid="31"  name="Container"              searchfield="name"            displaycols="name" format="%s"   dataobjformatter=""/>
+    <typesearch tableid="31"  name="ContainerOwner"         searchfield="name"            displaycols="name" format="%s"   dataobjformatter="">
+        SELECT %s1 FROM Container con WHERE %s2 AND con.collectionObjects.size = 0 ORDER BY name
+    </typesearch>
+    <typesearch tableid="87"  name="CollectingTrip"         searchfield="collectingTripName" displaycols="collectingTripName" format="%s"  dataobjformatter=""/>
+    <typesearch tableid="23"  name="Collection"             searchfield="collectionName" displaycols="collectionName" format="%s"  dataobjformatter=""/>
+    <typesearch tableid="34"  name="Disposal"               searchfield="disposalNumber"  displaycols="disposalNumber"     format="%s"     dataobjformatter="Disposal"/>
+    <typesearch tableid="26"  name="Discipline"             searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="96"  name="Division"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="150" name="DNAPrimer"        	    searchfield="primerDesignator" displaycols="primerDesignator"  format="%s"     dataobjformatter=""/>
+    <typesearch tableid="89"  name="Exsiccata"              searchfield="title"           displaycols="title"              format="%s"     dataobjformatter=""/>
+    <typesearch tableid="85"  name="FieldNotebookPage"      searchfield="pageNumber"      displaycols="fnbp.pageNumber,fnb.name"  format="%s - %s"     dataobjformatter="FieldNotebookPage">
+        SELECT %s1 FROM FieldNotebookPage fnbp JOIN fnbp.pageSet as fnbps JOIN fnbps.fieldNotebook as fnb JOIN fnb.discipline as dsp WHERE dsp.disciplineId = DSPLNID AND %s2 ORDER BY fnb.name, fnbp.pageNumber
+    </typesearch>
+    <typesearch tableid="3"   name="Geography"              searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter="Geography"/>
+    <typesearch tableid="46"  name="GeologicTimePeriod"     searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="94"  name="Institution"            searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="51"  name="Journal"                searchfield="journalName"     displaycols="journalName"        format="%s"     dataobjformatter=""/>
+    <typesearch tableid="163" name="Deaccession"            searchfield="deaccessionNumber"    displaycols="deaccessionNumber"       format="%s" dataobjformatter="Deaccession"/>
+    <typesearch tableid="100" name="LithoStrat"             searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="2"   name="Locality"               searchfield="localityName"    displaycols="localityName,geo.fullName"       format="%s;  %s" dataobjformatter="Locality">
+        SELECT %s1 FROM Locality loc JOIN loc.discipline as dsp LEFT JOIN loc.geography geo WHERE dsp.disciplineId = DSPLNID AND %s2 ORDER BY localityName, geo.fullName
+    </typesearch>
+    <typesearch tableid="138" name="MorphBankView"          searchfield="viewName"        displaycols="viewName"           format="%s"     dataobjformatter=""/>  
+    <typesearch tableid="69"  name="ReferenceWork"          searchfield="title"           displaycols="title"              format="%s"     dataobjformatter=""/>
+    <typesearch tableid="70"  name="RepositoryAgreement"    searchfield="repositoryAgreementNumber" displaycols="repositoryAgreementNumber" format="%s"     dataobjformatter=""/>
+    <typesearch tableid="58"  name="Storage"                searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="72"  name="SpecifyUser"            searchfield="name"            displaycols="name"           format="%s"     dataobjformatter=""/>
+    <typesearch tableid="32"  name="PaleoContext"           searchfield="paleoContextName,cs.fullName,ls.fullName" displaycols="paleoContextName,cs.fullName,cse.fullName,ls.fullName" format="%s, %s, %s, %s"     
+    	dataobjformatter="PaleoContext">
+    	SELECT %s1 FROM PaleoContext pc LEFT JOIN pc.chronosStrat cs LEFT JOIN cs.definition csd LEFT JOIN pc.chronosStratEnd cse LEFT JOIN cse.definition csed LEFT JOIN pc.lithoStrat ls LEFT JOIN ls.definition lsd WHERE pc.discipline.disciplineId = DSPLNID AND (pc.chronosStrat IS NULL OR csd.geologicTimePeriodTreeDefId=GTPTREEDEFID) AND (pc.chronosStratEnd IS NULL OR csed.geologicTimePeriodTreeDefId=GTPTREEDEFID) AND (pc.lithoStrat IS NULL OR lsd.lithoStratTreeDefId=LITHOTREEDEFID) AND %s2 ORDER BY pc.paleoContextName,cs.fullName,cse.fullName,ls.fullName
+    </typesearch>
+    <typesearch tableid="6"   name="Permit"                 searchfield="permitNumber"    displaycols="permitNumber"       format="%s"     dataobjformatter=""/>
+    <typesearch tableid="63"   name="Preparation"            searchfield="co.catalogNumber" displaycols="co.catalogNumber, pt.name"    format="%s, %s"     dataobjformatter="Preparation">
+    SELECT %s1 FROM Preparation pp JOIN pp.collectionObject co JOIN pp.prepType pt WHERE %s2 ORDER BY co.catalogNumber, pt.name
+    </typesearch>
+    <typesearch tableid="65"  name="PrepType"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="4"   name="Taxon"                  searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="Taxon"/>
+    <typesearch tableid="77"  name="TaxonTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
+    <typesearch tableid="1027"  name="TectonicUnit"         searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="TectonicUnit"/>
+    <typesearch tableid="1026"  name="TectonicUnitTreeDefItem"       searchfield="name"   displaycols="name"               format="%s"     dataobjformatter=""/>
+</typesearches>

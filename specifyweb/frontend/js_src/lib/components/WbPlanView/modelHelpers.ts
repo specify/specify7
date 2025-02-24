@@ -18,6 +18,7 @@ import type { MappingPath } from './Mapper';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -74,7 +75,7 @@ export function findRequiredMissingFields(
   // Handle trees
   else if (isTreeTable(tableName) && !valueIsTreeRank(path.at(-1)))
     return (
-      getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
+      getTreeDefinitionItems(tableName, false, 'all')?.flatMap(
         ({ name: rankName }) => {
           const formattedRankName = formatTreeRank(rankName);
           const localPath = [...path, formattedRankName];
@@ -103,8 +104,10 @@ export function findRequiredMissingFields(
           // Disable circular relationships
           (isCircularRelationship(parentRelationship, relationship) ||
             // Skip -to-many inside -to-many
-            (relationshipIsToMany(parentRelationship) &&
-              relationshipIsToMany(relationship)))
+            ((relationshipIsToMany(parentRelationship) ||
+              relationshipIsRemoteToOne(parentRelationship)) &&
+              (relationshipIsToMany(relationship) ||
+                relationshipIsRemoteToOne(relationship))))
         )
           return [];
 

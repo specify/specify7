@@ -68,7 +68,7 @@ export function QueryImport({
     <Dialog
       buttons={commonText.cancel()}
       header={commonText.import()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      icon={icons.documentSearch}
       onClose={handleClose}
     >
       <>

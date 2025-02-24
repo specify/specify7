@@ -1,4 +1,14 @@
+import { resourcesText } from '../../localization/resources';
 import type { BusinessRuleResult } from './businessRules';
+import {
+  COG_PRIMARY_KEY,
+  COG_TOITSELF,
+  CURRENT_DETERMINATION_KEY,
+  DETERMINATION_TAXON_KEY,
+  ensureSingleCollectionObjectCheck,
+  hasNoCurrentDetermination,
+} from './businessRuleUtils';
+import { cogTypes } from './helpers';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -9,12 +19,16 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { setSaveBlockers } from './saveBlockers';
+import { schema } from './schema';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectGroup,
+  CollectionObjectGroupJoin,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -107,8 +121,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? returned > quantity
               ? quantity
               : returned > resolved
-              ? resolved
-              : returned
+                ? resolved
+                : returned
             : undefined;
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
@@ -127,8 +141,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? resolved > quantity
               ? quantity
               : resolved < returned
-              ? returned
-              : resolved
+                ? returned
+                : resolved
             : undefined;
 
         if (typeof adjustedResolved === 'number')
@@ -149,30 +163,164 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           new tables.CollectingEvent.Resource()
         );
       }
+
+      // Set the default CoType
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof collectionObject.get('collectionObjectType') !== 'string'
+      )
+        collectionObject.set(
+          'collectionObjectType',
+          schema.defaultCollectionObjectType
+        );
+    },
+    fieldChecks: {
+      collectionObjectType: async (resource): Promise<undefined> => {
+        const determinations = resource.getDependentResource('determinations');
+        if (determinations === undefined || determinations.models.length === 0)
+          return;
+
+        const taxons = await Promise.all(
+          determinations.models.map(async (det) => det.rgetPromise('taxon'))
+        );
+        const coType = await resource.rgetPromise('collectionObjectType');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        // Block save when a Determination -> Taxon does not belong to the COType's tree definition
+        determinations.models.forEach((determination, index) => {
+          const taxon = taxons[index];
+          const taxonTreeDef = taxon?.get('definition');
+          const isValid =
+            typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+          setSaveBlockers(
+            determination,
+            determination.specifyTable.field.taxon,
+            isValid ? [] : [resourcesText.invalidDeterminationTaxon()],
+            DETERMINATION_TAXON_KEY
+          );
+        });
+
+        return undefined;
+      },
+    },
+  },
+
+  CollectionObjectGroup: {
+    fieldChecks: {
+      cogType: (cog): void => {
+        // Consolidated COGs need to have a primary CO child. If not, save will be blocked
+        cog.rgetPromise('cogType').then((cogtype) => {
+          if (cogtype.get('type') === cogTypes.CONSOLIDATED) {
+            const children = cog.getDependentResource('children');
+            const collectionObjectChildren =
+              children?.models.filter(
+                (child) => typeof child.get('childCo') === 'string'
+              ) ?? [];
+
+            if (
+              collectionObjectChildren.length > 0 &&
+              !collectionObjectChildren.some((cojo) => cojo.get('isPrimary'))
+            ) {
+              setSaveBlockers(
+                cog,
+                tables.CollectionObjectGroupJoin.field.isPrimary,
+                [resourcesText.primaryCogChildRequired()],
+                COG_PRIMARY_KEY
+              );
+              return;
+            }
+          }
+          setSaveBlockers(
+            cog,
+            tables.CollectionObjectGroupJoin.field.isPrimary,
+            [],
+            COG_PRIMARY_KEY
+          );
+        });
+      },
+    },
+  },
+
+  CollectionObjectGroupJoin: {
+    fieldChecks: {
+      /*
+       * Only a single CO in a COG can be set as primary.
+       * When checking a CO as primary, other COs in that COG will get unchecked.
+       */
+      isPrimary: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
+        ensureSingleCollectionObjectCheck(cojo, 'isPrimary');
+
+        // Trigger Consolidated COGs field check when isPrimary changes
+        if (
+          cojo.collection?.related?.specifyTable ===
+          tables.CollectionObjectGroup
+        ) {
+          const cog = cojo.collection
+            .related as SpecifyResource<CollectionObjectGroup>;
+          cog.businessRuleManager?.checkField('cogType');
+        }
+      },
+      /*
+       * Only a single CO in a COG can be set as substrate.
+       * When checking a CO as substrate, other COs in that COG will get unchecked.
+       */
+      isSubstrate: (cojo: SpecifyResource<CollectionObjectGroupJoin>): void => {
+        ensureSingleCollectionObjectCheck(cojo, 'isSubstrate');
+      },
+      parentCog: async (cojo): Promise<BusinessRuleResult> => {
+        if (
+          cojo.get('childCog') === cojo.get('parentCog') &&
+          typeof cojo.get('childCog') === 'string' &&
+          typeof cojo.get('parentCog') === 'string'
+        ) {
+          return {
+            isValid: false,
+            reason: resourcesText.cogAddedToItself(),
+            saveBlockerKey: COG_TOITSELF,
+          };
+        }
+        return {
+          isValid: true,
+          saveBlockerKey: COG_TOITSELF,
+        };
+      },
+    },
+    onAdded: (cojo, collection) => {
+      if (
+        cojo.get('childCog') === cojo.get('parentCog') &&
+        typeof cojo.get('childCog') === 'string' &&
+        typeof cojo.get('parentCog') === 'string'
+      ) {
+        setSaveBlockers(
+          cojo,
+          cojo.specifyTable.field.childCog,
+          [resourcesText.cogAddedToItself()],
+          COG_TOITSELF
+        );
+      }
+
+      // Trigger Consolidated COGs field check when a child is added
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
+    },
+    onRemoved(_, collection) {
+      // Trigger Consolidated COGs field check when a child is deleted
+      if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
+        const cog =
+          collection.related as SpecifyResource<CollectionObjectGroup>;
+        cog.businessRuleManager?.checkField('cogType');
+      }
     },
   },
   Determination: {
-    customInit: (determinaton: SpecifyResource<Determination>): void => {
-      if (determinaton.isNew()) {
-        const setCurrent = () => {
-          determinaton.set('isCurrent', true);
-          if (determinaton.collection !== undefined) {
-            determinaton.collection.models.forEach(
-              (other: SpecifyResource<Determination>) => {
-                if (other.cid !== determinaton.cid)
-                  other.set('isCurrent', false);
-              }
-            );
-          }
-        };
-        if (determinaton.collection !== null) setCurrent();
-        determinaton.on('add', setCurrent);
-      }
-    },
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> =>
+      ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
@@ -184,6 +332,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                 .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
+
             return taxon === null
               ? {
                   isValid: true,
@@ -201,6 +350,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
+        /*
+         * Disallow multiple determinations being checked as current
+         * Unchecks other determination when one of them gets checked
+         */
         if (
           determination.get('isCurrent') &&
           determination.collection !== undefined
@@ -213,16 +366,52 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             }
           );
         }
+        // Flag as invalid if no determinations are checked as current
         if (
           determination.collection !== undefined &&
-          !determination.collection.models.some(
-            (c: SpecifyResource<Determination>) => c.get('isCurrent')
-          )
+          hasNoCurrentDetermination(determination.collection)
         ) {
-          determination.set('isCurrent', true);
+          return {
+            isValid: false,
+            reason: resourcesText.currentDeterminationRequired(),
+            saveBlockerKey: CURRENT_DETERMINATION_KEY,
+            resource: determination.collection.related,
+          };
         }
-        return { isValid: true };
+        return {
+          isValid: true,
+          saveBlockerKey: CURRENT_DETERMINATION_KEY,
+          resource: determination.collection?.related,
+        };
       },
+    },
+    onRemoved: (determination, collection): void => {
+      // Block save when no current determinations exist on removing
+      if (hasNoCurrentDetermination(collection))
+        setSaveBlockers(
+          collection.related ?? determination,
+          determination.specifyTable.field.isCurrent,
+          [resourcesText.currentDeterminationRequired()],
+          CURRENT_DETERMINATION_KEY
+        );
+      // Unblock save when all determinations are removed
+      else
+        setSaveBlockers(
+          collection.related ?? determination,
+          determination.specifyTable.field.isCurrent,
+          [],
+          CURRENT_DETERMINATION_KEY
+        );
+    },
+    onAdded: (determination, collection): void => {
+      determination.set('isCurrent', true);
+      // Clear any existing save blocker on adding a new current determination
+      setSaveBlockers(
+        collection.related ?? determination,
+        determination.specifyTable.field.isCurrent,
+        [],
+        CURRENT_DETERMINATION_KEY
+      );
     },
   },
   Determiner: {
@@ -343,7 +532,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   LoanPreparation: {
     customInit: (resource: SpecifyResource<LoanPreparation>): void => {
       if (!resource.isNew())
-        resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
+        resource
+          .rgetCollection('loanReturnPreparations')
+          .then((preps) => updateLoanPrep(preps, true));
     },
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -366,7 +557,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         previousLoanPreparations.previousResolved[resource.cid] =
           Number(resolved);
       }
-      updateLoanPrep(resource.collection);
+      updateLoanPrep(resource.collection, true);
     },
     fieldChecks: {
       quantityReturned: (

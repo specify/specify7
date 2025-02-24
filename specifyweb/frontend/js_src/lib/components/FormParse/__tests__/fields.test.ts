@@ -35,6 +35,7 @@ describe('parseFormField', () => {
       min: undefined,
       step: undefined,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Readonly Text field', () =>
@@ -49,6 +50,7 @@ describe('parseFormField', () => {
       min: 4,
       step: 3.2,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Legacy readonly text field', () =>
@@ -63,6 +65,7 @@ describe('parseFormField', () => {
       min: 4,
       step: 3.2,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Legacy text field', () =>
@@ -72,6 +75,7 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
       type: 'Text',
     }));
 
@@ -82,6 +86,7 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
       type: 'Text',
     }));
 
@@ -196,6 +201,7 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
     });
   });
 
@@ -299,6 +305,7 @@ describe('parseFormField', () => {
       min: undefined,
       minLength: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
     }));
 });
 

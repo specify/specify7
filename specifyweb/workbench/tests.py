@@ -1,10 +1,10 @@
 import json
 
-from django.test import TestCase, Client
+from django.test import Client
 
-from specifyweb.specify.api_tests import ApiTests
-from specifyweb.specify import models as spmodels
-from . import models
+from specifyweb.specify.models import Recordset
+from specifyweb.workbench.models import Spdataset
+from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 
 class DataSetTests(ApiTests):
@@ -43,7 +43,7 @@ class DataSetTests(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
-        dataset = models.Spdataset.objects.get(id=datasetid)
+        dataset = Spdataset.objects.get(id=datasetid)
         self.assertEqual(dataset.uploadplan, None)
 
     def test_create_record_set(self) -> None:
@@ -71,7 +71,7 @@ class DataSetTests(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
-        dataset = models.Spdataset.objects.get(id=datasetid)
+        dataset = Spdataset.objects.get(id=datasetid)
         results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
         self.assertTrue(dataset.uploadresult['success'])
 
@@ -82,5 +82,5 @@ class DataSetTests(ApiTests):
         self.assertEqual(response.status_code, 201)
         recordset_id = json.loads(response.content)
 
-        rs = getattr(spmodels, 'Recordset').objects.get(id=recordset_id)
+        rs = Recordset.objects.get(id=recordset_id)
         self.assertEqual(rs.recordsetitems.count(), 3)

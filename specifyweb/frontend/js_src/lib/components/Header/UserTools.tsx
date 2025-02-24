@@ -78,7 +78,7 @@ export function UserToolsOverlay(): JSX.Element | null {
           ? headerText.userToolsForUser({ userName: userInformation.name })
           : headerText.userTools()
       }
-      icon={<span className="text-blue-500">{icons.cog}</span>}
+      icon={icons.cog}
       onClose={handleClose}
     >
       {isReadOnly && (
@@ -140,10 +140,11 @@ function UserToolsColumn({
         <div className="flex flex-col gap-2" key={groupName}>
           <H3>{groupName}</H3>
           <Ul className="flex flex-col gap-1">
-            {userTools.map(({ title, url, icon }) => {
+            {userTools.map(({ title, url, icon, onClick }) => {
               const isExternalLink = isExternalUrl(url);
               // Make links to another entrypoint trigger page reload
               const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
+
               return (
                 <li key={url}>
                   <LinkComponent
@@ -154,6 +155,7 @@ function UserToolsColumn({
                         : undefined
                     }
                     href={url}
+                    onClick={onClick}
                   >
                     {icon}
                     {title}

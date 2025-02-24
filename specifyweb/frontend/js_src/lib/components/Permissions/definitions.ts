@@ -1,20 +1,24 @@
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 export const collectionAccessResource = '/system/sp7/collection';
 export const operationPolicies = {
-  '/system/sp7/collection': ['access'],
-  '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
-  '/admin/user/sp6/is_admin': ['update'],
-  '/record/merge': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
+  '/admin/user/password': ['update'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
-  '/report': ['execute'],
+  '/admin/user/sp6/is_admin': ['update'],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
+  ],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
+  '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
   '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
-  '/permissions/user/roles': ['read', 'update'],
   '/permissions/roles': [
     'read',
     'create',
@@ -22,16 +26,17 @@ export const operationPolicies = {
     'delete',
     'copy_from_library',
   ],
-  '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
-  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
-  '/tree/edit/geography': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
+  '/permissions/user/roles': ['read', 'update'],
+  '/querybuilder/query': [
+    'execute',
+    'export_csv',
+    'export_kml',
+    'create_recordset',
   ],
-  '/tree/edit/storage': [
+  '/record/merge': ['update', 'delete'],
+  '/report': ['execute'],
+  '/system/sp7/collection': ['access'],
+  '/tree/edit/geography': [
     'merge',
     'move',
     'synonymize',
@@ -52,11 +57,21 @@ export const operationPolicies = {
     'desynonymize',
     'repair',
   ],
-  '/querybuilder/query': [
-    'execute',
-    'export_csv',
-    'export_kml',
-    'create_recordset',
+  '/tree/edit/storage': [
+    'merge',
+    'move',
+    'bulk_move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
+  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
+  '/tree/edit/tectonicunit': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
   ],
   '/workbench/dataset': [
     'create',
@@ -67,13 +82,6 @@ export const operationPolicies = {
     'validate',
     'transfer',
     'create_recordset',
-  ],
-  '/attachment_import/dataset': [
-    'create',
-    'update',
-    'delete',
-    'upload',
-    'rollback',
   ],
 } as const;
 

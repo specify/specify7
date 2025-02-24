@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+NOTE: The "name" must be entered into the localization resource file.
+ -->
+<icons type="disciplines" subdir="disciplines">
+
+
+    <!-- Discipline Icons -->
+    <icon name="Bird"           file="bird.png" sizes="all"/>    
+    <icon name="Bug"            file="bug.png" sizes="all"/>    
+    <icon name="fish"           file="fish.png" sizes="all"/>
+    <icon name="Frogs"          file="frog.png" sizes="all"/>    
+    <icon name="InvertPaleo"    file="paleo_invert.png" sizes="all"/>    
+    <icon name="Lizard"         file="lizard.png" sizes="all"/>    
+    <icon name="LowerPlants"    file="lower_plant.png" sizes="all"/>    
+    <icon name="Mammal"         file="mammal.png" sizes="all"/>    
+    <icon name="PaleoBotany"    file="paleo_bot.png" sizes="all"/>    
+    <icon name="Plants"         file="flower.png" sizes="all"/>    
+    <icon name="Snake"          file="snake.png" sizes="all"/>    
+    <icon name="Spider"         file="spider.png" sizes="all"/>    
+    <icon name="VertPaleo"      file="paleo_vert.png" sizes="all"/>    
+    <icon name="Invertebrate"   file="starfish.png" sizes="all"/>
+    <icon name="VascularPlants" file="flower.png" sizes="all"/>
+ 
+    <!--
+    fish, herpetology, paleobotany, invertpaleo, vertpaleo, bird, 
+    mammal, insect, botany, invertebrate, vascplant
+    
+    These do not have icons
+    minerals,
+    anthropology
+    -->
+    
+    <icon name="herpetology"  alias="Frogs"/>
+    <icon name="bird"         alias="Bird"/>
+    <icon name="insect"       alias="Bug"/>
+    <icon name="fish"         alias="Fish"/>
+    <icon name="frogs"        alias="Frogs"/>
+    <icon name="invertpaleo"  alias="InvertPaleo"/>
+    <icon name="lizard"       alias="Lizard"/>
+    <icon name="lowerplants"  alias="LowerPlants"/>
+    <icon name="mammal"       alias="Mammal"/>
+    <icon name="paleobotany"  alias="PaleoBotany"/>
+    <icon name="botany"       alias="Plants"/>
+    <icon name="spider"       alias="Spider"/>
+    <icon name="snake"        alias="Snake"/>
+    <icon name="vertpaleo"    alias="VertPaleo"/>
+    <icon name="invertebrate" alias="Invertebrate"/>
+    <icon name="vascplant"    alias="VascularPlants"/>
+    <icon name="Fungi"        alias="LowerPlants"/>
+    <icon name="fungi"        alias="LowerPlants"/>
+ 
+</icons>

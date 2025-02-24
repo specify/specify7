@@ -76,7 +76,7 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={queryText.queries()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      icon={icons.documentSearch}
       onClose={f.never()}
     >
       <DialogListSkeleton />
@@ -222,7 +222,7 @@ export function QueryListDialog({
                 count: totalCount,
               })
         }
-        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+        icon={icons.documentSearch}
         onClose={handleClose}
       >
         {children}

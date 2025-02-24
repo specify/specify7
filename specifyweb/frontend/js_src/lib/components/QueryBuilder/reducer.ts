@@ -156,11 +156,6 @@ export const reducer = generateReducer<MainState, Actions>({
       fields: replaceItem(state.fields, line, {
         ...state.fields[line],
         mappingPath: newMappingPath,
-        dataObjFormatter:
-          mappingPathIsComplete(newMappingPath) &&
-          action.currentTableName === action.newTableName
-            ? undefined
-            : state.fields[line].dataObjFormatter,
       }),
       autoMapperSuggestions: undefined,
     };

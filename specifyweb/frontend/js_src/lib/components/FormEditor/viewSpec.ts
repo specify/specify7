@@ -1,3 +1,5 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -6,6 +8,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import type { FormCondition } from '../FormParse';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
 import type { SpecToJson, Syncer } from '../Syncer';
@@ -14,6 +17,7 @@ import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -131,25 +135,29 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
     ),
     condition: pipe(
       syncers.xmlAttribute('condition', 'skip', false),
-      syncer(
+      syncer<LocalizedString | undefined, FormCondition>(
         (rawCondition) => {
           if (rawCondition === undefined) return undefined;
+          const isAlways = rawCondition.trim() === 'always';
+          if (isAlways) return { type: 'Always' } as const;
           const [rawField, ...condition] = rawCondition.split('=');
           const field = syncers.field(table?.name).serializer(rawField);
           return field === undefined
             ? undefined
-            : {
+            : ({
+                type: 'Value',
                 field,
-                condition: condition.join('='),
-              };
+                value: condition.join('='),
+              } as const);
         },
         (props) => {
           if (props === undefined) return undefined;
-          const { field, condition } = props;
+          if (props.type === 'Always') return localized('always');
+          const { field, value } = props;
           const joined = syncers.field(table?.name).deserializer(field);
           return joined === undefined || joined.length === 0
             ? undefined
-            : localized(`${joined}=${condition}`);
+            : localized(`${joined}=${value}`);
         }
       )
     ),
@@ -361,6 +369,14 @@ const subViewSpec = (
             console.error('SubView can only be used to display a relationship');
             return undefined;
           }
+          if (field !== undefined && field.getReverse() === undefined) {
+            console.error(
+              `No reverse relationship exists${
+                relationshipIsToMany(field) ? '' : '. Use a querycbx instead'
+              }`
+            );
+            return undefined;
+          }
           if (field?.type === 'many-to-many') {
             // ResourceApi does not support .rget() on a many-to-many
             console.warn('Many-to-many relationships are not supported');
@@ -406,12 +422,14 @@ const subViewSpec = (
         syncer(
           (raw: string) => {
             const cellName = cell.rest.node.attributes.name;
-            const cellRelationship = table?.fields
-              .filter((field) => field.isRelationship)
-              .find((table) => table.name === cellName) as
-              | Relationship
-              | undefined;
-            const cellRelatedTableName = cellRelationship?.relatedTable.name;
+            const cellRelationship =
+              typeof cellName === 'string'
+                ? syncers.field(table?.name).serializer(cellName)?.at(-1)
+                : undefined;
+            const cellRelatedTableName =
+              cellRelationship?.isRelationship === true
+                ? cellRelationship.relatedTable.name
+                : undefined;
             const parsed = toLargeSortConfig(raw);
             const fieldNames = syncers
               .field(cellRelatedTableName)
@@ -774,11 +792,8 @@ const textSpec = f.store(() =>
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
-  {
-    rawType,
-  }: {
-    readonly rawType: string;
-  }
+  _: unknown,
+  rawType: string
 ) =>
   createXmlSpec({
     rows: pipe(
@@ -793,8 +808,32 @@ const textAreaSpec = (
     ),
   });
 
-const queryComboBoxSpec = f.store(() =>
+const queryComboBoxSpec = (
+  _spec: SpecToJson<ReturnType<typeof rawFieldSpec>>,
+  {
+    table,
+  }: {
+    readonly table: SpecifyTable | undefined;
+  }
+) =>
   createXmlSpec({
+    field: pipe(
+      rawFieldSpec(table).field,
+      syncer(
+        ({ parsed, ...rest }) => {
+          if (
+            parsed?.some(
+              (field) => field.isRelationship && relationshipIsToMany(field)
+            )
+          )
+            console.error(
+              'Unable to render a to-many relationship as a querycbx. Use a Subview instead'
+            );
+          return { parsed, ...rest };
+        },
+        (value) => value
+      )
+    ),
     // Customize view name
     dialogViewName: syncers.xmlAttribute('initialize displayDlg', 'skip'),
     searchDialogViewName: syncers.xmlAttribute('initialize searchDlg', 'skip'),
@@ -830,8 +869,7 @@ const queryComboBoxSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(true)
     ),
-  })
-);
+  });
 
 const checkBoxSpec = f.store(() =>
   createXmlSpec({

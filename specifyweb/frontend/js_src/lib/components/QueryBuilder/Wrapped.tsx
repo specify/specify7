@@ -190,12 +190,12 @@ function Wrapped({
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
           mappingPath,
           sortType: undefined,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
           isDisplay: true,

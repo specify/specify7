@@ -4,7 +4,7 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { fetchCollection } from '../DataModel/collection';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -20,13 +20,17 @@ const getSearchField = (
 ): string =>
   `${searchField}__${searchCaseSensitive ? '' : 'i'}${searchAlgorithm}`;
 
+const DEFAULT_FETCH_SEARCH_LIMIT = 200;
+
 export function TreeViewSearch<SCHEMA extends AnyTree>({
   tableName,
+  treeDefinitionId,
   treeDefinitionItems,
   forwardRef,
   onFocusPath: handleFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
+  readonly treeDefinitionId: number;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
@@ -72,7 +76,8 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             tableName as AnyTree['tableName'],
             {
-              limit: DEFAULT_FETCH_LIMIT,
+              definition: treeDefinitionId,
+              limit: DEFAULT_FETCH_SEARCH_LIMIT,
               orderBy: 'name',
               domainFilter: true,
             },

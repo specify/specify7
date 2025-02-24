@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+      <file level="3" mimetype="text/xml" name="WebLinks" description="Web Link Formats" file="weblinks.xml"/>
+      <file level="3" mimetype="text/xml" name="InteractionsTaskInit" description="Interactions Sidebar Setup" file="interactionstask.xml"/>
+</files>

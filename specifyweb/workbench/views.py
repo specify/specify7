@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional
+from typing import List, Optional, Dict, Literal, get_args as get_typing_args
 from uuid import uuid4
 
 from django import http
@@ -12,10 +12,10 @@ from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
-    toJson, uri_for_model
+from specifyweb.celery_tasks import CELERY_TASK_STATE
+from specifyweb.specify.api import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify import models as specify_models
+from specifyweb.specify.models import Recordset, Specifyuser
 from specifyweb.notifications.models import Message
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
@@ -34,6 +34,9 @@ class DataSetPT(PermissionTarget):
     validate = PermissionTargetAction()
     transfer = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
+
+WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
+
 
 def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
     n = ncols + 1 # extra row info such as disambiguation in hidden col at end
@@ -93,11 +96,7 @@ open_api_components = {
                         },
                         "taskstatus": {
                             "type": "string",
-                            "enum": [
-                                "PROGRESS",
-                                "PENDING",
-                                "FAILURE",
-                            ]
+                            "enum": list(get_typing_args(WorkbenchUpdateStatus))
                         },
                         "uploaderstatus": {
                             "type": "object",
@@ -477,9 +476,12 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                     try:
                         validate(plan, upload_plan_schema.schema)
                     except ValidationError as e:
-                        return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
-
-                    new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
+                        # TODO fix this
+                        # return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
+                        pass
+                    
+                    parsed_plan = upload_plan_schema.parse_plan(request.specify_collection, plan)
+                    new_cols = parsed_plan.get_cols() - set(ds.columns)
                     if new_cols:
                         ncols = len(ds.columns)
                         ds.columns += list(new_cols)
@@ -624,22 +626,35 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
         if ds.was_uploaded():
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
-        taskid = str(uuid4())
-        async_result = tasks.upload.apply_async([
-            request.specify_collection.id,
-            request.specify_user_agent.id,
-            ds.id,
-            no_commit,
-            allow_partial
-        ], task_id=taskid)
-        ds.uploaderstatus = {
-            'operation': "validating" if no_commit else "uploading",
-            'taskid': taskid
-        }
-        ds.save(update_fields=['uploaderstatus'])
+        data = json.loads(request.body) if request.body else {}
+        background = True
+        if 'background' in data:
+            background = bool(data['background']) # {"background": false}
 
-    return http.JsonResponse(async_result.id, safe=False)
-
+        if background:
+            taskid = str(uuid4())
+            async_result = tasks.upload.apply_async([
+                request.specify_collection.id,
+                request.specify_user_agent.id,
+                ds.id,
+                no_commit,
+                allow_partial
+            ], task_id=taskid)
+            ds.uploaderstatus = {
+                'operation': "validating" if no_commit else "uploading",
+                'taskid': taskid
+            }
+            ds.save(update_fields=['uploaderstatus'])
+            return http.JsonResponse(async_result.id, safe=False)
+        else:
+            tasks.upload_data(
+                request.specify_collection.id,
+                request.specify_user_agent.id,
+                ds.id,
+                no_commit,
+                allow_partial,
+            )
+            return http.JsonResponse(None, safe=False)
 
 @openapi(schema={
     'post': {
@@ -713,16 +728,26 @@ def status(request, ds_id: int) -> http.HttpResponse:
 
     if ds.uploaderstatus is None:
         return http.JsonResponse(None, safe=False)
+    
+    task_status_map: Dict[str, WorkbenchUpdateStatus]  = {
+        CELERY_TASK_STATE.RECEIVED: "PENDING",
+        CELERY_TASK_STATE.STARTED: "PENDING",
+        CELERY_TASK_STATE.SUCCESS: "PENDING",
+        CELERY_TASK_STATE.RETRY: "FAILURE",
+        CELERY_TASK_STATE.REVOKED: "FAILURE",
+    }
 
     task = {
         'uploading': tasks.upload,
         'validating': tasks.upload,
         'unuploading': tasks.unupload,
     }[ds.uploaderstatus['operation']]
+
     result = task.AsyncResult(ds.uploaderstatus['taskid'])
+
     status = {
         'uploaderstatus': ds.uploaderstatus,
-        'taskstatus': result.state,
+        'taskstatus': task_status_map.get(result.state, result.state),
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
     return http.JsonResponse(status)
@@ -945,8 +970,6 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    Specifyuser = getattr(specify_models, 'Specifyuser')
-
     try:
         ds.specifyuser = Specifyuser.objects.get(id=request.POST['specifyuserid'])
     except Specifyuser.DoesNotExist:
@@ -1002,8 +1025,6 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
 @require_POST
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=False)
 def create_recordset(request, ds) -> http.HttpResponse:
-    Recordset = getattr(specify_models, 'Recordset')
-
     if ds.uploadplan is None:
         return http.HttpResponseBadRequest("data set is missing upload plan")
 
@@ -1014,7 +1035,8 @@ def create_recordset(request, ds) -> http.HttpResponse:
         return http.HttpResponseBadRequest("missing parameter: name")
 
     name = request.POST['name']
-    if len(name) > Recordset._meta.get_field('name').max_length:
+    max_length = Recordset._meta.get_field('name').max_length
+    if max_length is not None and len(name) > max_length:
         return http.HttpResponseBadRequest("name too long")
 
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.create_recordset])

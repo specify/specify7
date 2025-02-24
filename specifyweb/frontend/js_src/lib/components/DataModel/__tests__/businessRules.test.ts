@@ -1,14 +1,17 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
+import { resourcesText } from '../../../localization/resources';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
+import { getPref } from '../../InitialContext/remotePrefs';
+import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type { Taxon, TaxonTreeDefItem } from '../types';
+import type { CollectionObjectType, Taxon, TaxonTreeDefItem } from '../types';
 
 mockTime();
 requireContext();
@@ -48,6 +51,28 @@ describe('Borrow Material business rules', () => {
 });
 
 describe('Collection Object business rules', () => {
+  const collectionObjectTypeUrl = getResourceApiUrl('CollectionObjectType', 1);
+  const collectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 1,
+    name: 'Entomology',
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 1),
+    resource_uri: collectionObjectTypeUrl,
+  };
+  overrideAjax(collectionObjectTypeUrl, collectionObjectType);
+
+  const otherTaxonId = 1;
+  const otherTaxon: Partial<SerializedResource<Taxon>> = {
+    id: otherTaxonId,
+    isAccepted: true,
+    rankId: 10,
+    definition: getResourceApiUrl('TaxonTreeDef', 2),
+    resource_uri: getResourceApiUrl('Taxon', otherTaxonId),
+  };
+
+  overrideAjax(getResourceApiUrl('Taxon', otherTaxonId), otherTaxon);
+
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
@@ -57,7 +82,16 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
+      determinations: [
+        {
+          taxon: getResourceApiUrl('Taxon', otherTaxonId),
+          preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
+          isCurrent: true,
+        },
+      ],
       resource_uri: collectionObjectUrl,
+      description: 'Base collection object',
+      catalogNumber: '123',
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
@@ -78,6 +112,194 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
+    expect(collectionObject.get('collectionObjectType')).toEqual(
+      schema.defaultCollectionObjectType
+    );
+  });
+
+  const otherCollectionObjectTypeUrl = getResourceApiUrl(
+    'CollectionObjectType',
+    2
+  );
+  const otherCollectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 2,
+    name: 'Fossil',
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 2),
+    resource_uri: otherCollectionObjectTypeUrl,
+  };
+  overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
+
+  test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 1)
+    );
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+    );
+
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.invalidDeterminationTaxon(),
+    ]);
+
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([]);
+  });
+
+  test('CollectionObject -> determinations: New determinations are current by default', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    determinations?.add(new tables.Determination.Resource());
+
+    // Old determination gets unchecked as current
+    expect(determinations?.models[0].get('isCurrent')).toBe(false);
+    // New determination becomes current by default
+    expect(determinations?.models[1].get('isCurrent')).toBe(true);
+  });
+
+  test('CollectionObject -> determinations: Save blocked when no current determinations exist', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    determination?.set('isCurrent', false);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([
+      'A current determination is required.',
+    ]);
+  });
+
+  test('CollectionObject -> determinations: Save is not blocked when all determinations are deleted', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    const determination = determinations?.models[0];
+
+    determinations?.remove(determination!);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([]);
+  });
+});
+
+describe('CollectionObjectGroup business rules', () => {
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 1), {
+    name: 'Discrete type',
+    type: cogTypes.DISCRETE,
+  });
+
+  overrideAjax(getResourceApiUrl('CollectionObjectGroupType', 2), {
+    name: 'Consolidated type',
+    type: cogTypes.CONSOLIDATED,
+  });
+
+  const getBaseCog = () => {
+    const cog = new tables.CollectionObjectGroup.Resource({
+      id: 1,
+      cogType: getResourceApiUrl('CollectionObjectGroupType', 1),
+      resource_uri: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    const cojo1 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: false,
+      isSubstrate: true,
+      childCo: getResourceApiUrl('CollectionObject', 1),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+    const cojo2 = new tables.CollectionObjectGroupJoin.Resource({
+      isPrimary: true,
+      isSubstrate: false,
+      childCo: getResourceApiUrl('CollectionObject', 2),
+      parentCog: getResourceApiUrl('CollectionObjectGroup', 1),
+    });
+
+    cog.set('children', [cojo1, cojo2]);
+    return { cog, cojo1, cojo2 };
+  };
+
+  test('Only one CO COJO can be primary', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo1.set('isPrimary', true);
+
+    expect(cojo1.get('isPrimary')).toBe(true);
+    expect(cojo2.get('isPrimary')).toBe(false);
+  });
+
+  test('Only one CO COJO can be substrate', () => {
+    const { cojo1, cojo2 } = getBaseCog();
+    cojo2.set('isSubstrate', true);
+
+    expect(cojo1.get('isSubstrate')).toBe(false);
+    expect(cojo2.get('isSubstrate')).toBe(true);
+  });
+
+  test('Save blocked when a Consolidated COG has no primary CO child', async () => {
+    const { cog, cojo2 } = getBaseCog();
+    cog.set('cogType', getResourceApiUrl('CollectionObjectGroupType', 2));
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(cog, tables.CollectionObjectGroupJoin.field.isPrimary)
+    );
+
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save not blocked initially
+    expect(result.current[0]).toStrictEqual([]);
+
+    cojo2.set('isPrimary', false);
+    await act(async () => {
+      await cog?.businessRuleManager?.checkField('cogType');
+    });
+
+    // Save blocked after second child is marked as not primary
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.primaryCogChildRequired(),
+    ]);
   });
 });
 
@@ -152,6 +374,11 @@ describe('uniqueness rules', () => {
     ]);
   });
 
+  overrideAjax(getResourceApiUrl('Agent', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Agent', 1),
+  });
+
   test('rule with local collection', async () => {
     const accessionId = 1;
     const accession = new tables.Accession.Resource({
@@ -197,6 +424,18 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 3,
     name: 'Acipenser',
+    isAccepted: true,
+    rankId: 180,
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/9/',
+    parent: '/api/specify/taxon/2/',
+  };
+
+  const husoResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 6,
+    name: 'Huso',
+    isAccepted: false,
     rankId: 180,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/9/',
@@ -207,6 +446,7 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 4,
     name: 'oxyrinchus',
+    isAccepted: true,
     rankId: 220,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/2/',
@@ -218,6 +458,7 @@ describe('treeBusinessRules', () => {
     id: 5,
     rankId: 230,
     name: 'oxyrinchus',
+    isAccepted: true,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/22/',
   };
@@ -265,9 +506,11 @@ describe('treeBusinessRules', () => {
   };
 
   const oxyrinchusFullNameResponse = 'Acipenser oxyrinchus';
+  const dauricusFullNameResponse = 'Huso dauricus';
 
   overrideAjax('/api/specify/taxon/2/', animaliaResponse);
   overrideAjax('/api/specify/taxon/3/', acipenserResponse);
+  overrideAjax('/api/specify/taxon/6/', husoResponse);
   overrideAjax('/api/specify/taxon/4/', oxyrinchusSpeciesResponse);
   overrideAjax('/api/specify/taxon/5/', oxyrinchusSubSpeciesResponse);
   overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
@@ -276,6 +519,10 @@ describe('treeBusinessRules', () => {
   overrideAjax(
     '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
     oxyrinchusFullNameResponse
+  );
+  overrideAjax(
+    '/api/specify_tree/taxon/6/predict_fullname/?name=dauricus&treedefitemid=2',
+    dauricusFullNameResponse
   );
   overrideAjax('/api/specify/taxon/?limit=1&parent=4&orderby=rankid', {
     objects: [oxyrinchusSubSpeciesResponse],
@@ -328,5 +575,53 @@ describe('treeBusinessRules', () => {
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
+  });
+  test('saveBlocker on synonymized parent', async () => {
+    const taxon = new tables.Taxon.Resource({
+      name: 'dauricus',
+      parent: '/api/specify/taxon/6/',
+      rankId: 220,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionItem: '/api/specify/taxontreedefitem/2/',
+    });
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
+
+    await taxon.businessRuleManager?.checkField('integer1');
+
+    const { result: fieldChangeResult } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
+  });
+  test('saveBlocker not on synonymized parent w/preference', async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'getPref')
+      .mockImplementation((key) =>
+        key === 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
+          ? true
+          : getPref(key)
+      );
+
+    const taxon = new tables.Taxon.Resource({
+      name: 'dauricus',
+      parent: '/api/specify/taxon/6/',
+      rankId: 220,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionItem: '/api/specify/taxontreedefitem/2/',
+    });
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual([]);
   });
 });

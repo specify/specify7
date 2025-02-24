@@ -4,15 +4,17 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
-export function TreeRow({
+export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
   getStats,
@@ -53,7 +55,7 @@ export function TreeRow({
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
-  readonly treeName: string;
+  readonly treeName: SCHEMA['tableName'];
   readonly hideEmptyNodes: boolean;
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
@@ -73,18 +75,37 @@ export function TreeRow({
   const isExpanded = Array.isArray(conformation);
   const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
+  const orderByField = userPreferences.get(
+    'treeEditor',
+    'behavior',
+    'orderByField'
+  );
+
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
-    void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
+    void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
+      const sortedRows = Array.from(fetchedRows).sort(
+        sortFunction<Row, number | string>(
+          orderByField === 'rankId'
+            ? (row) => row.rankId
+            : orderByField === 'nodeNumber'
+              ? (row) => row.nodeNumber
+              : orderByField === 'name'
+                ? (row) => row.name
+                : orderByField === 'fullName'
+                  ? (row) => row.fullName
+                  : () => 0
+        )
+      );
+      destructorCalled ? undefined : setRows(sortedRows);
+    });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row]);
+  }, [isLoading, getRows, row, orderByField]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;
@@ -171,8 +192,8 @@ export function TreeRow({
                   isAction
                     ? 'outline outline-1 outline-red-500'
                     : isFocused
-                    ? 'outline outline-1 outline-blue-500'
-                    : ''
+                      ? 'outline outline-1 outline-blue-500'
+                      : ''
                 }
                 ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
@@ -204,19 +225,19 @@ export function TreeRow({
                     ? isLoading
                       ? commonText.loading()
                       : row.children === 0
-                      ? treeText.leafNode()
-                      : displayChildren
-                      ? treeText.opened()
-                      : treeText.closed()
+                        ? treeText.leafNode()
+                        : displayChildren
+                          ? treeText.opened()
+                          : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
-                  ? icons.blank
-                  : displayChildren
-                  ? icons.chevronDown
-                  : icons.chevronRight}
+                    ? icons.blank
+                    : displayChildren
+                      ? icons.chevronDown
+                      : icons.chevronRight}
               </span>
               <span
                 className={
@@ -229,7 +250,11 @@ export function TreeRow({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : undefined
+                      : typeof row.synonyms === 'string'
+                        ? treeText.synonyms({
+                            names: row.synonyms,
+                          })
+                        : undefined
                   }
                 >
                   {doIncludeAuthorPref &&

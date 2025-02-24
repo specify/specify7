@@ -73,7 +73,7 @@ SA_POOL_RECYCLE = 3600
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
-SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', os.path.join(SPECIFY_THICK_CLIENT, "config"))
 
 RO_MODE = False
 
@@ -108,6 +108,7 @@ LANGUAGES = [
     ('fr-fr', 'français'),
     ('es-es', 'español'),
     ('de-ch', 'deutsch (schweiz)'),
+    ('pt-br', 'português (brasil)'),
 ]
 
 SITE_ID = 1
@@ -263,4 +264,6 @@ try:
 except ImportError:
     pass
 
-
+SILENCED_SYSTEM_CHECKS = [
+    "fields.W342", # Allow ForeignKey(unique=True) instead of OneToOneField without gettig a warning
+]

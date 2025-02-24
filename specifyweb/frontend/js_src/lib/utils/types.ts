@@ -17,7 +17,7 @@ export type RA<V> = readonly V[];
 export type GetSet<T> = readonly [T, (value: T) => void];
 export type GetOrSet<T> = readonly [
   T,
-  (value: T | ((oldValue: T) => T)) => void
+  (value: T | ((oldValue: T) => T)) => void,
 ];
 
 export type ValueOf<T> = T[keyof T];
@@ -48,7 +48,7 @@ export const filterArray = <T>(array: RA<T | undefined>): RA<T> =>
 /** Make some keys on a record optional */
 export type PartialBy<
   RECORD extends IR<unknown>,
-  OPTIONAL_KEYS extends keyof RECORD
+  OPTIONAL_KEYS extends keyof RECORD,
 > = Omit<RECORD, OPTIONAL_KEYS> & Partial<Pick<RECORD, OPTIONAL_KEYS>>;
 
 /**
@@ -58,14 +58,42 @@ export type DeepPartial<RECORD extends IR<unknown>> = {
   readonly [KEY in keyof RECORD]?: RECORD[KEY] extends RA<IR<unknown>>
     ? RA<DeepPartial<RECORD[KEY][number]>>
     : RECORD[KEY] extends IR<unknown>
-    ? DeepPartial<RECORD[KEY]>
-    : RECORD[KEY];
+      ? DeepPartial<RECORD[KEY]>
+      : RECORD[KEY];
 };
 
 // eslint-disable-next-line functional/prefer-readonly-type
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
+
+/**
+ * Inspired by https://stackoverflow.com/a/69676731
+ * Constructs a tuple type which must contain exactly one of every possible
+ * type of VALUES along with the values in RESULT
+ *
+ * @remarks
+ * While the RESULT parameter can be explicitly provided, it is primarily used
+ * to recursively generate the tuple
+ *
+ * @example
+ * ```ts
+ * type Colors = RestrictedTuple<'blue' | 'green' | 'red'>;
+ * const missing: Colors = ['blue']; // Invalid
+ * const duplicates: Colors = ['blue', 'blue', 'red']; // Invalid
+ * const wrongColor: Colors = ['green', 'blue', 'yellow']; // Invalid
+ * const wrongLength: Colors = ['blue', 'red', 'green', 'green']; // Invalid
+ * const rightColors: Colors = ['blue', 'red', 'green']; // Valid
+ * ```
+ */
+export type RestrictedTuple<
+  VALUES extends string,
+  RESULT extends RA<unknown> = readonly [],
+> = ValueOf<{
+  readonly [KEY in VALUES]: Exclude<VALUES, KEY> extends never
+    ? readonly [KEY, ...RESULT]
+    : RestrictedTuple<Exclude<VALUES, KEY>, readonly [KEY, ...RESULT]>;
+}>;
 
 /**
  * Cast type to writable. Equivalent to doing "as Writable<T>", except this
@@ -98,7 +126,7 @@ export const isFunction = <T>(
  */
 export function overwriteReadOnly<
   KEY extends string,
-  OBJECT extends { readonly [key in KEY]?: unknown }
+  OBJECT extends { readonly [key in KEY]?: unknown },
 >(object: OBJECT, key: KEY, value: unknown): void {
   // @ts-expect-error Overwriting read-only
   object[key] = value;

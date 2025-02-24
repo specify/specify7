@@ -87,7 +87,7 @@ export type ViewDefinition = {
 };
 
 export const formTypes = ['form', 'formTable'] as const;
-export type FormType = typeof formTypes[number];
+export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
 let views: R<ViewDefinition | undefined> = {};
@@ -300,9 +300,9 @@ export function resolveViewDefinition(
   const resolvedFormType =
     formType === 'formTable'
       ? 'formTable'
-      : formTypes.find(
+      : (formTypes.find(
           (type) => type.toLowerCase() === newFormType?.toLowerCase()
-        ) ?? 'form';
+        ) ?? 'form');
   if (resolvedFormType === undefined)
     console.warn(
       `Unknown form type ${
@@ -425,9 +425,10 @@ async function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
-              ?.label ??
-            localized(cell.fieldNames?.join(backboneFieldSeparator))
+          ? (table?.getField(
+              cell.fieldNames?.join(backboneFieldSeparator) ?? ''
+            )?.label ??
+            localized(cell.fieldNames?.join(backboneFieldSeparator)))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -457,18 +458,21 @@ function parseFormTableColumns(
     }).fill(undefined),
   ];
 }
+export type FormCondition =
+  | State<
+      'Value',
+      {
+        readonly field: RA<LiteralField | Relationship>;
+        readonly value: string;
+      }
+    >
+  | State<'Always'>
+  | undefined;
+
+export const EMPTY_VALUE_CONDITION = '_EMPTY';
 
 export type ConditionalFormDefinition = RA<{
-  readonly condition:
-    | State<
-        'Value',
-        {
-          readonly field: RA<LiteralField | Relationship>;
-          readonly value: string;
-        }
-      >
-    | State<'Always'>
-    | undefined;
+  readonly condition: FormCondition;
   readonly definition: ParsedFormDefinition;
 }>;
 
@@ -494,33 +498,7 @@ export async function parseFormDefinition(
             ? getColumnDefinitions(viewDefinition)
             : directColumnDefinitions
         ),
-        await Promise.all(
-          rows.map(async (row, index) => {
-            const context = getLogContext();
-            pushContext({
-              type: 'Child',
-              tagName: 'row',
-              extras: { row: index + 1 },
-            });
-
-            const data = await Promise.all(
-              row.children.cell?.map(async (cell, index) => {
-                const context = getLogContext();
-                pushContext({
-                  type: 'Child',
-                  tagName: 'cell',
-                  extras: { cell: index + 1 },
-                });
-                const data = await parseFormCell(table, cell);
-
-                setLogContext(context);
-                return data;
-              })
-            );
-            setLogContext(context);
-            return data ?? [];
-          })
-        ),
+        await parseRows(rows, table),
         table
       );
 
@@ -571,6 +549,38 @@ const getColumnDefinition = (
     typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
   )?.text;
 
+const parseRows = async (
+  rawRows: RA<SimpleXmlNode>,
+  table: SpecifyTable
+): Promise<RA<RA<FormCellDefinition>>> =>
+  Promise.all(
+    rawRows.map(async (row, index) => {
+      const context = getLogContext();
+      pushContext({
+        type: 'Child',
+        tagName: 'row',
+        extras: { row: index + 1 },
+      });
+
+      const data = await Promise.all(
+        (row.children.cell ?? []).map(async (cell, index) => {
+          const context = getLogContext();
+          pushContext({
+            type: 'Child',
+            tagName: 'cell',
+            extras: { cell: index + 1 },
+          });
+          const data = await parseFormCell(table, cell);
+
+          setLogContext(context);
+          return data;
+        })
+      );
+      setLogContext(context);
+      return data ?? [];
+    })
+  );
+
 export const exportsForTests = {
   views,
   parseViewDefinitions,
@@ -579,4 +589,5 @@ export const exportsForTests = {
   parseFormTableColumns,
   getColumnDefinitions,
   getColumnDefinition,
+  parseRows,
 };

@@ -83,7 +83,7 @@ function useRole(
     const id = f.parseInt(roleId);
     if (typeof id === 'number') {
       return typeof libraryRoles === 'object'
-        ? libraryRoles[id] ?? false
+        ? (libraryRoles[id] ?? false)
         : undefined;
     } else
       return {

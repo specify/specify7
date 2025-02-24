@@ -7,13 +7,15 @@ export const downloadDataSet = async (
   name: string,
   rows: RA<RA<string>>,
   columns: RA<string>,
-  delimiter: string
+  delimiter: string,
+  bom: boolean = false
 ): Promise<void> =>
   new Promise((resolve, reject) =>
     stringify(
       [columns, ...rows],
       {
         delimiter,
+        bom,
       },
       (error, output) => {
         if (error === undefined)

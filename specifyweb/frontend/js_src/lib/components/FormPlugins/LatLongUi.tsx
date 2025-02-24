@@ -3,7 +3,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
@@ -14,7 +13,7 @@ import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
-export type CoordinateType = typeof coordinateType[number];
+export type CoordinateType = (typeof coordinateType)[number];
 
 function Coordinate({
   resource,
@@ -82,15 +81,22 @@ function Coordinate({
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
-      ? (fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined
+      ? ((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined)
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
-    setValidation(isValid ? '' : formsText.invalidValue());
+    const latLongBlockers = isValid
+      ? []
+      : [
+          fieldType === 'Lat'
+            ? localityText.validLatitude()
+            : localityText.validLongitude(),
+        ];
+    setValidation(latLongBlockers);
     handleFormatted(
       isValid
         ? hasValue
-          ? parsed?.format(step) ?? ''
+          ? (parsed?.format(step) ?? '')
           : commonText.notApplicable()
         : undefined
     );
@@ -135,7 +141,6 @@ function Coordinate({
     fieldType,
     step,
     handleFormatted,
-    setValidation,
     parser,
   ]);
 
@@ -272,8 +277,8 @@ export function LatLongUi({
               coordinateType === 'Point'
                 ? localityText.coordinates()
                 : coordinateType === 'Line'
-                ? commonText.start()
-                : localityText.northWestCorner()
+                  ? commonText.start()
+                  : localityText.northWestCorner()
             }
             resource={resource}
             step={step}

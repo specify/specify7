@@ -190,7 +190,7 @@ export function useDefaultStatsToAdd(
 }
 
 export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>
+  query: SerializedResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
@@ -202,7 +202,7 @@ export function queryCountPromiseGenerator(
         Accept: 'application/json',
       },
       body: keysToLowerCase({
-        ...serializeResource(query),
+        ...query,
         countOnly: true,
       }),
       expectedErrors: Object.values(Http),
@@ -400,7 +400,7 @@ export function statsToTsv(
  *
  */
 export function useStatValueLoad<
-  PROMISE_TYPE extends number | string | undefined
+  PROMISE_TYPE extends number | string | undefined,
 >(
   value: number | string | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,

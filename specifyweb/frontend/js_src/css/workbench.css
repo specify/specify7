@@ -50,7 +50,12 @@
 /* Cell navigation */
 
 .wbs-form
-  :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
+  :is(
+    .wb-no-match-cell,
+    .wb-modified-cell,
+    .htCommentCell,
+    .wb-search-match-cell
+  ),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }
@@ -75,6 +80,16 @@
 .wbs-form:not(.wb-hide-search-results) .wb-search-match-cell,
 .wb-navigation-section[data-navigation-type='searchResults'] {
   --accent-color: var(--search-result);
+}
+
+/* 
+ * Override default font properties: required for handsontable 10 and above
+ * See: https://github.com/handsontable/handsontable/pull/8681
+ */
+.handsontable {
+  @apply text-inherit;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 /* Handsontable dark mode */

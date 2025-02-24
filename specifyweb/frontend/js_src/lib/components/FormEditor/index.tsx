@@ -35,7 +35,7 @@ export function FormEditor(props: AppResourceTabProps): JSX.Element {
 export type FormEditorOutlet = {
   readonly viewSets: readonly [
     ViewSets,
-    (viewSets: ViewSets, changedViewNames: RA<string>) => void
+    (viewSets: ViewSets, changedViewNames: RA<string>) => void,
   ];
   readonly disciplines: RA<SerializedResource<Discipline>>;
 };

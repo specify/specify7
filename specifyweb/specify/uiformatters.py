@@ -68,6 +68,10 @@ def get_autonumber_group_filter(model, collection, format_name: str):
         return default
 
 class FormatMismatch(ValueError):
+    def __init__(self, *args: object, value: str, formatter: str) -> None:
+        super().__init__(*args)
+        self.value = value
+        self.formatter = formatter
     pass
 
 class UIFormatter(NamedTuple):
@@ -83,7 +87,7 @@ class UIFormatter(NamedTuple):
     def parse(self, value: str) -> Sequence[str]:
         match = re.match(self.parse_regexp(), value)
         if match is None:
-            raise FormatMismatch("value {} doesn't match formatter {}". format(repr(value), self.value()))
+            raise FormatMismatch("value {} doesn't match formatter {}".format(repr(value), self.value()), value=repr(value), formatter=self.value())
         return match.groups()
 
     def value(self) -> str:
@@ -299,7 +303,8 @@ def new_field(node) -> Field:
         inc = node.attrib.get('inc', 'false') == 'true',
         by_year = node.attrib.get('byyear', 'false') == 'true')
 
-def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
+def get_uiformatters(collection, obj, user) -> List[UIFormatter]:
+    tablename = obj.__class__.__name__
     filters = dict(container__discipline=collection.discipline,
                    container__name=tablename.lower(),
                    format__isnull=False)
@@ -311,9 +316,6 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         .values_list('format', flat=True)
     )
 
-    if tablename.lower() == 'collectionobject':
-        formatter_names.append(collection.catalognumformatname)
-
     logger.debug("formatters for %s: %s", tablename, formatter_names)
 
     uiformatters = [
@@ -321,13 +323,18 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         (get_uiformatter_by_name(collection, user, fn) for fn in formatter_names)
         if f is not None
     ]
+    if tablename.lower() == 'collectionobject':
+        cat_num_format = getattr(getattr(obj, 'collectionobjecttype', None), 'catalognumberformatname', None)
+        cat_num_formatter = get_catalognumber_format(collection, cat_num_format, user)
+        if cat_num_formatter: uiformatters.append(cat_num_formatter)
+
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
 def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_uiformatter_by_name(collection, None, collection.catalognumformatname)
+        return get_catalognumber_format(collection, None, None)
 
     try:
         field_format = Item.objects.get(
@@ -339,3 +346,11 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFo
         return None
     else:
         return get_uiformatter_by_name(collection, None, field_format)
+
+def get_catalognumber_format(collection, format_name: Optional[str], user) -> UIFormatter:
+    if format_name: 
+         formatter = get_uiformatter_by_name(collection, user, format_name)
+         if formatter:
+            return formatter
+
+    return get_uiformatter_by_name(collection, user, collection.catalognumformatname)

@@ -17,10 +17,22 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
+class CELERY_TASK_STATE:
+    """ Built-In Celery Task States
+    See https://docs.celeryq.dev/en/stable/userguide/tasks.html#built-in-states
+    """
+    FAILURE = 'FAILURE'
+    PENDING = 'PENDING'
+    RECEIVED = 'RECEIVED'
+    RETRY = 'RETRY'
+    REVOKED = 'REVOKED'
+    STARTED = 'STARTED'
+    SUCCESS = 'SUCCESS'
 
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
 
 logger = get_task_logger(__name__)
 
@@ -28,4 +40,5 @@ logger = get_task_logger(__name__)
 class LogErrorsTask(Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.exception('Celery task failure!!!1', exc_info=exc)
-        super(LogErrorsTask, self).on_failure(exc, task_id, args, kwargs, einfo)
+        super(LogErrorsTask, self).on_failure(
+            exc, task_id, args, kwargs, einfo)

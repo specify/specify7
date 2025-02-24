@@ -44,7 +44,7 @@ const createWorkbenchDataSet = async () =>
   );
 
 export const createEmptyDataSet = async <
-  DATASET extends AttachmentDataSet | Dataset
+  DATASET extends AttachmentDataSet | Dataset,
 >(
   datasetUrl: string,
   name: LocalizedString,
@@ -164,8 +164,8 @@ export function DataSetsDialog({
           sortConfig.sortField === 'name'
             ? name
             : sortConfig.sortField === 'dateCreated'
-            ? timestampcreated
-            : uploadresult?.timestamp ?? ''
+              ? timestampcreated
+              : (uploadresult?.timestamp ?? '')
       )
     : undefined;
 
@@ -210,7 +210,7 @@ export function DataSetsDialog({
               count: datasets.length,
             })
       }
-      icon={<span className="text-blue-500">{icons.table}</span>}
+      icon={icons.table}
       onClose={handleClose}
     >
       {datasets.length === 0 ? (

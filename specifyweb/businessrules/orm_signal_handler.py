@@ -1,5 +1,6 @@
 import logging
 
+from inspect import getfullargspec
 from typing import Callable, Literal, Optional, Hashable
 
 from django.db.models import signals
@@ -11,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 # See https://docs.djangoproject.com/en/3.2/ref/signals/#module-django.db.models.signals
 MODEL_SIGNAL = Literal["pre_init", "post_init", "pre_save",
-                       "post_save", "pre_delete", "post_delete", "m2m_changed"]
+                       "post_save", "pre_delete", "post_delete", 
+                       "m2m_changed"]
 
 
 def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
@@ -19,7 +21,7 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
         receiver_kwargs = kwargs
         if model is not None:
             if not hasattr(models, model): 
-                logger.warn(f"{model} not a valid model. Skipping rule")
+                logger.warning(f"{model} not a valid model. Skipping rule")
                 return
 
             receiver_kwargs['sender'] = getattr(models, model)
@@ -34,7 +36,16 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
             def handler(sender, **kwargs):
                 if kwargs.get('raw', False):
                     return
-                rule(sender, kwargs['instance'])
+                
+                instance = kwargs['instance']
+                created = kwargs.get('created', None)
+                argspec = getfullargspec(rule)
+                rule_has_created = 'created' in argspec.args
+                
+                if created is not None and rule_has_created:
+                    rule(sender, instance, created)
+                else:
+                    rule(sender, instance)
 
         return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
     return _dec

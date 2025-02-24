@@ -11,7 +11,7 @@ from ..upload import do_upload_csv, validate_row
 from ..upload_plan_schema import parse_plan
 
 from .base import UploadTestsBase
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 
 class BugTests(UploadTestsBase):
 

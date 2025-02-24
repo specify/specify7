@@ -16,8 +16,8 @@ function entrypoint(): void {
 
   interceptLogs();
 
-  console.group('Specify App Starting');
   if (process.env.NODE_ENV === 'production') {
+    console.group('Specify App Starting');
     console.log(
       '%cDocumentation for Developers:\n',
       'font-weight: bold',
@@ -27,7 +27,6 @@ function entrypoint(): void {
   const entrypointName =
     parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name') ??
     'main';
-  console.log(entrypointName);
   unlockInitialContext(entrypointName);
 
   globalThis.addEventListener?.('load', () => {

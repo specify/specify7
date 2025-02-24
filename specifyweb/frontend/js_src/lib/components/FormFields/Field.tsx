@@ -81,8 +81,8 @@ function RelationshipField({
         formatted === undefined
           ? commonText.loading()
           : formatted === false
-          ? ''
-          : formatted.toString()
+            ? ''
+            : formatted.toString()
       }
     />
   );
