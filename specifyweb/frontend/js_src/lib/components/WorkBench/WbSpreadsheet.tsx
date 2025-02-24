@@ -143,11 +143,14 @@ function WbSpreadsheetComponent({
                     if (isReadOnly) return true;
                     // Or if called on the last row
                     const selectedRegions = getSelectedRegions(hot);
-                    return (
-                      selectedRegions.length === 1 &&
-                      selectedRegions[0].startRow === data.length - 1 &&
-                      selectedRegions[0].startRow === selectedRegions[0].endRow
-                    );
+                    // Allow removing last row in Batch Edit since rows cannot be added in Batch Edit
+                    const disableRemoveLastRow = dataset.isupdate
+                      ? false
+                      : selectedRegions[0].startRow === data.length - 1 &&
+                        selectedRegions[0].startRow ===
+                          selectedRegions[0].endRow;
+
+                    return selectedRegions.length === 1 && disableRemoveLastRow;
                   },
                 },
                 disambiguate: {
