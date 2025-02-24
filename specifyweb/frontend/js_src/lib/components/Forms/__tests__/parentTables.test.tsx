@@ -94,6 +94,7 @@ test('Parent table relationships are calculated properly', () =>
       "RolePolicy": "[relationship RolePolicy.role]",
       "SpAppResourceData": "[relationship SpAppResourceData.spAppResource]",
       "SpAuditLogField": "[relationship SpAuditLogField.spAuditLog]",
+      "SpdatasetAttachment": "[relationship SpdatasetAttachment.spdataset]",
       "SpExportSchemaItem": "[relationship SpExportSchemaItem.spExportSchema]",
       "SpExportSchemaItemMapping": "[relationship SpExportSchemaItemMapping.exportSchemaItem]",
       "SpLocaleContainerItem": "[relationship SpLocaleContainerItem.container]",

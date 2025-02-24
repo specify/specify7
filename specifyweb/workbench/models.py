@@ -7,7 +7,7 @@ from django.db import models, transaction
 from django.http import Http404
 from django.utils import timezone
 
-from specifyweb.specify.models import Collection, Specifyuser, Agent, datamodel, custom_save
+from specifyweb.specify.models import Collection, Specifyuser, Agent, datamodel, custom_save, protect_with_blockers
 from specifyweb.specify.api import uri_for_model
 
 class Dataset(models.Model):
@@ -44,7 +44,7 @@ class Dataset(models.Model):
             collection=request.specify_collection,
             **(extra_filters if extra_filters is not None else {})
         ).only(*attrs)
-        return [{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}, 'uploadplan': json.loads(ds.uploadplan) if ds.uploadplan else None} for ds in dss]
+        return []
 
     # raise_404: Whether to raise 404 or return http 404.
     # lock_object: Whether to run a "select for update" or "select"
@@ -112,3 +112,29 @@ class Spdataset(Dataset):
 
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult['success']
+
+class SpdatasetAttachment(models.Model):
+    specify_model = datamodel.get_table_strict('spdatasetattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='spdatasetattachmentid')
+
+    # TODO: Dont't use lazy references
+    # Fields
+    ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    spdataset = models.ForeignKey('Spdataset', db_column='id', related_name='spdatasetattachments', null=False, on_delete=models.CASCADE)
+    attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'spdatasetattachment'
+        ordering = ()
+    
+    save = partialmethod(custom_save)
