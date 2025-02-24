@@ -42,6 +42,8 @@ RUN npx webpack --mode production
 
 FROM common AS build-backend
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         build-essential \
@@ -58,6 +60,7 @@ RUN apt-get update \
         python3.8-distutils \
         python3.8-dev \
         libmariadbclient-dev \
+        tzdata \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
