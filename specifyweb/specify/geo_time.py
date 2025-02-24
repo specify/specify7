@@ -622,51 +622,51 @@ def modify_query_add_age_range(query, start_time: float, end_time: float, requir
     )
 
     # Build the PaleoContext subquery
-    c = aliased(CollectionObject, name="c")
+    co = aliased(CollectionObject, name="co")
     ce = aliased(CollectingEvent, name="ce")
-    l = aliased(Locality, name="l")
-    p = aliased(PaleoContext, name="p")
+    loc = aliased(Locality, name="loc")
+    pc = aliased(PaleoContext, name="pc")
     cs = aliased(GeologicTimePeriod, name="cs")
     csend = aliased(GeologicTimePeriod, name="csend")
 
-    paleo_start_expr = build_paleo_expr(is_start=True, cs=cs, csend=csend, p=p)
-    paleo_end_expr = build_paleo_expr(is_start=False, cs=cs, csend=csend, p=p)
+    paleo_start_expr = build_paleo_expr(is_start=True, cs=cs, csend=csend, p=pc)
+    paleo_end_expr = build_paleo_expr(is_start=False, cs=cs, csend=csend, p=pc)
 
     join_structure = join(
-        c, ce, c.CollectingEventID == ce.collectingEventId, isouter=True
+        co, ce, co.CollectingEventID == ce.collectingEventId, isouter=True
     )
     join_structure = join(
-        join_structure, l, ce.LocalityID == l.localityId, isouter=True
+        join_structure, loc, ce.LocalityID == loc.localityId, isouter=True
     )
     join_structure = join(
         join_structure,
-        p,
+        pc,
         or_(
-            c.PaleoContextID == p.paleoContextId,
-            ce.PaleoContextID == p.paleoContextId,
-            l.PaleoContextID == p.paleoContextId
+            co.PaleoContextID == pc.paleoContextId,
+            ce.PaleoContextID == pc.paleoContextId,
+            loc.PaleoContextID == pc.paleoContextId
         ),
         isouter=True
     )
     join_structure = join(
-        join_structure, cs, p.ChronosStratID == cs.geologicTimePeriodId, isouter=True
+        join_structure, cs, pc.ChronosStratID == cs.geologicTimePeriodId, isouter=True
     )
     join_structure = join(
-        join_structure, csend, p.ChronosStratEndID == csend.geologicTimePeriodId, isouter=True
+        join_structure, csend, pc.ChronosStratEndID == csend.geologicTimePeriodId, isouter=True
     )
 
     paleo_sel = select([
-        c.collectionObjectId.label("coid"),
+        co.collectionObjectId.label("coid"),
         paleo_start_expr.label("startperiod"),
         paleo_end_expr.label("endperiod")
     ]).select_from(join_structure).where(
         and_(
-            p.paleoContextId != None,
+            pc.paleoContextId != None,
             cs.startPeriod != None,
             cs.endPeriod != None,
             cs.startPeriod >= cs.endPeriod,
             or_(
-                p.ChronosStratEndID == None,
+                pc.ChronosStratEndID == None,
                 and_(
                     csend.startPeriod != None,
                     csend.endPeriod != None,
