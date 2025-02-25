@@ -1076,11 +1076,13 @@ class BoundTreeRecord(NamedTuple):
 
         previous_parent_id = None
         for tdi in self.treedefitems[::-1]:
-            if tdi.name not in self.batch_edit_pack:
+            ref_key = f"{tdi.treedef.name}{RANK_KEY_DELIMITER}{tdi.name}{RANK_KEY_DELIMITER}{tdi.treedef.id}"
+            tree_rank_record = TreeRankRecord(tdi.name, tdi.treedef.id)
+            if ref_key not in self.batch_edit_pack:
                 continue
-            columns = [pr.column for pr in self.parsedFields[tdi.name]]
+            columns = [pr.column for pr in self.parsedFields[tree_rank_record]]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
-            pack = self.batch_edit_pack[tdi.name]
+            pack = self.batch_edit_pack[ref_key]
             try:
                 reference = safe_fetch(
                     model, {"id": pack["id"]}, pack.get("version", None)
