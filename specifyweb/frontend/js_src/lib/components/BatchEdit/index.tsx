@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LocalizedString } from 'typesafe-i18n';
 
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -78,7 +80,10 @@ export function BatchEditFromQuery({
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
       }),
     });
+
   const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
+  const [missingRanks, setMissingRanks] = React.useState<MissingRanks>();
+  const [datasetName, setDatasetName] = React.useState<LocalizedString>();
   const loading = React.useContext(LoadingContext);
 
   const queryFieldSpecs = React.useMemo(
@@ -92,6 +97,17 @@ export function BatchEditFromQuery({
       ),
     [fields]
   );
+
+  const handleCreateDataset = async (newName: string) => {
+    return uniquifyDataSetName(newName, undefined, 'batchEdit').then(
+      async (name) =>
+        post(name).then(({ data }) => {
+          setDatasetName(undefined);
+          setMissingRanks(undefined);
+          navigate(`/specify/workbench/${data.id}`);
+        })
+    );
+  };
 
   return (
     <>
@@ -107,13 +123,10 @@ export function BatchEditFromQuery({
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))
               );
-              const hasErrors =
-                Object.values(missingRanks).some((ranks) => ranks.length > 0) ||
-                invalidFields.length > 0;
 
+              const hasErrors = invalidFields.length > 0;
               if (hasErrors) {
                 setErrors({
-                  missingRanks,
                   invalidFields: invalidFields.map(queryFieldSpecHeader),
                 });
                 return;
@@ -123,12 +136,16 @@ export function BatchEditFromQuery({
                 queryName: query.get('name'),
                 datePart: new Date().toDateString(),
               });
-              return uniquifyDataSetName(newName, undefined, 'batchEdit').then(
-                async (name) =>
-                  post(name).then(({ data }) =>
-                    navigate(`/specify/workbench/${data.id}`)
-                  )
+              const hasMissingRanks = Object.values(missingRanks).some(
+                (ranks) => ranks.length > 0
               );
+              if (hasMissingRanks) {
+                setMissingRanks(missingRanks);
+                setDatasetName(newName);
+                return;
+              }
+
+              return handleCreateDataset(newName);
             })
           );
         }}
@@ -138,16 +155,23 @@ export function BatchEditFromQuery({
       {errors !== undefined && (
         <ErrorsDialog errors={errors} onClose={() => setErrors(undefined)} />
       )}
+      {missingRanks !== undefined && datasetName !== undefined ? (
+        <MissingRanksDialog
+          missingRanks={missingRanks}
+          onClose={() => handleCreateDataset(datasetName)}
+        />
+      ) : undefined}
     </>
   );
 }
 
 type QueryError = {
-  readonly missingRanks: {
-    // Query can contain relationship to multiple trees
-    readonly [KEY in AnyTree['tableName']]: RA<string>;
-  };
   readonly invalidFields: RA<string>;
+};
+
+type MissingRanks = {
+  // Query can contain relationship to multiple trees
+  readonly [KEY in AnyTree['tableName']]: RA<string>;
 };
 
 function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
@@ -180,9 +204,7 @@ const getTreeDefFromName = (
     )
   );
 
-function findAllMissing(
-  queryFieldSpecs: RA<QueryFieldSpec>
-): QueryError['missingRanks'] {
+function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
   const treeFieldSpecs = group(
     filterArray(
       queryFieldSpecs.map((fieldSpec) =>
@@ -281,7 +303,25 @@ function ErrorsDialog({
       onClose={handleClose}
     >
       <ShowInvalidFields error={errors.invalidFields} />
-      <ShowMissingRanks error={errors.missingRanks} />
+    </Dialog>
+  );
+}
+
+function MissingRanksDialog({
+  missingRanks,
+  onClose: handleClose,
+}: {
+  readonly missingRanks: MissingRanks;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={interactionsText.continue()}
+      header={batchEditText.missingRanksInQuery()}
+      icon={dialogIcons.info}
+      onClose={handleClose}
+    >
+      <ShowMissingRanks missingRanks={missingRanks} />
     </Dialog>
   );
 }
@@ -305,17 +345,19 @@ function ShowInvalidFields({
 }
 
 function ShowMissingRanks({
-  error,
+  missingRanks,
 }: {
-  readonly error: QueryError['missingRanks'];
+  readonly missingRanks: MissingRanks;
 }) {
-  const hasMissing = Object.values(error).some((rank) => rank.length > 0);
+  const hasMissing = Object.values(missingRanks).some(
+    (rank) => rank.length > 0
+  );
   return hasMissing ? (
     <div>
       <div className="mt-2 flex gap-2">
         <H2>{batchEditText.addTreeRank()}</H2>
       </div>
-      {Object.entries(error).map(([treeTable, ranks]) => (
+      {Object.entries(missingRanks).map(([treeTable, ranks]) => (
         <div>
           <div>
             <TableIcon label name={treeTable} />

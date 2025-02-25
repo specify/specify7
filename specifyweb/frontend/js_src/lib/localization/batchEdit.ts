@@ -18,13 +18,17 @@ export const batchEditText = createDictionary({
       'Field not supported for batch edit. Either remove the field, or make it hidden.',
   },
   addTreeRank: {
-    'en-us': 'Please add the following missing rank to the query',
+    'en-us':
+      'The following ranks will be added to the query to enable batch editing',
   },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
   },
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
+  },
+  missingRanksInQuery: {
+    'en-us': 'Query requires additional ranks for batch editing',
   },
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
