@@ -1,14 +1,26 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Container, H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
+import type { Collection } from '../DataModel/types';
+import { collection } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
-import { LoadingScreen } from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
+
+  const [newResourceOpen, handleNewResource, closeNewResource] = useBooleanState()
+
+  const [parentId, setParentId] = React.useState()
+
+  const [newResource, setNewResource] = React.useState<SpecifyResource<Collection> | undefined>()
 
   React.useEffect(() => {
     fetchAllSystemData.then(setAllInfo).catch(() => console.warn('Error when fetching institution info'));
@@ -29,7 +41,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                 />
                 </div>
             <Ul className="m-6">
-              {data.children.map((division) => (
+              {data.institution.children.map((division) => (
                 <li key={division.id}>
                   <div className='flex'>
                   <H3>{`Division: ${division.name}`}</H3>
@@ -48,7 +60,12 @@ export function SystemConfigurationTool(): JSX.Element | null {
                           <Button.Icon
                             icon="plus"
                             title="Add new collection to discipline"
-                            onClick={() => console.log(`'Add new collection to discipline' ${discipline.id}`)}/>
+                            onClick={() =>{
+                              console.log(`'Add new collection to discipline' ${discipline.id}`)
+                              setParentId(discipline.id)
+                              setNewResource(new tables.Collection.Resource())
+                              handleNewResource()
+                              }}/>
                           </div>
                           {discipline.children.length > 0 && (
                             <Ul className="m-6">
@@ -78,12 +95,28 @@ export function SystemConfigurationTool(): JSX.Element | null {
       <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
       {allInfo === undefined || allInfo === null ? <LoadingScreen /> : renderHierarchy(allInfo)}
       </div>
+      {newResourceOpen ?     
+        <Dialog header="Add new Resource" onClose={closeNewResource}>
+          <ResourceView
+                dialog="modal"
+                isDependent={false}
+                isSubForm={false}
+                resource={newResource}
+                viewName={collection}
+                onAdd={undefined}
+                onClose={closeNewResource}
+                onDeleted={undefined}
+                onSaved={() => console.log('Click')}
+              />
+          </Dialog> 
+        : undefined}
     </Container.FullGray>
   );
 }
 
 type InstitutionData = {
-  // Institution
+  readonly 'institution': {
+    // Institution
   readonly id: number;
   readonly name: string;
   readonly children: RA<{
@@ -100,7 +133,7 @@ type InstitutionData = {
         readonly name: string;
       }>;
     }>;
-  }>;
+  }>;}
 };
 
 let institutionData: InstitutionData;
