@@ -53,7 +53,7 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    if (institutions?.length === 0) {
+    if (institutions?.length === 0 || institutions === undefined) {
       // Display here the new setup pages 
       return <p>Welcome! No institutions are available at the moment.</p>;
     }
