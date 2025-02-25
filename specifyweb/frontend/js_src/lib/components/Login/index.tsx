@@ -90,7 +90,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, []);
+  }, [institutions]); 
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
