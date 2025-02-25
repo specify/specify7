@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
@@ -98,8 +98,7 @@ export function BatchEditFromQuery({
     [fields]
   );
 
-  const handleCreateDataset = async (newName: string) => {
-    return uniquifyDataSetName(newName, undefined, 'batchEdit').then(
+  const handleCreateDataset = async (newName: string) => uniquifyDataSetName(newName, undefined, 'batchEdit').then(
       async (name) =>
         post(name).then(({ data }) => {
           setDatasetName(undefined);
@@ -107,7 +106,6 @@ export function BatchEditFromQuery({
           navigate(`/specify/workbench/${data.id}`);
         })
     );
-  };
 
   return (
     <>
@@ -158,7 +156,7 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
-          onClose={() => handleCreateDataset(datasetName)}
+          onClose={async () => handleCreateDataset(datasetName)}
         />
       ) : undefined}
     </>
