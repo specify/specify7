@@ -18,7 +18,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
 
   const [newResourceOpen, handleNewResource, closeNewResource] = useBooleanState()
 
-  const [parentId, setParentId] = React.useState()
+  const [parentId, setParentId] = React.useState<number | undefined>()
 
   const [newResource, setNewResource] = React.useState<SpecifyResource<Collection> | undefined>()
 
@@ -26,29 +26,39 @@ export function SystemConfigurationTool(): JSX.Element | null {
     fetchAllSystemData.then(setAllInfo).catch(() => console.warn('Error when fetching institution info'));
   }, []);
 
-  const renderHierarchy = (data: InstitutionData | null): JSX.Element => {
-    if (!data) return <LoadingScreen />;
+  const renderHierarchy = (institution: InstitutionData | null): JSX.Element => {
+    if (!institution) return <LoadingScreen />;
   
     return (
       <Ul className="m-4">
         <li>
           <div className='flex'>
-          <H2>{`Institution: ${data.name}`}</H2>
+          <H2>{`Institution: ${institution.name}`}</H2>
           <Button.Icon
                   icon="plus"
                   title="Add new division to institution"
-                  onClick={() => console.log(`'Add new division to institution' ${data.id}`)}
+                  onClick={() => {
+                    console.log(`'Add new division to institution' ${institution.id}`)
+                    setParentId(institution.id)
+                    setNewResource(new tables.Division.Resource())
+                    handleNewResource()
+                  }}
                 />
                 </div>
             <Ul className="m-6">
-              {data.institution.children.map((division) => (
+              {institution.children.map((division) => (
                 <li key={division.id}>
                   <div className='flex'>
                   <H3>{`Division: ${division.name}`}</H3>
                   <Button.Icon
                   icon="plus"
                   title="Add new discipline to institution"
-                  onClick={() => console.log(`'Add new discipline to division' ${division.id}`)}
+                  onClick={() => {
+                    console.log(`'Add new discipline to division' ${division.id}`)
+                    setParentId(division.id)
+                    setNewResource(new tables.Discipline.Resource())
+                    handleNewResource()
+                  }}
                 />
                 </div>
                   {division.children.length > 0 && (
@@ -115,8 +125,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
 }
 
 type InstitutionData = {
-  readonly 'institution': {
-    // Institution
+  /*
+   * Readonly 'institution': {
+   *   // Institution
+   */
   readonly id: number;
   readonly name: string;
   readonly children: RA<{
@@ -134,16 +146,16 @@ type InstitutionData = {
       }>;
     }>;
   }>;}
-};
+// };
 
 let institutionData: InstitutionData;
 
-export const fetchAllSystemData = load<{ readonly institution: InstitutionData }>(
+export const fetchAllSystemData = load<InstitutionData>(
   '/context/all_system_data.json',
   'application/json'
-).then((data: { readonly institution: InstitutionData }) => {
-  institutionData = data.institution;
-  return institutionData;
+).then((data: InstitutionData) => {
+  institutionData = data;
+  return data;
 });
 
 export const getAllInfo = ():InstitutionData => institutionData

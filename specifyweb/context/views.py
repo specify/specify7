@@ -694,14 +694,12 @@ def all_system_data(request):
             division_map[discipline.division_id]["children"].append(discipline_map[discipline.id])
 
     institution_data = {
-        "institution": {
             "id": institution.id,
             "name": institution.name,
             "children": list(division_map.values())
-        }
     }
 
-    return JsonResponse({"institution": institution_data}, safe=False)
+    return JsonResponse(institution_data, safe=False)
 
 PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
 PATH_GROUP_RE_EXTENDED = re.compile(r'<([^:]+):([^>]+)>')
