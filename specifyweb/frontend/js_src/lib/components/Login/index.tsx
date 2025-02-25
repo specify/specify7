@@ -24,10 +24,10 @@ import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
 export function Login(): JSX.Element {
-  const [institutions] = useAsyncState(
+  const [institution] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<string>>(`/api/specify/institutions/`, {
+        ajax<RA<string>>(`/api/specify/institution/`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -35,13 +35,13 @@ export function Login(): JSX.Element {
           errorMode: 'silent',
         })
           .then(({ data }) => {
-            if (data.length === 0) {
-              console.warn("No institutions found.");
+            if (data === null) {
+              console.warn("No institution found.");
             }
             return data;
           })
           .catch((error) => {
-            console.error("Failed to fetch institutions:", error);
+            console.error("Failed to fetch institution:", error);
             return undefined;
           }),
       []
@@ -53,7 +53,7 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    if (institutions?.length === 0 || institutions === undefined) {
+    if (institution === null) {
       // Display here the new setup pages 
       return <p>Welcome! No institutions are available at the moment.</p>;
     }
@@ -90,7 +90,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [institutions]); 
+  }, [institution]); 
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';

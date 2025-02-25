@@ -1370,6 +1370,6 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
 
 
 #check for institution at login
-def get_all_institutions(request):
-    institutions = list(spmodels.Institution.objects.values())
-    return http.JsonResponse(institutions, safe=False)
+def get_institution(request):
+    institution = spmodels.Institution.objects.first()
+    return http.JsonResponse(institution if institution else None, safe=False)
