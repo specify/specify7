@@ -28,13 +28,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['internal_filters'] = []
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank, next_join_path, current_field_spec: QueryFieldSpec):
+    def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
         if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
             f"No Collection found in Query for {table}",
             {"table" : table,
              "localizationKey" : "noCollectionInQuery"}) 
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, next_join_path)
+        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
@@ -65,8 +65,10 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         # TODO: optimize out the ranks that appear? cache them
         treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank).values_list('id', flat=True)))
+            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list('id', flat=True)))
             for treedef_id, _ in treedefs
+            # For constructing tree queries for batch edit
+            if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
             ] if tup[1] is not None]
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
