@@ -10,45 +10,21 @@ import specifyweb.specify.models
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
 
 MIGRATION_0006_FIELDS = {
-    'SpdatasetAttachment': [
-        ('id', 'id', 'id'),
-        ('ordinal', 'ordinal', 'ordinal'),
-        ('remarks', 'remarks', 'remarks'),
-        ('timestampcreated', 'timestampcreated', 'timestampcreated'),
-        ('timestampmodified', 'timestampmodified', 'timestampmodified'),
-        ('version', 'version', 'version'),
-        ('attachment', 'attachment', 'attachment'),
-        ('createdbyagent', 'createdbyagent', 'createdbyagent'),
-        ('modifiedbyagent', 'modifiedbyagent', 'modifiedbyagent'),
-        ('storage', 'storage', 'storage'),
+    'SpDataSetAttachment': [
+        'ordinal',
+        'remarks',
+        'timestampCreated',
+        'timestampModified',
+        'version',
+        'attachment',
+        'collectionMember',
+        'createdByAgent',
+        'modifiedByAgent',
+        'spdataset',
     ],
+    'Spdataset': [ 'spdatasetattachments' ],
+    'Attachment': [ 'spdatasetattachments' ],
 }
-
-def create_spdatasetattachment(apps):
-    migrations.CreateModel(
-        name='SpdatasetAttachment',
-        fields=[
-            ('id', models.AutoField(db_column='spdatasetattachmentid', primary_key=True, serialize=False)),
-            ('ordinal', models.IntegerField(db_column='Ordinal')),
-            ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
-            ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
-            ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-            ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-            ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
-            ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-            ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-            ('spdataset', models.ForeignKey(db_column='id', on_delete=django.db.models.deletion.CASCADE, related_name='spdatasetattachments', to='workbench.spdataset')),
-        ],
-        options={
-            'db_table': 'spdatasetattachment',
-            'ordering': (),
-        },
-    ),
-
-def reverse_create_spdatasetattachment(apps):   
-    migrations.DeleteModel(
-        name='SpdatasetAttachment',
-    ),
 
 def create_spdatasetattachment_splocalecontaineritem(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -71,13 +47,31 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        create_spdatasetattachment(apps)
         create_spdatasetattachment_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        reverse_create_spdatasetattachment(apps)
         reverse_create_spdatasetattachment_splocalecontaineritem(apps)
 
     operations = [
+        migrations.CreateModel(
+            name='SpDataSetAttachment',
+            fields=[
+                ('id', models.AutoField(db_column='SpDataSetAttachmentID', primary_key=True, serialize=False)),
+                ('ordinal', models.IntegerField(db_column='Ordinal')),
+                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
+                ('collectionmember', models.ForeignKey(db_column='CollectionMemberID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.collection')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('spdataset', models.ForeignKey(db_column='SpDataSetID', on_delete=django.db.models.deletion.CASCADE, related_name='spdatasetattachments', to='workbench.spdataset')),
+            ],
+            options={
+                'db_table': 'spdatasetattachment',
+                'ordering': (),
+            },
+        ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
     ]

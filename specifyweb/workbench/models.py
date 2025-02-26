@@ -113,11 +113,11 @@ class Spdataset(Dataset):
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult['success']
 
-class SpdatasetAttachment(models.Model):
+class SpDataSetAttachment(models.Model):
     specify_model = datamodel.get_table_strict('spdatasetattachment')
 
     # ID Field
-    id = models.AutoField(primary_key=True, db_column='spdatasetattachmentid')
+    id = models.AutoField(primary_key=True, db_column='SpDataSetAttachmentID')
 
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
@@ -127,9 +127,10 @@ class SpdatasetAttachment(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    spdataset = models.ForeignKey(Spdataset, db_column='id', related_name='spdatasetattachments', null=False, on_delete=models.CASCADE)
     attachment = models.ForeignKey(Attachment, db_column='AttachmentID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey(Collection, db_column='CollectionMemberID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey(Agent, db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spdataset = models.ForeignKey(Spdataset, db_column='SpDataSetID', related_name='spdatasetattachments', null=False, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey(Agent, db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:

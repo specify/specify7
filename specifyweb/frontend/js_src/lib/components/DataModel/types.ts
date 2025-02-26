@@ -704,7 +704,7 @@ export type Attachment = {
     readonly preparationAttachments: RA<PreparationAttachment>;
     readonly referenceWorkAttachments: RA<ReferenceWorkAttachment>;
     readonly repositoryAgreementAttachments: RA<RepositoryAgreementAttachment>;
-    readonly spdatasetAttachments: RA<SpdatasetAttachment>;
+    readonly spDataSetAttachments: RA<SpDataSetAttachment>;
     readonly storageAttachments: RA<StorageAttachment>;
     readonly tags: RA<AttachmentTag>;
     readonly taxonAttachments: RA<TaxonAttachment>;
@@ -6465,7 +6465,7 @@ export type Spdataset = {
     readonly specifyuser: SpecifyUser;
   };
   readonly toManyDependent: {
-    readonly spdatasetAttachments: RA<SpdatasetAttachment>;
+    readonly spDataSetAttachments: RA<SpDataSetAttachment>;
   };
   readonly toManyIndependent: RR<never, never>;
 };
@@ -6817,8 +6817,8 @@ export type TectonicUnit = {
     readonly paleoContexts: RA<PaleoContext>;
   };
 };
-export type SpdatasetAttachment = {
-  readonly tableName: 'SpdatasetAttachment';
+export type SpDataSetAttachment = {
+  readonly tableName: 'SpDataSetAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
