@@ -4,8 +4,6 @@ For uploading tree records.
 
 from itertools import groupby
 import logging
-from math import e
-from os import error
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 
 from django.db import transaction, IntegrityError
@@ -53,6 +51,9 @@ from .uploadable import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Rank keys in the upload plan have the format: <treename>~><rankname>
+RANK_KEY_DELIMITER = "~>"
 
 class TreeRankCell(NamedTuple):
     treedef_id: int
@@ -147,7 +148,10 @@ class TreeRank(NamedTuple):
             """
             Get the treedef ID for the given rank name and tree.
             """
-
+            
+            if treedef_id is not None:
+                return treedef_id
+            
             # Fetch treedefitems based on filter keyword arguments
             def fetch_treedefitems(filter_kwargs):
                 return tree_model.objects.filter(**filter_kwargs)
@@ -164,9 +168,6 @@ class TreeRank(NamedTuple):
                 if treedefitems.count() > 1:
                     return filter_by_treedef_id(treedefitems, rank_name, tree, treedef_id)
                 return treedefitems
-
-            if treedef_id is not None:
-                return treedef_id
 
             if treedef_id is None and treedef_name is not None:
                 treedef_id = get_treedef_model(tree).objects.get(name=treedef_name)
@@ -192,7 +193,7 @@ class TreeRank(NamedTuple):
             """
             Extract treedef_name from rank_name if it exists in the format 'treedef_name~>rank_name'.
             """
-            parts = rank_name.split('~>', 1)
+            parts = rank_name.split(RANK_KEY_DELIMITER, 1)
             if len(parts) == 2:
                 treedef_name = parts[0]
                 rank_name = parts[1]
@@ -272,6 +273,7 @@ class TreeRankRecord(NamedTuple):
     def validate_rank(self, tree) -> None:
         TreeRank.create(self.rank_name, tree, self.treedef_id).validate_rank()
 
+        
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
@@ -293,7 +295,7 @@ class TreeRecord(NamedTuple):
             rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
             treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
             
-            if len(cols) == 1:
+            if len(cols) == 1 and not isinstance(rank, TreeRankRecord):
                 result["ranks"][rank_key] = treeNodeCols["name"]
             else:
                 rank_data = {"treeNodeCols": treeNodeCols}
@@ -1074,11 +1076,13 @@ class BoundTreeRecord(NamedTuple):
 
         previous_parent_id = None
         for tdi in self.treedefitems[::-1]:
-            if tdi.name not in self.batch_edit_pack:
+            ref_key = f"{tdi.treedef.name}{RANK_KEY_DELIMITER}{tdi.name}{RANK_KEY_DELIMITER}{tdi.treedef.id}"
+            tree_rank_record = TreeRankRecord(tdi.name, tdi.treedef.id)
+            if ref_key not in self.batch_edit_pack:
                 continue
-            columns = [pr.column for pr in self.parsedFields[tdi.name]]
+            columns = [pr.column for pr in self.parsedFields[tree_rank_record]]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
-            pack = self.batch_edit_pack[tdi.name]
+            pack = self.batch_edit_pack[ref_key]
             try:
                 reference = safe_fetch(
                     model, {"id": pack["id"]}, pack.get("version", None)

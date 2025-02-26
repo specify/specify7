@@ -49,6 +49,10 @@ class Func:
     @staticmethod
     def second(source: List[Tuple[I, O]]) -> List[O]:
         return [second for (_, second) in source]
+    
+    @staticmethod
+    def filter_list(source: List[Optional[I]])->List[I]:
+        return [item for item in source if item is not None]
 
 class CustomRepr:
     def __init__(self, func, new_repr):

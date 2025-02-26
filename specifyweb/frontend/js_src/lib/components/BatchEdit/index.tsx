@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -18,6 +20,7 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -25,6 +28,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
+  getTreeDefinitions,
   isTreeTable,
   strictGetTreeDefinitionItems,
   treeRanksPromise,
@@ -76,7 +80,10 @@ export function BatchEditFromQuery({
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
       }),
     });
+
   const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
+  const [missingRanks, setMissingRanks] = React.useState<MissingRanks>();
+  const [datasetName, setDatasetName] = React.useState<LocalizedString>();
   const loading = React.useContext(LoadingContext);
 
   const queryFieldSpecs = React.useMemo(
@@ -91,13 +98,21 @@ export function BatchEditFromQuery({
     [fields]
   );
 
+  const handleCreateDataset = async (newName: string) => uniquifyDataSetName(newName, undefined, 'batchEdit').then(
+      async (name) =>
+        post(name).then(({ data }) => {
+          setDatasetName(undefined);
+          setMissingRanks(undefined);
+          navigate(`/specify/workbench/${data.id}`);
+        })
+    );
+
   return (
     <>
       <Button.Small
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable) ||
-          queryFieldSpecs.some(containsTreeTableOrSpecificRank) // TODO: Remove this when we have batch edit for tree tables #6127
+          queryFieldSpecs.some(hasHierarchyBaseTable)
         }
         onClick={() => {
           loading(
@@ -106,13 +121,10 @@ export function BatchEditFromQuery({
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))
               );
-              const hasErrors =
-                Object.values(missingRanks).some((ranks) => ranks.length > 0) ||
-                invalidFields.length > 0;
 
+              const hasErrors = invalidFields.length > 0;
               if (hasErrors) {
                 setErrors({
-                  missingRanks,
                   invalidFields: invalidFields.map(queryFieldSpecHeader),
                 });
                 return;
@@ -122,12 +134,16 @@ export function BatchEditFromQuery({
                 queryName: query.get('name'),
                 datePart: new Date().toDateString(),
               });
-              return uniquifyDataSetName(newName, undefined, 'batchEdit').then(
-                async (name) =>
-                  post(name).then(({ data }) =>
-                    navigate(`/specify/workbench/${data.id}`)
-                  )
+              const hasMissingRanks = Object.values(missingRanks).some(
+                (ranks) => ranks.length > 0
               );
+              if (hasMissingRanks) {
+                setMissingRanks(missingRanks);
+                setDatasetName(newName);
+                return;
+              }
+
+              return handleCreateDataset(newName);
             })
           );
         }}
@@ -137,16 +153,23 @@ export function BatchEditFromQuery({
       {errors !== undefined && (
         <ErrorsDialog errors={errors} onClose={() => setErrors(undefined)} />
       )}
+      {missingRanks !== undefined && datasetName !== undefined ? (
+        <MissingRanksDialog
+          missingRanks={missingRanks}
+          onClose={async () => handleCreateDataset(datasetName)}
+        />
+      ) : undefined}
     </>
   );
 }
 
 type QueryError = {
-  readonly missingRanks: {
-    // Query can contain relationship to multiple trees
-    readonly [KEY in AnyTree['tableName']]: RA<string>;
-  };
   readonly invalidFields: RA<string>;
+};
+
+type MissingRanks = {
+  // Query can contain relationship to multiple trees
+  readonly [KEY in AnyTree['tableName']]: RA<string>;
 };
 
 function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
@@ -167,11 +190,6 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
 
-const containsTreeTableOrSpecificRank = (queryFieldSpec: QueryFieldSpec) =>
-  isTreeTable(queryFieldSpec.baseTable.name) ||
-  (typeof queryFieldSpec.treeRank === 'string' &&
-    queryFieldSpec.treeRank !== '-any');
-
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
 const getTreeDefFromName = (
@@ -184,9 +202,7 @@ const getTreeDefFromName = (
     )
   );
 
-function findAllMissing(
-  queryFieldSpecs: RA<QueryFieldSpec>
-): QueryError['missingRanks'] {
+function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
   const treeFieldSpecs = group(
     filterArray(
       queryFieldSpecs.map((fieldSpec) =>
@@ -222,7 +238,8 @@ function findMissingRanks(
 ): RA<string> {
   const allTreeDefItems = strictGetTreeDefinitionItems(
     treeTable.name as 'Geography',
-    false
+    false,
+    'all'
   );
 
   // Duplicates don't affect any logic here
@@ -241,24 +258,30 @@ function findMissingRanks(
 
   const highestRank = currentRanksSorted[0];
 
-  return allTreeDefItems.flatMap(({ rankId, name }) =>
+  return allTreeDefItems.flatMap(({ treeDef, rankId, name }) =>
     rankId < highestRank.specifyRank.rankId
       ? []
       : filterArray(
-          requiredTreeFields.map((requiredField) =>
-            currentTreeRanks.some(
+          requiredTreeFields.map((requiredField) => {
+            const treeDefinition = getTreeDefinitions(
+              treeTable.name as 'Geography',
+              idFromUrl(treeDef)
+            );
+            const treeDefinitionName = treeDefinition[0].definition.name;
+
+            return currentTreeRanks.some(
               (rank) =>
                 rank.specifyRank.name === name &&
                 rank.field !== undefined &&
                 requiredField === rank.field.name
             )
               ? undefined
-              : `${name} ${
+              : `${treeDefinitionName}: ${name} - ${
                   defined(
                     strictGetTable(treeTable.name).getField(requiredField)
                   ).label
-                }`
-          )
+                }`;
+          })
         )
   );
 }
@@ -278,7 +301,25 @@ function ErrorsDialog({
       onClose={handleClose}
     >
       <ShowInvalidFields error={errors.invalidFields} />
-      <ShowMissingRanks error={errors.missingRanks} />
+    </Dialog>
+  );
+}
+
+function MissingRanksDialog({
+  missingRanks,
+  onClose: handleClose,
+}: {
+  readonly missingRanks: MissingRanks;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={interactionsText.continue()}
+      header={batchEditText.missingRanksInQuery()}
+      icon={dialogIcons.info}
+      onClose={handleClose}
+    >
+      <ShowMissingRanks missingRanks={missingRanks} />
     </Dialog>
   );
 }
@@ -302,17 +343,19 @@ function ShowInvalidFields({
 }
 
 function ShowMissingRanks({
-  error,
+  missingRanks,
 }: {
-  readonly error: QueryError['missingRanks'];
+  readonly missingRanks: MissingRanks;
 }) {
-  const hasMissing = Object.values(error).some((rank) => rank.length > 0);
+  const hasMissing = Object.values(missingRanks).some(
+    (rank) => rank.length > 0
+  );
   return hasMissing ? (
     <div>
       <div className="mt-2 flex gap-2">
         <H2>{batchEditText.addTreeRank()}</H2>
       </div>
-      {Object.entries(error).map(([treeTable, ranks]) => (
+      {Object.entries(missingRanks).map(([treeTable, ranks]) => (
         <div>
           <div>
             <TableIcon label name={treeTable} />
