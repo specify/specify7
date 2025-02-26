@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-26 13:02+0000\n"
+"PO-Revision-Date: 2025-02-26 13:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:471
@@ -240,8 +240,8 @@ msgstr "Iniciar upload de anexo?"
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"O upload dos anexos fará com que os anexos sejam criados no servidor de "
-"ativos e no banco de dados do Specify"
+"O upload dos anexos fará os anexos no servidor de ativos e no banco de dados "
+"Especificar"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
