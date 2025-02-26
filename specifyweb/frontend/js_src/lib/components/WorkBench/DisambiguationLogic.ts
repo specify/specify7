@@ -99,7 +99,11 @@ export class Disambiguation {
     if (Object.keys(disambiguation).length === 0)
       // Nothing to clear
       return;
-    this.changeDisambiguation(physicalRow, (row) => removeKey(row, 'disambiguation'), 'Disambiguation.Clear');
+    this.changeDisambiguation(
+      physicalRow,
+      (row) => removeKey(row, 'disambiguation'),
+      'Disambiguation.Clear'
+    );
   }
 
   public setDisambiguation(

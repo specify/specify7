@@ -98,13 +98,13 @@ export function BatchEditFromQuery({
     [fields]
   );
 
-  const handleCreateDataset = async (newName: string) => uniquifyDataSetName(newName, undefined, 'batchEdit').then(
-      async (name) =>
-        post(name).then(({ data }) => {
-          setDatasetName(undefined);
-          setMissingRanks(undefined);
-          navigate(`/specify/workbench/${data.id}`);
-        })
+  const handleCreateDataset = async (newName: string) =>
+    uniquifyDataSetName(newName, undefined, 'batchEdit').then(async (name) =>
+      post(name).then(({ data }) => {
+        setDatasetName(undefined);
+        setMissingRanks(undefined);
+        navigate(`/specify/workbench/${data.id}`);
+      })
     );
 
   return (
