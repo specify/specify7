@@ -1007,7 +1007,7 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=True,
+        omit_relationships=False,
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
     mapped_raws = [
@@ -1141,7 +1141,6 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # Consider optimizing when relationships are not-editable? May not benefit actually
     # This permission just gets enforced here
-    # NOTE: Relationships disabled for issue-5413 branch to minimize scope of testing
     omit_relationships = props["omit_relationships"] or not has_target_permission(
         props["collection"].id,
         props["user"].id,
