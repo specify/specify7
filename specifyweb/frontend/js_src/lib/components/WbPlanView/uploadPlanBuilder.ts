@@ -5,6 +5,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
+import type { BatchEditPrefs } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
@@ -181,7 +182,8 @@ const toUploadable = (
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RR<keyof Tables, boolean>
+  mustMatchPreferences: RR<keyof Tables, boolean>,
+  batchEditPrefs?: BatchEditPrefs
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -192,6 +194,7 @@ export const uploadPlanBuilder = (
       .map(([tableName]) => tableName),
     true
   ),
+  batchEditPrefs,
 });
 
 const indexMappings = (

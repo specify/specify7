@@ -5,11 +5,11 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import type { MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
+import type { BatchEditPrefs, MappingPath } from './Mapper';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
@@ -56,6 +56,7 @@ export type Uploadable = TreeRecordVariety | UploadTableVariety;
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
+  readonly batchEditPrefs?: BatchEditPrefs;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({

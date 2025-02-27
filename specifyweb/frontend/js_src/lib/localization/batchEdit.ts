@@ -10,6 +10,9 @@ export const batchEditText = createDictionary({
   batchEdit: {
     'en-us': 'Batch Edit',
   },
+  batchEditPrefs: {
+    'en-us': 'Batch Edit Preferences',
+  },
   numberOfRecords: {
     'en-us': 'Number of records selected from the query',
   },
