@@ -131,6 +131,41 @@ describe('Collection Object business rules', () => {
   };
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
+  test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 1)
+    );
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+    );
+
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.invalidDeterminationTaxon(),
+    ]);
+
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([]);
+  });
+
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
     const determinations =

@@ -24,6 +24,7 @@
     <typesearch tableid="97"  name="CatAutoNumberingScheme" searchfield="schemeName"      displaycols="schemeName"         format="%s"     dataobjformatter=""/>
     <typesearch tableid="46"  name="ChronosStrat"           searchfield="name"            displaycols="fullName"           format="%s"     dataobjformatter=""/>
     <typesearch tableid="1"   name="CollectionObject"       searchfield="catalogNumber"   displaycols="catalogNumber"      uifieldformatter="CatalogNumber" dataobjformatter="CollectionObject"/>
+    <typesearch tableid="1015"   name="CollectionObjectType" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
     <typesearch tableid="1016"   name="CollectionObjectGroup" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
     <typesearch tableid="1018"   name="CollectionObjectGroupType" searchfield="name" displaycols="name"    format="%s"     dataobjformatter=""/>
     <typesearch tableid="98" name="CollectionRelType"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>  
@@ -68,6 +69,7 @@
     </typesearch>
     <typesearch tableid="65"  name="PrepType"               searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="4"   name="Taxon"                  searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="Taxon"/>
+    <typesearch tableid="76"  name="TaxonTreeDef"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="77"  name="TaxonTreeDefItem"       searchfield="name"            displaycols="name"               format="%s"     dataobjformatter=""/>
     <typesearch tableid="1027"  name="TectonicUnit"         searchfield="fullName"        displaycols="fullName"           format="%s"     dataobjformatter="TectonicUnit"/>
     <typesearch tableid="1026"  name="TectonicUnitTreeDefItem"       searchfield="name"   displaycols="name"               format="%s"     dataobjformatter=""/>

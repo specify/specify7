@@ -846,4 +846,8 @@ export const resourcesText = createDictionary({
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
   },
+  invalidDeterminationTaxon: {
+    'en-us':
+      'Determination does not belong to the taxon tree associated with the Collection Object Type',
+  },
 } as const);
