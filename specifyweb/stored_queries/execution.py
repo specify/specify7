@@ -567,7 +567,12 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
             query = query.limit(limit)
 
         if series:
-            return {'results': series_post_query(query)}
+            cat_num_sort_type = 0
+            for field_spec in field_specs:
+                if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                    cat_num_sort_type = field_spec.sort_type
+                    break
+            return {'results': series_post_query(query, sort_type=cat_num_sort_type)}
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
@@ -796,5 +801,21 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
         ]
 
     # Process and flatten the results
+    results = [item for sublist in map(process_row, list(query)) for item in sublist]
+
+    # Reorder the final results based on sort_type
+    if sort_type in (1, 2):
+        def sort_key(record):
+            # record[1] contains the formatted series, e.g., "1000 - 1001" or "1003"
+            # Extract the first catalog number.
+            first_cat = record[1].split(' - ')[0].strip()
+            prefix, num = parse_catalog(first_cat)
+            return (prefix, num if num is not None else first_cat)
+
+        reverse_order = (sort_type == 2)
+        results = sorted(results, key=sort_key, reverse=reverse_order)
+
     MAX_ROWS = 500
-    return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
+    return results[:MAX_ROWS]
+
+    
