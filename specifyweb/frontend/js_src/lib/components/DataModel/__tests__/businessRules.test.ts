@@ -166,6 +166,43 @@ describe('Collection Object business rules', () => {
     expect(result.current[0]).toStrictEqual([]);
   });
 
+  // Uniqueness rule check
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=2022-%23%23%23%23%23%23&collection=4&offset=0',
+    {
+      objects: [],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 0,
+      },
+    }
+  );
+
+  test('CollectionObject -> catalogNumber is reset whenever new CollectionObject -> collectionObjectType changes', async () => {
+    const collectionObject = new tables.CollectionObject.Resource();
+    expect(collectionObject.get('catalogNumber')).toBeUndefined();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    expect(collectionObject.get('catalogNumber')).toBe('2022-######');
+    // Wait for any pending promise to complete before test finishes
+    await collectionObject.businessRuleManager?.pendingPromise;
+  });
+
+  test('CollectionObject -> catalogNumber is reset whenever existing CollectionObject -> collectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    expect(collectionObject.get('catalogNumber')).toBe('123');
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    expect(collectionObject.get('catalogNumber')).toBe('2022-######');
+    // Wait for any pending promise to complete before test finishes
+    await collectionObject.businessRuleManager?.pendingPromise;
+  });
+
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
     const determinations =
