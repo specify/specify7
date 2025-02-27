@@ -10,14 +10,27 @@ import { getDateInputValue } from '../utils/dayJs';
 import type { Parser } from '../utils/parser/definitions';
 import { parseAnyDate } from '../utils/relativeDate';
 
-export function useFieldDefaultValue(
+/**
+ * Handles setting the default value of a field if needed on a resource
+ * according to some parser.
+ *
+ * If you don't have a parser, you can use `resolveParser` or `useParser` to
+ * generate one given the field and resource
+ *
+ * Example:
+ * ```
+ * const parser = useParser(field, resource);
+ * useParserDefaultValue(resource, field, parser);
+ * ```
+ *
+ */
+export function useParserDefaultValue(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined,
   parser: Parser
 ) {
   React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
-
     /*
      * Don't auto set numeric to "0" or boolean fields to false, unless it is the default value
      * in the form definition
@@ -34,6 +47,7 @@ export function useFieldDefaultValue(
       | string
       | null
       | undefined;
+
     if (
       hasDefault &&
       /*

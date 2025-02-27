@@ -12,7 +12,7 @@ import type { Input } from '../components/Forms/validationHelpers';
 import type { Parser } from '../utils/parser/definitions';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
-import { useFieldDefaultValue } from './useFieldDefaultValue';
+import { useParserDefaultValue } from './useParserDefaultValue';
 import { useFieldParser } from './useFieldParser';
 import { useFieldValidation } from './useFieldValidation';
 
@@ -58,7 +58,7 @@ export function useResourceValue<
 } {
   const parser = useParser(field, resource, defaultParser);
 
-  useFieldDefaultValue(resource, field, parser);
+  useParserDefaultValue(resource, field, parser);
 
   const { inputRef, validationRef, setValidation } = useFieldValidation<INPUT>(
     resource,
