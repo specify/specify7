@@ -707,7 +707,7 @@ def build_query(session, collection, user, tableid, field_specs,
     logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
 
-def series_post_query(query, co_id_cat_num_pair_col_index=0):
+def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
@@ -743,5 +743,58 @@ def series_post_query(query, co_id_cat_num_pair_col_index=0):
             for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
         ]
 
+    MAX_ROWS = 500
+    return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
+
+def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
+    """Transform the query results by removing the co_id:catnum pair column
+    and adding a co_id colum and formatted catnum range column.
+    Sort the results by the first catnum in the range."""
+    log_sqlalchemy_query(query)  # Debugging
+
+    def parse_catalog(catalog):
+        m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
+        if m:
+            return m.group(1), int(m.group(2))
+        else:
+            return catalog, None
+
+    def catalog_sort_key(x):
+        prefix, num = parse_catalog(x[1])
+        return (prefix, num if num is not None else x[1])
+
+    def are_adjacent(cat1, cat2):
+        prefix1, num1 = parse_catalog(cat1)
+        prefix2, num2 = parse_catalog(cat2)
+        return prefix1 == prefix2 and num1 is not None and num2 is not None and (num1 + 1 == num2)
+
+    def group_consecutive_ranges(lst):
+        def group_consecutives(acc, x):
+            if not acc or not are_adjacent(acc[-1][-1][1], x[1]):
+                acc.append([x])
+            else:
+                acc[-1].append(x)
+            return acc
+
+        grouped = reduce(group_consecutives, lst, [])
+        return [
+            (','.join([x[0] for x in group]),
+             f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
+            for group in grouped
+        ]
+
+    def process_row(row):
+        pairs = [pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')]
+        sorted_pairs = sorted(pairs, key=catalog_sort_key)
+        co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
+        return [
+            [co_id, cat_num_series] + (
+                list(row[1:]) if co_id_cat_num_pair_col_index == 0
+                else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
+            )
+            for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
+        ]
+
+    # Process and flatten the results
     MAX_ROWS = 500
     return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
