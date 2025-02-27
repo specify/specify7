@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-27 06:02+0000\n"
+"PO-Revision-Date: 2025-02-27 06:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -307,9 +307,9 @@ msgstr ""
 #, fuzzy
 msgid "localityUpdateEffectCounts"
 msgstr ""
-"Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen ist von der "
-"Aktualisierung betroffen und es werden {geoCoordDetailTableLabel: string}-"
-"Datensätze erstellt:"
+"Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wird von "
+"der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: "
+"string}-Datensätze erstellt:"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:289
