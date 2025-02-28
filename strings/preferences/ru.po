@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-28 18:01+0000\n"
+"PO-Revision-Date: 2025-02-28 17:39+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -187,7 +187,7 @@ msgstr "(шрифт по умолчанию)"
 #: components/Preferences/UserDefinitions.tsx:846
 #, fuzzy
 msgid "maxFormWidth"
-msgstr "Макс. ширина формы"
+msgstr "Максимальная ширина формы"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:895
@@ -569,7 +569,7 @@ msgstr ""
 #: components/Preferences/index.tsx:245
 #, fuzzy
 msgid "adminsOnlyPreference"
-msgstr "У вас нет разрешения на изменение этой опции"
+msgstr "У вас нет разрешения на изменение этой опции."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1557
@@ -724,7 +724,7 @@ msgstr "Фильтрация элементов списка выбора"
 #: components/Preferences/UserDefinitions.tsx:1806
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Разделитель экспортируемых файлов"
+msgstr "Разделитель файлов экспорта"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1597
