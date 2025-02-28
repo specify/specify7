@@ -352,6 +352,16 @@ class Relationship(Field):
         self.relatedModelName = relatedModelName
         self.otherSideName = otherSideName
 
+    """
+        Remote to-ones are one-to-one from the remote side.
+        i.e: The foreign key exists on the other side of the relationship
+
+        Backend equivalent of relationshipIsRemoteToOne()
+        See: https://github.com/specify/specify7/pull/6073#discussion_r1915397675
+    """
+    def is_remote_to_one(self):
+        return self.type == "one-to-one" and self.column == None
+
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find("id")
