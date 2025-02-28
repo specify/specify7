@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-28 17:00+0000\n"
+"PO-Revision-Date: 2025-02-28 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -89,7 +89,7 @@ msgstr "Champs obligatoires"
 #: components/WbPlanView/LineComponents.tsx:213
 #, fuzzy
 msgid "optionalFields"
-msgstr "Champs optionnels"
+msgstr "Champs facultatifs"
 
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #: components/QueryBuilder/Import.tsx:155
@@ -125,7 +125,7 @@ msgstr "Ignorer lorsque vide"
 #, fuzzy
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Lorsque l'option « Ignorer si vide » est sélectionnée, les valeurs vides de "
+"Lorsque l'option « Ignorer si vide » est sélectionnée, les valeurs vides de "
 "cette colonne ne seront pas prises en compte à des fins de correspondance. "
 "Les valeurs vides sont ignorées lors de la correspondance, même si une "
 "valeur par défaut est fournie."
@@ -200,7 +200,7 @@ msgstr "La validation a trouvé des mappages manquants :"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Il manque à ce mappage de données un ou plusieurs champs de données requis "
+"Ce mappage de données manque d'un ou de plusieurs champs de données requis "
 "pour le téléchargement par votre configuration Spécifier. Ajoutez les "
 "mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
 "inachevé."
@@ -420,7 +420,7 @@ msgstr "Doit correspondre"
 #: components/WbPlanView/Mapper.tsx:156
 #, fuzzy
 msgid "unloadProtectMessage"
-msgstr "Ce mappage n'a pas été enregistré."
+msgstr "Cette cartographie n'a pas été enregistrée."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:48
