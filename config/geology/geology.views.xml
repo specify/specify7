@@ -1265,8 +1265,8 @@
 								<cell type="field" id="4" name="locality" uitype="querycbx" initialize="name=Locality;title=Locality;clonebtn=true" colspan="10"/>
 							</row>
 							<row>
-								<cell type="label" labelfor="10"/>
-								<cell type="field" id="10" name="collectingTrip" uitype="querycbx" initialize="name=CollectingTrip;title=CollectingTrip" colspan="10"/>
+								<cell type="label" labelfor="colTrip"/>
+								<cell type="field" id="colTrip" name="collectingTrip" uitype="querycbx" initialize="name=CollectingTrip;title=CollectingTrip" colspan="10"/>
 							</row>
 							<row>
 								<cell type="label" labelfor="remarks"/>
