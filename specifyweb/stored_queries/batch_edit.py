@@ -406,7 +406,7 @@ class RowPlanMap(NamedTuple):
 
         rel_type = (
             "to_many"
-            if node.type.endswith("to-many") or node.type == "zero-to-one"
+            if node.type.endswith("to-many") or node.type == "zero-to-one" or node.is_remote_to_one()
             else "to_one"
         )
 
