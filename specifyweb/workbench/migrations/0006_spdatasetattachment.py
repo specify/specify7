@@ -7,37 +7,23 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults, revert_table_schema_config
 
-MIGRATION_0006_FIELDS = {
-    'SpDataSetAttachment': [
-        'ordinal',
-        'remarks',
-        'timestampCreated',
-        'timestampModified',
-        'version',
-        'attachment',
-        'collectionMember',
-        'createdByAgent',
-        'modifiedByAgent',
-        'spdataset',
-    ],
-    'Spdataset': [ 'spdatasetattachments' ],
-    'Attachment': [ 'spdatasetattachments' ],
-}
+MIGRATION_0006_TABLES = [
+    ('SpDataSetAttachment', 'An attachment temporarily associated with a Specify Data Set for use in a WorkBench upload.')
+]
 
-def create_spdatasetattachment_splocalecontaineritem(apps):
+def apply_migration(apps, schema_editor):
+    # Update Schema config
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        for table, fields in MIGRATION_0006_FIELDS.items():
-            for field in fields:
-                update_table_field_schema_config_with_defaults(
-                    table, discipline.id, field, apps)
+        for table, desc in MIGRATION_0006_TABLES:
+            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
 
-def reverse_create_spdatasetattachment_splocalecontaineritem(apps):
-    for table, fields in MIGRATION_0006_FIELDS.items():
-        for field in fields:
-            revert_table_field_schema_config(table, field, apps)
+def revert_migration(apps, schema_editor):
+    for table, _ in MIGRATION_0006_TABLES:
+        revert_table_schema_config(table, apps)
+
 
 class Migration(migrations.Migration):
 
@@ -45,12 +31,6 @@ class Migration(migrations.Migration):
         ('specify', '0023_update_schema_config_text'),
         ('workbench', '0005_auto_20210428_1634'),
     ]
-
-    def apply_migration(apps, schema_editor):
-        create_spdatasetattachment_splocalecontaineritem(apps)
-
-    def revert_migration(apps, schema_editor):
-        reverse_create_spdatasetattachment_splocalecontaineritem(apps)
 
     operations = [
         migrations.CreateModel(
@@ -63,7 +43,7 @@ class Migration(migrations.Migration):
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
-                ('collectionmember', models.ForeignKey(db_column='CollectionMemberID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.collection')),
+                ('collectionmember', models.ForeignKey(db_column='CollectionMemberID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.collection')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('spdataset', models.ForeignKey(db_column='SpDataSetID', on_delete=django.db.models.deletion.CASCADE, related_name='spdatasetattachments', to='workbench.spdataset')),

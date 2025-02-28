@@ -8712,7 +8712,7 @@ datamodel = Datamodel(tables=[
     Table( # SpDataSetAttachment
         sp7_only=True,
         classname='edu.ku.brc.specify.datamodel.SpDataSetAttachment',
-        table='spadatasetattachment',
+        table='spdatasetattachment',
         tableId=1028,
         system=True,
         idColumn='SpDataSetAttachmentID',

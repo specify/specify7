@@ -6820,6 +6820,7 @@ export type TectonicUnit = {
 export type SpDataSetAttachment = {
   readonly tableName: 'SpDataSetAttachment';
   readonly fields: {
+    readonly collectionMemberId: number;
     readonly ordinal: number;
     readonly remarks: string | null;
     readonly timestampCreated: string;
