@@ -15,6 +15,7 @@ from specifyweb.specify.models import (
     Collectionobject,
     Paleocontext,
 )
+from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.stored_queries.models import (
     AbsoluteAge,
     RelativeAge,
@@ -897,13 +898,17 @@ def modify_query_add_meta_age_range(query, start_time, end_time, require_full_ov
     ]).alias("RankedAges")
     
     # Final aggregation: pick the uncertainties for the extreme values.
-    start_uncertainty_case = func.max(
-         case([(ranked_ages.c.StartPeriod == ranked_ages.c.MaxStartPeriod,
+    start_uncertainty_case = func.coalesce(
+        func.max(
+            case([(ranked_ages.c.StartPeriod == ranked_ages.c.MaxStartPeriod,
                 ranked_ages.c.StartUncertainty)])
+        ), 0
     )
-    end_uncertainty_case = func.max(
-         case([(ranked_ages.c.EndPeriod == ranked_ages.c.MinEndPeriod,
+    end_uncertainty_case = func.coalesce(
+        func.max(
+            case([(ranked_ages.c.EndPeriod == ranked_ages.c.MinEndPeriod,
                 ranked_ages.c.EndUncertainty)])
+        ), 0
     )
     
     # Build the filter condition based on require_full_overlap.
@@ -965,4 +970,5 @@ def modify_query_add_meta_age_range(query, start_time, end_time, require_full_ov
     ).label("age")
     new_query = new_query.add_columns(age_expr)
     
+    log_sqlalchemy_query(new_query)
     return new_query
