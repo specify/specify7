@@ -28,7 +28,7 @@ from specifyweb.stored_queries.models import (
 logger = logging.getLogger(__name__)
 
 GEO_TIME_QUERY_IMPLEMENTATION = os.getenv('GEO_TIME_QUERY_IMPLEMENTATION', 'sqlalchemy') # 'django' or 'sqlalchemy'
-GEO_TIME_QUERY_SQL_TYPE = os.getenv('GEO_TIME_QUERY_SQL_TYPE', 'modify') # 'modify' or 'raw', or 'filter'
+GEO_TIME_QUERY_SQL_TYPE = os.getenv('GEO_TIME_QUERY_SQL_TYPE', 'meta') # 'modify' or 'raw', or 'filter', or 'meta'
 
 # Table paths from CollectionObject to Absoluteage or GeologicTimePeriod:
 # - collectionobject->absoluteage
@@ -716,6 +716,8 @@ def geo_time_query(start_time: float, end_time: float, require_full_overlap: boo
     elif GEO_TIME_QUERY_IMPLEMENTATION == 'sqlalchemy':
         if GEO_TIME_QUERY_SQL_TYPE == 'modify':
             return modify_query_add_age_range(query, start_time, end_time, require_full_overlap)
+        elif GEO_TIME_QUERY_SQL_TYPE == 'meta':
+            return modify_query_add_meta_age_range(query, start_time, end_time, require_full_overlap)
         elif GEO_TIME_QUERY_SQL_TYPE == 'filter':
             return query_co_in_time_range_with_joins(query, start_time, end_time, require_full_overlap)
 
@@ -741,3 +743,226 @@ def geo_time_period_query(time_period_name: str, require_full_overlap: bool = Fa
         end_time = 0
 
     return geo_time_query(start_time, end_time, require_full_overlap, query)
+
+def modify_query_add_meta_age_range(query, start_time, end_time, require_full_overlap=False):
+    """
+    Given an existing SQLAlchemy query (whose base is CollectionObject),
+    add an inner join to an aggregated subquery that calculates, per CollectionObject,
+    the maximum start period and minimum end period (with their uncertainties)
+    from nine different age sources, and then applies an age range filter.
+    """
+    aa = aliased(AbsoluteAge, name="aa")
+    ra = aliased(RelativeAge, name="ra")
+    co = aliased(CollectionObject, name="co")
+    ce = aliased(CollectingEvent, name="ce")
+    loc = aliased(Locality, name="loc")
+    pc = aliased(PaleoContext, name="pc")
+    gtp_ra = aliased(GeologicTimePeriod, name="gtp_ra_agename")
+    gtp_ra_end = aliased(GeologicTimePeriod, name="gtp_ra_agenameend")
+    gtp_pc = aliased(GeologicTimePeriod, name="gtp_pc_chronostrat")
+    gtp_pc_end = aliased(GeologicTimePeriod, name="gtp_pc_chronostratend")
+    gtp_ce = aliased(GeologicTimePeriod, name="gtp_ce_pc_chronostrat")
+    gtp_ce_end = aliased(GeologicTimePeriod, name="gtp_ce_pc_chronostratend")
+    gtp_ce_loc = aliased(GeologicTimePeriod, name="gtp_ce_loc_pc_chronostrat")
+    gtp_ce_loc_end = aliased(GeologicTimePeriod, name="gtp_ce_loc_pc_chronostratend")
+    
+    # Build the nine source subqueries (AllAgeData)
+    # 1. Absolute Age
+    co_aa_join = join(co, aa, aa.CollectionObjectID == co.collectionObjectId)
+    abs_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         aa.absoluteAge.label("StartPeriod"),
+         aa.absoluteAge.label("EndPeriod"),
+         aa.ageUncertainty.label("StartUncertainty"),
+         aa.ageUncertainty.label("EndUncertainty")
+    ]).select_from(co_aa_join)
+    
+    # 2. Relative Age – AgeName
+    co_ra_join = join(co, ra, ra.CollectionObjectID == co.collectionObjectId)
+    co_ra_gtp_ra_join = join(co_ra_join, gtp_ra, ra.AgeNameID == gtp_ra.geologicTimePeriodId)
+    rel_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ra.startPeriod.label("StartPeriod"),
+         gtp_ra.endPeriod.label("EndPeriod"),
+         gtp_ra.startUncertainty.label("StartUncertainty"),
+         gtp_ra.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ra_gtp_ra_join)
+    
+    # 3. Relative Age – AgeNameEnd
+    co_ra_join = join(co, ra, ra.CollectionObjectID == co.collectionObjectId)
+    co_ra_gtp_ra_end_join = join(co_ra_join, gtp_ra_end, ra.AgeNameEndID == gtp_ra_end.geologicTimePeriodId)
+    rel_end_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ra_end.startPeriod.label("StartPeriod"),
+         gtp_ra_end.endPeriod.label("EndPeriod"),
+         gtp_ra_end.startUncertainty.label("StartUncertainty"),
+         gtp_ra_end.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ra_gtp_ra_end_join)
+    
+    # 4. PaleoContext – Chronostrat
+    co_pc_join = join(co, pc, co.PaleoContextID == pc.paleoContextId)
+    co_pc_gtp_pc_join = join(co_pc_join, gtp_pc, pc.ChronosStratID == gtp_pc.geologicTimePeriodId)
+    pc_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_pc.startPeriod.label("StartPeriod"),
+         gtp_pc.endPeriod.label("EndPeriod"),
+         gtp_pc.startUncertainty.label("StartUncertainty"),
+         gtp_pc.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_pc_gtp_pc_join)
+    
+    # 5. PaleoContext – ChronostratEnd
+    co_pc_join = join(co, pc, co.PaleoContextID == pc.paleoContextId)
+    co_pc_gtp_pc_end_join = join(co_pc_join, gtp_pc_end, pc.ChronosStratEndID == gtp_pc_end.geologicTimePeriodId)
+    pc_end_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_pc_end.startPeriod.label("StartPeriod"),
+         gtp_pc_end.endPeriod.label("EndPeriod"),
+         gtp_pc_end.startUncertainty.label("StartUncertainty"),
+         gtp_pc_end.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_pc_gtp_pc_end_join)
+    
+    # 6. CollectingEvent – PaleoContext Chronostrat
+    co_ce_join = join(co, ce, co.CollectingEventID == ce.collectingEventId)
+    co_ce_pc_join = join(co_ce_join, pc, ce.PaleoContextID == pc.paleoContextId)
+    co_ce_pc_gtp_ce_join = join(co_ce_pc_join, gtp_ce, pc.ChronosStratID == gtp_ce.geologicTimePeriodId)
+    ce_pc_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ce.startPeriod.label("StartPeriod"),
+         gtp_ce.endPeriod.label("EndPeriod"),
+         gtp_ce.startUncertainty.label("StartUncertainty"),
+         gtp_ce.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ce_pc_gtp_ce_join)
+    
+    # 7. CollectingEvent – PaleoContext ChronostratEnd
+    co_ce_join = join(co, ce, co.CollectingEventID == ce.collectingEventId)
+    co_ce_pc_join = join(co_ce_join, pc, ce.PaleoContextID == pc.paleoContextId)
+    co_ce_pc_gtp_ce_end_join = join(co_ce_pc_join, gtp_ce_end, pc.ChronosStratEndID == gtp_ce_end.geologicTimePeriodId)
+    ce_pc_end_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ce_end.startPeriod.label("StartPeriod"),
+         gtp_ce_end.endPeriod.label("EndPeriod"),
+         gtp_ce_end.startUncertainty.label("StartUncertainty"),
+         gtp_ce_end.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ce_pc_gtp_ce_end_join)
+    
+    # 8. CollectingEvent Locality – PaleoContext Chronostrat
+    co_ce_join = join(co, ce, co.CollectingEventID == ce.collectingEventId)
+    co_ce_loc_join = join(co_ce_join, loc, ce.LocalityID == loc.localityId)
+    co_ce_loc_pc_join = join(co_ce_loc_join, pc, loc.PaleoContextID == pc.paleoContextId)
+    co_ce_loc_gtp_ce_loc_join = join(co_ce_loc_pc_join,
+                                     gtp_ce_loc,
+                                     pc.ChronosStratID == gtp_ce_loc.geologicTimePeriodId)
+    ce_loc_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ce_loc.startPeriod.label("StartPeriod"),
+         gtp_ce_loc.endPeriod.label("EndPeriod"),
+         gtp_ce_loc.startUncertainty.label("StartUncertainty"),
+         gtp_ce_loc.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ce_loc_gtp_ce_loc_join)
+    
+    # 9. CollectingEvent Locality – PaleoContext ChronostratEnd
+    co_ce_join = join(co, ce, co.CollectingEventID == ce.collectingEventId)
+    co_ce_loc_join = join(co_ce_join, loc, ce.LocalityID == loc.localityId)
+    co_ce_loc_pc_join = join(co_ce_loc_join, pc, loc.PaleoContextID == pc.paleoContextId)
+    co_ce_loc_gtp_ce_loc_end_join = join(co_ce_loc_pc_join,
+                                         gtp_ce_loc_end,
+                                         pc.ChronosStratEndID == gtp_ce_loc_end.geologicTimePeriodId)
+    ce_loc_end_query = select([
+         co.collectionObjectId.label("CollectionObjectID"),
+         gtp_ce_loc_end.startPeriod.label("StartPeriod"),
+         gtp_ce_loc_end.endPeriod.label("EndPeriod"),
+         gtp_ce_loc_end.startUncertainty.label("StartUncertainty"),
+         gtp_ce_loc_end.endUncertainty.label("EndUncertainty")
+    ]).select_from(co_ce_loc_gtp_ce_loc_end_join)
+    
+    # Union all nine subqueries into the AllAgeData CTE.
+    all_age_data = union_all(
+         abs_query, rel_query, rel_end_query, pc_query, pc_end_query,
+         ce_pc_query, ce_pc_end_query, ce_loc_query, ce_loc_end_query
+    ).alias("AllAgeData")
+    
+    # Create the RankedAges CTE using window functions.
+    ranked_ages = select([
+         all_age_data.c.CollectionObjectID,
+         all_age_data.c.StartPeriod,
+         all_age_data.c.EndPeriod,
+         all_age_data.c.StartUncertainty,
+         all_age_data.c.EndUncertainty,
+         func.max(all_age_data.c.StartPeriod).over(
+             partition_by=all_age_data.c.CollectionObjectID
+         ).label("MaxStartPeriod"),
+         func.min(all_age_data.c.EndPeriod).over(
+             partition_by=all_age_data.c.CollectionObjectID
+         ).label("MinEndPeriod")
+    ]).alias("RankedAges")
+    
+    # Final aggregation: pick the uncertainties for the extreme values.
+    start_uncertainty_case = func.max(
+         case([(ranked_ages.c.StartPeriod == ranked_ages.c.MaxStartPeriod,
+                ranked_ages.c.StartUncertainty)])
+    )
+    end_uncertainty_case = func.max(
+         case([(ranked_ages.c.EndPeriod == ranked_ages.c.MinEndPeriod,
+                ranked_ages.c.EndUncertainty)])
+    )
+    
+    # Build the filter condition based on require_full_overlap.
+    if require_full_overlap:
+        filter_condition = and_(
+            ranked_ages.c.MaxStartPeriod - start_uncertainty_case <= start_time,
+            ranked_ages.c.MinEndPeriod + end_uncertainty_case >= end_time
+        )
+    else:
+        filter_condition = or_(
+            and_(
+                ranked_ages.c.MaxStartPeriod - start_uncertainty_case <= start_time,
+                ranked_ages.c.MaxStartPeriod + start_uncertainty_case >= end_time
+            ),
+            and_(
+                ranked_ages.c.MinEndPeriod - end_uncertainty_case <= start_time,
+                ranked_ages.c.MinEndPeriod + end_uncertainty_case >= end_time
+            ),
+            and_(
+                ranked_ages.c.MaxStartPeriod + start_uncertainty_case >= start_time,
+                ranked_ages.c.MinEndPeriod - end_uncertainty_case <= end_time
+            )
+        )
+    
+    final_age_subq = select([
+        ranked_ages.c.CollectionObjectID,
+        ranked_ages.c.MaxStartPeriod,
+        ranked_ages.c.MinEndPeriod,
+        start_uncertainty_case.label("StartUncertaintyForMaxStartPeriod"),
+        end_uncertainty_case.label("EndUncertaintyForMinEndPeriod")
+    ]).group_by(
+        ranked_ages.c.CollectionObjectID,
+        ranked_ages.c.MaxStartPeriod,
+        ranked_ages.c.MinEndPeriod
+    ).having(
+        and_(
+            ranked_ages.c.MaxStartPeriod != None,
+            ranked_ages.c.MinEndPeriod != None,
+            filter_condition
+        )
+    ).alias("co_age_filter")
+    
+    # Join the aggregated subquery onto the incoming CollectionObject query.
+    new_query = query.join(final_age_subq, CollectionObject.collectionObjectId == final_age_subq.c.CollectionObjectID)
+    
+    # Add a formatted age expression column (for example, concatenating max and min).
+    age_expr = func.concat_ws(
+        " - ",
+        func.regexp_replace(
+            func.regexp_replace(cast(final_age_subq.c.MaxStartPeriod, String),
+                r'(\.[0-9]*[1-9])0+$', r'\1'),
+            r'\.0+$', ''
+        ),
+        func.regexp_replace(
+            func.regexp_replace(cast(final_age_subq.c.MinEndPeriod, String),
+                r'(\.[0-9]*[1-9])0+$', r'\1'),
+            r'\.0+$', ''
+        )
+    ).label("age")
+    new_query = new_query.add_columns(age_expr)
+    
+    return new_query
