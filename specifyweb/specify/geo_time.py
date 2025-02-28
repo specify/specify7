@@ -913,9 +913,19 @@ def modify_query_add_meta_age_range(query, start_time, end_time, require_full_ov
     
     # Build the filter condition based on require_full_overlap.
     if require_full_overlap:
-        filter_condition = and_(
-            ranked_ages.c.MaxStartPeriod - start_uncertainty_case <= start_time,
-            ranked_ages.c.MinEndPeriod + end_uncertainty_case >= end_time
+        # filter_condition = and_(
+        #     ranked_ages.c.MaxStartPeriod - start_uncertainty_case <= start_time,
+        #     ranked_ages.c.MinEndPeriod + end_uncertainty_case >= end_time
+        # )
+        filter_condition = or_(
+            and_(
+                ranked_ages.c.MaxStartPeriod - start_uncertainty_case <= start_time,
+                ranked_ages.c.MinEndPeriod + end_uncertainty_case >= end_time
+            ),
+            and_(
+                ranked_ages.c.MaxStartPeriod + start_uncertainty_case >= start_time,
+                ranked_ages.c.MinEndPeriod - end_uncertainty_case <= end_time
+            )
         )
     else:
         filter_condition = or_(
