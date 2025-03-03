@@ -156,7 +156,7 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
-          onClose={async () => handleCreateDataset(datasetName)}
+          onClose={async () => loading(handleCreateDataset(datasetName))}
         />
       ) : undefined}
     </>
@@ -357,8 +357,11 @@ function ShowMissingRanks({
       </div>
       {Object.entries(missingRanks).map(([treeTable, ranks]) => (
         <div>
-          <div>
-            <TableIcon label name={treeTable} />
+          <div className="flex gap-2">
+            <TableIcon
+              label={strictGetTable(treeTable).label}
+              name={treeTable}
+            />
             <H2>{strictGetTable(treeTable).label}</H2>
           </div>
           <div>
