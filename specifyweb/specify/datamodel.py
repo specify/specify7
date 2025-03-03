@@ -8716,30 +8716,28 @@ datamodel = Datamodel(tables=[
         tableId=1028,
         system=True,
         idColumn='SpDataSetAttachmentID',
-        idFieldName='SpDataSetAttachmentId',
-        idField=IdField(name='SpDataSetAttachmentId', column='SpDataSetAttachmentID', type='java.lang.Integer'),
+        idFieldName='spDataSetAttachmentId',
+        idField=IdField(name='spDataSetAttachmentId', column='SpDataSetAttachmentID', type='java.lang.Integer'),
         fields=[
+            Field(name='collectionMemberId', column='CollectionMemberID', indexed=True, unique=False, required=True, type='java.lang.Integer'),
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=True, type='java.lang.Integer'),
-            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
         ],
         indexes=[
-            
+            Index(name='SpDataSetAttColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='collectionMember', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionMemberID'),
             Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='SpDataSetAttachments', dependent=True),
-            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='Spdataset', column='SpDataSetID', otherSideName='SpDataSetAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='Spdataset', column='SpDataSetID', otherSideName='SpDataSetAttachments')
         ],
         fieldAliases=[
 
         ],
-        view='ObjectAttachment',
-        searchDialog=None
     ),
 ])
 

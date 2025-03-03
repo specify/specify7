@@ -37,13 +37,13 @@ class Migration(migrations.Migration):
             name='SpDataSetAttachment',
             fields=[
                 ('id', models.AutoField(db_column='SpDataSetAttachmentID', primary_key=True, serialize=False)),
+                ('collectionmemberid', models.IntegerField(db_column='CollectionMemberID')),
                 ('ordinal', models.IntegerField(db_column='Ordinal')),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
-                ('collectionmember', models.ForeignKey(db_column='CollectionMemberID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.collection')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('spdataset', models.ForeignKey(db_column='SpDataSetID', on_delete=django.db.models.deletion.CASCADE, related_name='spdatasetattachments', to='workbench.spdataset')),
@@ -52,6 +52,10 @@ class Migration(migrations.Migration):
                 'db_table': 'spdatasetattachment',
                 'ordering': (),
             },
+        ),
+        migrations.AddIndex(
+            model_name='spdatasetattachment',
+            index=models.Index(fields=['collectionmemberid'], name='SpDataSetAttColMemIDX'),
         ),
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
     ]

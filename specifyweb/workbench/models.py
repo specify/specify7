@@ -120,6 +120,7 @@ class SpDataSetAttachment(models.Model):
     id = models.AutoField(primary_key=True, db_column='SpDataSetAttachmentID')
 
     # Fields
+    collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
@@ -128,7 +129,6 @@ class SpDataSetAttachment(models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey(Attachment, db_column='AttachmentID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
-    collectionmember = models.ForeignKey(Collection, db_column='CollectionMemberID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey(Agent, db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     spdataset = models.ForeignKey(Spdataset, db_column='SpDataSetID', related_name='spdatasetattachments', null=False, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey(Agent, db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -136,5 +136,9 @@ class SpDataSetAttachment(models.Model):
     class Meta:
         db_table = 'spdatasetattachment'
         ordering = ()
+        indexes = [
+            models.Index(fields=['collectionmemberid'], name='SpDataSetAttColMemIDX')
+        ]
+
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
