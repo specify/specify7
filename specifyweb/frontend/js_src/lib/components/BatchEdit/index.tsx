@@ -98,11 +98,15 @@ export function BatchEditFromQuery({
     [fields]
   );
 
+  const handleCloseDialog = () => {
+    setDatasetName(undefined);
+    setMissingRanks(undefined);
+  };
+
   const handleCreateDataset = async (newName: string) =>
     uniquifyDataSetName(newName, undefined, 'batchEdit').then(async (name) =>
       post(name).then(({ data }) => {
-        setDatasetName(undefined);
-        setMissingRanks(undefined);
+        handleCloseDialog();
         navigate(`/specify/workbench/${data.id}`);
       })
     );
@@ -156,7 +160,8 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
-          onClose={async () => loading(handleCreateDataset(datasetName))}
+          onClose={handleCloseDialog}
+          onContinue={async () => loading(handleCreateDataset(datasetName))}
         />
       ) : undefined}
     </>
@@ -307,14 +312,23 @@ function ErrorsDialog({
 
 function MissingRanksDialog({
   missingRanks,
+  onContinue: handleContinue,
   onClose: handleClose,
 }: {
   readonly missingRanks: MissingRanks;
+  readonly onContinue: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <Dialog
-      buttons={interactionsText.continue()}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Info onClick={handleContinue}>
+            {interactionsText.continue()}
+          </Button.Info>
+        </>
+      }
       header={batchEditText.missingRanksInQuery()}
       icon={dialogIcons.info}
       onClose={handleClose}
