@@ -295,7 +295,7 @@ class TreeRecord(NamedTuple):
             rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
             treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
             
-            if len(cols) == 1 and not isinstance(rank, TreeRankRecord):
+            if len(cols) == 1:
                 result["ranks"][rank_key] = treeNodeCols["name"]
             else:
                 rank_data = {"treeNodeCols": treeNodeCols}
