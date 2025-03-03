@@ -1193,14 +1193,3 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
     data = modify_update_of_loan_return_sibling_preps(obj, data)
     return data
-
-
-def create_institution(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            new_institution = models.Institution.objects.create(**data)
-            return http.JsonResponse({"success": True, "institution_id": new_institution.id}, status=201)
-        except Exception as e:
-            return http.JsonResponse({"error": str(e)}, status=400)
-    return http.JsonResponse({"error": "Invalid request"}, status=400)

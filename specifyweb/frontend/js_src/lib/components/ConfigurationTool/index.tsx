@@ -57,6 +57,25 @@ export function ConfigurationTool(): JSX.Element {
             onClose={() => onClose()}
             onDeleted={undefined}
             onSaved={async () => resource.onClick()}
+
+            /*
+             * Example on how to call another function and not the normal save logic: 
+             *  onSaving={async () => resource.onClick()}
+             *          onSaving={(unsetUnloadProtect): false => {
+             *            unsetUnloadProtect();
+             *            loading(
+             *              ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
+             *                method: 'POST',
+             *                headers: { Accept: 'application/json' },
+             *                body: formData({ name: recordSet.get('name') }),
+             *                errorMode: 'dismissible',
+             *              }).then(({ data }) =>
+             *                unsafeNavigate(`/specify/record-set/${data}/`)
+             *              )
+             *            );
+             *            return false;
+             *          }}
+             */
           />
     ))}
       </Container.FullGray>

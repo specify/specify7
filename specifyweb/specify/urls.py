@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
 
     # new setup
-    url(r'^specify/institution/create/$', views.institution),
+    url(r'^specify/institution/create/$', views.create_institution),
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 

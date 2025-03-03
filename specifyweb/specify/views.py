@@ -82,8 +82,6 @@ resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
 collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
 collection_bulk = api_view(api.collection_dispatch_bulk)
-institution = api_view(api.create_institution)
-
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
@@ -1368,3 +1366,13 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+def create_institution(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_institution = spmodels.Institution.objects.create(**data)
+            return http.JsonResponse({"success": True, "institution_id": new_institution.id}, status=201)
+        except Exception as e:
+            return http.JsonResponse({"error": str(e)}, status=400)
+    return http.JsonResponse({"error": "Invalid request"}, status=400)
