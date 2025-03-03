@@ -4,9 +4,9 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -23,6 +23,10 @@ type SimpleFormatter = {
   readonly isDefault: boolean;
 };
 
+type FormatterWithCOTs = SimpleFormatter & {
+  readonly cotNames: string[];
+};
+
 export const formatterSeparator = '|||';
 
 export function createCompositeFormatter(name: string, index: number): string {
@@ -31,9 +35,9 @@ export function createCompositeFormatter(name: string, index: number): string {
 
 export function parseFormatterValue(value: string): { readonly name: string; readonly index: number } | null {
   const [name, indexString] = value.split(formatterSeparator);
-  const index = Number.parseInt(indexString, 10);
+  const index = f.parseInt(indexString);
   
-  if (!name || isNaN(index)) return null;
+  if (!name || index === undefined) return null;
   
   return { name, index };
 }
@@ -108,18 +112,30 @@ export function CatalogNumberFormatSelection({
               )
             )
           )
-          .then((cots) =>
-            filterArray(cots).map((cot) => {
-              const format =
-                cot.get('catalogNumberFormatName') ??
-                schema.catalogNumFormatName;
-              return {
-                name: format,
-                title: cot.get('name'),
-                isDefault: false,
-              };
-            })
-          ),
+          .then((cots) => {
+            const formattersMap = filterArray(cots).reduce((map, cot) => {
+              const format = cot.get('catalogNumberFormatName') ?? schema.catalogNumFormatName;
+              const cotName = cot.get('name');
+              
+              if (!map.has(format)) {
+                map.set(format, {
+                  name: format,
+                  title: format,
+                  isDefault: format === schema.catalogNumFormatName,
+                  cotNames: []
+                });
+              }
+              
+              map.get(format)!.cotNames.push(cotName);
+              return map;
+            }, new Map<string, FormatterWithCOTs>());
+            
+            return Array.from(formattersMap.values()).map(({ name, isDefault, cotNames }) => ({
+              name,
+              title: `Format As: ${cotNames.join(', ')}`,
+              isDefault
+            }));
+          }),
       []
     ),
     false
@@ -215,7 +231,7 @@ function FormatSelect({
             <option value="" />
             {availableFormatters.map((formatter, index) => (
               <option key={index} value={createCompositeFormatter(formatter.name, index)}>
-                {`${formatter.title} ${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
+                {formatter.title}
               </option>
             ))}
             {currentFormat !== undefined &&
