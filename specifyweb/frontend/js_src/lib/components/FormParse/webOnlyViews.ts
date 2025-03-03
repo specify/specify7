@@ -106,6 +106,7 @@ export const webOnlyViews = f.store(() =>
       tables.Discipline,
       'form',
       'edit',
+      // Required field: institution id
       ['name', 'type']
     ),
     [collection]: autoGenerateViewDefinition(
