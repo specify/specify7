@@ -736,8 +736,8 @@ def geo_time_period_query(time_period_name: str, require_full_overlap: bool = Fa
         return set()
     start_time = time_period.startperiod
     end_time = time_period.endperiod
-    start_time += Decimal(time_period.startuncertainty) if time_period.startuncertainty else Decimal('0.1')
-    end_time += Decimal(time_period.enduncertainty) if time_period.enduncertainty else Decimal('0.1')
+    # start_time += Decimal(time_period.startuncertainty) if time_period.startuncertainty else Decimal('0.1')
+    # end_time += Decimal(time_period.enduncertainty) if time_period.enduncertainty else Decimal('0.1')
     if start_time is None:
         start_time = 13800 # max start time, 13800 is the age of the Universe
     if end_time is None:
