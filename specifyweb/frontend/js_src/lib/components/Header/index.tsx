@@ -98,7 +98,7 @@ export function Header({
   const activeMenuItem = React.useContext(MenuContext);
 
   // To chnage once we added the feature for setup detection
-  const isSetupMode = true
+  const isSetupMode = false
 
   return (
     <header

@@ -94,7 +94,7 @@ export const webOnlyViews = f.store(() =>
       tables.Institution,
       'form',
       'edit',
-      ['name', 'code', 'isAccessionsGlobal', 'isSingleGeographyTree']
+      ['name', 'code', 'isAccessionsGlobal', 'isSingleGeographyTree', 'isSecurityOn', 'isServerBased']
     ),
     [division]: autoGenerateViewDefinition(
       tables.Division,

@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
 
+    # new setup
+    url(r'^specify/institution/create/$', views.institution),
+
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 
     # this url always triggers a 500 for testing purposes

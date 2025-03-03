@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { configurationText } from '../../localization/configurationText';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { Container, H2 } from '../Atoms';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
@@ -9,16 +11,36 @@ import { adminUser, collection, discipline, division, institution } from '../For
 import { ResourceView } from '../Forms/ResourceView';
 
 export function ConfigurationTool(): JSX.Element {
- const resources = [
-  { resource: new tables.Institution.Resource(), viewName: institution, onClick: () => console.log('click') },
-  { resource: new tables.Division.Resource(), viewName: division, onClick: () => console.log('click')  },
-  { resource: new tables.Discipline.Resource(), viewName: discipline, onClick: () => console.log('click')  },
-  { resource: new tables.Collection.Resource(), viewName: collection, onClick: () => console.log('click')  },
-  { resource: new tables.SpecifyUser.Resource(), viewName: adminUser, onClick: () => console.log('click')  }
-];
-const onClose = ():void => {
-console.log('close')
-}
+
+  const onInstitutionSaved = async (data: any) => ajax('/specify/institution/create/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: JSON.stringify(data),
+    errorMode: 'visible',
+    expectedErrors:
+        [Http.CREATED],  
+    })
+    .then(({ data, status }) => {
+    if (status === Http.OK) {
+      console.log('Institution created successfully:', data);
+    } else {
+      console.error('Error creating institution:', data);
+    }
+  }).catch(error => {
+    console.error('Request failed:', error);
+  });
+
+  const resources = [
+    { resource: new tables.Institution.Resource(), viewName: institution, onClick: () => console.log('click')  },
+    { resource: new tables.Division.Resource(), viewName: division, onClick: () => console.log('click')  },
+    { resource: new tables.Discipline.Resource(), viewName: discipline, onClick: () => console.log('click')  },
+    { resource: new tables.Collection.Resource(), viewName: collection, onClick: () => console.log('click')  },
+    { resource: new tables.SpecifyUser.Resource(), viewName: adminUser, onClick: () => console.log('click')  }
+  ];
+
+  const onClose = ():void => {
+  console.log('close')
+  }
 
   return (
       <Container.FullGray>
@@ -34,7 +56,7 @@ console.log('close')
             onAdd={undefined}
             onClose={() => onClose()}
             onDeleted={undefined}
-            onSaved={() => resource.onClick()}
+            onSaved={async () => resource.onClick()}
           />
     ))}
       </Container.FullGray>
