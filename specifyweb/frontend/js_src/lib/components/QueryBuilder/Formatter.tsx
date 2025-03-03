@@ -4,9 +4,9 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -24,7 +24,7 @@ type SimpleFormatter = {
 };
 
 type FormatterWithCOTs = SimpleFormatter & {
-  readonly cotNames: string[];
+  readonly cotNames: readonly string[];
 };
 
 export const formatterSeparator = '|||';
@@ -130,7 +130,7 @@ export function CatalogNumberFormatSelection({
               return map;
             }, new Map<string, FormatterWithCOTs>());
             
-            return Array.from(formattersMap.values()).map(({ name, isDefault, cotNames }) => ({
+            return Array.from(formattersMap.values(), ({ name, isDefault, cotNames }) => ({
               name,
               title: `Format As: ${cotNames.join(', ')}`,
               isDefault
