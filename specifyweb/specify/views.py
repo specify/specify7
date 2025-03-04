@@ -1369,7 +1369,7 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
     return 200, parsed
 
 
-#check for institution at login
-def get_institution(request):
-    institution = spmodels.Institution.objects.first()
-    return http.JsonResponse(institution if institution else None, safe=False)
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)

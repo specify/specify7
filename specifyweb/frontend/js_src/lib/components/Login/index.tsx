@@ -24,22 +24,17 @@ import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
 export function Login(): JSX.Element {
-  const [institution] = useAsyncState(
+  const [isNewUser] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<string>>(`/api/specify/institution/`, {
+        ajax<boolean>(`/api/specify/is_new_user/`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
           },
           errorMode: 'silent',
         })
-          .then(({ data }) => {
-            if (data === null) {
-              console.warn("No institution found.");
-            }
-            return data;
-          })
+          .then(({ data }) => data)
           .catch((error) => {
             console.error("Failed to fetch institution:", error);
             return undefined;
@@ -53,7 +48,7 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    if (institution === null) {
+    if (isNewUser === true || isNewUser === undefined) {
       // Display here the new setup pages 
       return <p>Welcome! No institutions are available at the moment.</p>;
     }
@@ -90,7 +85,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [institution]); 
+  }, [isNewUser]); 
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';

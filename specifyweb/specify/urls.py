@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
     #check for institution at login
-    url(r'^specify/institution/$', views.get_institution),
+    url(r'^specify/is_new_user/$', views.is_new_user),
 
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
