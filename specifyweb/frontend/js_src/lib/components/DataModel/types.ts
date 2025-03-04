@@ -704,6 +704,7 @@ export type Attachment = {
     readonly preparationAttachments: RA<PreparationAttachment>;
     readonly referenceWorkAttachments: RA<ReferenceWorkAttachment>;
     readonly repositoryAgreementAttachments: RA<RepositoryAgreementAttachment>;
+    readonly spDataSetAttachments: RA<SpDataSetAttachment>;
     readonly storageAttachments: RA<StorageAttachment>;
     readonly tags: RA<AttachmentTag>;
     readonly taxonAttachments: RA<TaxonAttachment>;
@@ -6463,7 +6464,9 @@ export type Spdataset = {
     readonly modifiedbyagent: Agent | null;
     readonly specifyuser: SpecifyUser;
   };
-  readonly toManyDependent: RR<never, never>;
+  readonly toManyDependent: {
+    readonly spDataSetAttachments: RA<SpDataSetAttachment>;
+  };
   readonly toManyIndependent: RR<never, never>;
 };
 export type CollectionObjectType = {
@@ -6813,4 +6816,23 @@ export type TectonicUnit = {
     readonly acceptedChildren: RA<TectonicUnit>;
     readonly paleoContexts: RA<PaleoContext>;
   };
+};
+export type SpDataSetAttachment = {
+  readonly tableName: 'SpDataSetAttachment';
+  readonly fields: {
+    readonly collectionMemberId: number;
+    readonly ordinal: number;
+    readonly remarks: string | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly version: number | null;
+  };
+  readonly toOneDependent: { readonly attachment: Attachment };
+  readonly toOneIndependent: {
+    readonly spdataset: Spdataset;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };

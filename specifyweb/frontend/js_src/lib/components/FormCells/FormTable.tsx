@@ -158,6 +158,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     resource: relationship.label,
     count: totalCount ?? resources.length,
   });
+
   const isReadOnly = React.useContext(ReadOnlyContext);
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
