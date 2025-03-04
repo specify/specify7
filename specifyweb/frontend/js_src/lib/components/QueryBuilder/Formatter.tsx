@@ -16,6 +16,7 @@ import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { CollectionObjectType, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import { QueryField } from './helpers';
 
 type SimpleFormatter = {
   readonly name: string;
@@ -186,7 +187,7 @@ function FormatSelect({
             !availableFormatters
               .map(({ name }) => name)
               .includes(currentFormat) ? (
-              <option key="invalidCOT" value={currentFormat}>
+              <option key="invalidFormatter" value={currentFormat}>
                 {queryText.invalidPicklistValue({ value: currentFormat })}
               </option>
             ) : undefined}

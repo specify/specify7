@@ -11,10 +11,16 @@ import type { QueryFieldType } from './FieldFilter';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
 
+/**
+ * Buttons which deal with the management and behavior of an entire QueryLine
+ *
+ * The Show in Results Button, Sort Button, Move Up, and Move Down buttons on a
+ * QueryLine
+ */
 export function QueryLineTools({
   fieldMeta,
   onOpenMap: handleOpenMap,
-  field,
+  queryField,
   isFieldComplete,
   onChange: handleChange,
   onMoveUp: handleMoveUp,
@@ -26,7 +32,7 @@ export function QueryLineTools({
     readonly canOpenMap: boolean;
   };
   readonly onOpenMap: (() => void) | undefined;
-  readonly field: QueryField;
+  readonly queryField: QueryField;
   readonly isFieldComplete: boolean;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMoveUp: (() => void) | undefined;
@@ -53,7 +59,7 @@ export function QueryLineTools({
       ) : undefined}
       <Button.Small
         aria-label={queryText.showButtonDescription()}
-        aria-pressed={field.isDisplay}
+        aria-pressed={queryField.isDisplay}
         className={`
           ${className.ariaHandled} 
           ${isFieldComplete ? '' : 'invisible'} 
@@ -61,22 +67,22 @@ export function QueryLineTools({
         `}
         title={queryText.showButtonDescription()}
         variant={
-          field.isDisplay
+          queryField.isDisplay
             ? className.successButton
             : className.secondaryLightButton
         }
         onClick={handleChange?.bind(undefined, {
-          ...field,
-          isDisplay: !field.isDisplay,
+          ...queryField,
+          isDisplay: !queryField.isDisplay,
         })}
       >
         {icons.check}
       </Button.Small>
       <Button.Small
         aria-label={
-          field.sortType === 'ascending'
+          queryField.sortType === 'ascending'
             ? queryText.ascendingSort()
-            : field.sortType === 'descending'
+            : queryField.sortType === 'descending'
               ? queryText.descendingSort()
               : queryText.sort()
         }
@@ -84,23 +90,23 @@ export function QueryLineTools({
          ${isFieldComplete ? '' : 'invisible'} ${isBasic ? 'h-full' : ''}
         `}
         title={
-          field.sortType === 'ascending'
+          queryField.sortType === 'ascending'
             ? queryText.ascendingSort()
-            : field.sortType === 'descending'
+            : queryField.sortType === 'descending'
               ? queryText.descendingSort()
               : queryText.sort()
         }
         onClick={handleChange?.bind(undefined, {
-          ...field,
+          ...queryField,
           sortType:
             sortTypes[
-              (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
+              (sortTypes.indexOf(queryField.sortType) + 1) % sortTypes.length
             ],
         })}
       >
-        {field.sortType === 'ascending'
+        {queryField.sortType === 'ascending'
           ? icons.arrowCircleUp
-          : field.sortType === 'descending'
+          : queryField.sortType === 'descending'
             ? icons.arrowCircleDown
             : icons.circle}
       </Button.Small>

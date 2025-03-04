@@ -2,7 +2,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { iconClassName, icons } from '../Atoms/Icons';
@@ -10,74 +10,72 @@ import {
   mappingElementDivider,
   mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
-import type { QueryFieldFilter } from './FieldFilter';
-import type { QueryField } from './helpers';
+import { QueryFieldFilterType } from './FieldFilter';
+import type { QueryFieldFilter } from './helpers';
 
 type FieldFilterToolProps = {
-  readonly fieldFilters: RA<{
-    readonly type: QueryFieldFilter;
-    readonly startValue: string;
-    readonly isNot: boolean;
-    /**
-     * When 'isStrict' is True
-     * each CO's age_range must be fully contained by
-     * the age range provided by start_time and end_time filter (complete overlap).
-     * When 'isStrict' is False, only a partial overlap
-     * between a CO's age range and the provided
-     * start_time and end_time filter are needed.
-     */
-    readonly isStrict: boolean;
-  }>;
-  readonly index: number;
+  readonly fieldFilter: QueryFieldFilter;
   readonly isBasic: boolean;
+  readonly isFirst: boolean;
+  readonly hasMultipleFilters: boolean;
   readonly hasAny: boolean;
   readonly isFieldComplete: boolean;
-  readonly fieldName: string;
-  readonly handleChange: ((newField: QueryField) => void) | undefined;
-  readonly handleFilterChange: (
-    index: number,
-    filter: QueryField['filters'][number] | undefined
-  ) => void;
+  readonly onChange:
+    | ((newFieldFilter: QueryFieldFilter | undefined) => void)
+    | undefined;
+  readonly onAddFieldFilter: (newFieldFilter: QueryFieldFilter) => void;
 };
 
+/**
+ * Buttons relating to the management of the filter or change the behavior
+ * of the filter
+ *
+ * Examples of these buttons are:
+ *
+ * Add Filter Button, Negate Filter Button, Remove Filter Button,
+ * Toggle IsStrict Button (for CollectionObject -> Age queries)
+ */
 export function FieldFilterTool({
-  fieldFilters,
-  index,
+  fieldFilter,
+  isFirst,
   isBasic,
   hasAny,
+  hasMultipleFilters,
   isFieldComplete,
-  fieldName,
-  handleChange,
-  handleFilterChange,
+  onChange: handleChange,
+  onAddFieldFilter: handleAddFieldFilter,
 }: FieldFilterToolProps): JSX.Element {
   return (
     <>
-      {index === 0 ? (
+      {/* REFACTOR: Extract this to separate component */}
+      {isFirst ? (
         <>
           {isBasic ? null : mappingElementDivider}
           {!hasAny && (
             <Button.Small
               aria-label={queryText.or()}
-              aria-pressed={fieldFilters.length > 1}
+              aria-pressed={hasMultipleFilters}
               className={`
                           print:hidden
                           ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
-              disabled={handleChange === undefined}
               title={queryText.or()}
               variant={
-                fieldFilters.length > 1
+                hasMultipleFilters
                   ? className.infoButton
                   : className.secondaryLightButton
               }
-              onClick={(): void =>
-                handleFilterChange(fieldFilters.length, {
-                  type: 'any',
-                  isNot: false,
-                  startValue: '',
-                  isStrict: false,
-                })
+              onClick={
+                handleChange === undefined
+                  ? undefined
+                  : (): void =>
+                      handleAddFieldFilter({
+                        type: 'any',
+                        isNot: false,
+                        startValue: '',
+                        isStrict: false,
+                      })
               }
             >
               {icons.plus}
@@ -99,63 +97,82 @@ export function FieldFilterTool({
           <Button.Small
             aria-label={commonText.remove()}
             className="print:hidden"
-            disabled={handleChange === undefined}
             title={commonText.remove()}
             variant={className.dangerButton}
-            onClick={(): void => handleFilterChange(index, undefined)}
+            onClick={
+              handleChange === undefined
+                ? undefined
+                : (): void => handleChange?.(undefined)
+            }
           >
             {icons.trash}
           </Button.Small>
         </>
       )}
-      {fieldFilters[index].type !== 'any' && (
+      {fieldFilter.type !== 'any' && (
         <Button.Small
           aria-label={queryText.negate()}
-          aria-pressed={fieldFilters[index].isNot}
+          aria-pressed={fieldFilter.isNot}
           className={className.ariaHandled}
-          disabled={handleChange === undefined}
           title={queryText.negate()}
           variant={
-            fieldFilters[index].isNot
+            fieldFilter.isNot
               ? className.dangerButton
               : className.secondaryLightButton
           }
-          onClick={(): void =>
-            handleFilterChange(index, {
-              ...fieldFilters[index],
-              isNot: !fieldFilters[index].isNot,
-            })
+          onClick={
+            handleChange === undefined
+              ? undefined
+              : (): void =>
+                  handleChange({
+                    ...fieldFilter,
+                    isNot: !fieldFilter.isNot,
+                  })
           }
         >
           {icons.ban}
         </Button.Small>
       )}
-      {fieldName === 'age' && index === 0 ? (
-        <Button.Small
-          aria-label={
-            fieldFilters[index].isStrict
-              ? queryText.strict()
-              : queryText.nonStrict()
-          }
-          aria-pressed={fieldFilters[index].isStrict}
-          className={className.ariaHandled}
-          disabled={handleChange === undefined}
-          title={
-            fieldFilters[index].isStrict
-              ? queryText.strict()
-              : queryText.nonStrict()
-          }
-          variant={className.secondaryLightButton}
-          onClick={(): void =>
-            handleFilterChange(index, {
-              ...fieldFilters[index],
-              isStrict: !fieldFilters[index].isStrict,
-            })
-          }
-        >
-          {fieldFilters[index].isStrict ? icons.strict : icons.nonStrict}
-        </Button.Small>
+      {/**
+       * REFACTOR: Add a property to queryFieldFilters to determine
+       * FieldFilterTool component based on type
+       */}
+      {(['ageRange', 'ageName'] as RA<QueryFieldFilterType>).includes(
+        fieldFilter.type
+      ) ? (
+        <AgeQueryFieldFilter
+          fieldFilter={fieldFilter}
+          onChange={handleChange}
+        />
       ) : undefined}
     </>
+  );
+}
+
+function AgeQueryFieldFilter({
+  fieldFilter,
+  onChange: handleChange,
+}: Pick<FieldFilterToolProps, 'fieldFilter' | 'onChange'>): JSX.Element {
+  return (
+    <Button.Small
+      aria-label={
+        fieldFilter.isStrict ? queryText.strict() : queryText.nonStrict()
+      }
+      aria-pressed={fieldFilter.isStrict}
+      className={className.ariaHandled}
+      title={fieldFilter.isStrict ? queryText.strict() : queryText.nonStrict()}
+      variant={className.secondaryLightButton}
+      onClick={
+        handleChange === undefined
+          ? undefined
+          : () =>
+              handleChange({
+                ...fieldFilter,
+                isStrict: !fieldFilter.isStrict,
+              })
+      }
+    >
+      {fieldFilter.isStrict ? icons.strict : icons.nonStrict}
+    </Button.Small>
   );
 }

@@ -46,7 +46,7 @@ export type QueryFieldType =
   | 'id'
   | 'number'
   | 'text';
-export type QueryFieldFilter =
+export type QueryFieldFilterType =
   | 'ageName'
   | 'ageRange'
   | 'any'
@@ -65,7 +65,7 @@ export type QueryFieldFilter =
   | 'startsWith'
   | 'true'
   | 'trueOrNull';
-export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
+export const filtersWithDefaultValue = new Set<QueryFieldFilterType>([
   'equal',
   'in',
 ]);
@@ -401,7 +401,7 @@ function In({
 }
 
 export const queryFieldFilters: RR<
-  QueryFieldFilter,
+  QueryFieldFilterType,
   {
     readonly id: number;
     readonly label: LocalizedString;

@@ -21,7 +21,7 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { QueryFieldFilter } from './FieldFilter';
+import type { QueryFieldFilterType } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
@@ -34,6 +34,30 @@ export const flippedSortTypes = {
   descending: 2,
 } as const;
 
+export type QueryFieldFilter = {
+  readonly type: QueryFieldFilterType;
+  readonly startValue: string;
+  readonly isNot: boolean;
+  /**
+   * When 'isStrict' is True
+   * each CO's age_range must be fully contained by
+   * the age range provided by start_time and end_time filter (complete overlap).
+   * When 'isStrict' is False, only a partial overlap
+   * between a CO's age range and the provided
+   * start_time and end_time filter are needed.
+   */
+  readonly isStrict: boolean;
+  /**
+   * Can either be a Record Formatter (for formatted/aggregated query fields)
+   * or a Field Formatter that can be set for each filter
+   *
+   * Currently the only configurable Field Formatter in the UI is
+   * CollectionObject -> catalogNumber
+   * See https://github.com/specify/specify7/issues/5474
+   */
+  readonly fieldFormat?: string;
+};
+
 export type QueryField = {
   /*
    * ID is used only as a React [key] prop in order to optimize rendering when
@@ -43,21 +67,7 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
-  readonly filters: RA<{
-    readonly type: QueryFieldFilter;
-    readonly startValue: string;
-    readonly isNot: boolean;
-    readonly isStrict: boolean;
-    /**
-     * Can either be a Record Formatter (for formatted/aggregated query fields)
-     * or a Field Formatter that can be set for each filter
-     *
-     * Currently the only configurable Field Formatter in the UI is
-     * CollectionObject -> catalogNumber
-     * See https://github.com/specify/specify7/issues/5474
-     */
-    readonly fieldFormat?: string;
-  }>;
+  readonly filters: RA<QueryFieldFilter>;
 };
 
 /** Convert SpQueryField to internal QueryField representation */

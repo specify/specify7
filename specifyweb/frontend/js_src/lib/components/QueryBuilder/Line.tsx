@@ -41,7 +41,7 @@ import {
 } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
-import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
+import type { QueryFieldFilterType, QueryFieldType } from './FieldFilter';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
@@ -453,14 +453,16 @@ export function QueryLine({
                   >
                     <div className="flex contents items-center gap-2">
                       <FieldFilterTool
-                        fieldFilters={field.filters}
-                        fieldName={field.mappingPath[0]}
-                        handleChange={handleChange}
-                        handleFilterChange={handleFilterChange}
+                        fieldFilter={filter}
+                        isFirst={index === 0}
                         hasAny={hasAny}
-                        index={index}
+                        hasMultipleFilters={field.filters.length > 1}
                         isBasic={isBasic}
                         isFieldComplete={isFieldComplete}
+                        onChange={(filter) => handleFilterChange(index, filter)}
+                        onAddFieldFilter={(filter) =>
+                          handleFilterChange(field.filters.length, filter)
+                        }
                       />
                       <div className="contents w-full">
                         <Select
@@ -479,7 +481,7 @@ export function QueryLine({
                           value={filter.type}
                           onChange={({ target }): void => {
                             const newFilter = (target as HTMLSelectElement)
-                              .value as QueryFieldFilter;
+                              .value as QueryFieldFilterType;
                             const startValue =
                               queryFieldFilters[newFilter].component ===
                               undefined
@@ -573,7 +575,7 @@ export function QueryLine({
           )}
         </div>
         <QueryLineTools
-          field={field}
+          queryField={field}
           fieldMeta={fieldMeta}
           isFieldComplete={isFieldComplete}
           onChange={handleChange}

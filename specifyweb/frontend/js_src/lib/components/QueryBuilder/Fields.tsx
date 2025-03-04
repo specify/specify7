@@ -73,12 +73,12 @@ export function QueryFields({
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;
 
-  const handleChangeFieldRef = React.useRef(handleChangeFields);
-  handleChangeFieldRef.current = handleChangeFields;
+  const handleChangeFieldsRef = React.useRef(handleChangeFields);
+  handleChangeFieldsRef.current = handleChangeFields;
 
   // Draggable and sortable code
   React.useEffect(() => {
-    if (handleChangeFieldRef.current === undefined) return;
+    if (handleChangeFieldsRef.current === undefined) return;
 
     if (fieldsContainerRef.current === null) return;
     const sortable = new Sortable(fieldsContainerRef.current, {
@@ -127,7 +127,7 @@ export function QueryFields({
         newItems.splice(oldIndex + 1, 1);
       }
 
-      handleChangeFieldRef.current?.(newItems);
+      handleChangeFieldsRef.current?.(newItems);
       handleLineFocus?.(newIndex);
     });
 
