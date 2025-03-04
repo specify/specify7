@@ -32,6 +32,7 @@ import {
   mappingPathToString,
   parsePartialField,
   valueIsPartialField,
+  valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import {
@@ -421,7 +422,11 @@ export function QueryLine({
               {field.filters.map((filter, index) => {
                 const terminatingField = isFieldComplete
                   ? genericTables[baseTableName].getField(
-                      mappingPathToString(field.mappingPath)
+                      mappingPathToString(
+                        field.mappingPath.filter(
+                          (fieldName) => !valueIsToManyIndex(fieldName)
+                        )
+                      )
                     )
                   : undefined;
 
