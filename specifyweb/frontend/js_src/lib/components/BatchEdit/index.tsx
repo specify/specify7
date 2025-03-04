@@ -234,6 +234,13 @@ function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
 // TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
 const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
 
+const nameExistsInRanks = (
+  name: string,
+  ranks: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
+): boolean => {
+  return ranks.some((rank) => rank.name === name);
+};
+
 function findMissingRanks(
   treeTable: SpecifyTable,
   treeRanks: RA<
@@ -276,9 +283,14 @@ function findMissingRanks(
 
             return currentTreeRanks.some(
               (rank) =>
-                rank.specifyRank.name === name &&
-                rank.field !== undefined &&
-                requiredField === rank.field.name
+                (rank.specifyRank.name === name &&
+                  rank.field !== undefined &&
+                  requiredField === rank.field.name &&
+                  rank.specifyRank.treeDef === treeDef) ||
+                !nameExistsInRanks(
+                  rank.specifyRank.name,
+                  treeDefinition[0].ranks
+                )
             )
               ? undefined
               : `${treeDefinitionName}: ${name} - ${
