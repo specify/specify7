@@ -239,9 +239,7 @@ const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
 const nameExistsInRanks = (
   name: string,
   ranks: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
-): boolean => {
-  return ranks.some((rank) => rank.name === name);
-};
+): boolean => ranks.some((rank) => rank.name === name);
 
 function findMissingRanks(
   treeTable: SpecifyTable,
