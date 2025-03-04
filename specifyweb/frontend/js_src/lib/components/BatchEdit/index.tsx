@@ -98,11 +98,15 @@ export function BatchEditFromQuery({
     [fields]
   );
 
+  const handleCloseDialog = () => {
+    setDatasetName(undefined);
+    setMissingRanks(undefined);
+  };
+
   const handleCreateDataset = async (newName: string) =>
     uniquifyDataSetName(newName, undefined, 'batchEdit').then(async (name) =>
       post(name).then(({ data }) => {
-        setDatasetName(undefined);
-        setMissingRanks(undefined);
+        handleCloseDialog();
         navigate(`/specify/workbench/${data.id}`);
       })
     );
@@ -117,7 +121,6 @@ export function BatchEditFromQuery({
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
-              const missingRanks = findAllMissing(queryFieldSpecs);
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))
               );
@@ -130,6 +133,7 @@ export function BatchEditFromQuery({
                 return;
               }
 
+              const missingRanks = findAllMissing(queryFieldSpecs);
               const newName = batchEditText.datasetName({
                 queryName: query.get('name'),
                 datePart: new Date().toDateString(),
@@ -156,7 +160,8 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
-          onClose={async () => loading(handleCreateDataset(datasetName))}
+          onClose={handleCloseDialog}
+          onContinue={async () => loading(handleCreateDataset(datasetName))}
         />
       ) : undefined}
     </>
@@ -179,7 +184,7 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
     (relationship) =>
       relationship.isRelationship && relationshipIsToMany(relationship)
   );
-  return nestedToManyCount.length > 1;
+  return nestedToManyCount.length > 0;
 }
 
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
@@ -229,6 +234,11 @@ function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
 // TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
 const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
 
+const nameExistsInRanks = (
+  name: string,
+  ranks: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
+): boolean => ranks.some((rank) => rank.name === name);
+
 function findMissingRanks(
   treeTable: SpecifyTable,
   treeRanks: RA<
@@ -271,9 +281,14 @@ function findMissingRanks(
 
             return currentTreeRanks.some(
               (rank) =>
-                rank.specifyRank.name === name &&
-                rank.field !== undefined &&
-                requiredField === rank.field.name
+                (rank.specifyRank.name === name &&
+                  rank.field !== undefined &&
+                  requiredField === rank.field.name &&
+                  rank.specifyRank.treeDef === treeDef) ||
+                !nameExistsInRanks(
+                  rank.specifyRank.name,
+                  treeDefinition[0].ranks
+                )
             )
               ? undefined
               : `${treeDefinitionName}: ${name} - ${
@@ -307,14 +322,23 @@ function ErrorsDialog({
 
 function MissingRanksDialog({
   missingRanks,
+  onContinue: handleContinue,
   onClose: handleClose,
 }: {
   readonly missingRanks: MissingRanks;
+  readonly onContinue: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <Dialog
-      buttons={interactionsText.continue()}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Info onClick={handleContinue}>
+            {interactionsText.continue()}
+          </Button.Info>
+        </>
+      }
       header={batchEditText.missingRanksInQuery()}
       icon={dialogIcons.info}
       onClose={handleClose}
