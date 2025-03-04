@@ -11,20 +11,7 @@ import {
   mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
 import { QueryFieldFilterType } from './FieldFilter';
-import type { QueryFieldFilter } from './helpers';
-
-type FieldFilterToolProps = {
-  readonly fieldFilter: QueryFieldFilter;
-  readonly isBasic: boolean;
-  readonly isFirst: boolean;
-  readonly hasMultipleFilters: boolean;
-  readonly hasAny: boolean;
-  readonly isFieldComplete: boolean;
-  readonly onChange:
-    | ((newFieldFilter: QueryFieldFilter | undefined) => void)
-    | undefined;
-  readonly onAddFieldFilter: (newFieldFilter: QueryFieldFilter) => void;
-};
+import { QueryFieldFilterProps } from './QueryLineFieldFilter';
 
 /**
  * Buttons relating to the management of the filter or change the behavior
@@ -44,7 +31,8 @@ export function FieldFilterTool({
   isFieldComplete,
   onChange: handleChange,
   onAddFieldFilter: handleAddFieldFilter,
-}: FieldFilterToolProps): JSX.Element {
+  onRemoveFieldFilter: handleRemoveFieldFilter,
+}: QueryFieldFilterProps): JSX.Element {
   return (
     <>
       {/* REFACTOR: Extract this to separate component */}
@@ -67,7 +55,7 @@ export function FieldFilterTool({
                   : className.secondaryLightButton
               }
               onClick={
-                handleChange === undefined
+                handleAddFieldFilter === undefined
                   ? undefined
                   : (): void =>
                       handleAddFieldFilter({
@@ -100,9 +88,9 @@ export function FieldFilterTool({
             title={commonText.remove()}
             variant={className.dangerButton}
             onClick={
-              handleChange === undefined
+              handleRemoveFieldFilter === undefined
                 ? undefined
-                : (): void => handleChange?.(undefined)
+                : (): void => handleRemoveFieldFilter()
             }
           >
             {icons.trash}
@@ -152,7 +140,7 @@ export function FieldFilterTool({
 function AgeQueryFieldFilter({
   fieldFilter,
   onChange: handleChange,
-}: Pick<FieldFilterToolProps, 'fieldFilter' | 'onChange'>): JSX.Element {
+}: Pick<QueryFieldFilterProps, 'fieldFilter' | 'onChange'>): JSX.Element {
   return (
     <Button.Small
       aria-label={

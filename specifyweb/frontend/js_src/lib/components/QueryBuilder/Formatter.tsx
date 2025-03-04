@@ -16,7 +16,6 @@ import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { CollectionObjectType, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
-import { QueryField } from './helpers';
 
 type SimpleFormatter = {
   readonly name: string;
