@@ -36,7 +36,7 @@ export function Login(): JSX.Element {
         })
           .then(({ data }) => data)
           .catch((error) => {
-            console.error("Failed to fetch institution:", error);
+            console.error("Failed to fetch isNewUser:", error);
             return undefined;
           }),
       []
