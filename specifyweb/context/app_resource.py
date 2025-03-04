@@ -61,11 +61,13 @@ def get_app_resource(collection, user, resource_name):
     for level in DIR_LEVELS:
         # First look in the database.
         from_db = get_app_resource_from_db(collection, user, level, resource_name)
-        if from_db is not None: return from_db
+        if from_db is not None:
+            return from_db
 
         # If resource was not found, look on the filesystem.
         from_fs = load_resource_at_level(collection, user, level, resource_name)
-        if from_fs is not None: return from_fs
+        if from_fs is not None:
+            return from_fs
         # Continue to next higher level of hierarchy.
 
     # resource was not found
