@@ -121,7 +121,6 @@ export function BatchEditFromQuery({
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
-              const missingRanks = findAllMissing(queryFieldSpecs);
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))
               );
@@ -134,6 +133,7 @@ export function BatchEditFromQuery({
                 return;
               }
 
+              const missingRanks = findAllMissing(queryFieldSpecs);
               const newName = batchEditText.datasetName({
                 queryName: query.get('name'),
                 datePart: new Date().toDateString(),
@@ -184,7 +184,7 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
     (relationship) =>
       relationship.isRelationship && relationshipIsToMany(relationship)
   );
-  return nestedToManyCount.length > 1;
+  return nestedToManyCount.length > 0;
 }
 
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
