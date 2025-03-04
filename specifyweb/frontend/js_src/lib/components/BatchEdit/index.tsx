@@ -184,7 +184,9 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
     (relationship) =>
       relationship.isRelationship && relationshipIsToMany(relationship)
   );
-  return nestedToManyCount.length > 0;
+
+  const allowedToMany = isTreeTable(queryFieldSpec.table.name) ? 0 : 1;
+  return nestedToManyCount.length > allowedToMany;
 }
 
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
