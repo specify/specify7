@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^specify/merge/status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
     url(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
-    #check for institution at login
+    # check if the user is new at login
     url(r'^specify/is_new_user/$', views.is_new_user),
 
     # the main business data API
