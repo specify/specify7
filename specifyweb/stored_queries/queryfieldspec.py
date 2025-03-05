@@ -5,10 +5,12 @@ from collections import namedtuple, deque
 from typing import NamedTuple, Optional, Tuple
 
 from sqlalchemy import sql
+from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.stored_queries.query_construct import QueryConstruct
 # from specifyweb.specify.geo_time import query_co_in_time_range
 from . import models
 from .query_ops import QueryOps
@@ -228,6 +230,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 # new_query = op(orm_field, value, query, is_strict=strict)
                 # query = query._replace(query=new_query)
                 # f = None
+                if isinstance(f, Query):
+                    query = query._replace(query=f)
+                    query = query.reset_joinpoint()
+                    return query, None, None
             else:
                 f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
