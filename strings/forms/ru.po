@@ -19,14 +19,14 @@ msgid "forms"
 msgstr "Формы"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:318
+#: components/Forms/Save.tsx:322
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Клонировать"
 
-#: components/Forms/Save.tsx:319
+#: components/Forms/Save.tsx:323
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
@@ -244,13 +244,13 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Эта форма не сохранилась."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:350
+#: components/Forms/Save.tsx:354
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Сохранить конфликт"
 
-#: components/Forms/Save.tsx:353
+#: components/Forms/Save.tsx:357
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -259,13 +259,13 @@ msgstr ""
 "на другой вкладке браузера и устарели. Страницу необходимо перезагрузить, "
 "чтобы предотвратить сохранение противоречивых данных."
 
-#: components/Forms/Save.tsx:383
+#: components/Forms/Save.tsx:387
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Запись информации"
 
-#: components/Forms/Save.tsx:386
+#: components/Forms/Save.tsx:390
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -527,62 +527,62 @@ msgstr "Удалить из {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Ничего не найдено"
 
-#: components/Forms/Save.tsx:261
+#: components/Forms/Save.tsx:268
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
 msgstr "Перенести вперед"
 
-#: components/FormMeta/CarryForward.tsx:117
+#: components/FormMeta/CarryForward.tsx:119
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardEnabled"
 msgstr "Показать кнопку «Перенести вперед»"
 
-#: components/FormMeta/CarryForward.tsx:181
+#: components/FormMeta/CarryForward.tsx:184
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
 msgstr ""
 
-#: components/Forms/Save.tsx:247
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr ""
 
-#: components/Forms/Save.tsx:262
+#: components/Forms/Save.tsx:269
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
 msgstr "Создайте новую запись с переносом определенных полей."
 
-#: components/FormMeta/CarryForward.tsx:120
-#: components/FormMeta/CarryForward.tsx:129
+#: components/FormMeta/CarryForward.tsx:122
+#: components/FormMeta/CarryForward.tsx:131
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Настройте поля для переноса"
 
-#: components/FormMeta/CarryForward.tsx:184
+#: components/FormMeta/CarryForward.tsx:187
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:339
+#: components/FormMeta/CarryForward.tsx:342
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Настройте поля для переноса ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:336
+#: components/FormMeta/CarryForward.tsx:339
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:409
+#: components/FormMeta/CarryForward.tsx:412
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
@@ -600,7 +600,7 @@ msgstr "Показать кнопку клонировать"
 msgid "addButtonEnabled"
 msgstr "Показать кнопку «Добавить»"
 
-#: components/Forms/Save.tsx:326
+#: components/Forms/Save.tsx:330
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"

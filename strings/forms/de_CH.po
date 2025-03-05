@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Formulare"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:318
+#: components/Forms/Save.tsx:322
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Klone"
 
-#: components/Forms/Save.tsx:319
+#: components/Forms/Save.tsx:323
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Erstellen einer kompletten Kopie des aktuellen Datensatzes"
@@ -249,13 +249,13 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Dieses Formular wurde nicht gespeichert."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:350
+#: components/Forms/Save.tsx:354
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Konflikt speichern"
 
-#: components/Forms/Save.tsx:353
+#: components/Forms/Save.tsx:357
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -265,13 +265,13 @@ msgstr ""
 "eine inkonsistente Datenspeicherung zu verhindern, muss die Seite neu "
 "geladen werden."
 
-#: components/Forms/Save.tsx:383
+#: components/Forms/Save.tsx:387
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Informationen aufnehmen"
 
-#: components/Forms/Save.tsx:386
+#: components/Forms/Save.tsx:390
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -536,62 +536,62 @@ msgstr "Entfernen aus {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nichts gefunden"
 
-#: components/Forms/Save.tsx:261
+#: components/Forms/Save.tsx:268
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
 msgstr "Weitertragen"
 
-#: components/FormMeta/CarryForward.tsx:117
+#: components/FormMeta/CarryForward.tsx:119
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardEnabled"
 msgstr "Schaltfläche „Übertrag anzeigen“"
 
-#: components/FormMeta/CarryForward.tsx:181
+#: components/FormMeta/CarryForward.tsx:184
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
 msgstr ""
 
-#: components/Forms/Save.tsx:247
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr ""
 
-#: components/Forms/Save.tsx:262
+#: components/Forms/Save.tsx:269
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
 msgstr "Einen neuen Datensatz erstellen, bei dem bestimmte Felder übernommen werden"
 
-#: components/FormMeta/CarryForward.tsx:120
-#: components/FormMeta/CarryForward.tsx:129
+#: components/FormMeta/CarryForward.tsx:122
+#: components/FormMeta/CarryForward.tsx:131
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Konfigurieren der zu übertragenden Felder"
 
-#: components/FormMeta/CarryForward.tsx:184
+#: components/FormMeta/CarryForward.tsx:187
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:339
+#: components/FormMeta/CarryForward.tsx:342
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Konfigurieren Sie die zu übertragenden Felder ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:336
+#: components/FormMeta/CarryForward.tsx:339
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:409
+#: components/FormMeta/CarryForward.tsx:412
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
@@ -609,7 +609,7 @@ msgstr "Schaltfläche „Klonen“ anzeigen"
 msgid "addButtonEnabled"
 msgstr "Schaltfläche „Hinzufügen“ anzeigen"
 
-#: components/Forms/Save.tsx:326
+#: components/Forms/Save.tsx:330
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"

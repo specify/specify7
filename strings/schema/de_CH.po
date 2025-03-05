@@ -70,7 +70,7 @@ msgstr "Basis-Tabelle ändern"
 msgid "field"
 msgstr "Feld"
 
-#: components/FormMeta/CarryForward.tsx:350
+#: components/FormMeta/CarryForward.tsx:353
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
@@ -80,7 +80,7 @@ msgstr "Feld"
 msgid "fields"
 msgstr "Felder"
 
-#: components/FormMeta/CarryForward.tsx:359
+#: components/FormMeta/CarryForward.tsx:362
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
