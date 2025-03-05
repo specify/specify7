@@ -191,14 +191,15 @@ describe('Collection Object business rules', () => {
     await collectionObject.businessRuleManager?.pendingPromise;
   });
 
-  test('CollectionObject -> catalogNumber is reset whenever existing CollectionObject -> collectionObjectType changes', async () => {
+  test('CollectionObject -> catalogNumber is not reset whenever existing CollectionObject -> collectionObjectType changes', async () => {
     const collectionObject = getBaseCollectionObject();
-    expect(collectionObject.get('catalogNumber')).toBe('123');
+    const expectedCatNum = '123';
+    expect(collectionObject.get('catalogNumber')).toBe(expectedCatNum);
     collectionObject.set(
       'collectionObjectType',
       getResourceApiUrl('CollectionObjectType', 2)
     );
-    expect(collectionObject.get('catalogNumber')).toBe('2022-######');
+    expect(collectionObject.get('catalogNumber')).toBe(expectedCatNum);
     // Wait for any pending promise to complete before test finishes
     await collectionObject.businessRuleManager?.pendingPromise;
   });
