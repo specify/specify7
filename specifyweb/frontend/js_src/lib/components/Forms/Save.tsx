@@ -233,6 +233,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     resource.specifyTable.name === 'CollectionObjectGroup' ||
     resource.specifyTable.name === 'CollectionObjectGroupJoin';
 
+    // Disable bulk carry forward for COType cat num format that are undefined or one of types listed in tableValidForBulkClone()
+  const formatter =
+    tables.CollectionObject.strictGetLiteralField(
+      'catalogNumber'
+    ).getUiFormatter(resource)!;
+  const disableBulk = !tableValidForBulkClone(resource.specifyTable, resource) || formatter === undefined
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
@@ -242,7 +249,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           isSaveDisabled &&
           showCarry &&
           showBulkCarry &&
-          !isCOGorCOJO ? (
+          !isCOGorCOJO && !disableBulk? (
             <Input.Integer
               aria-label={formsText.bulkCarryForwardCount()}
               className="!w-fit"
@@ -268,10 +275,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 resource.specifyTable.name === 'CollectionObject' &&
                   carryForwardAmount > 1
                   ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
-                      const formatter =
-                        tables.CollectionObject.strictGetLiteralField(
-                          'catalogNumber'
-                        ).getUiFormatter()!;
+
                       const wildCard = formatter.valueOrWild();
 
                       const clonePromises = Array.from(
