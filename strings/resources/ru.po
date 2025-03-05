@@ -498,26 +498,26 @@ msgstr "Условное значение поля"
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
 
-#: components/DataModel/businessRuleDefs.ts:393
-#: components/DataModel/businessRuleDefs.ts:411
+#: components/DataModel/businessRuleDefs.ts:395
+#: components/DataModel/businessRuleDefs.ts:413
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Требуется текущее определение."
 
-#: components/DataModel/businessRuleDefs.ts:295
-#: components/DataModel/businessRuleDefs.ts:314
+#: components/DataModel/businessRuleDefs.ts:297
+#: components/DataModel/businessRuleDefs.ts:316
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:244
-#: components/DataModel/__tests__/businessRules.test.ts:338
+#: components/DataModel/businessRuleDefs.ts:246
+#: components/DataModel/__tests__/businessRules.test.ts:339
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:215
+#: components/DataModel/businessRuleDefs.ts:217
 #: components/DataModel/__tests__/businessRules.test.ts:154
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
