@@ -8730,10 +8730,10 @@ datamodel = Datamodel(tables=[
             Index(name='SpDataSetAttColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='SpDataSetAttachments', dependent=True),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='spDataSetAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='Spdataset', column='SpDataSetID', otherSideName='SpDataSetAttachments')
+            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='Spdataset', column='SpDataSetID', otherSideName='spDataSetAttachments')
         ],
         fieldAliases=[
 
