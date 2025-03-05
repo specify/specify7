@@ -16,6 +16,8 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -131,7 +133,7 @@ export function CarryForwardConfig({
         />
       )}
       {isCarryForwardEnabled ? (
-        <BulkCloneConfig parentTable={parentTable} table={table} />
+        <BulkCloneConfig parentTable={parentTable} table={table}/>
       ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
@@ -169,6 +171,7 @@ function BulkCloneConfig({
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
+
   return tableValidForBulkClone(table) ? (
     <>
       <Label.Inline className="rounded bg-[color:var(--foreground)]">
@@ -199,11 +202,11 @@ function BulkCloneConfig({
   ) : null;
 }
 
-export const tableValidForBulkClone = (table: SpecifyTable): boolean =>
+export const tableValidForBulkClone = (table: SpecifyTable, resource?: SpecifyResource<AnySchema>): boolean =>
   table === tables.CollectionObject &&
   !(
     tables.CollectionObject.strictGetLiteralField('catalogNumber')
-      .getUiFormatter()
+      .getUiFormatter(resource ?? undefined)
       ?.fields.some(
         (field) =>
           field.type === 'regex' ||

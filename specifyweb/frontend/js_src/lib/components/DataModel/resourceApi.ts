@@ -71,9 +71,9 @@ function eventHandlerForToMany(related, field) {
         this.handleChanged();
         if (
           related.models?.[0]?.specifyTable?.name !== 'CollectionRelationship'
-        )
+        ) {
           this.trigger.apply(this, args);
-
+        }
         break;
       }
       case 'change':
