@@ -133,7 +133,7 @@ export function CarryForwardConfig({
         />
       )}
       {isCarryForwardEnabled ? (
-        <BulkCloneConfig parentTable={parentTable} table={table}/>
+        <BulkCloneConfig parentTable={parentTable} table={table} />
       ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
@@ -171,7 +171,6 @@ function BulkCloneConfig({
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
-
   return tableValidForBulkClone(table) ? (
     <>
       <Label.Inline className="rounded bg-[color:var(--foreground)]">
@@ -202,7 +201,10 @@ function BulkCloneConfig({
   ) : null;
 }
 
-export const tableValidForBulkClone = (table: SpecifyTable, resource?: SpecifyResource<AnySchema>): boolean =>
+export const tableValidForBulkClone = (
+  table: SpecifyTable,
+  resource?: SpecifyResource<AnySchema>
+): boolean =>
   table === tables.CollectionObject &&
   !(
     tables.CollectionObject.strictGetLiteralField('catalogNumber')
