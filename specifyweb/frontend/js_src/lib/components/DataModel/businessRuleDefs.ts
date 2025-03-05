@@ -182,15 +182,17 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
-        const parser = resolveParser(
-          resource.specifyTable.strictGetLiteralField('catalogNumber'),
-          undefined,
-          resource
-        );
-        // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
-        resource.set('catalogNumber', parser.value as never, {
-          silent: (parser.value ?? '') === '',
-        });
+        if (resource.isNew()) {
+          const parser = resolveParser(
+            resource.specifyTable.strictGetLiteralField('catalogNumber'),
+            undefined,
+            resource
+          );
+          // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
+          resource.set('catalogNumber', parser.value as never, {
+            silent: (parser.value ?? '') === '',
+          });
+        }
 
         const determinations = resource.getDependentResource('determinations');
         if (determinations === undefined || determinations.models.length === 0)
