@@ -64,8 +64,10 @@ const isDarkMode = ({
   isRedirecting,
 }: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
-// Navigator may not be defined in some environments, like non-browser environments
-const altKeyName = typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
+/**
+ * See https://developer.mozilla.org/en-US/docs/Web/API/Navigator/platform
+ */
+const altKeyName = globalThis.navigator?.platform.startsWith('Mac')
   ? 'Option'
   : 'Alt';
 
