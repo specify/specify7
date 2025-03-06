@@ -7,6 +7,7 @@ export const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
 export const COG_TOITSELF = 'cog-toItself';
 export const PARENTCOG_KEY = 'cog-parentCog';
 export const COG_PRIMARY_KEY = 'cog-isPrimary';
+export const DETERMINATION_TAXON_KEY = 'determination-Taxon';
 
 /**
  *
