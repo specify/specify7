@@ -57,7 +57,7 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     """
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
-    
+
     if not additional_default:
         # Traverse the hierarchy.
         for level in DIR_LEVELS:

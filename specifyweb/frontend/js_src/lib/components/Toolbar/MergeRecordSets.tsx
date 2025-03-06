@@ -67,9 +67,9 @@ export function MergeRecordSets({
       }).then(({ response }) => {
         if (!response.ok) return;
         handleClose();
+        globalThis.location.assign('/specify/overlay/record-sets/');
       })
     );
-    globalThis.location.assign('/specify/overlay/record-sets/');
   };
 
   return (
