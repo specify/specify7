@@ -10,8 +10,7 @@ from sqlalchemy.orm.query import Query
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
-from specifyweb.stored_queries.query_construct import QueryConstruct
-# from specifyweb.specify.geo_time import query_co_in_time_range
+
 from . import models
 from .query_ops import QueryOps
 from ..specify.load_datamodel import Table, Field, Relationship
