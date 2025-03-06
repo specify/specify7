@@ -531,6 +531,7 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
 
     handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
+    _handle_special_update_posts(obj)
     return obj
 
 def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
@@ -925,6 +926,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
         delete_obj(dep, deleter, parent_obj=obj)
     handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
+    _handle_special_update_posts(obj)
     return obj
 
 def bump_version(obj, version) -> None:
@@ -1192,6 +1194,10 @@ def rows(request, model_name: str) -> HttpResponse:
 
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
+
+def _handle_special_update_posts(obj):
+    from specifyweb.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
+    enforce_interaction_sibling_prep_max_count(obj)
 
 def _handle_special_update_priors(obj, data):
     from specifyweb.interactions.cog_preps import (
