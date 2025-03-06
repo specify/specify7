@@ -4,6 +4,7 @@ from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
 from sqlalchemy import sql, Table as SQLTable
+from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import datamodel
@@ -374,6 +375,10 @@ class QueryFieldSpec(
                 # new_query = op(orm_field, value, query, is_strict=strict)
                 # query = query._replace(query=new_query)
                 # f = None
+                if isinstance(f, Query):
+                    query = query._replace(query=f)
+                    query = query.reset_joinpoint()
+                    return query, None, None
             else:
                 f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
