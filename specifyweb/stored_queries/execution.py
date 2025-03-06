@@ -868,6 +868,9 @@ def build_query(
         query, field, predicate = fs.add_to_query(
             query, formatauditobjs=props.formatauditobjs
         )
+        if field is None:
+            continue
+        
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
