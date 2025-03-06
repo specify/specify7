@@ -86,7 +86,7 @@ MIGRATION_0023_FIELDS = {
         ('guid', 'GUID', 'GUID'), 
         ('cogType', 'Type', 'Determines the logic Specify should use when managing the children within that COG'),
         ('igsn', 'IGSN', 'An International Generic Sample Number (IGSN) provides an unambiguous globally unique and persistent identifier for physical samples.'),
-        ('cojo', 'Collection Object Group Join', 'This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy.'), 
+        ('cojo', 'Parent COG', 'This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy.'), 
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('yesno1', 'YesNo1', 'YesNo1'),
         ],
@@ -123,7 +123,7 @@ MIGRATION_0023_FIELDS = {
 
     'collectionobject': [
         ('collectionObjectType', 'Type', 'The type of object, such as a fish, mammal, mineral, rock, or meteorite.'),
-        ('cojo', 'Collection Object Group', 'Connects a Collection Object to its Collection Object Group'),
+        ('cojo', 'Parent COG', 'Connects a Collection Object to its Collection Object Group'),
     ],
 
     'tectonicunit': [
