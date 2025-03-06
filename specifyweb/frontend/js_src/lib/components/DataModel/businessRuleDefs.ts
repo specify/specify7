@@ -1,4 +1,6 @@
 import { resourcesText } from '../../localization/resources';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
   COG_PRIMARY_KEY,
@@ -9,7 +11,7 @@ import {
   hasNoCurrentDetermination,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
-import type { AnySchema, TableFields } from './helperTypes';
+import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
@@ -21,6 +23,7 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
+import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -49,7 +52,17 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
-      resource: SpecifyResource<SCHEMA>
+      resource: SpecifyResource<SCHEMA>,
+      field: (CommonFields &
+        SCHEMA['fields'] &
+        SCHEMA['toManyDependent'] &
+        SCHEMA['toManyIndependent'] &
+        SCHEMA['toOneDependent'] &
+        SCHEMA['toOneIndependent'])[FIELD_NAME] extends ValueOf<
+        AnySchema['fields']
+      >
+        ? LiteralField
+        : Relationship
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
 };
@@ -169,6 +182,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
+        if (resource.isNew()) {
+          const parser = resolveParser(
+            resource.specifyTable.strictGetLiteralField('catalogNumber'),
+            undefined,
+            resource
+          );
+          // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
+          resource.set('catalogNumber', parser.value as never, {
+            silent: (parser.value ?? '') === '',
+          });
+        }
+
         const determinations = resource.getDependentResource('determinations');
         if (determinations === undefined || determinations.models.length === 0)
           return;

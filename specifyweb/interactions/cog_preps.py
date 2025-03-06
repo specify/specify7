@@ -1,8 +1,8 @@
-import re
 import logging
 from typing import Any, List, Optional, Set
-from django.db.models import Subquery
+from django.db.models import Subquery, Sum, F, Value, IntegerField, ExpressionWrapper, Q
 from django.db.models.query import QuerySet
+from django.db.models.functions import Coalesce
 from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjectgroup,
@@ -70,6 +70,10 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
     """
     Get the topmost consolidated parent CollectionObjectGroup of the preparation.
     """
+
+    if prep is None:
+        return None  
+
     # Get the CollectionObject of the preparation
     co = prep.collectionobject
     if co is None:
@@ -100,10 +104,10 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     """
     Get all the sibling preparations within the consolidated cog
     """
-    # Get the topmost consolidated parent cog of the preparation
+    # Get the top most consolidated parent cog of the preparation
     top_consolidated_cog = get_the_top_consolidated_parent_cog_of_prep(prep)
     if top_consolidated_cog is None:
-        return [prep]
+        return []
 
     # Get all the sibling preparations
     sibling_preps = get_cog_consolidated_preps(top_consolidated_cog)
@@ -111,7 +115,7 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     # Remove the prep.id from the sibling preparations
     sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
-    return sibling_preps
+    return [prep, *sibling_preps]
 
 
 def is_cog_recordset(rs: Recordset) -> bool:
@@ -267,6 +271,8 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     interaction_prep_name = None
     InteractionPrepModel = None
     filter_fld = None
+    if original_interaction_obj is None:
+        return updated_interaction_data
     if original_interaction_obj._meta.model_name == 'loan':
         if 'loanpreparations' in updated_interaction_data:
             interaction_prep_name = "loanpreparations"
@@ -461,27 +467,20 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         original_loan_prep_data = None
         original_loan_return_data_lst = None
         original_loan_return_data = None
-        if len(orginal_prep_ids) == 1:
-            original_prep_id = orginal_prep_ids.pop()
-            original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
-            original_loan_prep_data = updated_interaction_data[
-                "loanpreparations"][original_loan_prep_idx]
-            original_loan_return_data_lst = original_loan_prep_data["loanreturnpreparations"]
-            original_loan_return_data = (
-                original_loan_return_data_lst[-1]
-                if original_loan_return_data_lst is not None
-                and len(original_loan_return_data_lst) > 0
-                else None
-            )
-            if original_loan_return_data is None:
-                logger.warning(
-                    "No loan return preparation data found for this consolidated COG preparation.")
-                continue
-        elif len(orginal_prep_ids) > 1:
-            logger.warning(
-                "Multiple partial loan returns found for this consolidated COG preparation.")
-        else:
+        if len(orginal_prep_ids) < 1:
             continue
+        if len(orginal_prep_ids) > 1:
+            logger.warning("Multiple partial loan returns found for this consolidated COG preparation.")
+        original_prep_id = orginal_prep_ids.pop()
+        original_loan_prep_idx = map_prep_id_to_loan_prep_idx[original_prep_id]
+        original_loan_prep_data = updated_interaction_data["loanpreparations"][original_loan_prep_idx]
+        original_loan_return_data_lst = original_loan_prep_data["loanreturnpreparations"]
+        original_loan_return_data = (
+            original_loan_return_data_lst[-1]
+            if original_loan_return_data_lst is not None
+            and len(original_loan_return_data_lst) > 0
+            else None
+        )
 
         # Set the return and resolved quantity to the max amount.
         # In the future, maybe have more complex logic for partial returns/resolves of consolidated cogs.
@@ -562,3 +561,105 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     # NOTE: Maybe handle removed sibling preparations after removing an existing loan return preparation
 
     return updated_interaction_data
+
+def enforce_interaction_sibling_prep_max_count(interaction_obj):
+    def get_interaction_prep_model_and_filter_field(interaction_obj):
+        model_map = {
+            'loan': (Loanpreparation, 'loan', 'loanpreparations__id'),
+            'gift': (Giftpreparation, 'gift', 'giftpreparations__id'),
+            'disposal': (Disposalpreparation, 'disposal', 'disposalpreparations__id'),
+        }
+        return model_map.get(interaction_obj._meta.model_name, (None, None, None))
+
+    def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, prep_id_fld, InteractionPrepModel):
+
+        for sibling_prep in sibling_preps:
+            if sibling_prep is None:
+                return False
+            if sibling_prep.id not in interaction_prep_ids:
+                continue
+            # count = sibling_prep.countamt
+            available_count = get_availability_count(sibling_prep, interaction_prep_id, prep_id_fld) or 0
+            interaction_sibling_prep = InteractionPrepModel.objects.filter(preparation=sibling_prep).first()
+            if interaction_sibling_prep and interaction_sibling_prep.quantity == available_count:
+                return True
+        return False
+
+    if interaction_obj is None:
+        return interaction_obj
+
+    InteractionPrepModel, filter_fld, id_fld = get_interaction_prep_model_and_filter_field(interaction_obj)
+    if InteractionPrepModel is None:
+        return interaction_obj
+
+    interaction_preps = InteractionPrepModel.objects.filter(**{filter_fld: interaction_obj})
+    interaction_prep_ids = set(interaction_preps.values_list("preparation_id", flat=True))
+
+    for interaction_prep in interaction_preps:
+        prep = interaction_prep.preparation
+        sibling_preps = get_all_sibling_preps_within_consolidated_cog(prep)
+
+        if is_max_quantity_used(
+            sibling_preps, interaction_prep.id, interaction_prep_ids, id_fld, InteractionPrepModel
+        ) or (sibling_preps is not None and len(sibling_preps) > 0):
+            if interaction_prep.preparation is None: 
+                continue
+
+            if interaction_prep.quantity == interaction_prep.preparation.countamt:
+                continue
+            available_count = get_availability_count(prep, interaction_prep.id, "loanpreparations__id") or 0
+            interaction_prep.quantity = available_count
+            interaction_prep.save()
+
+    return interaction_obj
+
+def get_availability_count(prep, iprepid, iprepid_fld):
+    loan_filter = Q()
+    gift_filter = Q()
+    exchange_filter = Q()
+
+    if iprepid is not None and iprepid_fld:
+        if iprepid_fld.startswith('loanpreparations__'):
+            loan_filter = ~Q(**{iprepid_fld: iprepid})
+        elif iprepid_fld.startswith('giftpreparations__'):
+            gift_filter = ~Q(**{iprepid_fld: iprepid})
+        elif iprepid_fld.startswith('exchangeoutpreps__'):
+            exchange_filter = ~Q(**{iprepid_fld: iprepid})
+        else:
+            loan_filter = ~Q(**{iprepid_fld: iprepid})
+            gift_filter = ~Q(**{iprepid_fld: iprepid})
+            exchange_filter = ~Q(**{iprepid_fld: iprepid})
+
+    qs = (prep.__class__.objects
+          .filter(id=prep.id)
+          .annotate(
+              loan_sum=Coalesce(
+                  Sum(
+                      ExpressionWrapper(
+                          F('loanpreparations__quantity') - F('loanpreparations__quantityresolved'),
+                          output_field=IntegerField()
+                      ),
+                      filter=loan_filter
+                  ),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+              gift_sum=Coalesce(
+                  Sum('giftpreparations__quantity', filter=gift_filter, output_field=IntegerField()),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+              exchange_sum=Coalesce(
+                  Sum('exchangeoutpreps__quantity', filter=exchange_filter, output_field=IntegerField()),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
+          )
+          .values('countamt', 'loan_sum', 'gift_sum', 'exchange_sum')
+         )
+
+    row = qs.first()
+    if row is None:
+        return prep.countamt
+    else:
+        return row['countamt'] - row['loan_sum'] - row['gift_sum'] - row['exchange_sum']
