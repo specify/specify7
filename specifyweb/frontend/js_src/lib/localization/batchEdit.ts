@@ -37,11 +37,11 @@ export const batchEditText = createDictionary({
     'en-us': 'Use the query builder to make a new batch edit dataset',
   },
   showRollback: {
-    'en-us': 'Show revert button',
+    'en-us': 'Show rollback button',
   },
   showRollbackDescription: {
     'en-us':
-      'Revert is currently an experimental feature. This preference will hide the button',
+      'Rollback in Batch Edit is an experimental feature. This preference will hide the button',
   },
   commit: {
     'en-us': 'Commit',
