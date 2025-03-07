@@ -23,7 +23,7 @@ def fix_schema_config():
     usc.update_cogtype_splocalecontaineritem(apps) # 7
     usc.update_systemcogtypes_picklist(apps) # 7
     usc.update_cogtype_type_splocalecontaineritem(apps) # 7
-    usc.update_table_schema_configs(apps, sc.MIGRATION_0008_FIELDS) # 8
+    usc.update_relative_age_fields(apps) # 8
     usc.add_cojo_to_schema_config(apps) # 12
     usc.update_cog_schema_config(apps) # 13
     usc.update_age_schema_config(apps) # 15
@@ -64,4 +64,5 @@ def temp(request):
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
 
-    key_migration_func_pipeline()
+    def handle(self, *args, **options):
+        key_migration_func_pipeline()

@@ -4,7 +4,6 @@ from django.db import migrations, models
 import specifyweb.specify.models
 
 from specifyweb.specify.migration_utils import update_schema_config as usc
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0008_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
 
 class Migration(migrations.Migration):
 
@@ -13,10 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.update_table_schema_configs(apps, SCHEMA_CONFIG_MOD_TABLE_FIELDS)
+        usc.update_relative_age_fields(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_table_schema_configs(apps, SCHEMA_CONFIG_MOD_TABLE_FIELDS)
+        usc.update_relative_age_fields(apps)
 
     operations = [
         migrations.AddField(
