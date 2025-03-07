@@ -206,17 +206,6 @@ export function InteractionDialog({
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
-    const errorMessages = parseResults
-      .filter((result): result is InvalidParseResult => !result.isValid)
-      .map(({ reason, value }) => `${reason} (${value})`);
-    if (errorMessages.length > 0) {
-      setValidation(errorMessages);
-      setState({
-        type: 'InvalidState',
-        invalid: errorMessages,
-      });
-      return undefined;
-    }
 
     const parsed = f.unique(
       (parseResults as RA<ValidParseResult>)
