@@ -7,11 +7,7 @@ import django.utils.timezone
 from specifyweb.specify.models import (
     protect_with_blockers
 )
-from specifyweb.specify.migration_utils.update_schema_config import (
-    update_table_schema_config_with_defaults,
-    revert_table_schema_config,
-)
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
+from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.utils import create_default_collection_types
 
 logger = logging.getLogger(__name__)
@@ -74,16 +70,6 @@ def revert_default_discipline_for_tree_defs(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_table_schema_config_with_defaults(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-
-def revert_table_schema_config_with_defaults(apps):
-    for table, _ in SCHEMA_CONFIG_TABLES:
-        revert_table_schema_config(table, apps)
-
 def create_default_collection_object_types(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
@@ -143,13 +129,13 @@ class Migration(migrations.Migration):
     def consolidated_python_django_migration_operations(apps, schema_editor):
         handle_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
-        create_table_schema_config_with_defaults(apps)
+        usc.create_geo_table_schema_config_with_defaults(apps)
         create_default_collection_object_types(apps)
         set_discipline_for_taxon_treedefs(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_default_collection_object_types(apps)
-        revert_table_schema_config_with_defaults(apps)
+        usc.revert_geo_table_schema_config_with_defaults(apps)
         revert_default_discipline_for_tree_defs(apps)
         revert_default_collection_types(apps)
 

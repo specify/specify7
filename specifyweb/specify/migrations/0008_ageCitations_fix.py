@@ -3,23 +3,8 @@
 from django.db import migrations, models
 import specifyweb.specify.models
 
-from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0008_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
-
-def update_fields(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    # Add absoluteAgeCitation -> absoluteAge & Add relativeAgeCitation -> relativeAge
-    for discipline in Discipline.objects.all():
-        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
-            for field in fields: 
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
-
-def revert_update_fields(apps):
-    # Remove absoluteAgeCitation -> absoluteAge and relativeAgeCitation -> relativeAge
-        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
-            for field in fields: 
-                revert_table_field_schema_config(table, field, apps)
 
 class Migration(migrations.Migration):
 
@@ -28,21 +13,33 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        update_fields(apps)
+        usc.update_table_schema_configs(apps, SCHEMA_CONFIG_MOD_TABLE_FIELDS)
 
     def revert_migration(apps, schema_editor):
-        revert_update_fields(apps)
+        usc.revert_table_schema_configs(apps, SCHEMA_CONFIG_MOD_TABLE_FIELDS)
 
     operations = [
         migrations.AddField(
-            model_name='absoluteage',
-            name='absoluteagecitation',
-            field=models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation'),
+            model_name="absoluteage",
+            name="absoluteagecitation",
+            field=models.ForeignKey(
+                db_column="AbsoluteAgeCitationID",
+                null=True,
+                on_delete=specifyweb.specify.models.protect_with_blockers,
+                related_name="absoluteages",
+                to="specify.absoluteagecitation",
+            ),
         ),
         migrations.AddField(
-            model_name='relativeage',
-            name='relativeagecitation',
-            field=models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation'),
+            model_name="relativeage",
+            name="relativeagecitation",
+            field=models.ForeignKey(
+                db_column="RelativeAgeCitationID",
+                null=True,
+                on_delete=specifyweb.specify.models.protect_with_blockers,
+                related_name="relativeages",
+                to="specify.relativeagecitation",
+            ),
         ),
-        migrations.RunPython(apply_migration, revert_migration, atomic=True)
+        migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]
