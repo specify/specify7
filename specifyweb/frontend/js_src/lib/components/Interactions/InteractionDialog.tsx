@@ -14,7 +14,6 @@ import {
   resolveParser,
 } from '../../utils/parser/definitions';
 import type {
-  InvalidParseResult,
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
@@ -100,7 +99,7 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const { validationRef, inputRef, setValidation } =
+  const { validationRef, inputRef } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
 
