@@ -63,7 +63,7 @@ msgstr "No"
 #: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
 #: components/SearchDialog/SelectRecordSet.tsx:133
-#: components/SearchDialog/index.tsx:235
+#: components/SearchDialog/index.tsx:236
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:91
 #: components/Security/Role.tsx:195
@@ -228,14 +228,14 @@ msgstr "Crear"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:588
+#: components/QueryComboBox/index.tsx:584
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
 #: components/SchemaConfig/Languages.tsx:33
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
-#: components/SearchDialog/index.tsx:363
+#: components/SearchDialog/index.tsx:364
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:456
@@ -442,7 +442,7 @@ msgstr "Herramientas"
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
-#: components/SearchDialog/index.tsx:297
+#: components/SearchDialog/index.tsx:298
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
 #: components/Security/CollectionRole.tsx:233
@@ -508,9 +508,9 @@ msgstr "Eliminar"
 #: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:138
 #: components/HomePage/index.tsx:33
-#: components/SearchDialog/index.tsx:247
-#: components/SearchDialog/index.tsx:252
-#: components/SearchDialog/index.tsx:351
+#: components/SearchDialog/index.tsx:248
+#: components/SearchDialog/index.tsx:253
+#: components/SearchDialog/index.tsx:352
 #: components/WbUtils/index.tsx:60
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 msgid "search"
@@ -518,7 +518,7 @@ msgstr "Buscar"
 
 #: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
-#: components/SearchDialog/index.tsx:299
+#: components/SearchDialog/index.tsx:300
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 msgid "noResults"
 msgstr "Sin resultados"
@@ -554,7 +554,7 @@ msgstr "Nuevo"
 #: components/FormMeta/index.tsx:99
 #: components/FormMeta/index.tsx:101
 #: components/Forms/ResourceView.tsx:223
-#: components/Molecules/ResourceLink.tsx:134
+#: components/Molecules/ResourceLink.tsx:140
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
 #: components/SchemaConfig/Format.tsx:270
@@ -620,7 +620,7 @@ msgstr "Fecha completa"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/Molecules/ResourceLink.tsx:65
+#: components/Molecules/ResourceLink.tsx:70
 #: components/TreeView/Actions.tsx:122
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 msgid "view"
@@ -898,7 +898,7 @@ msgid "reset"
 msgstr "Reiniciar"
 
 #: components/FormEditor/Create.tsx:210
-#: components/SearchDialog/index.tsx:372
+#: components/SearchDialog/index.tsx:373
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 msgid "select"
 msgstr "Seleccionar"
