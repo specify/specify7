@@ -335,8 +335,8 @@ msgstr "зберегти"
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:462
-#: components/SchemaConfig/Format.tsx:289
-#: components/SchemaConfig/Format.tsx:337
+#: components/SchemaConfig/Format.tsx:288
+#: components/SchemaConfig/Format.tsx:336
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
@@ -557,8 +557,8 @@ msgstr "новий"
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
-#: components/SchemaConfig/Format.tsx:268
-#: components/SchemaConfig/Format.tsx:324
+#: components/SchemaConfig/Format.tsx:267
+#: components/SchemaConfig/Format.tsx:323
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:154
 #: components/Security/UserComponents.tsx:158
