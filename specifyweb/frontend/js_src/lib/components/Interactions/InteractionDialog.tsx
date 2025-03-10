@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
@@ -30,11 +31,13 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl } from '../DataModel/resource';
+import { getResourceViewUrl, resourceFromUrl } from '../DataModel/resource';
+import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
+  CollectionObjectType,
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
@@ -201,10 +204,22 @@ export function InteractionDialog({
       })),
     });
 
+    const [collectionHasSeveralTypes] = useAsyncState(
+      React.useCallback(
+        async () =>
+          fetchDomain.then(async (schema) => Object.keys(schema.collectionObjectTypeCatalogNumberFormats).length > 1),
+        []
+      ),
+      false
+    );
+
   function handleParse(): RA<string> | undefined {
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
+
+    const form = parser.parser?.(split(catalogNumbers)[0])
+    console.log(form)
 
     const parsed = f.unique(
       (parseResults as RA<ValidParseResult>)
