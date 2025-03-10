@@ -13,16 +13,20 @@ export function QueryToolbar({
   showHiddenFields,
   tableName,
   isDistinct,
+  searchSynonymy,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
+  onToggleSearchSynonymy: handleToggleSearchSynonymy,
   onRunCountOnly: handleRunCountOnly,
   onSubmitClick: handleSubmitClick,
 }: {
   readonly showHiddenFields: boolean;
   readonly tableName: keyof Tables;
   readonly isDistinct: boolean;
+  readonly searchSynonymy: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
+  readonly onToggleSearchSynonymy: () => void;
   readonly onRunCountOnly: () => void;
   readonly onSubmitClick: () => void;
 }): JSX.Element {
@@ -49,6 +53,15 @@ export function QueryToolbar({
                 onChange={handleToggleDistinct}
               />
               {queryText.distinct()}
+            </Label.Inline>
+          )}
+          {isTreeTable(tableName) && (
+            <Label.Inline>
+              <Input.Checkbox
+                checked={searchSynonymy}
+                onChange={handleToggleSearchSynonymy}
+              />
+              {queryText.searchSynonyms()}
             </Label.Inline>
           )}
           <Button.Small onClick={handleRunCountOnly}>
