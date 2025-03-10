@@ -1,6 +1,7 @@
 import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
+import { userInformation } from '../InitialContext/userInformation';
 import { getTablePermissions } from '../Permissions';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
@@ -25,6 +26,13 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     schema.domainLevelIds === undefined
   )
     return;
+
+  if (resource.isNew())
+    resource.set(
+      'createdByAgent',
+      // @ts-expect-error setting this value is fine as `createdByAgent` exists on every table
+      getResourceApiUrl('Agent', userInformation.agent.id)
+    );
 
   const scoping = getScopingResource(resource.specifyTable);
   if (scoping === undefined) return;
