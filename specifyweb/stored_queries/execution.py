@@ -572,7 +572,7 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
-            return {'results': series_post_query(query, sort_type=cat_num_sort_type)}
+            return {'results': series_post_query(query, sort_type=cat_num_sort_type)[:limit]}
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
