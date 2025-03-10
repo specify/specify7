@@ -4,7 +4,7 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { f } from '../../utils/functools';
+import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -26,21 +26,6 @@ type SimpleFormatter = {
 type FormatterWithCOTs = SimpleFormatter & {
   readonly cotNames: readonly string[];
 };
-
-export const formatterSeparator = '|||';
-
-export function createCompositeFormatter(name: string, index: number): string {
-  return `${name}${formatterSeparator}${index}`;
-}
-
-export function parseFormatterValue(value: string): { readonly name: string; readonly index: number } | null {
-  const [name, indexString] = value.split(formatterSeparator);
-  const index = f.parseInt(indexString);
-  
-  if (!name || index === undefined) return null;
-  
-  return { name, index };
-}
 
 export function QueryFieldRecordFormatter({
   type,
@@ -176,23 +161,8 @@ function FormatSelect({
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+  
   const id = useId('formatters-selection');
-
-  const compositeValue = React.useMemo(() => {
-    if (availableFormatters && availableFormatters.length > 0) {
-      if (selectedIndex !== null && availableFormatters[selectedIndex]) {
-        return createCompositeFormatter(availableFormatters[selectedIndex].name, selectedIndex);
-      }
-      const foundIndex = availableFormatters.findIndex(
-        (f) => f.name === currentFormat
-      );
-      if (foundIndex !== -1) {
-        return createCompositeFormatter(availableFormatters[foundIndex].name, foundIndex);
-      }
-    }
-    return '';
-  }, [selectedIndex, availableFormatters, currentFormat]);
 
   return availableFormatters === undefined ? (
     typeof currentFormat === 'string' ? (
@@ -224,19 +194,13 @@ function FormatSelect({
             className={customSelectElementBackground}
             disabled={handleChange === undefined}
             id={id('list')}
-            value={compositeValue}
-            onValueChange={(value) => {
-              const parsed = parseFormatterValue(value);
-              const index = parsed?.index ?? null;
-              const name = parsed?.name ?? value;
-              setSelectedIndex(index);
-              handleChange?.(name);
-            }}
+            value={currentFormat}
+            onValueChange={handleChange}
           >
             <option value="" />
             {availableFormatters.map((formatter, index) => (
-              <option key={index} value={createCompositeFormatter(formatter.name, index)}>
-                {formatter.title}
+              <option key={index} value={formatter.name}>
+                {`${formatter.title}${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
             {currentFormat !== undefined &&
