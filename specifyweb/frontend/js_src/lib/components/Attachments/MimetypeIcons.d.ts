@@ -1,8 +1,7 @@
 // Support importing SVG files as strings
 
 declare module '*.svg' {
+  const content: string;
 
-    const content: string;
-  
-    export default content;
-}  
+  export default content;
+}
