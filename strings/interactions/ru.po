@@ -13,10 +13,10 @@ msgstr ""
 "X-Generator: Weblate 5.7-dev\n"
 
 #: components/FormCommands/ShowTransactions.tsx:119
-#: components/Header/menuItemDefinitions.ts:60
+#: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:60
-#: components/Preferences/UserDefinitions.tsx:613
-#: components/Router/OverlayRoutes.tsx:86
+#: components/Preferences/UserDefinitions.tsx:614
+#: components/Router/OverlayRoutes.tsx:87
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "interactions"

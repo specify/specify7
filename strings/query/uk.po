@@ -12,6 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.9-dev\n"
 
+#: components/Preferences/UserDefinitions.tsx:2031
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
@@ -19,12 +20,12 @@ msgstr ""
 #: components/TreeView/Actions.tsx:91
 #: components/TreeView/Actions.tsx:102
 #: components/TreeView/Actions.tsx:108
-#. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Запит"
 
-#: components/Header/menuItemDefinitions.ts:72
-#: components/Router/OverlayRoutes.tsx:113
+#: components/Header/menuItemDefinitions.ts:73
+#: components/Router/OverlayRoutes.tsx:114
 #: components/Toolbar/Query.tsx:78
 #: components/Toolbar/Query.tsx:219
 #: components/Toolbar/Query.tsx:221
@@ -33,7 +34,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1547
+#: components/Preferences/UserDefinitions.tsx:1548
 #: components/SearchDialog/index.tsx:238
 #: components/SearchDialog/index.tsx:380
 #: components/Security/registry.ts:210
@@ -43,7 +44,7 @@ msgstr "Конструктор запитів"
 
 #: components/QueryBuilder/Export.tsx:103
 #: components/QueryBuilder/index.tsx:128
-#: components/Router/OverlayRoutes.tsx:128
+#: components/Router/OverlayRoutes.tsx:129
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
@@ -99,7 +100,7 @@ msgstr "Визначення запиту містить незаповнені 
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#: components/QueryBuilder/Wrapped.tsx:181
+#: components/QueryBuilder/Wrapped.tsx:183
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
@@ -161,7 +162,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:465
+#: components/QueryBuilder/Wrapped.tsx:467
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
@@ -188,7 +189,7 @@ msgstr "Створіть KML"
 
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
-#: components/WorkBench/RecordSet.tsx:35
+#: components/WorkBench/RecordSet.tsx:38
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
 msgstr "Створити {modelName:string}"
@@ -338,7 +339,7 @@ msgstr "в"
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1408
+#: components/Preferences/UserDefinitions.tsx:1409
 #: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -354,7 +355,7 @@ msgstr "Порожній"
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1404
+#: components/Preferences/UserDefinitions.tsx:1405
 #: components/QueryBuilder/FieldFilter.tsx:537
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"

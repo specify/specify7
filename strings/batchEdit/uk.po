@@ -1,0 +1,122 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/BatchEdit/index.tsx:135
+#: components/Header/menuItemDefinitions.ts:115
+#: components/Preferences/UserDefinitions.tsx:2028
+#: components/Router/OverlayRoutes.tsx:246
+#: components/WbUtils/datasetVariants.tsx:89
+#: components/WbUtils/datasetVariants.tsx:104
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+msgid "batchEdit"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2034
+#. Used in: Components > Preferences > User Definitions
+msgid "numberOfRecords"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:295
+#. Used in: Components > Batch Edit > Index
+msgid "removeField"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:313
+#. Used in: Components > Batch Edit > Index
+msgid "addTreeRank"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:121
+#. Used in: Components > Batch Edit > Index
+msgid "datasetName"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:276
+#. Used in: Components > Batch Edit > Index
+msgid "errorInQuery"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:110
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "createUpdateDataSetInstructions"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2049
+#. Used in: Components > Preferences > User Definitions
+msgid "showRollback"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2054
+#. Used in: Components > Preferences > User Definitions
+msgid "showRollbackDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:115
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commit"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:120
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "startCommitDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:124
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "startRevertDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:125
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitSuccessfulDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:126
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "dateSetRevertDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:127
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "committing"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:128
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "beStatusCommit"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:116
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "startCommit"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:117
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitErrors"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:119
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitErrorsDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:118
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitCancelled"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:121
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitCancelledDescription"
+msgstr ""
+
+#: components/WbUtils/datasetVariants.tsx:129
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "commitSuccessful"
+msgstr ""
+
+#: components/WorkBench/RecordSet.tsx:73
+#. Used in: Components > Work Bench > Record Set
+msgid "batchEditRecordSetName"
+msgstr ""

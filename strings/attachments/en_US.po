@@ -1,15 +1,15 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:139
-#: components/Attachments/RecordSetAttachment.tsx:141
+#: components/Attachments/RecordSetAttachment.tsx:145
+#: components/Attachments/RecordSetAttachment.tsx:147
 #: components/Attachments/index.tsx:161
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
-#: components/Header/menuItemDefinitions.ts:98
+#: components/Header/menuItemDefinitions.ts:99
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
-#: components/Preferences/UserDefinitions.tsx:1300
+#: components/Preferences/UserDefinitions.tsx:1301
 #: components/Router/Routes.tsx:182
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
@@ -36,7 +36,7 @@ msgstr "Setup your attachment server"
 
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1287
+#: components/Preferences/UserDefinitions.tsx:1288
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Order By"
@@ -47,18 +47,18 @@ msgid "uploadingInline"
 msgstr "Uploading…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:149
+#: components/Attachments/RecordSetAttachment.tsx:155
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "There are no attachments"
 
-#: components/Attachments/Cell.tsx:149
+#: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "Unable to find related record"
 
-#: components/Attachments/Cell.tsx:152
+#: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Unable to find a record that this attachment is related to."
@@ -89,7 +89,7 @@ msgstr "Deleted"
 msgid "noFile"
 msgstr "No File"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:169
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "pleaseReselectAllFiles"
 msgstr "Please reselect all files before uploading."
@@ -224,12 +224,12 @@ msgstr ""
 msgid "noMatch"
 msgstr "No match"
 
-#: components/Attachments/RecordSetAttachment.tsx:152
+#: components/Attachments/RecordSetAttachment.tsx:158
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No attachments have been found in the first {halt:number} records."
 
-#: components/Attachments/RecordSetAttachment.tsx:160
+#: components/Attachments/RecordSetAttachment.tsx:166
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Look for more attachments"
@@ -244,12 +244,12 @@ msgstr "Hide Form"
 msgid "multipleMatches"
 msgstr "Multiple matches"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:81
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
 msgstr "Multiple Matches. Click To Disambiguate"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "totalFiles"
 msgstr "Total files"
@@ -264,7 +264,7 @@ msgstr "Correctly Formatted"
 msgid "stoppedByUser"
 msgstr "Stopped By User"
 
-#: components/Router/OverlayRoutes.tsx:228
+#: components/Router/OverlayRoutes.tsx:229
 #. Used in: Components > Router > Overlay Routes
 msgid "importAttachments"
 msgstr "Import Attachments"
@@ -301,12 +301,12 @@ msgstr "Error saving record"
 msgid "interruptionStopped"
 msgstr "Stopped because of error uploading a previous file"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "chooseFilesToGetStarted"
 msgstr "Choose files or drag them here to get started."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "selectIdentifier"
 msgstr "Select an identifier to match the files name against."
@@ -343,13 +343,13 @@ msgstr ""
 "Error Uploading Attachment. Attachment server maybe unavailable or there "
 "was an error reading the file."
 
-#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:84
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAll"
 msgstr "Download All"
 
-#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/RecordSetAttachment.tsx:124
 #: components/FormSliders/AttachmentsCollection.tsx:79
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAllDescription"

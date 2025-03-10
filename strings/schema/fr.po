@@ -30,7 +30,7 @@ msgstr "Tableau"
 msgid "tables"
 msgstr "les tables"
 
-#: components/Preferences/UserDefinitions.tsx:780
+#: components/Preferences/UserDefinitions.tsx:781
 #: components/WbPlanView/MapperComponents.tsx:446
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -44,7 +44,7 @@ msgid "withoutTable"
 msgstr "Sans tableau"
 
 #: components/Header/userToolDefinitions.ts:61
-#: components/Preferences/UserDefinitions.tsx:723
+#: components/Preferences/UserDefinitions.tsx:724
 #: components/Router/Routes.tsx:373
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
@@ -351,7 +351,7 @@ msgstr "Champ d'identification"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Règles d'unicité"
 
-#: components/Router/OverlayRoutes.tsx:236
+#: components/Router/OverlayRoutes.tsx:237
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #, fuzzy

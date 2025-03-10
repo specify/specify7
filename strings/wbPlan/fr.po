@@ -11,22 +11,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1864
+#: components/Preferences/UserDefinitions.tsx:1865
 #: components/WbToolkit/DevShowPlan.tsx:111
-#: components/WorkBench/WbView.tsx:192
+#: components/WorkBench/WbView.tsx:196
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "dataMapper"
 msgstr "Mappeur de données"
 
-#: components/WbActions/WbNoUploadPlan.tsx:48
+#: components/WbActions/WbNoUploadPlan.tsx:49
 #: components/WbPlanView/State.tsx:35
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #, fuzzy
 msgid "noUploadPlan"
 msgstr "Aucun plan de téléchargement n'est défini"
 
-#: components/WbActions/WbNoUploadPlan.tsx:51
+#: components/WbActions/WbNoUploadPlan.tsx:52
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #, fuzzy
 msgid "noUploadPlanDescription"
@@ -34,8 +34,8 @@ msgstr ""
 "Aucun plan de téléchargement n'a été défini pour cet ensemble de données. "
 "En créer un maintenant ?"
 
-#: components/WorkBench/hotProps.tsx:144
-#: components/WorkBench/hotProps.tsx:146
+#: components/WorkBench/hotProps.tsx:148
+#: components/WorkBench/hotProps.tsx:150
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"
@@ -439,14 +439,14 @@ msgstr "Nouvelle colonne {index:number}"
 msgid "noHeader"
 msgstr "(aucun en-tête)"
 
-#: components/Toolbar/WbsDialog.tsx:207
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:73
+#. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "copyPlan"
 msgstr "Copier le plan à partir d'un ensemble de données existant"
 
-#: components/Toolbar/WbsDialog.tsx:219
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:74
+#. Used in: Components > Wb Utils > Dataset Variants
 #, fuzzy
 msgid "noPlansToCopyFrom"
 msgstr ""

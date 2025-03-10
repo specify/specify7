@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.4-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Preferences/UserDefinitions.tsx:707
+#: components/Preferences/UserDefinitions.tsx:708
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Forms"
@@ -181,14 +181,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1119
+#: components/Preferences/UserDefinitions.tsx:1120
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1123
+#: components/Preferences/UserDefinitions.tsx:1124
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -605,7 +605,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1130
+#: components/Preferences/UserDefinitions.tsx:1131
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"

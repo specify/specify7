@@ -29,20 +29,20 @@ msgid "currentCollection"
 msgstr "Derzeitige {collectionTable:string}"
 
 #: components/DataEntryTables/index.tsx:44
-#: components/Header/menuItemDefinitions.ts:42
-#: components/Router/OverlayRoutes.tsx:70
+#: components/Header/menuItemDefinitions.ts:43
+#: components/Router/OverlayRoutes.tsx:71
 #. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
 msgstr "Datenerfassung"
 
 #: components/Header/userToolDefinitions.ts:99
-#: components/Router/OverlayRoutes.tsx:181
+#: components/Router/OverlayRoutes.tsx:182
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "DwC-Archiv erstellen"
 
 #: components/Header/userToolDefinitions.ts:105
-#: components/Router/OverlayRoutes.tsx:189
+#: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "RSS-Feed aktualisieren"
@@ -109,7 +109,7 @@ msgid "createReport"
 msgstr "Neuen Bericht erstellen"
 
 #: components/Header/userToolDefinitions.ts:83
-#: components/Router/OverlayRoutes.tsx:165
+#: components/Router/OverlayRoutes.tsx:166
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
@@ -152,7 +152,7 @@ msgstr "Metadatenressource"
 
 #: components/Header/ExpressSearchTask.tsx:53
 #: components/Header/ExpressSearchTask.tsx:124
-#: components/Router/OverlayRoutes.tsx:50
+#: components/Router/OverlayRoutes.tsx:51
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
@@ -176,7 +176,7 @@ msgstr "Menü-Einträge"
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
 #: components/Preferences/Renderers.tsx:121
-#: components/Router/OverlayRoutes.tsx:42
+#: components/Router/OverlayRoutes.tsx:43
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 msgid "userTools"
 msgstr "Benutzerwerkzeuge"
@@ -233,10 +233,11 @@ msgstr "Operations-API"
 #: components/AppResources/Create.tsx:97
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:234
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
 #: components/Header/userToolDefinitions.ts:119
-#: components/Preferences/UserDefinitions.tsx:542
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:543
+#: components/Toolbar/WbsDialog.tsx:225
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Dokumentation"
 

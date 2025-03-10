@@ -11,28 +11,28 @@ msgstr ""
 "X-Generator: Weblate 5.3\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Preferences/UserDefinitions.tsx:1864
+#: components/Preferences/UserDefinitions.tsx:1865
 #: components/WbToolkit/DevShowPlan.tsx:111
-#: components/WorkBench/WbView.tsx:192
+#: components/WorkBench/WbView.tsx:196
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Mapeador de Datos"
 
-#: components/WbActions/WbNoUploadPlan.tsx:48
+#: components/WbActions/WbNoUploadPlan.tsx:49
 #: components/WbPlanView/State.tsx:35
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "noUploadPlan"
 msgstr "No hay definido ningún plan de carga"
 
-#: components/WbActions/WbNoUploadPlan.tsx:51
+#: components/WbActions/WbNoUploadPlan.tsx:52
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 msgid "noUploadPlanDescription"
 msgstr ""
 "No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear "
 "uno ahora?"
 
-#: components/WorkBench/hotProps.tsx:144
-#: components/WorkBench/hotProps.tsx:146
+#: components/WorkBench/hotProps.tsx:148
+#: components/WorkBench/hotProps.tsx:150
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Columna no asignada"
@@ -366,13 +366,13 @@ msgstr "Nueva Columna {index:number}"
 msgid "noHeader"
 msgstr "(sin encabezado)"
 
-#: components/Toolbar/WbsDialog.tsx:207
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:73
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "copyPlan"
 msgstr "Copie el plan del conjunto de datos existente"
 
-#: components/Toolbar/WbsDialog.tsx:219
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:74
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "noPlansToCopyFrom"
 msgstr "No hay planes disponibles, continúe creando un plan de carga."
 

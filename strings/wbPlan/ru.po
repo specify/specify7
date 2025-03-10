@@ -1,26 +1,26 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1864
+#: components/Preferences/UserDefinitions.tsx:1865
 #: components/WbToolkit/DevShowPlan.tsx:111
-#: components/WorkBench/WbView.tsx:192
+#: components/WorkBench/WbView.tsx:196
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Сопоставления"
 
-#: components/WbActions/WbNoUploadPlan.tsx:48
+#: components/WbActions/WbNoUploadPlan.tsx:49
 #: components/WbPlanView/State.tsx:35
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "noUploadPlan"
 msgstr "План загрузки не определен"
 
-#: components/WbActions/WbNoUploadPlan.tsx:51
+#: components/WbActions/WbNoUploadPlan.tsx:52
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/hotProps.tsx:144
-#: components/WorkBench/hotProps.tsx:146
+#: components/WorkBench/hotProps.tsx:148
+#: components/WorkBench/hotProps.tsx:150
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
@@ -353,13 +353,13 @@ msgstr "Новый столбец {index:number}"
 msgid "noHeader"
 msgstr "(нет заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:207
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:73
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "copyPlan"
 msgstr "Копировать план из существующего набора данных"
 
-#: components/Toolbar/WbsDialog.tsx:219
-#. Used in: Components > Toolbar > Wbs Dialog
+#: components/WbUtils/datasetVariants.tsx:74
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "noPlansToCopyFrom"
 msgstr "Нет доступных планов, продолжайте создавать план загрузки."
 
