@@ -42,17 +42,19 @@ export function useTypeSearch(
       else if (relatedTable === undefined) return false;
 
       const customSearches = await typeSearchesCustom;
-      let found = customSearches.find(({ name }) => name === initialTypeSearch) ??
+      let found =
+        customSearches.find(({ name }) => name === initialTypeSearch) ??
         customSearches.find(({ table }) => table === relatedTable);
 
       // If not found in custom, proceed with typeSearchesDefault
       if (!found) {
         const defaultSearches = await typeSearchesDefault;
-        found = defaultSearches.find(({ name }) => name === initialTypeSearch) ??
+        found =
+          defaultSearches.find(({ name }) => name === initialTypeSearch) ??
           defaultSearches.find(({ table }) => table === relatedTable);
       }
 
-      return found ?? false;    
+      return found ?? false;
     }, [initialTypeSearch, relatedTable]),
     false
   );
