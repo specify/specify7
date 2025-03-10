@@ -14,37 +14,57 @@ class UploadResultsTests(unittest.TestCase):
     @given(uploaded=infer)
     def testUploaded(self, uploaded: Uploaded):
         j = json.dumps(uploaded.to_json())
-        self.assertEqual(uploaded, json_to_Uploaded(json.loads(j)))
+        self.assertEqual(uploaded, Uploaded.from_json(json.loads(j)))
 
     @given(matched=infer)
     def testMatched(self, matched: Matched):
         j = json.dumps(matched.to_json())
-        self.assertEqual(matched, json_to_Matched(json.loads(j)))
+        self.assertEqual(matched, Matched.from_json(json.loads(j)))
 
     @given(matchedMultiple=infer)
     def testMatchedMultiple(self, matchedMultiple: MatchedMultiple):
         j = json.dumps(matchedMultiple.to_json())
-        self.assertEqual(matchedMultiple, json_to_MatchedMultiple(json.loads(j)))
+        self.assertEqual(matchedMultiple, MatchedMultiple.from_json(json.loads(j)))
 
     @given(nullRecord=infer)
     def testNullRecord(self, nullRecord: NullRecord):
         j = json.dumps(nullRecord.to_json())
-        self.assertEqual(nullRecord, json_to_NullRecord(json.loads(j)))
+        self.assertEqual(nullRecord, NullRecord.from_json(json.loads(j)))
 
     @given(failedBusinessRule=infer)
     def testFailedBusinessRule(self, failedBusinessRule: FailedBusinessRule):
         j = json.dumps(failedBusinessRule.to_json())
-        self.assertEqual(failedBusinessRule, json_to_FailedBusinessRule(json.loads(j)))
+        self.assertEqual(failedBusinessRule, FailedBusinessRule.from_json(json.loads(j)))
 
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):
         j = json.dumps(noMatch.to_json())
-        self.assertEqual(noMatch, json_to_NoMatch(json.loads(j)))
+        self.assertEqual(noMatch, NoMatch.from_json(json.loads(j)))
 
     @given(parseFailures=infer)
     def testParseFailures(self, parseFailures: ParseFailures):
         j = json.dumps(parseFailures.to_json())
-        self.assertEqual(parseFailures, json_to_ParseFailures(json.loads(j)))
+        self.assertEqual(parseFailures, ParseFailures.from_json(json.loads(j)))
+
+    @given(noChange=infer)
+    def testNoChange(self, noChange: NoChange):
+        j = json.dumps(noChange.to_json())
+        self.assertEqual(noChange, NoChange.from_json(json.loads(j)))
+
+    @given(updated=infer)
+    def testUpdated(self, updated: Updated):
+        j = json.dumps(updated.to_json())
+        self.assertEqual(updated, Updated.from_json(json.loads(j)))
+
+    @given(deleted=infer)
+    def testDeleted(self, deleted: Deleted):
+        j = json.dumps(deleted.to_json())
+        self.assertEqual(deleted, Deleted.from_json(json.loads(j)))
+
+    @given(matchedAndChanged=infer)
+    def testMatchedAndChanged(self, matchedAndChanged: MatchedAndChanged):
+        j = json.dumps(matchedAndChanged.to_json())
+        self.assertEqual(matchedAndChanged, MatchedAndChanged.from_json(json.loads(j)))
 
     @settings(suppress_health_check=[HealthCheck.too_slow])
     @given(record_result=infer, toOne=infer, toMany=infer)
@@ -58,7 +78,7 @@ class UploadResultsTests(unittest.TestCase):
         j = json.dumps(d)
         e = json.loads(j)
         validate([e], schema)
-        self.assertEqual(uploadResult, json_to_UploadResult(e))
+        self.assertEqual(uploadResult, UploadResult.from_json(e))
 
     def testUploadResultExplicit(self):
         failed_bussiness_rule: FailedBusinessRule = FailedBusinessRule(
@@ -84,9 +104,8 @@ class UploadResultsTests(unittest.TestCase):
             toMany={k: [UploadResult(v, {}, {}) for v in vs] for k, vs in toMany.items()}
         )
         d = uploadResult.to_json()
-        print(d)
         j = json.dumps(d)
         e = json.loads(j)
         validate([e], schema) 
-        self.assertEqual(uploadResult, json_to_UploadResult(e))
+        self.assertEqual(uploadResult, UploadResult.from_json(e))
 
