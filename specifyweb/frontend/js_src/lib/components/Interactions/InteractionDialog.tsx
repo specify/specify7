@@ -15,6 +15,7 @@ import {
   resolveParser,
 } from '../../utils/parser/definitions';
 import type {
+  InvalidParseResult,
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
@@ -102,7 +103,7 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const { validationRef, inputRef } =
+  const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
 
@@ -218,8 +219,28 @@ export function InteractionDialog({
       parseValue(parser, inputRef.current ?? undefined, value)
     );
 
-    const form = parser.parser?.(split(catalogNumbers)[0])
-    console.log(form)
+    const errorMessages = parseResults
+    .filter((result): result is InvalidParseResult => !result.isValid)
+    .map(({ reason, value }) => `${reason} (${value})`);
+
+    if (errorMessages.length > 0 && collectionHasSeveralTypes === false) {
+      setValidation(errorMessages);
+      setState({
+        type: 'InvalidState',
+        invalid: errorMessages,
+      });
+      return undefined;
+    }
+
+    if (collectionHasSeveralTypes === true) {
+      const parsedCatNumber = (split(catalogNumbers).map((catalogNumber) => parser.parser?.(catalogNumber) ?? catalogNumber))
+
+      setCatalogNumbers(parsedCatNumber.join('\n'))
+
+      setState({ type: 'MainState' });
+
+      return(parsedCatNumber.map((cat) => (cat as number | string).toString()))
+    }
 
     const parsed = f.unique(
       (parseResults as RA<ValidParseResult>)
@@ -227,6 +248,7 @@ export function InteractionDialog({
         .map(({ parsed }) => (parsed as number | string).toString())
         .sort(sortFunction(f.id))
     );
+
     setCatalogNumbers(parsed.join('\n'));
 
     setState({ type: 'MainState' });
