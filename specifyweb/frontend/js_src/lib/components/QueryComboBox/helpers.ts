@@ -272,10 +272,7 @@ export function useQueryComboBoxDefaults({
     const record = toTable(resource, 'RecordSet');
     record?.set(
       'specifyUser',
-      record?.get('specifyUser') ?? userInformation.resource_uri,
-      {
-        silent: true,
-      }
+      record?.get('specifyUser') ?? userInformation.resource_uri
     );
   } else if (field.name === 'receivedBy') {
     const record = toTable(resource, 'LoanReturnPreparation');
