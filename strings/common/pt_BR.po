@@ -766,7 +766,7 @@ msgstr ""
 msgid "searchQuery"
 msgstr ""
 
-#: components/Attachments/attachments.ts:77
+#: components/Attachments/attachments.ts:112
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
