@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0023_update_schema_config_text'),
+        ('specify', '0025_alter_collectionobjectgroupjoin_childco'),
     ]
 
     operations = [
