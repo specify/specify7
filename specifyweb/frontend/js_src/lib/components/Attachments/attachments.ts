@@ -3,6 +3,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -11,6 +12,7 @@ import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
+import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
@@ -149,6 +151,9 @@ export async function fetchThumbnail(
   };
 }
 
+export const cleanAttachmentDownloadName = (origFilename: string): string =>
+  origFilename.replace(/^.*[/\\]/u, '');
+
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
   token: string | undefined
@@ -158,7 +163,9 @@ export const formatAttachmentUrl = (
         coll: settings.collection,
         type: 'O',
         fileName: attachment.attachmentLocation,
-        downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
+        downloadName: attachment.origFilename
+          ? cleanAttachmentDownloadName(attachment.origFilename)
+          : undefined,
         token,
       })
     : undefined;
@@ -267,5 +274,64 @@ function fixMimeType(originalMimeType: string): string {
         ` to "${mimeType}" due to length limit`
     );
     return mimeType;
+  }
+}
+
+export function downloadAttachment(
+  attachment: SerializedResource<Attachment>
+): void {
+  fetchOriginalUrl(attachment).then((url) => {
+    if (typeof url === 'string') {
+      const fileName = cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      );
+      downloadFile(
+        fileName,
+        `/attachment_gw/proxy/${new URL(url).search}`,
+        true
+      );
+    }
+  });
+}
+
+export async function downloadAllAttachments(
+  attachments: readonly SerializedResource<Attachment>[],
+  archiveName?: string
+): Promise<void> {
+  if (attachments.length === 0) return;
+  if (attachments.length === 1) {
+    downloadAttachment(attachments[0]);
+    return;
+  }
+
+  const attachmentLocations = attachments
+    .map((attachment) => attachment.attachmentLocation)
+    .filter((name): name is string => name !== null);
+  const origFilenames = attachments
+    .map((attachment) =>
+      cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      )
+    )
+    .filter((name): name is string => name !== null);
+
+  const response = await ajax<Blob>('/attachment_gw/download_all/', {
+    method: 'POST',
+    body: keysToLowerCase({
+      attachmentLocations,
+      origFilenames,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/octet-stream',
+    },
+    errorMode: 'dismissible',
+  });
+
+  if (response.status === Http.OK) {
+    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
+    downloadFile(fileName, response.data);
+  } else {
+    throw new Error(`Attachment archive download failed: ${response}`);
   }
 }
