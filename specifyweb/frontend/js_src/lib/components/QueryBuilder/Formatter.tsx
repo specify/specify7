@@ -130,11 +130,16 @@ export function CatalogNumberFormatSelection({
               return map;
             }, new Map<string, FormatterWithCOTs>());
             
-            return Array.from(formattersMap.values(), ({ name, isDefault, cotNames }) => ({
-              name,
-              title: `Format As: ${cotNames.join(', ')}`,
-              isDefault
-            }));
+            return Array.from(formattersMap.values(), ({ name, isDefault, cotNames }) => {
+              const title = queryText.formatInputAs({
+                commaSeparatedFormats: cotNames.join(', '),
+              });
+              return {
+                name,
+                title,
+                isDefault
+              };
+            });
           }),
       []
     ),
