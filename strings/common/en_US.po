@@ -172,7 +172,7 @@ msgstr "Create"
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:335
-#: components/FormMeta/Definition.tsx:53
+#: components/FormMeta/Definition.tsx:73
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
 #: components/FormMeta/index.tsx:112
@@ -334,8 +334,8 @@ msgstr "Save"
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:462
-#: components/SchemaConfig/Format.tsx:288
-#: components/SchemaConfig/Format.tsx:336
+#: components/SchemaConfig/Format.tsx:291
+#: components/SchemaConfig/Format.tsx:339
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
@@ -556,8 +556,8 @@ msgstr "New"
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
-#: components/SchemaConfig/Format.tsx:267
-#: components/SchemaConfig/Format.tsx:323
+#: components/SchemaConfig/Format.tsx:270
+#: components/SchemaConfig/Format.tsx:326
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:154
 #: components/Security/UserComponents.tsx:158

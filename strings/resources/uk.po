@@ -24,8 +24,8 @@ msgstr "Ресурси програми"
 
 #: components/AppResources/Create.tsx:284
 #: components/FormEditor/Create.tsx:265
-#: components/FormMeta/Definition.tsx:29
-#: components/FormMeta/Definition.tsx:54
+#: components/FormMeta/Definition.tsx:31
+#: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:805
 #. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
