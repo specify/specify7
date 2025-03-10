@@ -14,12 +14,14 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
   response,
   errorMode,
   text,
+  data,
 }: {
   readonly expectedErrors: RA<number>;
   readonly accept: MimeType | undefined;
   readonly response: Response;
   readonly errorMode: AjaxErrorMode;
   readonly text: string;
+  readonly data?: unknown;
 }): AjaxResponseObject<RESPONSE_TYPE> {
   // BUG: silence all errors if the page begun reloading
   try {
@@ -49,6 +51,12 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
             statusText: `Failed parsing XML response: ${parsed}`,
             responseText: text,
           };
+      } else if (response.ok && accept === 'application/octet-stream') {
+        return {
+          data: data as unknown as RESPONSE_TYPE,
+          response,
+          status: response.status,
+        };
       } else
         return {
           // Assuming that RESPONSE_TYPE extends string
