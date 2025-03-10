@@ -63,33 +63,55 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  const iconMap: Record<string, { readonly alt: string; readonly src: string }> = {
+  const iconMap: Record<
+    string,
+    { readonly alt: string; readonly src: string }
+  > = {
     'application/json': { alt: 'json', src: applicationJsonIcon },
     'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
     'audio/x-generic': { alt: 'audio', src: audioXGenericIcon },
     'image/x-generic': { alt: 'image', src: imageXGenericIcon },
-    'model': { alt: 'model', src: modelIcon },
+    model: { alt: 'model', src: modelIcon },
     'text/html': { alt: 'html', src: textHtmlIcon },
     'text/xml': { alt: 'html', src: textHtmlIcon },
     'text/plain': { alt: 'text', src: textXGenericIcon },
     'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
     'application/x-yaml': { alt: 'yaml', src: textXMakefileIcon },
     'video/x-generic': { alt: 'video', src: videoXGenericIcon },
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { alt: 'MSWord', src: xOfficeDocumentIcon },
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { alt: 'MSExcel', src: xOfficeSpreadsheetIcon },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      alt: 'MSWord',
+      src: xOfficeDocumentIcon,
+    },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      alt: 'MSExcel',
+      src: xOfficeSpreadsheetIcon,
+    },
     'application/zip': { alt: 'zip', src: packageXgeneric },
   };
 
   return (
-    iconMap[mimeType] 
-    ?? (mimeType.startsWith('video/') ? { alt: 'video', src: videoXGenericIcon } : null)
-    ?? (mimeType.startsWith('audio/') ? { alt: 'audio', src: audioXGenericIcon } : null)
-    ?? (mimeType.startsWith('image/') ? { alt: 'image', src: imageXGenericIcon } : null)
-    ?? (mimeType.endsWith('presentation') || mimeType.includes('powerpoint') ? { alt: 'presentation', src: xOfficePresentationIcon } : null)
-    ?? (mimeType.includes('wordprocessing') || mimeType.endsWith('word') ? { alt: 'document', src: xOfficeDocumentIcon } : null)
-    ?? (mimeType == null ? { alt: 'image', src: textXGenericIcon } : null)
-    ?? { alt: commonText.unknown(), src: textXGenericIcon }
+    iconMap[mimeType] ??
+    (mimeType.startsWith('video/')
+      ? { alt: 'video', src: videoXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('audio/')
+      ? { alt: 'audio', src: audioXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('image/')
+      ? { alt: 'image', src: imageXGenericIcon }
+      : null) ??
+    (mimeType.endsWith('presentation') || mimeType.includes('powerpoint')
+      ? { alt: 'presentation', src: xOfficePresentationIcon }
+      : null) ??
+    (mimeType.includes('wordprocessing') || mimeType.endsWith('word')
+      ? { alt: 'document', src: xOfficeDocumentIcon }
+      : null) ??
+    (mimeType == null ? { alt: 'image', src: textXGenericIcon } : null) ?? {
+      alt: commonText.unknown(),
+      src: textXGenericIcon,
+    }
   );
 }
 
