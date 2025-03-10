@@ -3,6 +3,7 @@
  */
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -109,6 +110,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     icon: icons.chartBar,
     enabled: () => hasPermission('/querybuilder/query', 'execute'),
   },
+  batchEdit: {
+    url: '/specify/overlay/batch-edit',
+    title: batchEditText.batchEdit(),
+    icon: icons.table,
+  }
 } as const);
 
 export type MenuItemName = keyof typeof rawMenuItems | 'search';

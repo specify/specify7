@@ -1,4 +1,5 @@
 import type { IR } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { getSelectedLast } from './hotHelpers';
@@ -98,7 +99,7 @@ export class Disambiguation {
     if (Object.keys(disambiguation).length === 0)
       // Nothing to clear
       return;
-    this.changeDisambiguation(physicalRow, () => ({}), 'Disambiguation.Clear');
+    this.changeDisambiguation(physicalRow, (row) => removeKey(row, 'disambiguation'), 'Disambiguation.Clear');
   }
 
   public setDisambiguation(

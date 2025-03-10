@@ -213,6 +213,7 @@ export type SortConfigs = {
     | 'name'
     | 'timestampCreated'
     | 'timestampModified';
+  readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
 // Some circular types can't be expressed without interfaces

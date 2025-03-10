@@ -1,6 +1,8 @@
 import type Handsontable from 'handsontable';
 
 import type { RA, RR, WritableArray } from '../../utils/types';
+import { WbMapping } from './mapping';
+import { Dataset } from '../WbPlanView/Wrapped';
 
 export function getSelectedRegions(hot: Handsontable): RA<{
   readonly startRow: number;
@@ -82,3 +84,8 @@ export const setHotData = (
 ): void =>
   // eslint-disable-next-line functional/prefer-readonly-type
   hot.setDataAtCell(changes as WritableArray<[number, number, string | null]>);
+
+export const getPhysicalColToMappingCol = (mappings: WbMapping | undefined, dataset: Dataset) => (physicalCol: number): number | undefined =>
+  mappings?.lines.findIndex(
+    ({ headerName }) => headerName === dataset.columns[physicalCol]
+  );

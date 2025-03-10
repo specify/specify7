@@ -62,6 +62,7 @@ export function Navigation({
     if (totalCount === 0) setCurrentPosition(0);
   }, [totalCount]);
 
+  const isDisabled = !['newCells', 'searchResults', 'updatedCells', 'deletedCells'].includes(name) && isReadOnly;
   return (
     <span
       aria-atomic
@@ -71,7 +72,7 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
-        disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
+        disabled={isDisabled}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
       >
@@ -102,7 +103,7 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
-        disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
+        disabled={isDisabled}
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}
