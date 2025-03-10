@@ -127,6 +127,7 @@ function Field({
   return (
     <Input.Generic
       forwardRef={validationRef}
+      key={parser.title}
       name={name}
       {...validationAttributes}
       className={
