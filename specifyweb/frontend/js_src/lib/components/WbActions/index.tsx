@@ -222,16 +222,16 @@ export function WbActions({
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
-              ? wbText.rollbackCanceled()
-              : viewerLocalization.doCancelled
+                ? wbText.rollbackCanceled()
+                : viewerLocalization.doCancelled
           }
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : viewerLocalization.doCancelledDescription}
+              ? wbText.rollbackCanceledDescription()
+              : viewerLocalization.doCancelledDescription}
         </Dialog>
       )}
     </>

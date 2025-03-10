@@ -85,7 +85,9 @@ export const setHotData = (
   // eslint-disable-next-line functional/prefer-readonly-type
   hot.setDataAtCell(changes as WritableArray<[number, number, string | null]>);
 
-export const getPhysicalColToMappingCol = (mappings: WbMapping | undefined, dataset: Dataset) => (physicalCol: number): number | undefined =>
-  mappings?.lines.findIndex(
-    ({ headerName }) => headerName === dataset.columns[physicalCol]
-  );
+export const getPhysicalColToMappingCol =
+  (mappings: WbMapping | undefined, dataset: Dataset) =>
+  (physicalCol: number): number | undefined =>
+    mappings?.lines.findIndex(
+      ({ headerName }) => headerName === dataset.columns[physicalCol]
+    );
