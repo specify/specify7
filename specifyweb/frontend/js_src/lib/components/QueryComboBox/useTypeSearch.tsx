@@ -10,7 +10,14 @@ import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { TypeSearch } from './spec';
 import { typeSearchesSpec } from './spec';
 
-export const typeSearches = Promise.all([
+export const typeSearchesDefault = Promise.all([
+  load<Element>(getAppResourceUrl('TypeSearches', undefined, true), 'text/xml'),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
+]).then(([xml]) =>
+  filterArray(xmlToSpec(xml, typeSearchesSpec()).typeSearches)
+);
+
+export const typeSearchesCustom = Promise.all([
   load<Element>(getAppResourceUrl('TypeSearches'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([xml]) =>
@@ -28,16 +35,24 @@ export function useTypeSearch(
     (typeof initialTypeSearch === 'object'
       ? initialTypeSearch.table
       : undefined);
+
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(async () => {
       if (typeof initialTypeSearch === 'object') return initialTypeSearch;
       else if (relatedTable === undefined) return false;
-      return typeSearches.then(
-        (typeSearches) =>
-          typeSearches.find(({ name }) => name === initialTypeSearch) ??
-          typeSearches.find(({ table }) => table === relatedTable) ??
-          false
-      );
+
+      const customSearches = await typeSearchesCustom;
+      let found = customSearches.find(({ name }) => name === initialTypeSearch) ??
+        customSearches.find(({ table }) => table === relatedTable);
+
+      // If not found in custom, proceed with typeSearchesDefault
+      if (!found) {
+        const defaultSearches = await typeSearchesDefault;
+        found = defaultSearches.find(({ name }) => name === initialTypeSearch) ??
+          defaultSearches.find(({ table }) => table === relatedTable);
+      }
+
+      return found ?? false;    
     }, [initialTypeSearch, relatedTable]),
     false
   );
