@@ -36,7 +36,7 @@ msgstr "Non"
 #: components/FormCells/COJODialog.tsx:92
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
-#: components/FormSliders/RecordSelectorFromIds.tsx:269
+#: components/FormSliders/RecordSelectorFromIds.tsx:273
 #: components/Forms/DeleteButton.tsx:121
 #: components/Forms/DeleteButton.tsx:145
 #: components/Forms/ResourceView.tsx:361
@@ -148,10 +148,10 @@ msgstr "Créer"
 #: components/Atoms/__tests__/Submit.test.ts:9
 #: components/Atoms/__tests__/Submit.test.ts:10
 #: components/Atoms/__tests__/Submit.test.ts:11
-#: components/Attachments/Cell.tsx:126
+#: components/Attachments/Cell.tsx:148
 #: components/Attachments/ChronoChart.tsx:28
 #: components/Attachments/Dialog.tsx:63
-#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/RecordSetAttachment.tsx:129
 #: components/Attachments/index.tsx:53
 #: components/AttachmentsBulkImport/ActionState.tsx:43
 #: components/AttachmentsBulkImport/Datasets.tsx:137
@@ -192,7 +192,7 @@ msgstr "Créer"
 #: components/FormPlugins/PaleoLocation.tsx:88
 #: components/FormPlugins/index.tsx:198
 #: components/FormPlugins/index.tsx:267
-#: components/FormSliders/AttachmentsCollection.tsx:74
+#: components/FormSliders/AttachmentsCollection.tsx:87
 #: components/FormSliders/RecordSet.tsx:498
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
@@ -605,7 +605,7 @@ msgstr "Modifier"
 msgid "ignore"
 msgstr "Ignorer"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:278
+#: components/FormSliders/RecordSelectorFromIds.tsx:282
 #: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
@@ -766,7 +766,7 @@ msgstr "Pas de correspondance"
 msgid "searchQuery"
 msgstr "Requête de recherche"
 
-#: components/Attachments/attachments.ts:75
+#: components/Attachments/attachments.ts:77
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
@@ -998,7 +998,7 @@ msgstr "Aucun disponible"
 #: components/AppResources/Filters.tsx:100
 #: components/AppResources/Filters.tsx:116
 #: components/AppResources/Filters.tsx:142
-#: components/Attachments/RecordSetAttachment.tsx:122
+#: components/Attachments/RecordSetAttachment.tsx:140
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
 #: components/FormCells/FormTable.tsx:157

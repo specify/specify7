@@ -570,12 +570,12 @@ msgstr "Імпорт набору даних"
 msgid "wbImportHeader"
 msgstr "Імпортуйте файл, щоб створити новий набір даних"
 
-#: components/Molecules/FilePicker.tsx:265
+#: components/Molecules/FilePicker.tsx:277
 #. Used in: Components > Molecules > File Picker
 msgid "previewDataSet"
 msgstr "Попередній перегляд набору даних"
 
-#: components/Molecules/FilePicker.tsx:305
+#: components/Molecules/FilePicker.tsx:317
 #. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "Під час імпортування файлу виникли такі помилки:"
@@ -644,12 +644,12 @@ msgstr "Регістр сірників"
 msgid "chooseDataSetName"
 msgstr "Назва нового набору даних:"
 
-#: components/Molecules/FilePicker.tsx:242
+#: components/Molecules/FilePicker.tsx:254
 #. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
 msgstr "Перший рядок – заголовок:"
 
-#: components/Molecules/FilePicker.tsx:217
+#: components/Molecules/FilePicker.tsx:229
 #: components/Toolbar/WbsDialog.tsx:184
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"

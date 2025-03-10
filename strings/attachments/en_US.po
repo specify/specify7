@@ -1,11 +1,11 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:121
-#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/RecordSetAttachment.tsx:139
+#: components/Attachments/RecordSetAttachment.tsx:141
 #: components/Attachments/index.tsx:161
-#: components/FormSliders/AttachmentsCollection.tsx:65
-#: components/FormSliders/AttachmentsCollection.tsx:77
+#: components/FormSliders/AttachmentsCollection.tsx:68
+#: components/FormSliders/AttachmentsCollection.tsx:91
 #: components/Header/menuItemDefinitions.ts:98
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
@@ -47,18 +47,18 @@ msgid "uploadingInline"
 msgstr "Uploading…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:131
+#: components/Attachments/RecordSetAttachment.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "There are no attachments"
 
-#: components/Attachments/Cell.tsx:127
+#: components/Attachments/Cell.tsx:149
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "Unable to find related record"
 
-#: components/Attachments/Cell.tsx:130
+#: components/Attachments/Cell.tsx:152
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Unable to find a record that this attachment is related to."
@@ -224,12 +224,12 @@ msgstr ""
 msgid "noMatch"
 msgstr "No match"
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:152
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No attachments have been found in the first {halt:number} records."
 
-#: components/Attachments/RecordSetAttachment.tsx:142
+#: components/Attachments/RecordSetAttachment.tsx:160
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Look for more attachments"
@@ -342,3 +342,15 @@ msgid "attachmentUploadError"
 msgstr ""
 "Error Uploading Attachment. Attachment server maybe unavailable or there "
 "was an error reading the file."
+
+#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/FormSliders/AttachmentsCollection.tsx:84
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAll"
+msgstr "Download All"
+
+#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/FormSliders/AttachmentsCollection.tsx:79
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAllDescription"
+msgstr "Download all found attachments"

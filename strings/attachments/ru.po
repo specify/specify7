@@ -12,11 +12,11 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:121
-#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/RecordSetAttachment.tsx:139
+#: components/Attachments/RecordSetAttachment.tsx:141
 #: components/Attachments/index.tsx:161
-#: components/FormSliders/AttachmentsCollection.tsx:65
-#: components/FormSliders/AttachmentsCollection.tsx:77
+#: components/FormSliders/AttachmentsCollection.tsx:68
+#: components/FormSliders/AttachmentsCollection.tsx:91
 #: components/Header/menuItemDefinitions.ts:98
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
@@ -59,19 +59,19 @@ msgid "uploadingInline"
 msgstr "Закачивание…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:131
+#: components/Attachments/RecordSetAttachment.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "В вашей коллекции нет вложений"
 
-#: components/Attachments/Cell.tsx:127
+#: components/Attachments/Cell.tsx:149
 #. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecord"
 msgstr "Не удалось найти связанную запись"
 
-#: components/Attachments/Cell.tsx:130
+#: components/Attachments/Cell.tsx:152
 #. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
@@ -266,13 +266,13 @@ msgstr "Откат приведет к удалению вложений из б
 msgid "noMatch"
 msgstr "Не совпадает"
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:152
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "В первых записях {halt:number} вложений не обнаружено."
 
-#: components/Attachments/RecordSetAttachment.tsx:142
+#: components/Attachments/RecordSetAttachment.tsx:160
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"
@@ -407,3 +407,15 @@ msgid "attachmentUploadError"
 msgstr ""
 "Ошибка при загрузке вложения. Возможно, сервер вложений недоступен или "
 "произошла ошибка при чтении файла."
+
+#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/FormSliders/AttachmentsCollection.tsx:84
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAll"
+msgstr ""
+
+#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/FormSliders/AttachmentsCollection.tsx:79
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAllDescription"
+msgstr ""

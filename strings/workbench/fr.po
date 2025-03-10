@@ -598,12 +598,12 @@ msgstr "Importer un ensemble de données"
 msgid "wbImportHeader"
 msgstr "Importer un fichier pour créer un nouvel ensemble de données"
 
-#: components/Molecules/FilePicker.tsx:265
+#: components/Molecules/FilePicker.tsx:277
 #. Used in: Components > Molecules > File Picker
 msgid "previewDataSet"
 msgstr "Aperçu de l'ensemble de données"
 
-#: components/Molecules/FilePicker.tsx:305
+#: components/Molecules/FilePicker.tsx:317
 #. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "Les erreurs suivantes se sont produites lors de l'importation du fichier :"
@@ -674,12 +674,12 @@ msgstr "Déterminer automatiquement"
 msgid "chooseDataSetName"
 msgstr "Nom du nouvel ensemble de données :"
 
-#: components/Molecules/FilePicker.tsx:242
+#: components/Molecules/FilePicker.tsx:254
 #. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
 msgstr "La première ligne est l'en-tête :"
 
-#: components/Molecules/FilePicker.tsx:217
+#: components/Molecules/FilePicker.tsx:229
 #: components/Toolbar/WbsDialog.tsx:184
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"

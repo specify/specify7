@@ -28,12 +28,13 @@ msgid "exception"
 msgstr "Ошибка"
 
 #: components/AppResources/EditorComponents.tsx:159
+#: components/Attachments/Cell.tsx:82
 #: components/Attachments/Viewer.tsx:201
 #: components/LocalityUpdate/Status.tsx:393
 #: components/Notifications/NotificationRenderers.tsx:76
 #: components/Notifications/NotificationRenderers.tsx:104
 #: components/Notifications/NotificationRenderers.tsx:118
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "download"
 msgstr "Скачать"
 

@@ -11,11 +11,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.5-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:121
-#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/RecordSetAttachment.tsx:139
+#: components/Attachments/RecordSetAttachment.tsx:141
 #: components/Attachments/index.tsx:161
-#: components/FormSliders/AttachmentsCollection.tsx:65
-#: components/FormSliders/AttachmentsCollection.tsx:77
+#: components/FormSliders/AttachmentsCollection.tsx:68
+#: components/FormSliders/AttachmentsCollection.tsx:91
 #: components/Header/menuItemDefinitions.ts:98
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
@@ -57,18 +57,18 @@ msgid "uploadingInline"
 msgstr "Subiendo…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:131
+#: components/Attachments/RecordSetAttachment.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "No hay adjuntos"
 
-#: components/Attachments/Cell.tsx:127
+#: components/Attachments/Cell.tsx:149
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "No se puede encontrar el registro relacionado"
 
-#: components/Attachments/Cell.tsx:130
+#: components/Attachments/Cell.tsx:152
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
 msgstr "No se puede encontrar un registro con el que esté relacionado este adjunto."
@@ -233,12 +233,12 @@ msgstr ""
 msgid "noMatch"
 msgstr "Sin coincidencia"
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:152
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No se han encontrado adjuntos en los primeros {halt:number} registros."
 
-#: components/Attachments/RecordSetAttachment.tsx:142
+#: components/Attachments/RecordSetAttachment.tsx:160
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Buscar más adjuntos"
@@ -355,3 +355,15 @@ msgid "attachmentUploadError"
 msgstr ""
 "Error al cargar el archivo adjunto. Es posible que el servidor de archivos "
 "adjuntos no esté disponible o hubo un error al leer el archivo."
+
+#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/FormSliders/AttachmentsCollection.tsx:84
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAll"
+msgstr ""
+
+#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/FormSliders/AttachmentsCollection.tsx:79
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+msgid "downloadAllDescription"
+msgstr ""

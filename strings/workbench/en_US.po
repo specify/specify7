@@ -555,12 +555,12 @@ msgstr "Import Data Set"
 msgid "wbImportHeader"
 msgstr "Import a File to Create a New Data Set"
 
-#: components/Molecules/FilePicker.tsx:265
+#: components/Molecules/FilePicker.tsx:277
 #. Used in: Components > Molecules > File Picker
 msgid "previewDataSet"
 msgstr "Preview Dataset"
 
-#: components/Molecules/FilePicker.tsx:305
+#: components/Molecules/FilePicker.tsx:317
 #. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "The following error(s) occurred while importing the file:"
@@ -629,12 +629,12 @@ msgstr "Determine automatically"
 msgid "chooseDataSetName"
 msgstr "Name for New Data Set:"
 
-#: components/Molecules/FilePicker.tsx:242
+#: components/Molecules/FilePicker.tsx:254
 #. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
 msgstr "First Row is Header:"
 
-#: components/Molecules/FilePicker.tsx:217
+#: components/Molecules/FilePicker.tsx:229
 #: components/Toolbar/WbsDialog.tsx:184
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
