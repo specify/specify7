@@ -412,7 +412,9 @@ function CarryForwardCategory({
                 title={
                   isUnique
                     ? formsText.carryForwardUniqueField()
-                    : field.getLocalizedDesc()
+                    : isRequired
+                      ? formsText.carryForwardRequiredField()
+                      : field.getLocalizedDesc()
                 }
               >
                 <Input.Checkbox
