@@ -1,5 +1,5 @@
-import { R, RA } from '../../utils/types';
-import { MappingPath } from '../WbPlanView/Mapper';
+import type { R, RA } from '../../utils/types';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   getNumberFromToManyIndex,
   valueIsToManyIndex,
@@ -12,7 +12,7 @@ export const BATCH_EDIT_NULL_RECORD = 'null_record';
 export const BATCH_EDIT_KEY = 'batch_edit';
 
 type BatchEditRecord = {
-  readonly id: typeof BATCH_EDIT_NULL_RECORD | number | undefined;
+  readonly id: number | typeof BATCH_EDIT_NULL_RECORD | undefined;
   readonly ordernumber: number | undefined;
   readonly version: number | undefined;
 };
@@ -34,13 +34,13 @@ export const isBatchEditNullRecord = (
   // FEAT: Remove this
   if (valueIsTreeRank(node)) return false;
 
-  // it may actually not be a to-many
+  // It may actually not be a to-many
   const isToMany = rest[0] !== undefined && valueIsToManyIndex(rest[0]);
 
-  // batch-edit pack is strictly lower-case
+  // Batch-edit pack is strictly lower-case
   const lookUpNode = node.toLowerCase();
   if (isToMany) {
-    // id starts with 1...
+    // Id starts with 1...
     const toManyId = getNumberFromToManyIndex(rest[0]) - 1;
     const toMany = batchEditPack?.to_many?.[lookUpNode]?.[toManyId];
     return isBatchEditNullRecord(toMany, rest.slice(1));

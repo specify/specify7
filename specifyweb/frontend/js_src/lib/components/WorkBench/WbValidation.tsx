@@ -30,7 +30,7 @@ type Records = WritableArray<
   >
 >;
 
-// just to make things manageable
+// Just to make things manageable
 type RecordCountsKey = keyof Pick<
   UploadResult['UploadResult']['record_result'],
   'Deleted' | 'MatchedAndChanged' | 'Updated' | 'Uploaded'

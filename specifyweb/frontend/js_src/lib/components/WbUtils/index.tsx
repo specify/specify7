@@ -131,7 +131,7 @@ export function WbUtilsComponent({
       />
       {
         // Only show these cells if batch-edit
-        isUpdate === true && (
+        isUpdate && (
           <>
             <Navigation
               label={wbText.updatedCells()}

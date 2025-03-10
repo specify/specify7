@@ -14,9 +14,9 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
-import { WbMeta } from './CellMeta';
 
 export function useHotHooks({
   workbench,
