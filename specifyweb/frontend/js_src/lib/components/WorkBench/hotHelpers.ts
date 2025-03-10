@@ -1,8 +1,8 @@
 import type Handsontable from 'handsontable';
 
 import type { RA, RR, WritableArray } from '../../utils/types';
-import { WbMapping } from './mapping';
-import { Dataset } from '../WbPlanView/Wrapped';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import type { WbMapping } from './mapping';
 
 export function getSelectedRegions(hot: Handsontable): RA<{
   readonly startRow: number;
