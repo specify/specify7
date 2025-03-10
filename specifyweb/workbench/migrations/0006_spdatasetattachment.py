@@ -7,22 +7,34 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults, revert_table_schema_config
+from specifyweb.specify.migration_utils.update_schema_config import update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults, revert_table_field_schema_config, revert_table_schema_config 
 
 MIGRATION_0006_TABLES = [
     ('SpDataSetAttachment', 'An attachment temporarily associated with a Specify Data Set for use in a WorkBench upload.')
 ]
 
+MIGRATION_0006_FIELDS = {
+    'Spdataset': ['spDataSetAttachments']
+}
+
 def apply_migration(apps, schema_editor):
     # Update Schema config
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline in Discipline.objects.all(): # New SpDataSetAttachment table
         for table, desc in MIGRATION_0006_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+    for discipline in Discipline.objects.all(): # New relationship Spdataset -> SpDataSetAttachment
+        for table, fields in MIGRATION_0006_FIELDS.items():
+            for field in fields: 
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
 
 def revert_migration(apps, schema_editor):
-    for table, _ in MIGRATION_0006_TABLES:
+    # Revert Schema config changes
+    for table, _ in MIGRATION_0006_TABLES: # Remove SpDataSetAttachment table
         revert_table_schema_config(table, apps)
+    for table, fields in MIGRATION_0006_FIELDS.items(): # Remove relationship Spdataset -> SpDataSetAttachment
+            for field in fields: 
+                revert_table_field_schema_config(table, field, apps)
 
 
 class Migration(migrations.Migration):
