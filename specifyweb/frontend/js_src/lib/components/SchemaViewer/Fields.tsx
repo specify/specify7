@@ -51,16 +51,20 @@ export function SchemaViewerFields({
   );
 }
 
+export const commonFieldColumns = f.store(() => ({
+  name: getField(tables.SpLocaleContainerItem, 'name').label,
+  label: reportsText.labels(),
+  description: schemaText.description(),
+  isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
+  isReadOnly: schemaText.readOnly(),
+  isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
+  type: getField(tables.SpLocaleContainerItem, 'type').label,
+}));
+
 const fieldColumns = f.store(
   () =>
     ({
-      name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: reportsText.labels(),
-      description: schemaText.description(),
-      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
-      isReadOnly: schemaText.readOnly(),
-      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
-      type: getField(tables.SpLocaleContainerItem, 'type').label,
+      ...commonFieldColumns(),
       length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
     }) as const

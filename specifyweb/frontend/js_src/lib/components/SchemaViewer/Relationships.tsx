@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -8,11 +7,10 @@ import type { RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { getField } from '../DataModel/helpers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
+import { commonFieldColumns } from './Fields';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
 
@@ -91,13 +89,7 @@ export function SchemaViewerRelationships({
 const relationshipColumns = f.store(
   () =>
     ({
-      name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: reportsText.labels(),
-      description: schemaText.description(),
-      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
-      isReadOnly: schemaText.readOnly(),
-      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
-      type: getField(tables.SpLocaleContainerItem, 'type').label,
+      ...commonFieldColumns(),
       databaseColumn: schemaText.databaseColumn(),
       relatedTable: schemaText.relatedTable(),
       otherSideName: schemaText.otherSideName(),
