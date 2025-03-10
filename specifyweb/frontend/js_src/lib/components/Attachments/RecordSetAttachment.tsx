@@ -9,12 +9,14 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
+import { downloadAllAttachments } from './attachments';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
 
@@ -23,11 +25,13 @@ const haltIncrementSize = 300;
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
+  name,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
+  readonly name: string | undefined;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -81,6 +85,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
+  const loading = React.useContext(LoadingContext);
+
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
 
   /*
@@ -98,6 +104,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === records.length;
+  const downloadAllAttachmentsDisabled = !isComplete || attachments?.attachments.length === 0;
 
   return (
     <>
@@ -110,7 +117,18 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       {showAttachments && (
         <Dialog
           buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            <>
+              <Button.Info
+                disabled={downloadAllAttachmentsDisabled}
+                title={attachmentsText.downloadAllDescription()}
+                onClick={(): void => loading(downloadAllAttachments(attachmentsRef.current?.attachments ?? [], name))}
+              >
+                {attachmentsText.downloadAll()}
+              </Button.Info>
+              <Button.DialogClose>
+                {commonText.close()}
+              </Button.DialogClose>
+            </>
           }
           className={{
             container: dialogClassNames.wideContainer,
