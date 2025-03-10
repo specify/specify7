@@ -32,13 +32,12 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl, resourceFromUrl } from '../DataModel/resource';
-import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { fetchContext as fetchDomain } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
-  CollectionObjectType,
   DisposalPreparation,
   GiftPreparation,
   LoanPreparation,
