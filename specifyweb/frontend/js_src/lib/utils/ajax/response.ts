@@ -53,7 +53,7 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
           };
       } else if (response.ok && accept === 'application/octet-stream') {
         return {
-          data: data as unknown as RESPONSE_TYPE,
+          data: data as RESPONSE_TYPE,
           response,
           status: response.status,
         };
