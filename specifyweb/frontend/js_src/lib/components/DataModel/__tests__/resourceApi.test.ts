@@ -65,6 +65,26 @@ overrideAjax(
   }
 );
 
+const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
+const firstCollectionObject = {
+  id: 1,
+  resource_uri: firstCollectionObjectUrl,
+  catalognumber: '000011111',
+  collection: getResourceApiUrl('Collection', 4),
+};
+overrideAjax(firstCollectionObjectUrl, firstCollectionObject);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000011111&collection=4&offset=0',
+  {
+    objects: [],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
+
 const accessionNumber = '2011-IC-116';
 const accessionResponse = {
   resource_uri: accessionUrl,
@@ -250,7 +270,8 @@ describe('eventHandlerForToMany', () => {
       ?.models[0].set('text1', 'helloWorld');
 
     expect(resource.needsSaved).toBe(true);
-    expect(testFunction).toHaveBeenCalledTimes(1);
+    // Change to 2 in issue-6214
+    expect(testFunction).toHaveBeenCalledTimes(3);
   });
   test('changing collection propagates to related', () => {
     const resource = new tables.CollectionObject.Resource(
@@ -299,14 +320,14 @@ describe('eventHandlerForToMany', () => {
       { index: 1 }
     );
 
-    expect(onResourceChange).toHaveBeenCalledTimes(3);
+    expect(onResourceChange).toHaveBeenCalledTimes(4);
 
     resource.set('determinations', [
       addMissingFields('Determination', {
         taxon: getResourceApiUrl('Taxon', 1),
       }),
     ]);
-    expect(onResourceChange).toHaveBeenCalledTimes(4);
+    expect(onResourceChange).toHaveBeenCalledTimes(5);
     expect(onPrepChange).toHaveBeenCalledTimes(1);
     expect(onPrepAdd).toHaveBeenCalledTimes(1);
     expect(onPrepRemoval).toHaveBeenCalledTimes(1);

@@ -130,10 +130,6 @@ class ObjectFormatter(object):
             result = lookup('name', aggregator_name)
         return result if result is not None else lookup_default('class', specify_model.classname)
 
-    def catalog_number_is_numeric(self, raw_format_name: Optional[str] = None):
-        format_name = raw_format_name if raw_format_name else self.collection.catalognumformatname
-        return format_name == 'CatalogNumberNumeric'
-
     def pseudo_sprintf(self, format, expr):
         """Handle format attribute of fields in data object formatter definitions.
 
@@ -316,7 +312,7 @@ class ObjectFormatter(object):
                 pass
 
             else:
-                field = self._fieldformat(field_spec.get_field(), field, query_field.format_name)
+                field = self._fieldformat(field_spec.get_field(), field)
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
@@ -334,18 +330,12 @@ class ObjectFormatter(object):
         return func.date_format(field, format_expr)
 
     def _fieldformat(self, specify_field: Field,
-                     field: Union[InstrumentedAttribute, Extract], 
-                     format_name: Optional[str] = None):
+                     field: Union[InstrumentedAttribute, Extract]):
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
-
-        if specify_field is CollectionObject_model.get_field('catalogNumber') \
-                and self.catalog_number_is_numeric(format_name):
-            return cast(field,
-                        types.Numeric(65))  # 65 is the mysql max precision
 
         if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)
