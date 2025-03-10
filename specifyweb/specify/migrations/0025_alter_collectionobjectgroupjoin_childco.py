@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0023_update_schema_config_text'),
+        ('specify', '0024_add_uniqueIdentifier_storage'),
     ]
 
     operations = [
