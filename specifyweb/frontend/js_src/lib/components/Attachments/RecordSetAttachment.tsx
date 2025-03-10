@@ -104,7 +104,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === records.length;
-  const downloadAllAttachmentsDisabled = !isComplete || attachments?.attachments.length === 0;
+  const downloadAllAttachmentsDisabled =
+    !isComplete || attachments?.attachments.length === 0;
 
   return (
     <>
@@ -121,13 +122,18 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               <Button.Info
                 disabled={downloadAllAttachmentsDisabled}
                 title={attachmentsText.downloadAllDescription()}
-                onClick={(): void => loading(downloadAllAttachments(attachmentsRef.current?.attachments ?? [], name))}
+                onClick={(): void =>
+                  loading(
+                    downloadAllAttachments(
+                      attachmentsRef.current?.attachments ?? [],
+                      name
+                    )
+                  )
+                }
               >
                 {attachmentsText.downloadAll()}
               </Button.Info>
-              <Button.DialogClose>
-                {commonText.close()}
-              </Button.DialogClose>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
           className={{

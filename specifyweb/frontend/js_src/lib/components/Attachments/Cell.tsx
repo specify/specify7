@@ -73,9 +73,7 @@ export function AttachmentCell({
       {typeof originalUrl === 'string' && (
         <Link.Icon
           className="absolute right-0 top-0"
-          download={new URL(originalUrl).searchParams.get(
-            'downloadname'
-          )}
+          download={new URL(originalUrl).searchParams.get('downloadname')}
           href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
           icon="download"
           target="_blank"
