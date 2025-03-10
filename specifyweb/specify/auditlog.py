@@ -52,7 +52,7 @@ class AuditLog(object):
             self._lastCheck = time()
         return self._auditing;
     
-    def update(self, obj, agent, parent_record, dirty_flds):
+    def update(self, obj, agent, parent_record=None, dirty_flds=[]):
         self.log_action(auditcodes.UPDATE, obj, agent, parent_record, dirty_flds)
     
     def log_action(self, action, obj, agent, parent_record, dirty_flds):

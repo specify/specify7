@@ -7,6 +7,7 @@ import django.utils.timezone
 from specifyweb.specify.models import (
     protect_with_blockers
 )
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.utils import create_default_collection_types
 
