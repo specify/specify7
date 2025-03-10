@@ -485,8 +485,8 @@ msgstr "Conditional Field Value"
 msgid "formatPreview"
 msgstr "Format Preview"
 
-#: components/DataModel/businessRuleDefs.ts:395
-#: components/DataModel/businessRuleDefs.ts:413
+#: components/DataModel/businessRuleDefs.ts:403
+#: components/DataModel/businessRuleDefs.ts:421
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "A current determination is required."
@@ -504,6 +504,19 @@ msgid "primaryCogChildRequired"
 msgstr ""
 "A Consolidated Collection Object Group must have a primary Collection "
 "Object child"
+
+#: components/DataModel/businessRuleDefs.ts:334
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deletePrimaryRecord"
+msgstr "Primary record CO cannot be deleted."
+
+#: components/DataModel/businessRuleDefs.ts:335
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "primaryDeletionErrorMessage"
+msgstr ""
+"This record cannot be deleted as it is the primary record of the Collection "
+"Object Group. Please reload the page, then assign another CO as the primary "
+"record if a change is desired."
 
 #: components/DataModel/businessRuleDefs.ts:217
 #: components/DataModel/__tests__/businessRules.test.ts:154

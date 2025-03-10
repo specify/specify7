@@ -498,8 +498,8 @@ msgstr "Условное значение поля"
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
 
-#: components/DataModel/businessRuleDefs.ts:395
-#: components/DataModel/businessRuleDefs.ts:413
+#: components/DataModel/businessRuleDefs.ts:403
+#: components/DataModel/businessRuleDefs.ts:421
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
@@ -515,6 +515,16 @@ msgstr ""
 #: components/DataModel/__tests__/businessRules.test.ts:339
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:334
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deletePrimaryRecord"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:335
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "primaryDeletionErrorMessage"
 msgstr ""
 
 #: components/DataModel/businessRuleDefs.ts:217
