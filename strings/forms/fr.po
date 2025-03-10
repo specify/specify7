@@ -601,6 +601,11 @@ msgstr ""
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté"
 
+#: components/FormMeta/CarryForward.tsx:416
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardRequiredField"
+msgstr "Ce champ est obligatoire. Il doit être reporté"
+
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
 #, fuzzy

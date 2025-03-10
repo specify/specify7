@@ -481,6 +481,11 @@ msgstr ""
 msgid "carryForwardUniqueField"
 msgstr ""
 
+#: components/FormMeta/CarryForward.tsx:416
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardRequiredField"
+msgstr ""
+
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
 msgid "cloneButtonEnabled"

@@ -511,6 +511,11 @@ msgstr "Configure fields to bulk carry forward ({tableName:string})"
 msgid "carryForwardUniqueField"
 msgstr "This field must be unique. It can not be carried over"
 
+#: components/FormMeta/CarryForward.tsx:416
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardRequiredField"
+msgstr "This field is required. It must be carried forward"
+
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
 msgid "cloneButtonEnabled"
