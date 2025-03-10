@@ -148,7 +148,7 @@ msgstr "Відновна вартість"
 msgid "searchResults"
 msgstr "Результати пошуку"
 
-#: components/WbUtils/Navigation.tsx:89
+#: components/WbUtils/Navigation.tsx:92
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Натисніть, щоб увімкнути видимість"
@@ -170,7 +170,7 @@ msgstr "Модифіковані клітини"
 msgid "newCells"
 msgstr "Нові клітини"
 
-#: components/WbUtils/index.tsx:156
+#: components/WbUtils/index.tsx:159
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Комірки помилок"
@@ -277,12 +277,12 @@ msgstr "Збереження..."
 msgid "wbUnloadProtect"
 msgstr "Зміни в цьому наборі даних не збережено."
 
-#: components/WorkBench/WbValidation.tsx:291
+#: components/WorkBench/WbValidation.tsx:310
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов’язкової відповідності."
 
-#: components/WorkBench/WbValidation.tsx:320
+#: components/WorkBench/WbValidation.tsx:339
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -456,7 +456,7 @@ msgstr "Цей інструмент вимагає відображення ст
 msgid "unavailableWhenUploaded"
 msgstr "Цей інструмент не працює із завантаженими наборами даних"
 
-#: components/WorkBench/index.tsx:45
+#: components/WorkBench/index.tsx:53
 #. Used in: Components > Work Bench > Index
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набір даних видалено іншим сеансом."
@@ -812,12 +812,12 @@ msgstr "WB завантаження \"{dataSet:string}\""
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (у {parent:string})"
 
-#: components/WbUtils/index.tsx:135
+#: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index
 msgid "updatedCells"
 msgstr ""
 
-#: components/WbUtils/index.tsx:141
+#: components/WbUtils/index.tsx:143
 #. Used in: Components > Wb Utils > Index
 msgid "deletedCells"
 msgstr ""
@@ -862,7 +862,7 @@ msgstr ""
 msgid "recordsMatchedAndChanged"
 msgstr ""
 
-#: components/WbUtils/index.tsx:147
+#: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index
 msgid "matchAndChanged"
 msgstr ""

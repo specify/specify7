@@ -167,7 +167,7 @@ msgstr ""
 msgid "searchResults"
 msgstr ""
 
-#: components/WbUtils/Navigation.tsx:89
+#: components/WbUtils/Navigation.tsx:92
 #. Used in: Components > Wb Utils > Navigation
 #, fuzzy
 msgid "clickToToggle"
@@ -193,7 +193,7 @@ msgstr ""
 msgid "newCells"
 msgstr ""
 
-#: components/WbUtils/index.tsx:156
+#: components/WbUtils/index.tsx:159
 #. Used in: Components > Wb Utils > Index
 #, fuzzy
 msgid "errorCells"
@@ -303,13 +303,13 @@ msgstr ""
 msgid "wbUnloadProtect"
 msgstr ""
 
-#: components/WorkBench/WbValidation.tsx:291
+#: components/WorkBench/WbValidation.tsx:310
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr ""
 
-#: components/WorkBench/WbValidation.tsx:320
+#: components/WorkBench/WbValidation.tsx:339
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
@@ -504,7 +504,7 @@ msgstr ""
 msgid "unavailableWhenUploaded"
 msgstr ""
 
-#: components/WorkBench/index.tsx:45
+#: components/WorkBench/index.tsx:53
 #. Used in: Components > Work Bench > Index
 #, fuzzy
 msgid "dataSetDeletedOrNotFound"
@@ -920,12 +920,12 @@ msgstr ""
 msgid "ambiguousTaxaChild"
 msgstr ""
 
-#: components/WbUtils/index.tsx:135
+#: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index
 msgid "updatedCells"
 msgstr ""
 
-#: components/WbUtils/index.tsx:141
+#: components/WbUtils/index.tsx:143
 #. Used in: Components > Wb Utils > Index
 msgid "deletedCells"
 msgstr ""
@@ -970,7 +970,7 @@ msgstr ""
 msgid "recordsMatchedAndChanged"
 msgstr ""
 
-#: components/WbUtils/index.tsx:147
+#: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index
 msgid "matchAndChanged"
 msgstr ""

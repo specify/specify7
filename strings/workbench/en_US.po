@@ -137,7 +137,7 @@ msgstr "Replacement value"
 msgid "searchResults"
 msgstr "Search Results"
 
-#: components/WbUtils/Navigation.tsx:89
+#: components/WbUtils/Navigation.tsx:92
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Click to toggle visibility"
@@ -159,7 +159,7 @@ msgstr "Modified Cells"
 msgid "newCells"
 msgstr "New Cells"
 
-#: components/WbUtils/index.tsx:156
+#: components/WbUtils/index.tsx:159
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Error Cells"
@@ -266,12 +266,12 @@ msgstr "Saving..."
 msgid "wbUnloadProtect"
 msgstr "Changes to this Data Set have not been Saved."
 
-#: components/WorkBench/WbValidation.tsx:291
+#: components/WorkBench/WbValidation.tsx:310
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "No matching record for must-match table."
 
-#: components/WorkBench/WbValidation.tsx:320
+#: components/WorkBench/WbValidation.tsx:339
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -444,7 +444,7 @@ msgstr "This tool requires locality columns to be mapped"
 msgid "unavailableWhenUploaded"
 msgstr "This tool does not work with uploaded Data Sets"
 
-#: components/WorkBench/index.tsx:45
+#: components/WorkBench/index.tsx:53
 #. Used in: Components > Work Bench > Index
 msgid "dataSetDeletedOrNotFound"
 msgstr "Data Set was deleted by another session."
@@ -800,12 +800,12 @@ msgstr "WB upload of \"{dataSet:string}\""
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (in {parent:string})"
 
-#: components/WbUtils/index.tsx:135
+#: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index
 msgid "updatedCells"
 msgstr "Updated Cells"
 
-#: components/WbUtils/index.tsx:141
+#: components/WbUtils/index.tsx:143
 #. Used in: Components > Wb Utils > Index
 msgid "deletedCells"
 msgstr "Deleted Cells"
@@ -850,7 +850,7 @@ msgstr "Records deleted (not including dependents)"
 msgid "recordsMatchedAndChanged"
 msgstr "Records matched, different from current related"
 
-#: components/WbUtils/index.tsx:147
+#: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index
 msgid "matchAndChanged"
 msgstr "Matched and changed cells"

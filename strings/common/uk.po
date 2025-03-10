@@ -555,7 +555,7 @@ msgstr "новий"
 #: components/FormMeta/index.tsx:99
 #: components/FormMeta/index.tsx:101
 #: components/Forms/ResourceView.tsx:223
-#: components/Molecules/ResourceLink.tsx:111
+#: components/Molecules/ResourceLink.tsx:134
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
 #: components/SchemaConfig/Format.tsx:270
@@ -621,7 +621,7 @@ msgstr "Розгорнути все"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/Molecules/ResourceLink.tsx:64
+#: components/Molecules/ResourceLink.tsx:65
 #: components/TreeView/Actions.tsx:122
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 msgid "view"

@@ -12,26 +12,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: components/WorkBench/resultsParser.ts:199
+#: components/WorkBench/resultsParser.ts:200
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "Wert \"{value:string}\" kann nicht in True oder False aufgelöst werden"
 
-#: components/WorkBench/resultsParser.ts:201
+#: components/WorkBench/resultsParser.ts:202
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "\"{value:string}\" ist kein gültiger Dezimalwert"
 
-#: components/WorkBench/resultsParser.ts:203
+#: components/WorkBench/resultsParser.ts:204
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
 
 #: components/WorkBench/CellMeta.ts:152
-#: components/WorkBench/hooks.ts:109
-#: components/WorkBench/hooks.ts:118
-#: components/WorkBench/resultsParser.ts:254
+#: components/WorkBench/hooks.ts:122
+#: components/WorkBench/hooks.ts:131
+#: components/WorkBench/resultsParser.ts:255
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingPickList"
@@ -39,7 +39,7 @@ msgstr ""
 "{value:string} ist in diesem Auswahllistenfeld kein gültiger Wert.\n"
 "Klicken Sie auf den Pfeil, um aus den verfügbaren Optionen auszuwählen."
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:206
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingAgentType"
@@ -47,7 +47,7 @@ msgstr ""
 "schlecht {agentTypeField:string}: \"{badType:string}\". Erwartet wurde "
 "eines von {validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:258
+#: components/WorkBench/resultsParser.ts:259
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "pickListValueTooLong"
@@ -55,43 +55,43 @@ msgstr ""
 "Wert von {pickListTable:string} {pickList:string} länger als das Maximum "
 "von {maxLength:number|formatted} für das Feld"
 
-#: components/WorkBench/resultsParser.ts:213
+#: components/WorkBench/resultsParser.ts:214
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "valueTooLong"
 msgstr "Der Wert darf nicht länger als {maxLength:number|formatted} sein."
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:218
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidYear"
 msgstr "Datumswert muss vierstellige Jahreszahl enthalten: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:222
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "badDateFormat"
 msgstr "ungültiger Datumswert: {value:string}. erwartet: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:226
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "coordinateBadFormat"
 msgstr "[X0X] Knoten \"[X25X]\" zum synonymisierten übergeordneten Knoten \"[X67X]\""
 
-#: components/WorkBench/resultsParser.ts:230
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "Der Breitengrad muss zwischen -90 und 90 liegen. Tatsächlich: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
+#: components/WorkBench/resultsParser.ts:235
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
+#: components/WorkBench/resultsParser.ts:239
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "formatMismatch"
@@ -99,25 +99,25 @@ msgstr ""
 "Wert {value:string} stimmt nicht mit Formatierungsprogramm "
 "{formatter:string} überein"
 
-#: components/WorkBench/resultsParser.ts:264
+#: components/WorkBench/resultsParser.ts:265
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "dieses Feld muss leer sein, wenn {column:string} leer ist"
 
-#: components/WorkBench/resultsParser.ts:268
+#: components/WorkBench/resultsParser.ts:269
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "Das Feld ist für die Upload-Plan-Zuordnung erforderlich"
 
-#: components/WorkBench/resultsParser.ts:270
+#: components/WorkBench/resultsParser.ts:271
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "Es gibt mehrere „Hochgeladene“ Platzhalterwerte im Baum!"
 
-#: components/WorkBench/resultsParser.ts:272
+#: components/WorkBench/resultsParser.ts:273
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "missingRequiredTreeParent"

@@ -11,97 +11,97 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.6-rc\n"
 
-#: components/WorkBench/resultsParser.ts:199
+#: components/WorkBench/resultsParser.ts:200
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "el valor \"{value:string}\" no se puede resolver en Verdadero o Falso"
 
-#: components/WorkBench/resultsParser.ts:201
+#: components/WorkBench/resultsParser.ts:202
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "El valor \"{value:string}\" no es un valor decimal válido"
 
-#: components/WorkBench/resultsParser.ts:203
+#: components/WorkBench/resultsParser.ts:204
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "El valor \"{value:string}\" no es un valor de coma flotante válido"
 
 #: components/WorkBench/CellMeta.ts:152
-#: components/WorkBench/hooks.ts:109
-#: components/WorkBench/hooks.ts:118
-#: components/WorkBench/resultsParser.ts:254
+#: components/WorkBench/hooks.ts:122
+#: components/WorkBench/hooks.ts:131
+#: components/WorkBench/resultsParser.ts:255
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} no es un valor legal en este campo de lista de selección.\n"
 "Haga clic en la flecha para elegir entre las opciones disponibles."
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:206
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "malo {agentTypeField:string}: \"{badType:string}\". Se esperaba uno de "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:258
+#: components/WorkBench/resultsParser.ts:259
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "valor de {pickListTable:string} {pickList:string} más largo que el máximo "
 "de {maxLength:number|formatted} para el campo"
 
-#: components/WorkBench/resultsParser.ts:213
+#: components/WorkBench/resultsParser.ts:214
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "el valor no debe tener una longitud mayor que {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:218
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "el valor de fecha debe contener el año de cuatro dígitos: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:222
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "valor de fecha incorrecto: {value:string}. se esperaba: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:226
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "valor de latitud o longitud incorrecto: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:230
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "la latitud debe estar entre -90 y 90. Actual: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
+#: components/WorkBench/resultsParser.ts:235
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "la longitud debe estar entre -180 y 180. Actual: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
+#: components/WorkBench/resultsParser.ts:239
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "formatMismatch"
 msgstr "el valor {value:string} no coincide con el formateador {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:264
+#: components/WorkBench/resultsParser.ts:265
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "este campo debe estar vacío si {column:string} está vacío"
 
-#: components/WorkBench/resultsParser.ts:268
+#: components/WorkBench/resultsParser.ts:269
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "el campo es obligatorio para la asignación del plan de mapeo"
 
-#: components/WorkBench/resultsParser.ts:270
+#: components/WorkBench/resultsParser.ts:271
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "¡Hay varios valores de marcador de posición \"Subidos\" en el árbol!"
 
-#: components/WorkBench/resultsParser.ts:272
+#: components/WorkBench/resultsParser.ts:273
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""

@@ -149,7 +149,7 @@ msgstr "Valeur de remplacement"
 msgid "searchResults"
 msgstr "Résultats de recherche"
 
-#: components/WbUtils/Navigation.tsx:89
+#: components/WbUtils/Navigation.tsx:92
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Cliquez pour basculer la visibilité"
@@ -171,7 +171,7 @@ msgstr "Cellules modifiées"
 msgid "newCells"
 msgstr "Nouvelles cellules"
 
-#: components/WbUtils/index.tsx:156
+#: components/WbUtils/index.tsx:159
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Cellules d'erreur"
@@ -288,14 +288,14 @@ msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
 "enregistrées."
 
-#: components/WorkBench/WbValidation.tsx:291
+#: components/WorkBench/WbValidation.tsx:310
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr ""
 "Aucun enregistrement correspondant pour la table à correspondance "
 "obligatoire."
 
-#: components/WorkBench/WbValidation.tsx:320
+#: components/WorkBench/WbValidation.tsx:339
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -482,7 +482,7 @@ msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 msgid "unavailableWhenUploaded"
 msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
 
-#: components/WorkBench/index.tsx:45
+#: components/WorkBench/index.tsx:53
 #. Used in: Components > Work Bench > Index
 msgid "dataSetDeletedOrNotFound"
 msgstr "L'ensemble de données a été supprimé par une autre session."
@@ -849,12 +849,12 @@ msgstr "Téléchargement WB de \"{dataSet:string}\""
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (dans {parent:string})"
 
-#: components/WbUtils/index.tsx:135
+#: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index
 msgid "updatedCells"
 msgstr ""
 
-#: components/WbUtils/index.tsx:141
+#: components/WbUtils/index.tsx:143
 #. Used in: Components > Wb Utils > Index
 msgid "deletedCells"
 msgstr ""
@@ -899,7 +899,7 @@ msgstr ""
 msgid "recordsMatchedAndChanged"
 msgstr ""
 
-#: components/WbUtils/index.tsx:147
+#: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index
 msgid "matchAndChanged"
 msgstr ""
