@@ -6,7 +6,6 @@ from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_r
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 from specifyweb.permissions.initialize import initialize
-from specifyweb.specify.migration_utils import sp7_schemaconfig as sc
 from specifyweb.specify.migration_utils import update_schema_config as usc
 
 logger = logging.getLogger(__name__)
@@ -17,7 +16,7 @@ def fix_cots():
 def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
     usc.create_cotype_splocalecontaineritem(apps) # 3
-    usc.create_strat_table_schema_config_with_defaults(apps) # 4
+    usc.create_strat_table_schema_config_with_defaults(apps) # 4 - getting skip warnings
     usc.update_cog_type_fields(apps) # 7
     usc.create_cogtype_picklist(apps) # 7
     usc.update_cogtype_splocalecontaineritem(apps) # 7
@@ -33,6 +32,7 @@ def fix_schema_config():
     usc.fix_hidden_geo_prop(apps) # 21
     usc.update_schema_config_field_desc(apps) # 23
     usc.update_hidden_prop(apps) # 23
+    usc.update_storage_unique_id_fields(apps) # 24
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
@@ -59,7 +59,9 @@ def key_migration_func_pipeline():
         raise
 
 def temp(request):
-    key_migration_func_pipeline()
+    from django.http import HttpResponse
+    key_migration_func_pipeline() # remove after debugging
+    return HttpResponse("Key migration functions executed successfully.")
 
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
