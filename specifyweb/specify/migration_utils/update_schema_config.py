@@ -23,6 +23,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0021_FIELDS,
     MIGRATION_0023_FIELDS,
     MIGRATION_0023_FIELDS_BIS,
+    MIGRATION_0024_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -312,7 +313,7 @@ def revert_cotype_splocalecontaineritem(apps):
 def create_strat_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
-        for table, desc in MIGRATION_0004_TABLES:
+        for table, desc in MIGRATION_0004_TABLES: # NOTE: lots of Nones, getting skips
             update_table_field_schema_config_with_defaults(table, discipline.id, desc, apps)
 
         for table, fields in MIGRATION_0004_FIELDS.items():
@@ -841,3 +842,22 @@ def reverse_update_schema_config_field_desc(apps, schema_editor=None):
 
                     localized_items_name.text = item.name
                     localized_items_name.save()
+
+# ##########################################
+# Used in 0024_add_uniqueIdentifier_storage.py
+# ##########################################
+
+def update_storage_unique_id_fields(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    # Add uniqueIdentifier -> storage
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0024_FIELDS.items(): 
+            for field in fields: 
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+def revert_storage_unique_id_fields(apps):
+    # Remove uniqueIdentifier -> storage
+    for table, fields in MIGRATION_0024_FIELDS.items(): 
+        for field in fields: 
+            revert_table_field_schema_config(table, field, apps)
