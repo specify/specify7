@@ -446,55 +446,14 @@ class ScopedTreeRecord(NamedTuple):
             elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
                 logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
                 error_col_name = ranks_columns[0].column_fullname
-                return self, WorkBenchParseFailure('multipleRanksInRow', {}, error_col_name)
-
-            # Group ranks_columns by treedef_id using itertools.groupby
-            ranks_columns.sort(key=lambda x: x.treedef_id)  # groupby requires sorted input
-            grouped_by_treedef_id = {k: list(v) for k, v in groupby(ranks_columns, key=lambda x: x.treedef_id)}
-
-            # Check if any treedef_id has more than one rank
-            multiple_ranks = any(len(columns) > 1 for columns in grouped_by_treedef_id.values())
-            if multiple_ranks and len(unique_treedef_ids) > 1:
-                treedef_id = next(
-                    treedef_id
-                    for treedef_id, columns in grouped_by_treedef_id.items()
-                    if len(columns) > 1
-                )
-                logger.warning(f"Multiple ranks found for treedef_id {treedef_id}")
-                error_col_name = grouped_by_treedef_id[treedef_id][0].column_fullname
-                return self, WorkBenchParseFailure("multipleRanksForTreedef", {}, error_col_name)
+                
+                return self, WorkBenchParseFailure('Multiple tree definitions in row', {}, error_col_name)
 
             return None
 
         # Retrieve the target rank treedef
         def get_target_rank_treedef(tree_def_model, target_rank_treedef_id: int):
             return tree_def_model.objects.get(id=target_rank_treedef_id)
-
-        # Retrieve the treedef items and root for the tree
-        def get_treedefitems_and_root(tree_rank_model, tree_node_model, target_rank_treedef_id: int):
-            # Fetch treedef items
-            def fetch_treedefitems():
-                return list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
-
-            # Fetch root node
-            def fetch_root():
-                return tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
-
-            # Check if root is None and log warning
-            def check_root(root):
-                if root is None:
-                    logger.warning(f"No root found for treedef {target_rank_treedef_id}")
-                    return None, WorkBenchParseFailure('noRoot', {}, None)
-                return root
-
-            treedefitems = fetch_treedefitems()
-            root = fetch_root()
-            root_checked = check_root(root)
-
-            if root_checked is not root:
-                return root_checked
-
-            return treedefitems, root
 
         tree_def_model, tree_rank_model, tree_node_model = get_models(self.name)
 
