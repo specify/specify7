@@ -555,7 +555,10 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
                                         formatauditobjs=formatauditobjs, distinct=distinct, series=series)
 
     if count_only:
-        return {'count': query.count()}
+        if series:
+            return {'count': len(series_post_query(query, sort_type=cat_num_sort_type))}
+        else:
+            return {'count': query.count()}
     else:
         if series:
             order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))"))
@@ -572,7 +575,7 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
-            return {'results': series_post_query(query, sort_type=cat_num_sort_type)[:limit]}
+            return {'results': series_post_query(query, sort_type=cat_num_sort_type)}
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
