@@ -14,6 +14,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import type { PartialUploadableFileSpec } from './types';
@@ -230,7 +231,7 @@ function StartUploadDescription(): JSX.Element {
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
       </ol>
-      <Link.NewTab href="https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374">
+      <Link.NewTab href={datasetVariants.bulkAttachment.documentationUrl}>
         {headerText.documentation()}
       </Link.NewTab>
     </div>

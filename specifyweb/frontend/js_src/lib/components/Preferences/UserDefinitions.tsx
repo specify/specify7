@@ -6,6 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
@@ -2018,6 +2019,39 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  batchEdit: {
+    title: batchEditText.batchEdit(),
+    subCategories: {
+      query: {
+        title: queryText.query(),
+        items: {
+          limit: definePref<number>({
+            title: batchEditText.numberOfRecords(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 5000,
+            type: 'java.lang.Double',
+            parser: {
+              min: 0,
+            },
+          }),
+        },
+      },
+      editor: {
+        title: preferencesText.general(),
+        items: {
+          showRollback: definePref<boolean>({
+            title: batchEditText.showRollback(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.showRollbackDescription(),
           }),
         },
       },
