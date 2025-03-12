@@ -919,4 +919,7 @@ export const queryText = createDictionary({
   nonStrict: {
     'en-us': 'Non strict',
   },
+  catalogNumberInheritance: {
+    'en-us': "Catalog Number Inheritance"
+  }
 } as const);

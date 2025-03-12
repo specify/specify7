@@ -27,6 +27,7 @@ import { useMenuItem } from '../Header/MenuContext';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
@@ -215,6 +216,15 @@ function Wrapped({
       ): ReturnType<typeof unParseQueryFields> =>
         unParseQueryFields(state.baseTableName, fields)
     : undefined;
+
+  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
+  const [catalogNumberInherits] = collectionPreferences.use(
+    'catalogNumberInheritance',
+    'behavior',
+    'inheritance'
+  ); 
+  console.log(catalogNumberInherits)
+  // Pass it to backend to define query logic
 
   /*
    * REFACTOR: simplify this (move "executed query" state into this component
