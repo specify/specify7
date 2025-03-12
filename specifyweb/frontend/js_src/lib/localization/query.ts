@@ -920,6 +920,6 @@ export const queryText = createDictionary({
     'en-us': 'Non strict',
   },
   catalogNumberInheritance: {
-    'en-us': "Catalog Number Inheritance"
-  }
+    'en-us': 'Catalog Number Inheritance',
+  },
 } as const);

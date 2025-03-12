@@ -2012,6 +2012,7 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberPref: {
     // TODO: improve
-    'en-us': "Enable the inheritance of the primary catalog number to its empty siblings."
-  }
+    'en-us':
+      'Enable the inheritance of the primary catalog number to its empty siblings.',
+  },
 } as const);
