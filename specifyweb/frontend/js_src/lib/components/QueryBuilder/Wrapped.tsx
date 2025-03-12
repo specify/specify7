@@ -223,7 +223,7 @@ function Wrapped({
     'behavior',
     'inheritance'
   ); 
-  console.log(catalogNumberInherits)
+  console.log('catalogNumberInherits: ' ,catalogNumberInherits)
   // Pass it to backend to define query logic
 
   /*
