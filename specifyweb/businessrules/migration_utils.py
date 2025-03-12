@@ -4,6 +4,13 @@ from specifyweb.businessrules.uniqueness_rules import create_uniqueness_rule
 
 
 def catnum_rule_editable(apps, schema_editor=None):
+    """ Find any CollectionObject catalogNumber must be unique to Collection 
+    rules which are readonly on the frontend (have isDatabaseConstraint=True)
+    and set their isDatabaseConstraint=False.
+    
+    Generally should be run only after migration businessrules/0003 has been 
+    applied
+    """
     UniquenessRule = apps.get_model("businessrules", "UniquenessRule")
     
     model_rules = UniquenessRule.objects.filter(modelName="Collectionobject", isDatabaseConstraint=True)
@@ -27,6 +34,12 @@ def catnum_rule_editable(apps, schema_editor=None):
 
 
 def catnum_rule_uneditable(apps, schema_editor=None):
+    """ Find any CollectionObject catalogNumber must be unique to Collection 
+    rules which are editable on the frontend (have isDatabaseConstraint=False)
+    and set their isDatabaseConstraint=True.
+    
+    Generally should be run when migration businessrules/0003 is being reverted
+    """
     Discipline = apps.get_model("specify", "Discipline")
     UniquenessRule = apps.get_model("businessrules", "UniquenessRule")
 
