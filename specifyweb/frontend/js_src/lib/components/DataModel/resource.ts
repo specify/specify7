@@ -25,7 +25,7 @@ import type {
 import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { serializeResource } from './serializers';
-import { SpecifyTable } from './specifyTable';
+import type { SpecifyTable } from './specifyTable';
 import { genericTables, getTable, tables } from './tables';
 import type { Tables } from './types';
 import { getUniquenessRules } from './uniquenessRules';
@@ -343,9 +343,11 @@ export const exportsForTests = {
 };
 
 setDevelopmentGlobal('_getUniqueFields', (): void => {
-  // Batch-editor clones records in independent-to-one no-match cases. It needs to be aware of the fields to not clone. It's fine if it doesn't respect user preferences (for now), but needs to be replicate
-  // front-end logic. So, the "fields to not clone" must be identical. This is done by storing them as a static file, which frontend and backend both access + a unit test to make sure the file is up-to-date.
-  // In the case where the user is really doesn't want to carry-over some fields, they can simply add those fields in batch-edit query (and then set them to null) so it handles general use case pretty well.
+  /*
+   * Batch-editor clones records in independent-to-one no-match cases. It needs to be aware of the fields to not clone. It's fine if it doesn't respect user preferences (for now), but needs to be replicate
+   * front-end logic. So, the "fields to not clone" must be identical. This is done by storing them as a static file, which frontend and backend both access + a unit test to make sure the file is up-to-date.
+   * In the case where the user is really doesn't want to carry-over some fields, they can simply add those fields in batch-edit query (and then set them to null) so it handles general use case pretty well.
+   */
   const allTablesResult = Object.fromEntries(
     Object.values(tables).map((table) => [
       table.name.toLowerCase(),

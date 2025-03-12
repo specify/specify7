@@ -154,18 +154,18 @@ type PropagatedFailure = State<'PropagatedFailure'>;
 type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
 
 type RecordResultTypes =
+  | Deleted
   | FailedBusinessRule
   | Matched
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
   | NoMatch
   | NullRecord
   | ParseFailures
   | PropagatedFailure
-  | Uploaded
   | Updated
-  | NoChange
-  | Deleted
-  | MatchedAndChanged;
+  | Uploaded;
 
 // Records the specific result of attempting to upload a particular record
 type WbRecordResult = {

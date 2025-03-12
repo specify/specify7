@@ -8,7 +8,12 @@ import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchResource, getResourceViewUrl, idFromUrl, resourceFromUrl } from '../DataModel/resource';
+import {
+  fetchResource,
+  getResourceViewUrl,
+  idFromUrl,
+  resourceFromUrl,
+} from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { LazyResourceView } from '../Forms/LazyResourceView';
 import type { ResourceView } from '../Forms/ResourceView';
@@ -104,27 +109,28 @@ export function ResourceEdit({
   readonly resource: SpecifyResource<AnySchema>;
   readonly onSaved?: () => void;
 }): JSX.Element {
-    const [_, setCurrentDefinition] = useCachedState(
-      'tree',
-      `definition${'Taxon'}`
-    );
+  const [_, setCurrentDefinition] = useCachedState(
+    'tree',
+    `definition${'Taxon'}`
+  );
 
-    const [defaultTaxonTreeDefinitionId, setDefaultTaxonTreeDefinitionId] = React.useState<number>()
+  const [defaultTaxonTreeDefinitionId, setDefaultTaxonTreeDefinitionId] =
+    React.useState<number>();
 
-    const disciplineId = resourceFromUrl(resource.get('discipline'))?.get('id');
+  const disciplineId = resourceFromUrl(resource.get('discipline'))?.get('id');
 
-    React.useEffect(() => {
-      if (disciplineId === undefined || disciplineId === null) return;
+  React.useEffect(() => {
+    if (disciplineId === undefined || disciplineId === null) return;
 
-      fetchResource('Discipline', disciplineId)
-        .then((data) => {
-          const taxonId = idFromUrl(data.taxonTreeDef ?? '');
-          setDefaultTaxonTreeDefinitionId(taxonId);
-        })
-        .catch((error) => {
-          console.error('Error fetching discipline:', error);
-        });
-    }, [disciplineId]);
+    fetchResource('Discipline', disciplineId)
+      .then((data) => {
+        const taxonId = idFromUrl(data.taxonTreeDef ?? '');
+        setDefaultTaxonTreeDefinitionId(taxonId);
+      })
+      .catch((error) => {
+        console.error('Error fetching discipline:', error);
+      });
+  }, [disciplineId]);
 
   return (
     <ResourceLink
