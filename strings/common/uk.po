@@ -436,7 +436,7 @@ msgstr "Інструменти"
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:646
-#: components/QueryBuilder/Formatter.tsx:148
+#: components/QueryBuilder/Formatter.tsx:173
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
 #: components/QueryComboBox/index.tsx:426

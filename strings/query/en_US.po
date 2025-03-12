@@ -135,7 +135,7 @@ msgstr ""
 "download."
 
 #: components/PickLists/index.tsx:188
-#: components/QueryBuilder/Formatter.tsx:190
+#: components/QueryBuilder/Formatter.tsx:215
 #: components/SchemaConfig/Components.tsx:90
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
@@ -511,9 +511,9 @@ msgstr "Scroll to editor"
 msgid "viewRecords"
 msgstr "View records"
 
-#: components/QueryBuilder/Formatter.tsx:154
-#: components/QueryBuilder/Formatter.tsx:164
-#: components/QueryBuilder/Formatter.tsx:172
+#: components/QueryBuilder/Formatter.tsx:179
+#: components/QueryBuilder/Formatter.tsx:189
+#: components/QueryBuilder/Formatter.tsx:197
 #. Used in: Components > Query Builder > Formatter
 msgid "chooseFormatter"
 msgstr "Choose formatter"
@@ -534,3 +534,8 @@ msgstr "Strict"
 #. Used in: Components > Query Builder > Field Filter Tool
 msgid "nonStrict"
 msgstr "Non strict"
+
+#: components/QueryBuilder/Formatter.tsx:123
+#. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
+msgid "formatInputAs"
+msgstr "Format As: {commaSeparatedFormats:string}"
