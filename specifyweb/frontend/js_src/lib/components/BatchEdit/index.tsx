@@ -7,10 +7,10 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, keysToLowerCase, sortFunction } from '../../utils/utils';
-import { H2, H3 } from '../Atoms';
+import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
@@ -20,7 +20,6 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -138,8 +137,8 @@ export function BatchEditFromQuery({
                 queryName: query.get('name'),
                 datePart: new Date().toDateString(),
               });
-              const hasMissingRanks = Object.values(missingRanks).some(
-                (ranks) => ranks.length > 0
+              const hasMissingRanks = Object.entries(missingRanks).some(
+                ([_, rankData]) => Object.values(rankData).length > 0
               );
               if (hasMissingRanks) {
                 setMissingRanks(missingRanks);
@@ -172,9 +171,11 @@ type QueryError = {
   readonly invalidFields: RA<string>;
 };
 
+type TreeDefinitionName = string;
+
 type MissingRanks = {
   // Query can contain relationship to multiple trees
-  readonly [KEY in AnyTree['tableName']]: RA<string>;
+  readonly [KEY in AnyTree['tableName']]: RR<TreeDefinitionName, RA<string>>;
 };
 
 function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
@@ -225,10 +226,12 @@ function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
   );
 
   return Object.fromEntries(
-    treeFieldSpecs.map(([treeTable, treeRanks]) => [
-      treeTable.name,
-      findMissingRanks(treeTable, treeRanks),
-    ])
+    treeFieldSpecs
+      .map(([treeTable, treeRanks]) => [
+        treeTable.name,
+        findMissingRanks(treeTable, treeRanks),
+      ])
+      .filter(([_, rankData]) => Object.values(rankData).length > 0)
   );
 }
 
@@ -246,7 +249,7 @@ function findMissingRanks(
     | { readonly rank: string; readonly field?: LiteralField | Relationship }
     | undefined
   >
-): RA<string> {
+): RR<TreeDefinitionName, RA<string>> {
   const allTreeDefItems = strictGetTreeDefinitionItems(
     treeTable.name as 'Geography',
     false,
@@ -269,38 +272,59 @@ function findMissingRanks(
 
   const highestRank = currentRanksSorted[0];
 
-  return allTreeDefItems.flatMap(({ treeDef, rankId, name }) =>
+  const treeDefinitions = getTreeDefinitions(
+    treeTable.name as 'Geography',
+    'all'
+  );
+
+  return Object.fromEntries(
+    treeDefinitions
+      .map(({ definition, ranks }) => [
+        definition.name,
+        findMissingRanksInTreeDefItems(
+          ranks,
+          treeTable.name,
+          highestRank,
+          currentTreeRanks
+        ),
+      ])
+      .filter(([_, missingRanks]) => missingRanks.length > 0)
+  );
+}
+
+type RankData = {
+  specifyRank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
+  field: LiteralField | Relationship | undefined;
+};
+
+const findMissingRanksInTreeDefItems = (
+  treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>,
+  tableName: string,
+  highestRank: RankData,
+  currentTreeRanks: RA<RankData>
+): RA<string> => {
+  return treeDefItems.flatMap(({ treeDef, rankId, name }) =>
     rankId < highestRank.specifyRank.rankId
       ? []
       : filterArray(
           requiredTreeFields.map((requiredField) => {
-            const treeDefinition = getTreeDefinitions(
-              treeTable.name as 'Geography',
-              idFromUrl(treeDef)
-            );
-            const treeDefinitionName = treeDefinition[0].definition.name;
-
             return currentTreeRanks.some(
               (rank) =>
                 (rank.specifyRank.name === name &&
                   rank.field !== undefined &&
                   requiredField === rank.field.name &&
                   rank.specifyRank.treeDef === treeDef) ||
-                !nameExistsInRanks(
-                  rank.specifyRank.name,
-                  treeDefinition[0].ranks
-                )
+                !nameExistsInRanks(rank.specifyRank.name, treeDefItems)
             )
               ? undefined
-              : `${treeDefinitionName}: ${name} - ${
-                  defined(
-                    strictGetTable(treeTable.name).getField(requiredField)
-                  ).label
+              : `${name} - ${
+                  defined(strictGetTable(tableName).getField(requiredField))
+                    .label
                 }`;
           })
         )
   );
-}
+};
 
 function ErrorsDialog({
   errors,
@@ -372,16 +396,13 @@ function ShowMissingRanks({
 }: {
   readonly missingRanks: MissingRanks;
 }) {
-  const hasMissing = Object.values(missingRanks).some(
-    (rank) => rank.length > 0
-  );
-  return hasMissing ? (
+  return (
     <div>
       <div className="mt-2 flex gap-2">
         <H2>{batchEditText.addTreeRank()}</H2>
       </div>
       {Object.entries(missingRanks).map(([treeTable, ranks]) => (
-        <div>
+        <div key={treeTable}>
           <div className="flex gap-2">
             <TableIcon
               label={strictGetTable(treeTable).label}
@@ -390,12 +411,21 @@ function ShowMissingRanks({
             <H2>{strictGetTable(treeTable).label}</H2>
           </div>
           <div>
-            {ranks.map((rank) => (
-              <H3>{rank}</H3>
+            {Object.entries(ranks).map(([treeDefName, rankNames]) => (
+              <div key={treeDefName}>
+                <H3>{`${treeDefName}:`}</H3>
+                <Ul>
+                  {rankNames.map((rank) => (
+                    <li key={rank} className="px-4">
+                      {rank}
+                    </li>
+                  ))}
+                </Ul>
+              </div>
             ))}
           </div>
         </div>
       ))}
     </div>
-  ) : null;
+  );
 }
