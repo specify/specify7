@@ -3,7 +3,7 @@ import re
 from typing import NamedTuple, List
 import logging
 
-from django.db.models import Q, F
+from django.db.models import Q, Count
 from django.apps import apps as global_apps
 
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
@@ -778,21 +778,35 @@ def update_schema_config_field_desc(apps, schema_editor=None):
 def update_hidden_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
         )
         for container in containers:
-            for field_name in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
+            items = Splocalecontaineritem.objects.filter(
+                container=container,
+                name__in=[field_name.lower() for field_name in fields]
+            )
+            logger.info(f"Updating {items.count()} items for table {table} and container {container.id}")
+            items.update(ishidden=True)
 
-                for item in items:
-                    item.ishidden = True
-                    item.save()
+    duplicates = (
+        Splocalecontaineritem.objects.values("container", "name")
+        .annotate(count=Count("id"))
+        .filter(count__gt=1)
+    )
+    for duplicate in duplicates:
+        container_id = duplicate['container']
+        name = duplicate['name']
+        duplicate_items = Splocalecontaineritem.objects.filter(container_id=container_id, name=name)
+        item_to_keep = duplicate_items.first()
+        items_to_delete = duplicate_items.exclude(id=item_to_keep.id)
+
+        Splocaleitemstr.objects.filter(itemdesc_id__in=items_to_delete).update(itemdesc_id=item_to_keep.id)
+        Splocaleitemstr.objects.filter(itemname_id__in=items_to_delete).update(itemname_id=item_to_keep.id)
+        items_to_delete.delete()
 
 def reverse_update_hidden_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -803,15 +817,12 @@ def reverse_update_hidden_prop(apps, schema_editor=None):
             name=table.lower(),
         )
         for container in containers:
-            for field_name in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
-
-                for item in items:
-                    item.ishidden = False
-                    item.save()
+            items = Splocalecontaineritem.objects.filter(
+                container=container,
+                name__in=[field_name.lower() for field_name in fields]
+            )
+            logger.info(f"Reverting {items.count()} items for table {table} and container {container.id}")
+            items.update(ishidden=False)
 
 def reverse_update_schema_config_field_desc(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
