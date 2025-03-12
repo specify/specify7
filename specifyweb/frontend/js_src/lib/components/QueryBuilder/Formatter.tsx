@@ -24,7 +24,7 @@ type SimpleFormatter = {
 };
 
 type FormatterWithCOTs = SimpleFormatter & {
-  readonly cotNames: readonly string[];
+  readonly cotNames: RA<string>;
 };
 
 export function QueryFieldRecordFormatter({
@@ -111,7 +111,11 @@ export function CatalogNumberFormatSelection({
                 });
               }
               
-              map.get(format)!.cotNames.push(cotName);
+              const formatter = map.get(format)!;
+              map.set(format, {
+                ...formatter,
+                cotNames: [...formatter.cotNames, cotName]
+              });
               return map;
             }, new Map<string, FormatterWithCOTs>());
             
