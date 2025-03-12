@@ -293,8 +293,8 @@ function findMissingRanks(
 }
 
 type RankData = {
-  specifyRank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-  field: LiteralField | Relationship | undefined;
+  readonly specifyRank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
+  readonly field: LiteralField | Relationship | undefined;
 };
 
 const findMissingRanksInTreeDefItems = (
@@ -302,13 +302,11 @@ const findMissingRanksInTreeDefItems = (
   tableName: string,
   highestRank: RankData,
   currentTreeRanks: RA<RankData>
-): RA<string> => {
-  return treeDefItems.flatMap(({ treeDef, rankId, name }) =>
+): RA<string> => treeDefItems.flatMap(({ treeDef, rankId, name }) =>
     rankId < highestRank.specifyRank.rankId
       ? []
       : filterArray(
-          requiredTreeFields.map((requiredField) => {
-            return currentTreeRanks.some(
+          requiredTreeFields.map((requiredField) => currentTreeRanks.some(
               (rank) =>
                 (rank.specifyRank.name === name &&
                   rank.field !== undefined &&
@@ -320,11 +318,9 @@ const findMissingRanksInTreeDefItems = (
               : `${name} - ${
                   defined(strictGetTable(tableName).getField(requiredField))
                     .label
-                }`;
-          })
+                }`)
         )
   );
-};
 
 function ErrorsDialog({
   errors,
@@ -416,7 +412,7 @@ function ShowMissingRanks({
                 <H3>{`${treeDefName}:`}</H3>
                 <Ul>
                   {rankNames.map((rank) => (
-                    <li key={rank} className="px-4">
+                    <li className="px-4" key={rank}>
                       {rank}
                     </li>
                   ))}
