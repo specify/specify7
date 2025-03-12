@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from specifyweb.businessrules.uniqueness_rules import catnum_rule_editable, catnum_rule_uneditable
+from specifyweb.businessrules.migration_utils import catnum_rule_editable, catnum_rule_uneditable
 
 class Migration(migrations.Migration):
     dependencies = [

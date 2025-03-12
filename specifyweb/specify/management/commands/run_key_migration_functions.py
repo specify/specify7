@@ -2,7 +2,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
-from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules, catnum_rule_editable
+from specifyweb.businessrules.migration_utils import catnum_rule_editable
+from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 from specifyweb.permissions.initialize import initialize

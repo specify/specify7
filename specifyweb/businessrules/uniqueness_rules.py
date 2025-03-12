@@ -1,7 +1,7 @@
 from functools import reduce
 import logging
 import json
-from typing import Dict, List, Union, Iterable, Tuple
+from typing import Dict, List, Union, Iterable
 
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
@@ -214,68 +214,3 @@ GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
-
-
-def catnum_rule_editable(apps, schema_editor=None):
-    UniquenessRule = apps.get_model("businessrules", "UniquenessRule")
-    UniquenessRuleField = apps.get_model("businessrules", "UniquenessRuleField")
-
-    candidate_rules_with_field: Tuple[int] = tuple(
-        UniquenessRuleField.objects.filter(
-            uniquenessrule__modelName__iexact="collectionobject",
-            uniquenessrule__isDatabaseConstraint=True,
-            fieldPath__iexact="catalognumber",
-            isScope=False,
-        ).values_list("uniquenessrule_id", flat=True)
-    )
-
-    candidate_rules_with_scope: Tuple[int] = tuple(
-        UniquenessRuleField.objects.filter(
-            uniquenessrule_id__in=candidate_rules_with_field,
-            fieldPath__iexact="collection",
-            isScope=True,
-        ).values_list("uniquenessrule_id", flat=True)
-    )
-
-    candidate_rules = UniquenessRule.objects.filter(id__in=candidate_rules_with_scope)
-    candidate_rules.update(isDatabaseConstraint=False)
-
-
-def catnum_rule_uneditable(apps, schema_editor=None):
-    Discipline = apps.get_model("specify", "Discipline")
-    UniquenessRule = apps.get_model("businessrules", "UniquenessRule")
-    UniquenessRuleField = apps.get_model("businessrules", "UniquenessRuleField")
-
-    for discipline in Discipline.objects.all():
-        candidate_rules_with_field: Tuple[int] = tuple(
-            UniquenessRuleField.objects.filter(
-                uniquenessrule__modelName__iexact="collectionobject",
-                uniquenessrule__discipline=discipline.id,
-                uniquenessrule__isDatabaseConstraint=False,
-                fieldPath__iexact="catalognumber",
-                isScope=False,
-            ).values_list("uniquenessrule_id", flat=True)
-        )
-
-        candidate_rules_with_scope: Tuple[int] = tuple(
-            UniquenessRuleField.objects.filter(
-                uniquenessrule_id__in=candidate_rules_with_field,
-                fieldPath__iexact="collection",
-                isScope=True,
-            ).values_list("uniquenessrule_id", flat=True)
-        )
-
-        candidate_rules = UniquenessRule.objects.filter(
-            id__in=candidate_rules_with_scope
-        )
-        if len(candidate_rules) == 0:
-            create_uniqueness_rule(
-                "Collectionobject",
-                discipline=discipline,
-                is_database_constraint=True,
-                fields=["catalogNumber"],
-                scopes=["collection"],
-                registry=apps,
-            )
-        else:
-            candidate_rules.update(isDatabaseConstraint=True)
