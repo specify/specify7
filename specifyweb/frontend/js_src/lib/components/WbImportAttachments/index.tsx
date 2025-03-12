@@ -7,26 +7,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
-import { uploadFile } from '../Attachments/attachments';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
+import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { useMenuItem } from '../Header/MenuContext';
-import { FilePicker } from '../Molecules/FilePicker';
-import { uniquifyDataSetName } from '../WbImport/helpers';
-import { ChooseName } from '../WbImport/index';
+import { uploadFile } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { raise } from '../Errors/Crash';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
+import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog } from '../Molecules/Dialog';
-import { Progress } from '../Atoms';
 import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import { uniquifyDataSetName } from '../WbImport/helpers';
+import { ChooseName } from '../WbImport/index';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -72,7 +72,7 @@ function FilesPicked({ files }: { readonly files: readonly File[] }): JSX.Elemen
     await dataSet.save();
     const dataSetUrl = dataSet.url();
 
-    let spDataSetAttachmentIds: number[] = [];
+    const spDataSetAttachmentIds: readonly number[] = [];
     async function handleUploaded(attachment: SpecifyResource<Attachment>): Promise<void> {
       // Create SpDataSetAttachment Record for each uploaded attachment
       const spDataSetAtt: SpecifyResource<SpDataSetAttachment> = new tables.SpDataSetAttachment.Resource({
@@ -85,9 +85,9 @@ function FilesPicked({ files }: { readonly files: readonly File[] }): JSX.Elemen
       spDataSetAttachmentIds.push(spDataSetAtt.id);
     }
 
-    const uploads = files.map((file) =>
+    const uploads = files.map(async (file) =>
       uploadFile(file, setUploadProgress)
-        .then((attachment) =>
+        .then(async (attachment) =>
           attachment === undefined
             ? handleFailed()
             : handleUploaded(attachment)
@@ -103,9 +103,7 @@ function FilesPicked({ files }: { readonly files: readonly File[] }): JSX.Elemen
     await Promise.all(uploads);
 
     // Data set will contain the ids to the SpDataSetAttachment records
-    const data: RA<RA<string>> = [
-      ...Array.from(spDataSetAttachmentIds, (id) => [id.toString()]),
-    ];
+    const data: RA<RA<string>> = Array.from(Array.from(spDataSetAttachmentIds, (id) => [id.toString()]));
     dataSet.set('data', data as never);
     loading(dataSet.save().then(() => {
       navigate(`/specify/workbench/plan/${dataSet.id}/`)
