@@ -232,13 +232,12 @@ export function InteractionDialog({
     }
 
     if (collectionHasSeveralTypes === true) {
-      const parsedCatNumber = (split(catalogNumbers).map((catalogNumber) => parser.parser?.(catalogNumber) ?? catalogNumber))
-
-      setCatalogNumbers(parsedCatNumber.join('\n'))
-
+      const parsedCatNumber = split(catalogNumbers);
+    
+      setCatalogNumbers(parsedCatNumber.join('\n'));
       setState({ type: 'MainState' });
-
-      return(parsedCatNumber.map((cat) => (cat as number | string).toString()))
+    
+      return parsedCatNumber.map(String);
     }
 
     const parsed = f.unique(
