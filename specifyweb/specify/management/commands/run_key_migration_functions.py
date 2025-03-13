@@ -43,7 +43,7 @@ def fix_business_rules():
     catnum_rule_editable(apps)
 
 def fix_permissions():
-    initialize(True, apps)
+    initialize(False, apps)
     add_permission(apps)
     add_stats_edit_permission(apps)
 
