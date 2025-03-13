@@ -537,16 +537,16 @@ def run_ephemeral_query(collection, user, spquery):
     with models.session_context() as session:
         field_specs = fields_from_json(spquery["fields"])
         return execute(
-            session,
-            collection,
-            user,
-            tableid,
-            distinct,
-            count_only,
-            field_specs,
-            limit,
-            offset,
-            recordsetid,
+            session=session,
+            collection=collection,
+            user=user,
+            tableid=tableid,
+            distinct=distinct,
+            count_only=count_only,
+            field_specs=field_specs,
+            limit=limit,
+            offset=offset,
+            recordsetid=recordsetid,
             formatauditobjs=format_audits,
         )
 
