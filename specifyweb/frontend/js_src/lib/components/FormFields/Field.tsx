@@ -132,12 +132,16 @@ function Field({
 
   // New api call to backend to get the primary cat num if present
   const catNumberFromPrimary = 'Cat num from primary'
+  
   /*
    * Const catNumberFromPrimary2 = ajax('api/specify/catalog_number_for_sibiling', {
-   *   method: 'GET',
-   *   headers: { Accept: 'application/json' },
-   * }).then((catalogNumber) => catalogNumber);
+   *     method: 'GET',
+   *     headers: { Accept: 'application/json' },
+   *     body: JSON.stringify({ resource }),
+   * }).then((catalogNumber: string
+   * ) => catalogNumber);
    */
+
 
 
   return (

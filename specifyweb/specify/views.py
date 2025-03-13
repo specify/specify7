@@ -1367,3 +1367,9 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+@login_maybe_required
+@require_POST
+def catalog_number_for_sibling(request: http.HttpRequest):
+    # returns the catalog number of the primary CO if one is present 
+    pass
