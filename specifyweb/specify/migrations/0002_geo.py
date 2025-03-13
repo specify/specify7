@@ -9,7 +9,7 @@ from specifyweb.specify.models import (
 )
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
 from specifyweb.specify.migration_utils import update_schema_config as usc
-from specifyweb.specify.utils import create_default_collection_types
+from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ def revert_default_discipline_for_tree_defs(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_default_collection_object_types(apps):
+def create_default_collection_object_group_types(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
         handle_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
         usc.create_geo_table_schema_config_with_defaults(apps)
-        create_default_collection_object_types(apps)
+        create_default_collection_object_group_types(apps)
         set_discipline_for_taxon_treedefs(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):

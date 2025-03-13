@@ -3,6 +3,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 
 logger = logging.getLogger(__name__)
 
+
 def create_default_collection_types(apps):
     Collection = apps.get_model('specify', 'Collection')
     Collectionobject = apps.get_model('specify', 'Collectionobject')
@@ -20,7 +21,8 @@ def create_default_collection_types(apps):
         )
 
         # Update CollectionObjects' collectionobjecttype for the discipline
-        Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
+        Collectionobject.objects.filter(
+            collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
         try:
             collection.save()
@@ -37,5 +39,6 @@ def create_default_collection_types(apps):
                 try:
                     collection.save()
                 except BusinessRuleException as e:
-                    logger.warning(f'Problem saving collection {collection}: {e}')
+                    logger.warning(
+                        f'Problem saving collection {collection}: {e}')
             continue
