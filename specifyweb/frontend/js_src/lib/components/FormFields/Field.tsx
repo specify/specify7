@@ -127,7 +127,8 @@ function Field({
   const isNew = resource?.isNew()
   const isCO = resource?.specifyTable.name === "CollectionObject"
   const isPartOfCOG = isCO ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined : false;
-  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG
+  const isCatNumberField = field?.name === "catalogNumber"
+  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG && isCatNumberField
 
   // New api call to backend to get the primary cat num if present
   const catNumberFromPrimary = 'Cat num from primary'
