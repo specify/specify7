@@ -846,6 +846,13 @@ export const resourcesText = createDictionary({
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
   },
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+  },
+  primaryDeletionErrorMessage: {
+    'en-us':
+      'This record cannot be deleted as it is the primary record of the Collection Object Group. Please reload the page, then assign another CO as the primary record if a change is desired.',
+  },
   invalidDeterminationTaxon: {
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',
