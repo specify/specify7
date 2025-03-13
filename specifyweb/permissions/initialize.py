@@ -5,7 +5,6 @@ from django.apps import apps
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.model_extras import is_legacy_admin
 from specifyweb.specify.auditlog import auditlog
-# from specifyweb.specify.models import Spauditlog
 
 from .permissions import CollectionAccessPT
 
@@ -50,9 +49,7 @@ def create_admins(apps=apps) -> None:
                 action="%",
             )
             if is_new:
-                auditlog.insert(user_policy, user)
-            else:
-                auditlog.update(user_policy, user)
+                auditlog.insert(user_policy, None)
 
 def assign_users_to_roles(apps=apps) -> None:
     from specifyweb.context.views import users_collections_for_sp6
@@ -83,7 +80,7 @@ def assign_users_to_roles(apps=apps) -> None:
                     resource=CollectionAccessPT.access.resource(),
                     action=CollectionAccessPT.access.action(),
                 )
-                auditlog.insert(user_policy, user)
+                auditlog.insert(user_policy, None)
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')

@@ -1,6 +1,3 @@
-# from specifyweb.permissions.views import Role
-# from specifyweb.specify.models import Collection
-
 def add_permission(apps):
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')

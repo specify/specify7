@@ -1,18 +1,18 @@
 import logging
-from time import time
-
-from specifyweb.specify.field_change_info import FieldChangeInfo
-
-
-logger = logging.getLogger(__name__)
 import re
+
+from time import time
+from typing import Iterable
 
 from django.db import connection
 from django.conf import settings
 
+from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models import Spauditlog, Spauditlogfield
 from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
 from specifyweb.specify.models import datamodel
+
+logger = logging.getLogger(__name__)
 
 Collection = datamodel.get_table_strict('Collection')
 Discipline = datamodel.get_table_strict('Discipline')
@@ -56,7 +56,7 @@ class AuditLog(object):
             self._lastCheck = time()
         return self._auditing;
     
-    def update(self, obj, agent, parent_record=None, dirty_flds=[]):
+    def update(self, obj, agent, parent_record, dirty_flds: Iterable[FieldChangeInfo]):
         self.log_action(auditcodes.UPDATE, obj, agent, parent_record, dirty_flds)
     
     def log_action(self, action, obj, agent, parent_record, dirty_flds):
