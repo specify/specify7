@@ -1372,4 +1372,46 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
     # returns the catalog number of the primary CO if one is present 
-    pass
+
+    request_data = json.loads(request.body)
+    id = request_data.get('id')
+    catalog_number = request_data.get('catalognumber')
+
+    if catalog_number is not None: 
+        return None
+    
+    request_data_dict = dict(request_data) 
+    if "catalognumber" not in request_data_dict:
+        return None
+
+    # Find the associated cojo
+    cojo = spmodels.Collectionobjectgroupjoin.objects.filter(childco=id).first()
+
+    if cojo is None:
+        return None
+
+    cog_parent = cojo.parentcog
+
+    cojos = spmodels.Collectionobjectgroupjoin.objects.filter(childco=cog_parent.id)
+
+    primary_catalog_number = None
+
+    for cojo in cojos:
+        child_co = cojo.childco
+        child_co_primary = getattr(child_co, "isprimary")
+
+        if child_co_primary:  # If child_co_primary is True
+            primary_catalog_number = child_co.catalognumber
+            break  # Stop loop if we found the primary catalog number
+
+        elif child_co_primary is False:  
+            continue
+
+    return primary_catalog_number 
+
+    # need to query collectionobjectgroupjoin table and filter with parentCOG = this one 
+
+    # get through all the parentCOG children 
+    # find the primary CO 
+    # get the cat numb of the primary CO 
+    # return the primary CO cat num as a string 
