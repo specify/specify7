@@ -3,52 +3,40 @@ import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { batchEditText } from '../../localization/batchEdit';
-import { commonText } from '../../localization/common';
-import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
-import type { RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { group, keysToLowerCase, sortFunction } from '../../utils/utils';
-import { H2, H3, Ul } from '../Atoms';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import { strictGetTable } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
-import {
-  getTreeDefinitions,
-  isTreeTable,
-  strictGetTreeDefinitionItems,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
-import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
+import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { uniquifyDataSetName } from '../WbImport/helpers';
-import {
-  anyTreeRank,
-  relationshipIsToMany,
-} from '../WbPlanView/mappingHelpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { MissingRanks, MissingRanksDialog } from './MissingRanks';
+import { findAllMissing } from './missingRanksUtils';
+import { ErrorsDialog, QueryError } from './QueryError';
 
 const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   generateMappingPathPreview(
     queryFieldSpec.baseTable.name,
     queryFieldSpec.toMappingPath()
   );
+
+// Data structure for passing the treedefs to use for batch edit in case of missing ranks
+type TreeDefsFilter =
+  | {
+      readonly [KEY in AnyTree['tableName']]: RA<number>;
+    }
+  | {};
 
 export function BatchEditFromQuery({
   query,
@@ -77,12 +65,16 @@ export function BatchEditFromQuery({
         name: dataSetName,
         recordSetId,
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
+        treeDefsFilter: treeDefsFilter,
       }),
     });
 
-  const [errors, setErrors] = React.useState<QueryError | undefined>(undefined);
+  const [errors, setErrors] = React.useState<QueryError>();
   const [missingRanks, setMissingRanks] = React.useState<MissingRanks>();
   const [datasetName, setDatasetName] = React.useState<LocalizedString>();
+  const [treeDefsFilter, setTreeDefsFilter] = React.useState<TreeDefsFilter>(
+    {}
+  );
   const loading = React.useContext(LoadingContext);
 
   const queryFieldSpecs = React.useMemo(
@@ -96,6 +88,28 @@ export function BatchEditFromQuery({
       ),
     [fields]
   );
+
+  const handleCheckboxChange = (
+    treeTableName: AnyTree['tableName'],
+    treeDefId: number
+  ) => {
+    setTreeDefsFilter((prevFilter) => {
+      const updatedFilter = { ...prevFilter };
+      if (Array.isArray(updatedFilter[treeTableName])) {
+        if (updatedFilter[treeTableName]?.includes(treeDefId)) {
+          updatedFilter[treeTableName] = updatedFilter[treeTableName]?.filter(
+            (id) => id !== treeDefId
+          );
+        } else {
+          updatedFilter[treeTableName] =
+            updatedFilter[treeTableName]?.concat(treeDefId);
+        }
+      } else {
+        updatedFilter[treeTableName] = [treeDefId];
+      }
+      return updatedFilter;
+    });
+  };
 
   const handleCloseDialog = () => {
     setDatasetName(undefined);
@@ -159,6 +173,7 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
+          onSelectTreeDef={handleCheckboxChange}
           onClose={handleCloseDialog}
           onContinue={async () => loading(handleCreateDataset(datasetName))}
         />
@@ -166,17 +181,6 @@ export function BatchEditFromQuery({
     </>
   );
 }
-
-type QueryError = {
-  readonly invalidFields: RA<string>;
-};
-
-type TreeDefinitionName = string;
-
-type MissingRanks = {
-  // Query can contain relationship to multiple trees
-  readonly [KEY in AnyTree['tableName']]: RR<TreeDefinitionName, RA<string>>;
-};
 
 function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   const joinPath = queryFieldSpec.joinPath;
@@ -197,235 +201,5 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
 
+// Error filters
 const filters = [containsFaultyNestedToMany, containsSystemTables];
-
-const getTreeDefFromName = (
-  rankName: string,
-  treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
-) =>
-  defined(
-    treeDefItems.find(
-      (treeRank) => treeRank.name.toLowerCase() === rankName.toLowerCase()
-    )
-  );
-
-function findAllMissing(queryFieldSpecs: RA<QueryFieldSpec>): MissingRanks {
-  const treeFieldSpecs = group(
-    filterArray(
-      queryFieldSpecs.map((fieldSpec) =>
-        isTreeTable(fieldSpec.table.name) &&
-        fieldSpec.treeRank !== anyTreeRank &&
-        fieldSpec.treeRank !== undefined
-          ? [
-              fieldSpec.table,
-              { rank: fieldSpec.treeRank, field: fieldSpec.getField() },
-            ]
-          : undefined
-      )
-    )
-  );
-
-  return Object.fromEntries(
-    treeFieldSpecs
-      .map(([treeTable, treeRanks]) => [
-        treeTable.name,
-        findMissingRanks(treeTable, treeRanks),
-      ])
-      .filter(([_, rankData]) => Object.values(rankData).length > 0)
-  );
-}
-
-// TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
-const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
-
-const nameExistsInRanks = (
-  name: string,
-  ranks: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
-): boolean => ranks.some((rank) => rank.name === name);
-
-function findMissingRanks(
-  treeTable: SpecifyTable,
-  treeRanks: RA<
-    | { readonly rank: string; readonly field?: LiteralField | Relationship }
-    | undefined
-  >
-): RR<TreeDefinitionName, RA<string>> {
-  const allTreeDefItems = strictGetTreeDefinitionItems(
-    treeTable.name as 'Geography',
-    false,
-    'all'
-  );
-
-  // Duplicates don't affect any logic here
-  const currentTreeRanks = filterArray(
-    treeRanks.map((treeRank) =>
-      f.maybe(treeRank, ({ rank, field }) => ({
-        specifyRank: getTreeDefFromName(rank, allTreeDefItems),
-        field,
-      }))
-    )
-  );
-
-  const currentRanksSorted = Array.from(currentTreeRanks).sort(
-    sortFunction(({ specifyRank: { rankId } }) => rankId)
-  );
-
-  const highestRank = currentRanksSorted[0];
-
-  const treeDefinitions = getTreeDefinitions(
-    treeTable.name as 'Geography',
-    'all'
-  );
-
-  return Object.fromEntries(
-    treeDefinitions
-      .map(({ definition, ranks }) => [
-        definition.name,
-        findMissingRanksInTreeDefItems(
-          ranks,
-          treeTable.name,
-          highestRank,
-          currentTreeRanks
-        ),
-      ])
-      .filter(([_, missingRanks]) => missingRanks.length > 0)
-  );
-}
-
-type RankData = {
-  specifyRank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-  field: LiteralField | Relationship | undefined;
-};
-
-const findMissingRanksInTreeDefItems = (
-  treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>,
-  tableName: string,
-  highestRank: RankData,
-  currentTreeRanks: RA<RankData>
-): RA<string> => {
-  return treeDefItems.flatMap(({ treeDef, rankId, name }) =>
-    rankId < highestRank.specifyRank.rankId
-      ? []
-      : filterArray(
-          requiredTreeFields.map((requiredField) => {
-            return currentTreeRanks.some(
-              (rank) =>
-                (rank.specifyRank.name === name &&
-                  rank.field !== undefined &&
-                  requiredField === rank.field.name &&
-                  rank.specifyRank.treeDef === treeDef) ||
-                !nameExistsInRanks(rank.specifyRank.name, treeDefItems)
-            )
-              ? undefined
-              : `${name} - ${
-                  defined(strictGetTable(tableName).getField(requiredField))
-                    .label
-                }`;
-          })
-        )
-  );
-};
-
-function ErrorsDialog({
-  errors,
-  onClose: handleClose,
-}: {
-  readonly errors: QueryError;
-  readonly onClose: () => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={commonText.close()}
-      header={batchEditText.errorInQuery()}
-      icon={dialogIcons.error}
-      onClose={handleClose}
-    >
-      <ShowInvalidFields error={errors.invalidFields} />
-    </Dialog>
-  );
-}
-
-function MissingRanksDialog({
-  missingRanks,
-  onContinue: handleContinue,
-  onClose: handleClose,
-}: {
-  readonly missingRanks: MissingRanks;
-  readonly onContinue: () => void;
-  readonly onClose: () => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Info onClick={handleContinue}>
-            {interactionsText.continue()}
-          </Button.Info>
-        </>
-      }
-      header={batchEditText.missingRanksInQuery()}
-      icon={dialogIcons.info}
-      onClose={handleClose}
-    >
-      <ShowMissingRanks missingRanks={missingRanks} />
-    </Dialog>
-  );
-}
-
-function ShowInvalidFields({
-  error,
-}: {
-  readonly error: QueryError['invalidFields'];
-}) {
-  const hasErrors = error.length > 0;
-  return hasErrors ? (
-    <div>
-      <div>
-        <H2>{batchEditText.removeField()}</H2>
-      </div>
-      {error.map((singleError) => (
-        <H3>{singleError}</H3>
-      ))}
-    </div>
-  ) : null;
-}
-
-function ShowMissingRanks({
-  missingRanks,
-}: {
-  readonly missingRanks: MissingRanks;
-}) {
-  return (
-    <div>
-      <div className="mt-2 flex gap-2">
-        <H2>{batchEditText.addTreeRank()}</H2>
-      </div>
-      {Object.entries(missingRanks).map(([treeTable, ranks]) => (
-        <div key={treeTable}>
-          <div className="flex gap-2">
-            <TableIcon
-              label={strictGetTable(treeTable).label}
-              name={treeTable}
-            />
-            <H2>{strictGetTable(treeTable).label}</H2>
-          </div>
-          <div>
-            {Object.entries(ranks).map(([treeDefName, rankNames]) => (
-              <div key={treeDefName}>
-                <H3>{`${treeDefName}:`}</H3>
-                <Ul>
-                  {rankNames.map((rank) => (
-                    <li key={rank} className="px-4">
-                      {rank}
-                    </li>
-                  ))}
-                </Ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}

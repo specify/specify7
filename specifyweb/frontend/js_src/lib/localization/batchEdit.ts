@@ -21,6 +21,10 @@ export const batchEditText = createDictionary({
     'en-us':
       'The following ranks will be added to the query to enable batch editing',
   },
+  pickTreesToFilter: {
+    'en-us':
+      'The selected rank(s) are found in multiple trees. Pick tree(s) to batch edit with',
+  },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
   },
