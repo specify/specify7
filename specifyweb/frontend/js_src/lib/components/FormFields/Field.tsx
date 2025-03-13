@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input } from '../Atoms/Form';
@@ -124,11 +125,25 @@ function Field({
     'rightAlignNumberFields'
   );
 
+  const isNew = resource?.isNew()
+  const isCO = resource?.specifyTable.name === "CollectionObject"
+  const isPartOfCOG = isCO ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined : false;
+  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG
+
+  // New api call to backend to get the primary cat num if present
+  const catNumberFromPrimary = 'Cat num from primary'
+  const catNumberFromPrimary2 = ajax('api/specify/catalog_number_for_sibiling', {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  }).then((catalogNumber) => catalogNumber);
+
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       name={name}
+      placeholder={displayCatNumberPlaceHolder ? catNumberFromPrimary : undefined}
       {...validationAttributes}
       className={
         /*
