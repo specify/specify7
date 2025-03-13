@@ -37,9 +37,13 @@ def fix_schema_config():
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        if not check_discipline_added_to_uniqueness_rules(discipline):
-            continue
+    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
+
+    disciplines_with_rules = Discipline.objects.exclude(
+        id__in=UniquenessRule.objects.values_list('discipline_id', flat=True).distinct()
+    )
+
+    for discipline in disciplines_with_rules:
         apply_default_uniqueness_rules(discipline, registry=apps)
 
     catnum_rule_editable(apps)
