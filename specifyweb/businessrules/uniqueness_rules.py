@@ -185,14 +185,8 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
-    matching_fields = UniquenessRuleField.objects.filter(
-        fieldPath__in=fields, uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=is_database_constraint, uniquenessrule__discipline=discipline, isScope=False)
-
-    matching_scopes = UniquenessRuleField.objects.filter(
-        fieldPath__in=scopes, uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=is_database_constraint, uniquenessrule__discipline=discipline, isScope=True)
-
     # If the rule already exists, skip creating the rule
-    if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
+    if check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
         return
 
     rule = UniquenessRule.objects.create(
@@ -205,6 +199,28 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
         UniquenessRuleField.objects.create(
             uniquenessrule=rule, fieldPath=scope, isScope=True)
 
+def check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
+    matching_fields = models.UniquenessRuleField.objects.filter(
+        fieldPath__in=fields,
+        uniquenessrule__modelName=model_name,
+        uniquenessrule__isDatabaseConstraint=is_database_constraint,
+        uniquenessrule__discipline=discipline,
+        isScope=False,
+    )
+    matching_scopes = models.UniquenessRuleField.objects.filter(
+        fieldPath__in=scopes,
+        uniquenessrule__modelName=model_name,
+        uniquenessrule__isDatabaseConstraint=is_database_constraint,
+        uniquenessrule__discipline=discipline,
+        isScope=True,
+    )
+
+    if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
+        return True
+    return False
+
+def check_discipline_added_to_uniqueness_rules(discipline):
+    return models.UniquenessRule.objects.filter(discipline=discipline).exists()
 
 """If a uniqueness rule has a scope which traverses through a hiearchy 
 relationship scoped above the discipline level, that rule should not be 

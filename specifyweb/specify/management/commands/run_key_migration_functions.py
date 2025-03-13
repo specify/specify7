@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
 from specifyweb.businessrules.migration_utils import catnum_rule_editable
-from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules
+from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules, check_discipline_added_to_uniqueness_rules, check_uniquenessrule
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 from specifyweb.permissions.initialize import initialize
@@ -38,6 +38,8 @@ def fix_schema_config():
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
+        if not check_discipline_added_to_uniqueness_rules(discipline):
+            continue
         apply_default_uniqueness_rules(discipline, registry=apps)
 
     catnum_rule_editable(apps)
