@@ -32,8 +32,8 @@ msgstr "Плохая древовидная структура."
 msgid "move"
 msgstr "Двигаться"
 
-#: components/Merging/CompareField.tsx:215
-#: components/Merging/CompareField.tsx:217
+#: components/Merging/CompareField.tsx:216
+#: components/Merging/CompareField.tsx:218
 #: components/Merging/index.tsx:362
 #: components/Merging/index.tsx:367
 #: components/Merging/index.tsx:370
