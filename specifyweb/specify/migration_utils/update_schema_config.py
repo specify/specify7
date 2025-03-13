@@ -230,16 +230,6 @@ def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
 # Migration schema config helper functions
 # ##############################################################################
 
-def update_table_schema_configs(apps, migration_tables):
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        for table, desc in migration_tables:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-
-def revert_table_schema_configs(apps, migration_tables):
-    for table, _ in migration_tables:
-        revert_table_schema_config(table, apps)
-
 # ##########################################
 # Used in 0002_schema_config_update.py
 # ##########################################
