@@ -1,22 +1,23 @@
 import { f } from '../../utils/functools';
-import { RA, defined, filterArray, RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { group, sortFunction } from '../../utils/utils';
-import {
-  SerializedResource,
-  FilterTablesByEndsWith,
+import type {
   AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
 } from '../DataModel/helperTypes';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { SpecifyTable } from '../DataModel/specifyTable';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import {
+  getTreeDefinitions,
   isTreeTable,
   strictGetTreeDefinitionItems,
-  getTreeDefinitions,
 } from '../InitialContext/treeRanks';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import type { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { anyTreeRank } from '../WbPlanView/mappingHelpers';
-import { MissingRanks, TreeDefinitionName } from './MissingRanks';
+import type { MissingRanks, TreeDefinitionName } from './MissingRanks';
 
 const getTreeDefFromName = (
   rankName: string,
@@ -114,8 +115,10 @@ function findMissingRanks(
 }
 
 type RankData = {
-  specifyRank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-  field: LiteralField | Relationship | undefined;
+  readonly specifyRank: SerializedResource<
+    FilterTablesByEndsWith<'TreeDefItem'>
+  >;
+  readonly field: LiteralField | Relationship | undefined;
 };
 
 const findMissingRanksInTreeDefItems = (
@@ -123,13 +126,13 @@ const findMissingRanksInTreeDefItems = (
   tableName: string,
   highestRank: RankData,
   currentTreeRanks: RA<RankData>
-): RA<string> => {
-  return treeDefItems.flatMap(({ treeDef, rankId, name }) =>
+): RA<string> =>
+  treeDefItems.flatMap(({ treeDef, rankId, name }) =>
     rankId < highestRank.specifyRank.rankId
       ? []
       : filterArray(
-          requiredTreeFields.map((requiredField) => {
-            return currentTreeRanks.some(
+          requiredTreeFields.map((requiredField) =>
+            currentTreeRanks.some(
               (rank) =>
                 (rank.specifyRank.name === name &&
                   rank.field !== undefined &&
@@ -141,8 +144,7 @@ const findMissingRanksInTreeDefItems = (
               : `${name} - ${
                   defined(strictGetTable(tableName).getField(requiredField))
                     .label
-                }`;
-          })
+                }`
+          )
         )
   );
-};

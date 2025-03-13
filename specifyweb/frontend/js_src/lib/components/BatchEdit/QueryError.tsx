@@ -2,7 +2,7 @@ import React from 'react';
 
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { H2, H3 } from '../Atoms';
 import { dialogIcons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';

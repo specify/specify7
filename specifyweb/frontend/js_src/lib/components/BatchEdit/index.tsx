@@ -21,9 +21,11 @@ import type { QueryField } from '../QueryBuilder/helpers';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { MissingRanks, MissingRanksDialog } from './MissingRanks';
+import type { MissingRanks } from './MissingRanks';
+import { MissingRanksDialog } from './MissingRanks';
 import { findAllMissing } from './missingRanksUtils';
-import { ErrorsDialog, QueryError } from './QueryError';
+import type { QueryError } from './QueryError';
+import { ErrorsDialog } from './QueryError';
 
 const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   generateMappingPathPreview(
@@ -65,7 +67,7 @@ export function BatchEditFromQuery({
         name: dataSetName,
         recordSetId,
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
-        treeDefsFilter: treeDefsFilter,
+        treeDefsFilter,
       }),
     });
 
@@ -93,17 +95,14 @@ export function BatchEditFromQuery({
     treeTableName: AnyTree['tableName'],
     treeDefId: number
   ) => {
-    setTreeDefsFilter((prevFilter) => {
-      const updatedFilter = { ...prevFilter };
+    setTreeDefsFilter((previousFilter) => {
+      const updatedFilter = { ...previousFilter };
       if (Array.isArray(updatedFilter[treeTableName])) {
-        if (updatedFilter[treeTableName]?.includes(treeDefId)) {
-          updatedFilter[treeTableName] = updatedFilter[treeTableName]?.filter(
-            (id) => id !== treeDefId
-          );
-        } else {
-          updatedFilter[treeTableName] =
-            updatedFilter[treeTableName]?.concat(treeDefId);
-        }
+        updatedFilter[treeTableName] = updatedFilter[treeTableName]?.includes(
+          treeDefId
+        )
+          ? updatedFilter[treeTableName]?.filter((id) => id !== treeDefId)
+          : updatedFilter[treeTableName]?.concat(treeDefId);
       } else {
         updatedFilter[treeTableName] = [treeDefId];
       }
@@ -173,9 +172,9 @@ export function BatchEditFromQuery({
       {missingRanks !== undefined && datasetName !== undefined ? (
         <MissingRanksDialog
           missingRanks={missingRanks}
-          onSelectTreeDef={handleCheckboxChange}
           onClose={handleCloseDialog}
           onContinue={async () => loading(handleCreateDataset(datasetName))}
+          onSelectTreeDef={handleCheckboxChange}
         />
       ) : undefined}
     </>

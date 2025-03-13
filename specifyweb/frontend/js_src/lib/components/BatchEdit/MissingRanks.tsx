@@ -3,12 +3,12 @@ import React from 'react';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { RR, RA } from '../../utils/types';
+import type { RA,RR } from '../../utils/types';
 import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { dialogIcons } from '../Atoms/Icons';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { strictGetTable } from '../DataModel/tables';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
@@ -107,7 +107,7 @@ function ShowMissingRanks({
                     </Label.Inline>
                     <Ul>
                       {rankNames.map((rank) => (
-                        <li key={rank} className="px-8">
+                        <li className="px-8" key={rank}>
                           {rank}
                         </li>
                       ))}
