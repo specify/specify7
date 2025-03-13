@@ -25,12 +25,14 @@ def add_permission(apps):
             action='create_recordset',
         )
 
+
 def add_stats_edit_permission(apps):
     Collection = apps.get_model('specify', 'Collection')
     Role = apps.get_model('permissions', 'Role')
     for collection_id in Collection.objects.values_list('id', flat=True):
         try:
-            all_full_access_roles = Role.objects.filter(collection_id=collection_id, name="Full Access - Legacy")
+            all_full_access_roles = Role.objects.filter(
+                collection_id=collection_id, name="Full Access - Legacy")
             for full_access_role in all_full_access_roles:
                 full_access_role.policies.create(resource="/preferences"
                                                           "/statistics",
