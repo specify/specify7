@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { ajax } from '../../utils/ajax';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input } from '../Atoms/Form';
@@ -132,10 +131,12 @@ function Field({
 
   // New api call to backend to get the primary cat num if present
   const catNumberFromPrimary = 'Cat num from primary'
-  const catNumberFromPrimary2 = ajax('api/specify/catalog_number_for_sibiling', {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  }).then((catalogNumber) => catalogNumber);
+  /*
+   * Const catNumberFromPrimary2 = ajax('api/specify/catalog_number_for_sibiling', {
+   *   method: 'GET',
+   *   headers: { Accept: 'application/json' },
+   * }).then((catalogNumber) => catalogNumber);
+   */
 
 
   return (
