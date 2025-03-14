@@ -17,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { uploadFile } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
@@ -27,7 +28,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import { serializeResource } from '../DataModel/serializers';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -77,7 +77,7 @@ function FilesPicked({
     await dataSet.save();
     const dataSetUrl = dataSet.url();
 
-    const dataSetAttachments: SpecifyResource<SpDataSetAttachment>[] = [];
+    const dataSetAttachments: readonly SpecifyResource<SpDataSetAttachment>[] = [];
     async function handleUploaded(
       attachment: SpecifyResource<Attachment>
     ): Promise<void> {
