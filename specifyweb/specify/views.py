@@ -1377,11 +1377,11 @@ def catalog_number_for_sibling(request: http.HttpRequest):
     id = request_data.get('id')
     catalog_number = request_data.get('catalognumber')
 
-    # If the CO reosurce already has a cat num we should return none to not use the sibling cat num
+    # If the CO resource already has a cat num we should return None to not use the sibling cat num
     if catalog_number is not None: 
         return http.JsonResponse(None, safe=False)
     
-    # If the resource is not CO we should return none
+    # If the resource is not CO we should return None
     request_data_dict = dict(request_data) 
     if "catalognumber" not in request_data_dict:
         return http.JsonResponse(None, safe=False)
