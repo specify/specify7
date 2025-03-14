@@ -5,6 +5,7 @@ from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.specify.utils import get_picklists
 from specifyweb.stored_queries.format import get_date_format
@@ -347,29 +348,7 @@ def set_order_number(
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
-    treedef = None
-    if table.name == 'Taxon':
-        if treedef is None:
-            treedef = collection.discipline.taxontreedef
-
-    elif table.name == "Geography":
-        treedef = collection.discipline.geographytreedef
-
-    elif table.name == "LithoStrat":
-        treedef = collection.discipline.lithostrattreedef
-
-    elif table.name == "GeologicTimePeriod":
-        treedef = collection.discipline.geologictimeperiodtreedef
-
-    elif table.name == "Storage":
-        treedef = collection.discipline.division.institution.storagetreedef
-
-    elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.tectonicunittreedef
-
-    else:
-        raise Exception(f"unexpected tree type: {table.name}")
-
+    treedef = get_default_treedef(table, collection)
     if treedef is None:
         raise ValueError(f"Could not find treedef for table {table.name}")
 

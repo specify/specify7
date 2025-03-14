@@ -1,7 +1,8 @@
 from typing import Tuple, List
 from django.db.models import Q, Count, Model
+
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.datamodel import datamodel, Table
 
 lookup = lambda tree: (tree.lower() + 'treedef')
 
@@ -48,3 +49,26 @@ def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple
 
     return result
 
+def get_default_treedef(table: Table, collection):
+    if table.name.lower() not in SPECIFY_TREES:
+        raise Exception(f"unexpected tree type: {table.name}")
+    
+    if table.name == 'Taxon':
+        return collection.discipline.taxontreedef
+
+    elif table.name == "Geography":
+        return collection.discipline.geographytreedef
+
+    elif table.name == "LithoStrat":
+        return collection.discipline.lithostrattreedef
+
+    elif table.name == "GeologicTimePeriod":
+        return collection.discipline.geologictimeperiodtreedef
+
+    elif table.name == "Storage":
+        return collection.discipline.division.institution.storagetreedef
+
+    elif table.name == 'TectonicUnit':
+        return collection.discipline.tectonicunittreedef
+    
+    return None
