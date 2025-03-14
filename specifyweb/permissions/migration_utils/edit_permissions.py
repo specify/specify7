@@ -1,30 +1,35 @@
+from specifyweb.specify.auditlog import auditlog
+
+
 def add_permission(apps, schema_editor=None):
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')
     RolePolicy = apps.get_model('permissions', 'RolePolicy')
 
     for p in UserPolicy.objects.filter(resource='/workbench/dataset', action='upload'):
-        UserPolicy.objects.create(
+        user_policy = UserPolicy.objects.create(
             collection=p.collection,
             specifyuser=p.specifyuser,
             resource=p.resource,
             action='create_recordset',
         )
+        auditlog.insert(user_policy, None)
 
     for p in RolePolicy.objects.filter(resource='/workbench/dataset', action='upload'):
-        RolePolicy.objects.create(
+        role_policy = RolePolicy.objects.create(
             role=p.role,
             resource=p.resource,
             action='create_recordset',
         )
+        auditlog.insert(role_policy, None)
 
     for p in LibraryRolePolicy.objects.filter(resource='/workbench/dataset', action='upload'):
-        LibraryRolePolicy.objects.create(
+        library_role_policy = LibraryRolePolicy.objects.create(
             role=p.role,
             resource=p.resource,
             action='create_recordset',
         )
-
+        auditlog.insert(library_role_policy, None)
 
 def add_stats_edit_permission(apps, schema_editor=None):
     Collection = apps.get_model('specify', 'Collection')
@@ -37,6 +42,7 @@ def add_stats_edit_permission(apps, schema_editor=None):
                 full_access_role.policies.create(resource="/preferences"
                                                           "/statistics",
                                                  action="edit")
+                auditlog.insert(full_access_role, None)
         except:
             print("Failed to assign stats edit permission in collection: ",
                   collection_id)
