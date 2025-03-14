@@ -1,5 +1,6 @@
 import type { IR, RA, RR } from '../../utils/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
+import { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -47,8 +48,11 @@ const toTreeRecordRanks = (
     ])
   );
 
-const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => {
-  const treeDefinitions = getTreeDefinitions('Taxon', 'all');
+const toTreeRecordVariety = (
+  tableName: AnyTree['tableName'],
+  lines: RA<SplitMappingPath>
+): TreeRecord => {
+  const treeDefinitions = getTreeDefinitions(tableName, 'all');
 
   return {
     ranks: Object.fromEntries(
@@ -166,7 +170,7 @@ const toUploadable = (
           mustMatchPreferences.includes(table.name)
             ? 'mustMatchTreeRecord'
             : 'treeRecord',
-          toTreeRecordVariety(lines),
+          toTreeRecordVariety(table.name, lines),
         ] as const,
       ])
     : Object.fromEntries([
