@@ -121,17 +121,20 @@
                             "Country": {
                               "treeNodeCols": {
                                 "name": "Country"
-                              }
+                              },
+                              "treeId": 1
                             },
                             "State": {
                               "treeNodeCols": {
                                 "name": "State/Prov/Pref"
-                              }
+                              },
+                              "treeId": 1
                             },
                             "Continent": {
                               "treeNodeCols": {
                                 "name": "Continent/Ocean"
-                              }
+                              },
+                              "treeId": 1
                             }
                           }
                         }
