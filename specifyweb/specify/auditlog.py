@@ -119,7 +119,7 @@ class AuditLog(object):
                 parenttablenum=parentTbl,
                 recordid=obj.id,
                 recordversion=obj.version if hasattr(obj, 'version') else 0,
-                tablenum=obj.specify_model.tableId,
+                tablenum=obj.specify_model.tableId if hasattr(obj, 'specify_model') else 0, # TODO: Checkout why LibraryRole has no specify_model during init migration
                 createdbyagent_id=agent_id,
                 modifiedbyagent_id=agent_id)
     
