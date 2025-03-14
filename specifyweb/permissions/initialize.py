@@ -55,6 +55,7 @@ def assign_users_to_roles(apps=apps) -> None:
     from specifyweb.context.views import users_collections_for_sp6
 
     Role = apps.get_model('permissions', 'Role')
+    UserRole = apps.get_model('permissions', 'UserRole')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     Collection = apps.get_model('specify', 'Collection')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
@@ -64,28 +65,36 @@ def assign_users_to_roles(apps=apps) -> None:
     for user in Specifyuser.objects.all():
         for collection in Collection.objects.all():
             if user.usertype == 'Manager':
-                try:
-                    user.roles.create(role=Role.objects.get(collection=collection, name="Collection Admin"))
-                except:
-                    print(f"Failed to assign Collection Admin role to {user} in {collection}")
+                roles = Role.objects.filter(collection=collection, name="Collection Admin")
+                for role in roles:
+                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    if created:
+                        auditlog.insert(user_role)
             if user.usertype == 'FullAccess':
-                user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
+                roles = Role.objects.filter(collection=collection, name="Full Access - Legacy")
+                for role in roles:
+                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    if created:
+                        auditlog.insert(user_role)
             if user.usertype in ('LimitedAccess', 'Guest'):
-                user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
+                roles = Role.objects.filter(collection=collection, name="Read Only - Legacy")
+                for role in roles:
+                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    if created:
+                        auditlog.insert(user_role)
 
         for colid, _ in users_collections_for_sp6(cursor, user.id):
-            # Does the user has an agent for the collection?
+            # Does the user have an agent for the collection?
             if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
                 # Give them access to the collection.
-                user_policy = UserPolicy.objects.create(
+                user_policy, created = UserPolicy.objects.get_or_create(
                     collection_id=colid,
                     specifyuser_id=user.id,
                     resource=CollectionAccessPT.access.resource(),
                     action=CollectionAccessPT.access.action(),
                 )
-                auditlog.insert(user_policy)
-
-from specifyweb.specify.auditlog import auditlog
+                if created:
+                    auditlog.insert(user_policy, None)
 
 def get_or_create_role(model, name, description, extra_fields=None):
     kwargs = {"name": name, "description": description}
