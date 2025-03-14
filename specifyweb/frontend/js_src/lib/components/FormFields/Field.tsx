@@ -137,7 +137,7 @@ function Field({
 
   React.useEffect(() => {
     if (resource && displayCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_for_sibiling/', {
+      ajax<string | null>('/api/specify/catalog_number_for_sibling/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: resource

@@ -13,8 +13,8 @@ urlpatterns = [
     url(r'^specify/merge/status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
     url(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
-    # cat num for sibilings
-    url(r'^specify/catalog_number_for_sibiling/$', views.catalog_number_for_sibling), 
+    # cat num for siblings
+    url(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling), 
 
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
