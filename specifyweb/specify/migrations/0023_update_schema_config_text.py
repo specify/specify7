@@ -8,6 +8,9 @@ from specifyweb.specify.migration_utils import update_schema_config as usc
 class Migration(migrations.Migration):
     dependencies = [
         ('specify', '0022_ensure_default_cots'),
+        ('businessrules', '0005_cojo') 
+        # Needed for reverting since 0024 has a businessrules dependency.
+        # See: https://docs.djangoproject.com/en/dev/topics/migrations/#accessing-models-from-other-apps
     ]
 
     operations = [
