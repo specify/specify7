@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -77,7 +77,9 @@ function FilesPicked({
     await dataSet.save();
     const dataSetUrl = dataSet.url();
 
-    const dataSetAttachments: readonly SpecifyResource<SpDataSetAttachment>[] = [];
+    const dataSetAttachments: WritableArray<
+      SpecifyResource<SpDataSetAttachment>
+    > = [];
     async function handleUploaded(
       attachment: SpecifyResource<Attachment>
     ): Promise<void> {
