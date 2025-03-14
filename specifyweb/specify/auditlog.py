@@ -66,7 +66,7 @@ class AuditLog(object):
                 self._log_fld_update(vals, log_obj, agent)
         return log_obj
         
-    def insert(self, obj, agent, parent_record=None):
+    def insert(self, obj, agent=None, parent_record=None):
         return self._log(auditcodes.INSERT, obj, agent, parent_record)
 
     def remove(self, obj, agent, parent_record=None):

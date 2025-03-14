@@ -49,7 +49,7 @@ def create_admins(apps=apps) -> None:
                 action="%",
             )
             if is_new:
-                auditlog.insert(user_policy, None)
+                auditlog.insert(user_policy)
 
 def assign_users_to_roles(apps=apps) -> None:
     from specifyweb.context.views import users_collections_for_sp6
@@ -83,7 +83,7 @@ def assign_users_to_roles(apps=apps) -> None:
                     resource=CollectionAccessPT.access.resource(),
                     action=CollectionAccessPT.access.action(),
                 )
-                auditlog.insert(user_policy, None)
+                auditlog.insert(user_policy)
 
 from specifyweb.specify.auditlog import auditlog
 
@@ -93,13 +93,13 @@ def get_or_create_role(model, name, description, extra_fields=None):
         kwargs.update(extra_fields)
     role_obj, created = model.objects.get_or_create(**kwargs)
     if created:
-        auditlog.insert(role_obj, None)
+        auditlog.insert(role_obj)
     return role_obj
 
 def get_or_create_policy(role, resource, action):
     policy_obj, created = role.policies.get_or_create(resource=resource, action=action)
     if created:
-        auditlog.insert(policy_obj, None)
+        auditlog.insert(policy_obj)
     return policy_obj
 
 def create_roles(apps=apps) -> None:

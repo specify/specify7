@@ -7,7 +7,7 @@ def add_attachment_import_role(apps, schema_editor):
         name="Bulk Attachment Import",
         description="Gives full access to the Bulk Attachment Import. Allows creating new attachments for any attachment table"
     )
-    auditlog.insert(role, None)
+    auditlog.insert(role)
 
     # Define policy sets grouped by resource
     policy_definitions = [
@@ -79,7 +79,7 @@ def add_attachment_import_role(apps, schema_editor):
         for action in policy['actions']:
             obj, created = role.policies.get_or_create(resource=policy['resource'], action=action)
             if created:
-                auditlog.insert(obj, None)
+                auditlog.insert(obj)
 
 class Migration(migrations.Migration):
     dependencies = [

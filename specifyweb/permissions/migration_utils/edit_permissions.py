@@ -13,7 +13,7 @@ def add_permission(apps, schema_editor=None):
             resource=p.resource,
             action='create_recordset',
         )
-        auditlog.insert(user_policy, None)
+        auditlog.insert(user_policy)
 
     for p in RolePolicy.objects.filter(resource='/workbench/dataset', action='upload'):
         role_policy = RolePolicy.objects.create(
