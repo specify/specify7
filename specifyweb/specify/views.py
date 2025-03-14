@@ -1371,34 +1371,37 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
-    # returns the catalog number of the primary CO if one is present 
+    # returns the catalog number of the primary CO of a COG if one is present 
 
     request_data = json.loads(request.body)
     id = request_data.get('id')
     catalog_number = request_data.get('catalognumber')
 
+    # If the CO reosurce already has a cat num we should return none to not use the sibling cat num
     if catalog_number is not None: 
-        return None
+        return http.JsonResponse(None, safe=False)
     
+    # If the resource is not CO we should return none
     request_data_dict = dict(request_data) 
     if "catalognumber" not in request_data_dict:
-        return None
+        return http.JsonResponse(None, safe=False)
 
     # Find the associated cojo
     cojo = spmodels.Collectionobjectgroupjoin.objects.filter(childco=id).first()
 
+    # If the CO is not a part of a COG no need to return sibling cat num
     if cojo is None:
-        return None
+        return http.JsonResponse(None, safe=False)
 
     cog_parent = cojo.parentcog
 
-    cojos = spmodels.Collectionobjectgroupjoin.objects.filter(childco=cog_parent.id)
+    cojos = spmodels.Collectionobjectgroupjoin.objects.filter(parentcog=cog_parent.id)
 
     primary_catalog_number = None
 
     for cojo in cojos:
         child_co = cojo.childco
-        child_co_primary = getattr(child_co, "isprimary")
+        child_co_primary = getattr(cojo, "isprimary")
 
         if child_co_primary:  # If child_co_primary is True
             primary_catalog_number = child_co.catalognumber
@@ -1407,11 +1410,5 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         elif child_co_primary is False:  
             continue
 
-    return primary_catalog_number 
-
-    # need to query collectionobjectgroupjoin table and filter with parentCOG = this one 
-
-    # get through all the parentCOG children 
-    # find the primary CO 
-    # get the cat numb of the primary CO 
-    # return the primary CO cat num as a string 
+    # This will return Primary CO cat num if one present, otherwise None
+    return http.JsonResponse(primary_catalog_number, safe=False)  

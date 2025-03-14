@@ -129,30 +129,34 @@ function Field({
   const isCO = resource?.specifyTable.name === "CollectionObject"
   const isPartOfCOG = isCO ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined : false;
   const isCatNumberField = field?.name === "catalogNumber"
-  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG && isCatNumberField
-
-  // New api call to backend to get the primary cat num if present
-  const catNumberFromPrimary = 'Cat num from primary'
+  // Chnage this once issue-6313 is merged
+  const displayPrimaryCatNumberPref = true
+  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG && isCatNumberField && displayPrimaryCatNumberPref
   
-  
-  const catNumberFromPrimary2 = resource && displayCatNumberPlaceHolder
-  ? ajax<string | null>('/api/specify/catalog_number_for_sibiling/', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: resource
-    })
-    .then((catalogNumber) => catalogNumber)
-  : Promise.resolve(null);
+  const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<string | null>(null);
 
-  console.log(catNumberFromPrimary2)
-
+  React.useEffect(() => {
+    if (resource && displayCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_for_sibiling/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource
+      })
+      .then((response) => {
+        setPrimaryCatalogNumber(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching catalog number:", error);
+      });
+    }
+  }, [resource, displayCatNumberPlaceHolder]);
 
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       name={name}
-      placeholder={displayCatNumberPlaceHolder ? catNumberFromPrimary : undefined}
+      placeholder={displayCatNumberPlaceHolder && typeof primaryCatalogNumber === 'string' ? primaryCatalogNumber : undefined}
       {...validationAttributes}
       className={
         /*
