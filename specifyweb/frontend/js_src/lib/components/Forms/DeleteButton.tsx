@@ -35,7 +35,7 @@ import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
 
 /**
- * A button to delele a resorce
+ * A button to delete a resource
  * Prompts before deletion
  * Checks for delete blockers (other resources depending on this one) before
  * deletion
@@ -47,6 +47,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
+  showUsages = false,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
@@ -59,6 +60,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
+  readonly showUsages?: boolean;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
@@ -92,12 +94,48 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
+  // Determine if the button should be disabled
+  const hideShowUsages = showUsages && !isBlocked;
+
+  // If hideShowUsages is true, make the button disabled
+  if (hideShowUsages) {
+    return (
+      <>
+        <ButtonComponent
+          disabled={true}
+          title={formsText.recordUnused()
+          }
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
+          >
+          {hideShowUsages ? (
+            <>
+              {icons.documentSearch}
+            </>
+          ) : undefined
+          }
+          </ButtonComponent>
+          </>
+    );
+  }
+
   return (
     <>
       {isIcon ? (
         <Button.Icon
-          icon="trash"
-          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
+          icon={
+            showUsages
+              ? 'informationCircle'
+              : 'trash'
+          }
+          title={
+            showUsages 
+              ? formsText.recordUsed()
+              : (isBlocked ? formsText.deleteBlocked() 
+                  : commonText.delete())
+          }
           onClick={(): void => {
             handleOpen();
             setDeferred(false);
@@ -105,28 +143,47 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         />
       ) : (
         <ButtonComponent
-          title={isBlocked ? formsText.deleteBlocked() : undefined}
+          title={
+            showUsages 
+              ? formsText.recordUsed()
+              : (isBlocked ? formsText.deleteBlocked() 
+                  : commonText.delete())
+          }
           onClick={(): void => {
             handleOpen();
             setDeferred(false);
           }}
         >
-          {isBlocked ? icons.exclamation : undefined}
-          {commonText.delete()}
+          {isBlocked && !showUsages ? (
+            <>
+              {icons.exclamation}
+              {commonText.delete()}
+            </>
+          ) : isBlocked && showUsages ? (
+            <>
+              {icons.documentSearch}
+            </>
+          ) : (
+            commonText.delete()
+          )}
         </ButtonComponent>
       )}
       {isOpen ? (
         blockers === undefined ? (
+          // This dialog is shown while the delete blockers are being fetched
           <Dialog
             buttons={commonText.cancel()}
             className={{ container: dialogClassNames.narrowContainer }}
             header={commonText.loading()}
             onClose={handleClose}
           >
-            {formsText.checkingIfResourceCanBeDeleted()}
+            {showUsages 
+              ? formsText.checkingIfResourceIsUsed() 
+              : formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
         ) : blockers.length === 0 ? (
+          // This dialog is only shown when the resource can be deleted
           <Dialog
             buttons={
               <>
@@ -171,15 +228,23 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             </div>
           </Dialog>
         ) : (
+          // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
+            icon={showUsages ? icons.documentSearch : icons.exclamation}
             buttons={commonText.close()}
             className={{
               container: dialogClassNames.wideContainer,
             }}
-            header={formsText.deleteBlocked()}
+            header={
+              showUsages
+                ? formsText.recordUsed()
+                : formsText.deleteBlocked()}
             onClose={handleClose}
           >
-            {formsText.deleteBlockedDescription()}
+            {showUsages 
+              ? formsText.recordUsedDescription() 
+              : formsText.deleteBlockedDescription()
+            }
             <DeleteBlockers
               blockers={[blockers, setBlockers]}
               resource={resource}
