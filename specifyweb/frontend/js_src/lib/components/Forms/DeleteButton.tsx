@@ -100,9 +100,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   // If hideShowUsages is true, make the button disabled
   if (hideShowUsages) {
     return (
-      <>
-        <ButtonComponent
-          disabled={true}
+      <ButtonComponent
+          disabled
           title={formsText.recordUnused()
           }
           onClick={(): void => {
@@ -117,7 +116,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           ) : undefined
           }
           </ButtonComponent>
-          </>
     );
   }
 
@@ -230,7 +228,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         ) : (
           // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
-            icon={showUsages ? icons.documentSearch : icons.exclamation}
             buttons={commonText.close()}
             className={{
               container: dialogClassNames.wideContainer,
@@ -239,6 +236,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               showUsages
                 ? formsText.recordUsed()
                 : formsText.deleteBlocked()}
+            icon={showUsages ? icons.documentSearch : icons.exclamation}
             onClose={handleClose}
           >
             {showUsages 
