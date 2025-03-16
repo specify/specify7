@@ -230,7 +230,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         ) : (
           // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
-            icon={showUsages ? icons.documentSearch : icons.exclamation}
             buttons={commonText.close()}
             className={{
               container: dialogClassNames.wideContainer,

@@ -271,14 +271,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !resource.isNew() &&
     hasTablePermission(resource.specifyTable.name, 'read') &&
     !isInFormEditor ? (
-     <ErrorBoundary dismissible>
-        <DeleteButton
-          resource={resource}
-          showUsages={true}
-        />
+      <ErrorBoundary dismissible>
+        <DeleteButton resource={resource} showUsages />
       </ErrorBoundary>
     ) : undefined;
-
 
   const hasNoData =
     !resource || (Array.isArray(resource) && resource.length === 0);
