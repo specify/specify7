@@ -183,7 +183,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               className={{ container: dialogClassNames.narrowContainer }}
               header={formsText.noLinkedRecords()}
               onClose={handleClose}
-            />
+            >
+              <></>
+            </Dialog>
           ) : (
             // This dialog is only shown when the resource can be deleted
             <Dialog
