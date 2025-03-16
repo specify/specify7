@@ -305,7 +305,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {showUsagesButton} {/* Add the new button here */}
+            {showUsagesButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
