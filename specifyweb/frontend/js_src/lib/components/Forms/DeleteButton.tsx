@@ -94,32 +94,13 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
-  // Determine if the button should be disabled
-  const hideShowUsages = showUsages && !isBlocked;
+  const handleButtonClick = (): void => {
+    handleOpen();
+    setDeferred(false);
+  };
 
-  // If hideShowUsages is true, make the button disabled
-  if (hideShowUsages) {
-    return (
-      <>
-        <ButtonComponent
-          disabled={true}
-          title={formsText.recordUnused()
-          }
-          onClick={(): void => {
-            handleOpen();
-            setDeferred(false);
-          }}
-          >
-          {hideShowUsages ? (
-            <>
-              {icons.documentSearch}
-            </>
-          ) : undefined
-          }
-          </ButtonComponent>
-          </>
-    );
-  }
+  // Determine if the button should be disabled
+  const noUsages = showUsages && blockers !== undefined && blockers.length === 0;
 
   return (
     <>
@@ -131,35 +112,41 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               : 'trash'
           }
           title={
-            showUsages 
-              ? formsText.recordUsed()
-              : (isBlocked ? formsText.deleteBlocked() 
-                  : commonText.delete())
+            blockers === undefined
+              ? commonText.loading()
+              : showUsages && !noUsages
+              ? formsText.linkedRecords()
+              : showUsages && noUsages
+              ? formsText.noLinkedRecords()
+              : isBlocked
+              ? formsText.deleteBlocked()
+              : commonText.delete()
           }
-          onClick={(): void => {
-            handleOpen();
-            setDeferred(false);
-          }}
+          onClick={handleButtonClick}
+          disabled={noUsages}
         />
       ) : (
         <ButtonComponent
           title={
-            showUsages 
-              ? formsText.recordUsed()
-              : (isBlocked ? formsText.deleteBlocked() 
-                  : commonText.delete())
+            blockers === undefined
+              ? commonText.loading()
+              : showUsages && !noUsages
+              ? formsText.linkedRecords()
+              : showUsages && noUsages
+              ? formsText.noLinkedRecords()
+              : isBlocked
+              ? formsText.deleteBlocked()
+              : commonText.delete()
           }
-          onClick={(): void => {
-            handleOpen();
-            setDeferred(false);
-          }}
+          onClick={handleButtonClick}
+          disabled={noUsages}
         >
           {isBlocked && !showUsages ? (
             <>
               {icons.exclamation}
               {commonText.delete()}
             </>
-          ) : isBlocked && showUsages ? (
+          ) : showUsages ? (
             <>
               {icons.documentSearch}
             </>
@@ -183,50 +170,63 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {loadingBar}
           </Dialog>
         ) : blockers.length === 0 ? (
-          // This dialog is only shown when the resource can be deleted
-          <Dialog
-            buttons={
-              <>
-                <Button.Danger
-                  onClick={(): void => {
-                    /*
-                     * REFACTOR: move this into ResourceApi.js
-                     */
-                    overwriteReadOnly(resource, 'needsSaved', false);
-                    loading(resource.destroy().then(handleDeleted));
+          showUsages ? (
+            /* 
+             * This dialog is shown when there are no linked records.
+             * In most cases, the user will not see this, but if it takes some
+             * time to fetch the linked records, this dialog will be shown once
+             * fetching is done.
+             */
+            <Dialog
+              icon={icons.documentSearch}
+              buttons={commonText.close()}
+              className={{ container: dialogClassNames.narrowContainer }}
+              header={formsText.noLinkedRecords()}
+              onClose={handleClose}
+            />
+          ) : (
+            // This dialog is only shown when the resource can be deleted
+            <Dialog
+              buttons={
+                <>
+                  <Button.Danger
+                    onClick={(): void => {
+                      overwriteReadOnly(resource, 'needsSaved', false);
+                      loading(resource.destroy().then(handleDeleted));
+                    }}
+                  >
+                    {commonText.delete()}
+                  </Button.Danger>
+                  <span className="-ml-2 flex-1" />
+                  <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                </>
+              }
+              className={{
+                container: dialogClassNames.narrowContainer,
+              }}
+              header={formsText.deleteConfirmation({
+                tableName: resource.specifyTable.label,
+              })}
+              onClose={handleClose}
+            >
+              {deletionMessage}
+              <div>
+                <StringToJsx
+                  components={{
+                    wrap: (
+                      <i className="flex items-center gap-2">
+                        <TableIcon label={false} name={iconName} />
+                        <FormattedResource asLink={false} resource={resource} />
+                      </i>
+                    ),
                   }}
-                >
-                  {commonText.delete()}
-                </Button.Danger>
-                <span className="-ml-2 flex-1" />
-                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              </>
-            }
-            className={{
-              container: dialogClassNames.narrowContainer,
-            }}
-            header={formsText.deleteConfirmation({
-              tableName: resource.specifyTable.label,
-            })}
-            onClose={handleClose}
-          >
-            {deletionMessage}
-            <div>
-              <StringToJsx
-                components={{
-                  wrap: (
-                    <i className="flex items-center gap-2">
-                      <TableIcon label={false} name={iconName} />
-                      <FormattedResource asLink={false} resource={resource} />
-                    </i>
-                  ),
-                }}
-                string={commonText.jsxColonLine({
-                  label: treeText.resourceToDelete(),
-                })}
-              />
-            </div>
-          </Dialog>
+                  string={commonText.jsxColonLine({
+                    label: treeText.resourceToDelete(),
+                  })}
+                />
+              </div>
+            </Dialog>
+          )
         ) : (
           // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
@@ -237,14 +237,14 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             }}
             header={
               showUsages
-                ? formsText.recordUsed()
-                : formsText.deleteBlocked()}
+                ? formsText.linkedRecords()
+                : formsText.deleteBlocked()
+            }
             onClose={handleClose}
           >
-            {showUsages 
-              ? formsText.recordUsedDescription() 
-              : formsText.deleteBlockedDescription()
-            }
+            {showUsages
+              ? formsText.recordUsedDescription()
+              : formsText.deleteBlockedDescription()}
             <DeleteBlockers
               blockers={[blockers, setBlockers]}
               resource={resource}
