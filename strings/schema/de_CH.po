@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-16 08:00+0000\n"
+"PO-Revision-Date: 2025-03-16 08:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -327,7 +327,7 @@ msgstr "Eindeutigkeitsregel hinzufügen"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:240
 #, fuzzy
 msgid "configureUniquenessRule"
-msgstr "Eindeutigkeitsregel konfigurieren"
+msgstr "Konfigurieren der Eindeutigkeitsregel"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
