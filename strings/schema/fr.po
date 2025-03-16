@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-16 08:00+0000\n"
+"PO-Revision-Date: 2025-03-16 08:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -28,7 +28,7 @@ msgstr "Tableau"
 #: components/SchemaConfig/Tables.tsx:49
 #, fuzzy
 msgid "tables"
-msgstr "Tableaux"
+msgstr "Tables"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/Preferences/UserDefinitions.tsx:778
@@ -41,7 +41,7 @@ msgstr "Nom de la table"
 #: components/WebLinks/Element.tsx:52
 #, fuzzy
 msgid "withoutTable"
-msgstr "Sans Table"
+msgstr "Sans table"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:52
@@ -58,7 +58,7 @@ msgstr "Configuration du schéma"
 #: components/SchemaConfig/index.tsx:75
 #, fuzzy
 msgid "unsavedSchemaUnloadProtect"
-msgstr "Les modifications de schéma n'ont pas été enregistrées"
+msgstr "Les modifications du schéma n'ont pas été enregistrées"
 
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
@@ -275,19 +275,19 @@ msgstr "Indépendant"
 #: components/SchemaViewer/index.tsx:44
 #, fuzzy
 msgid "downloadAsJson"
-msgstr "Télécharger en JSON"
+msgstr "Télécharger au format JSON"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:51
 #, fuzzy
 msgid "downloadAsXml"
-msgstr "Télécharger en XML"
+msgstr "Télécharger au format XML"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
 #, fuzzy
 msgid "downloadAsTsv"
-msgstr "Télécharger en TSV"
+msgstr "Télécharger au format TSV"
 
 #. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Table.tsx:61
