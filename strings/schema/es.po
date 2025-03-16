@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-16 08:00+0000\n"
+"PO-Revision-Date: 2025-03-16 08:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -65,7 +65,7 @@ msgstr "Los cambios de esquema no se han guardado"
 #: components/WbPlanView/MapperComponents.tsx:329
 #, fuzzy
 msgid "changeBaseTable"
-msgstr "Cambiar tabla base"
+msgstr "Cambiar la tabla base"
 
 #. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/Formatters/Fields.tsx:69
@@ -183,7 +183,7 @@ msgstr "Muchos a uno"
 #: components/SchemaConfig/helpers.ts:88
 #, fuzzy
 msgid "manyToMany"
-msgstr "muchos a muchos"
+msgstr "de muchos a muchos"
 
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaConfig/Field.tsx:69
@@ -294,7 +294,7 @@ msgstr "Descargar como TSV"
 #: components/SchemaViewer/schemaToTsv.tsx:19
 #, fuzzy
 msgid "tableId"
-msgstr "Identificación de la tabla"
+msgstr "ID de tabla"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
@@ -332,7 +332,7 @@ msgstr "Tablas posibles"
 #: components/SchemaViewer/Table.tsx:45
 #, fuzzy
 msgid "goToTop"
-msgstr "Ir al inicio"
+msgstr "Ir arriba"
 
 #. Used in: Components > Schema Viewer > Fields
 #: components/SchemaViewer/Fields.tsx:31
