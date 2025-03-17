@@ -189,37 +189,21 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     if check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
         return
 
-    rule = UniquenessRule.objects.create(
+    rule, created = UniquenessRule.objects.get_or_create(
         discipline=discipline,
         modelName=model_name,
         isDatabaseConstraint=is_database_constraint,
-    ) if UniquenessRule.objects.filter(
-        discipline_id=discipline.id,
-        modelName=model_name,
-        isDatabaseConstraint=is_database_constraint,
-    ).exists() else None
+    )
 
-    if rule is None:
+    if not created:
         return
     for field in fields:
-        (
-            UniquenessRuleField.objects.create(
-                uniquenessrule=rule, fieldPath=field, isScope=False
-            )
-            if not UniquenessRuleField.objects.filter(
-                uniquenessrule=rule, fieldPath=field, isScope=False
-            ).exists()
-            else None
+        UniquenessRuleField.objects.get_or_create(
+            uniquenessrule=rule, fieldPath=field, isScope=False
         )
     for scope in scopes:
-        (
-            UniquenessRuleField.objects.create(
-                uniquenessrule=rule, fieldPath=scope, isScope=True
-            )
-            if not UniquenessRuleField.objects.filter(
-                uniquenessrule=rule, fieldPath=scope, isScope=True
-            ).exists()
-            else None
+        UniquenessRuleField.objects.get_or_create(
+            uniquenessrule=rule, fieldPath=scope, isScope=True
         )
 
 def check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
