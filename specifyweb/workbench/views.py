@@ -697,7 +697,7 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             return http.HttpResponse("dataset has already been uploaded.", status=400)
 
         data = json.loads(request.body) if request.body else {}
-        background = False
+        background = True
         if 'background' in data:
             background = bool(data['background']) # {"background": false}
 

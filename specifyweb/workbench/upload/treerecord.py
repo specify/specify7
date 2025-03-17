@@ -127,7 +127,7 @@ class TreeRecord(NamedTuple):
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
-        return apply_scoping(self, collection)
+        return apply_scoping(self, collection, context)
 
     def get_cols(self) -> Set[str]:
         return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
@@ -162,6 +162,7 @@ class ScopedTreeRecord(NamedTuple):
     disambiguation: Dict[str, int]
     batch_edit_pack: Optional[Dict[str, Any]]
     scoped_cotypes: Any
+    cotype_column: Optional[str]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return (
@@ -312,13 +313,9 @@ class ScopedTreeRecord(NamedTuple):
         if self.name.lower() != "taxon":
             return None
         
-        # TODO: Need a better way to do this
-        # Find a way to send cotype column when ScopedTreeRecord instance is created?
-        COL_NAMES = ["Type", "Collection Object Type"]
         def find_cotype_in_row(row: Row):
-            for col_name, value in row.items():
-                if col_name in COL_NAMES:
-                    return col_name, value
+            if isinstance(self.cotype_column, str) and self.cotype_column in row:
+                return row[self.cotype_column]
                 
             return None
         
@@ -326,10 +323,8 @@ class ScopedTreeRecord(NamedTuple):
             cotypes = self.scoped_cotypes.filter(name=cotype_name)
             return cotypes[0].taxontreedef.id if len(cotypes) > 0 else None
     
-        cotype = find_cotype_in_row(row)
-        if not cotype: return None
-
-        cotype_column, cotype_value = cotype
+        cotype_value = find_cotype_in_row(row)
+        if not cotype_value: return None
 
         cotype_treedef_id = get_cotype_tree_def(cotype_value)
         if not cotype_treedef_id: return None
@@ -339,7 +334,7 @@ class ScopedTreeRecord(NamedTuple):
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
         
-        return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, cotype_column)
+        return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, self.cotype_column)
 
     def bind(
         self,
