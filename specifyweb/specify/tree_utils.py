@@ -72,3 +72,16 @@ def get_default_treedef(table: Table, collection):
         return collection.discipline.tectonicunittreedef
     
     return None
+
+def get_treedefitem_model(tree: str):
+    return getattr(spmodels, tree.lower().title() + 'treedefitem')
+
+def get_treedef_model(tree: str):
+    return getattr(spmodels, tree.lower().title() + 'treedef')
+
+def get_models(name: str):
+    tree_def_model = get_treedef_model(name)
+    tree_rank_model = get_treedefitem_model(name)
+    tree_node_model = getattr(spmodels, name.lower().title())
+    
+    return tree_def_model, tree_rank_model, tree_node_model

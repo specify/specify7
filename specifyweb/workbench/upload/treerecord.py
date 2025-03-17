@@ -23,7 +23,7 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-from specifyweb.specify.tree_utils import SPECIFY_TREES
+from specifyweb.specify.tree_utils import SPECIFY_TREES, get_treedef_model, get_treedefitem_model
 from specifyweb.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
@@ -121,18 +121,6 @@ class TreeRank(NamedTuple):
                         f"Multiple treedefitems found for rank {rank_name} and treedef {treedef_id}"
                     )
 
-            if treedef_id is None:
-                TreeNodeModel = getattr(models, tree)
-                treedefitem_ids = treedefitems.filter(name=rank_name).values_list('id', flat=True)
-                treedefitem_id = sorted(
-                    treedefitem_ids,
-                    key=lambda x: TreeNodeModel.objects.filter(definitionitem_id=x).count(),
-                    reverse=True,
-                )[0]
-                ranks = treedefitems.filter(id=treedefitem_id)
-                return ranks
-
-            # Check base treedef ID and filter treedefitems, then validate
             check_treedef_id(treedef_id)
             filtered_items = filter_items_by_treedef_id(treedefitems, treedef_id)
             validate_filtered_items(filtered_items)
@@ -154,39 +142,24 @@ class TreeRank(NamedTuple):
 
             # Get the first item from the queryset
             def get_first_item(treedefitems):
-                first_item = treedefitems.first()
+                first_item = treedefitems.last()
                 if first_item is None:
                     raise ValueError(f"No treedefitems found for rank {rank_name}")
                 return first_item
 
             # Handle cases where multiple items are found
+            # FAKE SCOPING ATTEMPT STARTS HERE
             def handle_multiple_items(treedefitems, tree, treedef_id):
-                if treedefitems.count() > 1:
-                    return filter_by_treedef_id(treedefitems, rank_name, tree, treedef_id)
+                # if treedefitems.count() > 1:
+                    # return filter_by_treedef_id(treedefitems, rank_name, tree, treedef_id)
                 return treedefitems
-
-            if treedef_id is not None:
-                return treedef_id
 
             if treedef_id is None and treedef_name is not None:
                 treedef_id = get_treedef_model(tree).objects.get(name=treedef_name)
 
-            # Build filter keyword arguments and fetch treedefitems
-            filter_kwargs = build_filter_kwargs(rank_name, treedef_id)
-            treedefitems = fetch_treedefitems(filter_kwargs)
-
-            # Handle cases where no items are found
-            if not treedefitems.exists() and treedef_id is not None:
-                filter_kwargs = build_filter_kwargs(rank_name)
-                treedefitems = fetch_treedefitems(filter_kwargs)
-
-            treedefitems = handle_multiple_items(treedefitems, tree, treedef_id)
-            first_item = get_first_item(treedefitems)
-
-            if first_item is None:
-                raise ValueError(f"No treedef found for rank {rank_name}")
-
-            return first_item.treedef_id
+            # Treedef could still be None at this stage
+            # In this case tree will be uploaded to the default tree after we scope TreeRecord
+            return treedef_id
 
         def extract_treedef_name(rank_name: str) -> Tuple[str, Optional[str]]:
             """
@@ -239,19 +212,16 @@ class TreeRank(NamedTuple):
         """
 
         assert self.rank_name is not None, "Rank name is required"
-        assert self.treedef_id is not None, "Treedef ID is required"
         assert self.tree is not None and self.tree.lower() in SPECIFY_TREES, "Tree is required"
+
+        if self.treedef_id is None:
+            logger.info("No treedef id found yet, scope will be deferred to default tree in collection")
+
         return TreeRankRecord(self.rank_name, self.treedef_id)
-
-def get_treedefitem_model(tree: str):
-    return getattr(models, tree.lower().title() + 'treedefitem')
-
-def get_treedef_model(tree: str):
-    return getattr(models, tree.lower().title() + 'treedef')
 
 class TreeRankRecord(NamedTuple):
     rank_name: str
-    treedef_id: int
+    treedef_id: Union[int, None]
 
     # Create a TreeRankRecord instance
     def to_json(self) -> Dict:
@@ -455,20 +425,24 @@ class ScopedTreeRecord(NamedTuple):
 
         tree_def_model, tree_rank_model, tree_node_model = get_models(self.name)
 
+        # Adjust scope if needed for old datasets
+        self = self._adjust_tree_scope()
+
+        ranks_columns_in_row_not_null = self._get_not_null_ranks_columns_in_row(row)
         unique_treedef_ids = {tr.treedef_id for tr in self.ranks.keys()}
+        targeted_treedef_ids = get_targeted_treedefids(ranks_columns_in_row_not_null)
 
-        ranks_columns_in_row_not_null = get_not_null_ranks_columns(row)
-        targeted_treedefids = get_targeted_treedefids(ranks_columns_in_row_not_null)
-
-        result = handle_multiple_or_no_treedefs(unique_treedef_ids, targeted_treedefids, ranks_columns_in_row_not_null)
+        # VALIDATION STEP
+        result = handle_multiple_or_no_treedefs(unique_treedef_ids, targeted_treedef_ids, ranks_columns_in_row_not_null)
         if result:
             return result
         
-        result = validate_trees_with_cotype(row, targeted_treedefids)
+        # TODO: SCOPE COTYPES
+        result = validate_trees_with_cotype(row, targeted_treedef_ids)
         if result:
             return result
 
-        target_rank_treedef_id = targeted_treedefids.pop()
+        target_rank_treedef_id = targeted_treedef_ids.pop()
         target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
 
         # Based on the target treedef, get the treedefitems and root for the tree
@@ -476,6 +450,17 @@ class ScopedTreeRecord(NamedTuple):
         root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
 
         return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
+    
+    def _adjust_tree_scope(self):
+        adjusted_ranks = {}
+        for trr in self.ranks.keys():
+            adjusted_trr = trr
+            if trr.treedef_id is None:
+                adjusted_trr = trr._replace(treedef_id=self.treedef.id)
+                
+            adjusted_ranks[adjusted_trr] = self.ranks[trr]
+
+        return self._replace(ranks=adjusted_ranks)
 
     def bind(
         self,
@@ -491,7 +476,7 @@ class ScopedTreeRecord(NamedTuple):
         if parse_fail:
             parseFails.append(parse_fail)
 
-        for tree_rank_record, cols in self.ranks.items():
+        for tree_rank_record, cols in rescoped_tree_record.ranks.items():
             nameColumn = cols['name']
             presults, pfails = parse_many(self.name, cols, row)
             parsedFields[tree_rank_record] = presults
