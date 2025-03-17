@@ -187,22 +187,16 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     if check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
         return
 
-    rule, created = UniquenessRule.objects.get_or_create(
+    rule = UniquenessRule.objects.create(
         discipline=discipline,
         modelName=model_name,
         isDatabaseConstraint=is_database_constraint,
     )
 
-    if not created:
-        return
     for field in fields:
-        UniquenessRuleField.objects.get_or_create(
-            uniquenessrule=rule, fieldPath=field, isScope=False
-        )
+        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
-        UniquenessRuleField.objects.get_or_create(
-            uniquenessrule=rule, fieldPath=scope, isScope=True
-        )
+        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 def check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
     try:
@@ -238,19 +232,3 @@ GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
-
-
-def deduplicate_uniqueness_rules():
-    rules = models.UniquenessRule.objects.all()
-    for rule in rules:
-        fields = models.UniquenessRuleField.objects.filter(uniquenessrule=rule)
-        if rule_is_global(
-            tuple(field.fieldPath for field in fields.filter(isScope=True))
-        ) and not in_same_scope(rule.discipline, fields):
-            rule.delete()
-
-    rule_fields = models.UniquenessRuleField.objects.all()
-    for field in rule_fields:
-        if field.fieldPath in GLOBAL_RULE_FIELDS:
-            field.isScope = True
-            field.save()
