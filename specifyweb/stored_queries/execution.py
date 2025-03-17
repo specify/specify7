@@ -218,7 +218,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = "query-export-to-csv-complete"
 
     with models.session_context() as session:
-        field_specs = field_specs_from_json(spquery['fields'])
+        field_specs = fields_from_json(spquery['fields'])
         if exporttype == 'csv':
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
@@ -229,6 +229,10 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                          recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
             message_type = 'query-export-to-kml-complete'
 
+    Message.objects.create(user=user, content=json.dumps({
+        'type': message_type,
+        'file': filename,
+    }))
 
 def stored_query_to_csv(query_id, collection, user, path):
     """Executes a query from the Spquery table with the given id and send
