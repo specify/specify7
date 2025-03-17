@@ -99,7 +99,7 @@ export function BatchEditFromQuery({
           queryFieldSpecs.some(hasHierarchyBaseTable) ||
           // TODO: Remove this when we have batch edit for tree tables #6127
           queryFieldSpecs.some(containsTreeTableOrSpecificRank) || 
-          queryFieldSpecs.some(spec => spec.baseTable?.name === "SpAuditLog")
+          query.get('contextName') === 'SpAuditLog'
         }
         onClick={() => {
           loading(
