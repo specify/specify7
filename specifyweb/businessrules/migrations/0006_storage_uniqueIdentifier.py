@@ -1,6 +1,5 @@
-from django.db import migrations, models
+from django.db import migrations
 from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES, create_uniqueness_rule
-import specifyweb.specify.models
 
 def apply_migration(apps, schema_editor):
     storage_rules = DEFAULT_UNIQUENESS_RULES["Storage"]

@@ -190,28 +190,54 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
         return
 
     rule = UniquenessRule.objects.create(
-        discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint)
+        discipline=discipline,
+        modelName=model_name,
+        isDatabaseConstraint=is_database_constraint,
+    ) if UniquenessRule.objects.filter(
+        discipline_id=discipline.id,
+        modelName=model_name,
+        isDatabaseConstraint=is_database_constraint,
+    ).exists() else None
 
+    if rule is None:
+        return
     for field in fields:
-        UniquenessRuleField.objects.create(
-            uniquenessrule=rule, fieldPath=field, isScope=False)
+        (
+            UniquenessRuleField.objects.create(
+                uniquenessrule=rule, fieldPath=field, isScope=False
+            )
+            if not UniquenessRuleField.objects.filter(
+                uniquenessrule=rule, fieldPath=field, isScope=False
+            ).exists()
+            else None
+        )
     for scope in scopes:
-        UniquenessRuleField.objects.create(
-            uniquenessrule=rule, fieldPath=scope, isScope=True)
+        (
+            UniquenessRuleField.objects.create(
+                uniquenessrule=rule, fieldPath=scope, isScope=True
+            )
+            if not UniquenessRuleField.objects.filter(
+                uniquenessrule=rule, fieldPath=scope, isScope=True
+            ).exists()
+            else None
+        )
 
 def check_uniquenessrule(model_name, discipline, is_database_constraint, fields, scopes):
-    matching_fields = models.UniquenessRuleField.objects.filter(
-        fieldPath__in=fields,
-        uniquenessrule__modelName=model_name,
-        uniquenessrule__isDatabaseConstraint=is_database_constraint,
-        uniquenessrule__discipline=discipline,
-        isScope=False,
-    )
+    try:
+        matching_fields = models.UniquenessRuleField.objects.filter(
+            fieldPath__in=fields,
+            uniquenessrule__modelName=model_name,
+            uniquenessrule__isDatabaseConstraint=is_database_constraint,
+            uniquenessrule__discipline__id=discipline.id,
+            isScope=False,
+        )
+    except:
+        print()
     matching_scopes = models.UniquenessRuleField.objects.filter(
         fieldPath__in=scopes,
         uniquenessrule__modelName=model_name,
         uniquenessrule__isDatabaseConstraint=is_database_constraint,
-        uniquenessrule__discipline=discipline,
+        uniquenessrule__discipline__id=discipline.id,
         isScope=True,
     )
 

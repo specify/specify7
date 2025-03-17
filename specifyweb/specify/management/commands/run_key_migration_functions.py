@@ -39,11 +39,7 @@ def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
-    disciplines_without_rules = Discipline.objects.exclude(
-        id__in=UniquenessRule.objects.values_list('discipline_id', flat=True).distinct()
-    )
-
-    for discipline in disciplines_without_rules:
+    for discipline in Discipline.objects.all():
         apply_default_uniqueness_rules(discipline, registry=apps)
 
     catnum_rule_editable(apps)
