@@ -97,7 +97,9 @@ export function BatchEditFromQuery({
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
           queryFieldSpecs.some(hasHierarchyBaseTable) ||
-          queryFieldSpecs.some(containsTreeTableOrSpecificRank) // TODO: Remove this when we have batch edit for tree tables #6127
+          // TODO: Remove this when we have batch edit for tree tables #6127
+          queryFieldSpecs.some(containsTreeTableOrSpecificRank) || 
+          query.get('contextName') === 'SpAuditLog'
         }
         onClick={() => {
           loading(
