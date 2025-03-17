@@ -234,15 +234,17 @@ def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
 # Used in 0002_schema_config_update.py
 # ##########################################
 
+DEFAULT_COG_TYPES = [
+    'Discrete',
+    'Consolidated',
+    'Drill Core',
+]
+
 def create_geo_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in MIGRATION_0002_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-
-def revert_geo_table_schema_config_with_defaults(apps):
-    for table, _ in MIGRATION_0002_TABLES:
-        update_table_schema_config_with_defaults(table, apps)
 
 # ##########################################
 # Used in 0003_cotype_picklist.py
@@ -362,7 +364,7 @@ def revert_cog_type_fields(apps):
 def create_cogtype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
-    
+
     # Create a cogtype picklist for each collection
     for collection in Collection.objects.all():
         Picklist.objects.get_or_create(
@@ -773,6 +775,7 @@ def update_hidden_prop(apps, schema_editor=None):
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
+            schematype=0
         )
         for container in containers:
             items = Splocalecontaineritem.objects.filter(

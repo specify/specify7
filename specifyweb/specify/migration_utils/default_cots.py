@@ -14,10 +14,9 @@ def create_default_collection_types(apps):
     Collection = apps.get_model('specify', 'Collection')
     Collectionobject = apps.get_model('specify', 'Collectionobject')
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
-    code_set = set(Collection.objects.all().values_list('code', flat=True))
 
     # Create default collection types for each collection, named after the discipline
-    for collection in Collection.objects.all():
+    for collection in Collection.objects.filter(collectionobjecttype__isnull=True):
         discipline = collection.discipline
         discipline_name = discipline.name
         cot, created = Collectionobjecttype.objects.get_or_create(
@@ -30,26 +29,7 @@ def create_default_collection_types(apps):
         Collectionobject.objects.filter(
             collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
-        try:
-            collection.save()
-        except BusinessRuleException as e:
-            if 'Collection must have unique code in discipline' in str(e):
-                # May want to do something besides numbering, but users can edit if after the migrqation if they want.
-                i = 1
-                while True:
-                    collection.code = f'{collection.code}-{i}'
-                    i += 1
-                    if collection.code not in code_set:
-                        code_set.add(collection.code)
-                        break
-                try:
-                    collection.save()
-                except BusinessRuleException as e:
-                    logger.warning(
-                        f'Problem saving collection {collection}: {e}')
-            continue
-
-        # Verify the taxon tree def for the cot points, remove later for other solution
+        collection.save()
 
 def create_default_discipline_for_tree_defs(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -77,11 +57,7 @@ def create_default_discipline_for_tree_defs(apps):
         storage_tree_def.institution = institution
         storage_tree_def.save()
 
-def revert_default_discipline_for_tree_defs(apps):
-    # Reverse handeled by table deletion
-    pass
-
-def create_default_collection_object_group_types(apps):
+def create_cogtype_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
@@ -100,21 +76,6 @@ def create_default_collection_object_group_types(apps):
                 value=cog_type,
                 picklist=cog_type_picklist
             )
-
-def revert_default_collection_object_types(apps):
-    Collection = apps.get_model('specify', 'Collection')
-    Picklist = apps.get_model('specify', 'Picklist')
-    Picklistitem = apps.get_model('specify', 'Picklistitem')
-
-    for collection in Collection.objects.all():
-        cog_type_picklist_qs = Picklist.objects.filter(
-            name='Default Collection Object Group Types',
-            collection=collection
-        )
-        if cog_type_picklist_qs.exists():
-            cog_type_picklist = cog_type_picklist_qs.first()
-            Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
-            cog_type_picklist.delete()
 
 def set_discipline_for_taxon_treedefs(apps):
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')

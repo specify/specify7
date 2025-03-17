@@ -56,7 +56,7 @@
   "Collectionobject": [
     {
       "rule": [["catalogNumber"], ["collection"]],
-      "isDatabaseConstraint": true
+      "isDatabaseConstraint": false
     },
     {
       "rule": [["uniqueIdentifier"], []],

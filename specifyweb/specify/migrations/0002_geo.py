@@ -10,11 +10,9 @@ from specifyweb.specify.models import (
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.default_cots import (
-    create_default_collection_object_group_types,
+    create_cogtype_type_picklist,
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
-    revert_default_collection_object_types,
-    revert_default_discipline_for_tree_defs,
     set_discipline_for_taxon_treedefs,
 )
 
@@ -42,6 +40,30 @@ def revert_default_cog_types(apps):
     # Reverse handeled by table deletion
     pass
 
+def revert_default_discipline_for_tree_defs(apps):
+    # Reverse handeled by table deletion
+    pass
+
+def revert_cogtype_type_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        cog_type_picklist_qs = Picklist.objects.filter(
+            name='Default Collection Object Group Types',
+            type=0,
+            collection=collection
+        )
+        if cog_type_picklist_qs.exists():
+            cog_type_picklist = cog_type_picklist_qs.first()
+            Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
+            cog_type_picklist.delete()
+
+def revert_geo_table_schema_config_with_defaults(apps):
+    for table, _ in SCHEMA_CONFIG_TABLES:
+        usc.revert_table_schema_config(table, apps)
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -54,12 +76,12 @@ class Migration(migrations.Migration):
         handle_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
         usc.create_geo_table_schema_config_with_defaults(apps)
-        create_default_collection_object_group_types(apps)
+        create_cogtype_type_picklist(apps)
         set_discipline_for_taxon_treedefs(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_default_collection_object_types(apps)
-        usc.revert_geo_table_schema_config_with_defaults(apps)
+        revert_cogtype_type_picklist(apps)
+        revert_geo_table_schema_config_with_defaults(apps)
         revert_default_discipline_for_tree_defs(apps)
         revert_default_collection_types(apps)
 

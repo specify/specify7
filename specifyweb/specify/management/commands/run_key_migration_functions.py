@@ -4,13 +4,11 @@ from django.apps import apps
 from django.db import transaction
 from specifyweb.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.businessrules.uniqueness_rules import (
-    apply_default_uniqueness_rules,
-    check_discipline_added_to_uniqueness_rules,
-    check_uniquenessrule,
+    apply_default_uniqueness_rules
 )
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import (
-    create_default_collection_object_group_types,
+    create_cogtype_type_picklist,
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     set_discipline_for_taxon_treedefs,
@@ -23,7 +21,7 @@ logger = logging.getLogger(__name__)
 def fix_cots():
     create_default_collection_types(apps)
     create_default_discipline_for_tree_defs(apps)
-    create_default_collection_object_group_types(apps)
+    create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
 
 def fix_schema_config():
@@ -60,14 +58,14 @@ def fix_permissions():
     add_permission(apps)
     add_stats_edit_permission(apps)
 
-def key_migration_func_pipeline():
+def key_migration_func_pipeline(command: BaseCommand):
     # Pipeline of key migration functions, no schema changes, only data changes
     try:
         with transaction.atomic():
-            fix_cots()
-            fix_permissions()
+            # fix_cots()
+            # fix_permissions()
             fix_business_rules()
-            fix_schema_config()
+            # fix_schema_config()
     except Exception as e:
         logger.error(f"An error occurred: {e}")
         raise
@@ -81,4 +79,4 @@ class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
 
     def handle(self, *args, **options):
-        key_migration_func_pipeline()
+        key_migration_func_pipeline(self)
