@@ -3,9 +3,18 @@ from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
 from specifyweb.businessrules.migration_utils import catnum_rule_editable
-from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules, check_discipline_added_to_uniqueness_rules, check_uniquenessrule
+from specifyweb.businessrules.uniqueness_rules import (
+    apply_default_uniqueness_rules,
+    check_discipline_added_to_uniqueness_rules,
+    check_uniquenessrule,
+)
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
-from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
+from specifyweb.specify.migration_utils.default_cots import (
+    create_default_collection_object_group_types,
+    create_default_collection_types,
+    create_default_discipline_for_tree_defs,
+    set_discipline_for_taxon_treedefs,
+)
 from specifyweb.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
 
@@ -13,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 def fix_cots():
     create_default_collection_types(apps)
+    create_default_discipline_for_tree_defs(apps)
+    create_default_collection_object_group_types(apps)
+    set_discipline_for_taxon_treedefs(apps)
 
 def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
@@ -37,7 +49,6 @@ def fix_schema_config():
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
-    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
     for discipline in Discipline.objects.all():
         apply_default_uniqueness_rules(discipline, registry=apps)
