@@ -156,10 +156,8 @@ def join_with_and(fields):
 
 
 def apply_default_uniqueness_rules(discipline, registry=None):
-    UniquenessRule = registry.get_model(
-        'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
-    has_set_global_rules = len(
-        UniquenessRule.objects.filter(discipline=None)) > 0
+    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') if registry else models.UniquenessRule
+    has_set_global_rules = len(UniquenessRule.objects.filter(discipline=None)) > 0
 
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         _discipline = discipline
@@ -212,7 +210,7 @@ def check_uniquenessrule(model_name, discipline, is_database_constraint, fields,
             fieldPath__in=fields,
             uniquenessrule__modelName=model_name,
             uniquenessrule__isDatabaseConstraint=is_database_constraint,
-            uniquenessrule__discipline__id=discipline.id,
+            uniquenessrule__discipline=discipline,
             isScope=False,
         )
     except:
@@ -221,7 +219,7 @@ def check_uniquenessrule(model_name, discipline, is_database_constraint, fields,
         fieldPath__in=scopes,
         uniquenessrule__modelName=model_name,
         uniquenessrule__isDatabaseConstraint=is_database_constraint,
-        uniquenessrule__discipline__id=discipline.id,
+        uniquenessrule__discipline=discipline,
         isScope=True,
     )
 
@@ -240,3 +238,19 @@ GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
+
+
+def deduplicate_uniqueness_rules():
+    rules = models.UniquenessRule.objects.all()
+    for rule in rules:
+        fields = models.UniquenessRuleField.objects.filter(uniquenessrule=rule)
+        if rule_is_global(
+            tuple(field.fieldPath for field in fields.filter(isScope=True))
+        ) and not in_same_scope(rule.discipline, fields):
+            rule.delete()
+
+    rule_fields = models.UniquenessRuleField.objects.all()
+    for field in rule_fields:
+        if field.fieldPath in GLOBAL_RULE_FIELDS:
+            field.isScope = True
+            field.save()
