@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:135
+#: components/BatchEdit/index.tsx:137
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2028
 #: components/Router/OverlayRoutes.tsx:246
@@ -16,24 +16,24 @@ msgstr "Batch Edit"
 msgid "numberOfRecords"
 msgstr "Number of records selected from the query"
 
-#: components/BatchEdit/index.tsx:295
+#: components/BatchEdit/index.tsx:297
 #. Used in: Components > Batch Edit > Index
 msgid "removeField"
 msgstr ""
 "Field not supported for batch edit. Either remove the field, or make it "
 "hidden."
 
-#: components/BatchEdit/index.tsx:313
+#: components/BatchEdit/index.tsx:315
 #. Used in: Components > Batch Edit > Index
 msgid "addTreeRank"
 msgstr "Please add the following missing rank to the query"
 
-#: components/BatchEdit/index.tsx:121
+#: components/BatchEdit/index.tsx:123
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
 
-#: components/BatchEdit/index.tsx:276
+#: components/BatchEdit/index.tsx:278
 #. Used in: Components > Batch Edit > Index
 msgid "errorInQuery"
 msgstr "Following errors were found in the query"

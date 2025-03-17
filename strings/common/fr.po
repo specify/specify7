@@ -164,7 +164,7 @@ msgstr "Créer"
 #: components/AttachmentsBulkImport/Upload.tsx:234
 #: components/AttachmentsBulkImport/Upload.tsx:248
 #: components/AttachmentsBulkImport/Upload.tsx:263
-#: components/BatchEdit/index.tsx:275
+#: components/BatchEdit/index.tsx:277
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
