@@ -371,6 +371,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
                 r, table.name, treedef.id if treedef else None
             ).tree_rank_record()
             if isinstance(r, str)
+            else r._replace(treedef_id=treedef.id) if r.treedef_id is None  # Adjust treeid for parsed JSON plans
             else r
         ): {
             f: extend_columnoptions(colopts, collection, table.name, f)
