@@ -20,7 +20,7 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-from specifyweb.specify.tree_utils import SPECIFY_TREES, get_treedef_model, get_models
+from specifyweb.specify.tree_utils import SPECIFY_TREES, get_treedef_model, get_models, get_treedefitem_model
 from specifyweb.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
@@ -117,6 +117,14 @@ class TreeRankRecord(NamedTuple):
     # Get the key for the TreeRankRecord instance
     def to_key(self) -> Tuple[str, Optional[int]]:
         return (self.rank_name, self.treedef_id)
+    
+    def validate_rank(self, tableName: str) -> bool:
+        if self.treedef_id is None:
+            return True  # assume valid until scope is determined
+        
+        treedefitem_model = get_treedefitem_model(tableName)
+
+        return treedefitem_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id).exists()
 
 class TreeRecord(NamedTuple):
     name: str
