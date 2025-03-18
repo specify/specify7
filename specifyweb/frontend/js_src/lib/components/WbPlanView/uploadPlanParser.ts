@@ -1,5 +1,5 @@
 import type { IR, RA, RR } from '../../utils/types';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
