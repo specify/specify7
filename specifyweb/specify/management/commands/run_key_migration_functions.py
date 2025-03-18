@@ -12,7 +12,6 @@ from specifyweb.specify.migration_utils.default_cots import (
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
-    match_discipline_to_taxon_treedef,
     set_discipline_for_taxon_treedefs,
 )
 from specifyweb.permissions.initialize import initialize
