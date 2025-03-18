@@ -13,7 +13,7 @@ class ScopingCache(TypedDict):
     # or cotypes but want to reuse as much as other field based info
     fields: Dict[Tuple[Any, str, str], Optional[UIFormatter]]
     date_format: Optional[str]
-    cotype_column = Optional[str]
+    cotype_column: Optional[str]
 
 class ScopeContext(object):
     cache: ScopingCache
