@@ -17,6 +17,7 @@ from specifyweb.specify.migration_utils.default_cots import (
 )
 from specifyweb.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,6 @@ def fix_cots():
     create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
     fix_taxon_treedef_discipline_links(apps)
-    fix_tectonic_unit_treedef_discipline_links(apps)
 
 def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
@@ -62,14 +62,20 @@ def fix_permissions():
     add_permission(apps)
     add_stats_edit_permission(apps)
 
+def fix_tectonic_ranks():
+    create_default_tectonic_ranks(apps)
+    create_root_tectonic_node(apps)
+    fix_tectonic_unit_treedef_discipline_links(apps)
+
 def key_migration_func_pipeline(command: BaseCommand):
     # Pipeline of key migration functions, no schema changes, only data changes
     try:
         with transaction.atomic():
-            # fix_cots()
-            # fix_permissions()
+            fix_cots()
+            fix_permissions()
             fix_business_rules()
-            # fix_schema_config()
+            fix_schema_config()
+            fix_tectonic_ranks()
     except Exception as e:
         logger.error(f"An error occurred: {e}")
         raise
