@@ -226,6 +226,7 @@ const fieldOverwrites: typeof globalFieldOverrides = {
     definition: { visibility: 'hidden' },
     definitionItem: { visibility: 'hidden' },
     orderNumber: { visibility: 'hidden' },
+    isPrimary: { visibility: 'hidden' },
     isHybrid: { visibility: 'hidden' },
     isAccepted: { visibility: 'hidden' },
     fullName: { visibility: 'readOnly' },
