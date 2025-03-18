@@ -215,10 +215,7 @@ export function GenericDataSetsDialog({
       }}
       dimensionsKey="DataSetsDialog"
       header={localization.datasetsDialog.header(datasets.length)}
-      icon={ 
-        wbVariant === 'batchEdit' ? icons.batchEdit :
-        icons.table
-      }
+      icon={wbVariant === 'batchEdit' ? icons.batchEdit : icons.table}
       onClose={handleClose}
     >
       {datasets.length === 0 ? (
