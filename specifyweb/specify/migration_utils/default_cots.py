@@ -89,3 +89,15 @@ def set_discipline_for_taxon_treedefs(apps):
 
     for cot in collection_object_types:
         Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
+
+def fix_taxon_treedef_discipline_links(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    Taxontreedef = apps.get_model('specify', 'Taxontreedef')
+
+    empty_taxon_treedefs = Taxontreedef.objects.filter(discipline__isnull=True)
+    disciplines = Discipline.objects.all()
+    for empty_taxon_treedef in empty_taxon_treedefs:
+        for discipline in disciplines:
+            if discipline.taxontreedef_id == empty_taxon_treedef.id:
+                empty_taxon_treedef.discipline = discipline
+                empty_taxon_treedef.save()

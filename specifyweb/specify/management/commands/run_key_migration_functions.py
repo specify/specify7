@@ -11,6 +11,8 @@ from specifyweb.specify.migration_utils.default_cots import (
     create_cogtype_type_picklist,
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
+    fix_taxon_treedef_discipline_links,
+    match_discipline_to_taxon_treedef,
     set_discipline_for_taxon_treedefs,
 )
 from specifyweb.permissions.initialize import initialize
@@ -23,6 +25,7 @@ def fix_cots():
     create_default_discipline_for_tree_defs(apps)
     create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
+    fix_taxon_treedef_discipline_links(apps)
 
 def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
