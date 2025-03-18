@@ -348,7 +348,7 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: ScopeContext) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     treedef = get_default_treedef(table, collection)
@@ -394,5 +394,5 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: ScopeContex
         disambiguation={},
         batch_edit_pack=None,
         scoped_cotypes=scoped_cotypes,
-        cotype_column=context.cache['cotype_column']
+        cotype_column=context.cache['cotype_column'] if context else None
     )

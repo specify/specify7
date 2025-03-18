@@ -318,7 +318,7 @@ class ScopedTreeRecord(NamedTuple):
     
     # Ensure cotype has same taxontreedef for ranks in row
     def _validate_trees_with_cotype(self, row: Row, treedefs_in_row: Set[int]):
-        if self.name.lower() != "taxon":
+        if self.name.lower() != "taxon" or self.cotype_column is None:
             return None
         
         def find_cotype_in_row(row: Row):
