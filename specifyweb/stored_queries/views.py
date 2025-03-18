@@ -89,8 +89,17 @@ def query(request, id):
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        data = execute(session, request.specify_collection, request.specify_user,
-                       tableid, distinct, count_only, field_specs, limit, offset)
+        data = execute(
+            session=session, 
+            collection=request.specify_collection, 
+            user=request.specify_user,
+            tableid=tableid, 
+            distinct=distinct, 
+            count_only=count_only, 
+            field_specs=field_specs, 
+            limit=limit, 
+            offset=offset
+        )
 
     return HttpResponse(toJson(data), content_type='application/json')
 
