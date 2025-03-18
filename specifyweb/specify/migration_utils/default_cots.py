@@ -1,6 +1,5 @@
 import logging
 from django.db.models import F
-from specifyweb.businessrules.exceptions import BusinessRuleException
 
 logger = logging.getLogger(__name__)
 
@@ -101,3 +100,27 @@ def fix_taxon_treedef_discipline_links(apps):
             if discipline.taxontreedef_id == empty_taxon_treedef.id:
                 empty_taxon_treedef.discipline = discipline
                 empty_taxon_treedef.save()
+
+def fix_tectonic_unit_treedef_discipline_links(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
+
+    empty_tectonic_unit_treedefs = Tectonicunittreedef.objects.filter(discipline__isnull=True)
+    empty_disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True)
+    for empty_discipline in empty_disciplines:
+        if not empty_tectonic_unit_treedefs.exists():
+            new_tectonic_unit_treedef = Tectonicunittreedef.objects.create(
+                name=f'{empty_discipline.name} Tectonic Unit Tree',
+                discipline=empty_discipline
+            )
+        else:
+            empty_discipline.tectonicunittreedef = empty_tectonic_unit_treedefs.first()
+            empty_discipline.save()
+
+    for empty_tectonic_unit_treedef in empty_tectonic_unit_treedefs:
+        if empty_disciplines.exists():
+            empty_tectonic_unit_treedef.discipline = empty_disciplines.first()
+            empty_tectonic_unit_treedef.save()
+        else:
+            empty_tectonic_unit_treedef.discipline = empty_disciplines.last()
+            empty_tectonic_unit_treedef.save()
