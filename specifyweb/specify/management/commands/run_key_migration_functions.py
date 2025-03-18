@@ -9,6 +9,7 @@ from specifyweb.businessrules.uniqueness_rules import (
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import (
     create_cogtype_type_picklist,
+    create_cotype_picklist,
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
@@ -27,6 +28,7 @@ def fix_cots():
     create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
     fix_taxon_treedef_discipline_links(apps)
+    create_cotype_picklist(apps)
 
 def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
