@@ -149,6 +149,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           ) : showUsages ? (
             <>
               {icons.documentSearch}
+              {blockers ? blockers.length : 0}
             </>
           ) : (
             commonText.delete()
