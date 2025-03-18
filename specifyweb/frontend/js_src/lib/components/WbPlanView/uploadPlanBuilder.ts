@@ -91,7 +91,7 @@ const toTreeRecordVariety = (
               : formatTreeRankKey(rankName, treeName),
             {
               treeNodeCols: toTreeRecordRanks(mappedFields),
-              treeId,
+              treeId: treeDefinitions.length > 1 ? treeId : undefined,
             },
           ];
         });
