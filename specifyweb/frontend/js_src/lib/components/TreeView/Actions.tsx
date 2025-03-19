@@ -76,6 +76,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
 
+  const isViewMode = !hasTablePermission(tableName, 'update');
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -117,7 +119,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           disabled={focusedRow === undefined}
           isRoot={isRoot}
           label={
-            hasTablePermission(tableName, 'update')
+            isViewMode
               ? commonText.edit()
               : commonText.view()
           }
@@ -160,7 +162,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isViewMode}
             icon="arrowsMove"
             title={treeText.move()}
             onClick={(): void => setAction('move')}
@@ -171,7 +173,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons}
+            disabled={disableButtons || isViewMode}
             icon="truck"
             title={treeText.moveItems()}
             onClick={(): void => setAction('bulkMove')}
@@ -181,7 +183,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isViewMode}
             icon="merge"
             title={treeText.merge()}
             onClick={(): void => setAction('merge')}
@@ -196,6 +198,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Icon
             disabled={
               disableButtons ||
+              isViewMode ||
               isRoot ||
               (doExpandSynonymActionsPref
                 ? false
