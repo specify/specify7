@@ -146,10 +146,23 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               {icons.exclamation}
               {commonText.delete()}
             </>
-          ) : showUsages ? (
+          ) : // If we are showing usages, show the number of linked records 
+          showUsages ? (
             <>
               {icons.documentSearch}
-              {blockers ? blockers.length : 0}
+              {blockers
+              ? blockers
+                .reduce(
+                  (sum, blocker) =>
+                  sum +
+                  blocker.blockers.reduce(
+                    (innerSum, { ids }) => innerSum + ids.length,
+                    0
+                  ),
+                  0
+                )
+                .toLocaleString() // This formats the count nicely.
+              : undefined}
             </>
           ) : (
             commonText.delete()
