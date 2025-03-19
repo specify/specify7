@@ -145,12 +145,12 @@ function Wrapped({
       throttle(
         () =>
           setSaveRequired(
-            state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)
+            (state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)) || autoRun
           ),
         200
       ),
-    [initialFields.current, state.fields]
+    [initialFields.current, state.fields, autoRun]
   );
 
   React.useEffect(checkForChanges, [state.fields]);
