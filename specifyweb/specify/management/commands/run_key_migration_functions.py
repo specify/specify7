@@ -34,6 +34,7 @@ def fix_schema_config():
     usc.create_geo_table_schema_config_with_defaults(apps) # 2
     usc.create_cotype_splocalecontaineritem(apps) # 3
     usc.create_strat_table_schema_config_with_defaults(apps) # 4 - getting skip warnings
+    usc.create_agetype_picklist(apps) # 4
     usc.update_cog_type_fields(apps) # 7
     usc.create_cogtype_picklist(apps) # 7
     usc.update_cogtype_splocalecontaineritem(apps) # 7

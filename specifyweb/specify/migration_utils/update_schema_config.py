@@ -299,8 +299,45 @@ def revert_cotype_splocalecontaineritem(apps):
     ).delete()
 
 # ##########################################
-# Used in 0004_schema_config_update.py
+# Used in 0004_stratigraphy_age.py
 # ##########################################
+
+AGETYPE_PICKLIST_NAME = 'AgeType'
+DEFAULT_AGE_TYPES = [
+    'Sedimentation', 
+    'Metamorphism', 
+    'Erosion', 
+    'Diagenetic', 
+]
+
+def create_agetype_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    PicklistItem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        if Picklist.objects.filter(
+            name=AGETYPE_PICKLIST_NAME,
+            type=0,
+            collection_id=collection.id
+        ).exists(): 
+            continue
+
+        age_type_picklist = Picklist.objects.create(
+            name=AGETYPE_PICKLIST_NAME,
+            issystem=False,
+            readonly=False,
+            sizelimit=-1,
+            sorttype=1,
+            type=0,
+            collection=collection
+        )
+        for age_type in DEFAULT_AGE_TYPES:
+            PicklistItem.objects.create(
+                title=age_type,
+                value=age_type,
+                picklist=age_type_picklist
+            )
 
 def create_strat_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
