@@ -328,7 +328,6 @@ def merge(node, into, agent):
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                         [FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)])
-                        # [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
             return
         except ProtectedError as e: 
             """ Cannot delete some instances of TREE because they are referenced 
