@@ -60,7 +60,6 @@ function EditQueryDialog({
   >('default');
 
   const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
   return state === 'default' ? (
     <ResourceView
       dialog="modal"
