@@ -742,15 +742,11 @@ def fix_hidden_geo_prop(apps, schema_editor=None):
                 discipline_id=discipline.id,
             )
             for container in containers:
-                for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name=field_name.lower()
-                    )
-
-                    for item in items:
-                        item.ishidden = True
-                        item.save()
+                # BUG: What if the user wants the field unhidden?
+                Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name__in=tuple(map(lambda field_name: field_name.lower(), fields))
+                ).update(ishidden=True)
 
 def reverse_fix_hidden_geo_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -768,15 +764,11 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor=None):
                 discipline_id=discipline.id,
             )
             for container in containers:
-                for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name=field_name.lower()
-                    )
-
-                    for item in items:
-                        item.ishidden = False
-                        item.save()
+                # BUG: What if the user wants the field hidden? 
+                Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name__in=tuple(map(lambda field_name: field_name.lower(), fields))
+                ).update(ishidden=False)
 
 # ##########################################
 # Used in 0023_update_schema_config_text.py
