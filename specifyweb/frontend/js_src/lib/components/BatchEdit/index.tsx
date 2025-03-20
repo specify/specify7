@@ -93,7 +93,7 @@ export function BatchEditFromQuery({
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
-              // const missingRanks = findAllMissing(queryFieldSpecs);
+              // Const missingRanks = findAllMissing(queryFieldSpecs);
               const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
                 filters.some((filter) => filter(fieldSpec))
               );
@@ -162,94 +162,110 @@ const containsTreeTableOrSpecificRank = (queryFieldSpec: QueryFieldSpec) =>
 
 const filters = [containsFaultyNestedToMany, containsSystemTables];
 
-// const getTreeDefFromName = (
-//   rankName: string,
-//   treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
-// ) =>
-//   defined(
-//     treeDefItems.find(
-//       (treeRank) => treeRank.name.toLowerCase() === rankName.toLowerCase()
-//     )
-//   );
+/*
+ * Const getTreeDefFromName = (
+ *   rankName: string,
+ *   treeDefItems: RA<SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>>
+ * ) =>
+ *   defined(
+ *     treeDefItems.find(
+ *       (treeRank) => treeRank.name.toLowerCase() === rankName.toLowerCase()
+ *     )
+ *   );
+ */
 
-// function findAllMissing(
-//   queryFieldSpecs: RA<QueryFieldSpec>
-// ): QueryError['missingRanks'] {
-//   const treeFieldSpecs = group(
-//     filterArray(
-//       queryFieldSpecs.map((fieldSpec) =>
-//         isTreeTable(fieldSpec.table.name) &&
-//         fieldSpec.treeRank !== anyTreeRank &&
-//         fieldSpec.treeRank !== undefined
-//           ? [
-//               fieldSpec.table,
-//               { rank: fieldSpec.treeRank, field: fieldSpec.getField() },
-//             ]
-//           : undefined
-//       )
-//     )
-//   );
+/*
+ * Function findAllMissing(
+ *   queryFieldSpecs: RA<QueryFieldSpec>
+ * ): QueryError['missingRanks'] {
+ *   const treeFieldSpecs = group(
+ *     filterArray(
+ *       queryFieldSpecs.map((fieldSpec) =>
+ *         isTreeTable(fieldSpec.table.name) &&
+ *         fieldSpec.treeRank !== anyTreeRank &&
+ *         fieldSpec.treeRank !== undefined
+ *           ? [
+ *               fieldSpec.table,
+ *               { rank: fieldSpec.treeRank, field: fieldSpec.getField() },
+ *             ]
+ *           : undefined
+ *       )
+ *     )
+ *   );
+ */
 
-//   return Object.fromEntries(
-//     treeFieldSpecs.map(([treeTable, treeRanks]) => [
-//       treeTable.name,
-//       findMissingRanks(treeTable, treeRanks),
-//     ])
-//   );
-// }
+/*
+ *   Return Object.fromEntries(
+ *     treeFieldSpecs.map(([treeTable, treeRanks]) => [
+ *       treeTable.name,
+ *       findMissingRanks(treeTable, treeRanks),
+ *     ])
+ *   );
+ * }
+ */
 
-// TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
-// const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
+/*
+ * TODO: discuss if we need to add more of them, and if we need to add more of them for other table.
+ * const requiredTreeFields: RA<keyof AnyTree['fields']> = ['name'] as const;
+ */
 
-// function findMissingRanks(
-//   treeTable: SpecifyTable,
-//   treeRanks: RA<
-//     | { readonly rank: string; readonly field?: LiteralField | Relationship }
-//     | undefined
-//   >
-// ): RA<string> {
-//   const allTreeDefItems = strictGetTreeDefinitionItems(
-//     treeTable.name as 'Geography',
-//     false
-//   );
+/*
+ * Function findMissingRanks(
+ *   treeTable: SpecifyTable,
+ *   treeRanks: RA<
+ *     | { readonly rank: string; readonly field?: LiteralField | Relationship }
+ *     | undefined
+ *   >
+ * ): RA<string> {
+ *   const allTreeDefItems = strictGetTreeDefinitionItems(
+ *     treeTable.name as 'Geography',
+ *     false
+ *   );
+ */
 
-//   // Duplicates don't affect any logic here
-//   const currentTreeRanks = filterArray(
-//     treeRanks.map((treeRank) =>
-//       f.maybe(treeRank, ({ rank, field }) => ({
-//         specifyRank: getTreeDefFromName(rank, allTreeDefItems),
-//         field,
-//       }))
-//     )
-//   );
+/*
+ *   // Duplicates don't affect any logic here
+ *   const currentTreeRanks = filterArray(
+ *     treeRanks.map((treeRank) =>
+ *       f.maybe(treeRank, ({ rank, field }) => ({
+ *         specifyRank: getTreeDefFromName(rank, allTreeDefItems),
+ *         field,
+ *       }))
+ *     )
+ *   );
+ */
 
-//   const currentRanksSorted = Array.from(currentTreeRanks).sort(
-//     sortFunction(({ specifyRank: { rankId } }) => rankId)
-//   );
+/*
+ *   Const currentRanksSorted = Array.from(currentTreeRanks).sort(
+ *     sortFunction(({ specifyRank: { rankId } }) => rankId)
+ *   );
+ */
 
-//   const highestRank = currentRanksSorted[0];
+//   Const highestRank = currentRanksSorted[0];
 
-//   return allTreeDefItems.flatMap(({ rankId, name }) =>
-//     rankId < highestRank.specifyRank.rankId
-//       ? []
-//       : filterArray(
-//           requiredTreeFields.map((requiredField) =>
-//             currentTreeRanks.some(
-//               (rank) =>
-//                 rank.specifyRank.name === name &&
-//                 rank.field !== undefined &&
-//                 requiredField === rank.field.name
-//             )
-//               ? undefined
-//               : `${name} ${
-//                   defined(
-//                     strictGetTable(treeTable.name).getField(requiredField)
-//                   ).label
-//                 }`
-//           )
-//         )
-//   );
-// }
+/*
+ *   Return allTreeDefItems.flatMap(({ rankId, name }) =>
+ *     rankId < highestRank.specifyRank.rankId
+ *       ? []
+ *       : filterArray(
+ *           requiredTreeFields.map((requiredField) =>
+ *             currentTreeRanks.some(
+ *               (rank) =>
+ *                 rank.specifyRank.name === name &&
+ *                 rank.field !== undefined &&
+ *                 requiredField === rank.field.name
+ *             )
+ *               ? undefined
+ *               : `${name} ${
+ *                   defined(
+ *                     strictGetTable(treeTable.name).getField(requiredField)
+ *                   ).label
+ *                 }`
+ *           )
+ *         )
+ *   );
+ * }
+ */
 
 function ErrorsDialog({
   errors,
@@ -289,30 +305,32 @@ function ShowInvalidFields({
   ) : null;
 }
 
-// function ShowMissingRanks({
-//   error,
-// }: {
-//   readonly error: QueryError['missingRanks'];
-// }) {
-//   const hasMissing = Object.values(error).some((rank) => rank.length > 0);
-//   return hasMissing ? (
-//     <div>
-//       <div className="mt-2 flex gap-2">
-//         <H2>{batchEditText.addTreeRank()}</H2>
-//       </div>
-//       {Object.entries(error).map(([treeTable, ranks]) => (
-//         <div>
-//           <div>
-//             <TableIcon label name={treeTable} />
-//             <H2>{strictGetTable(treeTable).label}</H2>
-//           </div>
-//           <div>
-//             {ranks.map((rank) => (
-//               <H3>{rank}</H3>
-//             ))}
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   ) : null;
-// }
+/*
+ * Function ShowMissingRanks({
+ *   error,
+ * }: {
+ *   readonly error: QueryError['missingRanks'];
+ * }) {
+ *   const hasMissing = Object.values(error).some((rank) => rank.length > 0);
+ *   return hasMissing ? (
+ *     <div>
+ *       <div className="mt-2 flex gap-2">
+ *         <H2>{batchEditText.addTreeRank()}</H2>
+ *       </div>
+ *       {Object.entries(error).map(([treeTable, ranks]) => (
+ *         <div>
+ *           <div>
+ *             <TableIcon label name={treeTable} />
+ *             <H2>{strictGetTable(treeTable).label}</H2>
+ *           </div>
+ *           <div>
+ *             {ranks.map((rank) => (
+ *               <H3>{rank}</H3>
+ *             ))}
+ *           </div>
+ *         </div>
+ *       ))}
+ *     </div>
+ *   ) : null;
+ * }
+ */
