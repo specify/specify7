@@ -32,6 +32,7 @@ import type {
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Collector,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -341,6 +342,31 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         cog.businessRuleManager?.checkField('cogType');
       }
     },
+  },
+
+  Collector: {
+    fieldChecks:{
+      isPrimary: (
+        collector: SpecifyResource<Collector>
+      ): void => {
+        if (collector.get('isPrimary') && collector.collection !== undefined) {
+          collector.collection.models.map((other: SpecifyResource<Collector>) => {
+            if (other.cid !== collector.cid) {
+              other.set('isPrimary', false)
+            }
+          }
+        )
+        }
+      }
+    },
+    onRemoved: (collector, collection): void => {
+      if (collector.get('isPrimary') && collection.models.length > 0) {
+        collection.models[0].set('isPrimary', true);
+      }
+    },
+    onAdded: (collector): void => {
+      collector.set('isPrimary', true)
+    }
   },
 
   Determination: {
