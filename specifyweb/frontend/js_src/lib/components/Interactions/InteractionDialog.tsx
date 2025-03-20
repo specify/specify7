@@ -204,14 +204,18 @@ export function InteractionDialog({
       })),
     });
 
-    const [collectionHasSeveralTypes] = useAsyncState(
-      React.useCallback(
-        async () =>
-          fetchDomain.then(async (schema) => Object.keys(schema.collectionObjectTypeCatalogNumberFormats).length > 1),
-        []
-      ),
-      false
-    );
+  const [collectionHasSeveralTypes] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchDomain.then(
+          async (schema) =>
+            Object.keys(schema.collectionObjectTypeCatalogNumberFormats)
+              .length > 1
+        ),
+      []
+    ),
+    false
+  );
 
   function handleParse(): RA<string> | undefined {
     const parseResults = split(catalogNumbers).map((value) =>
@@ -219,8 +223,8 @@ export function InteractionDialog({
     );
 
     const errorMessages = parseResults
-    .filter((result): result is InvalidParseResult => !result.isValid)
-    .map(({ reason, value }) => `${reason} (${value})`);
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
 
     if (errorMessages.length > 0 && collectionHasSeveralTypes === false) {
       setValidation(errorMessages);
@@ -233,10 +237,10 @@ export function InteractionDialog({
 
     if (collectionHasSeveralTypes === true) {
       const parsedCatNumber = split(catalogNumbers);
-    
+
       setCatalogNumbers(parsedCatNumber.join('\n'));
       setState({ type: 'MainState' });
-    
+
       return parsedCatNumber.map(String);
     }
 
