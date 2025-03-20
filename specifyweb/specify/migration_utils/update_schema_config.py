@@ -81,9 +81,12 @@ def update_table_schema_config_with_defaults(
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    try:
-        table: Table = datamodel.get_table_strict(table_name)
-    except TableDoesNotExistError:
+    table = datamodel.get_table(table_name)
+    
+    # BUG: The splocalecontainer related tables can still exist in the database, 
+    # and this will result in skipping any operation if the table/field is 
+    # removed, renamed, etc.
+    if table is None: 
         logger.warning(
             f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}"
         )
@@ -146,9 +149,12 @@ def update_table_field_schema_config_with_defaults(
     field_name: str,
     apps = global_apps
 ):
-    try:
-        table: Table = datamodel.get_table_strict(table_name)
-    except TableDoesNotExistError:
+    table = datamodel.get_table(table_name)
+
+    # BUG: The splocalecontainer related tables can still exist in the database, 
+    # and this will result in skipping any operation if the table/field is 
+    # removed, renamed, etc.
+    if table is None: 
         logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
         return
 
@@ -578,7 +584,14 @@ def fix_table_captions(apps):
 
     for migration in CONTAINER_MIGRATIONS:
         for table_name, table_desc in migration:
-            table = datamodel.get_table_strict(table_name)
+            table = datamodel.get_table(table_name)
+            
+            # BUG: The splocalecontainer related tables can still exist in the 
+            # database, and this will result in skipping any operation if the 
+            # table/field is removed, renamed, etc.
+            if table is None: 
+                logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config update for: {table_name}")
+                continue
             containers = Splocalecontainer.objects.filter(
                 name=table_name.lower(), schematype=0)
 
@@ -608,7 +621,13 @@ def fix_item_types(apps):
 
     for migration in CONTAINER_ITEM_MIGRATIONS:
         for table_name, fields in migration.items():
-            table = datamodel.get_table_strict(table_name)
+            table = datamodel.get_table(table_name)
+            # BUG: The splocalecontainer related tables can still exist in the 
+            # database, and this will result in skipping any operation if the 
+            # table/field is removed, renamed, etc.
+            if table is None:
+                logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+                continue
             items = Splocalecontaineritem.objects.filter(
                 container__name=table_name.lower(), container__schematype=0, name__in=fields)
 
