@@ -85,7 +85,14 @@ def create_cotype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
     # Create a cotype picklist for each collection
     for collection in Collection.objects.all():
-        Picklist.objects.get_or_create(
+        if Picklist.objects.filter(
+            name=PICKLIST_NAME, 
+            tablename='collectionobjecttype', 
+            type=1, 
+            collection_id=collection.id, 
+            formatter=PICKLIST_NAME).exists(): 
+            continue
+        Picklist.objects.create(
             name=PICKLIST_NAME,
             issystem=True,
             readonly=True,
