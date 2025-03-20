@@ -280,24 +280,6 @@ def create_cotype_splocalecontaineritem(apps):
             itemdesc=container_item
         )
 
-def revert_cotype_splocalecontaineritem(apps):
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-
-    Splocaleitemstr.objects.filter(
-        text=COT_TEXT,
-        itemdesc__container__name="collectionobject",
-        itemdesc__container__schematype=0,
-    ).delete()
-    Splocaleitemstr.objects.filter(
-        text=COT_TEXT,
-        itemname__container__name="collectionobject",
-        itemname__container__schematype=0,
-    ).delete()
-    Splocalecontaineritem.objects.filter(
-        name=COT_FIELD_NAME, container__name="collectionobject", container__schematype=0
-    ).delete()
-
 # ##########################################
 # Used in 0004_stratigraphy_age.py
 # ##########################################
