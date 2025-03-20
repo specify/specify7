@@ -304,28 +304,24 @@ def create_agetype_picklist(apps):
     PicklistItem = apps.get_model('specify', 'Picklistitem')
 
     for collection in Collection.objects.all():
-        if Picklist.objects.filter(
+        age_type_picklist, created = Picklist.objects.get_or_create(
             name=AGETYPE_PICKLIST_NAME,
             type=0,
-            collection_id=collection.id
-        ).exists(): 
-            continue
-
-        age_type_picklist = Picklist.objects.create(
-            name=AGETYPE_PICKLIST_NAME,
-            issystem=False,
-            readonly=False,
-            sizelimit=-1,
-            sorttype=1,
-            type=0,
-            collection=collection
+            collection_id=collection.id,
+            defaults={
+                "issystem": False,
+                "readonly": False,
+                "sizelimit": -1,
+                "sorttype": 1,
+            }
         )
-        for age_type in DEFAULT_AGE_TYPES:
-            PicklistItem.objects.create(
-                title=age_type,
-                value=age_type,
-                picklist=age_type_picklist
-            )
+        if created: 
+            for age_type in DEFAULT_AGE_TYPES:
+                PicklistItem.objects.create(
+                    title=age_type,
+                    value=age_type,
+                    picklist=age_type_picklist
+                )
 
 def create_strat_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -392,25 +388,18 @@ def create_cogtype_picklist(apps):
 
     # Create a cogtype picklist for each collection
     for collection in Collection.objects.all():
-        if Picklist.objects.filter(
+        Picklist.objects.get_or_create(
             name=COG_PICKLIST_NAME,
-            type=1,
-            tablename='collectionobjectgrouptype',
-            formatter='CollectionObjectGroupType',
-            collection_id=collection.id
-        ).exists(): 
-            continue
-
-        Picklist.objects.create(
-            name=COG_PICKLIST_NAME,
-            issystem=True,
-            readonly=True,
-            sizelimit=-1,
-            sorttype=1,
             type=1,
             tablename='collectionobjectgrouptype',
             collection=collection,
-            formatter='CollectionObjectGroupType'
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": -1,
+                "sorttype": 1,
+                "formatter": 'CollectionObjectGroupType',
+            }
         )
 
 def revert_cogtype_picklist(apps):

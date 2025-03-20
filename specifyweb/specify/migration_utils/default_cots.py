@@ -64,10 +64,12 @@ def create_cogtype_type_picklist(apps):
     for collection in Collection.objects.all():
         cog_type_picklist, _ = Picklist.objects.get_or_create(
             name='Default Collection Object Group Types',
-            issystem=False,
             type=0,
-            readonly=False,
-            collection=collection
+            collection=collection,
+            defaults={
+                "issystem": False,
+                "readonly": False,
+            }
         )
         for cog_type in DEFAULT_COG_TYPES:
             Picklistitem.objects.get_or_create(
@@ -85,23 +87,18 @@ def create_cotype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
     # Create a cotype picklist for each collection
     for collection in Collection.objects.all():
-        if Picklist.objects.filter(
-            name=COTYPE_PICKLIST_NAME, 
-            tablename='collectionobjecttype', 
-            type=1, 
-            collection_id=collection.id, 
-            formatter=COTYPE_PICKLIST_NAME).exists(): 
-            continue
-        Picklist.objects.create(
+        Picklist.objects.get_or_create(
             name=COTYPE_PICKLIST_NAME,
-            issystem=True,
-            readonly=True,
-            sizelimit=-1,
-            sorttype=1,
             type=1,
             tablename='collectionobjecttype',
             collection=collection,
-            formatter=COTYPE_PICKLIST_NAME
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": -1,
+                "sorttype": 1,
+                "formatter": COTYPE_PICKLIST_NAME,
+            }
         )
 
 def set_discipline_for_taxon_treedefs(apps):
