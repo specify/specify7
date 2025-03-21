@@ -82,7 +82,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
   const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
     props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder
   );
-  console.log(props.multiple)
+
   return useQueryBuilder ? (
     <QueryBuilderSearch
       // BUG: pass on extraFilters
