@@ -556,6 +556,11 @@ def execute(session, collection, user, tableid, distinct, series, count_only,
 
     if count_only:
         if series:
+            cat_num_sort_type = 0
+            for field_spec in field_specs:
+                if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                    cat_num_sort_type = field_spec.sort_type
+                    break
             return {'count': len(series_post_query(query, sort_type=cat_num_sort_type))}
         else:
             return {'count': query.count()}
@@ -792,6 +797,9 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
         ]
 
     def process_row(row):
+        if row[co_id_cat_num_pair_col_index] is None:
+            return []
+
         pairs = [pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')]
         sorted_pairs = sorted(pairs, key=catalog_sort_key)
         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
