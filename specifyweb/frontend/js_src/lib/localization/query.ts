@@ -922,4 +922,15 @@ export const queryText = createDictionary({
   nonStrict: {
     'en-us': 'Non strict',
   },
+  formatInputAs: {
+    comment: `
+      Used to indicate a text field will be formatted with a specific format.
+      If a format can be identified/named in more than one way, names can be 
+      displayed in a comma-separated format
+
+      Example: Format As: Ichthyology
+      Example: Format As: Rock, Mineral
+    `,
+    'en-us': 'Format As: {commaSeparatedFormats:string}',
+  },
 } as const);
