@@ -125,7 +125,7 @@ export const mainText = createDictionary({
   },
   criticalErrorOccurredDescription: {
     'en-us': `
-      To avoid corrupting data records, we need to start again from a safe
+      To avoid corrupting data records, you need to start again from a safe
       spot--the Home page.
     `,
     'ru-ru': `
