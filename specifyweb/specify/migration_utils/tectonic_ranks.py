@@ -2,7 +2,12 @@ def create_default_tectonic_ranks(apps):
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+
+    disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True).exclude(
+        id__in=TectonicTreeDef.objects.values_list('discipline_id', flat=True)
+    )
+
+    for discipline in disciplines:
         tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
 
         root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
