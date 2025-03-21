@@ -364,8 +364,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         collection.models[0].set('isPrimary', true);
       }
     },
-    onAdded: (collector): void => {
-      collector.set('isPrimary', true)
+    onAdded: (collector, collection): void => {
+      if (collection.models.length === 1){
+        collector.set('isPrimary', true)
+      }
     }
   },
 
