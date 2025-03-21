@@ -56,6 +56,7 @@ class BuildQueryProps(NamedTuple):
     replace_nulls: bool = False
     formatauditobjs: bool = False
     distinct: bool = False
+    series: bool = False
     implicit_or: bool = True
     format_agent_type: bool = False
     format_picklist: bool = False
@@ -562,7 +563,7 @@ def run_ephemeral_query(collection, user, spquery):
             user=user,
             tableid=tableid,
             distinct=distinct,
-            series=series
+            series=series,
             count_only=count_only,
             field_specs=field_specs,
             limit=limit,
@@ -857,7 +858,7 @@ def build_query(
     field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
     query_construct_query = None
-    if series and catalog_number_field:
+    if props.series and catalog_number_field:
         query_construct_query = session.query(
             func.group_concat(
                 func.concat(
@@ -868,10 +869,10 @@ def build_query(
                 separator='|'
             ).label('co_id_catnum_paired_values')
         )
-    elif distinct:
+    elif props.distinct:
         query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','))
     else:
-        query_construct_query = query_construct_query = session.query(id_field)
+        query_construct_query = session.query(id_field)
     
     query = QueryConstruct(
         collection=collection,
@@ -928,10 +929,10 @@ def build_query(
         # sort_type = SORT_TYPES[fs.sort_type]
         sort_type = QuerySort.by_id(fs.sort_type)
 
-        if series and fs.fieldspec.get_field().name.lower() == 'catalognumber':
+        if props.series and fs.fieldspec.get_field().name.lower() == 'catalognumber':
             continue
 
-        query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
+        query, field, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
 
         if field is None:
             continue
