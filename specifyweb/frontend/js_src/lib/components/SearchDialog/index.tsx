@@ -93,7 +93,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
       }}
     />
   ) : (
-    <SearchForm {...props} multiple={props.multiple} onUseQueryBuilder={handleUseQueryBuilder}/>
+    <SearchForm {...props} onUseQueryBuilder={handleUseQueryBuilder}/>
   );
 }
 
@@ -211,7 +211,6 @@ function SearchForm<SCHEMA extends AnySchema>({
     [table]
   );
   const viewName = viewNameExceptions[table.name] ?? `${table.name}Search`;
-  console.log(multiple)
 
   const resolvedName = searchView ?? viewName;
   const viewDefinition = useViewDefinition({
