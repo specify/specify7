@@ -96,6 +96,7 @@ def query(request, id):
             user=request.specify_user,
             tableid=tableid, 
             distinct=distinct, 
+            series=series,
             count_only=count_only, 
             field_specs=field_specs, 
             limit=limit, 
