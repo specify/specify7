@@ -337,13 +337,13 @@ msgstr ""
 "überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt "
 "werden."
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr "Status des Datensatz-Uploads"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
@@ -351,8 +351,8 @@ msgstr ""
 "Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in "
 "die Datenbank erfolgen."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
@@ -361,13 +361,13 @@ msgstr ""
 "sollte die Validierung vor dem Hochladen erneut ausgeführt werden, um "
 "sicherzustellen, dass keine Fehler aufgetreten sind."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr "Validierung mit Fehlern abgeschlossen"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -399,13 +399,13 @@ msgstr "Der Upload ist aufgrund fehlerhafter Zellen fehlgeschlagen"
 msgid "uploadErrorsDescription"
 msgstr "Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -419,27 +419,27 @@ msgstr ""
 "Dieser zurückgesetzte Datensatz wird gespeichert und kann bearbeitet oder "
 "erneut hochgeladen werden."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr "Validierung abgebrochen"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Datensatzvalidierung abgebrochen."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr "Rollback abgebrochen"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -477,7 +477,7 @@ msgstr "Wählen Sie ein bevorzugtes Geokoordinatenformat"
 msgid "emptyStringInline"
 msgstr "(leerer String)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "wbUploadedUnavailable"
@@ -516,7 +516,7 @@ msgstr "Der Upload ist nicht möglich, da einige Zellen Validierungsfehler aufwe
 msgid "unavailableWhileViewingResults"
 msgstr "Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar."
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "unavailableWhileValidating"

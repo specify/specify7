@@ -289,18 +289,18 @@ msgstr ""
 "Це значення збігається з двома чи більше існуючими записами бази даних, і "
 "збіг необхідно усунути перед завантаженням."
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Перевірка завершена без помилок"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -308,12 +308,12 @@ msgstr ""
 "завантаженням слід повторно запустити перевірку, щоб переконатися, що не "
 "було допущено помилок."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Перевірка виконана з помилками"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "Перевірка виявила помилки в наборі даних."
@@ -340,12 +340,12 @@ msgstr "Помилка завантаження через клітинки по
 msgid "uploadErrorsDescription"
 msgstr "Помилка завантаження через одну або кілька помилок значення клітинки."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "Набір даних успішно повернуто"
@@ -357,24 +357,24 @@ msgstr ""
 "Цей відкочений набір даних зберігається та може бути відредагований або "
 "повторно завантажений."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Перевірку скасовано"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Перевірку набору даних скасовано."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Відкат скасовано"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Відкат набору даних скасовано."
@@ -406,7 +406,7 @@ msgstr "Виберіть потрібний формат геокоордина�
 msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "Набір даних має бути перевірений або завантажений"
@@ -438,7 +438,7 @@ msgstr "Завантаження недоступне, оскільки в де�
 msgid "unavailableWhileViewingResults"
 msgstr "Ця дія недоступна під час перегляду результатів завантаження"
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна, поки триває перевірка даних"

@@ -293,20 +293,20 @@ msgstr ""
 "Este valor coincide con dos o más registros existentes en la base de datos "
 "y han de desambigüarse antes de cargar."
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Validar completado sin errores"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validación no encontró errores, está listo para ser cargado en la base "
 "de datos."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -314,12 +314,12 @@ msgstr ""
 "volver a ejecutar Validar antes de cargar para verificar que no se hayan "
 "introducido errores."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Validar completado con errores"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "La validación encontró errores en el conjunto de datos."
@@ -346,12 +346,12 @@ msgstr "Carga fallida debido a celdas de error"
 msgid "uploadErrorsDescription"
 msgstr "La carga falló debido a uno o más errores de valor de celda."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "El conjunto de datos se revirtió con éxito"
@@ -363,24 +363,24 @@ msgstr ""
 "Este conjunto de datos revertidos se guarda y se puede editar o volver a "
 "cargar."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Validación cancelada"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Se canceló la validación del conjunto de datos."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Reversión cancelada"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Reversión del conjunto de datos cancelada."
@@ -412,7 +412,7 @@ msgstr "Elija un formato de geocoordenada preferido"
 msgid "emptyStringInline"
 msgstr "(cadena vacía)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "Se ha de validar o cargar el conjunto de datos"
@@ -446,7 +446,7 @@ msgstr "Carga de datos no disponible si hay celdas con error de validación"
 msgid "unavailableWhileViewingResults"
 msgstr "Acción no disponible cuando se visualizan resultados de la carga de datos"
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "Acción no disponible durante la Comprobación de Datos"

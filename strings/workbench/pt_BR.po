@@ -315,32 +315,32 @@ msgstr ""
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr ""
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr ""
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -370,13 +370,13 @@ msgstr ""
 msgid "uploadErrorsDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -388,27 +388,27 @@ msgstr ""
 msgid "dataSetRollbackDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr ""
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr ""
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr ""
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -446,7 +446,7 @@ msgstr ""
 msgid "emptyStringInline"
 msgstr ""
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "wbUploadedUnavailable"
@@ -483,7 +483,7 @@ msgstr ""
 msgid "unavailableWhileViewingResults"
 msgstr ""
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "unavailableWhileValidating"

@@ -159,7 +159,7 @@ msgstr "Створити"
 #: components/AttachmentsBulkImport/Upload.tsx:234
 #: components/AttachmentsBulkImport/Upload.tsx:248
 #: components/AttachmentsBulkImport/Upload.tsx:263
-#: components/BatchEdit/index.tsx:277
+#: components/BatchEdit/index.tsx:279
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
@@ -257,8 +257,8 @@ msgstr "Створити"
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:406
 #: components/WbActions/WbNoUploadPlan.tsx:43
-#: components/WbActions/index.tsx:209
-#: components/WbActions/index.tsx:220
+#: components/WbActions/index.tsx:211
+#: components/WbActions/index.tsx:222
 #: components/WbPlanView/MapperComponents.tsx:206
 #: components/WbPlanView/MapperComponents.tsx:422
 #: components/WbPlanView/State.tsx:34
@@ -832,7 +832,7 @@ msgid "filter"
 msgstr "фільтр"
 
 #: components/QueryBuilder/Results.tsx:79
-#: components/WbActions/index.tsx:120
+#: components/WbActions/index.tsx:122
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
 msgstr "Результати"

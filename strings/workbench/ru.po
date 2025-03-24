@@ -292,32 +292,32 @@ msgstr ""
 "Это значение соответствует двум или более существующим записям базы данных "
 "и совпадению"
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Проверка завершена без ошибок"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу "
 "данных."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
 "Примечание: Если этот набор данных отредактирован и повторно сохранен, "
 "начать проверку снова, чтобы убедиться, что ошибок не было введено."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Проверка завершена с ошибками"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "Проверка обнаружила ошибки в наборе данных."
@@ -344,12 +344,12 @@ msgstr "Ошибка загрузки из-за ошибок"
 msgid "uploadErrorsDescription"
 msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "Набор данных был успешно откат"
@@ -361,24 +361,24 @@ msgstr ""
 "Этот набор данных отката сохранянен, и его можно редактировать или повторно "
 "загружать."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Проверка отменена"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Проверка набора данных отменена."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Загрузка отменена"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Откат набора данных отменен."
@@ -410,7 +410,7 @@ msgstr "Выберите предпочтительный формат геок�
 msgid "emptyStringInline"
 msgstr "(пуста строка)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
@@ -444,7 +444,7 @@ msgstr "Загрузка недоступна, в то время как в не
 msgid "unavailableWhileViewingResults"
 msgstr "Это действие недоступно при просмотре результатов загрузки"
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "Это действие недоступно, пока выполняется проверка данных"

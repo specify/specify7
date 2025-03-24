@@ -278,30 +278,30 @@ msgstr ""
 "This value matches two or more existing database records and the match must "
 "be disambiguated before uploading."
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Validate Completed with No Errors"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr "Validation found no errors, it is ready to be uploaded into the database."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
 "Note: If this Data Set is edited and re-saved, Validate should be re-run "
 "prior to Uploading to verify that no errors have been introduced."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Validate Completed with Errors"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "Validation found errors in the Data Set."
@@ -328,14 +328,14 @@ msgstr "Upload Failed due to Error Cells"
 msgid "uploadErrorsDescription"
 msgstr "The upload failed due to one or more cell value errors."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Validate the Data Set and review the mouseover hints for each error cell, "
 "then make the appropriate corrections. Save and retry the {type:string}."
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "Data Set was rolled back successfully"
@@ -345,24 +345,24 @@ msgstr "Data Set was rolled back successfully"
 msgid "dataSetRollbackDescription"
 msgstr "This Rolledback Data Set is saved, and can be edited or re-uploaded."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Validation Cancelled"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Data Set Validation cancelled."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Rollback Cancelled"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Data Set Rollback cancelled."
@@ -394,7 +394,7 @@ msgstr "Choose a preferred Geocoordinate format"
 msgid "emptyStringInline"
 msgstr "(empty string)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
@@ -426,7 +426,7 @@ msgstr "Upload is unavailable while some cells have validation errors"
 msgid "unavailableWhileViewingResults"
 msgstr "This action is unavailable while viewing the upload results"
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "This action is unavailable while Data Check is in progress"

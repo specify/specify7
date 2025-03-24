@@ -302,20 +302,20 @@ msgstr ""
 "Cette valeur correspond à deux enregistrements de base de données existants "
 "ou plus et la correspondance doit être levée avant le téléchargement."
 
-#: components/WbActions/index.tsx:312
+#: components/WbActions/index.tsx:314
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Validation terminée sans erreur"
 
-#: components/WbActions/index.tsx:315
+#: components/WbActions/index.tsx:317
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validation n'a trouvé aucune erreur, elle est prête à être téléchargée "
 "dans la base de données."
 
-#: components/WbActions/index.tsx:318
-#: components/WbActions/index.tsx:329
+#: components/WbActions/index.tsx:320
+#: components/WbActions/index.tsx:331
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -323,12 +323,12 @@ msgstr ""
 "validation doit être réexécutée avant le téléchargement pour vérifier "
 "qu'aucune erreur n'a été introduite."
 
-#: components/WbActions/index.tsx:323
+#: components/WbActions/index.tsx:325
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Valider terminé avec des erreurs"
 
-#: components/WbActions/index.tsx:326
+#: components/WbActions/index.tsx:328
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "La validation a détecté des erreurs dans l'ensemble de données."
@@ -357,12 +357,12 @@ msgstr ""
 "Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur "
 "de cellule."
 
-#: components/WbActions/index.tsx:346
+#: components/WbActions/index.tsx:348
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:353
+#: components/WbActions/index.tsx:355
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "L'ensemble de données a été restauré avec succès"
@@ -374,24 +374,24 @@ msgstr ""
 "Cet ensemble de données restaurées est enregistré et peut être modifié ou "
 "téléchargé à nouveau."
 
-#: components/WbActions/index.tsx:223
+#: components/WbActions/index.tsx:225
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Validation annulée"
 
-#: components/WbActions/index.tsx:231
+#: components/WbActions/index.tsx:233
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Validation de l'ensemble de données annulée."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:227
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Restauration annulée"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:235
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Restauration de l’ensemble de données annulée."
@@ -424,7 +424,7 @@ msgstr "Choisissez un format de géocoordonnée préféré"
 msgid "emptyStringInline"
 msgstr "(chaîne vide)"
 
-#: components/WbActions/index.tsx:116
+#: components/WbActions/index.tsx:118
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "L'ensemble de données doit être validé ou téléchargé"
@@ -462,7 +462,7 @@ msgstr ""
 "Cette action n'est pas disponible lors de l'affichage des résultats du "
 "téléchargement"
 
-#: components/WbActions/index.tsx:113
+#: components/WbActions/index.tsx:115
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr ""

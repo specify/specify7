@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:137
+#: components/BatchEdit/index.tsx:125
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2028
 #: components/Router/OverlayRoutes.tsx:246
@@ -16,22 +16,22 @@ msgstr ""
 msgid "numberOfRecords"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:297
+#: components/BatchEdit/index.tsx:299
 #. Used in: Components > Batch Edit > Index
 msgid "removeField"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:315
+#: components/BatchEdit/index.tsx:318
 #. Used in: Components > Batch Edit > Index
 msgid "addTreeRank"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:123
+#: components/BatchEdit/index.tsx:111
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:278
+#: components/BatchEdit/index.tsx:280
 #. Used in: Components > Batch Edit > Index
 msgid "errorInQuery"
 msgstr ""
@@ -119,4 +119,9 @@ msgstr ""
 #: components/WorkBench/RecordSet.tsx:73
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:90
+#. Used in: Components > Batch Edit > Index
+msgid "treeQueriesDisabled"
 msgstr ""
