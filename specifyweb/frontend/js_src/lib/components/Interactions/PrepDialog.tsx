@@ -186,6 +186,9 @@ export function PrepDialog({
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
+              if (Number.isNaN(result.get('quantity'))) {
+                result.set('quantity', 0)
+              }
               return result;
             })
           );
