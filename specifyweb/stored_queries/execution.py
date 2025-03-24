@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 
 SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
 
+SERIES_MAX_ROWS = 500
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -794,21 +795,23 @@ def execute(
             return {'count': query.count()}
     else:
         if series:
-            order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))"))
+            # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
+            order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
         
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
         
-        if limit:
-            query = query.limit(limit)
-
         if series:
+            query = query.limit(SERIES_MAX_ROWS)
             cat_num_sort_type = 0
             for field_spec in field_specs:
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
             return {'results': series_post_query(query, sort_type=cat_num_sort_type)}
+
+        if limit:
+            query = query.limit(limit)
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
@@ -857,7 +860,7 @@ def build_query(
     # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
     field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
-    query_construct_query = None
+    query_construct_query = session.query(id_field)
     if props.series and catalog_number_field:
         query_construct_query = session.query(
             func.group_concat(
@@ -883,11 +886,7 @@ def build_query(
             format_agent_type=props.format_agent_type,
             format_picklist=props.format_picklist,
         ),
-        query=(
-            session.query(func.group_concat(id_field.distinct(), separator=","))
-            if props.distinct
-            else session.query(id_field)
-        ),
+        query=query_construct_query
     )
 
     tables_to_read = set(
@@ -1018,23 +1017,71 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
+
     log_sqlalchemy_query(query)  # Debugging
 
-    def parse_catalog(catalog):
+    def parse_catalog_for_comparing(s):
+        def check_for_decimal(s):
+            decimal_match = re.search(r'\d+\.\d+', s)
+            if decimal_match:
+                return decimal_match.group()
+            return None
+
+        try:
+            num = int(s)
+            return (num, '', '')
+            # return s
+        except ValueError:
+            decimal_match_str = check_for_decimal(s)
+            if decimal_match_str:
+                num, dec = decimal_match_str.split('.')
+                match = re.search(rf'(\D*)({num}\.{dec})(.*)', s)
+                if match:
+                    prefix, number, postfix = match.groups()
+                    prefix = prefix if prefix else '' 
+                    postfix = postfix if postfix else '' 
+                    # return (float(number), prefix, postfix)
+                    return (int(float(number)), prefix, postfix)
+
+
+            match = re.search(r'(\D*)(\d+)(.*)', s)
+            if match:
+                prefix, number, postfix = match.groups()
+                prefix = prefix if prefix else '' 
+                postfix = postfix if postfix else '' 
+                # return (int(number), prefix, postfix)
+                return (int(number), prefix, postfix)
+            else:
+                return (None, s, '')
+
+    def parse_catalog_for_sorting(catalog):
         m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
         if m:
             return m.group(1), int(m.group(2))
         else:
             return catalog, None
 
+    # def catalog_sort_key(x):
+    #     prefix, num = parse_catalog_for_sorting(x[1])
+    #     return (prefix, num if num is not None else x[1])
+
     def catalog_sort_key(x):
-        prefix, num = parse_catalog(x[1])
-        return (prefix, num if num is not None else x[1])
+        num, prefix, postfix = parse_catalog_for_comparing(x[1])
+        return (prefix, num, postfix if num is not None else x[1])
+
+    # def are_adjacent(cat1, cat2):
+    #     prefix1, num1 = parse_catalog(cat1)
+    #     prefix2, num2 = parse_catalog(cat2)
+    #     return prefix1 == prefix2 and num1 is not None and num2 is not None and (num1 + 1 == num2)
 
     def are_adjacent(cat1, cat2):
-        prefix1, num1 = parse_catalog(cat1)
-        prefix2, num2 = parse_catalog(cat2)
-        return prefix1 == prefix2 and num1 is not None and num2 is not None and (num1 + 1 == num2)
+        num1, prefix1, postfix1 = parse_catalog_for_comparing(cat1)
+        num2, prefix2, postfix2 = parse_catalog_for_comparing(cat2)
+        return prefix1 == prefix2 and \
+               postfix1 == postfix2 and \
+               num1 is not None and \
+               num2 is not None and \
+               (num1 + 1 == num2 or num1 == num2)
 
     def group_consecutive_ranges(lst):
         def group_consecutives(acc, x):
@@ -1057,8 +1104,6 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
             return []
 
         pre_pairs = co_id_cat_num_seq.split(',') if type(co_id_cat_num_seq) is str else None
-        if pre_pairs is None and type(co_id_cat_num_seq) is int:
-            pre_pairs = f"0:{str(co_id_cat_num_seq)}".split(',')
         pairs = [pair.split(':') for pair in pre_pairs]
         sorted_pairs = sorted(pairs, key=catalog_sort_key)
         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
@@ -1074,18 +1119,18 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
     results = [item for sublist in map(process_row, list(query)) for item in sublist]
 
     # Reorder the final results based on sort_type
-    if sort_type in (1, 2):
-        def sort_key(record):
-            # record[1] contains the formatted series, e.g., "1000 - 1001" or "1003"
-            # Extract the first catalog number.
-            first_cat = record[1].split(' - ')[0].strip()
-            prefix, num = parse_catalog(first_cat)
-            return (prefix, num if num is not None else first_cat)
+    # if sort_type in (1, 2):
+    #     def sort_key(record):
+    #         # record[1] contains the formatted series, e.g., "1000 - 1001" or "1003"
+    #         # Extract the first catalog number.
+    #         first_cat = record[1].split(' - ')[0].strip()
+    #         prefix, num = parse_catalog_for_sorting(first_cat)
+    #         return (prefix, num if num is not None else first_cat)
 
-        reverse_order = (sort_type == 2)
-        results = sorted(results, key=sort_key, reverse=reverse_order)
+    #     reverse_order = (sort_type == 2)
+    #     results = sorted(results, key=sort_key, reverse=reverse_order)
 
-    MAX_ROWS = 500
-    return results[:MAX_ROWS]
+    if sort_type == 2:
+        results = results[::-1]
 
-    
+    return results[:SERIES_MAX_ROWS]
