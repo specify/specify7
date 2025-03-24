@@ -177,6 +177,9 @@ export function PrepDialog({
           const items = filterArray(
             preparations.map((preparation, index) => {
               if (selected[index] === 0) return undefined;
+              if (Number.isNaN(selected[index])) {
+                return undefined
+              }
               const result = new itemTable.Resource();
               result.set(
                 'preparation',
@@ -186,9 +189,6 @@ export function PrepDialog({
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
-              if (Number.isNaN(result.get('quantity'))) {
-                return undefined
-              }
               return result;
             })
           );
