@@ -2,6 +2,8 @@
 
 from django.db import migrations
 
+from specifyweb.patches.migration_utils import update_is_accepted
+
 
 class Migration(migrations.Migration):
 
@@ -13,10 +15,6 @@ class Migration(migrations.Migration):
         # Fixes an issue due to a bug in the WorkBench prior to 7.9.0 that did not
         # set accepted nodes to IsAccepted = 1 when they were not synonyms.
         # https://github.com/specify/specify7/issues/5131
-        migrations.RunSQL(
-            'UPDATE taxon t1 SET IsAccepted = TRUE WHERE t1.IsAccepted = 0 AND t1.AcceptedId IS NULL',
-            # This should not need to be reversed, but this allows for rollback without reversing the SQL
-            reverse_sql=''
-        )
+        migrations.RunPython(update_is_accepted,
+                             migrations.RunPython.noop, atomic=True),
     ]
-

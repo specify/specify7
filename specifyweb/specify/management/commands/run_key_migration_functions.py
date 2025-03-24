@@ -19,6 +19,7 @@ from specifyweb.specify.migration_utils.default_cots import (
 from specifyweb.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
+from specifyweb.patches.migration_utils import apply_migrations as apply_patches
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,7 @@ def key_migration_func_pipeline(command: BaseCommand):
     # Pipeline of key migration functions, no schema changes, only data changes
     try:
         with transaction.atomic():
+            apply_patches(apps)
             fix_cots()
             fix_permissions()
             fix_business_rules()

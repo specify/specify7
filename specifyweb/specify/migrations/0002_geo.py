@@ -29,9 +29,6 @@ logger = logging.getLogger(__name__)
 # 8. Add discipline relationship to TreeDef tables
 # 9. Add schema config for new sp7 tables
 
-def handle_default_collection_types(apps):
-    create_default_collection_types(apps)
-
 def revert_default_collection_types(apps):
     # Reverse handeled by table deletion.
     pass
@@ -73,7 +70,7 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        handle_default_collection_types(apps)
+        create_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
         usc.create_geo_table_schema_config_with_defaults(apps)
         create_cogtype_type_picklist(apps)
