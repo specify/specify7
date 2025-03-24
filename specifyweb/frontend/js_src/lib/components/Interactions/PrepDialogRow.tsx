@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import type { RA, RR } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -81,9 +82,13 @@ export function PrepDialogRow({
           </Link.NewTab>
         </td>
         <td>
-          <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
-            {localized(preparation.taxon)}
-          </Link.NewTab>
+          {preparation.taxon ? (
+            <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
+              {localized(preparation.taxon)}
+            </Link.NewTab>
+          ) : (
+            <span>{interactionsText.notAvailable()}</span> 
+          )}
         </td>
         <td>{preparation.prepType}</td>
         <td>
