@@ -1052,10 +1052,14 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
         ]
 
     def process_row(row):
+        co_id_cat_num_seq = row[co_id_cat_num_pair_col_index]
         if row[co_id_cat_num_pair_col_index] is None:
             return []
 
-        pairs = [pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')]
+        pre_pairs = co_id_cat_num_seq.split(',') if type(co_id_cat_num_seq) is str else None
+        if pre_pairs is None and type(co_id_cat_num_seq) is int:
+            pre_pairs = f"0:{str(co_id_cat_num_seq)}".split(',')
+        pairs = [pair.split(':') for pair in pre_pairs]
         sorted_pairs = sorted(pairs, key=catalog_sort_key)
         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
         return [
