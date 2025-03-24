@@ -187,7 +187,7 @@ export function PrepDialog({
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
               if (Number.isNaN(result.get('quantity'))) {
-                result.set('quantity', 0)
+                return undefined
               }
               return result;
             })
