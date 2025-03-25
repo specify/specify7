@@ -304,6 +304,13 @@ function Wrapped({
     table.name === 'CollectionObject' &&
     state.fields.some((field) => field.mappingPath[0] === 'catalogNumber');
 
+    React.useEffect(() => {
+      if (!showSeries) setQuery({
+        ...query,
+        selectSeries: false
+      })
+    }, [showSeries])
+
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <IsQueryBasicContext.Provider value={isBasic}>
@@ -565,8 +572,8 @@ function Wrapped({
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
                 isSeries={query.selectSeries ?? false}
-                showSeries={showSeries}
                 showHiddenFields={showHiddenFields}
+                showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
                 onSubmitClick={(): void =>
@@ -580,13 +587,13 @@ function Wrapped({
                     selectDistinct: !(query.selectDistinct ?? false),
                   })
                 }
+                onToggleHidden={setShowHiddenFields}
                 onToggleSeries={(): void =>
                   setQuery({
                     ...query,
                     selectSeries: !(query.selectSeries ?? false),
                   })
                 }
-                onToggleHidden={setShowHiddenFields}
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
