@@ -191,11 +191,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const id = useId('form-table');
 
   const collectionPreparationPref = getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) 
-  /*
-   * Const [isExpanded, setExpandedRecords] = React.useState<
-   *   IR<boolean | undefined>
-   * >({});
-   */
 
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean | undefined>>(
     Object.fromEntries(
