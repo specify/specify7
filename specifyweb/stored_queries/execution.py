@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
 
-SERIES_MAX_ROWS = 500
+SERIES_MAX_ROWS = 5000
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -817,8 +817,6 @@ def execute(
         
         if is_valid_series_query:
             query = query.limit(SERIES_MAX_ROWS)
-            # query = query.limit(limit) if limit else query.limit(SERIES_MAX_ROWS)
-            # return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
             return {'results': series_post_query(query, limit=SERIES_MAX_ROWS, offset=offset, sort_type=cat_num_sort_type)}
 
         if limit:
