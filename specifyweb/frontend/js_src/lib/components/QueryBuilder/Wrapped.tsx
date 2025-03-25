@@ -304,12 +304,12 @@ function Wrapped({
     table.name === 'CollectionObject' &&
     state.fields.some((field) => field.mappingPath[0] === 'catalogNumber');
 
-    React.useEffect(() => {
-      if (!showSeries) setQuery({
-        ...query,
-        selectSeries: false
-      })
-    }, [showSeries])
+  React.useEffect(() => {
+    if (!showSeries) setQuery({
+      ...query,
+      selectSeries: false
+    })
+  }, [showSeries])
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
