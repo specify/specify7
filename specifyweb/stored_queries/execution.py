@@ -791,7 +791,7 @@ def execute(
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
-            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type))}
+            return {'count': len(series_post_query(query, limit=limit, offset=0, sort_type=cat_num_sort_type, is_count=True))}
         else:
             return {'count': query.count()}
     else:
@@ -810,46 +810,21 @@ def execute(
 
         if is_valid_series_query:
             # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
+            # if cat_num_sort_type in {0, 1}:
+            #     order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
+            # elif cat_num_sort_type == 2:
+            #     order_by_exprs.insert(0, text("collectionobject.`CatalogNumber` DESC"))
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
         
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
-        
+
         if is_valid_series_query:
             # query = query.limit(SERIES_MAX_ROWS)
-            return {'results': series_post_query(query, limit=SERIES_MAX_ROWS, offset=offset, sort_type=cat_num_sort_type)}
-
+            return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
+        
         if limit:
             query = query.limit(limit)
-
-    # else:
-    #     cat_num_col_id = None
-    #     idx = 0
-    #     for field_spec in field_specs:
-    #         if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
-    #             cat_num_col_id = idx
-    #             break
-    #         idx += 1
-    #     is_valid_series_query = series and cat_num_col_id and tableid == models.Collectionobject.specify_model.tableId
-
-    #     if is_valid_series_query:
-    #         # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
-    #         order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
-        
-    #     logger.debug("order by: %s", order_by_exprs)
-    #     query = query.order_by(*order_by_exprs).offset(offset)
-        
-    #     if is_valid_series_query:
-    #         query = query.limit(limit) if limit else query.limit(SERIES_MAX_ROWS)
-    #         cat_num_sort_type = 0
-    #         for field_spec in field_specs:
-    #             if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
-    #                 cat_num_sort_type = field_spec.sort_type
-    #                 break
-    #         return {'results': series_post_query(query, limit)}
-
-    #     if limit:
-    #         query = query.limit(limit)
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
@@ -1051,7 +1026,7 @@ def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
     MAX_ROWS = 500
     return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
 
-def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0):
+def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
@@ -1148,7 +1123,9 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
     if sort_type == 2:
         results = results[::-1]
 
+    if is_count:
+        results
+
     series_limit = limit if limit else SERIES_MAX_ROWS
-    offset = offset if offset else 40
-    # return results[:series_limit]
+    offset = offset if offset else 0
     return results[offset:offset + series_limit]
