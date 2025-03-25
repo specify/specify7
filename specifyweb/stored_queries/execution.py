@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
 
-SERIES_MAX_ROWS = 5000
+SERIES_MAX_ROWS = 10000
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -791,7 +791,7 @@ def execute(
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
-            return {'count': len(series_post_query(query, limit=limit, offset=0, sort_type=cat_num_sort_type, is_count=True))}
+            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
         else:
             return {'count': query.count()}
     else:
