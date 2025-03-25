@@ -815,14 +815,13 @@ def execute(
             # elif cat_num_sort_type == 2:
             #     order_by_exprs.insert(0, text("collectionobject.`CatalogNumber` DESC"))
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
+
+            # query = query.limit(SERIES_MAX_ROWS)
+            return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
         
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
 
-        if is_valid_series_query:
-            # query = query.limit(SERIES_MAX_ROWS)
-            return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
-        
         if limit:
             query = query.limit(limit)
 
@@ -1124,7 +1123,7 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
         results = results[::-1]
 
     if is_count:
-        results
+        return results
 
     series_limit = limit if limit else SERIES_MAX_ROWS
     offset = offset if offset else 0
