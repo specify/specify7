@@ -16,7 +16,7 @@ from specifyweb.specify.models import (
     Recordsetitem,
 )
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
-from specifyweb.specify.api import strict_uri_to_model
+from specifyweb.specify import api
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +70,10 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
     """
     Get the topmost consolidated parent CollectionObjectGroup of the preparation.
     """
+
+    if prep is None:
+        return None  
+
     # Get the CollectionObject of the preparation
     co = prep.collectionobject
     if co is None:
@@ -100,10 +104,10 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     """
     Get all the sibling preparations within the consolidated cog
     """
-    # Get the topmost consolidated parent cog of the preparation
+    # Get the top most consolidated parent cog of the preparation
     top_consolidated_cog = get_the_top_consolidated_parent_cog_of_prep(prep)
     if top_consolidated_cog is None:
-        return [prep]
+        return []
 
     # Get all the sibling preparations
     sibling_preps = get_cog_consolidated_preps(top_consolidated_cog)
@@ -111,7 +115,7 @@ def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Pre
     # Remove the prep.id from the sibling preparations
     sibling_preps = [p for p in sibling_preps if p.id != prep.id]
 
-    return sibling_preps
+    return [prep, *sibling_preps]
 
 
 def is_cog_recordset(rs: Recordset) -> bool:
@@ -296,7 +300,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     updated_prep_ids = set(
         [
             # BUG: the preparation can be provided as an object in the request
-            strict_uri_to_model(
+            api.strict_uri_to_model(
                 interaction_prep["preparation"], "preparation")[1]
             for interaction_prep in interaction_prep_data
             if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
@@ -331,7 +335,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         if "preparation" in interaction_prep.keys()
         and interaction_prep["preparation"] is not None
         # BUG: the preparation can be provided as a dict in the request
-        and strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
+        and api.strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
     ]
 
     # Add preps
@@ -378,7 +382,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         # BUG: the preparation can be provided as a dict in the request
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys(
         ) else None
-        _, prep_id = strict_uri_to_model(
+        _, prep_id = api.strict_uri_to_model(
             prep_uri, "preparation") if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
@@ -399,7 +403,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 
         loan_return_prep_data = loan_return_prep_data_lst[0]
         # BUG: the loanpreparation can be provided as an object in the request
-        loan_return_loan_prep_id = strict_uri_to_model(
+        loan_return_loan_prep_id = api.strict_uri_to_model(
             loan_return_prep_data["loanpreparation"], "loanpreparation")[1]
         if loan_return_loan_prep_id == loan_prep_id:
             target_prep_ids.update({prep_id})
@@ -548,7 +552,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             in updated_interaction_data["loanpreparations"][loan_prep_idx].keys()
             else None
         )
-        prep_id = strict_uri_to_model(prep_uri, "preparation")[1] if prep_uri is not None else None
+        prep_id = api.strict_uri_to_model(prep_uri, "preparation")[1] if prep_uri is not None else None
         if prep_id in sibling_prep_ids or prep_id in new_loan_return_prep_ids or prep_id in target_prep_ids:
             quantity = updated_interaction_data["loanpreparations"][loan_prep_idx]["quantity"]
             if total_quantity_resolved >= quantity:
@@ -568,7 +572,10 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         return model_map.get(interaction_obj._meta.model_name, (None, None, None))
 
     def is_max_quantity_used(sibling_preps, interaction_prep_id, interaction_prep_ids, prep_id_fld, InteractionPrepModel):
+
         for sibling_prep in sibling_preps:
+            if sibling_prep is None:
+                return False
             if sibling_prep.id not in interaction_prep_ids:
                 continue
             # count = sibling_prep.countamt
@@ -595,6 +602,9 @@ def enforce_interaction_sibling_prep_max_count(interaction_obj):
         if is_max_quantity_used(
             sibling_preps, interaction_prep.id, interaction_prep_ids, id_fld, InteractionPrepModel
         ) or (sibling_preps is not None and len(sibling_preps) > 0):
+            if interaction_prep.preparation is None: 
+                continue
+
             if interaction_prep.quantity == interaction_prep.preparation.countamt:
                 continue
             available_count = get_availability_count(prep, interaction_prep.id, "loanpreparations__id") or 0
