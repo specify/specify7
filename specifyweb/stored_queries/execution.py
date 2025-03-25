@@ -816,7 +816,7 @@ def execute(
         query = query.order_by(*order_by_exprs).offset(offset)
         
         if is_valid_series_query:
-            query = query.limit(SERIES_MAX_ROWS)
+            # query = query.limit(SERIES_MAX_ROWS)
             return {'results': series_post_query(query, limit=SERIES_MAX_ROWS, offset=offset, sort_type=cat_num_sort_type)}
 
         if limit:
