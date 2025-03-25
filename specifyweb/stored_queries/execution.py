@@ -16,6 +16,7 @@ from sqlalchemy import sql, orm, func, select, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
@@ -790,28 +791,67 @@ def execute(
                 if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
-            return {'count': len(series_post_query(query, sort_type=cat_num_sort_type))}
+            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type))}
         else:
             return {'count': query.count()}
     else:
-        if series:
+        cat_num_col_id = None
+        cat_num_sort_type = None
+        idx = 0
+        for field_spec in field_specs:
+            if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                cat_num_col_id = idx
+                cat_num_sort_type = field_spec.sort_type
+                break
+            idx += 1
+        is_valid_series_query = series and \
+            cat_num_col_id is not None \
+            and tableid == get_table_id_by_model_name('Collectionobject')
+
+        if is_valid_series_query:
             # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
             order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
         
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
         
-        if series:
+        if is_valid_series_query:
             query = query.limit(SERIES_MAX_ROWS)
-            cat_num_sort_type = 0
-            for field_spec in field_specs:
-                if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
-                    cat_num_sort_type = field_spec.sort_type
-                    break
-            return {'results': series_post_query(query, sort_type=cat_num_sort_type)}
+            # query = query.limit(limit) if limit else query.limit(SERIES_MAX_ROWS)
+            # return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
+            return {'results': series_post_query(query, limit=SERIES_MAX_ROWS, offset=offset, sort_type=cat_num_sort_type)}
 
         if limit:
             query = query.limit(limit)
+
+    # else:
+    #     cat_num_col_id = None
+    #     idx = 0
+    #     for field_spec in field_specs:
+    #         if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+    #             cat_num_col_id = idx
+    #             break
+    #         idx += 1
+    #     is_valid_series_query = series and cat_num_col_id and tableid == models.Collectionobject.specify_model.tableId
+
+    #     if is_valid_series_query:
+    #         # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
+    #         order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
+        
+    #     logger.debug("order by: %s", order_by_exprs)
+    #     query = query.order_by(*order_by_exprs).offset(offset)
+        
+    #     if is_valid_series_query:
+    #         query = query.limit(limit) if limit else query.limit(SERIES_MAX_ROWS)
+    #         cat_num_sort_type = 0
+    #         for field_spec in field_specs:
+    #             if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+    #                 cat_num_sort_type = field_spec.sort_type
+    #                 break
+    #         return {'results': series_post_query(query, limit)}
+
+    #     if limit:
+    #         query = query.limit(limit)
 
         log_sqlalchemy_query(query) # Debugging
         return {'results': list(query)}
@@ -1013,7 +1053,7 @@ def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
     MAX_ROWS = 500
     return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
 
-def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
+def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
@@ -1030,7 +1070,6 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
         try:
             num = int(s)
             return (num, '', '')
-            # return s
         except ValueError:
             decimal_match_str = check_for_decimal(s)
             if decimal_match_str:
@@ -1040,7 +1079,6 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
                     prefix, number, postfix = match.groups()
                     prefix = prefix if prefix else '' 
                     postfix = postfix if postfix else '' 
-                    # return (float(number), prefix, postfix)
                     return (int(float(number)), prefix, postfix)
 
 
@@ -1049,7 +1087,6 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
                 prefix, number, postfix = match.groups()
                 prefix = prefix if prefix else '' 
                 postfix = postfix if postfix else '' 
-                # return (int(number), prefix, postfix)
                 return (int(number), prefix, postfix)
             else:
                 return (None, s, '')
@@ -1061,18 +1098,9 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
         else:
             return catalog, None
 
-    # def catalog_sort_key(x):
-    #     prefix, num = parse_catalog_for_sorting(x[1])
-    #     return (prefix, num if num is not None else x[1])
-
     def catalog_sort_key(x):
         num, prefix, postfix = parse_catalog_for_comparing(x[1])
         return (prefix, num, postfix if num is not None else x[1])
-
-    # def are_adjacent(cat1, cat2):
-    #     prefix1, num1 = parse_catalog(cat1)
-    #     prefix2, num2 = parse_catalog(cat2)
-    #     return prefix1 == prefix2 and num1 is not None and num2 is not None and (num1 + 1 == num2)
 
     def are_adjacent(cat1, cat2):
         num1, prefix1, postfix1 = parse_catalog_for_comparing(cat1)
@@ -1119,18 +1147,10 @@ def series_post_query(query, sort_type=0, co_id_cat_num_pair_col_index=0):
     results = [item for sublist in map(process_row, list(query)) for item in sublist]
 
     # Reorder the final results based on sort_type
-    # if sort_type in (1, 2):
-    #     def sort_key(record):
-    #         # record[1] contains the formatted series, e.g., "1000 - 1001" or "1003"
-    #         # Extract the first catalog number.
-    #         first_cat = record[1].split(' - ')[0].strip()
-    #         prefix, num = parse_catalog_for_sorting(first_cat)
-    #         return (prefix, num if num is not None else first_cat)
-
-    #     reverse_order = (sort_type == 2)
-    #     results = sorted(results, key=sort_key, reverse=reverse_order)
-
     if sort_type == 2:
         results = results[::-1]
 
-    return results[:SERIES_MAX_ROWS]
+    series_limit = limit if limit else SERIES_MAX_ROWS
+    offset = offset if offset else 40
+    # return results[:series_limit]
+    return results[offset:offset + series_limit]
