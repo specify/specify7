@@ -260,9 +260,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               placeholder="1"
               value={carryForwardAmount}
               onValueChange={(value): void =>
-                Number.isNaN(value)
-                  ? setCarryForwardAmount(1)
-                  : setCarryForwardAmount(Number(value))
+                setCarryForwardAmount(Number(value))
               }
             />
           ) : null}
