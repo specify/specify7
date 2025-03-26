@@ -2,9 +2,11 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
-import { filterArray } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getMainTableFields } from '../Formatters/formatters';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { TypeSearch } from './spec';
@@ -36,6 +38,8 @@ export function useTypeSearch(
       ? initialTypeSearch.table
       : undefined);
 
+  const mainfields = relatedTable?.name ? getMainTableFields(relatedTable?.name) : undefined
+
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(async () => {
       if (typeof initialTypeSearch === 'object') return initialTypeSearch;
@@ -52,6 +56,16 @@ export function useTypeSearch(
         found =
           defaultSearches.find(({ name }) => name === initialTypeSearch) ??
           defaultSearches.find(({ table }) => table === relatedTable);
+      }
+
+      found ||= {
+        table: relatedTable,
+        title: localized(mainfields?.[0].name ?? ''),
+        searchFields: [mainfields?.slice(0,1) ?? []] ,
+        name: localized(relatedTable?.name),
+        formatter: localized(""), 
+        displayFields: undefined,
+        format: localized("%s")
       }
 
       return found ?? false;
