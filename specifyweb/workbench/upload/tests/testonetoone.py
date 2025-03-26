@@ -7,10 +7,10 @@ from ..upload import do_upload
 from ..upload_table import UploadTable, OneToOneTable
 from ..upload_plan_schema import schema, parse_plan
 
-class OneToOneTests(UploadTestsBase):
-    def setUp(self) -> None:
-        super().setUp()
+from django.conf import settings
 
+class OneToOneTests(UploadTestsBase):
+    
     def plan(self, one_to_one: bool) -> Dict:
         reltype = 'oneToOneTable' if one_to_one else 'uploadTable'
         return dict(
@@ -38,7 +38,7 @@ class OneToOneTests(UploadTestsBase):
     def test_onetoone_parsing(self) -> None:
         json = self.plan(one_to_one=True)
         validate(json, schema)
-        plan = parse_plan(self.collection, json)
+        plan = parse_plan(json)
         assert isinstance(plan, UploadTable)
         assert isinstance(plan.toOne['collectingevent'], UploadTable)
         self.assertIsInstance(plan.toOne['collectingevent'], OneToOneTable)
@@ -46,13 +46,13 @@ class OneToOneTests(UploadTestsBase):
     def test_manytoone_parsing(self) -> None:
         json = self.plan(one_to_one=False)
         validate(json, schema)
-        plan = parse_plan(self.collection, json)
+        plan = parse_plan(json)
         assert isinstance(plan, UploadTable)
         assert isinstance(plan.toOne['collectingevent'], UploadTable)
         self.assertNotIsInstance(plan.toOne['collectingevent'], OneToOneTable)
 
     def test_onetoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.plan(one_to_one=True))
 
         data = [
             dict(catno='0', sfn='1'),
@@ -73,7 +73,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(4, len(ces))
 
     def test_manytoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=False)).apply_scoping(self.collection)
+        plan = parse_plan(self.plan(one_to_one=False))
 
         data = [
             dict(catno='0', sfn='1'),
@@ -93,7 +93,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(2, len(ces))
 
     def test_onetoone_with_null(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.plan(one_to_one=True))
 
         data = [
             dict(catno='0', sfn='1'),

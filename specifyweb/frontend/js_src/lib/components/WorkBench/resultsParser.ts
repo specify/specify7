@@ -134,17 +134,37 @@ type ParseFailures = State<
   }
 >;
 
+type Updated = State<'Updated', Omit<Uploaded, 'type'>>;
+
+type NoChange = State<
+  'NoChange',
+  {
+    readonly id: number;
+    readonly info: ReportInfo;
+  }
+>;
+
+type Deleted = State<
+  'Deleted',
+  { readonly id: number; readonly info: ReportInfo }
+>;
 // Indicates failure due to a failure to upload a related record
 type PropagatedFailure = State<'PropagatedFailure'>;
 
+type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
+
 type RecordResultTypes =
+  | Deleted
   | FailedBusinessRule
   | Matched
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
   | NoMatch
   | NullRecord
   | ParseFailures
   | PropagatedFailure
+  | Updated
   | Uploaded;
 
 // Records the specific result of attempting to upload a particular record
