@@ -222,6 +222,7 @@ INSTALLED_APPS = (
     'specifyweb.attachment_gw',
     'specifyweb.frontend',
     'specifyweb.barvis',
+    'specifyweb.patches',
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',

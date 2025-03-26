@@ -70,9 +70,11 @@ export function extractAppResourceId(url: string, response: Response): void {
 
 export const getAppResourceUrl = (
   name: string,
-  quiet: 'quiet' | undefined = undefined
+  quiet: 'quiet' | undefined = undefined,
+  additionalDefault: boolean = false
 ): string =>
   formatUrl('/context/app.resource', {
     name,
     quiet: quiet === 'quiet' ? '' : undefined,
+    additionaldefault: additionalDefault ? 'true' : undefined,
   });

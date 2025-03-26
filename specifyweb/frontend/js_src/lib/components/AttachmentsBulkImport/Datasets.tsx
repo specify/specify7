@@ -98,7 +98,7 @@ function ModifyDataset({
 }
 
 const createEmpty = async (name: LocalizedString) =>
-  createEmptyDataSet<AttachmentDataSet>('/attachment_gw/dataset/', name, {
+  createEmptyDataSet<AttachmentDataSet>('bulkAttachment', name, {
     uploadplan: { staticPathKey: undefined },
     uploaderstatus: 'main',
   });
@@ -241,7 +241,7 @@ const getNamePromise = async () =>
       date: new Date().toDateString(),
     }),
     undefined,
-    '/attachment_gw/dataset/'
+    'bulkAttachment'
   );
 
 function NewDataSet(): JSX.Element | null {
