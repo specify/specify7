@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
-import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
