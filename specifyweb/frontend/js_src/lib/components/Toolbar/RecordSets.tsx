@@ -209,7 +209,10 @@ export function RecordSetsDialog({
           buttons={
             <>
               {!isReadOnly && hasToolPermission('recordSets', 'create') && (
-                <MergeRecordSets closeParent={handleClose} recordSets={data?.records} />
+                <MergeRecordSets
+                  closeParent={handleClose}
+                  recordSets={data?.records}
+                />
               )}
               <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
