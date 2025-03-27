@@ -210,7 +210,7 @@ export function ResourceMapping({
         fieldsData: Object.fromEntries(
           Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
         ),
-      })) as RA<MappingLineData>,
+      })),
     [table.name, mappingPath]
   );
 
