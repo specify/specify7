@@ -272,7 +272,7 @@ export function ResourceMapping({
       }
     >
       {join(
-        lineData.map((mappingDetails, index) => (
+        mappingLineProps.map((mappingDetails, index) => (
           <li className="contents" key={index}>
             <MappingElement
               {...mappingDetails}
