@@ -36,7 +36,6 @@ import {
   relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
-import type { MappingLineData } from '../WbPlanView/navigator';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
