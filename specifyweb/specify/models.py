@@ -6566,6 +6566,7 @@ class Storage(model_extras.Storage):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     timestampversion = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampVersion', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=True, db_column='UniqueIdentifier', db_index=False)
 
     # Relationships: Many-to-One
     acceptedstorage = models.ForeignKey('Storage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
@@ -6767,8 +6768,8 @@ class Taxon(model_extras.Taxon):
     # Relationships: Many-to-One
     acceptedtaxon = models.ForeignKey('Taxon', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    definition = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionitem = models.ForeignKey('TaxonTreeDefItem', db_column='TaxonTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    definition = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treeentries', null=False, on_delete=models.CASCADE)
+    definitionitem = models.ForeignKey('TaxonTreeDefItem', db_column='TaxonTreeDefItemID', related_name='treeentries', null=False, on_delete=models.CASCADE)
     hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
     hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7090,8 +7091,8 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
-    treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.CASCADE)
+    treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'taxontreedefitem'
@@ -7615,7 +7616,7 @@ class Collectionobjectgroupjoin(models.Model): # aka. CoJo or CogJoin
 
     # Relationships: One-to-One
     childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
-    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'

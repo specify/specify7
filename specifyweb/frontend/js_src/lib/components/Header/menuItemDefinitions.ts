@@ -113,8 +113,8 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   batchEdit: {
     url: '/specify/overlay/batch-edit',
     title: batchEditText.batchEdit(),
-    icon: icons.table,
-  }
+    icon: icons.batchEdit,
+  },
 } as const);
 
 export type MenuItemName = keyof typeof rawMenuItems | 'search';

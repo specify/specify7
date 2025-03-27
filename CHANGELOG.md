@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.10.1](https://github.com/specify/specify7/compare/v7.10.0...v7.10.1) (10 March 2025)
+
+## Added
+* A Catalog Number format can now be linked to a specific Collection Object Type (COT)! ([#6277](https://github.com/specify/specify7/pull/6277))
+* Added a `uniqueIdentifier` field to the Storage table ([#6249](https://github.com/specify/specify7/pull/6249))
+
+## Fixed
+* Allow bulk carry for COType cat num format ([#6285](https://github.com/specify/specify7/pull/6285))
+* Fixed an issue where Specify would not auto-select a field format in Schema Config ([#6255](https://github.com/specify/specify7/pull/6255))
+
+
 ## [7.10.0](https://github.com/specify/specify7/compare/v7.9.6.2...v7.10.0) (5 March 2025)
 
 This release of Specify 7 now falls under the [GPL-3.0 license](https://github.com/specify/specify7?tab=GPL-3.0-1-ov-file#readme).

@@ -1090,19 +1090,19 @@ def run_batch_edit_query(props: BatchEditProps):
 
     with props["session_maker"]() as session:
         rows = execute(
-            session,
-            props["collection"],
-            props["user"],
-            tableid,
-            True,
-            False,
-            query_with_hidden,
-            limit,
-            offset,
-            True,
-            recordsetid,
-            False,
-            True,
+            session=session,
+            collection=props["collection"],
+            user=props["user"],
+            tableid=tableid,
+            distinct=True,
+            count_only=False,
+            field_specs=query_with_hidden,
+            limit=limit,
+            offset=offset,
+            format_agent_type=True,
+            recordsetid=recordsetid,
+            formatauditobjs=False,
+            format_picklist=True,
         )
 
     to_many_planner = indexed.to_many_planner()

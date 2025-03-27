@@ -130,26 +130,29 @@ export function WbUtilsComponent({
         utils={utils}
       />
       {
-      // Only show these cells if batch-edit
-       isUpdate === true && <><Navigation
-        label={wbText.updatedCells()}
-        name="updatedCells"
-        totalCount={cellCounts.updatedCells}
-        utils={utils}
-      />
-      <Navigation
-        label={wbText.deletedCells()}
-        name="deletedCells"
-        totalCount={cellCounts.deletedCells}
-        utils={utils}
-      />
-      <Navigation
-        label={wbText.matchAndChanged()}
-        name="matchedAndChangedCells"
-        totalCount={cellCounts.matchedAndChangedCells}
-        utils={utils}
-      />
-      </>
+        // Only show these cells if batch-edit
+        isUpdate && (
+          <>
+            <Navigation
+              label={wbText.updatedCells()}
+              name="updatedCells"
+              totalCount={cellCounts.updatedCells}
+              utils={utils}
+            />
+            <Navigation
+              label={wbText.deletedCells()}
+              name="deletedCells"
+              totalCount={cellCounts.deletedCells}
+              utils={utils}
+            />
+            <Navigation
+              label={wbText.matchAndChanged()}
+              name="matchedAndChangedCells"
+              totalCount={cellCounts.matchedAndChangedCells}
+              utils={utils}
+            />
+          </>
+        )
       }
       {!isUploaded && (
         <Navigation
