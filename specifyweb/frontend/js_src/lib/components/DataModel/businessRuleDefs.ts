@@ -596,4 +596,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       },
     },
   },
+  Preparation: {
+    onRemoved: (preparation, collection): void => {
+      if (preparation.get('isOnLoan') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnLoan,
+          [resourcesText.deleteLoanedPrep()],
+          resourcesText.loanedPrepDeletionMessage()
+        )
+      }
+    }
+  }
 };
