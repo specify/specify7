@@ -8,7 +8,7 @@ from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
-from specifyweb.specify.models import datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
 
 from . import models
@@ -318,6 +318,7 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
+                op, orm_field, value = apply_special_filter_cases(orm_field, table, value, op_num, uiformatter)
                 f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
@@ -408,3 +409,37 @@ class QueryFieldSpec(
                     orm_field = sql.extract(self.date_part, orm_field)
 
         return query, orm_field, field, table
+
+def apply_special_filter_cases(query, orm_field, field, table, value, op_num, uiformatter):
+    if table.name == "CollectionObject" and field.name == "catalognumber" and op_num == 1:
+        sibling_ids = co_sibling_ids(value)
+        if sibling_ids:
+            co_ids = [value] + sibling_ids.append(value)
+            value = ','.join(co_ids)
+            query_op = QueryOps(uiformatter)
+            op = query_op.by_op_num(10)
+
+    return op, orm_field, value
+        
+
+def co_sibling_ids(cat_num):
+    co_query = Collectionobject.objects.filter(catalognumber=cat_num)
+    if not co_query.exists() or co_query.count() > 1:
+        return []
+
+    co = co_query.first()
+    cojo_query = Collectionobjectgroupjoin.objects.filter(childco=co)
+    if not cojo_query.exists():
+        return []
+    
+    cojo = cojo_query.first()
+    if not cojo.isprimary:
+        return []
+
+    cojo_sibling_query = Collectionobjectgroupjoin.objects.filter(
+        paraentcog=cojo.parentcog, childco__isnull=False).exclude(childco=co)
+    if not cojo_sibling_query.exists():
+        return []
+    
+    sibling_co_ids = cojo_sibling_query.values_list('childco_id', flat=True)
+    return Collectionobject.objects.filter(id__in=sibling_co_ids, catalognumber=None).values_list('id', flat=True)
