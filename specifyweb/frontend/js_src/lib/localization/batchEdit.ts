@@ -88,7 +88,4 @@ export const batchEditText = createDictionary({
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
   },
-  treeQueriesDisabled: {
-    'en-us': 'Batch editing is disabled for trees',
-  },
 } as const);
