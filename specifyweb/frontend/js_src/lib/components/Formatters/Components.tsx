@@ -36,6 +36,7 @@ import {
   relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
+import type { MappingLineData } from '../WbPlanView/navigator';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
@@ -195,6 +196,7 @@ export function ResourceMapping({
   }, [mappingPath, sourcePath]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const lineData = React.useMemo(
     () =>
       getMappingLineData({
@@ -203,7 +205,12 @@ export function ResourceMapping({
         showHiddenFields: true,
         generateFieldData: 'all',
         spec: navigatorSpecs.formatterEditor,
-      }),
+      }).map(line => ({
+        ...line,
+        fieldsData: Object.fromEntries(
+          Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
+        ),
+      })) as RA<MappingLineData>,
     [table.name, mappingPath]
   );
 
@@ -265,7 +272,7 @@ export function ResourceMapping({
       }
     >
       {join(
-        mappingLineProps.map((mappingDetails, index) => (
+        lineData.map((mappingDetails, index) => (
           <li className="contents" key={index}>
             <MappingElement
               {...mappingDetails}
