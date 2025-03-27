@@ -1169,7 +1169,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = Func.first(sorted(headers_enumerated, key=lambda tup: tup[1][0]))
+    visual_order = Func.first(headers_enumerated)
 
     headers = Func.second(key_and_headers)
 
