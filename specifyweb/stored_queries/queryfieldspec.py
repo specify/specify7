@@ -10,7 +10,7 @@ from sqlalchemy.orm.query import Query
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
-from specifyweb.stored_queries import models as sqmodels
+from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
 from .query_ops import QueryOps
@@ -319,8 +319,8 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter)
-                f = op(orm_field, value)
+                op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter)
+                f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -412,17 +412,18 @@ class QueryFieldSpec(
         return query, orm_field, field, table
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter):
+    mod_orm_field = orm_field
     if table.name == "CollectionObject" and field.name == "catalogNumber" and op_num == 1:
         sibling_ids = co_sibling_ids(value)
         if sibling_ids:
             value = ','.join(sibling_ids)
             field_name = 'collectionObjectId'
-            orm_model = sqmodels.CollectionObject
-            orm_field = getattr(orm_model, field_name)
+            orm_model = sq_CollectionObject
+            mod_orm_field = getattr(orm_model, field_name)
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(10)
 
-    return op, orm_field, value
+    return op, mod_orm_field, value
 
 def co_sibling_ids(cat_num):
     co_query = Collectionobject.objects.filter(catalognumber=cat_num)
