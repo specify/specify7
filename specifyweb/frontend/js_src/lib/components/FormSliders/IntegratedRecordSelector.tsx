@@ -52,7 +52,7 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'onSlide' | 'table'
+  'children' | 'enableKeyboardShortcuts' | 'onSlide' | 'table'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly formType: FormType;
@@ -173,6 +173,7 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
+        enableKeyboardShortcuts={dialog !== false}
         relationship={relationship}
         onAdd={(resources): void => {
           if (isInteraction) {
@@ -299,6 +300,7 @@ export function IntegratedRecordSelector({
                                   handleAdd,
                                 });
                             }}
+                            enableShortcut={dialog !== false}
                           />
                         )
                       ) : undefined}

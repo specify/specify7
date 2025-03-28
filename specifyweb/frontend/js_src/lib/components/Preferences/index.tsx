@@ -42,7 +42,16 @@ const preferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
 
-function Preferences(): JSX.Element {
+export type PreferencesFilter =
+  | 'allUserPreferences'
+  | 'userKeyboardShortcuts'
+  | 'userPreferences';
+
+function Preferences({
+  filter,
+}: {
+  readonly filter: PreferencesFilter;
+}): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
@@ -65,6 +74,8 @@ function Preferences(): JSX.Element {
     setVisibleChild,
     references,
   } = useTopChild();
+
+  const definitions = usePrefDefinitions(filter);
 
   return (
     <Container.FullGray>
@@ -89,10 +100,14 @@ function Preferences(): JSX.Element {
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            definitions={definitions}
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} />
+          <PreferencesContent
+            definitions={definitions}
+            forwardRefs={forwardRefs}
+          />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -109,8 +124,8 @@ function Preferences(): JSX.Element {
   );
 }
 
-/** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions() {
+/** Hide invisible preferences. Remove empty categories and subCategories */
+export function usePrefDefinitions(filter: PreferencesFilter) {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
   const preferencesVisibilityContext = React.useMemo(
@@ -138,10 +153,30 @@ export function usePrefDefinitions() {
                         {
                           ...subCategoryData,
                           items: Object.entries(items).filter(
-                            ([_name, { visible }]) =>
-                              typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
-                                : visible !== false
+                            ([_name, item]) => {
+                              const visible =
+                                typeof item.visible === 'function'
+                                  ? item.visible(preferencesVisibilityContext)
+                                  : item.visible !== false;
+                              if (!visible) return false;
+
+                              if (filter !== 'allUserPreferences') {
+                                const isKeyboardShortcut =
+                                  'renderer' in item &&
+                                  (item.renderer.name ===
+                                    'KeyboardShortcutPreferenceItem' ||
+                                    item.renderer.name ===
+                                      'UrlShortcutsEditor');
+                                const showKeyboardShortcuts =
+                                  filter === 'userKeyboardShortcuts';
+
+                                return (
+                                  isKeyboardShortcut === showKeyboardShortcuts
+                                );
+                              }
+
+                              return true;
+                            }
                           ),
                         },
                       ] as const
@@ -151,24 +186,25 @@ export function usePrefDefinitions() {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
+    [preferencesVisibilityContext, filter]
   );
 }
 
 export function PreferencesContent({
   forwardRefs,
+  definitions,
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
+  readonly definitions: ReturnType<typeof usePrefDefinitions>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const definitions = usePrefDefinitions();
   return (
-    <div className="flex h-fit flex-col gap-6">
+    <div className="flex h-fit min-w-[60%] flex-col gap-6">
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
           index
-        ) => (
+        ): JSX.Element => (
           <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
@@ -318,7 +354,8 @@ function FormatString({
     <span>
       <StringToJsx
         components={{
-          key: (key) => <Key>{key}</Key>,
+          // eslint-disable-next-line react/no-unstable-nested-components
+          key: (key): JSX.Element => <Key>{key}</Key>,
         }}
         string={text}
       />
@@ -364,7 +401,14 @@ function Item({
   );
 }
 
-export function PreferencesWrapper(): JSX.Element | null {
+export function UserPreferencesWrapper(): JSX.Element | null {
   const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <Preferences /> : null;
+  return hasFetched === true ? <Preferences filter="userPreferences" /> : null;
+}
+
+export function KeyboardShortcutsWrapper(): JSX.Element | null {
+  const [hasFetched] = usePromise(preferencesPromise, true);
+  return hasFetched === true ? (
+    <Preferences filter="userKeyboardShortcuts" />
+  ) : null;
 }

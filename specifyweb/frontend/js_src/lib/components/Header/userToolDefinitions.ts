@@ -57,6 +57,11 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/user-preferences/',
       icon: icons.cog,
     },
+    userKeyboardShortcuts: {
+      title: preferencesText.keyboardShortcuts(),
+      url: '/specify/user-keyboard-shortcuts/',
+      icon: icons.cursorClick,
+    },
     schemaConfig: {
       title: schemaText.schemaConfig(),
       url: '/specify/schema-config/',
