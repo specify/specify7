@@ -16,7 +16,6 @@ from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
@@ -30,7 +29,6 @@ from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
-from specifyweb.specify.utils import log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -773,7 +771,6 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
         return {"results": list(query)}
 
 
@@ -908,5 +905,4 @@ def build_query(
     query = query.filter(internal_predicate)
 
     logger.debug("query: %s", query.query)
-    return query.query, order_by_exprs
-    
+    return query.query, order_by_exprs 
