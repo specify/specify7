@@ -107,6 +107,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
     <>
       {isIcon ? (
         <Button.Icon
+          disabled={noUsages}
           icon={
             showUsages
               ? 'informationCircle'
@@ -124,10 +125,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               : commonText.delete()
           }
           onClick={handleButtonClick}
-          disabled={noUsages}
         />
       ) : (
         <ButtonComponent
+          disabled={noUsages}
           title={
             blockers === undefined
               ? commonText.loading()
@@ -140,7 +141,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               : commonText.delete()
           }
           onClick={handleButtonClick}
-          disabled={noUsages}
         >
           {isBlocked && !showUsages ? (
             <>
@@ -193,10 +193,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
              * fetching is done.
              */
             <Dialog
-              icon={icons.documentSearch}
               buttons={commonText.close()}
               className={{ container: dialogClassNames.narrowContainer }}
               header={formsText.noLinkedRecords()}
+              icon={icons.documentSearch}
               onClose={handleClose}
             >
               <></>
@@ -247,7 +247,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         ) : (
           // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
-            icon={showUsages ? icons.documentSearch : icons.exclamation}
             buttons={commonText.close()}
             className={{
               container: dialogClassNames.wideContainer,
@@ -257,6 +256,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 ? mergingText.linkedRecords()
                 : formsText.deleteBlocked()
             }
+            icon={showUsages ? icons.documentSearch : icons.exclamation}
             onClose={handleClose}
           >
             {showUsages
