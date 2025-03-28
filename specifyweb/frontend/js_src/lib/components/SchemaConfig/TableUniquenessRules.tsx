@@ -118,7 +118,7 @@ export function TableUniquenessRules(): JSX.Element {
       buttons={
         <>
           <Button.Small
-            className="w-fit !ring-0"
+            className="w-fit"
             disabled={isReadOnly}
             onClick={(): void =>
               handleRuleValidation(
