@@ -318,7 +318,7 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, orm_field, value = apply_special_filter_cases(orm_field, table, value, op_num, uiformatter)
+                op, orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter)
                 f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
@@ -410,7 +410,7 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
-def apply_special_filter_cases(query, orm_field, field, table, value, op_num, uiformatter):
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter):
     if table.name == "CollectionObject" and field.name == "catalognumber" and op_num == 1:
         sibling_ids = co_sibling_ids(value)
         if sibling_ids:
