@@ -51,7 +51,7 @@ class Func:
         return [second for (_, second) in source]
     
     @staticmethod
-    def filter_list(source: List[Optional[I]])->List[I]:
+    def filter_list(source: List[Optional[I]]) -> List[I]:
         return [item for item in source if item is not None]
 
 class CustomRepr:

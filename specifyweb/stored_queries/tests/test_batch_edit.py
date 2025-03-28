@@ -38,7 +38,8 @@ def props_builder(self, session_maker):
             captions=None,
             limit=None,
             recordsetid=None,
-            omit_relationships=False
+            omit_relationships=False,
+            treedefsfilter=None
         )
 
     return _builder

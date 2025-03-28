@@ -164,3 +164,7 @@ MIGRATION_0023_FIELDS_BIS = {
 
     'tectonicunittreedef': ['discipline', 'treeEntries', 'tectonicUnitTreeDefId']
 }
+
+MIGRATION_0024_FIELDS = {
+    'Storage': ['uniqueIdentifier'],
+}

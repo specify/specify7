@@ -84,14 +84,16 @@ export function WbActions({
 
   return (
     <>
-      <WbNoUploadPlan
-        datasetId={dataset.id}
-        isUploaded={isUploaded}
-        mappings={mappings}
-        noUploadPlan={noUploadPlan}
-        onCloseNoUploadPlan={closeNoUploadPlan}
-        onOpenNoUploadPlan={openNoUploadPlan}
-      />
+      {!dataset.isupdate && (
+        <WbNoUploadPlan
+          datasetId={dataset.id}
+          isUploaded={isUploaded}
+          mappings={mappings}
+          noUploadPlan={noUploadPlan}
+          onCloseNoUploadPlan={closeNoUploadPlan}
+          onOpenNoUploadPlan={openNoUploadPlan}
+        />
+      )}
       {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
@@ -222,16 +224,16 @@ export function WbActions({
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
-              ? wbText.rollbackCanceled()
-              : viewerLocalization.doCancelled
+                ? wbText.rollbackCanceled()
+                : viewerLocalization.doCancelled
           }
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : viewerLocalization.doCancelledDescription}
+              ? wbText.rollbackCanceledDescription()
+              : viewerLocalization.doCancelledDescription}
         </Dialog>
       )}
     </>

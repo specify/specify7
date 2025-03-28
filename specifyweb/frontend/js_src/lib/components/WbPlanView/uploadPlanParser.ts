@@ -1,4 +1,5 @@
 import type { IR, PartialBy, RA, RR } from '../../utils/types';
+import { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -84,16 +85,16 @@ const parseTree = (
         ...mappingPath,
         ...(typeof rankData === 'object' &&
         typeof rankData.treeId === 'number' &&
-        getTreeDefinitions('Taxon', 'all').length > 1
-          ? [resolveTreeId(rankData.treeId)]
+        getTreeDefinitions(table.name as 'Geography', 'all').length > 1
+          ? [resolveTreeId(table.name as 'Geography', rankData.treeId)]
           : []),
         formatTreeRank(getRankNameFromKey(rankName)),
       ]
     )
   );
 
-const resolveTreeId = (id: number): string => {
-  const treeDefinition = getTreeDefinitions('Taxon', id);
+const resolveTreeId = (tableName: AnyTree['tableName'], id: number): string => {
+  const treeDefinition = getTreeDefinitions(tableName, id);
   return formatTreeDefinition(treeDefinition[0].definition.name);
 };
 

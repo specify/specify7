@@ -1008,6 +1008,7 @@ def run_batch_edit(collection, user, spquery, agent):
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
         omit_relationships=True,
+        treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
     mapped_raws = [
@@ -1037,6 +1038,7 @@ class BatchEditProps(TypedDict):
     session_maker: Any
     fields: List[QueryField]
     omit_relationships: Optional[bool]
+    treedefsfilter: Any
 
 def _get_table_and_field(field: QueryField):
     table_name = field.fieldspec.table.name
@@ -1055,6 +1057,8 @@ def run_batch_edit_query(props: BatchEditProps):
 
     visible_fields = [field for field in fields if field.display]
 
+    treedefsfilter = props["treedefsfilter"]
+
     assert captions is None or (
         len(visible_fields) == len(captions)
     ), "Got misaligned captions!"
@@ -1071,6 +1075,9 @@ def run_batch_edit_query(props: BatchEditProps):
     all_tree_info = get_all_tree_information(props["collection"], props["user"].id)
     base_table = datamodel.get_table_by_id_strict(tableid, strict=True)
     running_path = [base_table.name]
+
+    if treedefsfilter is not None:
+        all_tree_info = filter_tree_info(treedefsfilter, all_tree_info)
     row_plan = naive_row_plan.rewrite(base_table, all_tree_info, running_path)
 
     indexed, query_fields = row_plan.index_plan()
@@ -1083,19 +1090,19 @@ def run_batch_edit_query(props: BatchEditProps):
 
     with props["session_maker"]() as session:
         rows = execute(
-            session,
-            props["collection"],
-            props["user"],
-            tableid,
-            True,
-            False,
-            query_with_hidden,
-            limit,
-            offset,
-            True,
-            recordsetid,
-            False,
-            True,
+            session=session,
+            collection=props["collection"],
+            user=props["user"],
+            tableid=tableid,
+            distinct=True,
+            count_only=False,
+            field_specs=query_with_hidden,
+            limit=limit,
+            offset=offset,
+            format_agent_type=True,
+            recordsetid=recordsetid,
+            formatauditobjs=False,
+            format_picklist=True,
         )
 
     to_many_planner = indexed.to_many_planner()
@@ -1213,3 +1220,13 @@ def make_dataset(
         ds.save()
 
     return (ds_id, ds_name)
+
+
+def filter_tree_info(filters: Dict[str, List[int]], all_tree_info: Dict[str, List[TREE_INFORMATION]]):
+    for tablename in filters:
+        treetable_key = tablename.title()
+        if treetable_key in all_tree_info:
+            tree_filter = set(filters[tablename])
+            all_tree_info[treetable_key] = list(filter(lambda tree_info : tree_info['definition']['id'] in tree_filter, all_tree_info[treetable_key]))
+
+    return all_tree_info
