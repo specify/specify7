@@ -849,15 +849,8 @@ export const resourcesText = createDictionary({
   deletePrimaryRecord: {
     'en-us': 'Primary record CO cannot be deleted.',
   },
-  primaryDeletionErrorMessage: {
-    'en-us':
-      'This record cannot be deleted as it is the primary record of the Collection Object Group. Please reload the page, then assign another CO as the primary record if a change is desired.',
-  },
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
-  },
-  loanedPrepDeletionMessage: {
-    'en-us': 'This record cannot be delted because it is used in a loan.',
   },
   invalidDeterminationTaxon: {
     'en-us':

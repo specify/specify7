@@ -9,6 +9,7 @@ import {
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PREPARATION_LOANED_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
@@ -332,7 +333,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           collection.related ?? cojo,
           cojo.specifyTable.field.parentCog,
           [resourcesText.deletePrimaryRecord()],
-          resourcesText.primaryDeletionErrorMessage()
+          COJO_PRIMARY_DELETE_KEY
         );
       }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
@@ -603,7 +604,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           collection.related ?? preparation,
           preparation.specifyTable.field.isOnLoan,
           [resourcesText.deleteLoanedPrep()],
-          resourcesText.loanedPrepDeletionMessage()
+          PREPARATION_LOANED_KEY
         )
       }
     }
