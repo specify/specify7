@@ -5,6 +5,7 @@ import type { BusinessRuleResult } from './businessRules';
 import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
+  COJO_PRIMARY_DELETE_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
