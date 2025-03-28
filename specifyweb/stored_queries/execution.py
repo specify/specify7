@@ -905,4 +905,4 @@ def build_query(
     query = query.filter(internal_predicate)
 
     logger.debug("query: %s", query.query)
-    return query.query, order_by_exprs 
+    return query.query, order_by_exprs
