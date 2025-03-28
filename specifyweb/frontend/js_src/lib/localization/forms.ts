@@ -90,9 +90,6 @@ export const formsText = createDictionary({
   checkingIfResourceIsUsed: {
     'en-us': 'Checking if this record is currently in use…',
   },
-  linkedRecords: {
-    'en-us': 'Linked records',
-  },
   noLinkedRecords: {
     'en-us': 'No linked records',
   },

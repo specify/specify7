@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
@@ -115,7 +116,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             blockers === undefined
               ? commonText.loading()
               : showUsages && !noUsages
-              ? formsText.linkedRecords()
+              ? mergingText.linkedRecords()
               : showUsages && noUsages
               ? formsText.noLinkedRecords()
               : isBlocked
@@ -131,7 +132,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             blockers === undefined
               ? commonText.loading()
               : showUsages && !noUsages
-              ? formsText.linkedRecords()
+              ? mergingText.linkedRecords()
               : showUsages && noUsages
               ? formsText.noLinkedRecords()
               : isBlocked
@@ -253,7 +254,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             }}
             header={
               showUsages
-                ? formsText.linkedRecords()
+                ? mergingText.linkedRecords()
                 : formsText.deleteBlocked()
             }
             onClose={handleClose}
