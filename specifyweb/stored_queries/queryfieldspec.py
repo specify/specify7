@@ -10,6 +10,7 @@ from sqlalchemy.orm.query import Query
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.stored_queries import models as sqmodels
 
 from . import models
 from .query_ops import QueryOps
@@ -411,16 +412,17 @@ class QueryFieldSpec(
         return query, orm_field, field, table
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter):
-    if table.name == "CollectionObject" and field.name == "catalognumber" and op_num == 1:
+    if table.name == "CollectionObject" and field.name == "catalogNumber" and op_num == 1:
         sibling_ids = co_sibling_ids(value)
         if sibling_ids:
-            co_ids = [value] + sibling_ids.append(value)
-            value = ','.join(co_ids)
+            value = ','.join(sibling_ids)
+            field_name = 'collectionObjectId'
+            orm_model = sqmodels.CollectionObject
+            orm_field = getattr(orm_model, field_name)
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(10)
 
     return op, orm_field, value
-        
 
 def co_sibling_ids(cat_num):
     co_query = Collectionobject.objects.filter(catalognumber=cat_num)
@@ -437,9 +439,11 @@ def co_sibling_ids(cat_num):
         return []
 
     cojo_sibling_query = Collectionobjectgroupjoin.objects.filter(
-        paraentcog=cojo.parentcog, childco__isnull=False).exclude(childco=co)
+        parentcog=cojo.parentcog, childco__isnull=False).exclude(childco=co)
     if not cojo_sibling_query.exists():
         return []
     
     sibling_co_ids = cojo_sibling_query.values_list('childco_id', flat=True)
-    return Collectionobject.objects.filter(id__in=sibling_co_ids, catalognumber=None).values_list('id', flat=True)
+    target_sibling_co_ids = Collectionobject.objects.filter(
+        id__in=sibling_co_ids, catalognumber=None).values_list('id', flat=True)
+    return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
