@@ -412,39 +412,39 @@ class QueryFieldSpec(
         return query, orm_field, field, table
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter):
-    mod_orm_field = orm_field
-    if table.name == "CollectionObject" and field.name == "catalogNumber" and op_num == 1:
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+    ):
         sibling_ids = co_sibling_ids(value)
         if sibling_ids:
+            # Modify the query to filter operation and values for sibling collection objects
             value = ','.join(sibling_ids)
-            field_name = 'collectionObjectId'
-            orm_model = sq_CollectionObject
-            mod_orm_field = getattr(orm_model, field_name)
-            query_op = QueryOps(uiformatter)
-            op = query_op.by_op_num(10)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
 
-    return op, mod_orm_field, value
+    return op, orm_field, value
 
 def co_sibling_ids(cat_num):
-    co_query = Collectionobject.objects.filter(catalognumber=cat_num)
-    if not co_query.exists() or co_query.count() > 1:
+    # Get the collection object with the given catalog number
+    co = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not co:
         return []
 
-    co = co_query.first()
-    cojo_query = Collectionobjectgroupjoin.objects.filter(childco=co)
-    if not cojo_query.exists():
-        return []
-    
-    cojo = cojo_query.first()
-    if not cojo.isprimary:
+    # Get the primary group join for the collection object
+    cojo = Collectionobjectgroupjoin.objects.filter(childco=co, isprimary=True).first()
+    if not cojo:
         return []
 
-    cojo_sibling_query = Collectionobjectgroupjoin.objects.filter(
-        parentcog=cojo.parentcog, childco__isnull=False).exclude(childco=co)
-    if not cojo_sibling_query.exists():
-        return []
-    
-    sibling_co_ids = cojo_sibling_query.values_list('childco_id', flat=True)
+    # Get sibling collection objects in the same parent group
+    sibling_co_ids = Collectionobjectgroupjoin.objects.filter(
+        parentcog=cojo.parentcog, childco__isnull=False
+    ).exclude(childco=co).values_list('childco_id', flat=True)
+
+    # Filter siblings with no catalog number and return all IDs as strings
     target_sibling_co_ids = Collectionobject.objects.filter(
-        id__in=sibling_co_ids, catalognumber=None).values_list('id', flat=True)
+        id__in=sibling_co_ids, catalognumber=None
+    ).values_list('id', flat=True)
+
     return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
