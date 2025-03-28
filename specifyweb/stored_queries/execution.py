@@ -1,3 +1,4 @@
+from calendar import c
 import csv
 import json
 import logging
@@ -28,7 +29,8 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.utils import log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -771,7 +773,9 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        return {"results": list(query)}
+        log_sqlalchemy_query(query)
+        # return {"results": list(query)}
+        return {"results": apply_special_post_query_processing(query, tableid, field_specs)}
 
 
 def build_query(
@@ -906,3 +910,30 @@ def build_query(
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
+
+def apply_special_post_query_processing(query, tableid, field_specs):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]:
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
+        for result in results:
+            result = list(result)  # Convert result to a mutable list
+            if result[catalog_number_field_index] is None:
+                cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
+                if cojo:
+                    primary_cojo = Collectionobjectgroupjoin.objects.filter(parentcog=cojo.parentcog, isprimary=True).first()
+                    if primary_cojo:
+                        result[catalog_number_field_index] = primary_cojo.childco.catalognumber
+            updated_results.append(tuple(result))  # Convert back to tuple if needed
+
+        return updated_results
+
+    return list(query)
+    
