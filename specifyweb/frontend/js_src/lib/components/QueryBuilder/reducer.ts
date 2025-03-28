@@ -149,6 +149,10 @@ export const reducer = generateReducer<MainState, Actions>({
       return {
         ...state,
         mappingView: newMappingPath,
+        openedElement: {
+          line: state.fields.length,
+          index: undefined
+        }
       };
 
     return {
