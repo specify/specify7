@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-29 20:00+0000\n"
+"PO-Revision-Date: 2025-03-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "interactions/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -94,7 +94,7 @@ msgstr "Preparativos"
 #: components/FormCommands/index.tsx:101
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "Los preparativos no pueden devolverse en este contexto."
+msgstr "En este contexto no es posible retomar los preparativos."
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:75
@@ -171,7 +171,7 @@ msgstr "Cantidad seleccionada"
 #: components/Interactions/PrepReturnRow.tsx:105
 #, fuzzy
 msgid "returnedAmount"
-msgstr "Importe devuelto"
+msgstr "Cantidad devuelta"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:121
@@ -196,7 +196,7 @@ msgstr "Registros {loanTable:string} resueltos"
 #: components/FormCommands/ShowTransactions.tsx:125
 #, fuzzy
 msgid "openLoans"
-msgstr "Abrir registros {loanTable:string}"
+msgstr "Abrir {loanTable:string} registros"
 
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:147
@@ -270,7 +270,7 @@ msgstr "Crear {table:string}"
 #: components/Interactions/InteractionDialog.tsx:284
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?"
+msgstr "Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?"
 
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #: components/Interactions/InteractionDialog.tsx:321
