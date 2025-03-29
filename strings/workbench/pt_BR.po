@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-29 07:03+0000\n"
+"PO-Revision-Date: 2025-03-29 07:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
@@ -562,7 +562,7 @@ msgstr "Incluir símbolos DMS"
 #: components/WorkBench/Results.tsx:42
 #, fuzzy
 msgid "uploadResults"
-msgstr "Carregar resultados"
+msgstr "Resultados do upload"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:43
@@ -604,7 +604,7 @@ msgstr "Prioridade do Cursor"
 #: components/WorkBench/AdvancedSearch.tsx:131
 #, fuzzy
 msgid "columnFirst"
-msgstr "Primeira coluna"
+msgstr "Coluna primeiro"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
