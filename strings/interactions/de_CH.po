@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-29 20:00+0000\n"
+"PO-Revision-Date: 2025-03-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -32,20 +32,20 @@ msgstr "Elemente hinzufügen"
 #: components/Interactions/InteractionDialog.tsx:331
 #, fuzzy
 msgid "recordReturn"
-msgstr "{table:string} Zurück"
+msgstr "{table:string} Rückkehr"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:379
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "Für folgende Datensätze wurden keine Präparate gefunden:"
+msgstr "Für die folgenden Datensätze wurden keine Präparate gefunden:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:388
 #, fuzzy
 msgid "preparationsNotAvailableFor"
 msgstr ""
-"Für mindestens eine Präparationsart sind in folgenden Datensätzen keine "
+"Für mindestens eine Präparateart sind in folgenden Datensätzen keine "
 "Präparate vorhanden:"
 
 #. Used in: Components > Interactions > Interaction Dialog
@@ -178,7 +178,7 @@ msgstr "Aufgelöste {loanTable:string}-Datensätze"
 #: components/FormCommands/ShowTransactions.tsx:125
 #, fuzzy
 msgid "openLoans"
-msgstr "Offene {loanTable:string}-Datensätze"
+msgstr "Öffnen Sie {loanTable:string}-Datensätze"
 
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:147
@@ -220,7 +220,7 @@ msgstr ""
 #: components/QueryBuilder/Results.tsx:206
 #, fuzzy
 msgid "deselectAll"
-msgstr "Auswahl aufheben"
+msgstr "Alle abwählen"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:208
