@@ -9,9 +9,9 @@ Fixes #
 
 - [ ] Self-review the PR after opening it to make sure the changes look good and
       self-explanatory (or properly documented)
-- [ ] Add automated tests
 - [ ] Add relevant issue to release milestone
 - [ ] Add relevant documentation (Tester - Dev)
+- [ ] Add automated tests
 - [ ] Add a reverse migration if a migration is present in the PR
 
 ### Testing instructions

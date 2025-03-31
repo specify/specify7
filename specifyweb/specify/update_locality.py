@@ -13,6 +13,7 @@ from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.notifications.models import LocalityUpdate, LocalityUpdateRowResult, Message
 from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
+from specifyweb.specify.uiformatters import get_uiformatter
 
 LocalityParseErrorMessageKey = Literal[
     'guidHeaderNotProvided',
@@ -392,7 +393,9 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
 
 
 def parse_field(collection, table_name: UpdateModel, field_name: str, field_value: str, locality_id: Optional[int], row_number: int):
-    parsed = _parse_field(collection, table_name, field_name, field_value)
+    ui_formatter = get_uiformatter(collection, table_name, field_name)
+    scoped_formatter = None if ui_formatter is None else ui_formatter.apply_scope(collection)
+    parsed = _parse_field(table_name, field_name, field_value, scoped_formatter)
 
     if isinstance(parsed, BaseParseFailure):
         return ParseError.from_parse_failure(parsed, field_name, row_number)
