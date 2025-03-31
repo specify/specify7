@@ -110,6 +110,9 @@ def reverse_update_schema_config_field_desc(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ('specify', '0022_ensure_default_cots'),
+        ('businessrules', '0005_cojo') 
+        # Needed for reverting since 0024 has a businessrules dependency.
+        # See: https://docs.djangoproject.com/en/dev/topics/migrations/#accessing-models-from-other-apps
     ]
 
     operations = [

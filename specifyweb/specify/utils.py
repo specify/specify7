@@ -94,5 +94,8 @@ def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: st
     picklists = None
     if len(schema_items) > 0 and schema_items[0].picklistname:
         picklists = spmodels.Picklist.objects.filter(name=schema_items[0].picklistname)
+        collection_picklists = picklists.filter(collection=collection)
+        if len(collection_picklists) > 0:
+            picklists = collection_picklists
 
     return picklists, schemaitem

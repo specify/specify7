@@ -565,12 +565,6 @@ export function getMappingLineData({
               spec.includeReadOnly ||
               !field.overrides.isReadOnly;
 
-            isIncluded &&=
-              spec.includeAllTreeFields ||
-              !isTreeTable(table.name) ||
-              mappingPath[internalState.position - 1] ===
-                formatTreeRank(anyTreeRank);
-
             // Hide frontend only field
             isIncluded &&= !(
               getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
@@ -600,7 +594,10 @@ export function getMappingLineData({
                     ));
 
               isIncluded &&=
-                spec.includeRelationshipsFromTree || !isTreeTable(table.name);
+                (spec.includeRelationshipsFromTree &&
+                  mappingPath[internalState.position - 1] ===
+                    formatTreeRank(anyTreeRank)) ||
+                !isTreeTable(table.name);
 
               isIncluded &&=
                 spec.includeToManyToTree ||

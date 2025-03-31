@@ -281,7 +281,6 @@
                   "mustMatchTreeRecord": {
                     "ranks": {
                       "Class": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": {
                             "matchBehavior": "ignoreAlways",
@@ -292,32 +291,27 @@
                         }
                       },
                       "Family": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": "Family"
                         }
                       },
                       "Genus": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": "Genus"
                         }
                       },
                       "Subgenus": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": "Subgenus"
                         }
                       },
                       "Species": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": "Species",
                           "author": "Species Author"
                         }
                       },
                       "Subspecies": {
-                        "treeId": 1,
                         "treeNodeCols": {
                           "name": "Subspecies",
                           "author": "Subspecies Author"

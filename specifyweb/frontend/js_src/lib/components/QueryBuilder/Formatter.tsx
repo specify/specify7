@@ -23,6 +23,10 @@ type SimpleFormatter = {
   readonly isDefault: boolean;
 };
 
+type FormatterWithCOTs = SimpleFormatter & {
+  readonly cotNames: RA<string>;
+};
+
 export function QueryFieldRecordFormatter({
   type,
   tableName,
@@ -93,18 +97,44 @@ export function CatalogNumberFormatSelection({
               )
             )
           )
-          .then((cots) =>
-            filterArray(cots).map((cot) => {
+          .then((cots) => {
+            const formattersMap = filterArray(cots).reduce((map, cot) => {
               const format =
                 cot.get('catalogNumberFormatName') ??
                 schema.catalogNumFormatName;
-              return {
-                name: format,
-                title: cot.get('name'),
-                isDefault: false,
-              };
-            })
-          ),
+              const cotName = cot.get('name');
+
+              if (!map.has(format)) {
+                map.set(format, {
+                  name: format,
+                  title: format,
+                  isDefault: format === schema.catalogNumFormatName,
+                  cotNames: [],
+                });
+              }
+
+              const formatter = map.get(format)!;
+              map.set(format, {
+                ...formatter,
+                cotNames: [...formatter.cotNames, cotName],
+              });
+              return map;
+            }, new Map<string, FormatterWithCOTs>());
+
+            return Array.from(
+              formattersMap.values(),
+              ({ name, isDefault, cotNames }) => {
+                const title = queryText.formatInputAs({
+                  commaSeparatedFormats: cotNames.join(', '),
+                });
+                return {
+                  name,
+                  title,
+                  isDefault,
+                };
+              }
+            );
+          }),
       []
     ),
     false
@@ -176,10 +206,10 @@ function FormatSelect({
             value={currentFormat}
             onValueChange={handleChange}
           >
-            <option />
-            {availableFormatters.map(({ name, title, isDefault }, index) => (
-              <option key={index} value={name}>
-                {`${title} ${isDefault ? resourcesText.defaultInline() : ''}`}
+            <option value="" />
+            {availableFormatters.map((formatter, index) => (
+              <option key={index} value={formatter.name}>
+                {`${formatter.title}${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
             {currentFormat !== undefined &&

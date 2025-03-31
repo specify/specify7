@@ -862,6 +862,7 @@ const queryComboBoxSpec = (
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(true)
     ),
+    defaultRecord: syncers.xmlAttribute('initialize default', 'skip'),
     legacyHelpContext: syncers.xmlAttribute('initialize hc', 'skip'),
     // Make query compatible with multiple ORMs
     legacyAdjustQuery: pipe(
