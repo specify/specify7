@@ -325,8 +325,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         cog.businessRuleManager?.checkField('cogType');
       }
     },
-    onRemoved(_, collection) {
+    onRemoved(cojo, collection) {
       // Trigger Consolidated COGs field check when a child is deleted
+      if (cojo.get('isPrimary')) {
+        setSaveBlockers(
+          collection.related ?? cojo,
+          cojo.specifyTable.field.parentCog,
+          [resourcesText.deletePrimaryRecord()],
+          resourcesText.primaryDeletionErrorMessage()
+        );
+      }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
         const cog =
           collection.related as SpecifyResource<CollectionObjectGroup>;

@@ -20,7 +20,11 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
-import { getSelectedRegions, setHotData } from './hotHelpers';
+import {
+  getPhysicalColToMappingCol,
+  getSelectedRegions,
+  setHotData,
+} from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
@@ -54,10 +58,7 @@ function WbSpreadsheetComponent({
   readonly onClickDisambiguate: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const physicalColToMappingCol = (physicalCol: number): number | undefined =>
-    mappings?.lines.findIndex(
-      ({ headerName }) => headerName === dataset.columns[physicalCol]
-    );
+  const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
 
   const { validation, cells, disambiguation } = workbench;
 
@@ -78,9 +79,9 @@ function WbSpreadsheetComponent({
                     const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
                     const createdRecords =
-                      validation.uploadResults.newRecords[physicalRow]?.[
-                        physicalCol
-                      ];
+                      validation.uploadResults.interestingRecords[
+                        physicalRow
+                      ]?.[physicalCol];
 
                     if (
                       visualRow === undefined ||
@@ -132,10 +133,10 @@ function WbSpreadsheetComponent({
               } as const)
             : ({
                 row_above: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 row_below: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 remove_row: {
                   disabled: () => {
