@@ -688,5 +688,11 @@
     "version",
     "timestampModified"
   ],
-  "tectonicunit": ["guid", "timestampCreated", "version", "timestampModified"]
+  "tectonicunit": ["guid", "timestampCreated", "version", "timestampModified"],
+  "spdatasetattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ]
 }
