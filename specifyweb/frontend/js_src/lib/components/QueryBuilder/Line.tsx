@@ -433,7 +433,7 @@ export function QueryLine({
                       onChange={handleFilterChange?.bind(undefined, index)}
                       onAddFieldFilter={handleFilterChange?.bind(
                         undefined,
-                        index
+                        field.filters.length
                       )}
                       onRemoveFieldFilter={handleFilterChange?.bind(
                         undefined,
