@@ -209,7 +209,7 @@ function FormatSelect({
             <option value="" />
             {availableFormatters.map((formatter, index) => (
               <option key={index} value={formatter.name}>
-                {`${formatter.title}${formatter.isDefault ? resourcesText.defaultInline() : ''}`}
+                {`${formatter.title}${formatter.isDefault ? ` ${resourcesText.defaultInline()}` : ''}`}
               </option>
             ))}
             {currentFormat !== undefined &&
