@@ -59,7 +59,7 @@ msgstr ""
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
-"To avoid corrupting data records, we need to start again from a safe "
+"To avoid corrupting data records, you need to start again from a safe "
 "spot--the Home page."
 
 #: components/Errors/ErrorDialog.tsx:39
