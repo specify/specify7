@@ -218,15 +218,6 @@ function Wrapped({
         unParseQueryFields(state.baseTableName, fields)
     : undefined;
 
-  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
-  const [catalogNumberInherits] = collectionPreferences.use(
-    'catalogNumberInheritance',
-    'behavior',
-    'inheritance'
-  );
-  console.log('catalogNumberInherits: ', catalogNumberInherits);
-  // Pass it to backend to define query logic
-
   /*
    * REFACTOR: simplify this (move "executed query" state into this component
    *    and get rid of queryRunCount)

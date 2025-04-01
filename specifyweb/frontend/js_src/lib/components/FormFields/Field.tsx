@@ -13,6 +13,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
@@ -129,8 +130,12 @@ function Field({
   const isCO = resource?.specifyTable.name === "CollectionObject"
   const isPartOfCOG = isCO ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined : false;
   const isCatNumberField = field?.name === "catalogNumber"
-  // Chnage this once issue-6313 is merged
-  const displayPrimaryCatNumberPref = true
+  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
+  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
+      'catalogNumberInheritance',
+      'behavior',
+      'inheritance'
+    );
   const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG && isCatNumberField && displayPrimaryCatNumberPref
   
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<string | null>(null);
