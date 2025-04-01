@@ -7,7 +7,7 @@ import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { BatchEditPrefs } from './Mapper';
-import type { SplitMappingPath } from './mappingHelpers';
+import { SplitMappingPath, valueIsTreeMeta } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
   valueIsTreeDefinition,
@@ -162,7 +162,11 @@ const toUploadable = (
   mustMatchPreferences: RA<keyof Tables>,
   isRoot = false
 ): Uploadable =>
-  isTreeTable(table.name)
+  /**
+   * NOTE: pathHasTreeMeta handles the case where a Batch Edit dataset has a mapping line with a (any rank) query
+   * A mapping line like that requires a uploadTable record rather than a treeRecord in the upload plan
+   */
+  isTreeTable(table.name) && pathHasTreeMeta(lines)
     ? Object.fromEntries([
         [
           mustMatchPreferences.includes(table.name)
@@ -179,6 +183,11 @@ const toUploadable = (
           toUploadTable(table, lines, mustMatchPreferences),
         ] as const,
       ]);
+
+const pathHasTreeMeta = (lines: RA<SplitMappingPath>) =>
+  lines.some(({ mappingPath }) =>
+    mappingPath.some((value) => valueIsTreeMeta(value))
+  );
 
 /**
  * Build an upload plan from individual mapping lines
