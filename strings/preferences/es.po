@@ -530,6 +530,7 @@ msgstr "Página web integrada"
 msgid "embeddedWebpageDescription"
 msgstr "Una URL a una página que estaría incrustada en la página de inicio:"
 
+#: components/Preferences/CollectionDefinitions.tsx:96
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
@@ -539,7 +540,7 @@ msgstr "Una URL a una página que estaría incrustada en la página de inicio:"
 #: components/Preferences/UserDefinitions.tsx:1706
 #: components/Preferences/UserDefinitions.tsx:1918
 #: components/Preferences/UserDefinitions.tsx:1979
-#. Used in: Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "behavior"
 msgstr "Comportamiento"
@@ -1315,14 +1316,14 @@ msgstr "Abrir todos los registros en modo de solo lectura"
 msgid "displayBasicView"
 msgstr "Mostrar vista básica"
 
-#: components/QueryBuilder/Header.tsx:112
+#: components/QueryBuilder/Header.tsx:110
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Vista básica"
 
-#: components/QueryBuilder/Header.tsx:111
+#: components/QueryBuilder/Header.tsx:109
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
@@ -1352,3 +1353,8 @@ msgstr "Miniatura"
 #, fuzzy
 msgid "addSearchBarHomePage"
 msgstr "Agregar barra de búsqueda en la página de inicio"
+
+#: components/Preferences/CollectionDefinitions.tsx:99
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberPref"
+msgstr ""

@@ -80,8 +80,8 @@ msgstr "Немає"
 #: components/Toolbar/RecordSets.tsx:254
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:192
-#: components/TreeView/Actions.tsx:405
-#: components/TreeView/Actions.tsx:421
+#: components/TreeView/Actions.tsx:401
+#: components/TreeView/Actions.tsx:417
 #: components/TreeView/AddRank.tsx:54
 #: components/TreeView/CreateTree.tsx:74
 #: components/WbActions/WbRevert.tsx:39
@@ -252,7 +252,7 @@ msgstr "Створити"
 #: components/Toolbar/QueryTablesEdit.tsx:73
 #: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
-#: components/TreeView/Actions.tsx:409
+#: components/TreeView/Actions.tsx:405
 #: components/WbActions/WbNoUploadPlan.tsx:43
 #: components/WbActions/index.tsx:211
 #: components/WbActions/index.tsx:222
@@ -332,7 +332,7 @@ msgstr "зберегти"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:464
+#: components/QueryBuilder/Wrapped.tsx:475
 #: components/SchemaConfig/Format.tsx:291
 #: components/SchemaConfig/Format.tsx:339
 #: components/SchemaConfig/Languages.tsx:75
@@ -370,7 +370,7 @@ msgstr "ВІДЧИНЕНО"
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
 #: components/Statistics/DeleteCategory.tsx:38
-#: components/TreeView/Actions.tsx:510
+#: components/TreeView/Actions.tsx:506
 #: components/WorkBench/DataSetMeta.tsx:150
 #: components/WorkBench/DataSetMeta.tsx:176
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -433,7 +433,7 @@ msgstr "Інструменти"
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:646
-#: components/QueryBuilder/Formatter.tsx:173
+#: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
 #: components/QueryComboBox/index.tsx:402
@@ -565,7 +565,7 @@ msgstr "новий"
 #: components/Toolbar/RecordSets.tsx:320
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/Toolbar/WbsDialog.tsx:274
-#: components/TreeView/Actions.tsx:124
+#: components/TreeView/Actions.tsx:121
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Редагувати"
@@ -619,7 +619,7 @@ msgstr "Розгорнути все"
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
 #: components/Molecules/ResourceLink.tsx:70
-#: components/TreeView/Actions.tsx:123
+#: components/TreeView/Actions.tsx:121
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "Переглянути"
@@ -974,7 +974,7 @@ msgstr "{header:string}:"
 #: components/LocalityUpdate/utils.ts:64
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
-#: components/QueryBuilder/Header.tsx:92
+#: components/QueryBuilder/Header.tsx:90
 #: components/QueryBuilder/Results.tsx:195
 #: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55

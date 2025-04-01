@@ -336,7 +336,7 @@ msgstr "Grenze"
 
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
-#: components/QueryBuilder/Formatter.tsx:207
+#: components/QueryBuilder/Formatter.tsx:212
 #. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #, fuzzy
 msgid "defaultInline"

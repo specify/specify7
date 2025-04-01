@@ -525,6 +525,7 @@ msgstr "Встроенная веб-страница"
 msgid "embeddedWebpageDescription"
 msgstr "URL-адрес страницы, которая будет встроена в домашнюю страницу:"
 
+#: components/Preferences/CollectionDefinitions.tsx:96
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
@@ -534,7 +535,7 @@ msgstr "URL-адрес страницы, которая будет встрое�
 #: components/Preferences/UserDefinitions.tsx:1706
 #: components/Preferences/UserDefinitions.tsx:1918
 #: components/Preferences/UserDefinitions.tsx:1979
-#. Used in: Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "behavior"
 msgstr "Поведение"
@@ -1301,14 +1302,14 @@ msgstr "Открыть все записи в режиме только для �
 msgid "displayBasicView"
 msgstr "Отобразить базовый вид"
 
-#: components/QueryBuilder/Header.tsx:112
+#: components/QueryBuilder/Header.tsx:110
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Базовый вид"
 
-#: components/QueryBuilder/Header.tsx:111
+#: components/QueryBuilder/Header.tsx:109
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
@@ -1338,3 +1339,8 @@ msgstr "Миниатюра"
 #, fuzzy
 msgid "addSearchBarHomePage"
 msgstr "Добавить панель поиска на главную страницу"
+
+#: components/Preferences/CollectionDefinitions.tsx:99
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberPref"
+msgstr ""

@@ -447,6 +447,7 @@ msgstr "Вбудована веб-сторінка"
 msgid "embeddedWebpageDescription"
 msgstr "URL-адреса сторінки, яка буде вбудована на домашній сторінці:"
 
+#: components/Preferences/CollectionDefinitions.tsx:96
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
@@ -456,7 +457,7 @@ msgstr "URL-адреса сторінки, яка буде вбудована н
 #: components/Preferences/UserDefinitions.tsx:1706
 #: components/Preferences/UserDefinitions.tsx:1918
 #: components/Preferences/UserDefinitions.tsx:1979
-#. Used in: Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "behavior"
 msgstr "Поведінка"
 
@@ -1104,13 +1105,13 @@ msgstr "Відкрити всі записи в режимі лише для ч�
 msgid "displayBasicView"
 msgstr "Відобразити базовий вигляд"
 
-#: components/QueryBuilder/Header.tsx:112
+#: components/QueryBuilder/Header.tsx:110
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Основний вигляд"
 
-#: components/QueryBuilder/Header.tsx:111
+#: components/QueryBuilder/Header.tsx:109
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"
@@ -1135,3 +1136,8 @@ msgstr "Мініатюра"
 #. Used in: Components > Preferences > User Definitions
 msgid "addSearchBarHomePage"
 msgstr "Додайте рядок пошуку на головну сторінку"
+
+#: components/Preferences/CollectionDefinitions.tsx:99
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberPref"
+msgstr ""
