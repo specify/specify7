@@ -118,11 +118,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           addNew={false}
           disabled={focusedRow === undefined}
           isRoot={isRoot}
-          label={
-            isReadOnly
-              ? commonText.view()
-              : commonText.edit()
-          }
+          label={isReadOnly ? commonText.view() : commonText.edit()}
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
