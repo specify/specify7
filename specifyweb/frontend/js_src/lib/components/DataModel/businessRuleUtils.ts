@@ -9,6 +9,7 @@ export const PARENTCOG_KEY = 'cog-parentCog';
 export const COG_PRIMARY_KEY = 'cog-isPrimary';
 export const DETERMINATION_TAXON_KEY = 'determination-Taxon';
 export const PREPARATION_LOANED_KEY = 'preparation-isLoaned';
+export const PREPARATION_GIFTED_KEY = 'preparation-isGifted';
 export const COJO_PRIMARY_DELETE_KEY = 'primary-cojo-delete'
 
 /**

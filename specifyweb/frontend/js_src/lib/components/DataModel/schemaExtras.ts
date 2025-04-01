@@ -331,6 +331,14 @@ export const schemaExtras: {
         unique: false,
       }),
       new LiteralField(table, {
+        name: 'isOnGift',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
         name: 'actualCountAmt',
         required: false,
         readOnly: true,

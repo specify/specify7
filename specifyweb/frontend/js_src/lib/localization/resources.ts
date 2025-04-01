@@ -852,6 +852,9 @@ export const resourcesText = createDictionary({
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
   },
+  deleteGiftedPrep: {
+    'en-us': 'A gifted preparation cannot be deleted',
+  },
   invalidDeterminationTaxon: {
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',

@@ -10,6 +10,7 @@ import {
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
@@ -606,6 +607,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnLoan,
           [resourcesText.deleteLoanedPrep()],
           PREPARATION_LOANED_KEY
+        )
+      }
+      if (preparation.get('isOnGift') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnGift,
+          [resourcesText.deleteGiftedPrep()],
+          PREPARATION_GIFTED_KEY
         )
       }
     }
