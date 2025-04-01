@@ -86,7 +86,7 @@ function EditQueryDialog({
       onAdd={undefined}
       onClose={handleClose}
       onDeleted={handleClose}
-      onSaved={(): void => window.location.reload()}
+      onSaved={(): void => globalThis.location.reload()}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
