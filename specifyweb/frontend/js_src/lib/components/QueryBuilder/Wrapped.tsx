@@ -147,7 +147,8 @@ function Wrapped({
         () =>
           setSaveRequired(
             (state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)) || autoRun
+              initialFields.current !== JSON.stringify(state.fields)) ||
+              autoRun
           ),
         200
       ),
@@ -222,8 +223,8 @@ function Wrapped({
     'catalogNumberInheritance',
     'behavior',
     'inheritance'
-  ); 
-  console.log('catalogNumberInherits: ' ,catalogNumberInherits)
+  );
+  console.log('catalogNumberInherits: ', catalogNumberInherits);
   // Pass it to backend to define query logic
 
   /*
