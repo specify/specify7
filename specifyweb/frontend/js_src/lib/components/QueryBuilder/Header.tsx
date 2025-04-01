@@ -15,9 +15,7 @@ import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
-import {
-  hasToolPermission,
-} from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
