@@ -100,7 +100,7 @@ msgstr "Визначення запиту містить незаповнені 
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#: components/QueryBuilder/Wrapped.tsx:185
+#: components/QueryBuilder/Wrapped.tsx:184
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
@@ -162,7 +162,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:478
+#: components/QueryBuilder/Wrapped.tsx:468
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"

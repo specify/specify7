@@ -116,7 +116,7 @@ msgstr ""
 "Hay campos incompletos en la definición de la consulta. ¿Quieres "
 "eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:185
+#: components/QueryBuilder/Wrapped.tsx:184
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -189,7 +189,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:478
+#: components/QueryBuilder/Wrapped.tsx:468
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"

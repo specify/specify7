@@ -115,7 +115,7 @@ msgstr "Определение запроса содержит неполные 
 msgid "queryDeleteIncompleteDescription"
 msgstr "В определении запроса есть незаполненные поля. Вы хотите удалить их?"
 
-#: components/QueryBuilder/Wrapped.tsx:185
+#: components/QueryBuilder/Wrapped.tsx:184
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -186,7 +186,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} с помощью «{nodeFullName:string}»"
 
-#: components/QueryBuilder/Wrapped.tsx:478
+#: components/QueryBuilder/Wrapped.tsx:468
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
