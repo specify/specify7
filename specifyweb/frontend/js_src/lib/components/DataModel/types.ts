@@ -4387,6 +4387,7 @@ export type Preparation = {
     readonly integer2: number | null;
     readonly isOnLoan: boolean | null;
     readonly isOnGift: boolean | null;
+    readonly isOnDisposal: boolean | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly preparedDate: string | null;

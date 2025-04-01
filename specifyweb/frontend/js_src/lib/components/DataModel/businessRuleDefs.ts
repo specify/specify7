@@ -10,6 +10,7 @@ import {
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PREPARATION_DISPOSED_KEY,
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
 } from './businessRuleUtils';
@@ -615,6 +616,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnGift,
           [resourcesText.deleteGiftedPrep()],
           PREPARATION_GIFTED_KEY
+        )
+      }
+      if (preparation.get('isOnDisposal') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnDisposal,
+          [resourcesText.deleteDisposedPrep()],
+          PREPARATION_DISPOSED_KEY
         )
       }
     }
