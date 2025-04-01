@@ -11,6 +11,7 @@ import {
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
   PREPARATION_DISPOSED_KEY,
+  PREPARATION_EXCHANGED_IN_KEY,
   PREPARATION_EXCHANGED_OUT_KEY,
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
@@ -633,6 +634,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnExchangeOut,
           [resourcesText.deleteExchangeOutPrep()],
           PREPARATION_EXCHANGED_OUT_KEY
+        )
+      }
+      if (preparation.get('isOnExchangeIn') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnExchangeIn,
+          [resourcesText.deleteExchangeInPrep()],
+          PREPARATION_EXCHANGED_IN_KEY
         )
       }
     }

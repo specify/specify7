@@ -861,6 +861,9 @@ export const resourcesText = createDictionary({
   deleteExchangeOutPrep: {
     'en-us': 'A exchanged out preparation cannot be deleted',
   },
+  deleteExchangeInPrep: {
+    'en-us': 'A exchanged in preparation cannot be deleted',
+  },
   invalidDeterminationTaxon: {
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',
