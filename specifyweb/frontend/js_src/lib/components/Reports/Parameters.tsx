@@ -17,7 +17,11 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { IsQueryBasicContext, useQueryViewPref } from '../QueryBuilder/Context';
+import {
+  IsQueryBasicContext,
+  QueryFieldsContext,
+  useQueryViewPref,
+} from '../QueryBuilder/Context';
 import { QueryFields } from '../QueryBuilder/Fields';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
@@ -116,24 +120,25 @@ export function QueryParametersDialog({
             })
           }
         >
-          <QueryFields
-            baseTableName={table.name}
-            enforceLengthLimit={false}
-            fields={fields}
-            getMappedFields={() => []}
-            openedElement={undefined}
-            showHiddenFields={false}
-            onChangeField={(line, field): void =>
-              setFields(replaceItem(fields, line, field))
-            }
-            onClose={undefined}
-            onLineFocus={undefined}
-            onLineMove={undefined}
-            onMappingChange={undefined}
-            onOpen={undefined}
-            onOpenMap={undefined}
-            onRemoveField={undefined}
-          />
+          <QueryFieldsContext.Provider value={[fields, undefined]}>
+            <QueryFields
+              baseTableName={table.name}
+              enforceLengthLimit={false}
+              getMappedFields={() => []}
+              openedElement={undefined}
+              showHiddenFields={false}
+              onChangeField={(line, field): void =>
+                setFields(replaceItem(fields, line, field))
+              }
+              onClose={undefined}
+              onLineFocus={undefined}
+              onLineMove={undefined}
+              onMappingChange={undefined}
+              onOpen={undefined}
+              onOpenMap={undefined}
+              onRemoveField={undefined}
+            />
+          </QueryFieldsContext.Provider>
         </Form>
       </IsQueryBasicContext.Provider>
     </Dialog>

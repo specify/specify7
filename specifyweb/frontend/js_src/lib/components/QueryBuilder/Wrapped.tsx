@@ -44,12 +44,16 @@ import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { datasetVariants } from '../WbUtils/datasetVariants';
 import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
-import { IsQueryBasicContext, useQueryViewPref } from './Context';
+import {
+  IsQueryBasicContext,
+  QueryFieldsContext,
+  useQueryViewPref,
+} from './Context';
 import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { unParseQueryFields } from './helpers';
+import { QueryField, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
@@ -298,6 +302,25 @@ function Wrapped({
     undefined
   );
 
+  const queryFieldsContextValue = React.useMemo<
+    readonly [
+      fields: RA<QueryField>,
+      onFieldsChange: ((fields: RA<QueryField>) => void) | undefined,
+    ]
+  >(
+    () => [
+      state.fields,
+      isReadOnly
+        ? undefined
+        : (fields): void =>
+            dispatch({
+              type: 'ChangeFieldsAction',
+              fields,
+            }),
+    ],
+    [state.fields, isReadOnly]
+  );
+
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <IsQueryBasicContext.Provider value={isBasic}>
@@ -472,90 +495,82 @@ function Wrapped({
                   )}
                 </MappingView>
               )}
-              <QueryFields
-                baseTableName={state.baseTableName}
-                enforceLengthLimit={triedToSave}
-                fields={state.fields}
-                getMappedFields={getMappedFieldsBind}
-                openedElement={state.openedElement}
-                showHiddenFields={showHiddenFields}
-                onChangeField={
-                  isReadOnly
-                    ? undefined
-                    : (line, field): void =>
-                        dispatch({
-                          type: 'ChangeFieldAction',
-                          line,
-                          field,
-                        })
-                }
-                onChangeFields={
-                  isReadOnly
-                    ? undefined
-                    : (fields): void =>
-                        dispatch({
-                          type: 'ChangeFieldsAction',
-                          fields,
-                        })
-                }
-                onClose={(): void =>
-                  dispatch({
-                    type: 'ChangeOpenedElementAction',
-                    line: state.openedElement.line,
-                    index: undefined,
-                  })
-                }
-                onLineFocus={
-                  isReadOnly
-                    ? undefined
-                    : (line): void =>
-                        state.openedElement.line === line
-                          ? undefined
-                          : dispatch({
-                              type: 'FocusLineAction',
-                              line,
-                            })
-                }
-                onLineMove={
-                  isReadOnly
-                    ? undefined
-                    : (line, direction): void =>
-                        dispatch({
-                          type: 'LineMoveAction',
-                          line,
-                          direction,
-                        })
-                }
-                onMappingChange={
-                  isReadOnly
-                    ? undefined
-                    : (line, payload): void =>
-                        dispatch({
-                          type: 'ChangeSelectElementValueAction',
-                          line,
-                          ...payload,
-                        })
-                }
-                onOpen={(line, index): void =>
-                  dispatch({
-                    type: 'ChangeOpenedElementAction',
-                    line,
-                    index,
-                  })
-                }
-                onOpenMap={setMapFieldIndex}
-                onRemoveField={
-                  isReadOnly
-                    ? undefined
-                    : (line): void =>
-                        dispatch({
-                          type: 'ChangeFieldsAction',
-                          fields: state.fields.filter(
-                            (_, index) => index !== line
-                          ),
-                        })
-                }
-              />
+              <QueryFieldsContext.Provider value={queryFieldsContextValue}>
+                <QueryFields
+                  baseTableName={state.baseTableName}
+                  enforceLengthLimit={triedToSave}
+                  getMappedFields={getMappedFieldsBind}
+                  openedElement={state.openedElement}
+                  showHiddenFields={showHiddenFields}
+                  onChangeField={
+                    isReadOnly
+                      ? undefined
+                      : (line, field): void =>
+                          dispatch({
+                            type: 'ChangeFieldAction',
+                            line,
+                            field,
+                          })
+                  }
+                  onClose={(): void =>
+                    dispatch({
+                      type: 'ChangeOpenedElementAction',
+                      line: state.openedElement.line,
+                      index: undefined,
+                    })
+                  }
+                  onLineFocus={
+                    isReadOnly
+                      ? undefined
+                      : (line): void =>
+                          state.openedElement.line === line
+                            ? undefined
+                            : dispatch({
+                                type: 'FocusLineAction',
+                                line,
+                              })
+                  }
+                  onLineMove={
+                    isReadOnly
+                      ? undefined
+                      : (line, direction): void =>
+                          dispatch({
+                            type: 'LineMoveAction',
+                            line,
+                            direction,
+                          })
+                  }
+                  onMappingChange={
+                    isReadOnly
+                      ? undefined
+                      : (line, payload): void =>
+                          dispatch({
+                            type: 'ChangeSelectElementValueAction',
+                            line,
+                            ...payload,
+                          })
+                  }
+                  onOpen={(line, index): void =>
+                    dispatch({
+                      type: 'ChangeOpenedElementAction',
+                      line,
+                      index,
+                    })
+                  }
+                  onOpenMap={setMapFieldIndex}
+                  onRemoveField={
+                    isReadOnly
+                      ? undefined
+                      : (line): void =>
+                          dispatch({
+                            type: 'ChangeFieldsAction',
+                            fields: state.fields.filter(
+                              (_, index) => index !== line
+                            ),
+                          })
+                  }
+                />
+              </QueryFieldsContext.Provider>
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
                 showHiddenFields={showHiddenFields}

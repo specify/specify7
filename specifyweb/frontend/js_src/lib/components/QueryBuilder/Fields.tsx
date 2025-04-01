@@ -10,14 +10,13 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { IsQueryBasicContext } from './Context';
+import { IsQueryBasicContext, QueryFieldsContext } from './Context';
 import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
 export function QueryFields({
   baseTableName,
-  fields,
   enforceLengthLimit,
   openedElement,
   showHiddenFields,
@@ -30,10 +29,8 @@ export function QueryFields({
   onLineFocus: handleLineFocus,
   onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
-  onChangeFields: handleChangeFields,
 }: {
   readonly baseTableName: keyof Tables;
-  readonly fields: RA<QueryField>;
   readonly enforceLengthLimit: boolean;
   readonly openedElement?: {
     readonly line: number;
@@ -66,9 +63,10 @@ export function QueryFields({
     | ((line: number, direction: 'down' | 'up') => void)
     | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
-  readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
+
+  const [fields, handleChangeFields] = React.useContext(QueryFieldsContext);
 
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;

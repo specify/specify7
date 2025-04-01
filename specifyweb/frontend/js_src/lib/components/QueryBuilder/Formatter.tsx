@@ -5,13 +5,12 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceFromUrl } from '../DataModel/resource';
+import { fetchCollection } from '../DataModel/collection';
+import { SerializedResource } from '../DataModel/helperTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import type { CollectionObjectType, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
@@ -21,10 +20,6 @@ type SimpleFormatter = {
   readonly name: string;
   readonly title: string;
   readonly isDefault: boolean;
-};
-
-type FormatterWithCOTs = SimpleFormatter & {
-  readonly cotNames: RA<string>;
 };
 
 export function QueryFieldRecordFormatter({
@@ -85,56 +80,45 @@ export function CatalogNumberFormatSelection({
     React.useCallback(
       async () =>
         fetchDomain
-          .then(async (schema) =>
-            Promise.all(
-              Object.keys(schema.collectionObjectTypeCatalogNumberFormats).map(
-                async (cotUri) =>
-                  resourceFromUrl(cotUri, {
-                    noBusinessRules: true,
-                  })?.fetch() as Promise<
-                    SpecifyResource<CollectionObjectType> | undefined
-                  >
-              )
-            )
-          )
-          .then((cots) => {
-            const formattersMap = filterArray(cots).reduce((map, cot) => {
-              const format =
-                cot.get('catalogNumberFormatName') ??
-                schema.catalogNumFormatName;
-              const cotName = cot.get('name');
-
-              if (!map.has(format)) {
-                map.set(format, {
-                  name: format,
-                  title: format,
-                  isDefault: format === schema.catalogNumFormatName,
-                  cotNames: [],
-                });
-              }
-
-              const formatter = map.get(format)!;
-              map.set(format, {
-                ...formatter,
-                cotNames: [...formatter.cotNames, cotName],
-              });
-              return map;
-            }, new Map<string, FormatterWithCOTs>());
-
-            return Array.from(
-              formattersMap.values(),
-              ({ name, isDefault, cotNames }) => {
-                const title = queryText.formatInputAs({
-                  commaSeparatedFormats: cotNames.join(', '),
-                });
-                return {
-                  name,
-                  title,
-                  isDefault,
-                };
-              }
-            );
-          }),
+          .then((schema) => ({
+            collection: schema.domainLevelIds['collection'],
+            defaultCatNumFormat: schema.catalogNumFormatName,
+          }))
+          .then(async ({ collection, defaultCatNumFormat }) => ({
+            defaultCatNumFormat,
+            cots: await fetchCollection('CollectionObjectType', {
+              collection,
+            }).then(
+              ({ records }) =>
+                records.map((cot) => ({
+                  ...cot,
+                  catalogNumberFormatName:
+                    cot.catalogNumberFormatName ?? defaultCatNumFormat,
+                })) as RA<SerializedResource<CollectionObjectType>>
+            ),
+          }))
+          .then(({ cots, defaultCatNumFormat }) => ({
+            defaultCatNumFormat,
+            cotsByFormat: cots.reduce(
+              (map, cot) => ({
+                ...map,
+                [cot.catalogNumberFormatName!]: [
+                  ...(map[cot.catalogNumberFormatName!] ?? []),
+                  cot.name,
+                ],
+              }),
+              {} as IR<RA<string>>
+            ),
+          }))
+          .then(({ cotsByFormat, defaultCatNumFormat }) =>
+            Object.entries(cotsByFormat).map(([format, names]) => ({
+              title: queryText.formatInputAs({
+                commaSeparatedFormats: names.join(', '),
+              }),
+              name: format,
+              isDefault: format === defaultCatNumFormat,
+            }))
+          ),
       []
     ),
     false

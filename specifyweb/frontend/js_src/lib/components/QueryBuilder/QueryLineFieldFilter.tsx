@@ -1,7 +1,9 @@
 import React from 'react';
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import { formatterToParser, Parser } from '../../utils/parser/definitions';
 import { RA, ValueOf } from '../../utils/types';
+import { insertItem } from '../../utils/utils';
 import { Select } from '../Atoms/Form';
 import { genericTables } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
@@ -11,15 +13,19 @@ import {
   mappingPathToString,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
+import { QueryFieldsContext } from './Context';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
   QueryFieldFilterType,
   QueryLineFilter,
 } from './FieldFilter';
+import { fetchContext as fetchDomain } from '../DataModel/schema';
 import { FieldFilterTool } from './FieldFilterTool';
 import { CatalogNumberFormatSelection } from './Formatter';
 import { QueryField, QueryFieldFilter } from './helpers';
+import { LoadingContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
 
 // REFACTOR: Simplify this
 export type QueryFieldFilterProps = {
@@ -65,6 +71,10 @@ export function QueryLineFieldFilter({
   >;
   readonly enforceLengthLimit: boolean;
 } & QueryFieldFilterProps): JSX.Element {
+  const [fields, handleChangeFields] = React.useContext(QueryFieldsContext);
+
+  const loading = React.useContext(LoadingContext);
+
   const terminatingField = isFieldComplete
     ? genericTables[baseTableName].getField(
         mappingPathToString(
@@ -183,10 +193,68 @@ export function QueryLineFieldFilter({
               handleChange === undefined
                 ? undefined
                 : (formatName): void => {
+                    const collectionObjectStart = f.max(
+                      0,
+                      queryField.mappingPath.length - 1
+                    ) as number;
+                    const containsCotFilter = fields.some(
+                      (field) =>
+                        field.mappingPath
+                          .at(collectionObjectStart)
+                          ?.toLowerCase() === 'collectionobjecttype'
+                    );
                     handleChange({
                       ...fieldFilter,
                       fieldFormat: (formatName ?? '') || undefined,
                     });
+                    if (
+                      formatName !== '' &&
+                      formatName !== undefined &&
+                      !containsCotFilter
+                    ) {
+                      loading(
+                        fetchDomain
+                          .then((schema) => ({
+                            collection: schema.domainLevelIds['collection'],
+                            defaultCatNumFormat: schema.catalogNumFormatName,
+                          }))
+                          .then(({ collection, defaultCatNumFormat }) =>
+                            fetchCollection('CollectionObjectType', {
+                              collection,
+                            }).then(({ records }) =>
+                              records
+                                .filter(
+                                  (cot) =>
+                                    cot.catalogNumberFormatName ===
+                                      formatName ||
+                                    (cot.catalogNumberFormatName === null &&
+                                      formatName === defaultCatNumFormat)
+                                )
+                                .map(({ name }) => name)
+                            )
+                          )
+                          .then((cotNames) => {
+                            handleChangeFields?.(
+                              insertItem(
+                                fields,
+                                fields.indexOf(queryField) + 1,
+                                {
+                                  id: undefined!,
+                                  mappingPath: ['collectionObjectType', 'name'],
+                                  filters: cotNames.map((cotName) => ({
+                                    type: 'equal',
+                                    startValue: cotName,
+                                    isNot: false,
+                                    isStrict: false,
+                                  })),
+                                  isDisplay: true,
+                                  sortType: undefined,
+                                }
+                              )
+                            );
+                          })
+                      );
+                    }
                   }
             }
           />
