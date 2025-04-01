@@ -26,7 +26,7 @@ msgstr "Деревья"
 msgid "badStructure"
 msgstr "Плохая древовидная структура."
 
-#: components/TreeView/Actions.tsx:165
+#: components/TreeView/Actions.tsx:167
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "move"
@@ -40,62 +40,62 @@ msgstr "Двигаться"
 #: components/SearchDialog/SelectRecordSet.tsx:135
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:77
-#: components/TreeView/Actions.tsx:186
+#: components/TreeView/Actions.tsx:188
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "merge"
 msgstr "Объединить"
 
-#: components/TreeView/Actions.tsx:205
+#: components/TreeView/Actions.tsx:208
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "undoSynonymy"
 msgstr "Листовой узел"
 
-#: components/TreeView/Actions.tsx:205
+#: components/TreeView/Actions.tsx:208
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymize"
 msgstr "Подбирать синонимы"
 
-#: components/TreeView/Actions.tsx:407
+#: components/TreeView/Actions.tsx:410
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailed"
 msgstr "Операция не удалась"
 
-#: components/TreeView/Actions.tsx:410
+#: components/TreeView/Actions.tsx:413
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailedDescription"
 msgstr "Прямой счет [X7X]"
 
-#: components/TreeView/Actions.tsx:429
-#: components/TreeView/Actions.tsx:442
+#: components/TreeView/Actions.tsx:432
+#: components/TreeView/Actions.tsx:445
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNode"
 msgstr "Переместить узел"
 
-#: components/TreeView/Actions.tsx:153
+#: components/TreeView/Actions.tsx:155
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "addChild"
 msgstr "Добавить ребенка"
 
-#: components/TreeView/Actions.tsx:387
+#: components/TreeView/Actions.tsx:390
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodeHere"
 msgstr "Переместите «{nodeName:string}» сюда"
 
-#: components/TreeView/Actions.tsx:389
+#: components/TreeView/Actions.tsx:392
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodePreparationsHere"
 msgstr "Переместите все заготовки \"{nodeName:string}\" сюда."
 
-#: components/TreeView/Actions.tsx:454
+#: components/TreeView/Actions.tsx:457
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveMessage"
@@ -103,68 +103,68 @@ msgstr ""
 "Узел {treeName:string} «{nodeName:string}» будет помещен вместе со всеми "
 "его потомками в новый родительский узел «{parentName:string}»."
 
-#: components/TreeView/Actions.tsx:460
+#: components/TreeView/Actions.tsx:463
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeBulkMoveMessage"
 msgstr "Отменить синонимию"
 
-#: components/TreeView/Actions.tsx:360
+#: components/TreeView/Actions.tsx:363
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveHere"
 msgstr "Невозможно переместить этот узел дерева сюда"
 
-#: components/TreeView/Actions.tsx:367
+#: components/TreeView/Actions.tsx:370
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeHere"
 msgstr "Невозможно объединить этот узел дерева здесь"
 
-#: components/TreeView/Actions.tsx:361
+#: components/TreeView/Actions.tsx:364
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveToSynonym"
 msgstr "Невозможно перейти к синониму"
 
-#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:371
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeIntoSynonym"
 msgstr "Не могу объединить в синонимы"
 
-#: components/TreeView/Actions.tsx:371
+#: components/TreeView/Actions.tsx:374
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantSynonymizeSynonym"
 msgstr "Не могу синонимизировать синонимом"
 
-#: components/TreeView/Actions.tsx:340
+#: components/TreeView/Actions.tsx:343
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveHintMessage"
 msgstr "Выберите нового родителя для «{nodeName:string}»"
 
-#: components/TreeView/Actions.tsx:433
-#: components/TreeView/Actions.tsx:446
+#: components/TreeView/Actions.tsx:436
+#: components/TreeView/Actions.tsx:449
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNode"
 msgstr "Объединить узел"
 
-#: components/TreeView/Actions.tsx:393
+#: components/TreeView/Actions.tsx:396
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHere"
 msgstr "Объедините «{nodeName:string}» здесь"
 
-#: components/TreeView/Actions.tsx:342
+#: components/TreeView/Actions.tsx:345
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHintMessage"
 msgstr "Выберите новую цель для «{nodeName:string}», которую нужно объединить."
 
-#: components/TreeView/Actions.tsx:344
+#: components/TreeView/Actions.tsx:347
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "bulkMoveNodeHintMessage"
@@ -172,7 +172,7 @@ msgstr ""
 "Выберите новую цель для препаратов «{nodeName:string}», в которую нужно "
 "переместить"
 
-#: components/TreeView/Actions.tsx:466
+#: components/TreeView/Actions.tsx:469
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeMessage"
@@ -182,26 +182,26 @@ msgstr ""
 "«{parentName:string}», причем все потомки, совпадающие по имени и рангу, "
 "будут самими собой. объединены рекурсивно."
 
-#: components/TreeView/Actions.tsx:435
-#: components/TreeView/Actions.tsx:448
+#: components/TreeView/Actions.tsx:438
+#: components/TreeView/Actions.tsx:451
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNode"
 msgstr "Узел [X4X] «[X28X]» станет синонимом «[X74X]»."
 
-#: components/TreeView/Actions.tsx:395
+#: components/TreeView/Actions.tsx:398
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "makeSynonym"
 msgstr "Сделайте {nodeName:string} синонимом {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:346
+#: components/TreeView/Actions.tsx:349
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNodeHintMessage"
 msgstr "Выберите цель для «{nodeName:string}», которая будет синонимизирована."
 
-#: components/TreeView/Actions.tsx:472
+#: components/TreeView/Actions.tsx:475
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeMessage"
@@ -209,16 +209,16 @@ msgstr ""
 "Узел {treeName:string} «{nodeName:string}» станет синонимом "
 "«{synonymName:string}»."
 
-#: components/TreeView/Actions.tsx:399
-#: components/TreeView/Actions.tsx:436
-#: components/TreeView/Actions.tsx:449
+#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:439
+#: components/TreeView/Actions.tsx:452
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNode"
 msgstr "Десинонимизировать узел"
 
-#: components/TreeView/Actions.tsx:349
-#: components/TreeView/Actions.tsx:477
+#: components/TreeView/Actions.tsx:352
+#: components/TreeView/Actions.tsx:480
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNodeMessage"
@@ -349,9 +349,9 @@ msgstr "Добавить новый ранг"
 msgid "chooseParentRank"
 msgstr "Выберите родительский ранг"
 
-#: components/TreeView/Actions.tsx:176
-#: components/TreeView/Actions.tsx:431
-#: components/TreeView/Actions.tsx:444
+#: components/TreeView/Actions.tsx:178
+#: components/TreeView/Actions.tsx:434
+#: components/TreeView/Actions.tsx:447
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveItems"

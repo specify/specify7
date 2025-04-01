@@ -24,7 +24,7 @@ msgstr "дерева"
 msgid "badStructure"
 msgstr "Погана структура дерева."
 
-#: components/TreeView/Actions.tsx:165
+#: components/TreeView/Actions.tsx:167
 #. Used in: Components > Tree View > Actions
 msgid "move"
 msgstr "рухатися"
@@ -37,118 +37,118 @@ msgstr "рухатися"
 #: components/SearchDialog/SelectRecordSet.tsx:135
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:77
-#: components/TreeView/Actions.tsx:186
+#: components/TreeView/Actions.tsx:188
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 msgid "merge"
 msgstr "Об’єднати"
 
-#: components/TreeView/Actions.tsx:205
+#: components/TreeView/Actions.tsx:208
 #. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Листковий вузол"
 
-#: components/TreeView/Actions.tsx:205
+#: components/TreeView/Actions.tsx:208
 #. Used in: Components > Tree View > Actions
 msgid "synonymize"
 msgstr "Синонімізувати"
 
-#: components/TreeView/Actions.tsx:407
+#: components/TreeView/Actions.tsx:410
 #. Used in: Components > Tree View > Actions
 msgid "actionFailed"
 msgstr "Операція не вдалася"
 
-#: components/TreeView/Actions.tsx:410
+#: components/TreeView/Actions.tsx:413
 #. Used in: Components > Tree View > Actions
 msgid "actionFailedDescription"
 msgstr "Прямий підрахунок [X7X]."
 
-#: components/TreeView/Actions.tsx:429
-#: components/TreeView/Actions.tsx:442
+#: components/TreeView/Actions.tsx:432
+#: components/TreeView/Actions.tsx:445
 #. Used in: Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Перемістити вузол"
 
-#: components/TreeView/Actions.tsx:153
+#: components/TreeView/Actions.tsx:155
 #. Used in: Components > Tree View > Actions
 msgid "addChild"
 msgstr "Додати дитину"
 
-#: components/TreeView/Actions.tsx:387
+#: components/TreeView/Actions.tsx:390
 #. Used in: Components > Tree View > Actions
 msgid "moveNodeHere"
 msgstr "Перемістіть сюди \"{nodeName:string}\"."
 
-#: components/TreeView/Actions.tsx:389
+#: components/TreeView/Actions.tsx:392
 #. Used in: Components > Tree View > Actions
 msgid "moveNodePreparationsHere"
 msgstr "Перемістіть сюди всі препарати \"{nodeName:string}\"."
 
-#: components/TreeView/Actions.tsx:454
+#: components/TreeView/Actions.tsx:457
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "Вузол {treeName:string} \"{nodeName:string}\" буде розміщено разом із усіма "
 "його нащадками під новим батьківським вузлом \"{parentName:string}\"."
 
-#: components/TreeView/Actions.tsx:460
+#: components/TreeView/Actions.tsx:463
 #. Used in: Components > Tree View > Actions
 msgid "nodeBulkMoveMessage"
 msgstr "Скасувати синонімію"
 
-#: components/TreeView/Actions.tsx:360
+#: components/TreeView/Actions.tsx:363
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveHere"
 msgstr "Неможливо перемістити цей вузол дерева сюди"
 
-#: components/TreeView/Actions.tsx:367
+#: components/TreeView/Actions.tsx:370
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeHere"
 msgstr "Неможливо об’єднати цей вузол дерева тут"
 
-#: components/TreeView/Actions.tsx:361
+#: components/TreeView/Actions.tsx:364
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveToSynonym"
 msgstr "Неможливо перейти до синоніма"
 
-#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:371
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeIntoSynonym"
 msgstr "Не можна об’єднувати в синоніми"
 
-#: components/TreeView/Actions.tsx:371
+#: components/TreeView/Actions.tsx:374
 #. Used in: Components > Tree View > Actions
 msgid "cantSynonymizeSynonym"
 msgstr "Не можна синонімізувати синонім"
 
-#: components/TreeView/Actions.tsx:340
+#: components/TreeView/Actions.tsx:343
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveHintMessage"
 msgstr "Виберіть новий батьківський елемент для \"{nodeName:string}\""
 
-#: components/TreeView/Actions.tsx:433
-#: components/TreeView/Actions.tsx:446
+#: components/TreeView/Actions.tsx:436
+#: components/TreeView/Actions.tsx:449
 #. Used in: Components > Tree View > Actions
 msgid "mergeNode"
 msgstr "Вузол злиття"
 
-#: components/TreeView/Actions.tsx:393
+#: components/TreeView/Actions.tsx:396
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHere"
 msgstr "Об'єднайте \"{nodeName:string}\" тут"
 
-#: components/TreeView/Actions.tsx:342
+#: components/TreeView/Actions.tsx:345
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHintMessage"
 msgstr "Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати"
 
-#: components/TreeView/Actions.tsx:344
+#: components/TreeView/Actions.tsx:347
 #. Used in: Components > Tree View > Actions
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
 "Виберіть нову ціль для препаратів \"{nodeName:string}\", до якої потрібно "
 "переміститися"
 
-#: components/TreeView/Actions.tsx:466
+#: components/TreeView/Actions.tsx:469
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeMessage"
 msgstr ""
@@ -157,38 +157,38 @@ msgstr ""
 "до «{parentName:string}», а будь-які нащадки, що відповідають імені та "
 "рангу, будуть самі собою об'єднані рекурсивно."
 
-#: components/TreeView/Actions.tsx:435
-#: components/TreeView/Actions.tsx:448
+#: components/TreeView/Actions.tsx:438
+#: components/TreeView/Actions.tsx:451
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNode"
 msgstr "Вузол [X4X] \"[X28X]\" стане синонімом \"[X74X]\"."
 
-#: components/TreeView/Actions.tsx:395
+#: components/TreeView/Actions.tsx:398
 #. Used in: Components > Tree View > Actions
 msgid "makeSynonym"
 msgstr "Зробити {nodeName:string} синонімом {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:346
+#: components/TreeView/Actions.tsx:349
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNodeHintMessage"
 msgstr "Виберіть ціль для \"{nodeName:string}\", який буде синонімічним"
 
-#: components/TreeView/Actions.tsx:472
+#: components/TreeView/Actions.tsx:475
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeMessage"
 msgstr ""
 "Вузол {treeName:string} \"{nodeName:string}\" стане синонімом "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Actions.tsx:399
-#: components/TreeView/Actions.tsx:436
-#: components/TreeView/Actions.tsx:449
+#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:439
+#: components/TreeView/Actions.tsx:452
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNode"
 msgstr "Десинонімізувати вузол"
 
-#: components/TreeView/Actions.tsx:349
-#: components/TreeView/Actions.tsx:477
+#: components/TreeView/Actions.tsx:352
+#: components/TreeView/Actions.tsx:480
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
@@ -305,9 +305,9 @@ msgstr "Додати новий ранг"
 msgid "chooseParentRank"
 msgstr "Виберіть батьківський рейтинг"
 
-#: components/TreeView/Actions.tsx:176
-#: components/TreeView/Actions.tsx:431
-#: components/TreeView/Actions.tsx:444
+#: components/TreeView/Actions.tsx:178
+#: components/TreeView/Actions.tsx:434
+#: components/TreeView/Actions.tsx:447
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveItems"
