@@ -10,10 +10,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (15 April 2025)
 
-[wrap="info"]
-If you have not updated to `v7.10` or later, please follow the instructions available here first: https://discourse.specifysoftware.org/t/specify-7-10-release-announcement/2196#p-4228-specify-710-1
-[/wrap]
-
 ## Added
 
 * **[Batch Editing](https://discourse.specifysoftware.org/t/batch-edit/2248)** for simple fields ([#5417](https://github.com/specify/specify7/pull/5417) – *Requested by many, many members*)
