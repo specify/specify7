@@ -1267,14 +1267,14 @@ msgstr "Alle Datensätze im schreibgeschützten Modus öffnen"
 msgid "displayBasicView"
 msgstr "Basisansicht anzeigen"
 
-#: components/QueryBuilder/Header.tsx:129
+#: components/QueryBuilder/Header.tsx:112
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Basisansicht"
 
-#: components/QueryBuilder/Header.tsx:128
+#: components/QueryBuilder/Header.tsx:111
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy

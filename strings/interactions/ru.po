@@ -111,8 +111,7 @@ msgid "unresolved"
 msgstr "нерешенный"
 
 #: components/Interactions/LoanReturn.tsx:303
-#: components/QueryBuilder/LoanReturn.tsx:164
-#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
+#. 🟥Verb. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "return"
 msgstr "Возвращаться"
@@ -130,8 +129,7 @@ msgid "returnAllPreparations"
 msgstr "Добавить элементы"
 
 #: components/Interactions/LoanReturn.tsx:195
-#: components/QueryBuilder/LoanReturn.tsx:162
-#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
+#. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "returnSelectedPreparations"
 msgstr "Вернуть выбранные препараты"
@@ -255,8 +253,7 @@ msgid "unavailable"
 msgstr "Недоступен"
 
 #: components/Interactions/InteractionsDialog.tsx:83
-#: components/QueryBuilder/LoanReturn.tsx:148
-#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "returnLoan"
 msgstr "Вернуть {tableLoan:string} записей"

@@ -1104,13 +1104,13 @@ msgstr "Відкрити всі записи в режимі лише для ч�
 msgid "displayBasicView"
 msgstr "Відобразити базовий вигляд"
 
-#: components/QueryBuilder/Header.tsx:129
+#: components/QueryBuilder/Header.tsx:112
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Основний вигляд"
 
-#: components/QueryBuilder/Header.tsx:128
+#: components/QueryBuilder/Header.tsx:111
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"

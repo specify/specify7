@@ -1150,14 +1150,14 @@ msgstr "Ouvrir tous les enregistrements en mode lecture seule"
 msgid "displayBasicView"
 msgstr "Afficher la vue de base"
 
-#: components/QueryBuilder/Header.tsx:129
+#: components/QueryBuilder/Header.tsx:112
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Vue de base"
 
-#: components/QueryBuilder/Header.tsx:128
+#: components/QueryBuilder/Header.tsx:111
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy

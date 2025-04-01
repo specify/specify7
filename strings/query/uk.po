@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 5.9-dev\n"
 
 #: components/Preferences/UserDefinitions.tsx:2031
-#: components/QueryBuilder/Header.tsx:97
+#: components/QueryBuilder/Header.tsx:93
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -150,7 +150,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (поточне, недійсне значення)"
 
-#: components/QueryBuilder/Header.tsx:91
+#: components/QueryBuilder/Header.tsx:87
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -374,16 +374,6 @@ msgstr "або"
 msgid "yes"
 msgstr "Так"
 
-#: components/QueryBuilder/LoanReturn.tsx:173
-#. Used in: Components > Query Builder > Loan Return
-msgid "noPreparationsToReturn"
-msgstr "Немає невирішених елементів для повернення"
-
-#: components/QueryBuilder/LoanReturn.tsx:226
-#. Used in: Components > Query Builder > Loan Return
-msgid "itemsReturned"
-msgstr "Товари повернуто"
-
 #: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
@@ -513,7 +503,7 @@ msgstr "Перейти до відносного"
 msgid "switchToAbsolute"
 msgstr "Перейти до відносного"
 
-#: components/QueryBuilder/Header.tsx:105
+#: components/QueryBuilder/Header.tsx:101
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Перейдіть до редактора"

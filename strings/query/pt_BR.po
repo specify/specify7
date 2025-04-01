@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.9-dev\n"
 
 #: components/Preferences/UserDefinitions.tsx:2031
-#: components/QueryBuilder/Header.tsx:97
+#: components/QueryBuilder/Header.tsx:93
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -169,7 +169,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr ""
 
-#: components/QueryBuilder/Header.tsx:91
+#: components/QueryBuilder/Header.tsx:87
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "queryRecordSetTitle"
@@ -429,18 +429,6 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-#: components/QueryBuilder/LoanReturn.tsx:173
-#. Used in: Components > Query Builder > Loan Return
-#, fuzzy
-msgid "noPreparationsToReturn"
-msgstr ""
-
-#: components/QueryBuilder/LoanReturn.tsx:226
-#. Used in: Components > Query Builder > Loan Return
-#, fuzzy
-msgid "itemsReturned"
-msgstr ""
-
 #: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
@@ -588,7 +576,7 @@ msgstr ""
 msgid "switchToAbsolute"
 msgstr ""
 
-#: components/QueryBuilder/Header.tsx:105
+#: components/QueryBuilder/Header.tsx:101
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "scrollToEditor"

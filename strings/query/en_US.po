@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:2031
-#: components/QueryBuilder/Header.tsx:97
+#: components/QueryBuilder/Header.tsx:93
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -141,7 +141,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:91
+#: components/QueryBuilder/Header.tsx:87
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -365,16 +365,6 @@ msgstr "or"
 msgid "yes"
 msgstr "Yes"
 
-#: components/QueryBuilder/LoanReturn.tsx:173
-#. Used in: Components > Query Builder > Loan Return
-msgid "noPreparationsToReturn"
-msgstr "There are no unresolved items to return"
-
-#: components/QueryBuilder/LoanReturn.tsx:226
-#. Used in: Components > Query Builder > Loan Return
-msgid "itemsReturned"
-msgstr "Items have been returned"
-
 #: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
@@ -500,7 +490,7 @@ msgstr "Switch to relative"
 msgid "switchToAbsolute"
 msgstr "Switch to absolute"
 
-#: components/QueryBuilder/Header.tsx:105
+#: components/QueryBuilder/Header.tsx:101
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Scroll to editor"
