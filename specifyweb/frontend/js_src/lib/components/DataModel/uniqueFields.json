@@ -22,7 +22,6 @@
     "timestampCreated",
     "version",
     "isCurrent",
-    "isPrimary",
     "timestampModified"
   ],
   "addressofrecord": ["timestampCreated", "version", "timestampModified"],
@@ -200,7 +199,6 @@
   "collector": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "commonnametx": ["timestampCreated", "version", "timestampModified"],
@@ -285,7 +283,6 @@
   "determiner": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "discipline": ["timestampCreated", "version", "timestampModified"],
@@ -375,7 +372,6 @@
   "fundingagent": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "geocoorddetail": ["timestampCreated", "version", "timestampModified"],
@@ -648,7 +644,6 @@
   "collectionobjectgroupjoin": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "collectionobjectgrouptype": [
