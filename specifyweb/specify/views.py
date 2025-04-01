@@ -1367,3 +1367,9 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
