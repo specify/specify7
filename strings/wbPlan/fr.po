@@ -205,7 +205,7 @@ msgstr ""
 "mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
 "inachevé."
 
-#: components/Formatters/Components.tsx:214
+#: components/Formatters/Components.tsx:220
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #, fuzzy
 msgid "mappingIsRequired"

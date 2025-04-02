@@ -201,7 +201,7 @@ msgstr ""
 "для завантаження вашою конфігурацією Specify. Додайте відсутні відображення "
 "або збережіть цей план завантаження як незавершений."
 
-#: components/Formatters/Components.tsx:214
+#: components/Formatters/Components.tsx:220
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #, fuzzy
 msgid "mappingIsRequired"

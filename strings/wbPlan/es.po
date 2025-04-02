@@ -175,7 +175,7 @@ msgstr ""
 "cargar por su configuración de Especificar. Agregue las asignaciones "
 "faltantes que se muestran o guarde este plan de carga como inacabado."
 
-#: components/Formatters/Components.tsx:214
+#: components/Formatters/Components.tsx:220
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 msgid "mappingIsRequired"
 msgstr "Se requiere asignación"

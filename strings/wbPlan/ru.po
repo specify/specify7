@@ -163,7 +163,7 @@ msgstr ""
 "недостающие сопоставления или сохраните этот план загрузки как "
 "незавершенный."
 
-#: components/Formatters/Components.tsx:214
+#: components/Formatters/Components.tsx:220
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 msgid "mappingIsRequired"
 msgstr "Необходимо сопоставление"
