@@ -25,7 +25,7 @@ msgstr "Move"
 #: components/Merging/index.tsx:370
 #: components/SearchDialog/SelectRecordSet.tsx:135
 #: components/SearchDialog/SelectRecordSet.tsx:139
-#: components/Toolbar/MergeRecordSets.tsx:77
+#: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:184
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 msgid "merge"

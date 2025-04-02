@@ -76,8 +76,8 @@ msgstr ""
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:77
 #: components/Toolbar/Query.tsx:210
-#: components/Toolbar/RecordSets.tsx:215
-#: components/Toolbar/RecordSets.tsx:254
+#: components/Toolbar/RecordSets.tsx:218
+#: components/Toolbar/RecordSets.tsx:257
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:192
 #: components/TreeView/Actions.tsx:401
@@ -562,7 +562,7 @@ msgstr ""
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
-#: components/Toolbar/RecordSets.tsx:220
+#: components/Toolbar/RecordSets.tsx:223
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "new"
@@ -586,7 +586,7 @@ msgstr ""
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:609
-#: components/Toolbar/RecordSets.tsx:320
+#: components/Toolbar/RecordSets.tsx:323
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/Toolbar/WbsDialog.tsx:274
 #: components/TreeView/Actions.tsx:121
@@ -723,14 +723,14 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:137
 #: components/SearchDialog/SelectRecordSet.tsx:98
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:228
-#: components/Toolbar/RecordSets.tsx:255
+#: components/Toolbar/RecordSets.tsx:231
+#: components/Toolbar/RecordSets.tsx:258
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 #, fuzzy
 msgid "recordSets"
 msgstr ""
 
-#: components/Toolbar/RecordSets.tsx:310
+#: components/Toolbar/RecordSets.tsx:313
 #. Used in: Components > Toolbar > Record Sets
 #, fuzzy
 msgid "recordCount"
@@ -1005,7 +1005,7 @@ msgstr ""
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:220
-#: components/Toolbar/RecordSets.tsx:227
+#: components/Toolbar/RecordSets.tsx:230
 #: components/WbActions/WbValidate.tsx:53
 #: components/WbUtils/datasetVariants.tsx:29
 #: components/WbUtils/datasetVariants.tsx:88
