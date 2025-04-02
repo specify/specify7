@@ -105,4 +105,8 @@ export const batchEditText = createDictionary({
     'en-us':
       'If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}',
   },
+  batchEditDisabled: {
+    'en-us':
+      'Batch Edit is disabled for system tables and scoping hierarchy tables',
+  },
 } as const);

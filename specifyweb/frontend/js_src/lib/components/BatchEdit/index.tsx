@@ -124,14 +124,16 @@ export function BatchEditFromQuery({
       })
     );
 
+  const isDisabled =
+    queryFieldSpecs.some(containsSystemTables) ||
+    queryFieldSpecs.some(hasHierarchyBaseTable) ||
+    containsDisallowedTables(query);
+
   return (
     <>
       <Button.Small
-        disabled={
-          queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable) ||
-          containsDisallowedTables(query)
-        }
+        disabled={isDisabled}
+        title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
