@@ -449,20 +449,20 @@ msgstr ""
 msgid "configureQueryTables"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:96
-#: components/QueryBuilder/Edit.tsx:149
+#: components/QueryBuilder/Edit.tsx:95
+#: components/QueryBuilder/Edit.tsx:148
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryForDwca"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:101
+#: components/QueryBuilder/Edit.tsx:100
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsReport"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:104
+#: components/QueryBuilder/Edit.tsx:103
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsLabel"

@@ -456,20 +456,20 @@ msgstr "Просмотр в формах"
 msgid "configureQueryTables"
 msgstr "Настройка видимых таблиц запросов"
 
-#: components/QueryBuilder/Edit.tsx:96
-#: components/QueryBuilder/Edit.tsx:149
+#: components/QueryBuilder/Edit.tsx:95
+#: components/QueryBuilder/Edit.tsx:148
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryForDwca"
 msgstr "Экспортный запрос для определения DwCA"
 
-#: components/QueryBuilder/Edit.tsx:101
+#: components/QueryBuilder/Edit.tsx:100
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsReport"
 msgstr "Определить отчет на основе запроса"
 
-#: components/QueryBuilder/Edit.tsx:104
+#: components/QueryBuilder/Edit.tsx:103
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsLabel"

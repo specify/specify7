@@ -87,22 +87,22 @@ msgstr "Экспорт запущен. Вы получите уведомлен�
 msgid "localityUpdateTool"
 msgstr "Основной"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Название ярлыка"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Название отчета"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createLabel"
 msgstr "Создать новый ярлык"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createReport"
 msgstr "Создать новый отчет"

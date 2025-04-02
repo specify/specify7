@@ -391,18 +391,18 @@ msgstr "Перегляд у Формах"
 msgid "configureQueryTables"
 msgstr "Налаштувати видимі таблиці запитів"
 
-#: components/QueryBuilder/Edit.tsx:96
-#: components/QueryBuilder/Edit.tsx:149
+#: components/QueryBuilder/Edit.tsx:95
+#: components/QueryBuilder/Edit.tsx:148
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryForDwca"
 msgstr "Експорт запиту для визначення DwCA"
 
-#: components/QueryBuilder/Edit.tsx:101
+#: components/QueryBuilder/Edit.tsx:100
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsReport"
 msgstr "Визначити звіт на основі запиту"
 
-#: components/QueryBuilder/Edit.tsx:104
+#: components/QueryBuilder/Edit.tsx:103
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsLabel"
 msgstr "Визначте мітку на основі запиту"

@@ -457,20 +457,20 @@ msgstr "In Formularen stöbern"
 msgid "configureQueryTables"
 msgstr "Konfigurieren sichtbarer Abfragetabellen"
 
-#: components/QueryBuilder/Edit.tsx:96
-#: components/QueryBuilder/Edit.tsx:149
+#: components/QueryBuilder/Edit.tsx:95
+#: components/QueryBuilder/Edit.tsx:148
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryForDwca"
 msgstr "Exportabfrage für DwCA-Definition"
 
-#: components/QueryBuilder/Edit.tsx:101
+#: components/QueryBuilder/Edit.tsx:100
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsReport"
 msgstr "Definieren Sie den Bericht basierend auf der Abfrage"
 
-#: components/QueryBuilder/Edit.tsx:104
+#: components/QueryBuilder/Edit.tsx:103
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "exportQueryAsLabel"

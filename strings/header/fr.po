@@ -88,22 +88,22 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr "Outil de mise à jour de localité"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Outils administratifs"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Nom du rapport"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createLabel"
 msgstr "Créer une nouvelle étiquette"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createReport"
 msgstr "Créer un nouveau document"

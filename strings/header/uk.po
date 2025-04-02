@@ -85,22 +85,22 @@ msgstr "Експорт розпочато. Коли експорт заверш�
 msgid "localityUpdateTool"
 msgstr "Ресурс DwCA"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Назва бірки"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Назва звіту"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createLabel"
 msgstr "Створити нову бірку"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createReport"
 msgstr "Створити новий звіт"

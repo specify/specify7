@@ -53,7 +53,7 @@ msgstr "Немає"
 #: components/Molecules/SyncAttachmentPicker.tsx:109
 #: components/PickLists/index.tsx:282
 #: components/QueryBuilder/Components.tsx:169
-#: components/QueryBuilder/Edit.tsx:175
+#: components/QueryBuilder/Edit.tsx:174
 #: components/QueryBuilder/FromMap.tsx:72
 #: components/QueryBuilder/Import.tsx:69
 #: components/Reports/Parameters.tsx:86
@@ -113,7 +113,7 @@ msgstr "Пропустити"
 #: components/FormEditor/Create.tsx:60
 #: components/FormEditor/Create.tsx:262
 #: components/PickLists/definitions.ts:41
-#: components/QueryBuilder/Edit.tsx:176
+#: components/QueryBuilder/Edit.tsx:175
 #: components/Security/Institution.tsx:104
 #: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:66
@@ -221,7 +221,7 @@ msgstr "Створити"
 #: components/Preferences/index.tsx:103
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
-#: components/QueryBuilder/Edit.tsx:145
+#: components/QueryBuilder/Edit.tsx:144
 #: components/QueryBuilder/Export.tsx:144
 #: components/QueryBuilder/Export.tsx:152
 #: components/QueryBuilder/Import.tsx:154
@@ -653,7 +653,7 @@ msgid "goToHomepage"
 msgstr "Перейдіть на домашню сторінку"
 
 #: components/FormCells/FormTable.tsx:317
-#: components/QueryBuilder/Edit.tsx:94
+#: components/QueryBuilder/Edit.tsx:93
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
 msgstr "Дії"
@@ -784,7 +784,7 @@ msgid "ordinal"
 msgstr "Порядковий"
 
 #: components/Header/userToolDefinitions.ts:97
-#: components/QueryBuilder/Edit.tsx:80
+#: components/QueryBuilder/Edit.tsx:79
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:85

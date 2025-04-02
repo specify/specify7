@@ -88,22 +88,22 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr "DwCA-Ressource"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Etikett Name"
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Name des Berichts"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createLabel"
 msgstr "Neues Label erstellen"
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 msgid "createReport"
 msgstr "Neuen Bericht erstellen"

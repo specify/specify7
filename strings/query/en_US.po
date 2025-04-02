@@ -382,18 +382,18 @@ msgstr "Browse in Forms"
 msgid "configureQueryTables"
 msgstr "Configure visible query tables"
 
-#: components/QueryBuilder/Edit.tsx:96
-#: components/QueryBuilder/Edit.tsx:149
+#: components/QueryBuilder/Edit.tsx:95
+#: components/QueryBuilder/Edit.tsx:148
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryForDwca"
 msgstr "Export query for DwCA definition"
 
-#: components/QueryBuilder/Edit.tsx:101
+#: components/QueryBuilder/Edit.tsx:100
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsReport"
 msgstr "Define report based on query"
 
-#: components/QueryBuilder/Edit.tsx:104
+#: components/QueryBuilder/Edit.tsx:103
 #. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsLabel"
 msgstr "Define label based on query"

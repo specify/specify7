@@ -95,25 +95,25 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "labelName"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:210
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "reportName"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "createLabel"
 msgstr ""
 
-#: components/QueryBuilder/Edit.tsx:179
+#: components/QueryBuilder/Edit.tsx:178
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "createReport"
