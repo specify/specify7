@@ -775,7 +775,7 @@ def execute(
 
         log_sqlalchemy_query(query)
         # return {"results": list(query)}
-        return {"results": apply_special_post_query_processing(query, tableid, field_specs)}
+        return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
@@ -911,8 +911,39 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def apply_special_post_query_processing(query, tableid, field_specs):
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]:
+        def get_cat_num_inheritance_setting(collection, user) -> bool:
+            import specifyweb.context.app_resource as app_resource
+
+            inheritance_enabled: bool = False
+
+            try:
+                collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+
+                if collection_prefs_json is not None:
+                    collection_prefs_dict = json.loads(collection_prefs_json)
+
+                    catalog_number_inheritance = collection_prefs_dict.get('catalogNumberInheritance', {})
+                    behavior = catalog_number_inheritance.get('behavior', {}) \
+                        if isinstance(catalog_number_inheritance, dict) else {}
+                    inheritance_enabled = behavior.get('inheritance', False) if isinstance(behavior, dict) else False
+
+                    if not isinstance(inheritance_enabled, bool):
+                        inheritance_enabled = False
+
+            except json.JSONDecodeError:
+                logger.warning(f"Error: Could not decode JSON for collection preferences")
+            except TypeError as e:
+                logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
+            except Exception as e:
+                logger.warning(f"An unexpected error occurred: {e}")
+
+            return inheritance_enabled
+
+        if not get_cat_num_inheritance_setting(collection, user):
+            return list(query)
+
         # Get the catalogNumber field index
         catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
 
@@ -928,7 +959,8 @@ def apply_special_post_query_processing(query, tableid, field_specs):
             if result[catalog_number_field_index] is None:
                 cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
                 if cojo:
-                    primary_cojo = Collectionobjectgroupjoin.objects.filter(parentcog=cojo.parentcog, isprimary=True).first()
+                    primary_cojo = Collectionobjectgroupjoin.objects.filter(
+                        parentcog=cojo.parentcog, isprimary=True).first()
                     if primary_cojo:
                         result[catalog_number_field_index] = primary_cojo.childco.catalognumber
             updated_results.append(tuple(result))  # Convert back to tuple if needed

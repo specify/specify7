@@ -1384,7 +1384,6 @@ def catalog_number_for_sibling(request: http.HttpRequest):
     if object_id is None:
         return http.JsonResponse({'error': "'id' field is required."}, status=400)
 
-    # If the requesting CO already has a catalog number provided, don't look for a sibling's
     if provided_catalog_number is not None:
         return http.JsonResponse(None, safe=False)
 
@@ -1412,5 +1411,5 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         return http.JsonResponse(primary_catalog_number, safe=False)
 
     except Exception as e:
-        print(f"Error processing request: {e}") # Replace with proper logging
+        print(f"Error processing request: {e}")
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
