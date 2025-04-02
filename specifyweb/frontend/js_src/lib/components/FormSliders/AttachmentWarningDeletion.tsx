@@ -52,7 +52,7 @@ export function AttachmentWarningDeletion({
           >
             {attachmentsText.deleteAttachmentWarning()}
             <span className="font-bold">
-              {resource?.dependentResources?.attachment?.get('title') ?? ''}
+            {(resource?.dependentResources?.attachment as SpecifyResource<AnySchema>)?.get('title') ?? ''}
             </span>
          </Dialog> 
 }
