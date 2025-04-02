@@ -47,6 +47,7 @@ export function QueryLine({
   isLast,
   baseTableName,
   field,
+  fields,
   fieldHash,
   enforceLengthLimit = false,
   isFocused,
@@ -63,10 +64,12 @@ export function QueryLine({
   onMoveUp: handleMoveUp,
   onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
+  onChangeFields: handleChangeFields,
 }: {
   readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
+  readonly fields: RA<QueryField>;
   readonly fieldHash: string;
   readonly enforceLengthLimit?: boolean;
   readonly isFocused: boolean;
@@ -93,6 +96,7 @@ export function QueryLine({
   readonly onMoveUp: (() => void) | undefined;
   readonly onMoveDown: (() => void) | undefined;
   readonly onOpenMap: (() => void) | undefined;
+  readonly onChangeFields: ((fields: RA<QueryField>) => void) | undefined;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -418,6 +422,7 @@ export function QueryLine({
                   >
                     {/* REFACTOR: Simplify this */}
                     <QueryLineFieldFilter
+                      fields={fields}
                       queryField={field}
                       fieldFilter={filter}
                       baseTableName={baseTableName}
@@ -431,6 +436,7 @@ export function QueryLine({
                       enforceLengthLimit={enforceLengthLimit}
                       shownFilters={availableFilters}
                       onChange={handleFilterChange?.bind(undefined, index)}
+                      onChangeFields={handleChangeFields}
                       onAddFieldFilter={handleFilterChange?.bind(
                         undefined,
                         field.filters.length

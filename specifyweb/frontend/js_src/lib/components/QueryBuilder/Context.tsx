@@ -1,20 +1,11 @@
 import React from 'react';
 
-import type { GetSet, RA } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
-import { QueryField } from './helpers';
 
 export const IsQueryBasicContext = React.createContext(false);
 IsQueryBasicContext.displayName = 'IsQueryBasicContext';
-
-export const QueryFieldsContext = React.createContext<
-  readonly [
-    fields: RA<QueryField>,
-    onFieldsChange: ((fields: RA<QueryField>) => void) | undefined,
-  ]
->([[], undefined]);
-QueryFieldsContext.displayName = 'QueryFieldsContext';
 
 export function useQueryViewPref(queryId: number): GetSet<boolean> {
   const [isDefaultBasicViewPref] = userPreferences.use(

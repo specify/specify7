@@ -13,7 +13,6 @@ import {
   mappingPathToString,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import { QueryFieldsContext } from './Context';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
@@ -45,6 +44,7 @@ export type QueryFieldFilterProps = {
 };
 
 export function QueryLineFieldFilter({
+  fields,
   queryField,
   fieldFilter,
   terminatingTableName,
@@ -57,10 +57,12 @@ export function QueryLineFieldFilter({
   hasMultipleFilters,
   enforceLengthLimit,
   shownFilters,
-  onChange: handleChange,
+  onChangeFields: handleChangeFields,
+  onChange: handleFilterChange,
   onAddFieldFilter: handleAddFieldFilter,
   onRemoveFieldFilter: handleRemoveFieldFilter,
 }: {
+  readonly fields: RA<QueryField>;
   readonly queryField: QueryField;
   readonly fieldFilter: QueryFieldFilter;
   readonly baseParser: Parser | undefined;
@@ -70,9 +72,8 @@ export function QueryLineFieldFilter({
     readonly [keyof typeof queryFieldFilters, ValueOf<typeof queryFieldFilters>]
   >;
   readonly enforceLengthLimit: boolean;
+  readonly onChangeFields: ((fields: RA<QueryField>) => void) | undefined;
 } & QueryFieldFilterProps): JSX.Element {
-  const [fields, handleChangeFields] = React.useContext(QueryFieldsContext);
-
   const loading = React.useContext(LoadingContext);
 
   const terminatingField = isFieldComplete
@@ -104,7 +105,7 @@ export function QueryLineFieldFilter({
           hasMultipleFilters={hasMultipleFilters}
           isBasic={isBasic}
           isFieldComplete={isFieldComplete}
-          onChange={handleChange}
+          onChange={handleFilterChange}
           onAddFieldFilter={handleAddFieldFilter}
           onRemoveFieldFilter={handleRemoveFieldFilter}
         />
@@ -117,7 +118,7 @@ export function QueryLineFieldFilter({
             className={`
         !w-[unset] ${customSelectElementBackground}
       `}
-            disabled={handleChange === undefined}
+            disabled={handleFilterChange === undefined}
             title={
               queryFieldFilters[fieldFilter.type].description ??
               commonText.filter()
@@ -146,7 +147,7 @@ export function QueryLineFieldFilter({
                   ? startValue
                   : startValue.split(',').slice(0, valueLength).join(', ');
 
-              handleChange?.({
+              handleFilterChange?.({
                 ...fieldFilter,
                 type: newFilter,
                 startValue: trimmedValue,
@@ -170,9 +171,9 @@ export function QueryLineFieldFilter({
             parser={parser}
             terminatingField={terminatingField}
             onChange={
-              typeof handleChange === 'function'
+              typeof handleFilterChange === 'function'
                 ? (startValue): void =>
-                    handleChange({ ...fieldFilter, startValue })
+                    handleFilterChange({ ...fieldFilter, startValue })
                 : undefined
             }
           />
@@ -190,7 +191,7 @@ export function QueryLineFieldFilter({
           <CatalogNumberFormatSelection
             formatter={fieldFilter.fieldFormat}
             onChange={
-              handleChange === undefined
+              handleFilterChange === undefined
                 ? undefined
                 : (formatName): void => {
                     const collectionObjectStart = f.max(
@@ -203,7 +204,7 @@ export function QueryLineFieldFilter({
                           .at(collectionObjectStart)
                           ?.toLowerCase() === 'collectionobjecttype'
                     );
-                    handleChange({
+                    handleFilterChange({
                       ...fieldFilter,
                       fieldFormat: (formatName ?? '') || undefined,
                     });

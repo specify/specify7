@@ -8,7 +8,7 @@ import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import type { IR, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { replaceItem, replaceKey } from '../../utils/utils';
+import { replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -17,11 +17,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import {
-  IsQueryBasicContext,
-  QueryFieldsContext,
-  useQueryViewPref,
-} from '../QueryBuilder/Context';
+import { IsQueryBasicContext, useQueryViewPref } from '../QueryBuilder/Context';
 import { QueryFields } from '../QueryBuilder/Fields';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
@@ -120,25 +116,22 @@ export function QueryParametersDialog({
             })
           }
         >
-          <QueryFieldsContext.Provider value={[fields, undefined]}>
-            <QueryFields
-              baseTableName={table.name}
-              enforceLengthLimit={false}
-              getMappedFields={() => []}
-              openedElement={undefined}
-              showHiddenFields={false}
-              onChangeField={(line, field): void =>
-                setFields(replaceItem(fields, line, field))
-              }
-              onClose={undefined}
-              onLineFocus={undefined}
-              onLineMove={undefined}
-              onMappingChange={undefined}
-              onOpen={undefined}
-              onOpenMap={undefined}
-              onRemoveField={undefined}
-            />
-          </QueryFieldsContext.Provider>
+          <QueryFields
+            baseTableName={table.name}
+            enforceLengthLimit={false}
+            getMappedFields={() => []}
+            openedElement={undefined}
+            showHiddenFields={false}
+            fields={fields}
+            onChangeFields={(fields) => setFields(fields)}
+            onClose={undefined}
+            onLineFocus={undefined}
+            onLineMove={undefined}
+            onMappingChange={undefined}
+            onOpen={undefined}
+            onOpenMap={undefined}
+            onRemoveField={undefined}
+          />
         </Form>
       </IsQueryBasicContext.Provider>
     </Dialog>

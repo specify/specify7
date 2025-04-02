@@ -4,24 +4,26 @@ import React from 'react';
 import { useReadyEffect } from '../../hooks/useReadyEffect';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { IsQueryBasicContext, QueryFieldsContext } from './Context';
+import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
 export function QueryFields({
   baseTableName,
+  fields,
   enforceLengthLimit,
   openedElement,
   showHiddenFields,
   getMappedFields,
-  onChangeField: handleChangeField,
+  onChangeFields: handleChangeFields,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
   onOpen: handleOpen,
@@ -31,6 +33,7 @@ export function QueryFields({
   onOpenMap: handleOpenMap,
 }: {
   readonly baseTableName: keyof Tables;
+  readonly fields: RA<QueryField>;
   readonly enforceLengthLimit: boolean;
   readonly openedElement?: {
     readonly line: number;
@@ -38,9 +41,7 @@ export function QueryFields({
   };
   readonly showHiddenFields: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
-  readonly onChangeField:
-    | ((line: number, field: QueryField) => void)
-    | undefined;
+  readonly onChangeFields: ((fields: RA<QueryField>) => void) | undefined;
   readonly onMappingChange:
     | ((
         line: number,
@@ -65,8 +66,6 @@ export function QueryFields({
   readonly onOpenMap: ((line: number) => void) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
-
-  const [fields, handleChangeFields] = React.useContext(QueryFieldsContext);
 
   const fieldsRef = React.useRef(fields);
   fieldsRef.current = fields;
@@ -210,6 +209,7 @@ export function QueryFields({
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
+              fields={fields}
               field={field}
               fieldHash={`${line}_${length}`}
               fieldName={fieldName}
@@ -220,7 +220,14 @@ export function QueryFields({
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
+              onChange={
+                handleChangeFields === undefined
+                  ? undefined
+                  : (field): void => {
+                      handleChangeFields(replaceItem(fields, line, field));
+                    }
+              }
+              onChangeFields={handleChangeFields}
               onClose={handleClose}
               onLineFocus={(target): void =>
                 (target === 'previous' && line === 0) ||
