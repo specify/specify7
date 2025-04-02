@@ -543,17 +543,17 @@ msgstr ""
 msgid "editHistoryQueryName"
 msgstr ""
 
-#: components/FormMeta/index.tsx:147
+#: components/FormMeta/index.tsx:149
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr ""
 
-#: components/FormMeta/index.tsx:179
+#: components/FormMeta/index.tsx:181
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr ""
 
-#: components/FormMeta/index.tsx:227
+#: components/FormMeta/index.tsx:229
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr ""
@@ -585,7 +585,7 @@ msgstr ""
 msgid "formTable"
 msgstr ""
 
-#: components/FormMeta/index.tsx:197
+#: components/FormMeta/index.tsx:199
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr ""
@@ -626,8 +626,8 @@ msgstr ""
 msgid "configureInteractionTables"
 msgstr ""
 
-#: components/FormMeta/index.tsx:67
-#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:68
+#: components/FormMeta/index.tsx:70
 #. Used in: Components > Form Meta > Index
 msgid "formMeta"
 msgstr ""

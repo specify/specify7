@@ -662,19 +662,19 @@ msgstr "Редактировать историю"
 msgid "editHistoryQueryName"
 msgstr "История редактирования «{formattedRecord:string}»"
 
-#: components/FormMeta/index.tsx:147
+#: components/FormMeta/index.tsx:149
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formConfiguration"
 msgstr "Конфигурация формы"
 
-#: components/FormMeta/index.tsx:179
+#: components/FormMeta/index.tsx:181
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formState"
 msgstr "Форма состояния"
 
-#: components/FormMeta/index.tsx:227
+#: components/FormMeta/index.tsx:229
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "recordInformation"
@@ -712,7 +712,7 @@ msgstr "Подформа"
 msgid "formTable"
 msgstr "Сетка"
 
-#: components/FormMeta/index.tsx:197
+#: components/FormMeta/index.tsx:199
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "subviewConfiguration"
@@ -761,8 +761,8 @@ msgstr "Настройка таблиц ввода данных"
 msgid "configureInteractionTables"
 msgstr "Настройка таблиц взаимодействия"
 
-#: components/FormMeta/index.tsx:67
-#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:68
+#: components/FormMeta/index.tsx:70
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formMeta"

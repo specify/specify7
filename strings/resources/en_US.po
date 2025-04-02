@@ -445,12 +445,12 @@ msgstr "Copy default view definition"
 msgid "copyDefaultForms"
 msgstr "Copy default forms"
 
-#: components/FormMeta/index.tsx:113
+#: components/FormMeta/index.tsx:114
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirst"
 msgstr "Save form first"
 
-#: components/FormMeta/index.tsx:116
+#: components/FormMeta/index.tsx:117
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirstDescription"
 msgstr "You need to save this form before you edit another one"

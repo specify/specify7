@@ -532,13 +532,13 @@ msgstr "Formateadores de registros"
 msgid "copyDefaultForms"
 msgstr "Copiar formularios predeterminados"
 
-#: components/FormMeta/index.tsx:113
+#: components/FormMeta/index.tsx:114
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Guarde el formulario primero"
 
-#: components/FormMeta/index.tsx:116
+#: components/FormMeta/index.tsx:117
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirstDescription"

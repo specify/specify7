@@ -509,13 +509,13 @@ msgstr "Standardansichtsdefinition kopieren"
 msgid "copyDefaultForms"
 msgstr "Standardformulare kopieren"
 
-#: components/FormMeta/index.tsx:113
+#: components/FormMeta/index.tsx:114
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Formular vorher speichern"
 
-#: components/FormMeta/index.tsx:116
+#: components/FormMeta/index.tsx:117
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirstDescription"

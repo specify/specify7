@@ -617,19 +617,19 @@ msgstr "Editar historial"
 msgid "editHistoryQueryName"
 msgstr "Editar historial de \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:147
+#: components/FormMeta/index.tsx:149
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formConfiguration"
 msgstr "Configuración del formulario"
 
-#: components/FormMeta/index.tsx:179
+#: components/FormMeta/index.tsx:181
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formState"
 msgstr "Estado del formulario"
 
-#: components/FormMeta/index.tsx:227
+#: components/FormMeta/index.tsx:229
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "recordInformation"
@@ -666,7 +666,7 @@ msgstr "Subformulario"
 msgid "formTable"
 msgstr "Red"
 
-#: components/FormMeta/index.tsx:197
+#: components/FormMeta/index.tsx:199
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "subviewConfiguration"
@@ -715,8 +715,8 @@ msgstr "Configurar tablas de entrada de datos"
 msgid "configureInteractionTables"
 msgstr "Configurar tablas de interacción"
 
-#: components/FormMeta/index.tsx:67
-#: components/FormMeta/index.tsx:69
+#: components/FormMeta/index.tsx:68
+#: components/FormMeta/index.tsx:70
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formMeta"
