@@ -28,6 +28,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
+import { Preview } from '../Molecules/FilePicker';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -130,6 +131,14 @@ function FilesPicked({
   const [dataSetName, setDataSetName] = React.useState<string>(
     attachmentsText.attachments()
   );
+  
+  const previewData = React.useMemo(() => {
+    const preview: RA<RA<string>> = [
+      ["Attachments"],
+      ...Array.from(files, (file) => [file.name])
+    ];
+    return preview.length > 0 ? preview : undefined;
+  }, [files]);
 
   // TODO: Preview files, progress bar
   return isFailed ? (
@@ -149,16 +158,19 @@ function FilesPicked({
       </div>
     </Dialog>
   ) : (
-    <div className="grid w-96 grid-cols-2 items-center gap-2 mt-2">
-      <ChooseName name={dataSetName} onChange={setDataSetName} />
-      <Button.Secondary
-        className="col-span-full justify-center text-center"
-        onClick={async (): Promise<void> =>
-          handleFilesSelected(files, dataSetName)
-        }
-      >
-        {attachmentsText.importAttachments()}
-      </Button.Secondary>
-    </div>
+    <>
+      <div className="grid w-96 grid-cols-2 items-center gap-2 mt-2">
+        <ChooseName name={dataSetName} onChange={setDataSetName} />
+        <Button.Secondary
+          className="col-span-full justify-center text-center"
+          onClick={async (): Promise<void> =>
+            handleFilesSelected(files, dataSetName)
+          }
+        >
+          {attachmentsText.importAttachments()}
+        </Button.Secondary>
+      </div>
+      {previewData !== undefined && <Preview hasHeader={true} preview={previewData}></Preview>}
+    </>
   );
 }
