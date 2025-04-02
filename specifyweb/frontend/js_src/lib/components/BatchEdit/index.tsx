@@ -13,6 +13,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -128,7 +129,8 @@ export function BatchEditFromQuery({
       <Button.Small
         disabled={
           queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable)
+          queryFieldSpecs.some(hasHierarchyBaseTable) ||
+          containsDisallowedTables(query)
         }
         onClick={() => {
           loading(
@@ -198,6 +200,14 @@ const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
+  );
+
+const DISALLOWED_TABLES = [tables.SpAuditLog];
+
+const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
+  DISALLOWED_TABLES.some(
+    (table) =>
+      query.get('contextName').toLowerCase() === table.name.toLowerCase()
   );
 
 // Error filters
