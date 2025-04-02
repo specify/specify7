@@ -139,24 +139,41 @@ export function QueryFields({
     return () => sortable.destroy();
   }, []);
 
-  // Scroll to bottom if added a child
-  const oldFieldCount = React.useRef(fields.length);
+  /**
+   * If one or more children are added, scroll to the first added child
+   *
+   * This assumes that each child of the fieldsContainerRef element corresponds
+   * to the QueryField of the same index:
+   * i.e., fields[index] == fieldsContainerRef.children[index]
+   */
+  const oldFields = React.useRef<RA<QueryField>>(fields);
   // REFACTOR: extract this into hook and use everywhere where applicable
   useReadyEffect(
     React.useCallback(() => {
       if (
         fieldsContainerRef.current !== null &&
-        fieldsContainerRef.current.lastChild !== null &&
+        fieldsContainerRef.current.children.length > 1 &&
         fieldsContainerRef.current.clientHeight !==
           fieldsContainerRef.current.scrollHeight &&
-        fields.length > oldFieldCount.current
+        fields.length > oldFields.current.length
       ) {
-        const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
+        const firstChangedFieldIndex = fields
+          .map(({ id }) => id)
+          .findIndex(
+            (id, index) =>
+              index === oldFields.current.length ||
+              id !== oldFields.current[index].id
+          );
+        const lineToScrollTo = (
+          firstChangedFieldIndex === -1
+            ? fieldsContainerRef.current.lastChild
+            : fieldsContainerRef.current.children.item(firstChangedFieldIndex)
+        ) as HTMLElement;
         const firstNonContentsChild =
-          lastElement.querySelector(':not(.contents)');
+          lineToScrollTo.querySelector(':not(.contents)');
         scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
       }
-      oldFieldCount.current = fields.length;
+      oldFields.current = fields;
     }, [fields.length])
   );
 
