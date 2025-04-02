@@ -139,8 +139,8 @@ msgid "invalidNumericPicklistValue"
 msgstr ""
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:238
-#: components/FormCells/FormTable.tsx:568
+#: components/FormCells/FormTable.tsx:260
+#: components/FormCells/FormTable.tsx:592
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
