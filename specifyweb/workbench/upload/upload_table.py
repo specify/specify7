@@ -839,9 +839,10 @@ class BoundUploadTable(NamedTuple):
 
     def _relationship_is_dependent(self, field_name) -> bool:
         django_model = self.django_model
-        # We could check to_one_fields, but we are not going to, because that is just redundant with is_one_to_one.
-        if field_name in self.toOne:
-            return self.toOne[field_name].is_one_to_one()
+        # One-to-ones can always be considered to be dependent
+        if field_name in self.toOne and self.toOne[field_name].is_one_to_one():
+            return True
+        
         return django_model.specify_model.get_relationship(field_name).dependent
 
 
