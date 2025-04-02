@@ -26,9 +26,9 @@ import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
+import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import { Preview } from '../Molecules/FilePicker';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -131,11 +131,11 @@ function FilesPicked({
   const [dataSetName, setDataSetName] = React.useState<string>(
     attachmentsText.attachments()
   );
-  
+
   const previewData = React.useMemo(() => {
     const preview: RA<RA<string>> = [
-      ["Attachments"],
-      ...Array.from(files, (file) => [file.name])
+      ['Attachments'],
+      ...Array.from(files, (file) => [file.name]),
     ];
     return preview.length > 0 ? preview : undefined;
   }, [files]);
@@ -170,7 +170,7 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
-      {previewData !== undefined && <Preview hasHeader={true} preview={previewData}></Preview>}
+      {previewData !== undefined && <Preview hasHeader preview={previewData} />}
     </>
   );
 }
