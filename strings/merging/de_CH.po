@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-02 22:00+0000\n"
+"PO-Revision-Date: 2025-04-02 21:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/merging/de_CH/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1637
@@ -38,7 +38,7 @@ msgstr "Zusammengeführter Datensatz"
 #: components/Merging/index.tsx:451
 #, fuzzy
 msgid "showConflictingFieldsOnly"
-msgstr "Nur in Konflikt stehende Felder anzeigen"
+msgstr "Nur widersprüchliche Felder anzeigen"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:190
@@ -114,9 +114,9 @@ msgstr "Andere zusammenführen"
 msgid "warningMergeText"
 msgstr ""
 "Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere "
-"Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder einer "
-"vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für Benutzer von "
-"Specify führen. Bitte bedenken Sie die Auswirkungen auf deren "
+"Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder zur "
+"vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für Specify-"
+"Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren "
 "Benutzererfahrung. Diese Zusammenführung kann nicht rückgängig gemacht "
 "werden."
 
@@ -173,7 +173,7 @@ msgstr "Zusammenführung erneut versuchen."
 #: components/Merging/Status.tsx:144
 #, fuzzy
 msgid "mergingWentWrong"
-msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
+msgstr "Beim Zusammenführungsprozess ist ein Fehler aufgetreten."
 
 #. Used in: Components > Merging > Usages
 #: components/Merging/Usages.tsx:22
