@@ -3,9 +3,7 @@ import type { State } from 'typesafe-reducer';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { interactionsText } from '../../localization/interactions';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -31,10 +29,10 @@ import { SubViewContext } from '../Forms/SubView';
 import type { InteractionWithPreps } from '../Interactions/helpers';
 import { interactionPrepTables } from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
-import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
+import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -411,31 +409,17 @@ export function IntegratedRecordSelector({
                 />
               ) : null}
               {isWarningOpen && typeof handleRemove === 'function' && isAttachmentTable?
-                <Dialog 
-                  buttons={
-                    <>
-                      <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                      <Button.Save onClick={():void => {
-                        if (formType === 'form' ) {
-                          handleRemove('minusButton');
-                        }
-                        if (formType === 'formTable') {
-                          collection.remove(resource!);
-                          if (isCollapsed) handleExpand();
-                          handleDelete?.(index, 'minusButton');
-                        }
-                        closeWarning()
-                      }}>{interactionsText.continue()}</Button.Save>
-                    </>
-                  } 
-                  header={attachmentsText.attachmentDelition()}
-                  onClose={closeWarning}
-                  >
-                    {attachmentsText.deleteAttachmentWarning()}
-                    <span className="font-bold">
-                      {resource?.dependentResources?.attachment?.get('title') ?? ''}
-                    </span>
-                  </Dialog> : undefined
+                  <AttachmentWarningDeletion 
+                    closeWarning={closeWarning} 
+                    collection={collection} 
+                    formType={formType} 
+                    index={index}
+                    isCollapsed={isCollapsed}
+                    resource={resource} 
+                    onDelete={handleDelete} 
+                    onExpand={handleExpand} 
+                    onRemove={handleRemove}/> 
+                : undefined
               }
             </>
           )}
