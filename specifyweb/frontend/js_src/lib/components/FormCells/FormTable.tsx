@@ -18,6 +18,7 @@ import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
@@ -27,6 +28,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -124,6 +126,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined
   );
+
   const handleAddResources =
     typeof handleAdd === 'function'
       ? function handleAddResources(
@@ -140,7 +143,9 @@ export function FormTable<SCHEMA extends AnySchema>({
           addedResource.current = resources[0];
         }
       : undefined;
+
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
+
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
@@ -153,15 +158,20 @@ export function FormTable<SCHEMA extends AnySchema>({
   }, [resources]);
 
   const isToOne = !relationshipIsToMany(relationship);
+
   const disableAdding = isToOne && resources.length > 0;
+
   const header = commonText.countLine({
     resource: relationship.label,
     count: totalCount ?? resources.length,
   });
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const isInSearchDialog = React.useContext(SearchDialogContext);
+
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
+
   const collapsedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
     viewName,
@@ -169,6 +179,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     formType: 'formTable',
     mode,
   });
+
   const expandedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
     viewName,
@@ -178,19 +189,30 @@ export function FormTable<SCHEMA extends AnySchema>({
   });
 
   const id = useId('form-table');
-  const [isExpanded, setExpandedRecords] = React.useState<
-    IR<boolean | undefined>
-  >({});
+
+  const collectionPreparationPref = getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) 
+
+  const [isExpanded, setExpandedRecords] = React.useState<IR<boolean | undefined>>(
+    Object.fromEntries(
+      resources.map((resource) => [
+        resource.cid,
+        Boolean(resource.specifyTable.name === "Preparation" && collectionPreparationPref),
+      ])
+    )
+  );
+
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
+
   const [flexibleSubGridColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleSubGridColumnWidth'
   );
+
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
@@ -496,6 +518,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
+
   const addButtons =
     mode === 'view' || disableAdding ? undefined : relationship.relatedTable
         .name === 'CollectionObjectGroupJoin' &&
@@ -524,6 +547,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         ) : undefined}
       </>
     ) : undefined;
+
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
