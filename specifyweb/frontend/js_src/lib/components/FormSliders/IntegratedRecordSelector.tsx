@@ -32,6 +32,7 @@ import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
+import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -69,8 +70,7 @@ export function IntegratedRecordSelector({
   const focusFirstField = useFirstFocus(containerRef);
 
   const isDependent = collection instanceof DependentCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = shouldBeToOne(relationship);
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     false,
@@ -330,7 +330,9 @@ export function IntegratedRecordSelector({
                         <AttachmentsCollection collection={collection} />
                       )}
                       {specifyNetworkBadge}
-                      {!isToOne && slider}
+                      {(!isToOne ||
+                        (isToOne && collection.models.length > 1)) &&
+                        slider}
                     </>
                   )}
                   isCollapsed={isCollapsed}

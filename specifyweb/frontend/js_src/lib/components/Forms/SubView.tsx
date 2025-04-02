@@ -125,27 +125,7 @@ export function SubView({
     ]
   );
 
-  // TODO: Remove after #6193
-  const isCollectingEventToOne =
-    schema.embeddedCollectingEvent &&
-    relationship.table === tables.CollectingEvent &&
-    relationship.name === 'collectionObjects';
-  const reversePaleoContextField: IR<string> = {
-    collectionobject: 'collectionObjects',
-    collectingevent: 'collectingEvents',
-    locality: 'localities',
-  };
-  const isPaleoContextToOne =
-    schema.embeddedPaleoContext &&
-    relationship.table === tables.PaleoContext &&
-    relationship.name ===
-      reversePaleoContextField[schema.paleoContextChildTable];
-
-  // TODO: Remove readonly for embedded CE and paleo context after #6193
-  const isReadOnly =
-    React.useContext(ReadOnlyContext) ||
-    isCollectingEventToOne ||
-    isPaleoContextToOne;
+  const isReadOnly = React.useContext(ReadOnlyContext);
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
