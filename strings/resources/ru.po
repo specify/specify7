@@ -498,36 +498,56 @@ msgstr "Условное значение поля"
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
 
-#: components/DataModel/businessRuleDefs.ts:403
-#: components/DataModel/businessRuleDefs.ts:421
+#: components/DataModel/businessRuleDefs.ts:409
+#: components/DataModel/businessRuleDefs.ts:427
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Требуется текущее определение."
 
-#: components/DataModel/businessRuleDefs.ts:297
-#: components/DataModel/businessRuleDefs.ts:316
+#: components/DataModel/businessRuleDefs.ts:303
+#: components/DataModel/businessRuleDefs.ts:322
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:246
+#: components/DataModel/businessRuleDefs.ts:252
 #: components/DataModel/__tests__/businessRules.test.ts:339
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:334
+#: components/DataModel/businessRuleDefs.ts:340
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deletePrimaryRecord"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:335
+#: components/DataModel/businessRuleDefs.ts:611
 #. Used in: Components > Data Model > Business Rule Defs
-msgid "primaryDeletionErrorMessage"
+msgid "deleteLoanedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:217
+#: components/DataModel/businessRuleDefs.ts:619
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deleteGiftedPrep"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:627
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deleteDisposedPrep"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:635
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deleteExchangeOutPrep"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:643
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "deleteExchangeInPrep"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:223
 #: components/DataModel/__tests__/businessRules.test.ts:154
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
