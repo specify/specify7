@@ -1367,3 +1367,48 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+@login_maybe_required
+@require_POST
+def catalog_number_for_sibling(request: http.HttpRequest):
+    # returns the catalog number of the primary CO of a COG if one is present 
+
+    request_data = json.loads(request.body)
+    id = request_data.get('id')
+    catalog_number = request_data.get('catalognumber')
+
+    # If the CO resource already has a cat num we should return None to not use the sibling cat num
+    if catalog_number is not None: 
+        return http.JsonResponse(None, safe=False)
+    
+    # If the resource is not CO we should return None
+    request_data_dict = dict(request_data) 
+    if "catalognumber" not in request_data_dict:
+        return http.JsonResponse(None, safe=False)
+
+    # Find the associated cojo
+    cojo = spmodels.Collectionobjectgroupjoin.objects.filter(childco=id).first()
+
+    # If the CO is not a part of a COG no need to return sibling cat num
+    if cojo is None:
+        return http.JsonResponse(None, safe=False)
+
+    cog_parent = cojo.parentcog
+
+    cojos = spmodels.Collectionobjectgroupjoin.objects.filter(parentcog=cog_parent.id)
+
+    primary_catalog_number = None
+
+    for cojo in cojos:
+        child_co = cojo.childco
+        child_co_primary = getattr(cojo, "isprimary")
+
+        if child_co_primary:  # If child_co_primary is True
+            primary_catalog_number = child_co.catalognumber
+            break  # Stop loop if we found the primary catalog number
+
+        elif child_co_primary is False:  
+            continue
+
+    # This will return Primary CO cat num if one present, otherwise None
+    return http.JsonResponse(primary_catalog_number, safe=False)  

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input } from '../Atoms/Form';
@@ -12,6 +13,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
@@ -124,11 +126,42 @@ function Field({
     'rightAlignNumberFields'
   );
 
+  const isNew = resource?.isNew()
+  const isCO = resource?.specifyTable.name === "CollectionObject"
+  const isPartOfCOG = isCO ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined : false;
+  const isCatNumberField = field?.name === "catalogNumber"
+  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
+  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
+      'catalogNumberInheritance',
+      'behavior',
+      'inheritance'
+    );
+  const displayCatNumberPlaceHolder = isNew === false && isCO && isPartOfCOG && isCatNumberField && displayPrimaryCatNumberPref
+  
+  const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (resource && displayCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_for_sibling/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource
+      })
+      .then((response) => {
+        setPrimaryCatalogNumber(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching catalog number:", error);
+      });
+    }
+  }, [resource, displayCatNumberPlaceHolder]);
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       name={name}
+      placeholder={displayCatNumberPlaceHolder && typeof primaryCatalogNumber === 'string' ? primaryCatalogNumber : undefined}
       {...validationAttributes}
       className={
         /*
