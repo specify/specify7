@@ -30,29 +30,30 @@ export function AttachmentWarningDeletion({
  readonly index: number;
  readonly closeWarning: () => void
 }): JSX.Element {
- return <Dialog 
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Button.Save onClick={():void => {
-                if (formType === 'form' ) {
-                  handleRemove('minusButton');
-                }
-                if (formType === 'formTable') {
-                  collection.remove(resource!);
-                  if (isCollapsed) handleExpand();
-                  handleDelete?.(index, 'minusButton');
-                }
-                closeWarning()
-              }}>{interactionsText.continue()}</Button.Save>
-            </>
-          } 
-          header={attachmentsText.attachmentDelition()}
-          onClose={closeWarning}
-          >
-            {attachmentsText.deleteAttachmentWarning()}
-            <span className="font-bold">
-            {(resource?.dependentResources?.attachment as SpecifyResource<AnySchema>)?.get('title') ?? ''}
-            </span>
-         </Dialog> 
+ return (
+  <Dialog 
+    buttons={
+     <>
+       <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+       <Button.Save onClick={():void => {
+         if (formType === 'form' ) {
+           handleRemove('minusButton');
+         }
+         if (formType === 'formTable') {
+           collection.remove(resource!);
+           if (isCollapsed) handleExpand();
+           handleDelete?.(index, 'minusButton');
+         }
+         closeWarning()
+       }}>{interactionsText.continue()}</Button.Save>
+     </>
+    } 
+    header={attachmentsText.attachmentDelition()}
+    onClose={closeWarning}
+    >
+      {attachmentsText.deleteAttachmentWarning()}
+      <span className="font-bold">
+      {(resource?.dependentResources?.attachment as SpecifyResource<AnySchema>)?.get('title') ?? ''}
+      </span>
+   </Dialog> )
 }
