@@ -1,4 +1,3 @@
-from calendar import c
 import csv
 import json
 import logging
@@ -955,7 +954,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
 
         # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
         for result in results:
-            result = list(result)  # Convert result to a mutable list
+            result = list(result)
             if result[catalog_number_field_index] is None:
                 cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
                 if cojo:
@@ -963,7 +962,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
                         parentcog=cojo.parentcog, isprimary=True).first()
                     if primary_cojo:
                         result[catalog_number_field_index] = primary_cojo.childco.catalognumber
-            updated_results.append(tuple(result))  # Convert back to tuple if needed
+            updated_results.append(tuple(result))
 
         return updated_results
 
