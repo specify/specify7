@@ -146,7 +146,8 @@ function Wrapped({
         () =>
           setSaveRequired(
             (state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)) || autoRun
+              initialFields.current !== JSON.stringify(state.fields)) ||
+              autoRun
           ),
         200
       ),

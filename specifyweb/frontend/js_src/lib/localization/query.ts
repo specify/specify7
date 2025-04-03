@@ -902,6 +902,9 @@ export const queryText = createDictionary({
   nonStrict: {
     'en-us': 'Non strict',
   },
+  catalogNumberInheritance: {
+    'en-us': 'Catalog Number Inheritance',
+  },
   formatInputAs: {
     comment: `
       Used to indicate a text field will be formatted with a specific format.
