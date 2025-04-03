@@ -11,7 +11,7 @@ import type { GetSet, RA, RR } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -76,6 +76,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -116,11 +118,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           addNew={false}
           disabled={focusedRow === undefined}
           isRoot={isRoot}
-          label={
-            hasTablePermission(tableName, 'update')
-              ? commonText.edit()
-              : commonText.view()
-          }
+          label={isReadOnly ? commonText.view() : commonText.edit()}
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
@@ -160,7 +158,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isReadOnly}
             icon="arrowsMove"
             title={treeText.move()}
             onClick={(): void => setAction('move')}
@@ -171,7 +169,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons}
+            disabled={disableButtons || isReadOnly}
             icon="truck"
             title={treeText.moveItems()}
             onClick={(): void => setAction('bulkMove')}
@@ -181,7 +179,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isReadOnly}
             icon="merge"
             title={treeText.merge()}
             onClick={(): void => setAction('merge')}
@@ -196,6 +194,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Icon
             disabled={
               disableButtons ||
+              isReadOnly ||
               isRoot ||
               (doExpandSynonymActionsPref
                 ? false
