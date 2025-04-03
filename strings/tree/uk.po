@@ -251,7 +251,7 @@ msgstr "Прямий підрахунок {collectionObjectTable:string}."
 msgid "indirectCollectionObjectCount"
 msgstr "Непрямий підрахунок {collectionObjectTable:string}."
 
-#: components/TreeView/Tree.tsx:189
+#: components/TreeView/Tree.tsx:183
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Редагувати ранги"
@@ -320,7 +320,7 @@ msgstr "Переміщення елементів"
 msgid "addTree"
 msgstr ""
 
-#: components/TreeView/Tree.tsx:227
+#: components/TreeView/Tree.tsx:221
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "addRootNode"

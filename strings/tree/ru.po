@@ -293,7 +293,7 @@ msgstr "Прямой счет {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Косвенный счет {collectionObjectTable:string}"
 
-#: components/TreeView/Tree.tsx:189
+#: components/TreeView/Tree.tsx:183
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"
@@ -364,7 +364,7 @@ msgstr "Переместить предметы"
 msgid "addTree"
 msgstr ""
 
-#: components/TreeView/Tree.tsx:227
+#: components/TreeView/Tree.tsx:221
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "addRootNode"
