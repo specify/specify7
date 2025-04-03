@@ -92,11 +92,11 @@ type Actions =
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => ({
-    ...state, 
+    ...state,
     openedElement: {
-      line: (state.fields.length) - 1,
-      index: undefined
-    }
+      line: state.fields.length - 1,
+      index: undefined,
+    },
   }),
   RunQueryAction: ({ state }) => ({
     ...state,
@@ -157,8 +157,8 @@ export const reducer = generateReducer<MainState, Actions>({
         mappingView: newMappingPath,
         openedElement: {
           line: state.fields.length,
-          index: undefined
-        }
+          index: undefined,
+        },
       };
 
     return {

@@ -37,7 +37,9 @@ export function useTypeSearch(
       ? initialTypeSearch.table
       : undefined);
 
-  const mainfields = relatedTable?.name ? getMainTableFields(relatedTable?.name) : undefined
+  const mainfields = relatedTable?.name
+    ? getMainTableFields(relatedTable?.name)
+    : undefined;
 
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(async () => {
@@ -60,12 +62,12 @@ export function useTypeSearch(
       found ||= {
         table: relatedTable,
         title: localized(mainfields?.[0].name ?? ''),
-        searchFields: [mainfields?.slice(0,1) ?? []] ,
+        searchFields: [mainfields?.slice(0, 1) ?? []],
         name: localized(relatedTable?.name),
-        formatter: localized(""), 
+        formatter: localized(''),
         displayFields: undefined,
-        format: localized("%s")
-      }
+        format: localized('%s'),
+      };
 
       return found ?? false;
     }, [initialTypeSearch, relatedTable]),

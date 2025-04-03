@@ -131,7 +131,7 @@ function MetaDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
-  const canMergeTable = canMerge(resource.specifyTable)
+  const canMergeTable = canMerge(resource.specifyTable);
   return (
     <Dialog
       buttons={commonText.close()}
@@ -221,7 +221,8 @@ function MetaDialog({
             {resource.specifyTable.name in recordMergingTableSpec &&
             hasPermission('/record/merge', 'update') &&
             hasPermission('/record/merge', 'delete') &&
-            hasTablePermission(resource.specifyTable.name, 'update') && canMergeTable ? (
+            hasTablePermission(resource.specifyTable.name, 'update') &&
+            canMergeTable ? (
               <MergeRecord resource={resource} />
             ) : undefined}
           </>
