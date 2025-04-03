@@ -204,7 +204,7 @@ export function ResourceMapping({
         showHiddenFields: true,
         generateFieldData: 'all',
         spec: navigatorSpecs.formatterEditor,
-      }).map(line => ({
+      }).map((line) => ({
         ...line,
         fieldsData: Object.fromEntries(
           Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
