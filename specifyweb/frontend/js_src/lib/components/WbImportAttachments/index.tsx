@@ -141,11 +141,8 @@ function FilesPicked({
     attachmentsText.attachments()
   );
 
-
   const previewData = React.useMemo(() => {
     const preview: RA<RA<string>> = [
-      ['Attachments'],
-      ...Array.from(files, (file) => [file.name]),
       ['Attachments'],
       ...Array.from(files, (file) => [file.name]),
     ];
