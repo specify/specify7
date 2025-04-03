@@ -57,16 +57,20 @@ function FilesPicked({
   readonly files: readonly File[];
 }): JSX.Element {
   const navigate = useNavigate();
-  const [uploadProgress, setUploadProgress] = React.useState<
+  const [_, setUploadProgress] = React.useState<number | true | undefined>(
+    undefined
+  );
+  const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | true | undefined
   >(undefined);
-  const [isFailed, handleFailed] = useBooleanState();
+  const [isFailed, setFailed] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
   const handleFilesSelected = async (
     files: readonly File[],
     dataSetName: string
   ): Promise<void> => {
+    setFileUploadProgress(true);
     dataSetName = await uniquifyDataSetName(dataSetName);
     const dataSet = new tables.Spdataset.Resource({
       name: dataSetName,
@@ -95,6 +99,11 @@ function FilesPicked({
       dataSetAttachments.push(await dataSetAttachment.save());
     }
 
+    async function handleFailed(): Promise<void> {
+      setFileUploadProgress(undefined);
+      setFailed();
+    }
+
     const uploads = files.map(async (file) =>
       uploadFile(file, setUploadProgress)
         .then(async (attachment) =>
@@ -104,10 +113,9 @@ function FilesPicked({
           handleFailed();
           raise(error);
         })
-        .finally(() => setUploadProgress(undefined))
+        .finally(() => setFileUploadProgress(dataSetAttachments.length))
     );
 
-    loading(Promise.all(uploads));
     await Promise.all(uploads);
 
     // Data set will contain the ids to the SpDataSetAttachment records
@@ -121,6 +129,7 @@ function FilesPicked({
       'spDataSetAttachments',
       dataSetAttachments.map(serializeResource)
     );
+    setFileUploadProgress(undefined);
     loading(
       dataSet.save().then(() => {
         navigate(`/specify/workbench/plan/${dataSet.id}/`);
@@ -131,34 +140,34 @@ function FilesPicked({
   const [dataSetName, setDataSetName] = React.useState<string>(
     attachmentsText.attachments()
   );
-  
+
   const previewData = React.useMemo(() => {
     const preview: RA<RA<string>> = [
-      ["Attachments"],
-      ...Array.from(files, (file) => [file.name])
+      ['Attachments'],
+      ...Array.from(files, (file) => [file.name]),
     ];
     return preview.length > 0 ? preview : undefined;
   }, [files]);
 
-  // TODO: Preview files, progress bar
   return isFailed ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : typeof uploadProgress === 'object' ? (
-    <Dialog
-      buttons={undefined}
-      header={attachmentsText.uploadingInline()}
-      onClose={undefined}
-    >
-      <div aria-live="polite">
-        {typeof uploadProgress === 'number' ? (
-          <Progress value={uploadProgress} />
-        ) : (
-          loadingBar
-        )}
-      </div>
-    </Dialog>
   ) : (
     <>
+      {fileUploadProgress !== undefined && (
+        <Dialog
+          buttons={undefined}
+          header={attachmentsText.uploadingInline()}
+          onClose={undefined}
+        >
+          <div aria-live="polite">
+            {typeof fileUploadProgress === 'number' ? (
+              <Progress max={files.length} value={fileUploadProgress} />
+            ) : (
+              loadingBar
+            )}
+          </div>
+        </Dialog>
+      )}
       <div className="grid w-96 grid-cols-2 items-center gap-2 mt-2">
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <Button.Secondary
@@ -170,7 +179,9 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
-      {previewData !== undefined && <Preview hasHeader={true} preview={previewData}></Preview>}
+      {previewData !== undefined && (
+        <Preview hasHeader={true} preview={previewData}></Preview>
+      )}
     </>
   );
 }
