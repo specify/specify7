@@ -256,6 +256,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             <Input.Integer
               aria-label={formsText.bulkCarryForwardCount()}
               className="!w-fit"
+              max={5000}
               min={1}
               placeholder="1"
               value={carryForwardAmount}
