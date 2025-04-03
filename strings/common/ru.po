@@ -170,7 +170,7 @@ msgstr "Создать"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:563
+#: components/FormCells/FormTable.tsx:571
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -424,7 +424,7 @@ msgstr "Инструменты"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:258
+#: components/FormCells/FormTable.tsx:266
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:84
@@ -498,8 +498,8 @@ msgstr "Загружено"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:155
 #: components/ExportFeed/Editor.tsx:157
-#: components/FormCells/FormTable.tsx:481
-#: components/FormCells/FormTable.tsx:493
+#: components/FormCells/FormTable.tsx:489
+#: components/FormCells/FormTable.tsx:501
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
@@ -673,8 +673,8 @@ msgstr "(откроется в новой вкладке)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:209
-#: components/FormCells/FormTable.tsx:466
-#: components/FormCells/FormTable.tsx:469
+#: components/FormCells/FormTable.tsx:474
+#: components/FormCells/FormTable.tsx:477
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #, fuzzy
 msgid "openInNewTab"
@@ -689,7 +689,7 @@ msgstr "Открыть в новой вкладке"
 msgid "goToHomepage"
 msgstr "Вернуться на домашнюю страницу"
 
-#: components/FormCells/FormTable.tsx:339
+#: components/FormCells/FormTable.tsx:347
 #: components/QueryBuilder/Edit.tsx:93
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #, fuzzy
@@ -925,9 +925,9 @@ msgstr "Скопировать в буфер обмена"
 msgid "selected"
 msgstr "Выбрано"
 
-#: components/FormCells/FormTable.tsx:294
-#: components/FormCells/FormTable.tsx:390
-#: components/FormCells/FormTable.tsx:392
+#: components/FormCells/FormTable.tsx:302
+#: components/FormCells/FormTable.tsx:398
+#: components/FormCells/FormTable.tsx:400
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
@@ -943,8 +943,8 @@ msgstr "Расширять"
 msgid "expandAll"
 msgstr "Расширить все"
 
-#: components/FormCells/FormTable.tsx:350
-#: components/FormCells/FormTable.tsx:352
+#: components/FormCells/FormTable.tsx:358
+#: components/FormCells/FormTable.tsx:360
 #: components/FormSliders/IntegratedRecordSelector.tsx:109
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index

@@ -176,8 +176,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Дополнительные результаты опущены"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:260
-#: components/FormCells/FormTable.tsx:592
+#: components/FormCells/FormTable.tsx:268
+#: components/FormCells/FormTable.tsx:600
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
@@ -674,7 +674,7 @@ msgstr "Конфигурация формы"
 msgid "formState"
 msgstr "Форма состояния"
 
-#: components/FormMeta/index.tsx:229
+#: components/FormMeta/index.tsx:230
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "recordInformation"
