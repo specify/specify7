@@ -27,7 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Fixed
 
-* Fixes an issue that caused some WorkBench data sets. ([#6322](https://github.com/specify/specify7/pull/6322))
+* Fixes an issue that caused some WorkBench data sets to match to the incorrect ranks ([#6322](https://github.com/specify/specify7/pull/6322))
+* Fixes an issue where the defaults for insect collections were missing ([#6383](https://github.com/specify/specify7/pull/6383))
 * Field formats in the Schema Config utility are selected automatically again ([#6255](https://github.com/specify/specify7/pull/6255))
 * Primary Collection Objects (COs) in a consolidated Collection Object Group (COG) can no longer be deleted unless another CO is marked as primary ([#6181](https://github.com/specify/specify7/pull/6181))
 * Fixes all cases where table aggregation separators were missing ([#6115](https://github.com/specify/specify7/pull/6115))
