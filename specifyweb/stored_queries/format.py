@@ -6,20 +6,21 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
+from specifyweb.specify.utils import get_picklists
 from sqlalchemy import orm, Table as SQLTable, inspect
 from sqlalchemy.sql.expression import case, func, cast, literal, Label
-from sqlalchemy.sql.functions import concat, count
+from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union, Any
+from typing import Tuple, Optional, Union
 
-from specifyweb.context.app_resource import get_app_resource
+import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
-from specifyweb.specify.models import datamodel, Spappresourcedata, \
-    Splocalecontainer, Splocalecontaineritem
+from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
@@ -38,9 +39,9 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 
 class ObjectFormatter(object):
-    def __init__(self, collection, user, replace_nulls):
+    def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False):
 
-        formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
+        formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)
@@ -48,6 +49,8 @@ class ObjectFormatter(object):
         self.collection = collection
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
+        self.format_agent_type = format_agent_type
+        self.format_picklist = format_picklist
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
@@ -69,6 +72,7 @@ class ObjectFormatter(object):
             return None
 
         def getFormatterFromSchema() -> Element:
+
             try:
                 formatter_name = Splocalecontainer.objects.get(
                     name=specify_model.name.lower(),
@@ -98,7 +102,12 @@ class ObjectFormatter(object):
         if result is not None:
             return result
 
-        return lookup('class', specify_model.classname)
+        result = lookup('class', specify_model.classname)
+        if result is not None:
+            return result
+        
+        logger.warning("no dataobjformatter for %s", specify_model.classname)
+        return None
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
         if formatter_name is None:
@@ -124,9 +133,6 @@ class ObjectFormatter(object):
         if aggregator_name:
             result = lookup('name', aggregator_name)
         return result if result is not None else lookup_default('class', specify_model.classname)
-
-    def catalog_number_is_numeric(self):
-        return self.collection.catalognumformatname == 'CatalogNumberNumeric'
 
     def pseudo_sprintf(self, format, expr):
         """Handle format attribute of fields in data object formatter definitions.
@@ -180,8 +186,7 @@ class ObjectFormatter(object):
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
-            new_expr = self._fieldformat(formatter_field_spec.get_field(),
-                                         getattr(table, specify_field.name))
+            new_expr = getattr(table, specify_field.name)
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
@@ -263,7 +268,7 @@ class ObjectFormatter(object):
         formatter_name = aggregator_formatter_name
         if not self.hasFormatterDef(specify_model, aggregator_formatter_name):
             formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', ',')
+        separator = aggregatorNode.attrib.get('separator', '; ')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
         limit = aggregatorNode.attrib.get('count', '')
         limit = None if limit == '' or int(limit) == 0 else limit
@@ -303,14 +308,11 @@ class ObjectFormatter(object):
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
 
-            elif field_spec.tree_rank is not None:
-                pass
-
             elif field_spec.is_relationship():
                 pass
 
             else:
-                field = self._fieldformat(field_spec.get_field(), field)
+                field = self._fieldformat(field_spec.table, field_spec.get_field(), field)
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
@@ -327,18 +329,27 @@ class ObjectFormatter(object):
 
         return func.date_format(field, format_expr)
 
-    def _fieldformat(self, specify_field: Field,
+    def _fieldformat(self, table: Table, specify_field: Field,
                      field: Union[InstrumentedAttribute, Extract]):
+        
+        if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
+            cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
+            _case = case(cases)
+            return blank_nulls(_case) if self.replace_nulls else _case
+        
+        if self.format_picklist:
+            picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
+            if picklists:
+                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                _case = case(cases, else_=field)
+            
+                return blank_nulls(_case) if self.replace_nulls else _case
+        
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
-
-        if specify_field is CollectionObject_model.get_field('catalogNumber') \
-                and self.catalog_number_is_numeric():
-            return cast(field,
-                        types.Numeric(65))  # 65 is the mysql max precision
 
         if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)

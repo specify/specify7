@@ -17,6 +17,7 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { BatchEditFromQuery } from '../BatchEdit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -40,6 +41,7 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
@@ -143,12 +145,13 @@ function Wrapped({
       throttle(
         () =>
           setSaveRequired(
-            state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)
+            (state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)) ||
+              autoRun
           ),
         200
       ),
-    [initialFields.current, state.fields]
+    [initialFields.current, state.fields, autoRun]
   );
 
   React.useEffect(checkForChanges, [state.fields]);
@@ -190,12 +193,12 @@ function Wrapped({
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
           mappingPath,
           sortType: undefined,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
           isDisplay: true,
@@ -588,17 +591,27 @@ function Wrapped({
                   ) : undefined
                 }
                 extraButtons={
-                  query.countOnly ? undefined : (
-                    <QueryExportButtons
-                      baseTableName={state.baseTableName}
-                      fields={state.fields}
-                      getQueryFieldRecords={getQueryFieldRecords}
-                      queryResource={queryResource}
-                      recordSetId={recordSet?.id}
-                      results={resultsRef}
-                      selectedRows={selectedRows}
-                    />
-                  )
+                  <>
+                    {datasetVariants.batchEdit.canCreate() && (
+                      <BatchEditFromQuery
+                        baseTableName={state.baseTableName}
+                        fields={state.fields}
+                        query={queryResource}
+                        recordSetId={recordSet?.id}
+                      />
+                    )}
+                    {query.countOnly ? undefined : (
+                      <QueryExportButtons
+                        baseTableName={state.baseTableName}
+                        fields={state.fields}
+                        getQueryFieldRecords={getQueryFieldRecords}
+                        queryResource={queryResource}
+                        recordSetId={recordSet?.id}
+                        results={resultsRef}
+                        selectedRows={selectedRows}
+                      />
+                    )}
+                  </>
                 }
                 fields={state.fields}
                 forceCollection={forceCollection}

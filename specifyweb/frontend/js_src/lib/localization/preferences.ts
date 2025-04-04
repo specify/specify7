@@ -1412,6 +1412,9 @@ export const preferencesText = createDictionary({
       gelangen
     `,
   },
+  sortByField: {
+    'en-us': 'Order By Field',
+  },
   lineWrap: {
     'en-us': 'Line wrap',
     'ru-ru': 'Перенос строки',
@@ -1492,7 +1495,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поиск с учетом регистра',
   },
   searchField: {
-    'en-us': 'Search field',
+    'en-us': 'Search Field',
     'ru-ru': 'Поле поиска',
     'es-es': 'Campo de búsqueda',
     'fr-fr': 'Champ de recherche',
@@ -2013,5 +2016,10 @@ export const preferencesText = createDictionary({
     'fr-fr': "Ajouter une barre de recherche sur la page d'accueil",
     'ru-ru': 'Добавить панель поиска на главную страницу',
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
+  },
+  inheritanceCatNumberPref: {
+    // TODO: improve
+    'en-us':
+      'Enable the inheritance of the primary catalog number to its empty siblings.',
   },
 } as const);

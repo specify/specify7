@@ -15,6 +15,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
@@ -29,14 +30,18 @@ import {
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
+  formatTreeDefinition,
   formatTreeRank,
   getGenericMappingPath,
+  getNameFromTreeDefinitionName,
   getNameFromTreeRankName,
   parsePartialField,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsPartialField,
   valueIsToManyIndex,
-  valueIsTreeRank,
+  valueIsTreeDefinition,
+  valueIsTreeMeta,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
@@ -64,9 +69,14 @@ type NavigationCallbacks = {
   readonly handleToManyChildren: (
     callbackPayload: Readonly<NavigationCallbackPayload>
   ) => void;
+  readonly handleTreeDefinitions: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
   // Handles tree ranks children
   readonly handleTreeRanks: (
-    callbackPayload: Readonly<NavigationCallbackPayload>
+    callbackPayload: Readonly<NavigationCallbackPayload> & {
+      readonly definitionName: string;
+    }
   ) => void;
   // Handles field and relationships
   readonly handleSimpleFields: (
@@ -84,10 +94,12 @@ type NavigationCallbacks = {
  * fields from multiple relationships at once)
  */
 function navigator({
+  spec,
   callbacks,
   recursivePayload,
   baseTableName,
 }: {
+  readonly spec: NavigatorSpec;
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks;
   // Used internally to make navigator call itself multiple times
@@ -110,12 +122,13 @@ function navigator({
   if (next === undefined) return;
 
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationship) &&
+    (relationshipIsToMany(parentRelationship) ||
+      relationshipIsRemoteToOne(parentRelationship)) &&
     !valueIsToManyIndex(parentPartName) &&
-    !valueIsTreeRank(parentPartName);
+    !valueIsTreeMeta(parentPartName);
 
   const childrenAreRanks =
-    isTreeTable(table.name) && !valueIsTreeRank(parentPartName);
+    isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const callbackPayload = {
     table,
@@ -124,11 +137,28 @@ function navigator({
 
   if (childrenAreToManyElements)
     callbacks.handleToManyChildren(callbackPayload);
-  else if (childrenAreRanks) callbacks.handleTreeRanks(callbackPayload);
+  else if (childrenAreRanks) {
+    const definitions = getTreeDefinitions(table.name, 'all');
+
+    if (definitions.length > 1 && spec.useSpecificTreeInterface)
+      callbacks.handleTreeDefinitions(callbackPayload);
+    else
+      callbacks.handleTreeRanks({
+        ...callbackPayload,
+        definitionName: spec.useSpecificTreeInterface
+          ? (definitions[0].definition.name ?? anyTreeRank)
+          : anyTreeRank,
+      });
+  } else if (valueIsTreeDefinition(parentPartName))
+    callbacks.handleTreeRanks({
+      ...callbackPayload,
+      definitionName: getNameFromTreeDefinitionName(parentPartName),
+    });
   else callbacks.handleSimpleFields(callbackPayload);
 
   const isSpecial =
-    valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
+    valueIsToManyIndex(next.partName) || valueIsTreeMeta(next.partName);
+
   const nextField = isSpecial
     ? parentRelationship
     : table.getField(next.fieldName);
@@ -136,11 +166,12 @@ function navigator({
   const nextTable = isSpecial
     ? table
     : typeof nextField === 'object' && nextField.isRelationship
-    ? nextField.relatedTable
-    : undefined;
+      ? nextField.relatedTable
+      : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
+      spec,
       callbacks,
       recursivePayload: {
         table: nextTable,
@@ -285,7 +316,7 @@ export function getMappingLineData({
       return {
         partName: nextPart,
         fieldName:
-          valueIsTreeRank(nextPart) || valueIsToManyIndex(nextPart)
+          valueIsTreeMeta(nextPart) || valueIsToManyIndex(nextPart)
             ? valueIsToManyIndex(mappingPath[internalState.position - 1])
               ? mappingPath[internalState.position - 2]
               : mappingPath[internalState.position - 1]
@@ -299,7 +330,9 @@ export function getMappingLineData({
         internalState.defaultValue,
       ]);
 
-      const isToOne = parentRelationship?.type === 'zero-to-one';
+      const isToOne =
+        parentRelationship?.type === 'one-to-one' ||
+        parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
@@ -333,14 +366,65 @@ export function getMappingLineData({
       );
     },
 
-    handleTreeRanks({ table }) {
+    handleTreeDefinitions({ table }) {
+      const defaultValue = getNameFromTreeDefinitionName(
+        internalState.defaultValue
+      );
+
+      commitInstanceData(
+        'tree',
+        table,
+        generateFieldData === 'none' ||
+          !hasTreeAccess(table.name as AnyTree['tableName'], 'read')
+          ? []
+          : [
+              spec.includeAnyTreeDefinition &&
+              (generateFieldData === 'all' ||
+                internalState.defaultValue ===
+                  formatTreeDefinition(anyTreeRank))
+                ? [
+                    formatTreeDefinition(anyTreeRank),
+                    {
+                      optionLabel: queryText.anyTree(),
+                      isRelationship: true,
+                      isDefault:
+                        internalState.defaultValue ===
+                        formatTreeDefinition(anyTreeRank),
+                      isEnabled: true,
+                      tableName: table.name,
+                    },
+                  ]
+                : undefined,
+              ...(spec.includeSpecificTreeRanks
+                ? getTreeDefinitions(
+                    table.name as AnyTree['tableName'],
+                    'all'
+                  ).map(({ definition: { name } }) =>
+                    name === defaultValue || generateFieldData === 'all'
+                      ? ([
+                          formatTreeDefinition(name),
+                          {
+                            optionLabel: name,
+                            isRelationship: true,
+                            isDefault: name === defaultValue,
+                            tableName: table.name,
+                          },
+                        ] as const)
+                      : undefined
+                  )
+                : []),
+            ]
+      );
+    },
+
+    handleTreeRanks({ table, definitionName }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
       commitInstanceData(
         'tree',
         table,
         generateFieldData === 'none' ||
-          !hasTreeAccess(table.name as 'Geography', 'read')
+          !hasTreeAccess(table.name as AnyTree['tableName'], 'read')
           ? []
           : [
               spec.includeAnyTreeRank &&
@@ -360,26 +444,28 @@ export function getMappingLineData({
                   ]
                 : undefined,
               ...(spec.includeSpecificTreeRanks
-                ? getTreeDefinitions(
-                    table.name as AnyTree['tableName'],
-                    'all'
-                  ).flatMap(({ definition, ranks }) =>
-                    // Exclude the root rank for each tree
-                    ranks.slice(1).map(({ name, title }) =>
-                      name === defaultValue || generateFieldData === 'all'
-                        ? ([
-                            formatTreeRank(name),
-                            {
-                              optionLabel: title ?? name,
-                              isRelationship: true,
-                              isDefault: name === defaultValue,
-                              tableName: table.name,
-                              tableTreeDefName: definition.name,
-                            },
-                          ] as const)
-                        : undefined
+                ? getTreeDefinitions(table.name as AnyTree['tableName'], 'all')
+                    .filter(
+                      ({ definition: { name } }) =>
+                        definitionName === name ||
+                        definitionName === anyTreeRank
                     )
-                  )
+                    .flatMap(({ ranks }) =>
+                      // Exclude the root rank for each tree
+                      ranks.slice(1).map(({ name, title }) =>
+                        name === defaultValue || generateFieldData === 'all'
+                          ? ([
+                              formatTreeRank(name),
+                              {
+                                optionLabel: title ?? name,
+                                isRelationship: true,
+                                isDefault: name === defaultValue,
+                                tableName: table.name,
+                              },
+                            ] as const)
+                          : undefined
+                      )
+                    )
                 : []),
             ]
       );
@@ -460,6 +546,16 @@ export function getMappingLineData({
           .filter((field) => {
             let isIncluded = true;
 
+            const disciplineType =
+              getSystemInfo().discipline_type?.toLowerCase();
+            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
+            if (
+              field.name === 'age' &&
+              !geoPaleoDisciplines.includes(disciplineType)
+            ) {
+              return false;
+            }
+
             isIncluded &&=
               generateFieldData === 'all' ||
               field.name === internalState.parsedDefaultValue[0];
@@ -484,9 +580,11 @@ export function getMappingLineData({
                 formatTreeRank(anyTreeRank) ||
               queryBuilderTreeFields.has(field.name);
 
-            isIncluded &&=
-              getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
-              true;
+            // Hide frontend only field
+            isIncluded &&= !(
+              getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
+                true && field.name !== 'age'
+            );
 
             if (field.isRelationship) {
               isIncluded &&=
@@ -494,8 +592,10 @@ export function getMappingLineData({
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
                   !(
-                    relationshipIsToMany(field) &&
-                    relationshipIsToMany(parentRelationship)
+                    (relationshipIsToMany(field) ||
+                      relationshipIsRemoteToOne(field)) &&
+                    (relationshipIsToMany(parentRelationship) ||
+                      relationshipIsRemoteToOne(parentRelationship))
                   ));
 
               isIncluded &&=
@@ -517,7 +617,10 @@ export function getMappingLineData({
                  * Hide -to-many relationships to a tree table as they are
                  * not supported by the WorkBench
                  */
-                !relationshipIsToMany(field) ||
+                !(
+                  relationshipIsToMany(field) ||
+                  relationshipIsRemoteToOne(field)
+                ) ||
                 !isTreeTable(field.relatedTable.name);
             }
 
@@ -586,6 +689,7 @@ export function getMappingLineData({
   };
 
   navigator({
+    spec,
     callbacks,
     baseTableName,
   });
@@ -595,7 +699,9 @@ export function getMappingLineData({
     : internalState.mappingLineData.filter(
         ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
       );
-  return spec.includeAnyTreeRank || spec.includeSpecificTreeRanks
+  return spec.includeAnyTreeRank ||
+    spec.includeAnyTreeDefinition ||
+    spec.includeSpecificTreeRanks
     ? filtered
     : filtered.filter(
         ({ customSelectSubtype }) => customSelectSubtype !== 'tree'

@@ -10,8 +10,9 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { hasPermission } from '../Permissions/helpers';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
@@ -66,7 +67,13 @@ export function WbActions({
       workbench,
     });
 
-  const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
+  const variant = resolveVariantFromDataset(dataset);
+  const viewerLocalization: WbVariantLocalization = variant.localization.viewer;
+
+  const message =
+    mode === undefined
+      ? undefined
+      : getMessage(cellCounts, mode, viewerLocalization);
 
   const isMapped = mappings !== undefined;
 
@@ -77,15 +84,17 @@ export function WbActions({
 
   return (
     <>
-      <WbNoUploadPlan
-        datasetId={dataset.id}
-        isUploaded={isUploaded}
-        mappings={mappings}
-        noUploadPlan={noUploadPlan}
-        onCloseNoUploadPlan={closeNoUploadPlan}
-        onOpenNoUploadPlan={openNoUploadPlan}
-      />
-      {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
+      {!dataset.isupdate && (
+        <WbNoUploadPlan
+          datasetId={dataset.id}
+          isUploaded={isUploaded}
+          mappings={mappings}
+          noUploadPlan={noUploadPlan}
+          onCloseNoUploadPlan={closeNoUploadPlan}
+          onOpenNoUploadPlan={openNoUploadPlan}
+        />
+      )}
+      {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
             hasUnsavedChanges={hasUnsavedChanges}
@@ -105,23 +114,24 @@ export function WbActions({
             dataCheckInProgress
               ? wbText.unavailableWhileValidating()
               : isUploaded
-              ? undefined
-              : wbText.wbUploadedUnavailable()
+                ? undefined
+                : wbText.wbUploadedUnavailable()
           }
           onClick={handleToggleResults}
         >
           {commonText.results()}
         </Button.Small>
       </ErrorBoundary>
-      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
+      {isUploaded && variant.canUndo() ? (
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
             triggerStatusComponent={triggerStatusComponent}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
+      {!isUploaded && variant.canDo() ? (
         <ErrorBoundary dismissible>
           <WbUpload
             cellCounts={cellCounts}
@@ -129,10 +139,11 @@ export function WbActions({
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
             startUpload={startUpload}
+            viewerLocalization={viewerLocalization}
           />
         </ErrorBoundary>
       ) : undefined}
-      {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+      {!isUploaded && variant.canEdit() ? (
         <>
           <ErrorBoundary dismissible>
             <WbRevert
@@ -189,6 +200,7 @@ export function WbActions({
                 <CreateRecordSetButton
                   datasetId={dataset.id}
                   datasetName={dataset.name}
+                  isUpdate={dataset.isupdate}
                   small={false}
                   onClose={() => {
                     refreshInitiatorAborted.current = false;
@@ -212,16 +224,16 @@ export function WbActions({
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
-              ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled()
+                ? wbText.rollbackCanceled()
+                : viewerLocalization.doCancelled
           }
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription()}
+              ? wbText.rollbackCanceledDescription()
+              : viewerLocalization.doCancelledDescription}
         </Dialog>
       )}
     </>
@@ -289,7 +301,8 @@ function useWbActions({
 
 function getMessage(
   cellCounts: WbCellCounts,
-  mode: WbStatus
+  mode: WbStatus,
+  viewerLocalization: WbVariantLocalization
 ): {
   readonly header: LocalizedString;
   readonly message: JSX.Element | LocalizedString;
@@ -322,23 +335,25 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: wbText.uploadSuccessful(),
-            message: wbText.uploadSuccessfulDescription(),
+            header: viewerLocalization.do,
+            message: viewerLocalization.doSuccessfulDescription,
           }
         : {
-            header: wbText.uploadErrors(),
+            header: viewerLocalization.doErrors,
             message: (
               <>
-                {wbText.uploadErrorsDescription()}
+                {viewerLocalization.doErrorsDescription}
                 <br />
                 <br />
-                {wbText.uploadErrorsSecondDescription()}
+                {wbText.uploadErrorsSecondDescription({
+                  type: viewerLocalization.do,
+                })}
               </>
             ),
           },
     unupload: {
       header: wbText.dataSetRollback(),
-      message: wbText.dataSetRollbackDescription(),
+      message: viewerLocalization.undoFinishedDescription,
     },
   };
 

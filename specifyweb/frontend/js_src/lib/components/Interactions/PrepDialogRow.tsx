@@ -129,8 +129,8 @@ export function PrepDialogRow({
                                   resource: new (loans.length === 1
                                     ? tables.Loan
                                     : gifts.length === 1
-                                    ? tables.Gift
-                                    : tables.ExchangeOut
+                                      ? tables.Gift
+                                      : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,

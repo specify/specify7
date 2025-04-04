@@ -127,6 +127,7 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table RepositoryAgreement]",
   "[table RepositoryAgreementAttachment]",
   "[table Shipment]",
+  "[table SpAuditLog]",
   "[table Storage]",
   "[table StorageAttachment]",
   "[table StorageTreeDef]",
@@ -144,5 +145,14 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table CollectionObjectGroup]",
   "[table CollectionObjectGroupJoin]",
   "[table CollectionObjectGroupType]",
+  "[table AbsoluteAge]",
+  "[table RelativeAge]",
+  "[table AbsoluteAgeAttachment]",
+  "[table RelativeAgeAttachment]",
+  "[table AbsoluteAgeCitation]",
+  "[table RelativeAgeCitation]",
+  "[table TectonicUnitTreeDef]",
+  "[table TectonicUnitTreeDefItem]",
+  "[table TectonicUnit]",
 ]
 `;

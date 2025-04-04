@@ -118,7 +118,7 @@ export const spanNumber =
 /** Get Dictionary's key in a case insensitive way */
 export const caseInsensitiveHash = <
   KEY extends string,
-  DICTIONARY extends RR<KEY, unknown>
+  DICTIONARY extends RR<KEY, unknown>,
 >(
   dictionary: DICTIONARY,
   searchKey:
@@ -148,8 +148,8 @@ export const sortFunction =
     return typeof leftValue === 'string' && typeof rightValue === 'string'
       ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
       : (leftValue ?? 0) > (rightValue ?? 0)
-      ? 1
-      : -1;
+        ? 1
+        : -1;
   };
 
 /** Like sortFunction, but can sort based on multiple fields */
@@ -182,8 +182,8 @@ export const multiSortFunction =
       return typeof leftValue === 'string' && typeof rightValue === 'string'
         ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
         : leftValue > rightValue
-        ? 1
-        : -1;
+          ? 1
+          : -1;
     }
     return 0;
   };
@@ -203,7 +203,7 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
     .reduce<
       readonly [
         left: RA<LEFT_ITEM | RIGHT_ITEM>,
-        right: RA<LEFT_ITEM | RIGHT_ITEM>
+        right: RA<LEFT_ITEM | RIGHT_ITEM>,
       ]
     >(
       ([left, right], [item, isRight]) => [
@@ -251,7 +251,7 @@ export function mappedFind<ITEM, RETURN_TYPE>(
  */
 export function removeKey<
   DICTIONARY extends IR<unknown>,
-  OMIT extends keyof DICTIONARY
+  OMIT extends keyof DICTIONARY,
 >(object: DICTIONARY, ...toOmit: RA<OMIT>): Omit<DICTIONARY, OMIT> {
   if (toOmit.length === 1) {
     const { [toOmit[0]]: _, ...newObject } = object;
@@ -322,13 +322,13 @@ export const moveItem = <T>(
           ...array.slice(index + 1),
         ]
     : index + 1 >= array.length
-    ? array
-    : [
-        ...array.slice(0, index),
-        array[index + 1],
-        array[index],
-        ...array.slice(index + 2),
-      ];
+      ? array
+      : [
+          ...array.slice(0, index),
+          array[index + 1],
+          array[index],
+          ...array.slice(index + 2),
+        ];
 
 /** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
@@ -366,8 +366,8 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
               : (value as KeysToLowerCase<OBJECT>)
           )
         : typeof value === 'object' && value !== null
-        ? keysToLowerCase(value as IR<unknown>)
-        : value,
+          ? keysToLowerCase(value as IR<unknown>)
+          : value,
     ])
   ) as unknown as KeysToLowerCase<OBJECT>;
 

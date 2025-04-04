@@ -839,4 +839,33 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Требуется текущее определение.',
     'uk-ua': 'Потрібне поточне визначення.',
   },
+  cogAddedToItself: {
+    'en-us': 'A COG cannot be added to itself.',
+  },
+  primaryCogChildRequired: {
+    'en-us':
+      'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+  },
+  deleteLoanedPrep: {
+    'en-us': 'A loaned preparation cannot be deleted',
+  },
+  deleteGiftedPrep: {
+    'en-us': 'A gifted preparation cannot be deleted',
+  },
+  deleteDisposedPrep: {
+    'en-us': 'A disposed preparation cannot be deleted',
+  },
+  deleteExchangeOutPrep: {
+    'en-us': 'A exchanged out preparation cannot be deleted',
+  },
+  deleteExchangeInPrep: {
+    'en-us': 'A exchanged in preparation cannot be deleted',
+  },
+  invalidDeterminationTaxon: {
+    'en-us':
+      'Determination does not belong to the taxon tree associated with the Collection Object Type',
+  },
 } as const);

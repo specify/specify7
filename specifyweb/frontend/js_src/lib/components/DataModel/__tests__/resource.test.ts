@@ -31,6 +31,8 @@ import type { CollectionObject } from '../types';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 
+import uniqueFields from '../uniqueFields.json';
+
 mockTime();
 requireContext();
 
@@ -248,39 +250,18 @@ describe('getCarryOverPreference', () => {
   });
 });
 
-describe('getUniqueFields', () => {
-  test('CollectionObject', () =>
-    expect(getUniqueFields(tables.CollectionObject)).toEqual([
-      'catalogNumber',
-      'uniqueIdentifier',
-      'guid',
-      'collectionObjectAttachments',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('Locality', () =>
-    expect(getUniqueFields(tables.Locality)).toEqual([
-      'uniqueIdentifier',
-      'localityAttachments',
-      'guid',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('AccessionAttachment', () =>
-    expect(getUniqueFields(tables.AccessionAttachment)).toEqual([
-      'attachment',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('AccessionAgent', () =>
-    expect(getUniqueFields(tables.AccessionAgent)).toEqual([
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
+/**
+ * If this test breaks, uniqueFields.json needs to be regenerated.
+ * 1. Go to the dev console on the browser
+ * 2. Run the function _getUniqueFields()
+ * 3. Paste the text into uniqueFields.json and format with prettier
+ */
+test('checkUniqueFields', () => {
+  Object.values(tables).map((table) =>
+    expect(getUniqueFields(table, false)).toEqual(
+      uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]
+    )
+  );
 });
 
 test('getFieldsToNotClone', () => {
@@ -291,9 +272,11 @@ test('getFieldsToNotClone', () => {
   });
   expect(getFieldsToNotClone(tables.CollectionObject, true, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'timestampCreated',
     'totalCountAmt',
     'uniqueIdentifier',
@@ -304,9 +287,11 @@ test('getFieldsToNotClone', () => {
   ]);
   expect(getFieldsToNotClone(tables.CollectionObject, false, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'text1',
     'timestampCreated',
     'totalCountAmt',

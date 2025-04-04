@@ -155,7 +155,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
@@ -181,7 +181,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
@@ -203,7 +203,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
@@ -357,7 +357,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,

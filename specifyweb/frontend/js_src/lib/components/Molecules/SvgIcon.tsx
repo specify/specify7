@@ -60,6 +60,8 @@ export function SvgIcon({
       </g>
       <g>
         <text
+          alignmentBaseline="middle"
+          baselineShift="-10%"
           dominantBaseline="central"
           fill="#FFFFFF"
           fontFamily="Francois One,sans-serif"
@@ -108,8 +110,8 @@ function getShortName(rawName: keyof Tables): string {
     rawName.endsWith('Attachment') && rawName !== 'Attachment'
       ? rawName.slice(0, -'Attachment'.length)
       : rawName.startsWith('Sp')
-      ? rawName.slice(2)
-      : rawName;
+        ? rawName.slice(2)
+        : rawName;
   const capitalLetters = name.replaceAll(/[^A-Z]/gu, '');
   return capitalLetters.length > 1
     ? capitalLetters.slice(0, 3)
@@ -239,6 +241,9 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ...startsWith('DNA', colors.purple),
   ...startsWith('Sp', colors.lightBlue),
   ...startsWith('Workbench', colors.green),
+  ...startsWith('AbsoluteAge', colors.blue),
+  ...startsWith('RelativeAge', colors.lightBlue),
+  ...startsWith('TectonicUnit', colors.yellowOrange),
   ...endsWith('Agent', colors.yellowOrange),
   ...endsWith('Citation', colors.red),
   ...endsWith('Authorization', colors.red),

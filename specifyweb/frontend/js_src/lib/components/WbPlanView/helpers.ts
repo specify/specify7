@@ -28,6 +28,7 @@ import {
   formatToManyIndex,
   formatTreeRank,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -266,10 +267,13 @@ export function mutateMappingPath({
   const table = getTable(parentTableName ?? '');
   const currentField = table?.getField(mappingPath[index] ?? '');
   const isCurrentToMany =
-    currentField?.isRelationship === true && relationshipIsToMany(currentField);
+    currentField?.isRelationship === true &&
+    (relationshipIsToMany(currentField) ||
+      relationshipIsRemoteToOne(currentField));
   const newField = table?.getField(newValue);
   const isNewToMany =
-    newField?.isRelationship === true && relationshipIsToMany(newField);
+    newField?.isRelationship === true &&
+    (relationshipIsToMany(newField) || relationshipIsRemoteToOne(newField));
   const isNewTree =
     newField?.isRelationship === true &&
     isTreeTable(newField.relatedTable.name);

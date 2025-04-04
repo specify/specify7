@@ -91,7 +91,7 @@ export const treeBusinessRules = async (
 
 const getRelatedTreeTables = async <
   TREE extends AnyTree,
-  TREE_DEF_ITEM extends TreeDefItem<AnyTree>
+  TREE_DEF_ITEM extends TreeDefItem<AnyTree>,
 >(
   resource: SpecifyResource<TREE>
 ): Promise<{
@@ -114,7 +114,7 @@ const getRelatedTreeTables = async <
 
 const predictFullName = async <
   TREE extends AnyTree,
-  TREE_DEF_ITEM extends TreeDefItem<TREE>
+  TREE_DEF_ITEM extends TreeDefItem<TREE>,
 >(
   resource: SpecifyResource<TREE>,
   parent: SpecifyResource<TREE>,

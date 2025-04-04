@@ -75,10 +75,16 @@ export function TreeSelectDialog({
                 : hasTreeAccess(treeName, 'read')
             )
             .map((treeName) => {
-              const treeDefinition = deserializeResource(
-                getTreeDefinitions(treeName)[0].definition
+              const treeDefinitions = getTreeDefinitions(treeName);
+              if (treeDefinitions.length === 0) {
+                console.warn(`No tree definitions exist for ${treeName}`);
+                return [treeName, undefined] as const;
+              }
+
+              const defaultTreeDefinition = deserializeResource(
+                treeDefinitions[0].definition
               );
-              return [treeName, treeDefinition] as const;
+              return [treeName, defaultTreeDefinition] as const;
             })
         : undefined,
     [permissionName, treeRanks]
@@ -106,11 +112,7 @@ export function TreeSelectDialog({
                   <Link.Default
                     className="flex-1"
                     href={getLink(treeName)}
-                    title={
-                      (treeDefinition?.get('remarks') as
-                        | LocalizedString
-                        | undefined) ?? undefined
-                    }
+                    title={treeDefinition?.get('remarks') ?? undefined}
                     onClick={(event): void => {
                       if (handleClick === undefined) return;
                       event.preventDefault();

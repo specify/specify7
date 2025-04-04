@@ -100,6 +100,7 @@ describe('serializeResource', () => {
           isNot: false,
           isPrompt: null,
           isRelFld: null,
+          isStrict: false,
           modifiedByAgent: null,
           operEnd: null,
           operStart: 0,

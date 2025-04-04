@@ -77,6 +77,7 @@ export type Dataset = DatasetBase &
     readonly rows: RA<RA<string>>;
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
+    readonly isupdate: boolean;
   };
 
 /**

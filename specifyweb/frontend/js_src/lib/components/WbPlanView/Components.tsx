@@ -42,7 +42,8 @@ export function ListOfBaseTables({
       filter={filter}
       getAction={({ name }) =>
         () =>
-          handleClick(name)}
+          handleClick(name)
+        }
     />
   );
 }

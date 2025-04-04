@@ -8,6 +8,7 @@ RUN apt-get update \
         python3.8 \
         libldap-2.4-2 \
         libmariadbclient18 \
+        rsync \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -47,19 +48,26 @@ RUN apt-get update \
         ca-certificates \
         curl \
         git \
-        libldap2-dev \
-        libmariadbclient-dev \
         libsasl2-dev \
+        libsasl2-modules \
+        libldap2-dev \
+        libssl-dev \
+        libgmp-dev \
+        libffi-dev \
         python3.8-venv \
         python3.8-distutils \
-        python3.8-dev
+        python3.8-dev \
+        libmariadbclient-dev \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
 RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+ && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
@@ -68,6 +76,7 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
+COPY --chown=specify:specify config /opt/specify7/config
 
 ARG BUILD_VERSION
 ARG GIT_SHA
@@ -126,6 +135,7 @@ RUN echo \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
+        "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \

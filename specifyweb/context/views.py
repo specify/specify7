@@ -26,8 +26,9 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Institution, \
-    Specifyuser, Spprincipal, Spversion
+    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.schema import base_schema
+from specifyweb.specify.api import uri_for_model
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -340,7 +341,11 @@ def domain(request):
         'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         'catalogNumFormatName': collection.catalognumformatname,
+        'defaultCollectionObjectType': uri_for_model(collection.collectionobjecttype.__class__, collection.collectionobjecttype.id) if collection.collectionobjecttype is not None else None,
+        'collectionObjectTypeCatalogNumberFormats': {
+            uri_for_model(cot.__class__, cot.id): cot.catalognumberformatname for cot in collection.cotypes.all()
         }
+    }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
 
@@ -387,14 +392,21 @@ def app_resource(request):
         resource_name = request.GET['name']
     except:
         raise Http404()
+
     quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
+
+    # Check if 'additionalDefault' is present and set to 'true'
+    additional_default = "additionaldefault" in request.GET and request.GET.get('additionaldefault').lower() == 'true'
+
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
-                              resource_name)
+                              resource_name, additional_default)
+
     if result is None and not quiet: 
           raise Http404()
     elif result is None and quiet: 
           return HttpResponse(status=204)
+
     resource, mimetype, id = result
     response = HttpResponse(resource, content_type=mimetype)
     response['X-Record-ID'] = id
@@ -645,6 +657,7 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
+        discipline_type=discipline and discipline.type
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 

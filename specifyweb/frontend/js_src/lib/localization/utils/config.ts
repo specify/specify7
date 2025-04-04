@@ -53,7 +53,7 @@ export const devLanguages = {
   double: 'Double',
 };
 
-export type Language = typeof languages[number];
+export type Language = (typeof languages)[number];
 
 export const DEFAULT_LANGUAGE = 'en-us';
 

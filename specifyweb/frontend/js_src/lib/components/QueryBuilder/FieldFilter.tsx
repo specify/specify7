@@ -6,6 +6,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -38,6 +39,7 @@ import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'age'
   | 'aggregator'
   | 'checkbox'
   | 'date'
@@ -46,6 +48,8 @@ export type QueryFieldType =
   | 'number'
   | 'text';
 export type QueryFieldFilter =
+  | 'ageName'
+  | 'ageRange'
   | 'any'
   | 'between'
   | 'contains'
@@ -432,6 +436,7 @@ export const queryFieldFilters: RR<
       'text',
       'formatter',
       'aggregator',
+      'age',
     ],
     hasParser: false,
   },
@@ -588,6 +593,24 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['checkbox'],
     hasParser: true,
+  },
+  ageName: {
+    id: 17,
+    label: resourcesText.name(),
+    description: undefined,
+    renderPickList: true,
+    types: ['age'],
+    hasParser: true,
+    component: In,
+  },
+  ageRange: {
+    id: 16,
+    label: queryText.range(),
+    description: undefined,
+    renderPickList: false,
+    types: ['age'],
+    hasParser: true,
+    component: Between,
   },
 };
 
