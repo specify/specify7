@@ -396,7 +396,7 @@ class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
         self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection)
+        s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTreeRecord(*s)
 
 
