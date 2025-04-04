@@ -71,6 +71,7 @@ function FilesPicked({
     dataSetName: string
   ): Promise<void> => {
     setFileUploadProgress(true);
+    // Create an empty data set
     dataSetName = await uniquifyDataSetName(dataSetName);
     const dataSet = new tables.Spdataset.Resource({
       name: dataSetName,
@@ -82,6 +83,7 @@ function FilesPicked({
     await dataSet.save();
     const dataSetUrl = dataSet.url();
 
+    // Upload attachments
     const dataSetAttachments: WritableArray<
       SpecifyResource<SpDataSetAttachment>
     > = [];
@@ -141,14 +143,6 @@ function FilesPicked({
     attachmentsText.attachments()
   );
 
-  const previewData = React.useMemo(() => {
-    const preview: RA<RA<string>> = [
-      ['Attachments'],
-      ...Array.from(files, (file) => [file.name]),
-    ];
-    return preview.length > 0 ? preview : undefined;
-  }, [files]);
-
   return isFailed ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
   ) : (
@@ -179,6 +173,28 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
+      <FilesPreview header={'Attachment'} files={files} />
+    </>
+  );
+}
+
+function FilesPreview({
+  header,
+  files,
+}: {
+  readonly header: string;
+  readonly files: readonly File[];
+}): JSX.Element {
+  const previewData = React.useMemo(() => {
+    const preview: RA<RA<string>> = [
+      [header],
+      ...Array.from(files, (file) => [file.name]),
+    ];
+    return preview.length > 0 ? preview : undefined;
+  }, [files]);
+
+  return (
+    <>
       {previewData !== undefined && <Preview hasHeader preview={previewData} />}
     </>
   );
