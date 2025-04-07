@@ -59,7 +59,7 @@ msgstr "No"
 #: components/Reports/Report.tsx:200
 #: components/Reports/Report.tsx:227
 #: components/Reports/Report.tsx:312
-#: components/Reports/index.tsx:141
+#: components/Reports/index.tsx:142
 #: components/Router/UnloadProtect.tsx:26
 #: components/SearchDialog/SelectRecordSet.tsx:133
 #: components/SearchDialog/index.tsx:236
@@ -514,7 +514,7 @@ msgid "search"
 msgstr "Search"
 
 #: components/FormCommands/ShowTransactions.tsx:48
-#: components/Reports/index.tsx:200
+#: components/Reports/index.tsx:201
 #: components/SearchDialog/index.tsx:300
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 msgid "noResults"
@@ -552,8 +552,8 @@ msgstr "New"
 #: components/FormMeta/index.tsx:102
 #: components/Forms/ResourceView.tsx:223
 #: components/Molecules/ResourceLink.tsx:140
-#: components/Reports/index.tsx:255
-#: components/Reports/index.tsx:259
+#: components/Reports/index.tsx:258
+#: components/Reports/index.tsx:262
 #: components/SchemaConfig/Format.tsx:270
 #: components/SchemaConfig/Format.tsx:326
 #: components/SchemaConfig/Table.tsx:165
