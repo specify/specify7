@@ -194,8 +194,8 @@ msgstr "Crear"
 #: components/Forms/DeleteButton.tsx:175
 #: components/Forms/ResourceView.tsx:213
 #: components/Forms/ResourceView.tsx:364
-#: components/Forms/Save.tsx:353
-#: components/Forms/Save.tsx:388
+#: components/Forms/Save.tsx:352
+#: components/Forms/Save.tsx:387
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:275
@@ -327,7 +327,7 @@ msgstr "Guardar"
 #: components/ExportFeed/Editor.tsx:137
 #: components/FormSliders/RecordSelectorFromIds.tsx:179
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:331
+#: components/Forms/Save.tsx:330
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
@@ -967,7 +967,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:394
+#: components/Forms/Save.tsx:393
 #: components/Leaflet/index.ts:171
 #: components/LocalityUpdate/Status.tsx:519
 #: components/LocalityUpdate/utils.ts:64
