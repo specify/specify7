@@ -1999,14 +1999,19 @@ export type Component = {
     readonly number4: number | null;
     readonly number5: number | null;
     readonly number6: number | null;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
   };
   readonly toOneDependent: {
     readonly collectionObject: CollectionObject | null;
   };
   readonly toOneIndependent: {
-    readonly collectionObjectType: CollectionObjectType;
+    readonly type: CollectionObjectType;
     readonly name: Taxon | null;
     readonly parentComponent: Component | null;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;

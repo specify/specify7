@@ -168,3 +168,26 @@ MIGRATION_0023_FIELDS_BIS = {
 MIGRATION_0024_FIELDS = {
     'Storage': ['uniqueIdentifier'],
 }
+
+MIGRATION_0027_TABLES = [
+    ('Component', None),
+]
+
+MIGRATION_0027_FIELDS = {
+    'Collectionobject': ['components'],
+    'Taxon': ['components'],
+    'RelativeAge': ['components'],
+    'AbsoluteAge': ['components'],
+}
+
+
+MIGRATION_0027_UPDATE_FIELDS = {
+    'Component': [
+        ('type', 'Component Type', 'This type determines the valid options for component names.'), 
+        ('name', 'Component Name', 'The name from a taxon tree corresponding to the chosen type.'),
+        ('verbatimName', 'Verbatim Name', 'The original name printed or associated with the component.'),
+        ('role', 'Component Role', 'Define the role or purpose of the component in the overall collection.'), 
+        ('proportion', 'Component Proportion', 'Specify the proportion of the component relative to the whole.'),
+        ('uniqueIdentifier', 'Unique Identifier', 'Unique Identifier [/+][-]Unique Identifier'),
+        ],
+}

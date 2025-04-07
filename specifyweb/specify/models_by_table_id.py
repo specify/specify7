@@ -446,6 +446,7 @@ model_names_by_app = {
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
+        'Component'
     }
 }
 
