@@ -2120,7 +2120,7 @@ class Component(models.Model):
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='components', null=False, on_delete=models.CASCADE)
     name = models.ForeignKey('Taxon', db_column='TaxonID', related_name='components', null=True, on_delete=protect_with_blockers)
     type = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='components', null=True, on_delete=models.SET_NULL)
-    parentcomponent = models.ForeignKey('Component', db_column='ParentComponentID', related_name='componentChildren', null=True, on_delete=protect_with_blockers)
+    parentcomponent = models.ForeignKey('Component', db_column='ParentComponentID', related_name='children', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 

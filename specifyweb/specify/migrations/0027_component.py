@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
             ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=protect_with_blockers, related_name='components', to='specify.collectionobject')),
             ('name', models.ForeignKey(db_column='TaxonID', on_delete=protect_with_blockers, related_name='components', to='specify.taxon')),
             ('type', models.ForeignKey(db_column='CollectionObjectTypeID', on_delete=protect_with_blockers, related_name='components', to='specify.collectionobjecttype')),
-            ('parentcomponent', models.ForeignKey(db_column='ParentComponentID', on_delete=protect_with_blockers, related_name='componentChildren', to='specify.component')),
+            ('parentcomponent', models.ForeignKey(db_column='ParentComponentID', on_delete=protect_with_blockers, related_name='children', to='specify.component')),
          ]
      ),
      migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
