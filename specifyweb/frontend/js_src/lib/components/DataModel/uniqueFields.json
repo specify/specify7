@@ -18,13 +18,7 @@
     "timestampModified"
   ],
   "accessioncitation": ["timestampCreated", "version", "timestampModified"],
-  "address": [
-    "timestampCreated",
-    "version",
-    "isCurrent",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "address": ["timestampCreated", "version", "isCurrent", "timestampModified"],
   "addressofrecord": ["timestampCreated", "version", "timestampModified"],
   "agent": [
     "agentAttachments",
@@ -197,12 +191,7 @@
     "version",
     "timestampModified"
   ],
-  "collector": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "collector": ["timestampCreated", "version", "timestampModified"],
   "commonnametx": ["timestampCreated", "version", "timestampModified"],
   "commonnametxcitation": ["timestampCreated", "version", "timestampModified"],
   "conservdescription": [
@@ -282,12 +271,7 @@
     "timestampModified"
   ],
   "determinationcitation": ["timestampCreated", "version", "timestampModified"],
-  "determiner": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "determiner": ["timestampCreated", "version", "timestampModified"],
   "discipline": ["timestampCreated", "version", "timestampModified"],
   "disposal": [
     "disposalAttachments",
@@ -372,12 +356,7 @@
     "version",
     "timestampModified"
   ],
-  "fundingagent": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "fundingagent": ["timestampCreated", "version", "timestampModified"],
   "geocoorddetail": ["timestampCreated", "version", "timestampModified"],
   "geography": [
     "guid",
@@ -648,7 +627,6 @@
   "collectionobjectgroupjoin": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "collectionobjectgrouptype": [

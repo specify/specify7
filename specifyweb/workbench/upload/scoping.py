@@ -5,6 +5,7 @@ from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.specify.utils import get_picklists
 from specifyweb.stored_queries.format import get_date_format
@@ -116,15 +117,8 @@ def extend_columnoptions(
     toOne = toOne or {}
     picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
-    if not picklists:
-        picklist = None
-    else:
-        collection_picklists = picklists.filter(collection=collection)
-
-        picklist = (
-            picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
-        )
-
+    # Picklists are already scoped by collection in get_picklists if possible
+    picklist = None if picklists is None else picklists[0]
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
@@ -347,29 +341,7 @@ def set_order_number(
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
-    treedef = None
-    if table.name == 'Taxon':
-        if treedef is None:
-            treedef = collection.discipline.taxontreedef
-
-    elif table.name == "Geography":
-        treedef = collection.discipline.geographytreedef
-
-    elif table.name == "LithoStrat":
-        treedef = collection.discipline.lithostrattreedef
-
-    elif table.name == "GeologicTimePeriod":
-        treedef = collection.discipline.geologictimeperiodtreedef
-
-    elif table.name == "Storage":
-        treedef = collection.discipline.division.institution.storagetreedef
-
-    elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.tectonicunittreedef
-
-    else:
-        raise Exception(f"unexpected tree type: {table.name}")
-
+    treedef = get_default_treedef(table, collection)
     if treedef is None:
         raise ValueError(f"Could not find treedef for table {table.name}")
 
@@ -377,7 +349,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
         is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
-        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
+        if not is_valid_rank and (isinstance(rank, TreeRankRecord) and not rank.validate_rank(tr.name)):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(
@@ -392,6 +364,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
                 r, table.name, treedef.id if treedef else None
             ).tree_rank_record()
             if isinstance(r, str)
+            else r._replace(treedef_id=treedef.id) if r.treedef_id is None  # Adjust treeid for parsed JSON plans
             else r
         ): {
             f: extend_columnoptions(colopts, collection, table.name, f)
@@ -399,6 +372,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         }
         for r, cols in tr.ranks.items()
     }
+
+    scoped_cotypes = models.Collectionobjecttype.objects.filter(collection=collection)
 
     return ScopedTreeRecord(
         name=tr.name,
@@ -408,4 +383,5 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         root=root[0] if root else None,
         disambiguation={},
         batch_edit_pack=None,
+        scoped_cotypes=scoped_cotypes
     )

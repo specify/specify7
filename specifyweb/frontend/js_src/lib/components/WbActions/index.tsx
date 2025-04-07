@@ -84,14 +84,16 @@ export function WbActions({
 
   return (
     <>
-      <WbNoUploadPlan
-        datasetId={dataset.id}
-        isUploaded={isUploaded}
-        mappings={mappings}
-        noUploadPlan={noUploadPlan}
-        onCloseNoUploadPlan={closeNoUploadPlan}
-        onOpenNoUploadPlan={openNoUploadPlan}
-      />
+      {!dataset.isupdate && (
+        <WbNoUploadPlan
+          datasetId={dataset.id}
+          isUploaded={isUploaded}
+          mappings={mappings}
+          noUploadPlan={noUploadPlan}
+          onCloseNoUploadPlan={closeNoUploadPlan}
+          onOpenNoUploadPlan={openNoUploadPlan}
+        />
+      )}
       {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
