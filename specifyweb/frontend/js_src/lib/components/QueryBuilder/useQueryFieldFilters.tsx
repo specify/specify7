@@ -2,11 +2,8 @@ import React from 'react';
 
 import { type RA, type RR, filterArray } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
-import {
-  QueryFieldFilter,
-  QueryFieldType,
-  queryFieldFilters,
-} from './FieldFilter';
+import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
+import { queryFieldFilters } from './FieldFilter';
 
 type ExpandedFieldFilter = (typeof queryFieldFilters)[QueryFieldFilter] & {
   readonly types: RA<QueryFieldType>;

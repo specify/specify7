@@ -42,7 +42,6 @@ import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import { filtersWithDefaultValue } from './FieldFilter';
-import { QueryLineFilter } from './QueryLineFilter';
 import { FieldFilterTool } from './FieldFilterTool';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
@@ -51,6 +50,7 @@ import {
   QueryFieldRecordFormatter,
 } from './Formatter';
 import type { QueryField } from './helpers';
+import { QueryLineFilter } from './QueryLineFilter';
 import { QueryLineTools } from './QueryLineTools';
 import { useQueryFieldFilters } from './useQueryFieldFilters';
 

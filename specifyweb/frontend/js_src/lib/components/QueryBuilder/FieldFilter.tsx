@@ -9,15 +9,15 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
-  pluralizeParser,
   getValidationAttributes,
+  pluralizeParser,
 } from '../../utils/parser/definitions';
 import type {
   InvalidParseResult,
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { RR, RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';

@@ -1,15 +1,16 @@
 import React from 'react';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { Parser } from '../../utils/parser/definitions';
+import type { Parser } from '../../utils/parser/definitions';
 import { removeKey } from '../../utils/utils';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
-import { QueryField } from './helpers';
-import { useQueryFieldFilters } from './useQueryFieldFilters';
 import { resolvePickListItem } from './FieldFilter';
+import type { QueryField } from './helpers';
+import { useQueryFieldFilters } from './useQueryFieldFilters';
 
 export function QueryLineFilter({
   filter,
