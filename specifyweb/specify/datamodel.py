@@ -8471,7 +8471,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='absoluteAgeCitations', type='one-to-many',required=False, relatedModelName='AbsoluteAgeCitation', otherSideName='absoluteAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='component', type='many-to-one', required=True, relatedModelName='Component', column='ComponentID', otherSideName='absoluteAges'),
+            Relationship(name='component', type='many-to-one', required=False, relatedModelName='Component', column='ComponentID', otherSideName='absoluteAges'),
         ],
         fieldAliases=[
 
@@ -8521,7 +8521,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='relativeAgeCitations', type='one-to-many',required=False, relatedModelName='RelativeAgeCitation', otherSideName='relativeAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='component', type='many-to-one', required=True, relatedModelName='Component', column='ComponentID', otherSideName='relativeAges'),
+            Relationship(name='component', type='many-to-one', required=False, relatedModelName='Component', column='ComponentID', otherSideName='relativeAges'),
         ],
         fieldAliases=[
 
