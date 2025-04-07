@@ -21,8 +21,7 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { QueryFieldFilter } from './FieldFilter';
-import { queryFieldFilters } from './FieldFilter';
+import { QueryFieldFilter, queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
 

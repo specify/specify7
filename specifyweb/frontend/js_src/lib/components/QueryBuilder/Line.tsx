@@ -41,11 +41,8 @@ import {
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
-import {
-  filtersWithDefaultValue,
-  queryFieldFilters,
-  QueryLineFilter,
-} from './FieldFilter';
+import { filtersWithDefaultValue } from './FieldFilter';
+import { QueryLineFilter } from './QueryLineFilter';
 import { FieldFilterTool } from './FieldFilterTool';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
@@ -55,6 +52,7 @@ import {
 } from './Formatter';
 import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
+import { useQueryFieldFilters } from './useQueryFieldFilters';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -109,6 +107,7 @@ export function QueryLine({
   readonly onOpenMap: (() => void) | undefined;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
+  const queryFieldFilters = useQueryFieldFilters();
 
   React.useLayoutEffect(() => {
     if (isFocused && lineRef.current?.contains(document.activeElement) !== true)

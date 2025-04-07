@@ -31,8 +31,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { createQuery } from '../QueryBuilder';
-import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import {
+  QueryFieldFilter,
+  queryFieldFilters,
+} from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { MappingPath } from '../WbPlanView/Mapper';
