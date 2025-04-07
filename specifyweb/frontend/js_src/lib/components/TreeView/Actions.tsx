@@ -475,7 +475,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                     })
                   : treeText.desynonymizeNodeMessage({
                       nodeName: actionRow.fullName,
-                      synonymName: focusedRow.fullName,
+                      synonymName: focusedRow.acceptedName!,
                     })}
         </Dialog>
       ) : undefined}
