@@ -77,6 +77,8 @@ COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 COPY --chown=specify:specify config /opt/specify7/config
+COPY --chown=specify:specify create_db_user.sh /opt/specify7/
+RUN chmod +x /opt/specify7/create_db_user.sh
 
 ARG BUILD_VERSION
 ARG GIT_SHA
