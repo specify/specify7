@@ -354,3 +354,13 @@ msgstr "Download All"
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAllDescription"
 msgstr "Download all found attachments"
+
+#: components/FormSliders/AttachmentWarningDeletion.tsx:60
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+msgid "deleteAttachmentWarning"
+msgstr "Are you sure you want to delete this attachment?"
+
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+msgid "attachmentDelition"
+msgstr "Attachment deletion"

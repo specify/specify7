@@ -232,8 +232,9 @@ msgstr "Create {table:string}"
 msgid "noPreparationsWarning"
 msgstr "None of these objects have preparations. Would you like to continue?"
 
+#: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:362
 #: components/TreeView/AddRank.tsx:62
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
+#. Used in: Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 msgid "continue"
 msgstr "Continue"

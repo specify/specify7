@@ -375,3 +375,13 @@ msgstr ""
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAllDescription"
 msgstr ""
+
+#: components/FormSliders/AttachmentWarningDeletion.tsx:60
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+msgid "deleteAttachmentWarning"
+msgstr ""
+
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+msgid "attachmentDelition"
+msgstr ""

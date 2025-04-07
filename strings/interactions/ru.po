@@ -271,9 +271,10 @@ msgstr "Создать {table:string}"
 msgid "noPreparationsWarning"
 msgstr "Ни один из этих объектов не имеет подготовки. Желаете ли вы продолжить?"
 
+#: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:362
 #: components/TreeView/AddRank.tsx:62
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
+#. Used in: Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #, fuzzy
 msgid "continue"
 msgstr "Продолжить без подготовки"
