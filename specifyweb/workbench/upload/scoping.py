@@ -117,15 +117,8 @@ def extend_columnoptions(
     toOne = toOne or {}
     picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
-    if not picklists:
-        picklist = None
-    else:
-        collection_picklists = picklists.filter(collection=collection)
-
-        picklist = (
-            picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
-        )
-
+    # Picklists are already scoped by collection in get_picklists if possible
+    picklist = None if picklists is None else picklists[0]
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (

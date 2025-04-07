@@ -99,36 +99,41 @@ export function CatalogNumberFormatSelection({
           )
           .then((cots) => {
             const formattersMap = filterArray(cots).reduce((map, cot) => {
-              const format = cot.get('catalogNumberFormatName') ?? schema.catalogNumFormatName;
+              const format =
+                cot.get('catalogNumberFormatName') ??
+                schema.catalogNumFormatName;
               const cotName = cot.get('name');
-              
+
               if (!map.has(format)) {
                 map.set(format, {
                   name: format,
                   title: format,
                   isDefault: format === schema.catalogNumFormatName,
-                  cotNames: []
+                  cotNames: [],
                 });
               }
-              
+
               const formatter = map.get(format)!;
               map.set(format, {
                 ...formatter,
-                cotNames: [...formatter.cotNames, cotName]
+                cotNames: [...formatter.cotNames, cotName],
               });
               return map;
             }, new Map<string, FormatterWithCOTs>());
-            
-            return Array.from(formattersMap.values(), ({ name, isDefault, cotNames }) => {
-              const title = queryText.formatInputAs({
-                commaSeparatedFormats: cotNames.join(', '),
-              });
-              return {
-                name,
-                title,
-                isDefault
-              };
-            });
+
+            return Array.from(
+              formattersMap.values(),
+              ({ name, isDefault, cotNames }) => {
+                const title = queryText.formatInputAs({
+                  commaSeparatedFormats: cotNames.join(', '),
+                });
+                return {
+                  name,
+                  title,
+                  isDefault,
+                };
+              }
+            );
           }),
       []
     ),
@@ -165,7 +170,7 @@ function FormatSelect({
   readonly onChange: ((formatter: string | undefined) => void) | undefined;
 }): JSX.Element | null {
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
-  
+
   const id = useId('formatters-selection');
 
   return availableFormatters === undefined ? (

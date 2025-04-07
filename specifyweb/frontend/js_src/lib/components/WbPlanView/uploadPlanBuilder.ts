@@ -1,6 +1,6 @@
 import type { IR, RA, RR } from '../../utils/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -91,7 +91,7 @@ const toTreeRecordVariety = (
               : formatTreeRankKey(rankName, treeName),
             {
               treeNodeCols: toTreeRecordRanks(mappedFields),
-              treeId,
+              treeId: treeDefinitions.length > 1 ? treeId : undefined,
             },
           ];
         });
