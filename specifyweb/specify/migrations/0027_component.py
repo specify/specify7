@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Component',
             fields=[
-                ('id', models.AutoField(db_column='componentid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='ComponentID', primary_key=True, serialize=False)),
                 ('verbatimname', models.TextField(blank=True, db_column='VerbatimName', null=True)),
                 ('role', models.CharField(db_column='Role', max_length=50)),
                 ('proportion', models.IntegerField(blank=True, db_column='Proportion', null=True)),
