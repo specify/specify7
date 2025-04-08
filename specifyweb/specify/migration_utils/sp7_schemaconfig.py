@@ -174,6 +174,7 @@ MIGRATION_0027_TABLES = [
 ]
 
 MIGRATION_0027_FIELDS = {
+    'CollectionObject': ['components'],
     'Taxon': ['components'],
     'RelativeAge': ['component'],
     'AbsoluteAge': ['component'],
