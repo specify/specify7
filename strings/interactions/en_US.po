@@ -137,8 +137,8 @@ msgstr "Select All"
 #: components/Interactions/LoanReturn.tsx:278
 #: components/Interactions/PrepDialog.tsx:150
 #: components/Interactions/PrepDialog.tsx:154
-#: components/Interactions/PrepDialogRow.tsx:91
-#: components/Interactions/PrepDialogRow.tsx:94
+#: components/Interactions/PrepDialogRow.tsx:95
+#: components/Interactions/PrepDialogRow.tsx:98
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Selected Amount"
@@ -155,7 +155,7 @@ msgstr "Returned Amount"
 msgid "resolvedAmount"
 msgstr "Resolved Amount"
 
-#: components/Interactions/PrepDialogRow.tsx:173
+#: components/Interactions/PrepDialogRow.tsx:177
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
@@ -238,3 +238,8 @@ msgstr "None of these objects have preparations. Would you like to continue?"
 #. Used in: Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 msgid "continue"
 msgstr "Continue"
+
+#: components/Interactions/PrepDialogRow.tsx:89
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "notAvailable"
+msgstr "Not available"
