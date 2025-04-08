@@ -2127,7 +2127,6 @@ class Component(models.Model):
         db_table = 'component'
         ordering = ()
 
-    
     save = partialmethod(custom_save)
 
 class Conservdescription(models.Model):
