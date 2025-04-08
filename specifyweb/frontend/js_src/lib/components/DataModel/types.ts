@@ -2012,11 +2012,13 @@ export type Component = {
     readonly parentComponent: Component | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly children: Component | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
     readonly relativeAges: RA<RelativeAge>;
+  };
+  readonly toManyIndependent: {
+    readonly children: RA<Component>;
   };
 };
 export type ConservDescription = {
