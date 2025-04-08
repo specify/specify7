@@ -58,8 +58,11 @@ export function AttachmentGallery({
     async () =>
       // Fetch more attachments when within 200px of the bottom
       containerRef.current !== null &&
-      containerRef.current.scrollTop + preFetchDistance >
-        containerRef.current.scrollHeight - containerRef.current.clientHeight
+      (containerRef.current.scrollTop + preFetchDistance >
+        containerRef.current.scrollHeight - containerRef.current.clientHeight ||
+        (!isComplete &&
+          containerRef.current.scrollHeight ===
+            containerRef.current.clientHeight))
         ? handleFetchMore?.().catch(raise)
         : undefined,
     [handleFetchMore]
@@ -124,7 +127,7 @@ export function AttachmentGallery({
           attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
         ) : (
           <AttachmentGallerySkeleton
-            fetchNumber={(attachments.length % columns) + columns * 2}
+            fetchNumber={columns - (attachments.length % columns) + columns * 2}
           />
         )}
       </Container.Base>
