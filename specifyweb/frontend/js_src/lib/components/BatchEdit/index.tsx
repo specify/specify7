@@ -13,7 +13,6 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -204,12 +203,12 @@ const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
   );
 
-const DISALLOWED_TABLES = [tables.SpAuditLog];
+// Using tables.SpAuditLog here leads to an error in some cases where the tables data hasn't loaded correctly
+const DISALLOWED_TABLES = ['spauditlog'];
 
 const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
   DISALLOWED_TABLES.some(
-    (table) =>
-      query.get('contextName').toLowerCase() === table.name.toLowerCase()
+    (tableName) => query.get('contextName').toLowerCase() === tableName
   );
 
 // Error filters
