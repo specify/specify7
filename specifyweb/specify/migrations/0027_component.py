@@ -98,7 +98,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='componentid', primary_key=True, serialize=False)),
                 ('verbatimname', models.TextField(blank=True, db_column='VerbatimName', null=True)),
-                ('role', models.CharField(db_column='Role', max_length=50)),
+                ('role', models.CharField(db_column='Role', max_length=50, null=True)),
                 ('proportion', models.IntegerField(blank=True, db_column='Proportion', null=True)),
                 ('uniqueidentifier', models.CharField(blank=True, db_column='UniqueIdentifier', max_length=128, null=True)),
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
