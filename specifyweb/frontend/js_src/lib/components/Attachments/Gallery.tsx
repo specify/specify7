@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
+import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
@@ -14,7 +15,6 @@ import { ResourceView } from '../Forms/ResourceView';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
-import { listen } from '../../utils/events';
 
 const preFetchDistance = 200;
 
@@ -42,7 +42,7 @@ export function AttachmentGallery({
   React.useEffect(() => {
     const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
       if (ref.current) {
-        const rootFontSize = parseFloat(
+        const rootFontSize = Number.parseFloat(
           window.getComputedStyle(document.documentElement).fontSize
         );
         const gap = rootFontSize;
