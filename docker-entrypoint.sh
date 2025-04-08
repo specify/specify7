@@ -9,7 +9,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   cd /opt/specify7
   echo "Applying Django migrations."
   set +e
-  ./create_db_user.sh | ve/bin/python manage.py base_specify_migration
+  ./sp7_db_setup_check.sh
   ve/bin/python manage.py migrate
   set -e
 fi
