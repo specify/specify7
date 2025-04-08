@@ -2241,7 +2241,7 @@ datamodel = Datamodel(tables=[
         indexes=[],
         relationships=[
             Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='components'),
-            Relationship(name='taxon', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
+            Relationship(name='name', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
             Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='parentComponent', type='many-to-one', required=False, relatedModelName='Component', column='ParentComponentID', otherSideName='children'),
             Relationship(name='children', type='one-to-many', required=False, relatedModelName='Component', otherSideName='parentComponent'),
