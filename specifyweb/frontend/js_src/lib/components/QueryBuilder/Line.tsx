@@ -181,7 +181,11 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              !queryFieldFilters[filter.type].types?.includes(fieldType);
+              // We want to include all supported types for the filter, not
+              // just visible ones
+              !Object.keys(queryFieldFilters[filter.type].types ?? {}).includes(
+                fieldType
+              );
             return resetFilter
               ? ({
                   type: 'any',
@@ -258,7 +262,7 @@ export function QueryLine({
   const availableFilters = Object.entries(queryFieldFilters).filter(
     ([filterName, { types }]) =>
       typeof fieldMeta.fieldType === 'string'
-        ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
+        ? Object.keys(types).includes(fieldMeta.fieldType)
         : filterName === 'any'
   );
   const filtersVisible =
@@ -505,11 +509,25 @@ export function QueryLine({
                             });
                           }}
                         >
-                          {availableFilters.map(([filterName, { label }]) => (
-                            <option key={filterName} value={filterName}>
-                              {label}
-                            </option>
-                          ))}
+                          {/**
+                           * Only visible filters types are shown and able to
+                           * be selected. If the current filter type is
+                           * supported but isn't supposed to be visible
+                           * (i.e., the filter in the database has the
+                           * supported type), still show the filter
+                           */}
+                          {availableFilters
+                            .filter(
+                              ([filterName, { types }]) =>
+                                fieldMeta.fieldType === undefined ||
+                                filterName === filter.type ||
+                                types[fieldMeta.fieldType]?.visible == true
+                            )
+                            .map(([filterName, { label }]) => (
+                              <option key={filterName} value={filterName}>
+                                {label}
+                              </option>
+                            ))}
                         </Select>
                       </div>
                     </div>

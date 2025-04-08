@@ -1,12 +1,22 @@
 import React from 'react';
 
-import { type RA, type RR, filterArray } from '../../utils/types';
+import type { RR } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 
 type ExpandedFieldFilter = (typeof queryFieldFilters)[QueryFieldFilter] & {
-  readonly types: RA<QueryFieldType>;
+  readonly types: Partial<
+    RR<
+      QueryFieldType,
+      /**
+       * A type can be supported by the front/backend, but not be visible to
+       * users (e.g., showing comparison operators for text fields if the
+       * corresponding preference is set)
+       */
+      { readonly visible: boolean }
+    >
+  >;
 };
 
 export function useQueryFieldFilters(): RR<
@@ -23,72 +33,87 @@ export function useQueryFieldFilters(): RR<
     () => ({
       any: {
         ...queryFieldFilters.any,
-        types: [
-          'checkbox',
-          'date',
-          'id',
-          'number',
-          'text',
-          'formatter',
-          'aggregator',
-          'age',
-        ],
+        types: {
+          checkbox: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+          number: { visible: true },
+          text: { visible: true },
+          formatter: { visible: true },
+          aggregator: { visible: true },
+          age: { visible: true },
+        },
       },
       like: {
         ...queryFieldFilters.like,
-        types: ['text', 'number', 'date', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       equal: {
         ...queryFieldFilters.equal,
-        types: ['text', 'number', 'date', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       greater: {
         ...queryFieldFilters.greater,
-        types: filterArray([
-          showComparisonOperatorsForString ? 'text' : undefined,
-          'number',
-          'date',
-          'id',
-        ]),
+        types: {
+          text: { visible: showComparisonOperatorsForString },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       less: {
         ...queryFieldFilters.less,
-        types: filterArray([
-          showComparisonOperatorsForString ? 'text' : undefined,
-          'number',
-          'date',
-          'id',
-        ]),
+        types: {
+          text: { visible: showComparisonOperatorsForString },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       greaterOrEqual: {
         ...queryFieldFilters.greaterOrEqual,
-        types: filterArray([
-          showComparisonOperatorsForString ? 'text' : undefined,
-          'number',
-          'date',
-          'id',
-        ]),
+        types: {
+          text: { visible: showComparisonOperatorsForString },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       lessOrEqual: {
         ...queryFieldFilters.lessOrEqual,
-        types: filterArray([
-          showComparisonOperatorsForString ? 'text' : undefined,
-          'number',
-          'date',
-          'id',
-        ]),
+        types: {
+          text: { visible: showComparisonOperatorsForString },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       true: {
         ...queryFieldFilters.true,
-        types: ['checkbox'],
+        types: { checkbox: { visible: true } },
       },
       false: {
         ...queryFieldFilters.false,
-        types: ['checkbox'],
+        types: { checkbox: { visible: true } },
       },
       between: {
         ...queryFieldFilters.between,
-        types: ['text', 'number', 'date', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       in: {
         ...queryFieldFilters.in,
@@ -96,35 +121,55 @@ export function useQueryFieldFilters(): RR<
          * Can't use "date" for IN because date picker does not allow separating
          * multiple values with a comma. Instead, OR filters should be used
          */
-        types: ['text', 'number', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          id: { visible: true },
+        },
       },
       contains: {
         ...queryFieldFilters.contains,
-        types: ['text', 'number', 'date', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       startsWith: {
         ...queryFieldFilters.startsWith,
-        types: ['text', 'number', 'date', 'id'],
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
       },
       empty: {
         ...queryFieldFilters.empty,
-        types: ['checkbox', 'date', 'id', 'number', 'text'],
+        types: {
+          checkbox: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+          number: { visible: true },
+          text: { visible: true },
+        },
       },
       trueOrNull: {
         ...queryFieldFilters.trueOrNull,
-        types: ['checkbox'],
+        types: { checkbox: { visible: true } },
       },
       falseOrNull: {
         ...queryFieldFilters.falseOrNull,
-        types: ['checkbox'],
+        types: { checkbox: { visible: true } },
       },
       ageName: {
         ...queryFieldFilters.ageName,
-        types: ['age'],
+        types: { age: { visible: true } },
       },
       ageRange: {
         ...queryFieldFilters.ageRange,
-        types: ['age'],
+        types: { age: { visible: true } },
       },
     }),
     [showComparisonOperatorsForString]
