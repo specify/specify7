@@ -2016,8 +2016,6 @@ export type Component = {
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
     readonly relativeAges: RA<RelativeAge>;
-  };
-  readonly toManyIndependent: {
     readonly children: RA<Component>;
   };
 };
