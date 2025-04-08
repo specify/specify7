@@ -2123,6 +2123,13 @@ class Component(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    class Meta:
+        db_table = 'component'
+        ordering = ()
+
+    
+    save = partialmethod(custom_save)
+
 class Conservdescription(models.Model):
     specify_model = datamodel.get_table_strict('conservdescription')
 
