@@ -139,11 +139,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='ComponentID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='absoluteages', to='specify.component'),
         ),
         migrations.AddField(
-            model_name='collectionobject',
-            name='component',
-            field=models.ForeignKey(db_column='ComponentID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='components', to='specify.component'),
-        ),
-        migrations.AddField(
             model_name='relativeage',
             name='component',
             field=models.ForeignKey(db_column='ComponentID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='relativeages', to='specify.component'),
