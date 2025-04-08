@@ -1601,7 +1601,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
-            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='collectionObject')
+            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='collectionObject', dependent=True)
         ],
         fieldAliases=[
 
