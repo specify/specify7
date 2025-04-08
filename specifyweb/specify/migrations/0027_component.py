@@ -7,7 +7,7 @@ from specifyweb.specify.migration_utils.update_schema_config import revert_table
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0027_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0027_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0027_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS
 
-def create_table_schema_config_with_defaults(apps):
+def create_table_schema_config_with_defaults(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
@@ -49,7 +49,7 @@ def update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name.text = new_name
                     localized_items_name.save() 
 
-def revert_table_schema_config_with_defaults(apps):
+def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
     for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
@@ -82,14 +82,14 @@ class Migration(migrations.Migration):
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_table_schema_config_with_defaults(apps)
-        update_schema_config_field_desc(apps)
+        create_table_schema_config_with_defaults(apps, schema_editor)
+        update_schema_config_field_desc(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_table_schema_config_with_defaults(apps)
-        revert_update_hidden_prop(apps)
+        revert_table_schema_config_with_defaults(apps, schema_editor)
+        revert_update_hidden_prop(apps, schema_editor)
 
-    operation = [
+    operations = [
         migrations.CreateModel(
             name='Component',
             fields=[
