@@ -14,6 +14,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
+import { listen } from '../../utils/events';
 
 const preFetchDistance = 200;
 
@@ -36,6 +37,22 @@ export function AttachmentGallery({
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
+
+  const [columns, setColumns] = React.useState<number>(0);
+  React.useEffect(() => {
+    const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
+      if (ref.current) {
+        const rootFontSize = parseFloat(
+          window.getComputedStyle(document.documentElement).fontSize
+        );
+        const gap = rootFontSize;
+        const columnWidth = scale * rootFontSize + gap;
+        setColumns(Math.floor((ref.current.clientWidth - gap) / columnWidth));
+      }
+    };
+    calculateColumns(containerRef);
+    return listen(window, 'resize', () => calculateColumns(containerRef));
+  }, [scale]);
 
   const rawFillPage = React.useCallback(
     async () =>
@@ -75,11 +92,11 @@ export function AttachmentGallery({
   return (
     <>
       <Container.Base
-        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]
-          items-center gap-4 shadow-none"
+        className="grid flex-1 items-center gap-4 shadow-none"
         forwardRef={containerRef}
         style={
           {
+            gridTemplateColumns: `repeat(${columns}, minmax(0px, 1fr))`,
             '--scale': `${scale}rem`,
           } as React.CSSProperties
         }
@@ -106,7 +123,9 @@ export function AttachmentGallery({
         {isComplete ? (
           attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
         ) : (
-          <AttachmentGallerySkeleton />
+          <AttachmentGallerySkeleton
+            fetchNumber={(attachments.length % columns) + columns * 2}
+          />
         )}
       </Container.Base>
       {typeof viewRecord === 'object' && (
