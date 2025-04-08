@@ -52,7 +52,7 @@ def update_schema_config_field_desc(apps, schema_editor):
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
-    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
+    for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items():
         for field in fields:
             revert_table_field_schema_config(table, field, apps)
 
