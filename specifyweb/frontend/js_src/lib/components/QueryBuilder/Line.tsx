@@ -181,8 +181,10 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              // We want to include all supported types for the filter, not
-              // just visible ones
+              /*
+               * We want to include all supported types for the filter, not
+               * just visible ones
+               */
               !Object.keys(queryFieldFilters[filter.type].types ?? {}).includes(
                 fieldType
               );
