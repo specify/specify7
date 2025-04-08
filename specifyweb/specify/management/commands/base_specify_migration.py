@@ -10,7 +10,19 @@ from django.db import connection
 class Command(BaseCommand):
     help = "Add initial specify migration to django_migrations table."
 
+    def add_arguments(self, parser):
+        # Add a positional argument to accept 0 or 1
+        parser.add_argument(
+            'use_override',
+            type=int,
+            default=1,
+            choices=[0, 1],
+            help='Pass 1 to override or 0 to not override.',
+        )
+
     def handle(self, *args, **options):
+        use_override = bool(options['use_override'])
+
         with connection.cursor() as cursor:
             # Check django table
             try:
@@ -36,13 +48,14 @@ class Command(BaseCommand):
                 """)
 
             # Check if the record exists and insert it if it doesn't
-            cursor.execute("""
-                INSERT INTO django_migrations (app, name, applied)
-                SELECT 'specify', '0001_initial', NOW()
-                FROM dual
-                WHERE NOT EXISTS (
-                    SELECT 1
-                    FROM django_migrations
-                    WHERE app = 'specify' AND name = '0001_initial'
-                );
-            """)
+            if use_override:
+                cursor.execute("""
+                    INSERT INTO django_migrations (app, name, applied)
+                    SELECT 'specify', '0001_initial', NOW()
+                    FROM dual
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM django_migrations
+                        WHERE app = 'specify' AND name = '0001_initial'
+                    );
+                """)
