@@ -2084,7 +2084,7 @@ class Component(models.Model):
 
     # Fields
     verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
-    role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
+    role = models.CharField(blank=False, max_length=50, null=True, unique=False, db_column='Role', db_index=False)
     proportion= models.IntegerField(blank=True, null=True, unique=False, db_column='Proportion', db_index=False)
     uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
