@@ -5,6 +5,7 @@ import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
+import { getPref } from '../InitialContext/remotePrefs';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -16,8 +17,8 @@ import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery'
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
 
-const preFetchDistance = 200;
-const attachmentSkeletonRows = 3;
+const defaultPreFetchDistance = 200;
+const attachmentSkeletonRows = 2;
 
 export function AttachmentGallery({
   attachments,
@@ -39,7 +40,11 @@ export function AttachmentGallery({
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
-  const [columns, setColumns] = React.useState<number>(0);
+  const [preFetchDistance, setPreFetchDistance] = React.useState<number>(
+    defaultPreFetchDistance
+  );
+  const [columns, setColumns] = React.useState<number>(3);
+  const attachmentHeight = getPref('attachment.preview_size');
   React.useEffect(() => {
     const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
       if (ref.current) {
@@ -48,6 +53,12 @@ export function AttachmentGallery({
         ); // Equivalent to 1rem
         const gap = rootFontSize;
         const columnWidth = scale * rootFontSize + gap;
+        setPreFetchDistance(
+          Math.max(
+            defaultPreFetchDistance,
+            (attachmentHeight + gap) * attachmentSkeletonRows + gap
+          )
+        );
         setColumns(Math.floor((ref.current.clientWidth - gap) / columnWidth));
       }
     };
@@ -72,11 +83,8 @@ export function AttachmentGallery({
     // Fetch attachments while scroll bar is not visible
     const noScrollFetch = () => {
       setTimeout(() => {
-        void (containerRef.current?.scrollHeight ===
-        containerRef.current?.clientHeight
-          ? fillPage?.().catch(raise)
-          : undefined);
-      }, 100); // Wait for container to re-render before checking if scrolling is disabled
+        fillPage?.().catch(raise);
+      }, 10); // Wait for container to re-render before checking if scrolling is disabled
     };
     noScrollFetch();
     return listen(window, 'resize', noScrollFetch);
