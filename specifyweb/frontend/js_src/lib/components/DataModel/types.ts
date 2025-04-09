@@ -2018,6 +2018,7 @@ export type Component = {
     readonly relativeAges: RA<RelativeAge>;
     readonly children: RA<Component>;
   };
+  readonly toManyIndependent: RR<never, never>;
 };
 export type ConservDescription = {
   readonly tableName: 'ConservDescription';
