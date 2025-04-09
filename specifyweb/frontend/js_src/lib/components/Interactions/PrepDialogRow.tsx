@@ -82,11 +82,13 @@ export function PrepDialogRow({
         </td>
         <td>
           {preparation.taxon ? (
-            <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
               {localized(preparation.taxon)}
             </Link.NewTab>
           ) : (
-            <span>{interactionsText.notAvailable()}</span> 
+            <span>{interactionsText.notAvailable()}</span>
           )}
         </td>
         <td>{preparation.prepType}</td>
