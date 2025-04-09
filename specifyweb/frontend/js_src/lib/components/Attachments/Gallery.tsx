@@ -17,6 +17,7 @@ import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
 
 const preFetchDistance = 200;
+const attachmentSkeletonRows = 3;
 
 export function AttachmentGallery({
   attachments,
@@ -44,7 +45,7 @@ export function AttachmentGallery({
       if (ref.current) {
         const rootFontSize = Number.parseFloat(
           window.getComputedStyle(document.documentElement).fontSize
-        );
+        ); // Equivalent to 1rem
         const gap = rootFontSize;
         const columnWidth = scale * rootFontSize + gap;
         setColumns(Math.floor((ref.current.clientWidth - gap) / columnWidth));
@@ -58,11 +59,8 @@ export function AttachmentGallery({
     async () =>
       // Fetch more attachments when within 200px of the bottom
       containerRef.current !== null &&
-      (containerRef.current.scrollTop + preFetchDistance >
-        containerRef.current.scrollHeight - containerRef.current.clientHeight ||
-        (!isComplete &&
-          containerRef.current.scrollHeight ===
-            containerRef.current.clientHeight))
+      containerRef.current.scrollTop + preFetchDistance >
+        containerRef.current.scrollHeight - containerRef.current.clientHeight
         ? handleFetchMore?.().catch(raise)
         : undefined,
     [handleFetchMore]
@@ -70,15 +68,19 @@ export function AttachmentGallery({
 
   const fillPage = handleFetchMore === undefined ? undefined : rawFillPage;
 
-  React.useEffect(
-    () =>
-      // Fetch attachments while scroll bar is not visible
-      void (containerRef.current?.scrollHeight ===
-      containerRef.current?.clientHeight
-        ? fillPage?.().catch(raise)
-        : undefined),
-    [fillPage, attachments]
-  );
+  React.useEffect(() => {
+    // Fetch attachments while scroll bar is not visible
+    const noScrollFetch = () => {
+      setTimeout(() => {
+        void (containerRef.current?.scrollHeight ===
+        containerRef.current?.clientHeight
+          ? fillPage?.().catch(raise)
+          : undefined);
+      }, 100); // Wait for container to re-render before checking if scrolling is disabled
+    };
+    noScrollFetch();
+    return listen(window, 'resize', noScrollFetch);
+  }, [fillPage, attachments, scale]);
 
   const [viewRecord, setViewRecord] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -127,7 +129,9 @@ export function AttachmentGallery({
           attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
         ) : (
           <AttachmentGallerySkeleton
-            fetchNumber={columns - (attachments.length % columns) + columns * 2}
+            fetchNumber={
+              columns * attachmentSkeletonRows - (attachments.length % columns)
+            }
           />
         )}
       </Container.Base>
