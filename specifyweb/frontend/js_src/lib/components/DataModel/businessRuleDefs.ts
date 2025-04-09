@@ -6,6 +6,7 @@ import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
@@ -39,6 +40,7 @@ import type {
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Collector,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -160,6 +162,39 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         if (typeof adjustedResolved === 'number')
           borrowMaterial.set('quantityResolved', adjustedResolved);
+      },
+    },
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      // Set the default CoType for Component type
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (component): Promise<undefined> => {
+        const name = await component.rgetPromise('name');
+        const nameTreeDef = name?.get('definition');
+        const type = await component.rgetPromise('type');
+        const typeTreeDef = type.get('taxonTreeDef');
+
+        const isValid =
+          typeof nameTreeDef === 'string' && nameTreeDef === typeTreeDef;
+
+        if (name) {
+          setSaveBlockers(
+            name,
+            name?.specifyTable.field.name,
+            isValid ? [] : [resourcesText.invalidNameComponent()],
+            COMPONENT_NAME_KEY
+          );
+        } else {
+          return undefined;
+        }
       },
     },
   },
@@ -351,19 +386,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Collector: {
-    fieldChecks:{
-      isPrimary: (
-        collector: SpecifyResource<Collector>
-      ): void => {
+    fieldChecks: {
+      isPrimary: (collector: SpecifyResource<Collector>): void => {
         if (collector.get('isPrimary') && collector.collection !== undefined) {
-          collector.collection.models.map((other: SpecifyResource<Collector>) => {
-            if (other.cid !== collector.cid) {
-              other.set('isPrimary', false)
+          collector.collection.models.map(
+            (other: SpecifyResource<Collector>) => {
+              if (other.cid !== collector.cid) {
+                other.set('isPrimary', false);
+              }
             }
-          }
-        )
+          );
         }
-      }
+      },
     },
     onRemoved: (collector, collection): void => {
       if (collector.get('isPrimary') && collection.models.length > 0) {
@@ -371,10 +405,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: (collector, collection): void => {
-      if (collection.models.length === 1){
-        collector.set('isPrimary', true)
+      if (collection.models.length === 1) {
+        collector.set('isPrimary', true);
       }
-    }
+    },
   },
 
   Determination: {
@@ -638,7 +672,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnLoan,
           [resourcesText.deleteLoanedPrep()],
           PREPARATION_LOANED_KEY
-        )
+        );
       }
       if (preparation.get('isOnGift') === true) {
         setSaveBlockers(
@@ -646,7 +680,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnGift,
           [resourcesText.deleteGiftedPrep()],
           PREPARATION_GIFTED_KEY
-        )
+        );
       }
       if (preparation.get('isOnDisposal') === true) {
         setSaveBlockers(
@@ -654,7 +688,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnDisposal,
           [resourcesText.deleteDisposedPrep()],
           PREPARATION_DISPOSED_KEY
-        )
+        );
       }
       if (preparation.get('isOnExchangeOut') === true) {
         setSaveBlockers(
@@ -662,7 +696,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnExchangeOut,
           [resourcesText.deleteExchangeOutPrep()],
           PREPARATION_EXCHANGED_OUT_KEY
-        )
+        );
       }
       if (preparation.get('isOnExchangeIn') === true) {
         setSaveBlockers(
@@ -670,8 +704,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnExchangeIn,
           [resourcesText.deleteExchangeInPrep()],
           PREPARATION_EXCHANGED_IN_KEY
-        )
+        );
       }
-    }
-  }
+    },
+  },
 };

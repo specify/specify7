@@ -27,6 +27,7 @@ import { tables } from '../DataModel/tables';
 import type {
   CollectionObject,
   CollectionObjectType,
+  Component,
 } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
@@ -252,6 +253,15 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        return resource.collection?.related?.specifyTable ===
+          tables.CollectionObject
+          ? (resource as SpecifyResource<Component>)
+              .rgetPromise('type')
+              .then((type: SpecifyResource<CollectionObjectType> | undefined) =>
+                type?.get('taxonTreeDef')
+              )
+          : undefined;
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
@@ -260,7 +270,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      resource?.get('type'),
+    ]),
     false
   );
 

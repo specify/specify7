@@ -868,4 +868,8 @@ export const resourcesText = createDictionary({
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',
   },
+  invalidNameComponent: {
+    'en-us':
+      'Name does not belong to the taxon tree associated with the Component Type',
+  },
 } as const);
