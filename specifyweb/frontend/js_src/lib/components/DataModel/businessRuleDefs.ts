@@ -6,6 +6,7 @@ import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_ADDED_SELF_KEY,
   COMPONENT_NAME_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
@@ -28,6 +29,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -195,6 +197,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           COMPONENT_NAME_KEY
         );
       },
+    },
+    onAdded: (component, collection): void => {
+      const id = component.get('id');
+      const filter = collection.filters.parentcomponent;
+
+      if (id === filter) {
+        setSaveBlockers(
+          component,
+          component.specifyTable.field.children,
+          [resourcesText.componentAddedToSelf()],
+          COMPONENT_ADDED_SELF_KEY
+        );
+      }
     },
   },
 

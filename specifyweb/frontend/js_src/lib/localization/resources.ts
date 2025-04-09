@@ -872,4 +872,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'Name does not belong to the taxon tree associated with the Component Type',
   },
+  componentAddedToSelf: {
+    'en-us': 'A component cannot be added to itself.',
+  },
 } as const);
