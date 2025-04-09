@@ -25,4 +25,5 @@ from . import (
     workbench_rules,
     cojo_rules,
     cogtype_rules,
+    component_rules
 )
