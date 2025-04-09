@@ -178,23 +178,22 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       type: async (component): Promise<undefined> => {
         const name = await component.rgetPromise('name');
-        const nameTreeDef = name?.get('definition');
         const type = await component.rgetPromise('type');
+
+        if (!name) return undefined;
+
+        const nameTreeDef = name.get('definition');
         const typeTreeDef = type.get('taxonTreeDef');
 
         const isValid =
           typeof nameTreeDef === 'string' && nameTreeDef === typeTreeDef;
 
-        if (name) {
-          setSaveBlockers(
-            name,
-            name?.specifyTable.field.name,
-            isValid ? [] : [resourcesText.invalidNameComponent()],
-            COMPONENT_NAME_KEY
-          );
-        } else {
-          return undefined;
-        }
+        setSaveBlockers(
+          name,
+          name.specifyTable.field.name,
+          isValid ? [] : [resourcesText.invalidNameComponent()],
+          COMPONENT_NAME_KEY
+        );
       },
     },
   },
