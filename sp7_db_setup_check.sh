@@ -53,10 +53,19 @@ echo "  Target User: $TARGET_USER_NAME"
 NEW_DATABASE_CREATED=0
 NEW_USER_CREATED=0
 
+# Wait for MariaDB to be up and running
+echo "Checking if MariaDB instance is up and running..."
+while ! mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent; do
+  echo "MariaDB is not available yet. Retrying in 5 seconds..."
+  sleep 5
+done
+echo "MariaDB is up and running."
+
 # Check if the database exists
 DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$SUPER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -e "CREATE DATABASE \`$DB_NAME\`;"; then
     NEW_DATABASE_CREATED=1
   else
@@ -71,6 +80,7 @@ fi
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$TARGET_USER_NAME' AND host = '$TARGET_USER_HOST';")
 if [[ "$USER_EXISTS" -eq 0 ]]; then
   echo "Creating user '$TARGET_USER_NAME'..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$SUPER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}' IDENTIFIED BY '${TARGET_USER_PASSWORD}';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -e "CREATE USER '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}' IDENTIFIED BY '${TARGET_USER_PASSWORD}';"; then
     NEW_USER_CREATED=1
   else
@@ -84,6 +94,7 @@ fi
 # Grant privileges only if a new user was created
 if [[ "$NEW_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$SUPER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}'; FLUSH PRIVILEGES;\""
   if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}'; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
@@ -103,4 +114,4 @@ echo "Passing flag $CREATED_FLAG to migration script..."
 echo "--------------------------------------------------"
 
 # Run the Python migration script with the flag
-ve/bin/python manage.py base_specify_migration "$CREATED_FLAG"
+ve/bin/python manage.py base_specify_migration --database=migrations "$CREATED_FLAG"
