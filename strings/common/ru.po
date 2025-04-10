@@ -919,7 +919,7 @@ msgstr "Скопировано!"
 msgid "copyToClipboard"
 msgstr "Скопировать в буфер обмена"
 
-#: components/Interactions/PrepDialog.tsx:250
+#: components/Interactions/PrepDialog.tsx:251
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
