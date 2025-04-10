@@ -10,7 +10,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   echo "Applying Django migrations."
   set +e
   ./sp7_db_setup_check.sh
-  ve/bin/python manage.py migrate
+  ve/bin/python manage.py migrate --database=migrations
   set -e
 fi
 exec "$@"
