@@ -26,8 +26,8 @@ MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
 SUPER_NAME='master'
 SUPER_PASSWORD='master'
-TARGET_NAME='specify_user'
-TARGET_PASSWORD='specify_user'
+TARGET_NAME='master'
+TARGET_PASSWORD='master'
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
