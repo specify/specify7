@@ -1,55 +1,54 @@
 #!/bin/bash
 
-# Assuming MySQL/MariaDB is runninger and is already setup with root/super user.
-# This script setups a master user for Specify 7 to use.
+# This script sets up a master user for Specify 7 to use in MySQL/MariaDB using env vars from the Linux environment.
 
-ENV_FILE=".env"
 TARGET_USER_HOST='%'
 
 echo "Starting MariaDB database and user creation script..."
 
-# Check if .env file exists
-if [ ! -f "$ENV_FILE" ]; then
-  echo "Error: Environment file '$ENV_FILE' not found."
-  exit 1
-fi
+# Read variables from environment
+DB_HOST="${DATABASE_HOST}"
+DB_PORT="${DATABASE_PORT}"
+MASTER_USER_NAME="${MASTER_NAME}"
+MASTER_USER_PASSWORD="${MASTER_PASSWORD}"
+SUPER_USER_NAME="${SUPER_USER_NAME}"
+SUPER_USER_PASSWORD="${SUPER_USER_PASSWORD}"
+DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+DB_NAME="${DATABASE_NAME}"
+TARGET_USER_NAME="${TARGET_NAME}"
+TARGET_USER_PASSWORD="${TARGET_PASSWORD}"
 
-# Read variable from .env file
-get_env_var() {
-  local var_name="$1"
-  local env_file="$2"
-  grep -E "^\s*${var_name}\s*=" "$env_file" | grep -v '^\s*#' | sed -e 's/^\s*[^=]*=\s*//' -e 's/\s*$//' | head -n 1
-}
-
-# Read variables
-DB_HOST=$(get_env_var "DATABASE_HOST" "$ENV_FILE")
-DB_PORT=$(get_env_var "DATABASE_PORT" "$ENV_FILE")
-SUPER_USER_NAME=$(get_env_var "SUPER_USER_NAME" "$ENV_FILE")
-SUPER_USER_NAME=${SUPER_USER_NAME:-root}
-SUPER_USER_PASSWORD=$(get_env_var "SUPER_USER_PASSWORD" "$ENV_FILE")
-DB_ROOT_PASSWORD=$(get_env_var "MYSQL_ROOT_PASSWORD" "$ENV_FILE")
+# Use fallback values if needed
 SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD:-$DB_ROOT_PASSWORD}
-DB_NAME=$(get_env_var "DATABASE_NAME" "$ENV_FILE")
-TARGET_USER_NAME=$(get_env_var "MASTER_NAME" "$ENV_FILE")
-TARGET_USER_PASSWORD=$(get_env_var "MASTER_PASSWORD" "$ENV_FILE")
 
-# Validate variables
-if [[ -z "$DB_HOST" || -z "$DB_PORT" || -z "$DB_ROOT_PASSWORD" || -z "$DB_NAME" || -z "$TARGET_USER_NAME" || -z "$TARGET_USER_PASSWORD" ]]; then
-  echo "Error: One or more required variables are missing or empty in '$ENV_FILE'."
-  exit 1
+# If super user name is not set, set it to master
+if [[ -z "$SUPER_USER_NAME" ]]; then
+  SUPER_USER_NAME="$MASTER_USER_NAME"
+  SUPER_USER_PASSWORD="$MASTER_USER_PASSWORD"
+fi
+# If super user name is still not set, set it to root
+if [[ -z "$SUPER_USER_NAME" ]]; then
+  SUPER_USER_NAME="root"
+  SUPER_USER_PASSWORD="$DB_ROOT_PASSWORD"
+fi
+# If target user name is not set, set it to super
+if [[ -z "$TARGET_USER_NAME" ]]; then
+  TARGET_USER_NAME="$SUPER_USER_NAME"
+  TARGET_USER_PASSWORD="$SUPER_USER_PASSWORD"
 fi
 
-if [[ "$TARGET_USER_NAME" == "root" ]]; then
-   echo "Error: MASTER_NAME is set to 'root'."
-   exit 1
+# Validate required variables
+if [[ -z "$DB_HOST" || -z "$DB_PORT" || -z "$SUPER_USER_PASSWORD" || -z "$DB_NAME" || -z "$TARGET_USER_NAME" || -z "$TARGET_USER_PASSWORD" ]]; then
+  echo "Error: One or more required environment variables are missing or empty."
+  exit 1
 fi
 
 echo "Read configuration:"
 echo "  DB Host: $DB_HOST"
 echo "  DB Port: $DB_PORT"
 echo "  DB Name: $DB_NAME"
+echo "  Super User: $SUPER_USER_NAME"
 echo "  Target User: $TARGET_USER_NAME"
-echo "  Target User Host: $TARGET_USER_HOST"
 
 NEW_DATABASE_CREATED=0
 NEW_USER_CREATED=0
@@ -94,11 +93,7 @@ else
 fi
 
 # Determine overall result
-if [[ "$NEW_DATABASE_CREATED" -eq 1 ]]; then
-  CREATED_FLAG=1
-else
-  CREATED_FLAG=0
-fi
+CREATED_FLAG=$([[ "$NEW_DATABASE_CREATED" -eq 1 ]] && echo 1 || echo 0)
 
 echo "--------------------------------------------------"
 echo "Database and user setup complete."
