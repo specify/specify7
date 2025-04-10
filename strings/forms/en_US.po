@@ -394,7 +394,7 @@ msgstr "Field From Table"
 msgid "unsupportedCellType"
 msgstr "Unsupported cell type"
 
-#: components/SearchDialog/index.tsx:320
+#: components/SearchDialog/index.tsx:323
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
