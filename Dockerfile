@@ -9,6 +9,7 @@ RUN apt-get update \
         libldap-2.4-2 \
         libmariadbclient18 \
         rsync \
+        mariadb-client \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
