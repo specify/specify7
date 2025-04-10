@@ -683,9 +683,9 @@ export const attachmentsText = createDictionary({
     'en-us': 'Download all found attachments',
   },
   deleteAttachmentWarning: {
-    'en-us': 'Are you sure you want to delete this attachment?'
+    'en-us': 'Are you sure you want to delete this attachment?',
   },
   attachmentDelition: {
-    'en-us': 'Attachment deletion'
-  }
+    'en-us': 'Attachment deletion',
+  },
 } as const);

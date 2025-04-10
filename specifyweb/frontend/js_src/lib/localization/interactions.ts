@@ -388,6 +388,6 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Продовжуйте без підготовки',
   },
   notAvailable: {
-    'en-us': 'Not available'
-  }
+    'en-us': 'Not available',
+  },
 } as const);
