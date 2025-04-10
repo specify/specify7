@@ -1,3 +1,4 @@
+import json
 import logging
 
 from specifyweb.accounts import models as acccounts_models
@@ -40,7 +41,9 @@ def log_sqlalchemy_query(query):
     from sqlalchemy.dialects import mysql
     compiled_query = query.statement.compile(dialect=mysql.dialect(), compile_kwargs={"literal_binds": True})
     raw_sql = str(compiled_query).replace('\n', ' ') + ';'
+    logger.debug('============== SQL Query ==============')
     logger.debug(raw_sql)
+    logger.debug('=======================================')
     # Run in the storred_queries.execute file, in the execute function, right before the return statement, line 546
     # from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
 
@@ -99,3 +102,31 @@ def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: st
             picklists = collection_picklists
 
     return picklists, schemaitem
+
+def get_cat_num_inheritance_setting(collection, user) -> bool:
+    import specifyweb.context.app_resource as app_resource
+
+    inheritance_enabled: bool = False
+
+    try:
+        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+
+        if collection_prefs_json is not None:
+            collection_prefs_dict = json.loads(collection_prefs_json)
+
+            catalog_number_inheritance = collection_prefs_dict.get('catalogNumberInheritance', {})
+            behavior = catalog_number_inheritance.get('behavior', {}) \
+                if isinstance(catalog_number_inheritance, dict) else {}
+            inheritance_enabled = behavior.get('inheritance', False) if isinstance(behavior, dict) else False
+
+            if not isinstance(inheritance_enabled, bool):
+                inheritance_enabled = False
+
+    except json.JSONDecodeError:
+        logger.warning(f"Error: Could not decode JSON for collection preferences")
+    except TypeError as e:
+        logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
+    except Exception as e:
+        logger.warning(f"An unexpected error occurred: {e}")
+
+    return inheritance_enabled

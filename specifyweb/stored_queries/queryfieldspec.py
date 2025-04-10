@@ -10,6 +10,7 @@ from sqlalchemy.orm.query import Query
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
@@ -293,7 +294,18 @@ class QueryFieldSpec(
     def needs_formatted(self):
         return len(self.join_path) == 0 or self.is_relationship()
     
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False):
+    def apply_filter(
+            self,
+            query,
+            orm_field,
+            field,
+            table,
+            value=None,
+            op_num=None,
+            negate=False,
+            strict=False,
+            collection=None,
+            user=None):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -319,7 +331,7 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter)
+                op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
@@ -336,7 +348,9 @@ class QueryFieldSpec(
         negate=False,
         formatter=None,
         formatauditobjs=False,
-        strict=False
+        strict=False,
+        collection=None,
+        user=None,
     ):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
@@ -345,7 +359,7 @@ class QueryFieldSpec(
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
-        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict)
+        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict, collection=collection, user=user)
 
     def add_spec_to_query(
         self, query, formatter=None, aggregator=None, cycle_detector=[]
@@ -411,11 +425,12 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
-def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter):
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
+        and get_cat_num_inheritance_setting(collection, user)
     ):
         sibling_ids = co_sibling_ids(value)
         if sibling_ids:

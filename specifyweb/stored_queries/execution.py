@@ -29,7 +29,7 @@ from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
-from specifyweb.specify.utils import log_sqlalchemy_query
+from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -873,7 +873,7 @@ def build_query(
         sort_type = QuerySort.by_id(fs.sort_type)
 
         query, field, predicate = fs.add_to_query(
-            query, formatauditobjs=props.formatauditobjs
+            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
         )
         if field is None:
             continue
@@ -911,36 +911,9 @@ def build_query(
     return query.query, order_by_exprs
 
 def apply_special_post_query_processing(query, tableid, field_specs, collection, user):
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]:
-        def get_cat_num_inheritance_setting(collection, user) -> bool:
-            import specifyweb.context.app_resource as app_resource
-
-            inheritance_enabled: bool = False
-
-            try:
-                collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-
-                if collection_prefs_json is not None:
-                    collection_prefs_dict = json.loads(collection_prefs_json)
-
-                    catalog_number_inheritance = collection_prefs_dict.get('catalogNumberInheritance', {})
-                    behavior = catalog_number_inheritance.get('behavior', {}) \
-                        if isinstance(catalog_number_inheritance, dict) else {}
-                    inheritance_enabled = behavior.get('inheritance', False) if isinstance(behavior, dict) else False
-
-                    if not isinstance(inheritance_enabled, bool):
-                        inheritance_enabled = False
-
-            except json.JSONDecodeError:
-                logger.warning(f"Error: Could not decode JSON for collection preferences")
-            except TypeError as e:
-                logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
-            except Exception as e:
-                logger.warning(f"An unexpected error occurred: {e}")
-
-            return inheritance_enabled
-
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_cat_num_inheritance_setting(collection, user):
+            # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
             return list(query)
 
         # Get the catalogNumber field index
