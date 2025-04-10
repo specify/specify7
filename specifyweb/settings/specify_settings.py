@@ -24,10 +24,10 @@ DATABASE_OPTIONS = {}
 # database. This can be the same as the Specify 6 master user.
 MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
-SUPER_NAME='master'
-SUPER_PASSWORD='master'
-TARGET_NAME='master'
-TARGET_PASSWORD='master'
+SUPER_NAME='MasterUser'
+SUPER_PASSWORD='MasterPassword'
+TARGET_NAME='MasterUser'
+TARGET_PASSWORD='MasterPassword'
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
