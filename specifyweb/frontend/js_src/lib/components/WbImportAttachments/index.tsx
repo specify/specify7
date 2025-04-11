@@ -64,6 +64,7 @@ function FilesPicked({
     number | true | undefined
   >(undefined);
   const [isFailed, setFailed] = useBooleanState();
+  const hasFailed = React.useRef(false);
   const loading = React.useContext(LoadingContext);
 
   const handleFilesSelected = async (
@@ -103,6 +104,7 @@ function FilesPicked({
 
     async function handleFailed(): Promise<void> {
       setFileUploadProgress(undefined);
+      hasFailed.current = true;
       setFailed();
     }
 
@@ -119,6 +121,12 @@ function FilesPicked({
     );
 
     await Promise.all(uploads);
+
+    // Upload failed, just delete incomplete data set for now
+    if (hasFailed.current) {
+      await dataSet.destroy();
+      return;
+    }
 
     // Data set will contain the ids to the SpDataSetAttachment records
     const data: RA<RA<string>> = Array.from(
