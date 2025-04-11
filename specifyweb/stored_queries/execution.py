@@ -941,6 +941,8 @@ def build_query(
         sort_type = QuerySort.by_id(fs.sort_type)
 
         if props.series and fs.fieldspec.get_field().name.lower() == 'catalognumber':
+            _, _, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
+            predicates_by_field[fs.fieldspec].append(predicate) if predicate is not None else None
             continue
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
