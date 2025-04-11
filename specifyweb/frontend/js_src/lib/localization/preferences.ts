@@ -2010,4 +2010,9 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Добавить панель поиска на главную страницу',
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
   },
+  inheritanceCatNumberPref: {
+    // TODO: improve
+    'en-us':
+      'Enable the inheritance of the primary catalog number to its empty siblings.',
+  },
 } as const);
