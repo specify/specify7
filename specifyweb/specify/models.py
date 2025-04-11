@@ -1471,6 +1471,7 @@ class Collectionobject(models.Model):
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
+    parentco = models.ForeignKey('CollectionObject', db_column='ParentCOID', related_name='children', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobject'

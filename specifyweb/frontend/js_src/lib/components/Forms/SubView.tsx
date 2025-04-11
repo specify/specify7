@@ -160,11 +160,7 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {(!RECURSIVE_RENDERING_EXCEPTIONS.has(parentResource.specifyTable) &&
-        parentContext
-          .map(({ relationship }) => relationship)
-          .includes(relationship)) ||
-      collection === false ? undefined : (
+      {collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray
