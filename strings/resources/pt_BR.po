@@ -568,8 +568,8 @@ msgstr ""
 msgid "formatPreview"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:437
-#: components/DataModel/businessRuleDefs.ts:455
+#: components/DataModel/businessRuleDefs.ts:436
+#: components/DataModel/businessRuleDefs.ts:454
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
@@ -592,27 +592,27 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:639
+#: components/DataModel/businessRuleDefs.ts:638
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:647
+#: components/DataModel/businessRuleDefs.ts:646
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:655
+#: components/DataModel/businessRuleDefs.ts:654
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:663
+#: components/DataModel/businessRuleDefs.ts:662
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:671
+#: components/DataModel/businessRuleDefs.ts:670
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr ""
