@@ -2009,9 +2009,9 @@ export type Component = {
   readonly toOneIndependent: {
     readonly type: CollectionObjectType;
     readonly name: Taxon | null;
-    readonly parentComponent: Component | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly parentComponent: Component | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;

@@ -2244,7 +2244,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='name', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
             Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='parentComponent', type='many-to-one', required=False, relatedModelName='Component', column='ParentComponentID', otherSideName='children'),
-            Relationship(name='children', type='one-to-many', required=False, relatedModelName='Component', otherSideName='parentComponent'),
+            Relationship(name='children', type='one-to-many', required=False, relatedModelName='Component', otherSideName='parentComponent', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='component', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='component', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
