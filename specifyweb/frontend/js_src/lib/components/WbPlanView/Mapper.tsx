@@ -375,7 +375,11 @@ export function Mapper(props: {
           />
           {typeof props.batchEditPrefs === 'object' ? (
             <ReadOnlyContext.Provider
-              value={props.readonlySpec?.batchEditPrefs ?? isReadOnly}
+              value={
+                props.dataset.uploadresult?.success ??
+                props.readonlySpec?.batchEditPrefs ??
+                isReadOnly
+              }
             >
               <BatchEditPrefsView
                 prefs={props.batchEditPrefs}
