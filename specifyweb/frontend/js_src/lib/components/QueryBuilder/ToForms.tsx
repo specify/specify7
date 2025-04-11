@@ -63,11 +63,12 @@ export function QueryToForms({
           onDelete={(index): void => {
             if (
               (selectedRows.size === 0 && results[index] === undefined) ||
-              (selectedRows.size > 0 && Array.from(selectedRows)[index] === undefined)
+              (selectedRows.size > 0 &&
+                Array.from(selectedRows)[index] === undefined)
             ) {
               handleClose();
             } else {
-              handleDelete(unParseIndex(index))
+              handleDelete(unParseIndex(index));
             }
           }}
           onSaved={f.void}

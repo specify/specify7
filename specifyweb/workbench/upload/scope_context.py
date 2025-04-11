@@ -13,6 +13,7 @@ class ScopingCache(TypedDict):
     # or cotypes but want to reuse as much as other field based info
     fields: Dict[Tuple[Any, str, str], Optional[UIFormatter]]
     date_format: Optional[str]
+    cotype_column: Optional[str]
 
 class ScopeContext(object):
     cache: ScopingCache
@@ -23,6 +24,7 @@ class ScopeContext(object):
         self.cache['cotypes'] = {}
         self.cache['date_format'] = None
         self.cache['fields'] = {}
+        self.cache['cotype_column'] = None
         
     def set_is_variable(self):
         # We "discover" whether the scoping is variable across the rows.
