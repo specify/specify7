@@ -43,9 +43,11 @@ import { Disambiguation } from './DisambiguationLogic';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
+import { WbAttachmentsPreview } from './AttachmentsPreview';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
+import { attachmentsText } from '../../localization/attachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -152,6 +154,9 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
+  const [showAttachments, _openAttachments, _closeAttachments, toggleAttachments] = 
+    useBooleanState();
+
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
@@ -196,6 +201,13 @@ export function WbView({
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          <Button.Small
+            aria-haspopup="grid"
+            aria-pressed={showAttachments}
+            onClick={toggleAttachments}
+          >
+            {attachmentsText.attachments()}
+          </Button.Small>
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
@@ -238,7 +250,7 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults && (
+          {showResults ? (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
@@ -249,7 +261,15 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          )}
+          ) : showAttachments ? (
+            <aside aria-live="polite">
+              <WbAttachmentsPreview
+                datasetId={dataset.id}
+                datasetName={dataset.name}
+                onClose={toggleAttachments}
+              />
+            </aside>
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent
