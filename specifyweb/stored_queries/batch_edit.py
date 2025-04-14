@@ -57,7 +57,7 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 # REFACTOR: Break this file into smaller pieaces
 
 # TODO: Play-around with localizing
-BATCH_EDIT_NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
+BATCH_EDIT_NULL_RECORD_DESCRIPTION = ""
 
 # TODO: add backend support for making system tables readonly
 BATCH_EDIT_READONLY_TABLES = [*CONCRETE_HIERARCHY]
