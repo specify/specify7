@@ -691,4 +691,10 @@ export const backEndText = createDictionary({
     'en-us':
       'Scope change detected in this row. It is recommended to delete this row from the dataset',
   },
+  multipleTreeDefsInRow: {
+    'en-us': 'Multiple tree definitions in row',
+  },
+  invalidCotype: {
+    'en-us': 'Invalid type for selected tree rank(s)',
+  },
 } as const);

@@ -315,7 +315,7 @@ class ScopedTreeRecord(NamedTuple):
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
             error_col_name = ranks_columns[0].column_fullname
             
-            return self, WorkBenchParseFailure('Multiple tree definitions in row', {}, error_col_name)
+            return self, WorkBenchParseFailure('multipleTreeDefsInRow', {}, error_col_name)
 
         return None
     
@@ -351,7 +351,7 @@ class ScopedTreeRecord(NamedTuple):
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
         
-        return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, cotype_column)
+        return self, WorkBenchParseFailure('invalidCotype', {}, cotype_column)
 
     def bind(
         self,
