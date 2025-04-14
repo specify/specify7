@@ -7,7 +7,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
@@ -57,13 +56,9 @@ function FilesPicked({
   readonly files: readonly File[];
 }): JSX.Element {
   const navigate = useNavigate();
-  const [_, setUploadProgress] = React.useState<number | true | undefined>(
-    undefined
-  );
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | true | undefined
   >(undefined);
-  const [isFailed, setFailed] = useBooleanState();
   const hasFailed = React.useRef(false);
   const loading = React.useContext(LoadingContext);
 
@@ -105,11 +100,10 @@ function FilesPicked({
     async function handleFailed(): Promise<void> {
       setFileUploadProgress(undefined);
       hasFailed.current = true;
-      setFailed();
     }
 
     const uploads = files.map(async (file) =>
-      uploadFile(file, setUploadProgress)
+      uploadFile(file)
         .then(async (attachment) =>
           attachment === undefined ? handleFailed() : handleUploaded(attachment)
         )
@@ -124,14 +118,13 @@ function FilesPicked({
 
     // Upload failed, just delete incomplete data set for now
     if (hasFailed.current) {
-      const deletions = dataSetAttachments.map(
-        async (dataSetAttachment) => {
-          await dataSetAttachment.destroy();
-        }
-      );
+      const deletions = dataSetAttachments.map(async (dataSetAttachment) => {
+        await dataSetAttachment.destroy();
+      });
       loading(Promise.all(deletions));
-      await Promise.all(deletions);
-      await dataSet.destroy();
+      await Promise.all(deletions).then(() => {
+        dataSet.destroy();
+      });
       return;
     }
 
@@ -157,8 +150,7 @@ function FilesPicked({
   const [dataSetName, setDataSetName] = React.useState<string>(
     attachmentsText.attachments()
   );
-
-  return isFailed ? (
+  return hasFailed.current ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
   ) : (
     <>
