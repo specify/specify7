@@ -974,10 +974,8 @@ class BoundUpdateTable(BoundUploadTable):
         )
 
         if self._has_scoping_changes(concrete_field_changes) and not self._is_scope_change_allowed(concrete_field_changes):
-            # I don't know what else to do. I don't think this will ever get raised. I don't know what I'll need to debug this, so showing everything.
-            raise Exception(
-                f"Attempting to change the scope of the record: {reference_record} at {self}. \n\n Diff: {concrete_field_changes}"
-            )
+            scope_change_error = ParseFailures([WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)])
+            return UploadResult(scope_change_error, {}, {})
 
         to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
 

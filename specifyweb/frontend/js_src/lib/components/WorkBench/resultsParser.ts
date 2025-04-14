@@ -272,6 +272,7 @@ export function resolveValidationMessage(
     return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
+  else if (key === 'scopeChangeError') return backEndText.scopeChangeDetected();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),
