@@ -124,6 +124,13 @@ function FilesPicked({
 
     // Upload failed, just delete incomplete data set for now
     if (hasFailed.current) {
+      const deletions = dataSetAttachments.map(
+        async (dataSetAttachment) => {
+          await dataSetAttachment.destroy();
+        }
+      );
+      loading(Promise.all(deletions));
+      await Promise.all(deletions);
       await dataSet.destroy();
       return;
     }
