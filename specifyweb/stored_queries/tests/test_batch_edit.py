@@ -558,6 +558,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks",
                 "Determination remarks #2",
                 "Determination remarks #3",
+                "Preparation countAmt",
+                "Preparation text1",
                 "Agent firstName",
                 "Agent lastName",
                 "AgentSpecialty specialtyName",
@@ -616,6 +618,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2": None,
                 "Determination integer1 #3": None,
                 "Determination remarks #3": None,
+                "Preparation countAmt": None,
+                "Preparation text1": None,
             },
             {
                 "CollectionObject catalogNumber": "num-1",
@@ -649,6 +653,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2": None,
                 "Determination integer1 #3": None,
                 "Determination remarks #3": None,
+                "Preparation countAmt": None,
+                "Preparation text1": None,
             },
             {
                 "CollectionObject catalogNumber": "num-2",
@@ -682,6 +688,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2": None,
                 "Determination integer1 #3": None,
                 "Determination remarks #3": None,
+                "Preparation countAmt": None,
+                "Preparation text1": None,
             },
             {
                 "CollectionObject catalogNumber": "num-3",
@@ -715,6 +723,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2": None,
                 "Determination integer1 #3": None,
                 "Determination remarks #3": None,
+                "Preparation countAmt": None,
+                "Preparation text1": None,
             },
             {
                 "CollectionObject catalogNumber": "num-4",
@@ -748,6 +758,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2": "test remarks",
                 "Determination integer1 #3": None,
                 "Determination remarks #3": None,
+                "Preparation countAmt": None,
+                "Preparation text1": None,
             },
         ]
 

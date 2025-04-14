@@ -45,7 +45,6 @@ from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
-from decimal import Decimal
 
 MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 
@@ -532,6 +531,7 @@ class RowPlanMap(NamedTuple):
             key: RowPlanMap(
                 batch_edit_pack=(
                     BatchEditPack(
+                        # NOTE: Check if default needs to be 1 here as well?
                         order=BatchEditFieldPack(value=0),
                         id=EMPTY_FIELD,
                         version=EMPTY_FIELD,
@@ -539,7 +539,9 @@ class RowPlanMap(NamedTuple):
                     if value.batch_edit_pack.order.idx is not None
                     # only use id if order field is not present
                     else BatchEditPack(
-                        id=BatchEditFieldPack(value=0),
+                        # Default value is 1 to ensure at least one to-many is added to the dataset. 
+                        # Check _extend_id_order for how this is used
+                        id=BatchEditFieldPack(value=1), 
                         order=EMPTY_FIELD,
                         version=EMPTY_FIELD,
                     )
@@ -708,6 +710,8 @@ class RowPlanCanonical(NamedTuple):
         }
         return RowPlanMap(batch_edit_pack=EMPTY_PACK, to_one=to_one, to_many=to_many)
 
+    # Responsible for extending a to-many relationship to include all to-many records in the same row
+    # Example: Consider a CO with 3 determinations. This function ensures all 3 determinations get added to the same row of the dataset
     @staticmethod
     def _extend_id_order(
         values: List["RowPlanCanonical"],
