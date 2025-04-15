@@ -425,14 +425,14 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
-def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
         and get_cat_num_inheritance_setting(collection, user)
     ):
-        sibling_ids = co_sibling_ids(value)
+        sibling_ids = cog_primary_co_sibling_ids(value)
         if sibling_ids:
             # Modify the query to filter operation and values for sibling collection objects
             value = ','.join(sibling_ids)
@@ -441,7 +441,12 @@ def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uifor
 
     return op, orm_field, value
 
-def co_sibling_ids(cat_num):
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+    return op, orm_field, value
+
+def cog_primary_co_sibling_ids(cat_num):
     # Get the collection object with the given catalog number
     co = Collectionobject.objects.filter(catalognumber=cat_num).first()
     if not co:
