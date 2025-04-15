@@ -17,12 +17,14 @@ from typing import (
     Union,
     Literal,
 )
+
 from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.specify.tree_views import get_all_tree_information, TREE_INFORMATION
+from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
@@ -954,10 +956,14 @@ class RowPlanCanonical(NamedTuple):
         ]
         all_headers = [*raw_headers, *to_one_headers, *to_many_headers]
 
+        def _is_anyrank_tree_relationship(name, value):
+            return name.lower() in SPECIFY_TREES and not isinstance(value, TreeRecord)
+
         def _relationship_is_editable(name, value):
             return (
                 Func.is_not_empty(name, value)
                 and name not in readonly_rels
+                and not _is_anyrank_tree_relationship(name, value)
                 and not omit_relationships
             )
 
