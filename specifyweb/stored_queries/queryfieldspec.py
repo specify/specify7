@@ -321,7 +321,7 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, mod_orm_field, value = apply_special_filter_cases_for_parent_inheritance(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
@@ -415,7 +415,7 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
-def apply_special_filter_cases_for_parent_inheritance(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
