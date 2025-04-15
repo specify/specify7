@@ -1054,14 +1054,6 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
                     prefix = prefix if prefix else '' 
                     postfix = postfix if postfix else '' 
                     return (int(float(number)), prefix, postfix)
-
-
-            match = re.search(r'(\D*)(\d+)(.*)', s)
-            if match:
-                prefix, number, postfix = match.groups()
-                prefix = prefix if prefix else '' 
-                postfix = postfix if postfix else '' 
-                return (int(number), prefix, postfix)
             
             # Match integer-integer string, like "1234-5678" so that the number 12345678 is parsed
             match = re.search(r'(\d+)(\D*)(\d+)', s)
@@ -1078,6 +1070,13 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
                 prefix = prefix if prefix else '' 
                 return (int(number), prefix, '')
 
+            match = re.search(r'(\D*)(\d+)(.*)', s)
+            if match:
+                prefix, number, postfix = match.groups()
+                prefix = prefix if prefix else '' 
+                postfix = postfix if postfix else '' 
+                return (int(number), prefix, postfix)
+            
             return (None, s, '')
 
     def parse_catalog_for_sorting(catalog):
