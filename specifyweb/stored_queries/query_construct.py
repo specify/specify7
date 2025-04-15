@@ -2,7 +2,7 @@ import logging
 from collections import namedtuple, deque
 from typing import Tuple, List
 
-from sqlalchemy import orm, sql
+from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tree_utils import get_treedefs
@@ -95,7 +95,9 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
         # We don't want to include treedef if the rank is not present.
-        new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
+        new_filters = [
+            *query.internal_filters,
+            or_(getattr(node, treedef_column).in_(defs_to_filter_on), getattr(node, treedef_column) == None)]
         query = query._replace(internal_filters=new_filters)
 
         return query, column, field, table
