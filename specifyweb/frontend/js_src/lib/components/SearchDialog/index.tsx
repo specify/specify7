@@ -93,7 +93,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
       }}
     />
   ) : (
-    <SearchForm {...props} onUseQueryBuilder={handleUseQueryBuilder}/>
+    <SearchForm {...props} onUseQueryBuilder={handleUseQueryBuilder} />
   );
 }
 
@@ -186,7 +186,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
   onAdd: handleAdd,
-  multiple
+  multiple,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -198,7 +198,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onAdd?:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
-  readonly multiple?: boolean
+  readonly multiple?: boolean;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -242,11 +242,13 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          {multiple === true && <SelectRecordSets
-            handleParentClose={handleClose}
-            table={table}
-            onAdd={handleAdd}
-          />}
+          {multiple === true && (
+            <SelectRecordSets
+              handleParentClose={handleClose}
+              table={table}
+              onAdd={handleAdd}
+            />
+          )}
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>
