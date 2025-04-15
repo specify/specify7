@@ -14,7 +14,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpQuery, Tables } from '../DataModel/types';
-import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { QueryField } from '../QueryBuilder/helpers';
@@ -189,7 +189,12 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
       relationship.isRelationship && relationshipIsToMany(relationship)
   );
 
-  return nestedToManyCount.length > 1;
+  const isTreeOnlyQuery =
+    isTreeTable(queryFieldSpec.baseTable.name) &&
+    isTreeTable(queryFieldSpec.table.name);
+
+  const allowedToMany = isTreeOnlyQuery ? 0 : 1;
+  return nestedToManyCount.length > allowedToMany;
 }
 
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
