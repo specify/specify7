@@ -1062,8 +1062,23 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
                 prefix = prefix if prefix else '' 
                 postfix = postfix if postfix else '' 
                 return (int(number), prefix, postfix)
-            else:
-                return (None, s, '')
+            
+            # Match integer-integer string, like "1234-5678" so that the number 12345678 is parsed
+            match = re.search(r'(\d+)(\D*)(\d+)', s)
+            if match:
+                prefix, num1, num2 = match.groups()
+                prefix = prefix if prefix else ''
+                combined_number = int(str(num1) + str(num2))
+                return (combined_number, prefix, '')
+            
+            # Match string-interger string, like "abc-1234" so that the number 1234 is parsed
+            match = re.search(r'(\D*)(\d+)', s)
+            if match:
+                prefix, number = match.groups()
+                prefix = prefix if prefix else '' 
+                return (int(number), prefix, '')
+
+            return (None, s, '')
 
     def parse_catalog_for_sorting(catalog):
         m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
