@@ -4,13 +4,12 @@ import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
-from specifyweb.specify.models import Collectionobject
-from specifyweb.stored_queries.execution import apply_processing_parent_inheritance
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobjectgroupjoin, datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
@@ -321,8 +320,9 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-                f = op(mod_orm_field, value)
+                f = op(orm_field, value)
+                # op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                # f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -420,7 +420,7 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
-        and apply_processing_parent_inheritance(collection, user)
+        and get_parent_cat_num_inheritance_setting(collection, user)
     ):
         children_ids = co_children_ids(value)
         if children_ids:
