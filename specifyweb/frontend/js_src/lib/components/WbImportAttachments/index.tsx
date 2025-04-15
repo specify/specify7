@@ -7,15 +7,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
 import type { RA, WritableArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { uploadFile } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
@@ -32,7 +33,6 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import type { SerializedRecord } from '../DataModel/helperTypes';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -127,7 +127,7 @@ function FilesPicked({
       return;
     }
 
-    // save all SpDataSetAttachment records
+    // Save all SpDataSetAttachment records
     const dataSetAttachments = await ajax<
       RA<SerializedRecord<SpDataSetAttachment>>
     >(`/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`, {
