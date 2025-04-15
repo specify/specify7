@@ -307,9 +307,7 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        # Check if query is a list or a SQLAlchemy query
         if isinstance(query, list):
-            # Handle the case where query is a list of results
             for row in query:
                 if row_filter is not None and not row_filter(row):
                     continue
@@ -319,7 +317,6 @@ def query_to_csv(
                 ]
                 csv_writer.writerow(encoded)
         else:
-            # Handle the case where query is a SQLAlchemy query
             for row in query.yield_per(1):
                 if row_filter is not None and not row_filter(row):
                     continue
@@ -375,6 +372,8 @@ def query_to_kml(
         id_field = getattr(model, model._id)
         query = query.filter(id_field.in_(selected_rows))
 
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
+
     logger.debug("query_to_kml starting")
 
     kmlDoc = xml.dom.minidom.Document()
@@ -393,12 +392,20 @@ def query_to_kml(
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
 
-    for row in query.yield_per(1):
-        if row_has_geocoords(coord_cols, row):
-            placemarkElement = createPlacemark(
-                kmlDoc, row, coord_cols, table, captions, host
-            )
-            documentElement.appendChild(placemarkElement)
+    if isinstance(query, list):
+        for row in query:
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
+    else:
+        for row in query.yield_per(1):
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
         kmlFile.write(kmlDoc.toprettyxml("  ", newl="\n", encoding="utf-8"))
