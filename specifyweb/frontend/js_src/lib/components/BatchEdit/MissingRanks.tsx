@@ -3,7 +3,7 @@ import React from 'react';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import type { RA,RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
