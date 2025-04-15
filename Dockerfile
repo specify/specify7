@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 AS common
+FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -7,7 +7,7 @@ RUN apt-get update \
         gettext \
         python3.8 \
         libldap-2.4-2 \
-        libmariadbclient18 \
+        libmariadb3 \
         rsync \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
