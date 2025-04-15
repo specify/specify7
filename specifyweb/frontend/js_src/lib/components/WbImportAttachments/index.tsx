@@ -7,6 +7,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ajax } from '../../utils/ajax';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
@@ -16,7 +17,10 @@ import { Button } from '../Atoms/Button';
 import { uploadFile } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { serializeResource } from '../DataModel/serializers';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
@@ -28,6 +32,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -80,21 +85,21 @@ function FilesPicked({
     const dataSetUrl = dataSet.url();
 
     // Upload attachments
-    const dataSetAttachments: WritableArray<
+    const unsavedDataSetAttachments: WritableArray<
       SpecifyResource<SpDataSetAttachment>
     > = [];
     async function handleUploaded(
       attachment: SpecifyResource<Attachment>
     ): Promise<void> {
       // Create SpDataSetAttachment Record for each uploaded attachment
-      const dataSetAttachment: SpecifyResource<SpDataSetAttachment> =
+      attachment.set('tableID', tables.SpDataSetAttachment.tableId);
+      unsavedDataSetAttachments.push(
         new tables.SpDataSetAttachment.Resource({
           attachment: attachment as never,
           spdataset: dataSetUrl,
           ordinal: 0,
-        });
-      attachment.set('tableID', dataSetAttachment.specifyTable.tableId);
-      dataSetAttachments.push(await dataSetAttachment.save());
+        })
+      );
     }
 
     async function handleFailed(): Promise<void> {
@@ -111,22 +116,29 @@ function FilesPicked({
           handleFailed();
           raise(error);
         })
-        .finally(() => setFileUploadProgress(dataSetAttachments.length))
+        .finally(() => setFileUploadProgress(unsavedDataSetAttachments.length))
     );
 
     await Promise.all(uploads);
 
     // Upload failed, just delete incomplete data set for now
     if (hasFailed.current) {
-      const deletions = dataSetAttachments.map(async (dataSetAttachment) => {
-        await dataSetAttachment.destroy();
-      });
-      loading(Promise.all(deletions));
-      await Promise.all(deletions).then(() => {
-        dataSet.destroy();
-      });
+      dataSet.destroy();
       return;
     }
+
+    // save all SpDataSetAttachment records
+    const dataSetAttachments = await ajax<
+      RA<SerializedRecord<SpDataSetAttachment>>
+    >(`/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: unsavedDataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }).then(({ data }) =>
+      data.map((resource) => deserializeResource(serializeResource(resource)))
+    );
 
     // Data set will contain the ids to the SpDataSetAttachment records
     const data: RA<RA<string>> = Array.from(
