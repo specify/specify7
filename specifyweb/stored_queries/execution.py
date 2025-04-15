@@ -12,6 +12,8 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
+from specifyweb.specify.models import Collectionobject
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
@@ -291,6 +293,8 @@ def query_to_csv(
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
 
+    query = apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=False)
+
     logger.debug("query_to_csv starting")
 
     encoding = 'utf-8'
@@ -305,14 +309,24 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        for row in query.yield_per(1):
-            if row_filter is not None and not row_filter(row):
-                continue
-            encoded = [
-                re.sub("\r|\n", " ", str(f))
-                for f in (row[1:] if strip_id or distinct else row)
-            ]
-            csv_writer.writerow(encoded)
+        if isinstance(query, list):
+            for row in query:
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
+        else:
+            for row in query.yield_per(1):
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
 
     logger.debug("query_to_csv finished")
 
@@ -360,6 +374,8 @@ def query_to_kml(
         id_field = getattr(model, model._id)
         query = query.filter(id_field.in_(selected_rows))
 
+    query = apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=False)
+
     logger.debug("query_to_kml starting")
 
     kmlDoc = xml.dom.minidom.Document()
@@ -378,12 +394,20 @@ def query_to_kml(
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
 
-    for row in query.yield_per(1):
-        if row_has_geocoords(coord_cols, row):
-            placemarkElement = createPlacemark(
-                kmlDoc, row, coord_cols, table, captions, host
-            )
-            documentElement.appendChild(placemarkElement)
+    if isinstance(query, list):
+        for row in query:
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
+    else:
+        for row in query.yield_per(1):
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
         kmlFile.write(kmlDoc.toprettyxml("  ", newl="\n", encoding="utf-8"))
@@ -771,7 +795,8 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        return {"results": list(query)}
+        # return {"results": list(query)}
+        return {"results": apply_processing_parent_inheritance(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
@@ -870,7 +895,7 @@ def build_query(
         sort_type = QuerySort.by_id(fs.sort_type)
 
         query, field, predicate = fs.add_to_query(
-            query, formatauditobjs=props.formatauditobjs
+            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
         )
         if field is None:
             continue
@@ -906,3 +931,32 @@ def build_query(
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
+
+def apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=True):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+        if not get_parent_cat_num_inheritance_setting(collection, user):
+            return list(query)
+
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the parent catalog number
+        for result in results:
+            result = list(result)
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+                parentco = Collectionobject.objects.filter(children=result).first()
+                if parentco:
+                    result[catalog_number_field_index] = parentco.catalognumber
+            updated_results.append(tuple(result))
+
+        return updated_results
+
+    if should_list_query:
+        return list(query)
+    return query

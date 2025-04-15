@@ -4,12 +4,15 @@ import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
+from specifyweb.specify.models import Collectionobject
+from specifyweb.stored_queries.execution import apply_processing_parent_inheritance
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
-from specifyweb.specify.models import datamodel
+from specifyweb.specify.models import Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
 from .query_ops import QueryOps
@@ -292,7 +295,7 @@ class QueryFieldSpec(
     def needs_formatted(self):
         return len(self.join_path) == 0 or self.is_relationship()
     
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False):
+    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False, collection=None, user=None):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -318,7 +321,8 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                f = op(orm_field, value)
+                op, mod_orm_field, value = apply_special_filter_cases_for_parent_inheritance(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -334,7 +338,9 @@ class QueryFieldSpec(
         negate=False,
         formatter=None,
         formatauditobjs=False,
-        strict=False
+        strict=False,
+        collection=None,
+        user=None,
     ):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
@@ -343,7 +349,7 @@ class QueryFieldSpec(
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
-        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict)
+        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict, collection=collection, user=user)
 
     def add_spec_to_query(
         self, query, formatter=None, aggregator=None, cycle_detector=[]
@@ -408,3 +414,37 @@ class QueryFieldSpec(
                     orm_field = sql.extract(self.date_part, orm_field)
 
         return query, orm_field, field, table
+
+def apply_special_filter_cases_for_parent_inheritance(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+        and apply_processing_parent_inheritance(collection, user)
+    ):
+        children_ids = co_children_ids(value)
+        if children_ids:
+            # Modify the query to filter operation and values for children collection objects
+            value = ','.join(children_ids)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
+
+    return op, orm_field, value
+
+def co_children_ids(cat_num):
+    # Get the collection object with the given catalog number
+    parentco = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not parentco:
+        return []
+
+    # Get children of collection object
+    children_co_ids = Collectionobject.objects.filter(
+        parentco=parentco
+    ).values_list('childco_id', flat=True)
+
+    # Filter children with no catalog number and return all IDs as strings
+    target_children_co_ids = Collectionobject.objects.filter(
+        id__in=children_co_ids, catalognumber=None
+    ).values_list('id', flat=True)
+
+    return [str(i) for i in [parentco.id] + list(target_children_co_ids)]
