@@ -931,7 +931,7 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_cat_num_inheritance_setting(collection, user):
             # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
@@ -960,7 +960,11 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
 
         return updated_results
 
+    return query
+
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    
     if should_list_query:
         return list(query)
     return query
-    
