@@ -291,6 +291,7 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")
 
@@ -306,14 +307,27 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        for row in query.yield_per(1):
-            if row_filter is not None and not row_filter(row):
-                continue
-            encoded = [
-                re.sub("\r|\n", " ", str(f))
-                for f in (row[1:] if strip_id or distinct else row)
-            ]
-            csv_writer.writerow(encoded)
+        # Check if query is a list or a SQLAlchemy query
+        if isinstance(query, list):
+            # Handle the case where query is a list of results
+            for row in query:
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
+        else:
+            # Handle the case where query is a SQLAlchemy query
+            for row in query.yield_per(1):
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
 
     logger.debug("query_to_csv finished")
 
@@ -910,7 +924,7 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def apply_special_post_query_processing(query, tableid, field_specs, collection, user):
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_cat_num_inheritance_setting(collection, user):
             # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
@@ -928,7 +942,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
         # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
         for result in results:
             result = list(result)
-            if result[catalog_number_field_index] is None:
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
                 cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
                 if cojo:
                     primary_cojo = Collectionobjectgroupjoin.objects.filter(
@@ -939,5 +953,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
 
         return updated_results
 
-    return list(query)
+    if should_list_query:
+        return list(query)
+    return query
     
