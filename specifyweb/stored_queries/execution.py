@@ -950,9 +950,10 @@ def apply_processing_parent_inheritance(query, tableid, field_specs, collection,
         for result in results:
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                parentco = Collectionobject.objects.filter(children=result).first()
-                if parentco:
-                    result[catalog_number_field_index] = parentco.catalognumber
+                child_id = result[0]  # Assuming the first column is the child's ID
+                child_obj = Collectionobject.objects.filter(id=child_id).first()
+                if child_obj and child_obj.parentco:
+                    result[catalog_number_field_index] = child_obj.parentco.catalognumber
             updated_results.append(tuple(result))
 
         return updated_results

@@ -320,9 +320,8 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                f = op(orm_field, value)
-                # op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-                # f = op(mod_orm_field, value)
+                op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                f = op(mod_orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -437,14 +436,10 @@ def co_children_ids(cat_num):
     if not parentco:
         return []
 
-    # Get children of collection object
-    children_co_ids = Collectionobject.objects.filter(
-        parentco=parentco
-    ).values_list('childco_id', flat=True)
+    # Get child objects directly from the related name
+    children = parentco.children.filter(catalognumber=None)
 
-    # Filter children with no catalog number and return all IDs as strings
-    target_children_co_ids = Collectionobject.objects.filter(
-        id__in=children_co_ids, catalognumber=None
-    ).values_list('id', flat=True)
+    # Get their IDs
+    target_children_co_ids = children.values_list('id', flat=True)
 
     return [str(i) for i in [parentco.id] + list(target_children_co_ids)]
