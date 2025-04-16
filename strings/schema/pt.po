@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-03-16 08:04+0000\n"
+"PO-Revision-Date: 2025-04-16 08:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "schema/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:388
@@ -101,7 +101,7 @@ msgstr "Nome da tabela"
 #: components/WebLinks/Element.tsx:52
 #, fuzzy
 msgid "withoutTable"
-msgstr "Sem Mesa"
+msgstr "Sem mesa"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:52
@@ -118,7 +118,7 @@ msgstr "Configuração do esquema"
 #: components/SchemaConfig/index.tsx:75
 #, fuzzy
 msgid "unsavedSchemaUnloadProtect"
-msgstr "As alterações do esquema não foram salvas"
+msgstr "As alterações de esquema não foram salvas"
 
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
@@ -293,7 +293,7 @@ msgstr "Definido pelo usuário"
 #: components/SchemaViewer/schemaToTsv.tsx:29
 #, fuzzy
 msgid "databaseColumn"
-msgstr "Coluna do banco de dados"
+msgstr "Coluna do Banco de Dados"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:102
@@ -372,7 +372,7 @@ msgstr "Esquema de banco de dados"
 #: components/Toolbar/QueryTablesEdit.tsx:94
 #, fuzzy
 msgid "selectedTables"
-msgstr "Tabelas selecionadas"
+msgstr "Tabelas Selecionadas"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:92
@@ -403,7 +403,7 @@ msgstr "{tableName:string} Regras de Unicidade"
 #: components/SchemaConfig/Table.tsx:93
 #, fuzzy
 msgid "uniquenessRules"
-msgstr "Regras de exclusividade"
+msgstr "Regras de Unicidade"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/TableUniquenessRules.tsx:180
