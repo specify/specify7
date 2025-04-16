@@ -104,7 +104,7 @@ def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: st
 def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
     import specifyweb.context.app_resource as app_resource
 
-    inheritance_enabled: bool = False
+    parent_inheritance_enabled: bool = False  
 
     try:
         collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
@@ -117,7 +117,7 @@ def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
                 if isinstance(catalog_number_parent_inheritance, dict) else {}
             parent_inheritance_enabled = behavior.get('inheritance', False) if isinstance(behavior, dict) else False
 
-            if not isinstance(inheritance_enabled, bool):
+            if not isinstance(parent_inheritance_enabled, bool):
                 parent_inheritance_enabled = False
 
     except json.JSONDecodeError:
