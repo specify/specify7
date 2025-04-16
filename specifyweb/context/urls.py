@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^api_endpoints_all.json$', views.api_endpoints_all),
     url(r'^user.json$', views.user),
     url(r'^system_info.json$', views.system_info),
+    url(r'^all_system_data.json$', views.all_system_data),
     url(r'^domain.json$', views.domain),
     url(r'^view.json$', views.view),
     url(r'^views.json$', views.views),

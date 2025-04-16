@@ -624,6 +624,9 @@ export const userText = createDictionary({
     'de-ch': 'Sicherheit und Konten',
     'ru-ru': 'Безопасность и учетные записи',
   },
+  systemConfigurationTool: {
+    'en-us': 'System Configuration Tool',
+  },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
     'ru-ru': 'Библиотека шаблонов ролей учреждения',
