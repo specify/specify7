@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.9-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:2031
+#: components/Preferences/UserDefinitions.tsx:2039
 #: components/QueryBuilder/Header.tsx:91
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
@@ -62,20 +62,20 @@ msgstr ""
 msgid "searchFields"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:419
+#: components/QueryBuilder/FieldFilter.tsx:423
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "any"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:343
-#: components/QueryBuilder/FieldFilter.tsx:393
+#: components/QueryBuilder/FieldFilter.tsx:338
+#: components/QueryBuilder/FieldFilter.tsx:388
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "startValue"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:354
+#: components/QueryBuilder/FieldFilter.tsx:349
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "endValue"
@@ -304,111 +304,111 @@ msgstr ""
 msgid "formattedInline"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:436
+#: components/QueryBuilder/FieldFilter.tsx:430
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "like"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:437
+#: components/QueryBuilder/FieldFilter.tsx:431
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "likeDescription"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:445
+#: components/QueryBuilder/FieldFilter.tsx:438
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "equal"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:454
+#: components/QueryBuilder/FieldFilter.tsx:446
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "greaterThan"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:463
+#: components/QueryBuilder/FieldFilter.tsx:454
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "lessThan"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:472
+#: components/QueryBuilder/FieldFilter.tsx:462
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "greaterOrEqualTo"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:481
+#: components/QueryBuilder/FieldFilter.tsx:470
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "lessOrEqualTo"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:490
+#: components/QueryBuilder/FieldFilter.tsx:478
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "true"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:498
+#: components/QueryBuilder/FieldFilter.tsx:485
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "false"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:554
+#: components/QueryBuilder/FieldFilter.tsx:531
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "trueOrNull"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:562
+#: components/QueryBuilder/FieldFilter.tsx:538
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "falseOrNull"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:506
+#: components/QueryBuilder/FieldFilter.tsx:492
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "between"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:515
+#: components/QueryBuilder/FieldFilter.tsx:500
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "in"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:516
+#: components/QueryBuilder/FieldFilter.tsx:501
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "inDescription"
 msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1409
-#: components/QueryBuilder/FieldFilter.tsx:528
+#: components/QueryBuilder/FieldFilter.tsx:508
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "contains"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:546
+#: components/QueryBuilder/FieldFilter.tsx:524
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "empty"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:349
+#: components/QueryBuilder/FieldFilter.tsx:344
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "and"
 msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1405
-#: components/QueryBuilder/FieldFilter.tsx:537
+#: components/QueryBuilder/FieldFilter.tsx:516
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "startsWith"
@@ -498,7 +498,7 @@ msgstr ""
 msgid "treeBulkMove"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:122
+#: components/QueryBuilder/FieldFilter.tsx:117
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "tooLongErrorMessage"
@@ -597,7 +597,7 @@ msgstr ""
 msgid "chooseFormatter"
 msgstr ""
 
-#: components/QueryBuilder/FieldFilter.tsx:579
+#: components/QueryBuilder/FieldFilter.tsx:553
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "range"

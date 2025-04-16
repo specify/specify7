@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/BatchEdit/index.tsx:125
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2028
+#: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:104
@@ -11,7 +11,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "batchEdit"
 msgstr "Batch Edit"
 
-#: components/Preferences/UserDefinitions.tsx:2034
+#: components/Preferences/UserDefinitions.tsx:2042
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Number of records selected from the query"
@@ -43,12 +43,12 @@ msgstr "Following errors were found in the query"
 msgid "createUpdateDataSetInstructions"
 msgstr "Use the query builder to make a new batch edit dataset"
 
-#: components/Preferences/UserDefinitions.tsx:2049
+#: components/Preferences/UserDefinitions.tsx:2057
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Show revert button"
 
-#: components/Preferences/UserDefinitions.tsx:2054
+#: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
