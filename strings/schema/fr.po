@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-03-16 08:04+0000\n"
+"PO-Revision-Date: 2025-04-16 08:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -28,7 +28,7 @@ msgstr "Tableau"
 #: components/SchemaConfig/Tables.tsx:49
 #, fuzzy
 msgid "tables"
-msgstr "Tables"
+msgstr "Tableaux"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/Preferences/UserDefinitions.tsx:778
@@ -159,7 +159,7 @@ msgstr "Format de tableau"
 #: components/SchemaConfig/Table.tsx:148
 #, fuzzy
 msgid "tableAggregation"
-msgstr "Agrégation de table"
+msgstr "Agrégation de tables"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:85
