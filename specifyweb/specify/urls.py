@@ -13,6 +13,9 @@ urlpatterns = [
     re_path(r'^specify/merge/status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
     re_path(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
+    # cat num for siblings
+    url(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling), 
+
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
