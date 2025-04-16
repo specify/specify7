@@ -208,7 +208,7 @@ export async function uploadFile(
   strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
-  
+
   const data =
     typeof uploadAttachmentSpec === 'object'
       ? uploadAttachmentSpec
