@@ -176,7 +176,8 @@ export function PrepDialog({
 
           const items = filterArray(
             preparations.map((preparation, index) => {
-              if (selected[index] === 0 || Number.isNaN(selected[index])) return undefined;
+              if (selected[index] === 0 || Number.isNaN(selected[index]))
+                return undefined;
 
               const result = new itemTable.Resource();
               result.set(

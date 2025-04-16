@@ -248,9 +248,9 @@ function ReportRow({
             </td>
             <td>
               <ReadOnlyContext.Provider value>
-              <FormattedResourceUrl
-                resourceUrl={entry.appResource.specifyUser}
-              />
+                <FormattedResourceUrl
+                  resourceUrl={entry.appResource.specifyUser}
+                />
               </ReadOnlyContext.Provider>
             </td>
             <td>
