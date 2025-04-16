@@ -37,7 +37,7 @@ msgstr "Consultas"
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1548
 #: components/SearchDialog/index.tsx:242
-#: components/SearchDialog/index.tsx:384
+#: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 #, fuzzy

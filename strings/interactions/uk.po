@@ -141,7 +141,7 @@ msgstr "Виберіть усі доступні препарати"
 #: components/FormMeta/CarryForward.tsx:311
 #: components/Interactions/LoanReturn.tsx:176
 #: components/Interactions/PrepDialog.tsx:120
-#: components/Interactions/PrepDialog.tsx:240
+#: components/Interactions/PrepDialog.tsx:241
 #: components/Interactions/PrepDialogRow.tsx:64
 #: components/Interactions/PrepDialogRow.tsx:66
 #: components/Interactions/PrepReturnRow.tsx:80
@@ -157,8 +157,8 @@ msgstr "Вибрати все"
 #: components/Interactions/LoanReturn.tsx:278
 #: components/Interactions/PrepDialog.tsx:150
 #: components/Interactions/PrepDialog.tsx:154
-#: components/Interactions/PrepDialogRow.tsx:95
-#: components/Interactions/PrepDialogRow.tsx:98
+#: components/Interactions/PrepDialogRow.tsx:97
+#: components/Interactions/PrepDialogRow.tsx:100
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 #, fuzzy
 msgid "selectedAmount"
@@ -178,7 +178,7 @@ msgstr "Повернена сума"
 msgid "resolvedAmount"
 msgstr "Вирішена сума"
 
-#: components/Interactions/PrepDialogRow.tsx:177
+#: components/Interactions/PrepDialogRow.tsx:179
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 #, fuzzy
 msgid "prepReturnFormatter"
@@ -238,13 +238,13 @@ msgstr ""
 msgid "deselectAll"
 msgstr "Зняти вибір із усіх"
 
-#: components/Interactions/PrepDialog.tsx:252
+#: components/Interactions/PrepDialog.tsx:253
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "available"
 msgstr "в наявності"
 
-#: components/Interactions/PrepDialog.tsx:253
+#: components/Interactions/PrepDialog.tsx:254
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "unavailable"
@@ -277,7 +277,7 @@ msgstr "Жоден із цих об'єктів не має підготовки.
 msgid "continue"
 msgstr "Продовжуйте без підготовки"
 
-#: components/Interactions/PrepDialogRow.tsx:89
+#: components/Interactions/PrepDialogRow.tsx:91
 #. Used in: Components > Interactions > Prep Dialog Row
 msgid "notAvailable"
 msgstr ""

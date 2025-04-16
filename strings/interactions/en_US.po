@@ -122,7 +122,7 @@ msgstr "Select all available preparations"
 #: components/FormMeta/CarryForward.tsx:311
 #: components/Interactions/LoanReturn.tsx:176
 #: components/Interactions/PrepDialog.tsx:120
-#: components/Interactions/PrepDialog.tsx:240
+#: components/Interactions/PrepDialog.tsx:241
 #: components/Interactions/PrepDialogRow.tsx:64
 #: components/Interactions/PrepDialogRow.tsx:66
 #: components/Interactions/PrepReturnRow.tsx:80
@@ -137,8 +137,8 @@ msgstr "Select All"
 #: components/Interactions/LoanReturn.tsx:278
 #: components/Interactions/PrepDialog.tsx:150
 #: components/Interactions/PrepDialog.tsx:154
-#: components/Interactions/PrepDialogRow.tsx:95
-#: components/Interactions/PrepDialogRow.tsx:98
+#: components/Interactions/PrepDialogRow.tsx:97
+#: components/Interactions/PrepDialogRow.tsx:100
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Selected Amount"
@@ -155,7 +155,7 @@ msgstr "Returned Amount"
 msgid "resolvedAmount"
 msgstr "Resolved Amount"
 
-#: components/Interactions/PrepDialogRow.tsx:177
+#: components/Interactions/PrepDialogRow.tsx:179
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
@@ -206,12 +206,12 @@ msgstr ""
 msgid "deselectAll"
 msgstr "Deselect all"
 
-#: components/Interactions/PrepDialog.tsx:252
+#: components/Interactions/PrepDialog.tsx:253
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Available"
 
-#: components/Interactions/PrepDialog.tsx:253
+#: components/Interactions/PrepDialog.tsx:254
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Unavailable"
@@ -239,7 +239,7 @@ msgstr "None of these objects have preparations. Would you like to continue?"
 msgid "continue"
 msgstr "Continue"
 
-#: components/Interactions/PrepDialogRow.tsx:89
+#: components/Interactions/PrepDialogRow.tsx:91
 #. Used in: Components > Interactions > Prep Dialog Row
 msgid "notAvailable"
 msgstr "Not available"
