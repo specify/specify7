@@ -203,7 +203,7 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | true) => void,
+  handleProgress?: (percentage: number | true) => void,
   uploadAttachmentSpec?: UploadAttachmentSpec,
   strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
@@ -240,9 +240,11 @@ export async function uploadFile(
    */
 
   const xhr = new XMLHttpRequest();
-  xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
-  );
+  if (handleProgress !== undefined) {
+    xhr.upload?.addEventListener('progress', (event) =>
+      handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    );
+  }
   xhr.open('POST', settings.write);
   xhr.send(formData);
   const DONE = 4;
