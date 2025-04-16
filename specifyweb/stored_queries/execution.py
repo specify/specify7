@@ -293,7 +293,7 @@ def query_to_csv(
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
 
-    query = apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=False)
+    query = apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")
 
@@ -374,7 +374,7 @@ def query_to_kml(
         id_field = getattr(model, model._id)
         query = query.filter(id_field.in_(selected_rows))
 
-    query = apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=False)
+    query = apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_kml starting")
 
@@ -796,7 +796,7 @@ def execute(
             query = query.limit(limit)
 
         # return {"results": list(query)}
-        return {"results": apply_processing_parent_inheritance(query, tableid, field_specs, collection, user)}
+        return {"results": apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
@@ -932,7 +932,7 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def apply_processing_parent_inheritance(query, tableid, field_specs, collection, user, should_list_query=True):
+def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_parent_cat_num_inheritance_setting(collection, user):
             return list(query)
@@ -957,6 +957,13 @@ def apply_processing_parent_inheritance(query, tableid, field_specs, collection,
             updated_results.append(tuple(result))
 
         return updated_results
+
+    if should_list_query:
+        return list(query)
+    return query
+
+def apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=True):
+    query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
 
     if should_list_query:
         return list(query)
