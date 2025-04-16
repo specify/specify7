@@ -1527,6 +1527,7 @@ exports[`tableScoping 1`] = `
   "SpAppResourceDir": "collection",
   "SpAuditLog": undefined,
   "SpAuditLogField": undefined,
+  "SpDataSetAttachment": "spdataset > collection",
   "SpExportSchema": "discipline",
   "SpExportSchemaItem": "spExportSchema > discipline",
   "SpExportSchemaItemMapping": "exportSchemaItem > spExportSchema > discipline",
