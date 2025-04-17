@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 AS common
+FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -7,9 +7,10 @@ RUN apt-get update \
         gettext \
         python3.8 \
         libldap-2.4-2 \
-        libmariadbclient18 \
+        libmariadb3 \
         rsync \
         mariadb-client \
+        tzdata \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -42,6 +43,8 @@ RUN npx webpack --mode production
 #####################################################################
 
 FROM common AS build-backend
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
@@ -153,6 +156,9 @@ CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
 
 ANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)
 SPECIFY_CONFIG_DIR = os.getenv('SPECIFY_CONFIG_DIR', '/opt/Specify/config')
+
+host = os.getenv('CSRF_TRUSTED_ORIGINS', None)
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []
 EOF
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \

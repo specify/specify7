@@ -28,7 +28,8 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -290,6 +291,7 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")
 
@@ -305,14 +307,24 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        for row in query.yield_per(1):
-            if row_filter is not None and not row_filter(row):
-                continue
-            encoded = [
-                re.sub("\r|\n", " ", str(f))
-                for f in (row[1:] if strip_id or distinct else row)
-            ]
-            csv_writer.writerow(encoded)
+        if isinstance(query, list):
+            for row in query:
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
+        else:
+            for row in query.yield_per(1):
+                if row_filter is not None and not row_filter(row):
+                    continue
+                encoded = [
+                    re.sub("\r|\n", " ", str(f))
+                    for f in (row[1:] if strip_id or distinct else row)
+                ]
+                csv_writer.writerow(encoded)
 
     logger.debug("query_to_csv finished")
 
@@ -360,6 +372,8 @@ def query_to_kml(
         id_field = getattr(model, model._id)
         query = query.filter(id_field.in_(selected_rows))
 
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
+
     logger.debug("query_to_kml starting")
 
     kmlDoc = xml.dom.minidom.Document()
@@ -378,12 +392,20 @@ def query_to_kml(
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
 
-    for row in query.yield_per(1):
-        if row_has_geocoords(coord_cols, row):
-            placemarkElement = createPlacemark(
-                kmlDoc, row, coord_cols, table, captions, host
-            )
-            documentElement.appendChild(placemarkElement)
+    if isinstance(query, list):
+        for row in query:
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
+    else:
+        for row in query.yield_per(1):
+            if row_has_geocoords(coord_cols, row):
+                placemarkElement = createPlacemark(
+                    kmlDoc, row, coord_cols, table, captions, host
+                )
+                documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
         kmlFile.write(kmlDoc.toprettyxml("  ", newl="\n", encoding="utf-8"))
@@ -771,7 +793,9 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        return {"results": list(query)}
+        log_sqlalchemy_query(query)
+        # return {"results": list(query)}
+        return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
@@ -870,7 +894,7 @@ def build_query(
         sort_type = QuerySort.by_id(fs.sort_type)
 
         query, field, predicate = fs.add_to_query(
-            query, formatauditobjs=props.formatauditobjs
+            query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
         )
         if field is None:
             continue
@@ -906,3 +930,41 @@ def build_query(
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
+
+def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+        if not get_cat_num_inheritance_setting(collection, user):
+            # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
+            return list(query)
+
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
+        for result in results:
+            result = list(result)
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+                cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
+                if cojo:
+                    primary_cojo = Collectionobjectgroupjoin.objects.filter(
+                        parentcog=cojo.parentcog, isprimary=True).first()
+                    if primary_cojo:
+                        result[catalog_number_field_index] = primary_cojo.childco.catalognumber
+            updated_results.append(tuple(result))
+
+        return updated_results
+
+    return query
+
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    
+    if should_list_query:
+        return list(query)
+    return query
