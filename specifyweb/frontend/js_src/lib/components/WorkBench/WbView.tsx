@@ -264,8 +264,7 @@ export function WbView({
           ) : showAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
-                datasetId={dataset.id}
-                datasetName={dataset.name}
+                hot={hot}
                 onClose={toggleAttachments}
               />
             </aside>
