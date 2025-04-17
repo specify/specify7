@@ -236,10 +236,10 @@ export function WbView({
             checkDeletedFail={checkDeletedFail}
             data={data}
             dataset={dataset}
+            hasBatchEditRolledBack={hasBatchEditRolledBack}
             hot={hot}
             isResultsOpen={showResults}
             isUploaded={isUploaded}
-            hasBatchEditRolledBack={hasBatchEditRolledBack}
             mappings={mappings}
             setHotTable={setHotTable}
             spreadsheetChanged={spreadsheetChanged}
