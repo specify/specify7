@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-17 10:00+0000\n"
+"PO-Revision-Date: 2025-04-17 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -149,7 +149,7 @@ msgstr "Wähle ein neues Ziel um \"{nodeName:string}\" zusammenzuführen"
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
 "Wählen Sie ein neues Ziel für die \"{nodeName:string}\"-Vorbereitungen, in "
-"die sie verschoben werden sollen"
+"die Sie verschieben möchten"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:462
@@ -271,7 +271,7 @@ msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 #: components/TreeView/index.tsx:387
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Nur Knoten mit verknüpften Objekten anzeigen"
+msgstr "Nur Knoten mit zugehörigen Objekten anzeigen"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:319
@@ -306,7 +306,7 @@ msgstr "Neuen Rang hinzufügen"
 #: components/TreeView/AddRank.tsx:71
 #, fuzzy
 msgid "chooseParentRank"
-msgstr "Übergeordneten Rang auswählen"
+msgstr "Wählen Sie den übergeordneten Rang"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:176
@@ -438,7 +438,7 @@ msgstr "Mineralien"
 #: components/TreeView/defaults.ts:679
 #, fuzzy
 msgid "rocks"
-msgstr "Steiniger Boden"
+msgstr "Felsen"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:671
