@@ -1,16 +1,16 @@
 import type { IR, PartialBy, RA, RR } from '../../utils/types';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
+import type { BatchEditPrefs, MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
-import type { BatchEditPrefs, MappingPath } from './Mapper';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
