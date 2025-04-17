@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-17 10:02+0000\n"
+"PO-Revision-Date: 2025-04-17 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/fr/"
 ">\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -46,7 +46,7 @@ msgstr "Fusionner"
 #: components/TreeView/Actions.tsx:205
 #, fuzzy
 msgid "undoSynonymy"
-msgstr "Annuler Synonymie"
+msgstr "Annuler la synonymie"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:205
@@ -83,21 +83,21 @@ msgstr "Ajouter un enfant"
 #: components/TreeView/Actions.tsx:385
 #, fuzzy
 msgid "moveNodeHere"
-msgstr "Déplacez « {nodeName:string} » ici"
+msgstr "Déplacer « {nodeName:string} » ici"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:387
 #, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr "Déplacez toutes les préparations « {nodeName:string} » ici"
+msgstr "Déplacer toutes les préparations « {nodeName:string} » ici"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:450
 #, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
-"Le nœud {treeName:string} « {nodeName:string} » sera placé, avec tous ses "
-"descendants, sous le nouveau parent « {parentName:string} »."
+"Le nœud {treeName:string} « {nodeName:string} » sera placé, ainsi que tous "
+"ses descendants, sous le nouveau parent « {parentName:string} »."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:456
@@ -270,7 +270,7 @@ msgstr "Fermé"
 #: components/TreeView/Row.tsx:208
 #, fuzzy
 msgid "leafNode"
-msgstr "Nœud de feuille"
+msgstr "Nœud feuille"
 
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:213
@@ -294,7 +294,7 @@ msgstr "Compte direct {collectionObjectTable:string}"
 #: components/TreeView/helpers.ts:205
 #, fuzzy
 msgid "indirectCollectionObjectCount"
-msgstr "Nombre indirect {collectionObjectTable:string}"
+msgstr "Compte indirect {collectionObjectTable:string}"
 
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:189
