@@ -7,7 +7,7 @@ import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { BatchEditPrefs } from './Mapper';
-import type { SplitMappingPath} from './mappingHelpers';
+import type { SplitMappingPath } from './mappingHelpers';
 import { valueIsTreeMeta } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
