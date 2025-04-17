@@ -38116,6 +38116,14 @@
         "unique": false,
         "required": false,
         "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "spDataSetAttachments",
+        "type": "one-to-many",
+        "required": false,
+        "dependent": true,
+        "relatedModelName": "SpDataSetAttachment",
+        "otherSideName": "spdataset"
       }
     ],
     "relationships": [
@@ -40101,5 +40109,100 @@
         "aname": "acceptedTectonicUnit"
       }
     ]
+  },
+  {
+    "classname": "edu.ku.brc.specify.datamodel.SpDataSetAttachment",
+    "table": "spdatasetattachment",
+    "tableId": 1028,
+    "system": true,
+    "idColumn": "SpDataSetAttachmentID",
+    "idFieldName": "spDataSetAttachmentId",
+    "fields": [
+      {
+        "name": "collectionMemberId",
+        "column": "CollectionMemberID",
+        "indexed": true,
+        "unique": false,
+        "required": true,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "ordinal",
+        "column": "Ordinal",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      },
+      {
+        "name": "remarks",
+        "column": "Remarks",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "text"
+      },
+      {
+        "name": "timestampCreated",
+        "column": "TimestampCreated",
+        "indexed": false,
+        "unique": false,
+        "required": true,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "timestampModified",
+        "column": "TimestampModified",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.sql.Timestamp"
+      },
+      {
+        "name": "version",
+        "column": "Version",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Integer"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "attachment",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": true,
+        "relatedModelName": "Attachment",
+        "column": "AttachmentID",
+        "otherSideName": "spDataSetAttachments"
+      },
+      {
+        "name": "createdByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "CreatedByAgentID"
+      },
+      {
+        "name": "modifiedByAgent",
+        "type": "many-to-one",
+        "required": false,
+        "dependent": false,
+        "relatedModelName": "Agent",
+        "column": "ModifiedByAgentID"
+      },
+      {
+        "name": "spdataset",
+        "type": "many-to-one",
+        "required": true,
+        "dependent": false,
+        "relatedModelName": "Spdataset",
+        "column": "SpDataSetID",
+        "otherSideName": "spDataSetAttachments"
+      }
+    ],
+    "fieldAliases": []
   }
 ]
