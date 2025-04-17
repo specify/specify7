@@ -14,6 +14,9 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
 
+from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
+
 logger = logging.getLogger(__name__)
 
 from django import forms
@@ -529,9 +532,8 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None, 
 
     handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
+    _handle_special_update_posts(obj)
     return obj
-
-FieldChangeInfo = TypedDict('FieldChangeInfo', {'field_name': str, 'old_value': Any, 'new_value': Any})
 
 def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
     if field.name != 'timestampmodified':
@@ -540,7 +542,7 @@ def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
             value = None if value is None else float(value)
         old_value = getattr(obj, field.name)
         if str(old_value) != str(value): # ugh
-            return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
+            return FieldChangeInfo(field_name=field.name, old_value=old_value, new_value=value)
     return None
 
 def set_fields_from_data(obj: Model, data: Dict[str, Any]) -> List[FieldChangeInfo]:
@@ -686,7 +688,8 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
         raise Exception(f'bad foreign key field in data: {field_name}')
 
     if str(old_related_id) != str(new_related_id):
-        dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+        dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
+
     return data, dependents_to_delete, dirty
 
 def _handle_remote_fk_field(obj, field, value, read_checker): 
@@ -731,7 +734,7 @@ def _handle_remote_fk_field(obj, field, value, read_checker):
         raise Exception(f'bad foreign key field in data: {field_name}')
 
     if str(old_related_id) != str(new_related_id):
-        dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+        dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
 
     if not rel_data is None: 
         remote_to_ones.append((field.remote_field, rel_data, dependent))
@@ -858,9 +861,16 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(obj, version, collection=collection, agent=agent)
+    return delete_obj(obj, (make_default_deleter(collection, agent)), version)
 
-def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, clean_predelete=None) -> None:
+def make_default_deleter(collection=None, agent=None):
+    def _deleter(obj, parent_obj):
+        if collection and agent:
+            check_table_permissions(collection, agent, obj, "delete")
+            auditlog.remove(obj, agent, parent_obj)
+    return _deleter
+
+def delete_obj(obj, deleter: Optional[Callable[[Any, Any], None]]=None, version=None, parent_obj=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -870,19 +880,22 @@ def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, 
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
-    if collection and agent:
-        check_table_permissions(collection, agent, obj, "delete")
-        auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+
     if clean_predelete:
         clean_predelete(obj)
+    
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
+
+    if deleter:
+        deleter(obj, parent_obj)
+
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent, clean_predelete=clean_predelete)
+      delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 
 @transaction.atomic
@@ -902,21 +915,19 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
-    try:
-        obj._meta.get_field('modifiedbyagent')
-    except FieldDoesNotExist:
-        pass
-    else:
-        obj.modifiedbyagent = agent
+    if hasattr(obj, 'modifiedbyagent'):
+        setattr(obj, 'modifiedbyagent', agent)
 
     data = _handle_special_update_priors(obj, data)
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
+    deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
-        delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
+        delete_obj(dep, deleter, parent_obj=obj)
     handle_remote_to_ones(obj)
     handle_to_many(collection, agent, obj, data)
+    _handle_special_update_posts(obj)
     return obj
 
 def bump_version(obj, version) -> None:
@@ -1184,6 +1195,10 @@ def rows(request, model_name: str) -> HttpResponse:
 
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
+
+def _handle_special_update_posts(obj):
+    from specifyweb.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
+    enforce_interaction_sibling_prep_max_count(obj)
 
 def _handle_special_update_priors(obj, data):
     from specifyweb.interactions.cog_preps import (

@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 AS common
+FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -7,7 +7,7 @@ RUN apt-get update \
         gettext \
         python3.8 \
         libldap-2.4-2 \
-        libmariadbclient18 \
+        libmariadb3 \
         rsync \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
@@ -135,6 +135,7 @@ RUN echo \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
+        "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \

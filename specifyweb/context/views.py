@@ -392,14 +392,21 @@ def app_resource(request):
         resource_name = request.GET['name']
     except:
         raise Http404()
+
     quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
+
+    # Check if 'additionalDefault' is present and set to 'true'
+    additional_default = "additionaldefault" in request.GET and request.GET.get('additionaldefault').lower() == 'true'
+
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
-                              resource_name)
+                              resource_name, additional_default)
+
     if result is None and not quiet: 
           raise Http404()
     elif result is None and quiet: 
           return HttpResponse(status=204)
+
     resource, mimetype, id = result
     response = HttpResponse(resource, content_type=mimetype)
     response['X-Record-ID'] = id
