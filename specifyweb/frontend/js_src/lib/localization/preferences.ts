@@ -1962,6 +1962,13 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Отобразить базовый вид',
     'uk-ua': 'Відобразити базовий вигляд',
   },
+  showComparisonOperatorsForString: {
+    'en-us': 'Show comparison operators for text-based fields',
+  },
+  showComparisonOperatorsDescription: {
+    'en-us':
+      'Allows the following filters to apply to text fields: Greater Than, Less Than, Greater Than or Equal to, and Less Than or Equal to',
+  },
   basicView: {
     'en-us': 'Basic view',
     'de-ch': 'Basisansicht',
