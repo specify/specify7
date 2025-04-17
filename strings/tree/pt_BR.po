@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-07 02:01+0000\n"
-"Last-Translator: Grant Fitzsimmons <grant@specifysoftware.org>\n"
+"PO-Revision-Date: 2025-04-17 10:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/tree/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -116,7 +116,7 @@ msgstr "Não é possível mover este nó da árvore aqui"
 #: components/TreeView/Actions.tsx:365
 #, fuzzy
 msgid "cantMergeHere"
-msgstr "Não é possível mesclar este nó de árvore aqui"
+msgstr "Não é possível mesclar este nó da árvore aqui"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:359
@@ -175,9 +175,9 @@ msgstr ""
 msgid "mergeNodeMessage"
 msgstr ""
 "Todas as referências ao nó {treeName:string} \"{nodeName:string}\" serão "
-"substituídas por \"{parentName:string}\", e todos os descendentes de \""
-"{nodeName:string}\" serão movidos para \"{parentName:string}\", com "
-"quaisquer descendentes correspondentes em nome e classificação sendo eles "
+"substituídas por \"{parentName:string}\", e todos os descendentes de "
+"\"{nodeName:string}\" serão movidos para \"{parentName:string}\", com "
+"quaisquer descendentes que correspondam em nome e classificação sendo eles "
 "próprios mesclados recursivamente."
 
 #. Used in: Components > Tree View > Actions
@@ -185,7 +185,7 @@ msgstr ""
 #: components/TreeView/Actions.tsx:444
 #, fuzzy
 msgid "synonymizeNode"
-msgstr "Sinonímia do nó"
+msgstr "Sinonímia de nó"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:391
@@ -197,7 +197,7 @@ msgstr "Faça {nodeName:string} um sinônimo de {synonymName:string}"
 #: components/TreeView/Actions.tsx:346
 #, fuzzy
 msgid "synonymizeNodeHintMessage"
-msgstr "Selecione um alvo para \"{nodeName:string}\" para ser sinonimizado"
+msgstr "Selecione um alvo para \"{nodeName:string}\" ser sinonimizado"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:468
@@ -440,7 +440,7 @@ msgstr "Plantas Vasculares"
 #: components/TreeView/defaults.ts:645
 #, fuzzy
 msgid "vertpaleo"
-msgstr "Paleontologia de vertebrados"
+msgstr "Paleontologia de Vertebrados"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:414
