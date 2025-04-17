@@ -169,9 +169,17 @@ export function WbView({
 
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
+  const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
+
   return (
     <ReadOnlyContext.Provider
-      value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
+      value={
+        isAlreadyReadOnly ||
+        isUploaded ||
+        showResults ||
+        !canUpdate ||
+        hasBatchEditRolledBack
+      }
     >
       <section
         className={`wbs-form ${className.containerFull}`}
