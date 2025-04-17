@@ -799,7 +799,7 @@ def execute(
         cat_num_sort_type = None
         idx = 0
         for field_spec in field_specs:
-            if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+            if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                 cat_num_col_id = idx
                 cat_num_sort_type = field_spec.sort_type
                 break
