@@ -48,9 +48,9 @@ def update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name.save() 
 
 def revert_update_fields(apps):
-        for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items(): 
-            for field in fields: 
-                revert_table_field_schema_config(table, field, apps)
+    for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items(): 
+        for field in fields: 
+            revert_table_field_schema_config(table, field, apps)
 
 def revert_update_schema_field(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
