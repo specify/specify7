@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-17 10:00+0000\n"
+"PO-Revision-Date: 2025-04-17 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -46,7 +46,7 @@ msgstr "Unir"
 #: components/TreeView/Actions.tsx:205
 #, fuzzy
 msgid "undoSynonymy"
-msgstr "Deshacer sinónimos"
+msgstr "Deshacer sinónimo"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:205
@@ -97,7 +97,7 @@ msgstr "Mueva todas las preparaciones \"{nodeName:string}\" aquí"
 msgid "nodeMoveMessage"
 msgstr ""
 "El nodo {treeName:string} \"{nodeName:string}\" se colocará, junto con todos "
-"sus descendientes, debajo del nuevo padre \"{parentName:string}\"."
+"sus descendientes, bajo el nuevo padre \"{parentName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:456
@@ -168,7 +168,7 @@ msgstr "Seleccione un nuevo objetivo para fusionar \"{nodeName:string}\""
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
 "Seleccione un nuevo objetivo para los preparativos \"{nodeName:string}\" que "
-"se trasladarán a él"
+"se trasladarán a"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:462
@@ -176,9 +176,10 @@ msgstr ""
 msgid "mergeNodeMessage"
 msgstr ""
 "Todas las referencias al nodo {treeName:string} \"{nodeName:string}\" serán "
-"reemplazadas por \"{parentName:string}\", y todos los descendientes de \""
-"{nodeName:string}\" se moverán a \"{parentName:string}\" y todos los "
-"descendientes que coincidan en nombre y rango se fusionarán recursivamente."
+"reemplazadas por \"{parentName:string}\", y todos los descendientes de "
+"\"{nodeName:string}\" se moverán a \"{parentName:string}\" y todos los "
+"descendientes que coincidan en nombre y rango se fusionarán de forma "
+"recursiva."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:431
@@ -191,7 +192,7 @@ msgstr "Sinónimos de nodo"
 #: components/TreeView/Actions.tsx:391
 #, fuzzy
 msgid "makeSynonym"
-msgstr "Convierte {nodeName:string} en sinónimo de {synonymName:string}"
+msgstr "Hacer de {nodeName:string} un sinónimo de {synonymName:string}"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:346
