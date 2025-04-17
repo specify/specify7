@@ -239,6 +239,7 @@ export function WbView({
             hot={hot}
             isResultsOpen={showResults}
             isUploaded={isUploaded}
+            hasBatchEditRolledBack={hasBatchEditRolledBack}
             mappings={mappings}
             setHotTable={setHotTable}
             spreadsheetChanged={spreadsheetChanged}

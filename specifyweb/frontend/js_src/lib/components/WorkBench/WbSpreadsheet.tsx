@@ -41,6 +41,7 @@ function WbSpreadsheetComponent({
   workbench,
   mappings,
   isResultsOpen,
+  hasBatchEditRolledBack,
   checkDeletedFail,
   spreadsheetChanged,
   onClickDisambiguate: handleClickDisambiguate,
@@ -53,6 +54,7 @@ function WbSpreadsheetComponent({
   readonly workbench: Workbench;
   readonly mappings: WbMapping | undefined;
   readonly isResultsOpen: boolean;
+  readonly hasBatchEditRolledBack: boolean;
   readonly checkDeletedFail: (statusCode: number) => boolean;
   readonly spreadsheetChanged: () => void;
   readonly onClickDisambiguate: () => void;
@@ -173,7 +175,7 @@ function WbSpreadsheetComponent({
         };
 
   React.useEffect(() => {
-    if (hot === undefined) return;
+    if (hot === undefined || hasBatchEditRolledBack) return;
     hot.batch(() => {
       (mappings === undefined
         ? Promise.resolve({})
