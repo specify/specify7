@@ -49,7 +49,6 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { attachmentsText } from '../../localization/attachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -289,7 +288,6 @@ export function WbView({
               <WbAttachmentsPreview
                 datasetColumns={dataset.columns}
                 hot={hot}
-                datasetColumns={dataset.columns}
                 onClose={toggleAttachments}
               />
             </aside>
