@@ -1525,6 +1525,9 @@ export const wbText = createDictionary({
     'fr-fr': '{node:string} {author:string} (dans {parent:string})',
     'uk-ua': '{node:string} {author:string} (у {parent:string})',
   },
+  attachmentsForRow: {
+    'en-us': 'Attachments for row {row:number}:',
+  },
   updatedCells: {
     'en-us': 'Updated Cells',
   },

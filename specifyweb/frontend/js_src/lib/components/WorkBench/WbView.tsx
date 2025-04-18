@@ -43,7 +43,7 @@ import { Disambiguation } from './DisambiguationLogic';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
-import { WbAttachmentsPreview } from './AttachmentsPreview';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
@@ -265,6 +265,7 @@ export function WbView({
             <aside aria-live="polite">
               <WbAttachmentsPreview
                 hot={hot}
+                datasetColumns={dataset.columns}
                 onClose={toggleAttachments}
               />
             </aside>
