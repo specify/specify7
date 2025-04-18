@@ -1371,44 +1371,45 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
-    # returns the catalog number of the primary CO of a COG if one is present 
+    """
+    Returns the catalog number of the primary CO of a COG if one is present 
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
 
-    request_data = json.loads(request.body)
-    id = request_data.get('id')
-    catalog_number = request_data.get('catalognumber')
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
 
-    # If the CO resource already has a cat num we should return None to not use the sibling cat num
-    if catalog_number is not None: 
-        return http.JsonResponse(None, safe=False)
-    
-    # If the resource is not CO we should return None
-    request_data_dict = dict(request_data) 
-    if "catalognumber" not in request_data_dict:
-        return http.JsonResponse(None, safe=False)
-
-    # Find the associated cojo
-    cojo = spmodels.Collectionobjectgroupjoin.objects.filter(childco=id).first()
-
-    # If the CO is not a part of a COG no need to return sibling cat num
-    if cojo is None:
+    if provided_catalog_number is not None:
         return http.JsonResponse(None, safe=False)
 
-    cog_parent = cojo.parentcog
+    try:
+        # Find the join record for the requesting object and its parent group ID
+        requesting_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            childco_id=object_id
+        ).values('parentcog_id').first()
 
-    cojos = spmodels.Collectionobjectgroupjoin.objects.filter(parentcog=cog_parent.id)
+        if not requesting_cojo:
+            return http.JsonResponse(None, safe=False)
 
-    primary_catalog_number = None
+        parent_cog_id = requesting_cojo['parentcog_id']
 
-    for cojo in cojos:
-        child_co = cojo.childco
-        child_co_primary = getattr(cojo, "isprimary")
+        primary_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            parentcog_id=parent_cog_id,
+            isprimary=True
+        ).select_related('childco').first()
 
-        if child_co_primary:  # If child_co_primary is True
-            primary_catalog_number = child_co.catalognumber
-            break  # Stop loop if we found the primary catalog number
+        # Extract the catalog number if a primary sibling CO exists
+        primary_catalog_number = None
+        if primary_cojo and primary_cojo.childco:
+            primary_catalog_number = primary_cojo.childco.catalognumber
 
-        elif child_co_primary is False:  
-            continue
+        return http.JsonResponse(primary_catalog_number, safe=False)
 
-    # This will return Primary CO cat num if one present, otherwise None
-    return http.JsonResponse(primary_catalog_number, safe=False)  
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
