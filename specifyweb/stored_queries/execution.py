@@ -809,7 +809,7 @@ def execute(
         if series:
             cat_num_sort_type = 0
             for field_spec in field_specs:
-                if field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
                     cat_num_sort_type = field_spec.sort_type
                     break
             return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
