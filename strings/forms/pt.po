@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-18 15:00+0000\n"
+"PO-Revision-Date: 2025-04-18 15:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "forms/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -78,7 +78,7 @@ msgid "paleoRequiresGeographyDescription"
 msgstr ""
 "O plugin Paleo Map requer que o {localityTable:string} tenha coordenadas "
 "geográficas e que o contexto paleo tenha uma idade geográfica com pelo menos "
-"uma hora de início ou de término preenchida."
+"um horário de início ou término preenchidos."
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:137
@@ -152,8 +152,8 @@ msgstr "Nenhum dado."
 #, fuzzy
 msgid "recordSetDeletionWarning"
 msgstr ""
-"O {recordSetTable:string} \"{recordSetName:string}\" será deletado. Os "
-"registros referenciados NÃO serão deletados do banco de dados."
+"O {recordSetTable:string} \"{recordSetName:string}\" será excluído. Os "
+"registros referenciados NÃO serão excluídos do banco de dados."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
@@ -218,9 +218,9 @@ msgstr "Salvar conflito"
 #, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
-"Os dados mostrados nesta página foram alterados por outro usuário ou em "
-"outra aba do navegador e estão desatualizados. A página deve ser recarregada "
-"para evitar que dados inconsistentes sejam salvos."
+"Os dados exibidos nesta página foram alterados por outro usuário ou em outra "
+"aba do navegador e estão desatualizados. A página deve ser recarregada para "
+"evitar que dados inconsistentes sejam salvos."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:373
@@ -304,8 +304,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongTableForCommand"
 msgstr ""
-"O comando não pode ser usado no formulário {currentTable:string}. Ele só "
-"pode ser usado no formulário {correctTable:string}."
+"O comando não pode ser usado no formato {currentTable:string}. Ele só pode "
+"ser usado no formato {correctTable:string}."
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:208
@@ -401,7 +401,7 @@ msgstr "Mesa inteira"
 #: components/PickLists/definitions.ts:36
 #, fuzzy
 msgid "fieldFromTable"
-msgstr "Campo da tabela"
+msgstr "Campo da Tabela"
 
 #. Used in: Components > Form Cells > Index
 #: components/FormCells/index.tsx:315
@@ -510,7 +510,7 @@ msgstr "Mostrar contagem de transporte em massa"
 #: components/Forms/Save.tsx:242
 #, fuzzy
 msgid "bulkCarryForwardCount"
-msgstr "Contagem de transporte em massa"
+msgstr "Contagem de transporte de carga a granel"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:257
@@ -547,7 +547,7 @@ msgstr "Configurar campos para transporte em massa ({tableName:string})"
 #: components/FormMeta/CarryForward.tsx:408
 #, fuzzy
 msgid "carryForwardUniqueField"
-msgstr "Este campo deve ser único. Não pode ser transportado"
+msgstr "Este campo deve ser único. Não pode ser transferido"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
@@ -572,13 +572,13 @@ msgstr "Criar um novo registro em branco"
 #: components/FormMeta/AutoNumbering.tsx:92
 #, fuzzy
 msgid "autoNumbering"
-msgstr "Numeração Automática"
+msgstr "Numeração automática"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:138
 #, fuzzy
 msgid "editFormDefinition"
-msgstr "Editar Definição do Formulário"
+msgstr "Editar definição de formulário"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:87
@@ -596,7 +596,7 @@ msgstr "Use rótulos de campo localizados"
 #: components/FormEditor/Editor.tsx:205
 #, fuzzy
 msgid "showFieldLabels"
-msgstr "Mostrar rótulos de campo localizados"
+msgstr "Mostrar rótulos de campos localizados"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:204
@@ -609,7 +609,7 @@ msgstr "Mostrar nomes de campos do modelo de dados"
 #: components/FormMeta/EditHistory.tsx:57
 #, fuzzy
 msgid "editHistory"
-msgstr "Histórico de edição"
+msgstr "Editar histórico"
 
 #. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:82
@@ -646,7 +646,7 @@ msgstr "Compartilhar registro"
 #: components/FormMeta/QueryTreeUsages.tsx:22
 #, fuzzy
 msgid "findUsages"
-msgstr "Encontrar usos"
+msgstr "Encontre usos"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
