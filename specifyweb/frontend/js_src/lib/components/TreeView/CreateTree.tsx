@@ -5,7 +5,7 @@ import { treeText } from '../../localization/tree';
 import type { DeepPartial, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { H2, H3, Ul } from '../Atoms';
+import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import type {
@@ -117,7 +117,7 @@ export function CreateTree<
                     <Button.LikeLink
                       onClick={(): void => handleClick(resource.file)}
                     >
-                      {resource.title}
+                      {localized(resource.title)}
                     </Button.LikeLink>
                     <div className="text-xs text-gray-500">
                       {resource.description}
