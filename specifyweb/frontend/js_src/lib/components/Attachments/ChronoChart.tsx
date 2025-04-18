@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { Button } from '../Atoms/Button';
 import { ImageViewer } from '../Attachments/ImageViewer';
@@ -19,13 +18,9 @@ export function ChronoChart(): JSX.Element {
         onClick={handleShowChronoChart}
       />
       {showChronoChart && (
-        <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          className={{
-            container: dialogClassNames.wideContainer,
-          }}
+        <ImageViewer
+          src="/static/img/chronostratChart2023-09.jpg"
+          alt="Chrono Chart"
           header={headerText.chronostratigraphicChart()}
           onClose={handleHideChronoChart}
         >

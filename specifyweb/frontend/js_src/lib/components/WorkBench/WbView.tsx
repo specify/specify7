@@ -289,6 +289,7 @@ export function WbView({
               <WbAttachmentsPreview
                 datasetColumns={dataset.columns}
                 hot={hot}
+                datasetColumns={dataset.columns}
                 onClose={toggleAttachments}
               />
             </aside>
