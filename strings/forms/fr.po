@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-18 15:00+0000\n"
+"PO-Revision-Date: 2025-04-18 15:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9.2-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -54,7 +54,7 @@ msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:strin
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr ""
-"Les valeurs de {values:string} doivent être uniques dans la base de données"
+"Les valeurs de {values:string} doivent être uniques à la base de données"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:112
@@ -91,7 +91,7 @@ msgstr "Relation"
 #: components/FormPlugins/PaleoLocation.tsx:98
 #, fuzzy
 msgid "paleoMap"
-msgstr "Carte Paléo"
+msgstr "Carte paléo"
 
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:76
@@ -176,7 +176,7 @@ msgstr ""
 #: components/PickLists/index.tsx:252
 #, fuzzy
 msgid "invalidType"
-msgstr "Type non valide"
+msgstr "Type invalide"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:255
@@ -200,8 +200,8 @@ msgstr "Aucune donnée."
 #, fuzzy
 msgid "recordSetDeletionWarning"
 msgstr ""
-"Le {recordSetTable:string} \"{recordSetName:string}\" sera supprimé. Les "
-"enregistrements référencés NE SERONT PAS supprimés de la base de données."
+"Le {recordSetTable:string} « {recordSetName:string} » sera supprimé. Les "
+"enregistrements référencés ne seront PAS supprimés de la base de données."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
@@ -259,7 +259,7 @@ msgstr "Ce formulaire n'a pas été enregistré."
 #: components/Forms/Save.tsx:340
 #, fuzzy
 msgid "saveConflict"
-msgstr "Sauvegarder le conflit"
+msgstr "Enregistrer le conflit"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:343
@@ -444,7 +444,7 @@ msgstr "Éléments définis par l'utilisateur"
 #: components/PickLists/definitions.ts:35
 #, fuzzy
 msgid "entireTable"
-msgstr "Tableau complet"
+msgstr "Tableau entier"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:36
@@ -475,14 +475,13 @@ msgstr "Continuer sans enregistrer ?"
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr ""
-"Vous souhaiterez peut-être sauvegarder cet enregistrement avant de continuer "
-"votre navigation."
+"Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:226
 #, fuzzy
 msgid "creatingNewRecord"
-msgstr "Créer un nouvel enregistrement"
+msgstr "Création d'un nouvel enregistrement"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:364
@@ -549,7 +548,7 @@ msgstr "Reporter"
 #: components/FormMeta/CarryForward.tsx:117
 #, fuzzy
 msgid "carryForwardEnabled"
-msgstr "Afficher le bouton \"Transférer en avant\""
+msgstr "Afficher le bouton de report"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:181
@@ -580,7 +579,7 @@ msgstr "Configurer les champs à reporter"
 #: components/FormMeta/CarryForward.tsx:184
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configurer les champs pour un report groupé"
+msgstr "Configurer les champs pour un report en masse"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:338
@@ -598,7 +597,7 @@ msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 #: components/FormMeta/CarryForward.tsx:408
 #, fuzzy
 msgid "carryForwardUniqueField"
-msgstr "Ce champ doit être unique. Il ne peut pas être reporté"
+msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
@@ -660,7 +659,7 @@ msgstr "Afficher les noms des champs du modèle de données"
 #: components/FormMeta/EditHistory.tsx:57
 #, fuzzy
 msgid "editHistory"
-msgstr "Historique des modifications"
+msgstr "Modifier l'historique"
 
 #. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:82
