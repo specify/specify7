@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-18 19:02+0000\n"
+"PO-Revision-Date: 2025-04-18 15:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -64,7 +64,7 @@ msgstr "Überprüfen, ob die Ressource gelöscht werden kann …"
 #: components/Forms/DeleteButton.tsx:165
 #, fuzzy
 msgid "deleteBlocked"
-msgstr "Blockierte löschen"
+msgstr "Gesperrte löschen"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:168
@@ -100,9 +100,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass {localityTable:string} über "
-"geografische Koordinaten verfügt und dass im Paläokontext ein geografisches "
-"Alter mit mindestens einer ausgefüllten Start- oder Endzeit angegeben ist."
+"Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische "
+"Koordinaten hat und dass der Paläo-Kontext ein geografisches Alter mit "
+"mindestens einer ausgefüllten Start- oder Endzeit hat."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -115,8 +115,8 @@ msgstr "Ungültiges Datum"
 #, fuzzy
 msgid "deleteConfirmation"
 msgstr ""
-"Möchten Sie dieses {tableName:string} wirklich dauerhaft aus der Datenbank "
-"löschen?"
+"Sind Sie sicher, dass Sie diesen {tableName:string} dauerhaft aus der "
+"Datenbank löschen möchten?"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:44
@@ -165,8 +165,8 @@ msgstr "Zu {pickListTable:string} hinzufügen?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Wert \"{value:string}\" zum {pickListTable:string} mit dem Namen "
-"\"{pickListName:string}\" hinzufügen?"
+"Wert „{value:string}“ zum {pickListTable:string} mit dem Namen "
+"„{pickListName:string}“ hinzufügen?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -219,14 +219,14 @@ msgstr "Erster Eintrag"
 #: components/Preferences/UserDefinitions.tsx:1121
 #, fuzzy
 msgid "lastRecord"
-msgstr "Letzter Eintrag"
+msgstr "Letzter Datensatz"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:40
 #: components/FormSliders/Slider.tsx:43
 #, fuzzy
 msgid "previousRecord"
-msgstr "Vorheriger Eintrag"
+msgstr "Vorheriger Datensatz"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
@@ -260,10 +260,10 @@ msgstr "Konflikt speichern"
 #, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
-"Die auf dieser Seite angezeigten Daten wurden durch einen anderen Benutzer "
-"oder in einem anderen Browsertab geändert und sind nicht mehr aktuell. Um "
-"eine inkonsistente Datenspeicherung zu verhindern, muss die Seite neu "
-"geladen werden."
+"Die auf dieser Seite angezeigten Daten wurden von einem anderen Benutzer "
+"oder in einem anderen Browser-Tab geändert und sind veraltet. Um die "
+"Speicherung inkonsistenter Daten zu verhindern, muss die Seite neu geladen "
+"werden."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:373
@@ -331,7 +331,7 @@ msgstr "Plugin nicht verfügbar"
 #: components/FormPlugins/index.tsx:203
 #, fuzzy
 msgid "pluginNotAvailableDescription"
-msgstr "Dieses Plugin ist derzeit nicht verfügbar für Specify 7"
+msgstr "Dieses Plugin ist derzeit für Specify 7 nicht verfügbar"
 
 #. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:65
@@ -530,13 +530,13 @@ msgstr "Entfernen aus {recordSetTable:string}"
 #: components/Molecules/AutoComplete.tsx:533
 #, fuzzy
 msgid "nothingFound"
-msgstr "Keine gefunden"
+msgstr "Nichts gefunden"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:256
 #, fuzzy
 msgid "carryForward"
-msgstr "Weitertragen"
+msgstr "Übertrag"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:117
@@ -560,7 +560,7 @@ msgstr "Anzahl der Massenüberträge"
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Einen neuen Datensatz erstellen, bei dem bestimmte Felder übernommen werden"
+msgstr "Erstellen Sie einen neuen Datensatz mit bestimmten übernommenen Feldern"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:120
@@ -585,7 +585,7 @@ msgstr "Dieser Befehl ist derzeit für Specify 7 nicht verfügbar."
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Konfigurieren von Feldern für den Massenübertrag ({tableName:string})"
+msgstr "Konfigurieren Sie Felder für den Massenübertrag ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
@@ -609,7 +609,7 @@ msgstr "Schaltfläche „Hinzufügen“ anzeigen"
 #: components/Forms/Save.tsx:316
 #, fuzzy
 msgid "addButtonDescription"
-msgstr "Einen neuen leeren Datensatz erstellen"
+msgstr "Erstellen Sie einen neuen leeren Datensatz"
 
 #. Used in: Components > Form Meta > Auto Numbering
 #: components/FormMeta/AutoNumbering.tsx:27
@@ -634,13 +634,13 @@ msgstr "Automatisch generiertes Formular verwenden"
 #: components/FormMeta/Definition.tsx:119
 #, fuzzy
 msgid "useFieldLabels"
-msgstr "Lokalisierte Feldbeschriftungen verwenden"
+msgstr "Lokalisierte Feldbezeichnungen verwenden"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:205
 #, fuzzy
 msgid "showFieldLabels"
-msgstr "Lokalisierte Feldbeschriftungen anzeigen"
+msgstr "Lokalisierte Feldbezeichnungen anzeigen"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:204
@@ -694,7 +694,7 @@ msgstr "Verwendungen finden"
 #: components/FormMeta/PickListUsages.tsx:68
 #, fuzzy
 msgid "usagesOfPickList"
-msgstr "Verwendungen der Auswahlliste „{pickList:string}“"
+msgstr "Verwendung der Auswahlliste „{pickList:string}“"
 
 #. Used in: Components > Form Meta > Sub View Meta
 #: components/FormMeta/SubViewMeta.tsx:36
@@ -719,7 +719,7 @@ msgstr "Unteransicht"
 #: components/DataEntryTables/Edit.tsx:50
 #, fuzzy
 msgid "selectSourceOfTables"
-msgstr "Auswählen der Tabellenquelle"
+msgstr "Wählen Sie die Quelle der Tabellen aus"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:71
@@ -738,7 +738,7 @@ msgstr "Benutzerdefinierte Einstellungen verwenden"
 #: components/Header/UserTools.tsx:91
 #, fuzzy
 msgid "disableReadOnly"
-msgstr "Deaktivieren des Nur-Lese-Modus"
+msgstr "Deaktivieren Sie den Nur-Lese-Modus"
 
 #. Used in: Components > Form Meta > Read Only Mode
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -756,14 +756,14 @@ msgstr "Konfigurieren von Dateneingabetabellen"
 #: components/DataEntryTables/Edit.tsx:130
 #, fuzzy
 msgid "configureInteractionTables"
-msgstr "Konfigurieren Sie Interaktionstabellen"
+msgstr "Konfigurieren von Interaktionstabellen"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:67
 #: components/FormMeta/index.tsx:69
 #, fuzzy
 msgid "formMeta"
-msgstr "Formular-Meta"
+msgstr "Formular-Metadaten"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:283
