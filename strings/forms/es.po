@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-18 15:00+0000\n"
+"PO-Revision-Date: 2025-04-18 15:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -140,8 +140,8 @@ msgstr "¿Añadir a {pickListTable:string}?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"¿Agregar el valor \"{value:string}\" al {pickListTable:string} llamado \""
-"{pickListName:string}\"?"
+"¿Agregar valor \"{value:string}\" al {pickListTable:string} llamado "
+"\"{pickListName:string}\"?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -170,7 +170,7 @@ msgstr "Sin datos."
 msgid "recordSetDeletionWarning"
 msgstr ""
 "Se eliminará el {recordSetTable:string} \"{recordSetName:string}\". Los "
-"registros a los que se hace referencia NO se eliminarán de la base de datos."
+"registros referenciados no se eliminarán de la base de datos."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
@@ -178,7 +178,7 @@ msgstr ""
 #: components/FormMeta/MergeRecord.tsx:53
 #, fuzzy
 msgid "saveRecordFirst"
-msgstr "Guardar registro primero"
+msgstr "Guardar el registro primero"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:32
@@ -201,14 +201,14 @@ msgstr "Último registro"
 #: components/FormSliders/Slider.tsx:43
 #, fuzzy
 msgid "previousRecord"
-msgstr "Récord anterior"
+msgstr "Registro anterior"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
 #: components/FormSliders/Slider.tsx:90
 #, fuzzy
 msgid "nextRecord"
-msgstr "Siguiente récord"
+msgstr "Próximo récord"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:57
@@ -236,9 +236,8 @@ msgstr "Guardar conflicto"
 msgid "saveConflictDescription"
 msgstr ""
 "Los datos que se muestran en esta página han sido modificados por otro "
-"usuario o en otra pestaña del navegador y no están actualizados. Es "
-"necesario volver a cargar la página para evitar que se guarden datos "
-"incoherentes."
+"usuario o en otra pestaña del navegador y están desactualizados. Es "
+"necesario recargar la página para evitar que se guarden datos incoherentes."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:373
@@ -422,8 +421,7 @@ msgstr "¿Continuar sin guardar?"
 #: components/FormSliders/RecordSelectorFromIds.tsx:281
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr ""
-"Es posible que desees guardar este registro antes de continuar navegando."
+msgstr "Es posible que desees guardar este registro antes de navegar."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:226
@@ -459,7 +457,7 @@ msgstr "(eliminado)"
 #: components/FormSliders/RecordSet.tsx:499
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Duplicar {recordSetItemTable:string}"
+msgstr "Duplicado {recordSetItemTable:string}"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:504
@@ -496,7 +494,7 @@ msgstr "Llevar adelante"
 #: components/FormMeta/CarryForward.tsx:117
 #, fuzzy
 msgid "carryForwardEnabled"
-msgstr "Mostrar botón Llevar adelante"
+msgstr "Mostrar el botón Llevar adelante"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:181
@@ -533,13 +531,13 @@ msgstr "Configurar campos para transferirlos en masa"
 #: components/FormMeta/CarryForward.tsx:338
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
-msgstr "Configurar campos para trasladar ({tableName:string})"
+msgstr "Configurar campos para transferir ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Configurar campos para transferirlos en bloque ({tableName:string})"
+msgstr "Configurar campos para transferirlos en masa ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
@@ -557,7 +555,7 @@ msgstr "Mostrar botón Clonar"
 #: components/FormMeta/Clone.tsx:57
 #, fuzzy
 msgid "addButtonEnabled"
-msgstr "Mostrar botón Agregar"
+msgstr "Mostrar el botón Agregar"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:316
@@ -686,7 +684,7 @@ msgstr "Copiar Especificar 6 configuraciones"
 #: components/DataEntryTables/Edit.tsx:79
 #, fuzzy
 msgid "useCustomSettings"
-msgstr "Utilice configuraciones personalizadas"
+msgstr "Usar configuraciones personalizadas"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -718,7 +716,7 @@ msgstr "Configurar tablas de interacción"
 #: components/FormMeta/index.tsx:69
 #, fuzzy
 msgid "formMeta"
-msgstr "Formulario Meta"
+msgstr "Meta del formulario"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:283
@@ -747,7 +745,7 @@ msgstr "Recurso eliminado"
 #: components/Forms/ResourceView.tsx:216
 #, fuzzy
 msgid "resourceDeletedDescription"
-msgstr "El artículo fue eliminado exitosamente."
+msgstr "El artículo fue eliminado exitosamente"
 
 #. Used in: Components > Forms > Date Range
 #: components/Forms/DateRange.tsx:53
@@ -759,4 +757,4 @@ msgstr "(Rango: {from:string} - {to:string})"
 #: components/FieldFormatters/index.ts:282
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
-msgstr "Número de catálogo Numérico"
+msgstr "Número de catálogo numérico"
