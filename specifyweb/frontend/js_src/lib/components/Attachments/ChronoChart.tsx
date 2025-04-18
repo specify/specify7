@@ -18,9 +18,9 @@ export function ChronoChart(): JSX.Element {
       />
       {showChronoChart && (
         <ImageViewer
-          src="/static/img/chronostratChart2023-09.jpg"
           alt="Chrono Chart"
           header={headerText.chronostratigraphicChart()}
+          src="/static/img/chronostratChart2023-09.jpg"
           onClose={handleHideChronoChart}
         />
       )}

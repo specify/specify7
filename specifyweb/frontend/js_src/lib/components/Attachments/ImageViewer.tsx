@@ -17,11 +17,11 @@ export function ImageViewer({
   onClose,
   modal,
 }: {
-  src: string;
-  alt: string;
-  header: LocalizedString;
-  onClose: () => void;
-  modal?: boolean;
+  readonly src: string;
+  readonly alt: string;
+  readonly header: LocalizedString;
+  readonly onClose: () => void;
+  readonly modal?: boolean;
 }): JSX.Element {
   return (
     <Dialog

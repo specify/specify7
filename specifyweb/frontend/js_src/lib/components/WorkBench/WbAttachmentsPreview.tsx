@@ -7,22 +7,25 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { serializeResource } from '../DataModel/serializers';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import type { RA } from '../../utils/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { attachmentsText } from '../../localization/attachments';
-import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
-import { AttachmentPreview } from '../Attachments/Preview';
-import { SerializedResource, SerializedRecord } from '../DataModel/helperTypes';
-import { f } from '../../utils/functools';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { ImageViewer } from '../Attachments/ImageViewer';
-import { wbText } from '../../localization/workbench';
+import { AttachmentPreview } from '../Attachments/Preview';
+import type {
+  SerializedRecord,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import { serializeResource } from '../DataModel/serializers';
+import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbAttachmentsPreview({
   hot,
@@ -54,9 +57,7 @@ export function WbAttachmentsPreview({
     if (selectedRow === undefined) return;
 
     // Look for Attachments column
-    const attachmentColumnIndex = datasetColumns.findIndex(
-      (column) => column === 'Attachment'
-    );
+    const attachmentColumnIndex = datasetColumns.indexOf('Attachment');
     if (attachmentColumnIndex === -1) return;
 
     const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
@@ -69,11 +70,7 @@ export function WbAttachmentsPreview({
           headers: { Accept: 'application/json' },
           method: 'GET',
         }
-      ).then(({ data }) =>
-        setAttachment(
-          serializeResource(data.attachment) as SerializedResource<Attachment>
-        )
-      );
+      ).then(({ data }) => setAttachment(serializeResource(data.attachment)));
     }
   }, [selectedRow]);
 
@@ -91,9 +88,9 @@ export function WbAttachmentsPreview({
           <div>
             <H2>{attachmentsText.attachments()}</H2>
             <p>
-              {selectedRow !== undefined
-                ? wbText.attachmentsForRow({ row: selectedRow+1 })
-                : commonText.noResults()}
+              {selectedRow === undefined
+                ? commonText.noResults()
+                : wbText.attachmentsForRow({ row: selectedRow + 1 })}
             </p>
             {selectedRow !== undefined && attachment !== undefined && (
               <AttachmentPreview
@@ -143,11 +140,11 @@ function AttachmentViewer({
     <>
       {attachment !== undefined && (
         <ImageViewer
-          src={attachmentUrl ?? ''}
           alt={attachment?.title ?? ''}
           header={attachmentsText.attachments()}
-          onClose={onClose}
           modal={false}
+          src={attachmentUrl ?? ''}
+          onClose={onClose}
         />
       )}
     </>

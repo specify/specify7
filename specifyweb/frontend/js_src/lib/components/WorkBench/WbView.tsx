@@ -19,6 +19,7 @@ import React from 'react';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -43,11 +44,10 @@ import { Disambiguation } from './DisambiguationLogic';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
-import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { attachmentsText } from '../../localization/attachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -154,8 +154,12 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
-  const [showAttachments, _openAttachments, _closeAttachments, toggleAttachments] = 
-    useBooleanState();
+  const [
+    showAttachments,
+    _openAttachments,
+    _closeAttachments,
+    toggleAttachments,
+  ] = useBooleanState();
 
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
@@ -264,8 +268,8 @@ export function WbView({
           ) : showAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
-                hot={hot}
                 datasetColumns={dataset.columns}
+                hot={hot}
                 onClose={toggleAttachments}
               />
             </aside>
