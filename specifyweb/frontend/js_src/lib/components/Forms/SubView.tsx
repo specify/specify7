@@ -160,7 +160,11 @@ export function SubView({
 
   return (
     <SubViewContext.Provider value={contextValue}>
-      {collection === false ? undefined : (
+      {(!RECURSIVE_RENDERING_EXCEPTIONS.has(parentResource.specifyTable) &&
+        parentContext
+          .map(({ relationship }) => relationship)
+          .includes(relationship)) ||
+      collection === false ? undefined : (
         <>
           {isButton && (
             <Button.BorderedGray
@@ -267,4 +271,5 @@ export function SubView({
 
 const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable>([
   tables.CollectionObjectGroup,
+  tables.CollectionObject,
 ]);

@@ -16,6 +16,9 @@ urlpatterns = [
     # cat num for siblings
     url(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling), 
 
+    # cat num for parent
+    url(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
+
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
     url(r'^specify_schema/(?P<model>\w+)/$', schema.view),
