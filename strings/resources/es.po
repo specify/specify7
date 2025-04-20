@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-20 23:01+0000\n"
+"PO-Revision-Date: 2025-04-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -150,11 +150,10 @@ msgstr "Formato de tabla"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"El “Formato de tabla” controla cómo se muestran los datos de una tabla "
-"específica en los resultados de la consulta, las exportaciones y los cuadros "
-"combinados de la consulta. Determina los campos que se mostrarán y su orden. "
-"El formato condicional se puede configurar en función de un valor del "
-"registro."
+"El \"Formato de tabla\" controla cómo se muestran los datos de una tabla "
+"específica en los resultados de consultas, las exportaciones y los cuadros "
+"combinados de consultas. Determina los campos que se mostrarán y su orden. "
+"El formato condicional se puede configurar según un valor del registro."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
@@ -167,10 +166,10 @@ msgstr "Agregación de tablas"
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"La “Agregación de tablas” controla cómo se consolidan varios registros de "
-"tablas en una sola cadena de texto. El formato de tabla, el separador, el "
+"La \"Agregación de Tablas\" controla cómo se consolidan varios registros de "
+"tabla en una sola cadena de texto. El formato de tabla, el separador, el "
 "sufijo, el campo de ordenación y el límite de vista previa de registros son "
-"personalizables. Se pueden mostrar en los resultados de la consulta y en los "
+"personalizables. Se pueden mostrar en los resultados de consultas y en los "
 "formatos de tabla."
 
 #. Used in: Components > Web Links > Definition
@@ -201,7 +200,7 @@ msgstr "Enlaces web disponibles"
 #: components/Formatters/List.tsx:127
 #, fuzzy
 msgid "selectDefaultFormatter"
-msgstr "Seleccione un formateador de registros predeterminado para esta tabla"
+msgstr "Seleccione un formateador de registro predeterminado para esta tabla"
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
@@ -225,7 +224,7 @@ msgstr "Tablas de interacciones"
 #: components/AppResources/types.tsx:190
 #, fuzzy
 msgid "otherXmlResource"
-msgstr "Otros recursos XML"
+msgstr "Otro recurso XML"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
@@ -237,7 +236,7 @@ msgstr "Otros recursos JSON"
 #: components/AppResources/types.tsx:204
 #, fuzzy
 msgid "otherPropertiesResource"
-msgstr "Otros recursos de propiedades"
+msgstr "Recursos de otras propiedades"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:211
@@ -263,7 +262,7 @@ msgstr "Costumbre"
 #: components/AppResources/types.tsx:119
 #, fuzzy
 msgid "leafletLayers"
-msgstr "Capas de los folíolos"
+msgstr "Capas de los folletos"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
@@ -419,7 +418,7 @@ msgstr "Eliminar definición"
 #: components/WebLinks/Definition.tsx:27
 #, fuzzy
 msgid "urlPart"
-msgstr "Parte URL"
+msgstr "Parte de la URL"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -461,9 +460,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Este recurso pertenece a una colección/disciplina diferente a la que se "
-"encuentra actualmente. Se recomienda cambiar de colección antes de editar "
-"este recurso"
+"Este recurso pertenece a una colección/disciplina diferente a la que estás "
+"actualmente. Se recomienda cambiar de colección antes de editar este recurso."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
