@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-20 23:00+0000\n"
+"PO-Revision-Date: 2025-04-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -141,11 +141,10 @@ msgstr "Tabellenformat"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in "
-"Abfrageergebnissen, Exporten und Abfragekombinationsfeldern angezeigt "
-"werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die "
-"bedingte Formatierung kann basierend auf einem Wert im Datensatz "
-"konfiguriert werden."
+"Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten "
+"Tabelle in Abfrageergebnissen, Exporten und Abfragekombinationsfeldern. Es "
+"bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte "
+"Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
@@ -158,11 +157,10 @@ msgstr "Tabellenaggregation"
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer "
-"einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat, "
-"Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind "
-"anpassbar. Es kann in Abfrageergebnissen und Tabellenformaten angezeigt "
-"werden."
+"Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einem "
+"einzigen Text zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, "
+"Sortierfeld und Datensatzvorschaulimit sind anpassbar. Die Anzeige kann in "
+"Abfrageergebnissen und Tabellenformaten erfolgen."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
@@ -192,7 +190,7 @@ msgstr "Verfügbare Weblinks"
 #: components/Formatters/List.tsx:127
 #, fuzzy
 msgid "selectDefaultFormatter"
-msgstr "Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle"
+msgstr "Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle"
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
@@ -416,7 +414,7 @@ msgstr "Dieses Feld"
 #: components/WebLinks/Definition.tsx:166
 #, fuzzy
 msgid "selectTableFirst"
-msgstr "Zuerst Tabelle auswählen"
+msgstr "Wählen Sie zuerst die Tabelle aus"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
@@ -439,8 +437,8 @@ msgstr ""
 msgid "wrongScopeWarning"
 msgstr ""
 "Diese Ressource gehört zu einer anderen Sammlung/Disziplin als der, in der "
-"Sie sich gerade befinden. Es wird empfohlen, die Sammlung zu wechseln, "
-"bevor Sie diese Ressource bearbeiten"
+"Sie sich gerade befinden. Es wird empfohlen, die Sammlung zu wechseln, bevor "
+"Sie diese Ressource bearbeiten."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -482,7 +480,7 @@ msgstr "Abschlussbenachrichtigung an Benutzer senden"
 #: components/ExportFeed/Editor.tsx:273
 #, fuzzy
 msgid "runInCollection"
-msgstr "In Sammlung ausführen"
+msgstr "In der Sammlung ausführen"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
@@ -512,7 +510,7 @@ msgstr "Standardformulare kopieren"
 #: components/FormMeta/index.tsx:113
 #, fuzzy
 msgid "saveFormFirst"
-msgstr "Formular vorher speichern"
+msgstr "Formular zuerst speichern"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:116
@@ -567,4 +565,4 @@ msgstr "Eine aktuelle Feststellung ist erforderlich."
 #: components/DataModel/businessRuleDefs.ts:230
 #, fuzzy
 msgid "parentCogSameAsChild"
-msgstr "Eine Sammlungsobjektgruppe kann nicht sich selbst übergeordnet sein"
+msgstr "Eine Sammlungsobjektgruppe kann nicht sich selbst übergeordnet sein."
