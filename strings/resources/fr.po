@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-20 23:00+0000\n"
+"PO-Revision-Date: 2025-04-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -98,13 +98,13 @@ msgstr "Ajouter une ressource"
 #: components/AppResources/types.tsx:30
 #, fuzzy
 msgid "appResource"
-msgstr "Ressource de l'application"
+msgstr "Ressource d'application"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:127
 #, fuzzy
 msgid "rssExportFeed"
-msgstr "Exporter le flux RSS"
+msgstr "Flux d'exportation RSS"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
@@ -140,7 +140,7 @@ msgstr "Formateurs de champs"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Formateurs d'enregistrement"
+msgstr "Formateurs d'enregistrements"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -155,28 +155,28 @@ msgstr "Format de tableau"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"Le « Format de table » contrôle la manière dont les données d'une table "
-"spécifique sont affichées dans les résultats de requête, les exportations et "
-"les zones de liste déroulante de requête. Il détermine les champs à afficher "
-"et leur ordre. La mise en forme conditionnelle peut être configurée en "
-"fonction d'une valeur dans l'enregistrement."
+"Le « Format de table » contrôle l'affichage des données d'une table "
+"spécifique dans les résultats de requête, les exportations et les zones de "
+"liste déroulante. Il détermine les champs à afficher et leur ordre. La mise "
+"en forme conditionnelle peut être configurée en fonction d'une valeur de "
+"l'enregistrement."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
 #, fuzzy
 msgid "aggregator"
-msgstr "Agrégation de table"
+msgstr "Agrégation de tables"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"L'agrégation de table contrôle la manière dont plusieurs enregistrements de "
-"table sont consolidés en une seule chaîne de texte. Le format de table, le "
-"séparateur, le suffixe, le champ de tri et la limite d'aperçu "
-"d'enregistrement sont personnalisables. Ils peuvent être affichés dans les "
-"résultats de requête et les formats de table."
+"L'« Agrégation de table » contrôle la consolidation de plusieurs "
+"enregistrements de table en une seule chaîne de texte. Le format de table, "
+"le séparateur, le suffixe, le champ de tri et la limite d'aperçu des "
+"enregistrements sont personnalisables. L'affichage peut être effectué dans "
+"les résultats de requête et les formats de table."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
@@ -214,7 +214,7 @@ msgstr ""
 #: components/Formatters/Element.tsx:52
 #, fuzzy
 msgid "duplicateFormatters"
-msgstr "Les noms des formateurs d'enregistrement doivent être uniques"
+msgstr "Les noms des formateurs d'enregistrements doivent être uniques"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:175
@@ -226,7 +226,7 @@ msgstr "Tableaux de saisie de données"
 #: components/AppResources/types.tsx:183
 #, fuzzy
 msgid "interactionsTables"
-msgstr "Tableaux d'interactions"
+msgstr "Tables d'interactions"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:190
@@ -250,7 +250,7 @@ msgstr "Autres propriétés"
 #: components/AppResources/types.tsx:211
 #, fuzzy
 msgid "otherAppResource"
-msgstr "Autres ressources"
+msgstr "Autre ressource"
 
 #. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:48
@@ -301,7 +301,7 @@ msgstr "Éditeur visuel"
 #: components/AppResources/Create.tsx:90
 #, fuzzy
 msgid "selectResourceType"
-msgstr "Sélectionner le type de ressource"
+msgstr "Sélectionnez le type de ressource"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:120
@@ -319,7 +319,7 @@ msgstr "Préférences à distance"
 #: components/Formatters/index.tsx:99
 #, fuzzy
 msgid "failedParsingXml"
-msgstr "Impossible d'analyser le XML"
+msgstr "Échec de l'analyse XML"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
@@ -390,8 +390,8 @@ msgstr "Aperçu"
 #, fuzzy
 msgid "previewExplainer"
 msgstr ""
-"Recherchez dans vos enregistrements de collection pour prévisualiser le "
-"formateur d'enregistrements"
+"Recherchez vos enregistrements de collection pour prévisualiser le formateur "
+"d'enregistrements"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
@@ -426,7 +426,7 @@ msgstr "Supprimer la définition"
 #: components/WebLinks/Definition.tsx:27
 #, fuzzy
 msgid "urlPart"
-msgstr "Partie URL"
+msgstr "partie URL"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -470,7 +470,7 @@ msgid "wrongScopeWarning"
 msgstr ""
 "Cette ressource appartient à une collection/discipline différente de celle "
 "dans laquelle vous vous trouvez actuellement. Il est recommandé de changer "
-"de collection avant de modifier cette ressource"
+"de collection avant de modifier cette ressource."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -512,7 +512,7 @@ msgstr "Envoyer une notification d'achèvement à l'utilisateur"
 #: components/ExportFeed/Editor.tsx:273
 #, fuzzy
 msgid "runInCollection"
-msgstr "Exécuter dans la collection"
+msgstr "Exécution en collection"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
@@ -597,4 +597,4 @@ msgstr "Une détermination actuelle est requise."
 #: components/DataModel/businessRuleDefs.ts:230
 #, fuzzy
 msgid "parentCogSameAsChild"
-msgstr "Un groupe d'objets de collection ne peut pas être son propre parent"
+msgstr "Un groupe d'objets de collection ne peut pas être parent de lui-même"
