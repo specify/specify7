@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-21 02:00+0000\n"
+"PO-Revision-Date: 2025-04-21 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/fr/"
 ">\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -94,8 +94,8 @@ msgstr "L'utilisateur actuel n'a pas d'agent attribué"
 #, fuzzy
 msgid "noAgentDescription"
 msgstr ""
-"Veuillez vous connecter en tant qu'administrateur et affecter un agent à cet "
-"utilisateur"
+"Veuillez vous connecter en tant qu'administrateur et attribuer un agent à "
+"cet utilisateur"
 
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #: components/Login/OicLogin.tsx:46
@@ -108,25 +108,25 @@ msgstr "Bonjour, {userName:string} !"
 #, fuzzy
 msgid "oicWelcomeMessage"
 msgstr ""
-"Vous avez été invité à associer une connexion externe à votre compte "
-"utilisateur Specify. Cela vous permettra de vous connecter à Specify avec "
-"le fournisseur de votre choix à l'avenir."
+"Vous avez été invité à associer un identifiant externe à votre compte "
+"utilisateur Specify. Cela vous permettra de vous connecter à Specify avec le "
+"fournisseur de votre choix."
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
 #, fuzzy
 msgid "legacyLogin"
-msgstr "Connectez-vous avec le compte spécifié"
+msgstr "Connectez-vous avec un compte spécifié"
 
 #. Used in: Components > Login > Index
 #: components/Login/index.tsx:123
 #, fuzzy
 msgid "unknownOicUser"
 msgstr ""
-"Il n'y a actuellement aucun utilisateur spécifié associé à votre compte "
-"{providerName:string}. Si vous avez un nom d'utilisateur et un mot de passe "
-"spécifiés, vous pouvez les saisir ci-dessous pour associer cet utilisateur à "
-"votre compte {providerName:string} pour les connexions futures."
+"Aucun utilisateur spécifié n'est actuellement associé à votre compte "
+"{providerName:string}. Si vous possédez un nom d'utilisateur et un mot de "
+"passe spécifiés, saisissez-les ci-dessous pour associer cet utilisateur à "
+"votre compte {providerName:string} lors de vos prochaines connexions."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:83
@@ -200,7 +200,7 @@ msgstr "Privilèges insuffisants"
 #, fuzzy
 msgid "sessionTimeOutDescription"
 msgstr ""
-"Vous ne disposez pas de privilèges suffisants pour cette action ou votre "
+"Vous ne disposez pas des privilèges suffisants pour cette action ou votre "
 "session actuelle a été déconnectée."
 
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
@@ -246,7 +246,7 @@ msgstr "Autorisation refusée lors de l'accès à <url />"
 #, fuzzy
 msgid "noAccessToCollections"
 msgstr ""
-"L'utilisateur connecté n'a pas accès aux collections de cette base de "
+"L'utilisateur connecté n'a accès à aucune collection de cette base de "
 "données. Vous devez vous connecter sous un autre nom d'utilisateur."
 
 #. Used in: Components > Header > User Tool Definitions
@@ -358,7 +358,7 @@ msgstr "Rôles utilisateur"
 #: components/Security/PreviewComponents.tsx:88
 #, fuzzy
 msgid "collectionUserRoles"
-msgstr "{collectionTable:string} Rôles des utilisateurs"
+msgstr "{collectionTable:string} Rôles utilisateur"
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:109
@@ -408,7 +408,7 @@ msgstr "Profil d'autorisation de l'utilisateur (lecture seule)"
 msgid "outOfDateWarning"
 msgstr ""
 "Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour "
-"mettre à jour l'aperçu"
+"le mettre à jour."
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
@@ -584,7 +584,7 @@ msgstr "(Spécifiez 6 Admin)"
 #: components/Security/Role.tsx:227
 #, fuzzy
 msgid "deleteRoleWithUsers"
-msgstr "Supprimer un rôle qui a des utilisateurs ?"
+msgstr "Supprimer le rôle qui a des utilisateurs ?"
 
 #. Used in: Components > Security > Role
 #: components/Security/Role.tsx:230
