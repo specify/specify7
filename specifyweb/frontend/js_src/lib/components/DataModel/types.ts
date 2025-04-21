@@ -1453,11 +1453,12 @@ export type CollectionObject = {
     readonly inventorizedBy: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
-    readonly visibilitySetBy: SpecifyUser | null;
     readonly parentCO: CollectionObject | null;
+    readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
+    readonly children: RA<CollectionObject>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
@@ -1473,7 +1474,6 @@ export type CollectionObject = {
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;
-    readonly children: RA<CollectionObject>;
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
@@ -4389,11 +4389,11 @@ export type Preparation = {
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
-    readonly isOnLoan: boolean | null;
-    readonly isOnGift: boolean | null;
     readonly isOnDisposal: boolean | null;
-    readonly isOnExchangeOut: boolean | null;
     readonly isOnExchangeIn: boolean | null;
+    readonly isOnExchangeOut: boolean | null;
+    readonly isOnGift: boolean | null;
+    readonly isOnLoan: boolean | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly preparedDate: string | null;
@@ -5324,11 +5324,11 @@ export type SpQueryField = {
     readonly endValue: string | null;
     readonly fieldName: string;
     readonly formatName: string | null;
-    readonly isStrict: boolean;
     readonly isDisplay: boolean;
     readonly isNot: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
+    readonly isStrict: boolean;
     readonly operEnd: number | null;
     readonly operStart: number;
     readonly position: number;
@@ -5538,8 +5538,8 @@ export type Storage = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly timestampVersion: string | null;
-    readonly version: number | null;
     readonly uniqueIdentifier: string | null;
+    readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
