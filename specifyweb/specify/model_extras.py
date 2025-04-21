@@ -144,6 +144,70 @@ class Preparation(models.Model):
         result = cursor.fetchone()
         return result[0] > 0
 
+    def isongift(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM giftpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
+    def isondisposal(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM disposalpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangeout(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeoutprep
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangein(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeinprep
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
     class Meta:
         abstract = True
 

@@ -2093,8 +2093,8 @@
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" isrequired="true"/>
-					<!-- <cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/> -->
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="catalogNumberFormatName" uitype="combobox"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
@@ -4943,9 +4943,9 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="quantityReturned" uitype="spinner" initialize="max=5000"/>
+					<cell type="field" id="3" name="quantityReturned" uitype="spinner" initialize="max=5000; min=0"/>
 					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="quantityResolved" uitype="spinner" initialize="max=5000"/>
+					<cell type="field" id="5" name="quantityResolved" uitype="spinner" initialize="max=5000; min=0"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="4"/>

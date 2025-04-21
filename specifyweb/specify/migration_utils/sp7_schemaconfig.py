@@ -164,3 +164,18 @@ MIGRATION_0023_FIELDS_BIS = {
 
     'tectonicunittreedef': ['discipline', 'treeEntries', 'tectonicUnitTreeDefId']
 }
+
+MIGRATION_0024_FIELDS = {
+    'Storage': ['uniqueIdentifier'],
+}
+
+MIGRATION_0027_FIELDS = {
+    'CollectionObject': ['parentCO', 'children'],
+}
+
+MIGRATION_0027_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('parentCO', 'Parent Collection Object', 'Parent CollectionObject'), 
+        ('children', 'Children', 'Children'),
+    ]
+}

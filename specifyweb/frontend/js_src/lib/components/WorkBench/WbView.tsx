@@ -29,12 +29,12 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { hasPermission } from '../Permissions/helpers';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
@@ -109,6 +109,9 @@ export function WbView({
     invalidCells: 0,
     searchResults: 0,
     modifiedCells: 0,
+    updatedCells: 0,
+    deletedCells: 0,
+    matchedAndChangedCells: 0,
   });
 
   const workbench = React.useMemo<Workbench>(() => {
@@ -144,7 +147,7 @@ export function WbView({
   }, []);
 
   const isMapped = mappings !== undefined;
-  const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const canUpdate = resolveVariantFromDataset(workbench.dataset).canEdit();
 
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
@@ -187,7 +190,8 @@ export function WbView({
             {commonText.tools()}
           </Button.Small>
           <span className="-ml-1 flex-1" />
-          {canUpdate || isMapped ? (
+          {/* NOTE: Data Mapper temporarily disabled in #5413 */}
+          {!dataset.isupdate && (canUpdate || isMapped) ? (
             <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
               {wbPlanText.dataMapper()}
             </Link.Small>
@@ -239,6 +243,7 @@ export function WbView({
               <WbUploaded
                 datasetId={dataset.id}
                 datasetName={dataset.name}
+                isUpdate={dataset.isupdate}
                 isUploaded={isUploaded}
                 recordCounts={workbench.validation.uploadResults.recordCounts}
                 onClose={closeResults}
@@ -251,6 +256,7 @@ export function WbView({
           cellCounts={cellCounts}
           cells={workbench.cells}
           debounceRate={throttleRate}
+          isUpdate={dataset.isupdate}
           isUploaded={isUploaded}
           searchRef={searchRef}
           utils={workbench.utils}

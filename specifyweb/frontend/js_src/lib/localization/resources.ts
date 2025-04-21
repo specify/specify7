@@ -842,9 +842,30 @@ export const resourcesText = createDictionary({
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
   },
+  coHasParent: {
+    'en-us': 'A CO with a parent cannot be added to a COG.',
+  },
   primaryCogChildRequired: {
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+  },
+  deleteLoanedPrep: {
+    'en-us': 'A loaned preparation cannot be deleted',
+  },
+  deleteGiftedPrep: {
+    'en-us': 'A gifted preparation cannot be deleted',
+  },
+  deleteDisposedPrep: {
+    'en-us': 'A disposed preparation cannot be deleted',
+  },
+  deleteExchangeOutPrep: {
+    'en-us': 'A exchanged out preparation cannot be deleted',
+  },
+  deleteExchangeInPrep: {
+    'en-us': 'A exchanged in preparation cannot be deleted',
   },
   invalidDeterminationTaxon: {
     'en-us':
