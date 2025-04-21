@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-21 02:00+0000\n"
+"PO-Revision-Date: 2025-04-21 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -88,7 +88,7 @@ msgstr "Benutzeragenten festlegen"
 #: components/Core/Main.tsx:101
 #, fuzzy
 msgid "noAgent"
-msgstr "Dem aktuellen Benutzer ist kein Agent zugewiesen."
+msgstr "Dem aktuellen Benutzer ist kein Agent zugewiesen"
 
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:104
@@ -96,7 +96,7 @@ msgstr "Dem aktuellen Benutzer ist kein Agent zugewiesen."
 msgid "noAgentDescription"
 msgstr ""
 "Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer "
-"einen Agenten zu."
+"einen Agenten zu"
 
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #: components/Login/OicLogin.tsx:46
@@ -111,8 +111,8 @@ msgstr "Hallo, {userName:string}!"
 msgid "oicWelcomeMessage"
 msgstr ""
 "Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login "
-"zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten "
-"Anbieter bei Specify anmelden."
+"zuzuordnen. Dadurch können Sie sich künftig mit Ihrem gewählten Anbieter bei "
+"Specify anmelden."
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
@@ -125,10 +125,10 @@ msgstr "Mit „Konto angeben“ anmelden"
 #, fuzzy
 msgid "unknownOicUser"
 msgstr ""
-"Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ "
-"„Specify“ zugeordnet. Wenn Sie einen Benutzernamen und ein Passwort vom Typ "
-"„Specify“ haben, können Sie diese unten eingeben, um diesen Benutzer bei "
-"zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen."
+"Ihrem {providerName:string}-Konto ist derzeit kein Benutzername zugeordnet. "
+"Wenn Sie über einen Benutzernamen und ein Passwort verfügen, können Sie "
+"diese unten eingeben, um diesen Benutzer bei zukünftigen Anmeldungen Ihrem "
+"{providerName:string}-Konto zuzuordnen."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:83
@@ -190,7 +190,7 @@ msgstr "Wählen Sie eine der folgenden Sammlungen aus:"
 #: components/Forms/OtherCollectionView.tsx:92
 #, fuzzy
 msgid "loginToProceed"
-msgstr "Sie können sich beim {collectionTable:string} anmelden, um fortzufahren:"
+msgstr "Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:"
 
 #. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 #: components/Permissions/FormatError.tsx:33
@@ -245,7 +245,7 @@ msgstr ""
 #: components/Permissions/FormatError.tsx:120
 #, fuzzy
 msgid "permissionDeniedForUrl"
-msgstr "Berechtigung beim Zugriff auf <url /> verweigert"
+msgstr "Zugriff verweigert beim Zugriff auf <url />"
 
 #. Used in: Components > Choose Collection > Index
 #: components/ChooseCollection/index.tsx:170
@@ -284,7 +284,7 @@ msgstr "Zum Administrator machen"
 #: components/Security/UserCollections.tsx:128
 #, fuzzy
 msgid "saveUserFirst"
-msgstr "Zuerst Benutzer speichern"
+msgstr "Benutzer zuerst speichern"
 
 #. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:55
@@ -343,7 +343,7 @@ msgstr "Sammlungen"
 #: components/Security/UserCollections.tsx:76
 #, fuzzy
 msgid "configureCollectionAccess"
-msgstr "Auswählen des Benutzersammlungszugriffs"
+msgstr "Auswählen des Benutzerzugriffs auf die Sammlung"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #: components/Header/userToolDefinitions.ts:69
@@ -357,7 +357,7 @@ msgstr "Sicherheit und Konten"
 #: components/Security/Institution.tsx:83
 #, fuzzy
 msgid "userRoleLibrary"
-msgstr "Institutionelle Bibliothek mit Rollenvorlagen"
+msgstr "Institutionsbibliothek mit Rollenvorlagen"
 
 #. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:246
@@ -422,7 +422,7 @@ msgstr "Berechtigungsprofil des Benutzers (schreibgeschützt)"
 msgid "outOfDateWarning"
 msgstr ""
 "Hinweis: Die Vorschau ist möglicherweise veraltet. Speichern Sie die "
-"Änderungen, um die Vorschau zu aktualisieren"
+"Änderungen, um die Vorschau zu aktualisieren."
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
@@ -537,14 +537,14 @@ msgstr "Einladungslink erstellen"
 #: components/Security/UserInviteLink.tsx:56
 #, fuzzy
 msgid "userInviteLink"
-msgstr "Link zur Benutzereinladung"
+msgstr "Benutzereinladungslink"
 
 #. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:61
 #, fuzzy
 msgid "userInviteLinkDescription"
 msgstr ""
-"Senden Sie den folgenden Link an {userName:string}, um ihm die erste "
+"Senden Sie den folgenden Link an {userName:string}, um ihnen die erstmalige "
 "Anmeldung zu ermöglichen."
 
 #. Used in: Components > Security > User Invite Link
@@ -553,7 +553,7 @@ msgstr ""
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in "
-"den 7 Servereinstellungen konfigurieren."
+"den Servereinstellungen festlegen."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -609,13 +609,13 @@ msgstr "Administratoren werden geladen …"
 #: components/Security/Institution.tsx:158
 #, fuzzy
 msgid "specifyAdmin"
-msgstr "(Geben Sie 7 Admins an)"
+msgstr "(Geben Sie 7 Admin an)"
 
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:162
 #, fuzzy
 msgid "legacyAdmin"
-msgstr "(Geben Sie 6 Admins an)"
+msgstr "(Geben Sie 6 Admin an)"
 
 #. Used in: Components > Security > Role
 #: components/Security/Role.tsx:227
@@ -627,7 +627,8 @@ msgstr "Rolle löschen, die Benutzer hat?"
 #: components/Security/Role.tsx:230
 #, fuzzy
 msgid "deleteRoleWithUsersDescription"
-msgstr "Benutzer werden nicht gelöscht, verlieren jedoch diese Rolle."
+msgstr ""
+"Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren."
 
 #. Used in: Components > Security > User
 #: components/Security/User.tsx:305
@@ -641,7 +642,7 @@ msgstr ""
 #: components/Security/User.tsx:665
 #, fuzzy
 msgid "cantRemoveLastAdmin"
-msgstr "Der Institutionsadministratorstatus kann nicht entfernt werden"
+msgstr "Der Status „Institutionsadministrator“ kann nicht entfernt werden"
 
 #. Used in: Components > Security > User
 #: components/Security/User.tsx:668
