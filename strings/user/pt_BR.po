@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-21 02:01+0000\n"
+"PO-Revision-Date: 2025-04-21 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/user/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -119,8 +119,8 @@ msgstr "Olá, {userName:string}!"
 msgid "oicWelcomeMessage"
 msgstr ""
 "Você foi convidado a associar um login externo à sua conta de usuário do "
-"Specify. Isso permitirá que você faça login no Specify com seu provedor "
-"escolhido daqui para frente."
+"Specify. Isso permitirá que você faça login no Specify com o provedor "
+"escolhido a partir de agora."
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
@@ -133,9 +133,9 @@ msgstr "Entrar com Especificar Conta"
 #, fuzzy
 msgid "unknownOicUser"
 msgstr ""
-"Atualmente, não há nenhum usuário do tipo Specify associado à sua conta "
-"{providerName:string}. Se você tiver um nome de usuário e senha do tipo "
-"Specify, você pode inseri-los abaixo para associar esse usuário à sua conta "
+"Atualmente, não há nenhum usuário específico associado à sua conta "
+"{providerName:string}. Se você tiver um nome de usuário e uma senha "
+"específicos, poderá inseri-los abaixo para associar esse usuário à sua conta "
 "{providerName:string} para logins futuros."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -250,8 +250,7 @@ msgstr ""
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
 msgstr ""
-"Não é possível abrir {recordSetTable:string} vazio quando em modo somente "
-"leitura"
+"Não é possível abrir {recordSetTable:string} vazio no modo somente leitura"
 
 #. Used in: Components > Permissions > Format Error
 #: components/Permissions/FormatError.tsx:120
@@ -265,7 +264,7 @@ msgstr "Permissão negada ao acessar <url />"
 msgid "noAccessToCollections"
 msgstr ""
 "O usuário logado não recebeu acesso a nenhuma coleção neste banco de dados. "
-"Você deve logar como outro usuário."
+"Você deve efetuar login como outro usuário."
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:25
@@ -337,7 +336,7 @@ msgstr "Definir senha"
 #: components/Security/SetPassword.tsx:50
 #, fuzzy
 msgid "passwordsDoNotMatchError"
-msgstr "As senhas não correspondem."
+msgstr "As senhas não coincidem."
 
 #. Used in: Components > Security > Set Password
 #: components/Security/SetPassword.tsx:65
@@ -369,7 +368,7 @@ msgstr "Segurança e Contas"
 #: components/Security/Institution.tsx:83
 #, fuzzy
 msgid "userRoleLibrary"
-msgstr "Biblioteca de modelos de funções da instituição"
+msgstr "Biblioteca de Modelos de Funções da Instituição"
 
 #. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:246
@@ -407,7 +406,7 @@ msgstr "Políticas de permissão do usuário"
 #, fuzzy
 msgid "customUserPolices"
 msgstr ""
-"Políticas de nível de coleção personalizada (aplica-se somente a esta "
+"Políticas personalizadas em nível de coleção (aplica-se somente a esta "
 "coleção)"
 
 #. Used in: Components > Security > Role
@@ -433,8 +432,8 @@ msgstr "Perfil de permissão do usuário (somente leitura)"
 #, fuzzy
 msgid "outOfDateWarning"
 msgstr ""
-"Nota: a pré-visualização pode estar desatualizada. Salve as alterações para "
-"atualizar a pré-visualização"
+"Observação: a pré-visualização pode estar desatualizada. Salve as alterações "
+"para atualizar a pré-visualização."
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
@@ -519,7 +518,7 @@ msgstr "De uma função existente:"
 #: components/Security/ImportExport.tsx:32
 #, fuzzy
 msgid "createNewRoles"
-msgstr "Crie novas funções:"
+msgstr "Criar novas funções:"
 
 #. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:30
@@ -537,7 +536,7 @@ msgstr "Funções inalteradas:"
 #: components/Security/UserComponents.tsx:86
 #, fuzzy
 msgid "institutionAdmin"
-msgstr "Administração da Instituição"
+msgstr "Administrador da Instituição"
 
 #. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:51
@@ -565,7 +564,7 @@ msgstr ""
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Nenhum provedor de identidade externo está configurado. Você pode configurar "
-"alguns em Especificar 7 configurações do servidor"
+"alguns em \"Especificar 7 configurações do servidor\"."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -578,8 +577,8 @@ msgstr "Especifique 6 permissões"
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
-"Considere definir uma senha para este usuário. Usuários sem uma senha não "
-"poderão fazer login"
+"Considere definir uma senha para este usuário. Usuários sem senha não "
+"conseguirão fazer login."
 
 #. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:133
