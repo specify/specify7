@@ -20,7 +20,11 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { SpDataSetAttachment } from '../DataModel/types';
+import type {
+  Attachment,
+  Spdataset,
+  SpDataSetAttachment,
+} from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -33,6 +37,9 @@ import { ChooseName } from '../WbImport/index';
 import type { SerializedRecord } from '../DataModel/helperTypes';
 import { f } from '../../utils/functools';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+
+const ATTACHMENTS_COLUMN = 'Attachments';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -55,6 +62,58 @@ export function WbImportAttachmentsView(): JSX.Element {
   );
 }
 
+function uploadFiles(
+  files: readonly File[],
+  handleProgress: (progress: (progress: number | undefined) => number) => void
+): Promise<SpecifyResource<Attachment>>[] {
+  return files.map(async (file) =>
+    uploadFile(file)
+      .then((attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset: dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
+}
+
 function FilesPicked({
   files,
 }: {
@@ -62,7 +121,7 @@ function FilesPicked({
 }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
-    number | true | undefined
+    number | undefined
   >(undefined);
   const [isFailed, setFailed] = useBooleanState(false);
 
@@ -72,73 +131,32 @@ function FilesPicked({
   ): Promise<void> => {
     setFileUploadProgress(0);
 
-    return Promise.all(
-      files.map(async (file) =>
-        // Upload all selected files/attachments
-        uploadFile(file)
-          .then((attachment) =>
-            attachment === undefined
-              ? Promise.reject(`Upload failed for file ${file.name}`)
-              : attachment
-          )
-          .finally(() =>
-            setFileUploadProgress((progress) =>
-              typeof progress === 'number' ? progress + 1 : 1
-            )
-          )
-      )
-    )
+    return Promise.all(uploadFiles(files, setFileUploadProgress)) // Upload all selected files/attachments
       .then((attachments) =>
-        f.all({
+        f
+          .all({
             // Create an empty data set
             dataSet: new tables.Spdataset.Resource({
               name: dataSetName,
               importedfilename: 'attachments',
-              columns: ['Attachment'] as never,
+              columns: [ATTACHMENTS_COLUMN] as never,
               data: [[]] as never,
               specifyuser: userInformation.resource_uri,
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => {
+          .then(({ dataSet, attachments }) => {
             // Create SpDataSetAttachments for each attachment
-            setFileUploadProgress(true);
             return f.all({
-              unsavedDataSetAttachments: Promise.all(
-                attachments.map(
-                  (attachment, index) =>
-                    new tables.SpDataSetAttachment.Resource({
-                      attachment: attachment as never,
-                      spdataset: dataSet.url(),
-                      ordinal: index,
-                    })
-                )
+              dataSetAttachments: createDataSetAttachments(
+                attachments,
+                dataSet
+              ).then((unsavedDataSetAttachments) =>
+                saveDataSetAttachments(unsavedDataSetAttachments)
               ),
               dataSet,
             });
           })
-          .then(async ({ dataSet, unsavedDataSetAttachments }) =>
-            // Save all SpDataSetAttachments to the backend
-            f.all({
-              dataSetAttachments: ajax<
-                RA<SerializedRecord<SpDataSetAttachment>>
-              >(
-                `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
-                {
-                  method: 'POST',
-                  headers: { Accept: 'application/json' },
-                  body: unsavedDataSetAttachments.map((dataSetAttachment) =>
-                    serializeResource(dataSetAttachment)
-                  ),
-                }
-              ).then(({ data }) =>
-                data.map((resource) =>
-                  deserializeResource(serializeResource(resource))
-                )
-              ),
-              dataSet,
-            })
-          )
       )
       .then(({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
@@ -171,7 +189,7 @@ function FilesPicked({
           onClose={undefined}
         >
           <div aria-live="polite">
-            {typeof fileUploadProgress === 'number' ? (
+            {fileUploadProgress !== files.length ? (
               <Progress max={files.length} value={fileUploadProgress} />
             ) : (
               loadingBar
