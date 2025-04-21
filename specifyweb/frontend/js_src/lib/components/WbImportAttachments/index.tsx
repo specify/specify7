@@ -7,14 +7,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { uploadFile } from '../Attachments/attachments';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
   serializeResource,
@@ -34,10 +38,6 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import type { SerializedRecord } from '../DataModel/helperTypes';
-import { f } from '../../utils/functools';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 
 const ATTACHMENTS_COLUMN = 'Attachments';
 
@@ -65,10 +65,10 @@ export function WbImportAttachmentsView(): JSX.Element {
 function uploadFiles(
   files: readonly File[],
   handleProgress: (progress: (progress: number | undefined) => number) => void
-): Promise<SpecifyResource<Attachment>>[] {
+): readonly Promise<SpecifyResource<Attachment>>[] {
   return files.map(async (file) =>
     uploadFile(file)
-      .then((attachment) =>
+      .then(async (attachment) =>
         attachment === undefined
           ? Promise.reject(`Upload failed for file ${file.name}`)
           : attachment
@@ -81,7 +81,7 @@ function uploadFiles(
   );
 }
 
-function createDataSetAttachments(
+async function createDataSetAttachments(
   attachments: RA<SpecifyResource<Attachment>>,
   dataSet: SpecifyResource<Spdataset>
 ): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
@@ -97,7 +97,7 @@ function createDataSetAttachments(
   );
 }
 
-function saveDataSetAttachments(
+async function saveDataSetAttachments(
   dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
 ): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
   return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
@@ -132,7 +132,7 @@ function FilesPicked({
     setFileUploadProgress(0);
 
     return Promise.all(uploadFiles(files, setFileUploadProgress)) // Upload all selected files/attachments
-      .then((attachments) =>
+      .then(async (attachments) =>
         f
           .all({
             // Create an empty data set
@@ -145,20 +145,20 @@ function FilesPicked({
             }).save(),
             attachments,
           })
-          .then(({ dataSet, attachments }) => {
+          .then(async ({ dataSet, attachments }) => 
             // Create SpDataSetAttachments for each attachment
-            return f.all({
+             f.all({
               dataSetAttachments: createDataSetAttachments(
                 attachments,
                 dataSet
-              ).then((unsavedDataSetAttachments) =>
+              ).then(async (unsavedDataSetAttachments) =>
                 saveDataSetAttachments(unsavedDataSetAttachments)
               ),
               dataSet,
-            });
-          })
+            })
+          )
       )
-      .then(({ dataSet, dataSetAttachments }) => {
+      .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
           dataSetAttachment.id.toString(),
@@ -189,10 +189,10 @@ function FilesPicked({
           onClose={undefined}
         >
           <div aria-live="polite">
-            {fileUploadProgress !== files.length ? (
-              <Progress max={files.length} value={fileUploadProgress} />
-            ) : (
+            {fileUploadProgress === files.length ? (
               loadingBar
+            ) : (
+              <Progress max={files.length} value={fileUploadProgress} />
             )}
           </div>
         </Dialog>
@@ -201,8 +201,8 @@ function FilesPicked({
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <Button.Secondary
           className="col-span-full justify-center text-center"
-          onClick={(): Promise<void> =>
-            uniquifyDataSetName(dataSetName).then((uniqueDataSetName) =>
+          onClick={async (): Promise<void> =>
+            uniquifyDataSetName(dataSetName).then(async (uniqueDataSetName) =>
               handleFilesSelected(files, uniqueDataSetName)
             )
           }
