@@ -19,14 +19,12 @@ import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { ImageViewer } from '../Attachments/ImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
+import { toResource } from '../DataModel/helpers';
 import type {
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import {
-  serializeResource,
-} from '../DataModel/serializers';
-import { toResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
@@ -44,10 +42,11 @@ export function WbAttachmentsPreview({
     undefined
   );
   const [attachments, setAttachments] = React.useState<
-    SerializedResource<Attachment>[]
+    readonly SerializedResource<Attachment>[]
   >([]);
-  const [selectedAttachment, setSelectedAttachment] =
-    React.useState<SerializedResource<Attachment> | undefined>(undefined);
+  const [selectedAttachment, setSelectedAttachment] = React.useState<
+    SerializedResource<Attachment> | undefined
+  >(undefined);
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
@@ -79,14 +78,18 @@ export function WbAttachmentsPreview({
             method: 'GET',
           }
         ).then(({ data }) => {
-          const resource = toResource(serializeResource(data.attachment), 'Attachment');
+          const resource = toResource(
+            serializeResource(data.attachment),
+            'Attachment'
+          );
           if (resource !== undefined) {
-            if (data.ordinal === 0) { // TODO: update ordinal correctly
+            if (data.ordinal === 0) {
+              // TODO: update ordinal correctly
               setSelectedAttachment(resource);
-            };
-            setAttachments((prevAttachments) => [
-              ...prevAttachments,
-              resource
+            }
+            setAttachments((previousAttachments) => [
+              ...previousAttachments,
+              resource,
             ]);
           }
         });
