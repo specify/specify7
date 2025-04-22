@@ -39,7 +39,7 @@ import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 
-const ATTACHMENTS_COLUMN = 'Attachments';
+export const ATTACHMENTS_COLUMN = 'Attachments';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');

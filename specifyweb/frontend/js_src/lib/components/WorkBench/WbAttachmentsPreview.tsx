@@ -23,9 +23,13 @@ import type {
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { serializeResource } from '../DataModel/serializers';
+import {
+  serializeResource,
+} from '../DataModel/serializers';
+import { toResource } from '../DataModel/helpers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 
 export function WbAttachmentsPreview({
   hot,
@@ -39,9 +43,11 @@ export function WbAttachmentsPreview({
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
     undefined
   );
-  const [attachment, setAttachment] = React.useState<
-    SerializedResource<Attachment> | undefined
-  >(undefined);
+  const [attachments, setAttachments] = React.useState<
+    SerializedResource<Attachment>[]
+  >([]);
+  const [selectedAttachment, setSelectedAttachment] =
+    React.useState<SerializedResource<Attachment> | undefined>(undefined);
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
@@ -53,25 +59,39 @@ export function WbAttachmentsPreview({
 
   React.useEffect(() => {
     if (!hot) return;
-    setAttachment(undefined);
+    setAttachments([]);
+    setSelectedAttachment(undefined);
     if (selectedRow === undefined) return;
 
     // Look for Attachments column
-    const attachmentColumnIndex = datasetColumns.indexOf('Attachment');
+    const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
     if (attachmentColumnIndex === -1) return;
 
+    // Each row should have comma-separated IDs for SpDataSetAttachments
     const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
-    // Check if its a selectedCell is a valid number (ID)
-    if (f.parseInt(selectedCell) !== undefined) {
-      const id = selectedCell;
-      ajax<SerializedRecord<SpDataSetAttachment>>(
-        `/api/specify/spdatasetattachment/${id}/`,
-        {
-          headers: { Accept: 'application/json' },
-          method: 'GET',
-        }
-      ).then(({ data }) => setAttachment(serializeResource(data.attachment)));
-    }
+    selectedCell?.split(',').forEach((cell: string) => {
+      const dataSetAttachmentId = f.parseInt(cell);
+      if (dataSetAttachmentId !== undefined) {
+        ajax<SerializedRecord<SpDataSetAttachment>>(
+          `/api/specify/spdatasetattachment/${dataSetAttachmentId}/`,
+          {
+            headers: { Accept: 'application/json' },
+            method: 'GET',
+          }
+        ).then(({ data }) => {
+          const resource = toResource(serializeResource(data.attachment), 'Attachment');
+          if (resource !== undefined) {
+            if (data.ordinal === 0) { // TODO: update ordinal correctly
+              setSelectedAttachment(resource);
+            };
+            setAttachments((prevAttachments) => [
+              ...prevAttachments,
+              resource
+            ]);
+          }
+        });
+      }
+    });
   }, [selectedRow]);
 
   React.useEffect(() => {
@@ -92,11 +112,18 @@ export function WbAttachmentsPreview({
                 ? commonText.noResults()
                 : wbText.attachmentsForRow({ row: selectedRow + 1 })}
             </p>
-            {selectedRow !== undefined && attachment !== undefined && (
-              <AttachmentPreview
-                attachment={attachment}
-                onOpen={handleShowAttachment}
-              />
+            {selectedRow !== undefined && attachments.length >= 0 && (
+              <div className="flex flex-col gap-2">
+                {attachments.map((attachment) => (
+                  <AttachmentPreview
+                    attachment={attachment}
+                    onOpen={() => {
+                      handleShowAttachment();
+                      setSelectedAttachment(attachment);
+                    }}
+                  />
+                ))}
+              </div>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
@@ -106,9 +133,9 @@ export function WbAttachmentsPreview({
           </div>
         </div>
       </ErrorBoundary>
-      {showAttachment && (
-        <AttachmentViewer
-          attachment={attachment}
+      {showAttachment && selectedAttachment !== undefined && (
+        <AttachmentViewerDialog
+          attachment={selectedAttachment}
           onClose={handleHideAttachment}
         />
       )}
@@ -116,7 +143,7 @@ export function WbAttachmentsPreview({
   );
 }
 
-function AttachmentViewer({
+function AttachmentViewerDialog({
   attachment,
   onClose,
 }: {
