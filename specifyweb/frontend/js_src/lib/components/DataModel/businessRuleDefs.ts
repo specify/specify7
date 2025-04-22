@@ -3,6 +3,7 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
@@ -27,6 +28,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -309,6 +311,33 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           isValid: true,
           saveBlockerKey: COG_TOITSELF,
         };
+      },
+      childCo: async (
+        cojo: SpecifyResource<CollectionObjectGroupJoin>
+      ): Promise<BusinessRuleResult> => {
+        const childCO = cojo.get('childCo');
+        const childCOId = idFromUrl(childCO!);
+        const CO: SpecifyResource<CollectionObject> | void =
+          await new tables.CollectionObject.Resource({ id: childCOId })
+            .fetch()
+            .then((co) => co)
+            .catch((error) => {
+              console.error('Failed to fetch CollectionObject:', error);
+            });
+        let coParent;
+        if (CO !== undefined) {
+          coParent = CO.get('parentCO');
+        }
+        return coParent === null
+          ? {
+              isValid: true,
+              saveBlockerKey: CO_HAS_PARENT,
+            }
+          : {
+              isValid: false,
+              reason: resourcesText.coHasParent(),
+              saveBlockerKey: CO_HAS_PARENT,
+            };
       },
     },
     onAdded: (cojo, collection) => {
