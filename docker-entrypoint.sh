@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 set -e
 if [ -z "$(ls -A /volumes/static-files/specify-config)" ]; then
   mkdir -p /volumes/static-files/specify-config/config/
