@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-22 03:12+0000\n"
+"PO-Revision-Date: 2025-04-22 03:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/main/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:65
@@ -36,7 +36,7 @@ msgstr "Página não encontrada"
 #: components/Router/NotFoundView.tsx:25
 #, fuzzy
 msgid "nothingWasFound"
-msgstr "Opa! Nada foi encontrado"
+msgstr "Ops! Nada foi encontrado"
 
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
@@ -50,7 +50,7 @@ msgstr ""
 #: components/Router/NotFoundView.tsx:29
 #, fuzzy
 msgid "returnToHomepage"
-msgstr "Retornar à página inicial"
+msgstr "Voltar para a página inicial"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:62
@@ -96,8 +96,8 @@ msgstr ""
 #, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
-"Usuários de <memberLink>instituições membros</memberLink> podem procurar "
-"respostas para perguntas e pedir ajuda em nosso <discourseLink>Fórum da "
+"Usuários de <memberLink>instituições membros</memberLink> podem pesquisar "
+"perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da "
 "Comunidade</discourseLink>."
 
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
