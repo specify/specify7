@@ -7,20 +7,28 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { uploadFile } from '../Attachments/attachments';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { SpDataSetAttachment } from '../DataModel/types';
+import type {
+  Attachment,
+  Spdataset,
+  SpDataSetAttachment,
+} from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -30,9 +38,8 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import type { SerializedRecord } from '../DataModel/helperTypes';
-import { f } from '../../utils/functools';
-import { useBooleanState } from '../../hooks/useBooleanState';
+
+const ATTACHMENTS_COLUMN = 'Attachments';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -55,6 +62,58 @@ export function WbImportAttachmentsView(): JSX.Element {
   );
 }
 
+function uploadFiles(
+  files: readonly File[],
+  handleProgress: (progress: (progress: number | undefined) => number) => void
+): readonly Promise<SpecifyResource<Attachment>>[] {
+  return files.map(async (file) =>
+    uploadFile(file)
+      .then(async (attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+async function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset: dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+async function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
+}
+
 function FilesPicked({
   files,
 }: {
@@ -62,7 +121,7 @@ function FilesPicked({
 }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
-    number | true | undefined
+    number | undefined
   >(undefined);
   const [isFailed, setFailed] = useBooleanState(false);
 
@@ -72,75 +131,34 @@ function FilesPicked({
   ): Promise<void> => {
     setFileUploadProgress(0);
 
-    return Promise.all(
-      files.map(async (file) =>
-        // Upload all selected files/attachments
-        uploadFile(file)
-          .then((attachment) =>
-            attachment === undefined
-              ? Promise.reject(`Upload failed for file ${file.name}`)
-              : attachment
-          )
-          .finally(() =>
-            setFileUploadProgress((progress) =>
-              typeof progress === 'number' ? progress + 1 : 1
-            )
-          )
-      )
-    )
-      .then((attachments) =>
-        f.all({
+    return Promise.all(uploadFiles(files, setFileUploadProgress)) // Upload all selected files/attachments
+      .then(async (attachments) =>
+        f
+          .all({
             // Create an empty data set
             dataSet: new tables.Spdataset.Resource({
               name: dataSetName,
               importedfilename: 'attachments',
-              columns: ['Attachment'] as never,
+              columns: [ATTACHMENTS_COLUMN] as never,
               data: [[]] as never,
               specifyuser: userInformation.resource_uri,
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => {
+          .then(async ({ dataSet, attachments }) => 
             // Create SpDataSetAttachments for each attachment
-            setFileUploadProgress(true);
-            return f.all({
-              unsavedDataSetAttachments: Promise.all(
-                attachments.map(
-                  (attachment, index) =>
-                    new tables.SpDataSetAttachment.Resource({
-                      attachment: attachment as never,
-                      spdataset: dataSet.url(),
-                      ordinal: index,
-                    })
-                )
-              ),
-              dataSet,
-            });
-          })
-          .then(async ({ dataSet, unsavedDataSetAttachments }) =>
-            // Save all SpDataSetAttachments to the backend
-            f.all({
-              dataSetAttachments: ajax<
-                RA<SerializedRecord<SpDataSetAttachment>>
-              >(
-                `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
-                {
-                  method: 'POST',
-                  headers: { Accept: 'application/json' },
-                  body: unsavedDataSetAttachments.map((dataSetAttachment) =>
-                    serializeResource(dataSetAttachment)
-                  ),
-                }
-              ).then(({ data }) =>
-                data.map((resource) =>
-                  deserializeResource(serializeResource(resource))
-                )
+             f.all({
+              dataSetAttachments: createDataSetAttachments(
+                attachments,
+                dataSet
+              ).then(async (unsavedDataSetAttachments) =>
+                saveDataSetAttachments(unsavedDataSetAttachments)
               ),
               dataSet,
             })
           )
       )
-      .then(({ dataSet, dataSetAttachments }) => {
+      .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
           dataSetAttachment.id.toString(),
@@ -171,10 +189,10 @@ function FilesPicked({
           onClose={undefined}
         >
           <div aria-live="polite">
-            {typeof fileUploadProgress === 'number' ? (
-              <Progress max={files.length} value={fileUploadProgress} />
-            ) : (
+            {fileUploadProgress === files.length ? (
               loadingBar
+            ) : (
+              <Progress max={files.length} value={fileUploadProgress} />
             )}
           </div>
         </Dialog>
@@ -183,8 +201,8 @@ function FilesPicked({
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <Button.Secondary
           className="col-span-full justify-center text-center"
-          onClick={(): Promise<void> =>
-            uniquifyDataSetName(dataSetName).then((uniqueDataSetName) =>
+          onClick={async (): Promise<void> =>
+            uniquifyDataSetName(dataSetName).then(async (uniqueDataSetName) =>
               handleFilesSelected(files, uniqueDataSetName)
             )
           }

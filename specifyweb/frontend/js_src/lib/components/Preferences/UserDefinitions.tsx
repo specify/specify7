@@ -1639,6 +1639,14 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          showComparisonOperatorsForString: definePref<boolean>({
+            title: preferencesText.showComparisonOperatorsForString(),
+            description: preferencesText.showComparisonOperatorsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
