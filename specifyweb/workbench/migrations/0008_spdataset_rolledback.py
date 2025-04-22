@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workbench', '0006_batch_edit'),
+        ('workbench', '0007_spdatasetattachment'),
     ]
 
     operations = [
