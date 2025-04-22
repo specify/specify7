@@ -25,7 +25,7 @@ def _track_observed_ranks(
     relname, current = _current
     if (
         current.tree_rank is None
-        or (current.tree_rank.relatedModelName != table_name)
+        or (current.tree_rank.relatedModelName.lower() != table_name.lower())
         or current.tree_rank.treedef_id is not None
         or (current.tree_rank.name not in all_current_ranks)
     ):
