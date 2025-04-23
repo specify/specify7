@@ -34,6 +34,7 @@ def check_unique(model, instance):
     if not cannonical_model:
         # The model is not a Specify Model
         # probably a Django-specific model
+        logger.info(f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
     applied_migrations = MigrationRecorder(
