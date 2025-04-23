@@ -63,7 +63,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -85,4 +85,6 @@ class QueryField(NamedTuple):
             formatter=self.format_name,
             formatauditobjs=formatauditobjs,
             strict=self.strict,
+            collection=collection,
+            user=user,
         )
