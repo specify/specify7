@@ -27,7 +27,13 @@ import type {
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+
+type WbAttachmentPreviewCell = {
+  readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly isLoading: boolean;
+};
 
 export function WbAttachmentsPreview({
   hot,
@@ -42,7 +48,7 @@ export function WbAttachmentsPreview({
     undefined
   );
   const [attachments, setAttachments] = React.useState<
-    readonly SerializedResource<Attachment>[]
+    readonly WbAttachmentPreviewCell[]
   >([]);
   const [selectedAttachment, setSelectedAttachment] = React.useState<
     SerializedResource<Attachment> | undefined
@@ -68,7 +74,13 @@ export function WbAttachmentsPreview({
 
     // Each row should have comma-separated IDs for SpDataSetAttachments
     const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
-    selectedCell?.split(',').forEach((cell: string) => {
+    const dataSetAttachmentIds = selectedCell?.split(',')
+    
+    setAttachments(Array.from({ length: dataSetAttachmentIds.length }, () => ({
+      attachment: undefined,
+      isLoading: true,
+    })));
+    dataSetAttachmentIds.forEach((cell: string, index: number) => {
       const dataSetAttachmentId = f.parseInt(cell);
       if (dataSetAttachmentId !== undefined) {
         ajax<SerializedRecord<SpDataSetAttachment>>(
@@ -83,14 +95,18 @@ export function WbAttachmentsPreview({
             'Attachment'
           );
           if (resource !== undefined) {
-            if (data.ordinal === 0) {
-              // TODO: update ordinal correctly
+            if (index === 0) {
+              // TODO: update ordinal correctly and use data.ordinal === 0
               setSelectedAttachment(resource);
             }
-            setAttachments((previousAttachments) => [
-              ...previousAttachments,
-              resource,
-            ]);
+            setAttachments((previousAttachments) => {
+              const newAttachments = Array.from(previousAttachments);
+              newAttachments[index] = {
+                attachment: resource,
+                isLoading: false,
+              };
+              return newAttachments;
+            });
           }
         });
       }
@@ -107,7 +123,7 @@ export function WbAttachmentsPreview({
   return (
     <>
       <ErrorBoundary dismissible>
-        <div className="flex h-full w-60 flex-col gap-4">
+        <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
           <div>
             <H2>{attachmentsText.attachments()}</H2>
             <p>
@@ -117,15 +133,19 @@ export function WbAttachmentsPreview({
             </p>
             {selectedRow !== undefined && attachments.length >= 0 && (
               <div className="flex flex-col gap-2">
-                {attachments.map((attachment) => (
-                  <AttachmentPreview
-                    attachment={attachment}
-                    onOpen={() => {
-                      handleShowAttachment();
-                      setSelectedAttachment(attachment);
-                    }}
-                  />
-                ))}
+                {attachments.map((cell, index) =>
+                  cell.attachment ? (
+                    <AttachmentPreview
+                      attachment={cell.attachment}
+                      onOpen={() => {
+                        handleShowAttachment();
+                        setSelectedAttachment(cell.attachment);
+                      }}
+                    />
+                  ) : (
+                    <Skeleton.Square key={index} />
+                  )
+                )}
               </div>
             )}
           </div>
