@@ -3,7 +3,7 @@ tzdata
 wheel
 backports.zoneinfo==0.2.1
 kombu==5.2.4
-celery[redis]==5.2.7
+celery[redis]==5.5.1
 Django==4.2.18
 mysqlclient==2.1.1
 SQLAlchemy==1.2.11
