@@ -29,6 +29,7 @@ def autonumber_and_save(collection, user, obj) -> None:
     else:
         logger.debug("no fields to autonumber for %s", obj)
         obj.save()
+        # obj.save() if not obj._state.adding else None # TODO: check for side effects
 
 
 def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[str]]]) -> None:

@@ -1410,14 +1410,20 @@ def catalog_number_for_sibling(request: http.HttpRequest):
             continue
 
     # This will return Primary CO cat num if one present, otherwise None
-    return http.JsonResponse(primary_catalog_number, safe=False)  
+    return http.JsonResponse(primary_catalog_number, safe=False)
 
-def create_institution(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            new_institution = spmodels.Institution.objects.create(**data)
-            return http.JsonResponse({"success": True, "institution_id": new_institution.id}, status=201)
-        except Exception as e:
-            return http.JsonResponse({"error": str(e)}, status=400)
-    return http.JsonResponse({"error": "Invalid request"}, status=400)
+def create_institution_view(request):
+    return api.create_institution(request)
+
+def create_division_view(request):
+    return api.create_division(request)
+
+def create_discipline_view(request):
+    return api.create_discipline(request)
+
+def create_collection_view(request):
+    return api.create_collection(request)
+
+def create_specifyuser_view(request):
+    return api.create_specifyuser(request)
+

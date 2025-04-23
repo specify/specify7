@@ -26,7 +26,11 @@ urlpatterns = [
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
 
     # new setup
-    url(r'^specify/institution/create/$', views.create_institution),
+    url(r'^specify/institution/create/$', views.create_institution_view),
+    url(r'^specify/divsion/create/$', views.create_division_view),
+    url(r'^specify/discipline/create/$', views.create_discipline_view),
+    url(r'^specify/collection/create/$', views.create_collection_view),
+    url(r'^specify/specifyuser/create/$', views.create_specifyuser_view),
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 

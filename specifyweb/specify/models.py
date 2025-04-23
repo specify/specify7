@@ -1,5 +1,5 @@
 from functools import partialmethod
-from django.db import models
+from django.db import IntegrityError, models
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
 from specifyweb.businessrules.exceptions import AbortSave
@@ -24,6 +24,11 @@ def custom_save(self, *args, **kwargs):
         # Handle AbortSave exception as needed
         logger.error("Save operation aborted: %s", e)
         return
+    # except IntegrityError as e:
+    #     if type(self) is Institution:
+    #         self.id = 10
+    #         # self.save()
+    #         save_auto_timestamp_field_with_override(super(self.__class__, self).save, args, kwargs, self)
 
 # TODO: Use this everywhere
 class ModelWithTable(models.Model):
@@ -3998,6 +4003,7 @@ class Institution(models.Model):
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
+    # id = models.AutoField(primary_key=True, db_column='usergroupscopeid', default=1)
 
     # Fields
     altname = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='AltName', db_index=False)
