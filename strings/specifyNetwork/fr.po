@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-23 05:01+0000\n"
+"PO-Revision-Date: 2025-04-23 05:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -71,12 +71,11 @@ msgstr ""
 msgid "iDigBioDescription"
 msgstr ""
 "Les occurrences enregistrées dans iDigBio sont représentées par des points "
-"verts ronds, à l'exception de celles de la collection actuelle enregistrées "
-"dans iDigBio qui sont représentées par des points rouges ronds. Un zoom sur "
-"les points rouges fait apparaître une épingle bleue en forme de larme. "
-"Cliquer sur l'épingle exécute une requête de localité dans Specify qui "
-"affiche toutes les espèces de la base de données Specify actuelle collectées "
-"à cet endroit."
+"verts ronds, à l'exception de celles de la collection actuelle, qui sont "
+"représentées par des points rouges ronds. Un zoom sur les points rouges fait "
+"apparaître une épingle bleue en forme de larme. Cliquer dessus exécute une "
+"requête de localité dans Specify, qui affiche toutes les espèces de la base "
+"de données Specify actuelles collectées à cet endroit."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
@@ -84,15 +83,15 @@ msgstr ""
 msgid "gbifDescription"
 msgstr ""
 "Pour les données GBIF, les points individuels et les groupes de points sont "
-"représentés par des hexagones de différentes couleurs allant du jaune à "
-"l'orange en passant par le rouge. Les hexagones rouge foncé correspondent "
-"aux distributions les plus denses de spécimens collectés de cette espèce."
+"représentés par des hexagones de différentes couleurs, allant du jaune à "
+"l'orange et au rouge. Les hexagones rouge foncé correspondent aux "
+"distributions les plus denses de spécimens collectés de l'espèce."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 #, fuzzy
 msgid "connectToGbif"
-msgstr "Se connecter au GBIF"
+msgstr "Connectez-vous au GBIF"
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
@@ -105,7 +104,7 @@ msgstr "Recherchez votre établissement :"
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
-"Carte de distribution de tous les spécimens numérisés conservés dans votre "
+"Carte de répartition de tous les spécimens numérisés conservés dans votre "
 "institution"
 
 #. Used in: Components > Specify Network Collection > Index
