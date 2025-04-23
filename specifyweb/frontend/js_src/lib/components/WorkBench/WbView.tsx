@@ -48,6 +48,7 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -154,6 +155,9 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
+  const useAttachments = React.useMemo(() => {
+    return dataset.columns.includes(ATTACHMENTS_COLUMN);
+  }, [dataset]);
   const [
     showAttachments,
     _openAttachments,
@@ -205,13 +209,14 @@ export function WbView({
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          {useAttachments && (
           <Button.Small
             aria-haspopup="grid"
             aria-pressed={showAttachments}
             onClick={toggleAttachments}
           >
             {attachmentsText.attachments()}
-          </Button.Small>
+          </Button.Small>)}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}

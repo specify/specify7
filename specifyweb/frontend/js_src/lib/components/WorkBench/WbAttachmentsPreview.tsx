@@ -134,7 +134,7 @@ export function WbAttachmentsPreview({
             {selectedRow !== undefined && attachments.length >= 0 && (
               <div className="flex flex-col gap-2">
                 {attachments.map((cell, index) =>
-                  cell.attachment ? (
+                  (!cell.isLoading && cell.attachment) ? (
                     <AttachmentPreview
                       attachment={cell.attachment}
                       onOpen={() => {
