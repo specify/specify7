@@ -190,6 +190,8 @@ class ScopedTreeRecord(NamedTuple):
             return self
         # batch-edit considers ranks as self-relationships, and are trivially stored in to-one
         rank_from_pack = batch_edit_pack.get("to_one", {})
+        if rank_from_pack is None:
+            rank_from_pack = {}
         return self._replace(
             batch_edit_pack={
                 rank: pack["self"] for (rank, pack) in rank_from_pack.items()
