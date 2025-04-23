@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
-from django.db.models import F, Model
+from django.db.models import F, Model, Max
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, QueryDict)
+                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -261,9 +261,24 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
+        from specifyweb.specify.models import Division
+        data = json.loads(request.body)
+        if '_tableName' in data:
+            # TODO: Add flag in request body to indicate intitialization
+            # TODO: Add condition to make sure this only runs during configuration tool
+            if data['_tableName'] == 'Institution':
+                return create_institution(request)
+            elif data['_tableName'] == 'Division':
+                return create_division(request)
+            elif data['_tableName'] == 'Discipline':
+                return create_discipline(request)
+            elif data['_tableName'] == 'Collection':
+                return create_collection(request)
+            elif data['_tableName'] == 'SpecifyUser':
+                return create_specifyuser(request)
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.loads(request.body),
+                            model, data,
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -1208,3 +1223,138 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
     data = modify_update_of_loan_return_sibling_preps(obj, data)
     return data
+
+def create_institution(request):
+    from specifyweb.specify.models import Institution
+    if request.method == 'POST':
+        if Institution.objects.exists():
+            # TODO: Require login if editing existing institution
+            data = json.loads(request.body)
+            institution = Institution.objects.first()
+            fields_to_update = [
+                'name',
+                'code',
+                'isaccessionsglobal',
+                'issecurityon',
+                'isserverbased',
+                'issinglegeographytree',
+            ]
+
+            for field in fields_to_update:
+                if field in data:
+                    setattr(institution, field, data[field])
+            institution.save()
+            return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
+        try:
+            data = json.loads(request.body)
+            data['id'] = 10
+            new_institution = Institution.objects.create(**data)
+            return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+def create_division(request, direct=False):
+    from specifyweb.specify.models import Division
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Division.objects.exists():
+            max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_division = Division.objects.create(**data)
+                return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            division = Division.objects.first()
+            fields_to_update = [
+                'name',
+                'abbreviation',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(division, field, data[field])
+            division.save()
+            return JsonResponse({"success": True, "division_id": division.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_discipline(request, direct=False):
+    from specifyweb.specify.models import Discipline
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Discipline.objects.exists():
+            max_id = int(Discipline.objects.aggregate(Max('id'))['id__max']) if Discipline.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_discipline = Discipline.objects.create(**data)
+                return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            discipline = Discipline.objects.first()
+            fields_to_update = [
+                'name',
+                'type',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(discipline, field, data[field])
+            discipline.save()
+            return JsonResponse({"success": True, "discipline_id": discipline.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_collection(request, direct=False):
+    from specifyweb.specify.models import Collection
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Collection.objects.exists():
+            max_id = int(Collection.objects.aggregate(Max('id'))['id__max']) if Collection.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_collection = Collection.objects.create(**data)
+                return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            collection = Collection.objects.first()
+            fields_to_update = [
+                'collectionname',
+                'code',
+                'catalognumformatname',
+                'isserverbased',
+                'issinglegeographytree',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(collection, field, data[field])
+            collection.save()
+            return JsonResponse({"success": True, "collection_id": collection.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+    
+def create_specifyuser(request, direct=False):
+    from specifyweb.specify.models import Specifyuser
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Specifyuser.objects.exists():
+            max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_user = Specifyuser.objects.create(**data)
+                return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            user = Specifyuser.objects.first()
+            fields_to_update = [
+                'name',
+                'password',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(user, field, data[field])
+            if not Specifyuser.objects.filter(name=data['name']).exists():
+                user.save()
+            return JsonResponse({"success": True, "user_id": user.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)

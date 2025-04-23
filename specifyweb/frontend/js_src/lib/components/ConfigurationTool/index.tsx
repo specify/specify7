@@ -9,75 +9,177 @@ import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { adminUser, collection, discipline, division, institution } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { LoadingContext } from '../Core/Contexts';
 
 export function ConfigurationTool(): JSX.Element {
+  const loading = React.useContext(LoadingContext);
 
-  const onInstitutionSaved = async (data: any) => ajax('/specify/institution/create/', {
-    method: 'POST',
-    headers: { Accept: 'application/json' },
-    body: JSON.stringify(data),
-    errorMode: 'visible',
-    expectedErrors:
-        [Http.CREATED],  
+  const onInstitutionSaved = async (data: any) =>
+    ajax('/api/specify/institution/create/', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      errorMode: 'visible',
+      expectedErrors: [Http.CREATED],
     })
-    .then(({ data, status }) => {
-    if (status === Http.OK) {
-      console.log('Institution created successfully:', data);
-    } else {
-      console.error('Error creating institution:', data);
-    }
-  }).catch(error => {
-    console.error('Request failed:', error);
-  });
+      .then(({ data, status }) => {
+        if (status === Http.CREATED) {
+          console.log('Institution created successfully:', data);
+        } else {
+          console.error('Error creating institution:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Request failed:', error);
+      });
+
+  const onDivisionSaved = async (data: any) =>
+    ajax('/api/specify/division/create/', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      errorMode: 'visible',
+      expectedErrors: [Http.CREATED],
+    })
+      .then(({ data, status }) => {
+        if (status === Http.CREATED) {
+          console.log('Division created successfully:', data);
+        } else {
+          console.error('Error creating division:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Request failed:', error);
+      });
+  
+  const onDisciplineSaved = async (data: any) =>
+    ajax('/api/specify/discipline/create/', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      errorMode: 'visible',
+      expectedErrors: [Http.CREATED],
+    })
+      .then(({ data, status }) => {
+        if (status === Http.CREATED) {
+          console.log('Discipline created successfully:', data);
+        } else {
+          console.error('Error creating discipline:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Request failed:', error);
+      });
+
+  const onCollectionSaved = async (data: any) =>
+    ajax('/api/specify/collection/create/', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      errorMode: 'visible',
+      expectedErrors: [Http.CREATED],
+    })
+      .then(({ data, status }) => {
+        if (status === Http.CREATED) {
+          console.log('Collection created successfully:', data);
+        } else {
+          console.error('Error creating collection:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Request failed:', error);
+      });
+
+  const onSpecifyUserSaved = async (data: any) =>
+    ajax('/api/specify/specifyuser/create/', {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      errorMode: 'visible',
+      expectedErrors: [Http.CREATED],
+    })
+      .then(({ data, status }) => {
+        if (status === Http.CREATED) {
+          console.log('Specify user created successfully:', data);
+        } else {
+          console.error('Error creating specify user:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Request failed:', error);
+      });
 
   const resources = [
-    { resource: new tables.Institution.Resource(), viewName: institution, onClick: () => console.log('click')  },
-    { resource: new tables.Division.Resource(), viewName: division, onClick: () => console.log('click')  },
-    { resource: new tables.Discipline.Resource(), viewName: discipline, onClick: () => console.log('click')  },
-    { resource: new tables.Collection.Resource(), viewName: collection, onClick: () => console.log('click')  },
-    { resource: new tables.SpecifyUser.Resource(), viewName: adminUser, onClick: () => console.log('click')  }
+    {
+      resource: new tables.Institution.Resource(),
+      viewName: institution,
+      onClick: async (data: any) => {
+        const body = {
+          name: data.get('name'),
+          code: data.get('code'),
+          isaccessionsglobal: data.get('isaccessionsglobal') || false,
+          issecurityon: data.get('issecurityon') || false,
+          isserverbased: data.get('isserverbased') || false,
+          issinglegeographytree: data.get('issinglegeographytree') || false,
+        };
+        loading(onInstitutionSaved(body));
+      },
+    },
+    { resource: new tables.Division.Resource(), viewName: division, onClick: async (data: any) => {
+        const body = {
+          name: data.get('name'),
+          abbreviation: data.get('abbrev'),
+        };
+        loading(onDivisionSaved(body));
+    }},
+    { resource: new tables.Discipline.Resource(), viewName: discipline, onClick: async (data: any) => {
+        const body = {
+          name: data.get('name'),
+          type: data.get('type'),
+        };
+        loading(onDisciplineSaved(body));
+    }},
+    { resource: new tables.Collection.Resource(), viewName: collection, onClick: async (data: any) => {
+        const body = {
+          collectionname: data.get('collectionname'),
+          code: data.get('code'),
+          catalognumformatname: data.get('catalognumformatname'),
+          discipline: data.get('discipline'),
+        };
+        loading(onCollectionSaved(body));
+    }},
+    { resource: new tables.SpecifyUser.Resource(), viewName: adminUser, onClick: async (data: any) => {
+        const body = {
+          name: data.get('name'),
+          password: data.get('password'),
+        };
+        loading(onSpecifyUserSaved(body));
+    }},
   ];
 
-  const onClose = ():void => {
-  console.log('close')
-  }
+  const onClose = (): void => {
+    console.log('close');
+  };
 
   return (
-      <Container.FullGray>
-        <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
-        {resources.map((resource, index) => (
-          <ResourceView
-            dialog={false}
-            isDependent={false}
-            isSubForm={false}
-            key={index}
-            resource={resource.resource as SpecifyResource<Collection>}
-            viewName={resource.viewName}
-            onAdd={undefined}
-            onClose={() => onClose()}
-            onDeleted={undefined}
-            onSaved={async () => resource.onClick()}
-
-            /*
-             * Example on how to call another function and not the normal save logic: 
-             *  onSaving={async () => resource.onClick()}
-             *          onSaving={(unsetUnloadProtect): false => {
-             *            unsetUnloadProtect();
-             *            loading(
-             *              ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
-             *                method: 'POST',
-             *                headers: { Accept: 'application/json' },
-             *                body: formData({ name: recordSet.get('name') }),
-             *                errorMode: 'dismissible',
-             *              }).then(({ data }) =>
-             *                unsafeNavigate(`/specify/record-set/${data}/`)
-             *              )
-             *            );
-             *            return false;
-             *          }}
-             */
-          />
-    ))}
-      </Container.FullGray>
-)
+    <Container.FullGray>
+      <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
+      {resources.map((resource, index) => (
+        <ResourceView
+          dialog={false}
+          isDependent={false}
+          isSubForm={false}
+          key={index}
+          resource={resource.resource as SpecifyResource<Collection>}
+          viewName={resource.viewName}
+          onAdd={undefined}
+          onClose={() => onClose()}
+          onDeleted={undefined}
+          onSaved={async () => {
+            await resource.onClick(resource.resource);
+          }}
+        />
+      ))}
+    </Container.FullGray>
+  );
 }
