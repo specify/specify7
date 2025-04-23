@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-23 05:01+0000\n"
+"PO-Revision-Date: 2025-04-23 05:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -25,7 +25,8 @@ msgstr "Specify Network"
 #: components/SpecifyNetwork/index.tsx:84
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
-msgstr "Zur Anzeige dieser Seite muss der Artenname oder die GUID angegeben werden"
+msgstr ""
+"Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
@@ -37,7 +38,7 @@ msgstr "Zu dieser Anfrage konnten keine Daten gefunden werden"
 #: components/SpecifyNetwork/Overlay.tsx:122
 #, fuzzy
 msgid "noDataErrorDescription"
-msgstr "Bitte versuchen Sie, nach einem anderen Datensatz zu suchen"
+msgstr "Versuchen Sie bitte, nach einem anderen Datensatz zu suchen"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
@@ -71,21 +72,20 @@ msgstr ""
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
-"In iDigBio erfasste Vorkommen werden als runde grüne Punkte angezeigt, mit "
-"Ausnahme der Vorkommen aus der aktuellen in iDigBio erfassten Sammlung, die "
-"runde rote Punkte sind. Wenn Sie die roten Punkte vergrößern, wird eine "
-"blaue Stecknadel in Tropfenform angezeigt. Wenn Sie auf die Stecknadel "
-"klicken, wird in Specify eine Standortabfrage ausgeführt, die alle Arten in "
-"der aktuellen Specify-Datenbank anzeigt, die an diesem Standort gesammelt "
-"wurden."
+"In iDigBio erfasste Vorkommen werden als runde grüne Punkte dargestellt, mit "
+"Ausnahme der in iDigBio erfassten Vorkommen, die als runde rote Punkte "
+"dargestellt werden. Beim Vergrößern der roten Punkte wird eine blaue "
+"Stecknadel angezeigt. Ein Klick auf diese Stecknadel führt eine Ortsabfrage "
+"in Specify aus, die alle an diesem Ort erfassten Arten der aktuellen Specify-"
+"Datenbank anzeigt."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Bei GBIF-Daten werden einzelne Punkte und Punktgruppen als Sechsecke in "
-"unterschiedlichen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote "
+"Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in "
+"verschiedenen Farben von Gelb über Orange bis Rot dargestellt. Dunkelrote "
 "Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser "
 "Art."
 
@@ -125,4 +125,4 @@ msgstr "Startjahr"
 #: components/Molecules/Range.tsx:44
 #, fuzzy
 msgid "endYear"
-msgstr "Ende des Jahres"
+msgstr "Jahresende"
