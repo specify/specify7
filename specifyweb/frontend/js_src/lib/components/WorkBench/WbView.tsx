@@ -49,7 +49,6 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
