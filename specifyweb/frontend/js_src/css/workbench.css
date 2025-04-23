@@ -28,6 +28,11 @@
   @apply bg-blue-400;
 }
 
+/* Highlight column headers when filtering is active */
+.handsontable :is(tbody, thead) th.htFiltersActive {
+  @apply bg-green-400;
+}
+
 /* Picklists */
 .handsontable td .htAutocompleteArrow {
   @apply cursor-pointer text-black dark:text-white;
