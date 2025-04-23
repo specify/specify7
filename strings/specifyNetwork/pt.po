@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-23 05:05+0000\n"
+"PO-Revision-Date: 2025-04-23 05:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -38,7 +38,7 @@ msgstr "Não foi possível encontrar nenhum dado para esta solicitação"
 #: components/SpecifyNetwork/Overlay.tsx:122
 #, fuzzy
 msgid "noDataErrorDescription"
-msgstr "Por favor, tente procurar por um registro diferente"
+msgstr "Por favor, tente procurar um registro diferente"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
@@ -64,7 +64,7 @@ msgstr "Data de coleta"
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"Este mapa mostra ocorrências deste táxon nos agregadores iDigBio e GBIF."
+"Este mapa mostra ocorrências deste táxon dos agregadores iDigBio e GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
@@ -72,21 +72,21 @@ msgstr ""
 msgid "iDigBioDescription"
 msgstr ""
 "As ocorrências registradas no iDigBio são mostradas como pontos verdes "
-"redondos, exceto aquelas da coleção atual registrada no iDigBio que são "
-"pontos vermelhos redondos. Aumentar o zoom nos pontos vermelhos faz aparecer "
-"um alfinete azul em forma de lágrima, clicar no alfinete executa uma "
-"consulta de localidade no Specify que mostra todas as espécies no banco de "
-"dados atual do Specify coletadas daquele local."
+"redondos, exceto aquelas da coleção atual registrada no iDigBio, que são "
+"pontos vermelhos redondos. Ao ampliar os pontos vermelhos, um alfinete azul "
+"em forma de lágrima é exibido. Clicar no alfinete executa uma consulta de "
+"localidade no Specify, que mostra todas as espécies coletadas naquele local "
+"no banco de dados do Specify atual."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Para dados GBIF, pontos individuais e grupos de pontos são mostrados como "
-"hexágonos de cores diferentes, variando de amarelo a laranja e vermelho. "
-"Hexágonos vermelho-escuros correspondem às distribuições mais densas de "
-"espécimes coletados daquela espécie."
+"Para dados do GBIF, pontos individuais e grupos de pontos são mostrados como "
+"hexágonos de cores diferentes, que variam do amarelo ao laranja e ao "
+"vermelho. Hexágonos vermelho-escuros correspondem às distribuições mais "
+"densas de espécimes coletados daquela espécie."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
