@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-24 04:02+0000\n"
+"PO-Revision-Date: 2025-04-24 04:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/header/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:63
@@ -176,7 +176,7 @@ msgstr "Recurso de metadados"
 #: components/Router/Routes.tsx:33
 #, fuzzy
 msgid "simpleSearch"
-msgstr "Pesquisa Simples"
+msgstr "Pesquisa simples"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
@@ -223,9 +223,8 @@ msgstr "Ajudar a localizar especificar 7"
 #, fuzzy
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Ficaremos muito gratos pelo seu suporte na localização da Interface de "
-"Usuário do Specify 7. Se você estiver interessado, por favor <link>veja as "
-"instruções</link>."
+"Ficaremos muito gratos pelo seu apoio na localização da Interface de Usuário "
+"do Specify 7. Caso tenha interesse, consulte as instruções."
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
@@ -244,10 +243,9 @@ msgstr "Localização incompleta"
 #, fuzzy
 msgid "incompleteLocalizationDescription"
 msgstr ""
-"A tradução para este idioma ainda não está completa. Alguns elementos podem "
-"estar sem localização ou ter localização incorreta. Se você estiver "
-"interessado em nos ajudar a concluir a localização, por favor <link>siga as "
-"instruções.</link>"
+"A tradução para este idioma ainda não foi concluída. Alguns elementos podem "
+"estar sem localização ou com localização incorreta. Se você tiver interesse "
+"em nos ajudar a concluir a localização, <link>siga as instruções.</link>"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:139
@@ -309,7 +307,7 @@ msgstr "O cache foi limpo. Recarregue a página."
 #: components/Header/userToolDefinitions.ts:122
 #, fuzzy
 msgid "technicalDocumentation"
-msgstr "Documentação técnica"
+msgstr "Documentação Técnica"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:33
