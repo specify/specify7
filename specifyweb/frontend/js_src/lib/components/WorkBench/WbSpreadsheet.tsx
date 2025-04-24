@@ -226,18 +226,15 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
-        height="auto"
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
-        contextMenu={contextMenuConfig}
-        // eslint-disable-next-line functional/prefer-readonly-type
-        data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
+        height="auto"
         hiddenColumns={hiddenColumns}
         hiddenRows={hiddenRows}
         invalidCellClassName="-"
@@ -254,6 +251,9 @@ function WbSpreadsheetComponent({
         rowHeaders
         stretchH="all"
         tabMoves={tabMoves}
+        contextMenu={contextMenuConfig}
+        // eslint-disable-next-line functional/prefer-readonly-type
+        data={data as (string | null)[][]}
         {...hooks}
       />
     </section>
