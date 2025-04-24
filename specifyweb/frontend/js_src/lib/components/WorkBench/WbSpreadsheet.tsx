@@ -234,7 +234,6 @@ function WbSpreadsheetComponent({
         comments={comments}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
-        height="auto"
         hiddenColumns={hiddenColumns}
         hiddenRows={hiddenRows}
         invalidCellClassName="-"
