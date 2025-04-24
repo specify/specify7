@@ -74,7 +74,7 @@ function WbSpreadsheetComponent({
                 upload_results: {
                   disableSelection: true,
                   isCommand: false,
-                  renderer: (hot, wrapper) => {
+                  renderer: (_, wrapper) => {
                     const { endRow: visualRow, endCol: visualCol } =
                       getSelectedRegions(hot).at(-1) ?? {};
                     const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
@@ -89,7 +89,9 @@ function WbSpreadsheetComponent({
                       visualRow === undefined ||
                       visualCol === undefined ||
                       createdRecords === undefined ||
-                      !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
+                      !cells.isResultCell(
+                        cells.getCellMetaArray(physicalRow, physicalCol)
+                      )
                     ) {
                       wrapper.textContent = wbText.noUploadResultsAvailable();
                       wrapper.parentElement?.classList.add('htDisabled');
@@ -224,6 +226,7 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
+        height="auto"
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
