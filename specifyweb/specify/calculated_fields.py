@@ -5,6 +5,8 @@ from typing import Dict, Any, List
 from django.db.models import Count, Sum, Value
 from django.db.models.functions import Coalesce
 
+from datetime import date
+
 # from . import models
 from specifyweb.specify.models import (
     Giftpreparation,
@@ -127,6 +129,15 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["unresolvedItems"] = unresolved_quantities
         extra["resolvedPreps"] = prep_count - unresolved_prep_count
         extra["resolvedItems"] = quantities - unresolved_quantities
+
+        if (
+            extra["resolvedPreps"] == extra["totalPreps"]
+            and extra["resolvedPreps"] != 0
+            and not obj.isclosed
+        ):
+            obj.isclosed = True
+            obj.dateclosed = date.today()
+            obj.save()
 
     elif isinstance(obj, Accession):
         # Calculate the quantities for giftpreparation, exchangeoutprep, and disposalpreparation
