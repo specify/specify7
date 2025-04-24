@@ -889,7 +889,7 @@ def upload_locality_set(request: http.HttpRequest):
     return http.JsonResponse(result, status=201 if run_in_background else 200, safe=False)
 
 
-def start_locality_set_background(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
+def start_locality_set_background(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
     task_id = str(uuid4())
     args = [collection.id, column_headers, data]
     if not parse_only:
@@ -915,7 +915,7 @@ def start_locality_set_background(collection, specify_user, agent, column_header
     return task.id
 
 
-def upload_locality_set_foreground(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool):
+def upload_locality_set_foreground(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool):
     result = _upload_locality_set(collection, column_headers, data)
 
     if result["type"] == 'ParseError':
@@ -1359,7 +1359,7 @@ def parse_locality_set(request: http.HttpRequest):
     return http.JsonResponse(result, status=status, safe=False)
 
 
-def parse_locality_set_foreground(collection, column_headers: List[str], data: List[List[str]]) -> Tuple[int, Dict[str, Any]]:
+def parse_locality_set_foreground(collection, column_headers: list[str], data: list[list[str]]) -> tuple[int, dict[str, Any]]:
     parsed, errors = _parse_locality_set(
         collection, column_headers, data)
 

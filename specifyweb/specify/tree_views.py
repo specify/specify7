@@ -32,12 +32,12 @@ logger = logging.getLogger(__name__)
 TREE_TABLE = Literal['Taxon', 'Storage',
                      'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
 
-GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
+GEO_TREES: tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
-COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
+COMMON_TREES: tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
-ALL_TREES: Tuple[TREE_TABLE, ...] = [
+ALL_TREES: tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 

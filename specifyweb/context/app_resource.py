@@ -118,7 +118,7 @@ def load_registry(path, registry_filename='app_resources.xml'):
     pathname = os.path.join(path, registry_filename)
     try:
         return ElementTree.parse(pathname)
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 
@@ -132,7 +132,7 @@ def load_resource(path, registry, resource_name):
     pathname = os.path.join(path, resource.attrib['file'])
     try:
         return open(pathname).read(), resource.attrib['mimetype'], None
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 

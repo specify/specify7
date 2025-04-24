@@ -33,7 +33,7 @@ def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
     )
 
 
-def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> List[Preparation]:
+def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> list[Preparation]:
     """
     Recursively get all the child CollectionObjectGroups, then get the leaf CollectionObjects,
     and then reuturn all the preparation ids if the CollectionObjectGroup to CollectionObject is consolidated
@@ -100,7 +100,7 @@ def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[C
     return top_cog
 
 
-def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> List[Preparation]:
+def get_all_sibling_preps_within_consolidated_cog(prep: Preparation) -> list[Preparation]:
     """
     Get all the sibling preparations within the consolidated cog
     """
@@ -154,7 +154,7 @@ def get_cogs_from_co_recordset(rs: Recordset) -> Optional[QuerySet[Collectionobj
     return cogs
 
 
-def get_cogs_from_co_ids(co_ids: List[int]) -> Optional[QuerySet[Collectionobjectgroup]]:
+def get_cogs_from_co_ids(co_ids: list[int]) -> Optional[QuerySet[Collectionobjectgroup]]:
     """
     Get the CollectionObjectGroups from the CollectionObject IDs
     """
@@ -169,14 +169,14 @@ def get_cogs_from_co_ids(co_ids: List[int]) -> Optional[QuerySet[Collectionobjec
     return cogs
 
 
-def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> Set[Collectionobject]:
+def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> set[Collectionobject]:
     preps = get_cog_consolidated_preps(cog)
 
     # Return set of distinct CollectionObjectIDs associated with the preparations
-    return set(prep.collectionobject.id for prep in preps)
+    return {prep.collectionobject.id for prep in preps}
 
 
-def add_consolidated_sibling_co_ids(request_co_ids: List[Any], id_fld: Optional[str] = None) -> List[Any]:
+def add_consolidated_sibling_co_ids(request_co_ids: list[Any], id_fld: Optional[str] = None) -> list[Any]:
     """
     Get the consolidated sibling CO IDs of the COs in the list
     """
@@ -197,7 +197,7 @@ def add_consolidated_sibling_co_ids(request_co_ids: List[Any], id_fld: Optional[
     return list(set(request_co_ids).union(set(cog_sibling_co_idfld_ids)))
 
 
-def get_co_ids_from_shared_cog_rs(rs: Recordset) -> Set[Collectionobject]:
+def get_co_ids_from_shared_cog_rs(rs: Recordset) -> set[Collectionobject]:
     """
     Get the CO IDs from the shared COGs in the recordset
     """
@@ -217,7 +217,7 @@ def get_co_ids_from_shared_cog_rs(rs: Recordset) -> Set[Collectionobject]:
     return cog_co_ids
 
 
-def modify_prep_update_based_on_sibling_preps(original_prep_ids: Set[int], updated_prep_ids: Set[int]) -> Set[int]:
+def modify_prep_update_based_on_sibling_preps(original_prep_ids: set[int], updated_prep_ids: set[int]) -> set[int]:
     """
     Determine the difference between the preparation IDs original and updated prep.
     Get a list of preparation IDs that were added and a list of preparation IDs that were removed.
@@ -297,15 +297,13 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         return updated_interaction_data
 
     interaction_prep_data = updated_interaction_data[interaction_prep_name]
-    updated_prep_ids = set(
-        [
+    updated_prep_ids = {
             # BUG: the preparation can be provided as an object in the request
             api.strict_uri_to_model(
                 interaction_prep["preparation"], "preparation")[1]
             for interaction_prep in interaction_prep_data
             if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
-        ]
-    )
+    }
     original_prep_ids = set(
         InteractionPrepModel.objects.filter(**{filter_fld: original_interaction_obj}).values_list(
             "preparation_id", flat=True

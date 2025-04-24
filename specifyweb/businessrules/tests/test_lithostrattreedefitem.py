@@ -5,7 +5,7 @@ from specifyweb.specify import models
 
 class LithostrattreedefitemTests(ApiTests):
     def setUp(self):
-        super(LithostrattreedefitemTests, self).setUp()
+        super().setUp()
 
         self.lithostrattreedef = models.Lithostrattreedef.objects.create(
             name="Test Lithostrat tree def")
