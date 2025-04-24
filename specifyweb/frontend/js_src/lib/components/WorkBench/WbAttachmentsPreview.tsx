@@ -111,7 +111,6 @@ export function WbAttachmentsPreview({
                 {attachments.map((cell, index) =>
                   cell !== undefined && !cell.isLoading && cell.attachment ? (
                     <AttachmentPreview
-                      key={index}
                       attachment={cell.attachment}
                       key={index}
                       onOpen={(): void => {
