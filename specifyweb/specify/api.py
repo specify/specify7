@@ -1224,7 +1224,7 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_loan_return_sibling_preps(obj, data)
     return data
 
-def create_institution(request):
+def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
     if request.method == 'POST':
         if Institution.objects.exists():

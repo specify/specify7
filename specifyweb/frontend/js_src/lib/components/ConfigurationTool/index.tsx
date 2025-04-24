@@ -175,8 +175,10 @@ export function ConfigurationTool(): JSX.Element {
           onAdd={undefined}
           onClose={() => onClose()}
           onDeleted={undefined}
-          onSaved={async () => {
-            await resource.onClick(resource.resource);
+          onSaving={(unsetUnloadProtect): false => {
+            unsetUnloadProtect();
+            resource.onClick(resource.resource);
+            return false;
           }}
         />
       ))}
