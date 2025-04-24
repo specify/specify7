@@ -136,6 +136,7 @@ export function WbAttachmentsPreview({
                 {attachments.map((cell, index) =>
                   (!cell.isLoading && cell.attachment) ? (
                     <AttachmentPreview
+                      key={index}
                       attachment={cell.attachment}
                       onOpen={() => {
                         handleShowAttachment();

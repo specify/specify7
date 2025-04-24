@@ -33,8 +33,15 @@ export function ImageViewer({
       modal={modal}
       onClose={onClose}
     >
-      <TransformWrapper>
-        <div className="flex flex-col items-center justify-center h-full w-full">
+      <div
+        className="flex flex-col items-center justify-center h-full w-full"
+        style={
+          {
+            '--transition-duration': 0,
+          } as React.CSSProperties
+        }
+      >
+        <TransformWrapper>
           <TransformComponent>
             <img
               alt={alt}
@@ -46,8 +53,8 @@ export function ImageViewer({
           <div className="flex gap-2 mt-4">
             <Controls />
           </div>
-        </div>
-      </TransformWrapper>
+        </TransformWrapper>
+      </div>
     </Dialog>
   );
 }
