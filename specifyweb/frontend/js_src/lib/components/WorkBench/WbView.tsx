@@ -32,6 +32,7 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
@@ -48,7 +49,6 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -155,9 +155,10 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
-  const useAttachments = React.useMemo(() => {
-    return dataset.columns.includes(ATTACHMENTS_COLUMN);
-  }, [dataset]);
+  const useAttachments = React.useMemo(
+    () => dataset.columns.includes(ATTACHMENTS_COLUMN),
+    [dataset]
+  );
   const [
     showAttachments,
     _openAttachments,
@@ -210,13 +211,14 @@ export function WbView({
             </Link.Small>
           ) : undefined}
           {useAttachments && (
-          <Button.Small
-            aria-haspopup="grid"
-            aria-pressed={showAttachments}
-            onClick={toggleAttachments}
-          >
-            {attachmentsText.attachments()}
-          </Button.Small>)}
+            <Button.Small
+              aria-haspopup="grid"
+              aria-pressed={showAttachments}
+              onClick={toggleAttachments}
+            >
+              {attachmentsText.attachments()}
+            </Button.Small>
+          )}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
