@@ -74,12 +74,14 @@ export function WbAttachmentsPreview({
 
     // Each row should have comma-separated IDs for SpDataSetAttachments
     const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
-    const dataSetAttachmentIds = selectedCell?.split(',')
-    
-    setAttachments(Array.from({ length: dataSetAttachmentIds.length }, () => ({
-      attachment: undefined,
-      isLoading: true,
-    })));
+    const dataSetAttachmentIds = selectedCell?.split(',');
+
+    setAttachments(
+      Array.from({ length: dataSetAttachmentIds.length }, () => ({
+        attachment: undefined,
+        isLoading: true,
+      }))
+    );
     dataSetAttachmentIds.forEach((cell: string, index: number) => {
       const dataSetAttachmentId = f.parseInt(cell);
       if (dataSetAttachmentId !== undefined) {
@@ -134,10 +136,10 @@ export function WbAttachmentsPreview({
             {selectedRow !== undefined && attachments.length >= 0 && (
               <div className="flex flex-col gap-2">
                 {attachments.map((cell, index) =>
-                  (!cell.isLoading && cell.attachment) ? (
+                  !cell.isLoading && cell.attachment ? (
                     <AttachmentPreview
-                      key={index}
                       attachment={cell.attachment}
+                      key={index}
                       onOpen={() => {
                         handleShowAttachment();
                         setSelectedAttachment(cell.attachment);
