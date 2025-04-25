@@ -18,10 +18,14 @@ export function ChronoChart(): JSX.Element {
         onClick={handleShowChronoChart}
       />
       {showChronoChart && (
-        <ImageViewer
-          alt="Chrono Chart"
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
           header={headerText.chronostratigraphicChart()}
-          src="/static/img/chronostratChart2023-09.jpg"
           onClose={handleHideChronoChart}
         >
           <ImageViewer
