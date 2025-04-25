@@ -525,27 +525,27 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:667
+#: components/DataModel/businessRuleDefs.ts:696
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:675
+#: components/DataModel/businessRuleDefs.ts:704
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:683
+#: components/DataModel/businessRuleDefs.ts:712
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:691
+#: components/DataModel/businessRuleDefs.ts:720
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr ""
 
-#: components/DataModel/businessRuleDefs.ts:699
+#: components/DataModel/businessRuleDefs.ts:728
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr ""
@@ -554,4 +554,9 @@ msgstr ""
 #: components/DataModel/__tests__/businessRules.test.ts:154
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:677
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "preparationUsedInLoan"
 msgstr ""
