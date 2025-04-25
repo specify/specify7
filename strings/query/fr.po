@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-25 21:01+0000\n"
+"PO-Revision-Date: 2025-04-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -112,8 +112,8 @@ msgstr "La définition de la requête contient des champs incomplets"
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
-"Il y a des champs non complétés dans la définition de la requête. Voulez-"
-"vous les supprimer ?"
+"La définition de la requête contient des champs non renseignés. Voulez-vous "
+"les supprimer ?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:181
@@ -125,7 +125,7 @@ msgstr "La définition de requête nouvelle ou modifiée n'a pas été enregistr
 #: components/QueryBuilder/Components.tsx:267
 #, fuzzy
 msgid "recordSetToQuery"
-msgstr "Créer un {recordSetTable:string} à partir d'une requête"
+msgstr "Création d'un {recordSetTable:string} à partir d'une requête"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:272
@@ -321,8 +321,8 @@ msgstr "Comme"
 #, fuzzy
 msgid "likeDescription"
 msgstr ""
-"Utilisez « % » pour faire correspondre n'importe quel nombre de caractères.\n"
-"Utilisez « _ » pour faire correspondre un seul caractère"
+"Utilisez « % » pour correspondre à n'importe quel nombre de caractères.\n"
+"Utilisez « _ » pour correspondre à un seul caractère."
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:445
@@ -474,7 +474,7 @@ msgstr "Configurer les tables de requête visibles"
 #: components/QueryBuilder/Edit.tsx:149
 #, fuzzy
 msgid "exportQueryForDwca"
-msgstr "Exporter la requête pour la définition DwCA"
+msgstr "Requête d'exportation pour la définition DwCA"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:101
@@ -504,7 +504,7 @@ msgstr "Déplacement d'arbre"
 #: components/PickLists/definitions.ts:45
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Arbre Synonyme"
+msgstr "Synonyme d'arbre"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
@@ -524,7 +524,7 @@ msgstr "Déplacement d'arbres en vrac"
 msgid "tooLongErrorMessage"
 msgstr ""
 "La valeur du champ est trop longue. La longueur maximale autorisée est "
-"{maxLength:number|formatted}"
+"{maxLength:number|formatted}."
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:186
@@ -582,7 +582,7 @@ msgstr ""
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La requête que vous avez importée contient des tables auxquelles vous n'avez "
+"La requête que vous avez importée contient des tables auxquelles vous n’avez "
 "pas accès en lecture :"
 
 #. Used in: Components > Query Builder > Check Read Access
@@ -614,7 +614,7 @@ msgstr "Faites défiler jusqu'à l'éditeur"
 #: components/QueryBuilder/ResultsTable.tsx:187
 #, fuzzy
 msgid "viewRecords"
-msgstr "Voir les enregistrements"
+msgstr "Afficher les enregistrements"
 
 #. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:65
