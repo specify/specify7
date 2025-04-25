@@ -101,7 +101,13 @@ const commandRenderers: {
               {interactionsText.preparationsCanNotBeReturned()}
             </Dialog>
           ) : (
-            <LoanReturn resource={loan} onClose={handleHide} />
+            <LoanReturn
+              resource={loan}
+              onClose={() => {
+                console.log(loan);
+                handleHide();
+              }}
+            />
           )
         ) : undefined}
       </>

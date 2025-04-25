@@ -130,14 +130,14 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["resolvedPreps"] = prep_count - unresolved_prep_count
         extra["resolvedItems"] = quantities - unresolved_quantities
 
-        if (
-            extra["resolvedPreps"] == extra["totalPreps"]
-            and extra["resolvedPreps"] != 0
-            and not obj.isclosed
-        ):
-            obj.isclosed = True
-            obj.dateclosed = date.today()
-            obj.save()
+        # if (
+        #     extra["resolvedPreps"] == extra["totalPreps"]
+        #     and extra["resolvedPreps"] != 0
+        #     and not obj.isclosed
+        # ):
+        #     obj.isclosed = True
+        #     obj.dateclosed = date.today()
+        #     obj.save()
 
     elif isinstance(obj, Accession):
         # Calculate the quantities for giftpreparation, exchangeoutprep, and disposalpreparation

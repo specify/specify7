@@ -75,7 +75,11 @@ export function LoanReturn({
         {interactionsText.noUnresolvedPreparations()}
       </Dialog>
     ) : (
-      <PreparationReturn preparations={preparations} onClose={handleClose} />
+      <PreparationReturn
+        preparations={preparations}
+        resource={resource}
+        onClose={handleClose}
+      />
     )
   ) : null;
 }
@@ -83,9 +87,11 @@ export function LoanReturn({
 function PreparationReturn({
   preparations,
   onClose: handleClose,
+  resource,
 }: {
   readonly preparations: RA<SpecifyResource<LoanPreparation>>;
   readonly onClose: () => void;
+  readonly resource: SpecifyResource<Loan>;
 }): JSX.Element {
   const loanReturnPreparation = React.useRef(
     new tables.LoanReturnPreparation.Resource({
@@ -245,6 +251,16 @@ function PreparationReturn({
               if (typeof loanPreparations === 'object')
                 loanPreparations.add(loanReturn);
             });
+
+          const isLoanClosed = state.every(
+            (preparation) => preparation.resolve === preparation.unresolved
+          );
+          if (isLoanClosed) {
+            resource.set('isClosed', true);
+            resource.set('dateClosed', getDateInputValue(new Date())!);
+          }
+
+          console.log(state, resource, isLoanClosed);
           handleClose();
         }}
       >
