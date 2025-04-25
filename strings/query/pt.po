@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-25 21:01+0000\n"
+"PO-Revision-Date: 2025-04-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "query/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -111,7 +111,7 @@ msgstr "A definição da consulta contém campos incompletos"
 #: components/QueryBuilder/Components.tsx:173
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
-msgstr "Há campos incompletos na definição da consulta. Você quer removê-los?"
+msgstr "Há campos incompletos na definição da consulta. Deseja removê-los?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:181
@@ -163,7 +163,7 @@ msgstr ""
 #: components/SchemaConfig/Components.tsx:90
 #, fuzzy
 msgid "invalidPicklistValue"
-msgstr "{value:string} (atual, valor inválido)"
+msgstr "{value:string} (valor atual, inválido)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
@@ -243,7 +243,7 @@ msgstr "(qualquer árvore)"
 #: components/Toolbar/ListEdit.tsx:111
 #, fuzzy
 msgid "moveUp"
-msgstr "Subir"
+msgstr "Mover para cima"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:212
@@ -314,7 +314,7 @@ msgstr "Como"
 msgid "likeDescription"
 msgstr ""
 "Use \"%\" para corresponder a qualquer número de caracteres.\n"
-"Use \"_\" para corresponder a um único caractere"
+"Use \"_\" para corresponder a um único caractere."
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:440
@@ -478,13 +478,13 @@ msgstr "Definir rótulo com base na consulta"
 #: components/PickLists/definitions.ts:43
 #, fuzzy
 msgid "treeMerge"
-msgstr "Mesclar Árvore"
+msgstr "Mesclagem de Árvores"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:44
 #, fuzzy
 msgid "treeMove"
-msgstr "Mover Árvore"
+msgstr "Movimentação de árvores"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:45
