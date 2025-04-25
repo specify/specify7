@@ -5,8 +5,6 @@ from typing import Dict, Any, List
 from django.db.models import Count, Sum, Value
 from django.db.models.functions import Coalesce
 
-from datetime import date
-
 # from . import models
 from specifyweb.specify.models import (
     Giftpreparation,
