@@ -60,6 +60,10 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
 
         extra["actualCountAmt"] = actual_count_amount
         extra["isonloan"] = obj.isonloan()
+        extra["isongift"] = obj.isongift()
+        extra["isondisposal"] = obj.isondisposal()
+        extra["isonexchangeout"] = obj.isonexchangeout()
+        extra["isonexchangein"] = obj.isonexchangein()
 
     elif isinstance(obj, Specifyuser):
         extra["isadmin"] = obj.is_admin()
