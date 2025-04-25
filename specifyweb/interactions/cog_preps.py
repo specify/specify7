@@ -530,6 +530,16 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
     for loan_prep_idx in range(len(updated_interaction_data["loanpreparations"])):
         if type(updated_interaction_data["loanpreparations"]) is str:
             continue
+
+        loan_preps = updated_interaction_data.get("loanpreparations")
+        # Skip if loan_preps is not a list or index is out of range
+        if not isinstance(loan_preps, list) or loan_prep_idx >= len(loan_preps):
+            continue
+
+        loan_prep = loan_preps[loan_prep_idx]
+        if not isinstance(loan_prep, dict):
+            continue
+
         loan_return_data = (
             updated_interaction_data["loanpreparations"][loan_prep_idx][
                 "loanreturnpreparations"
