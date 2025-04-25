@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-25 21:01+0000\n"
+"PO-Revision-Date: 2025-04-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:97
@@ -112,8 +112,7 @@ msgstr "La definición de consulta contiene campos incompletos"
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
-"Hay campos sin completar en la definición de la consulta. ¿Quieres "
-"eliminarlos?"
+"Hay campos sin completar en la definición de la consulta. ¿Desea eliminarlos?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:181
@@ -125,7 +124,7 @@ msgstr "La definición de consulta nueva o modificada no se ha guardado"
 #: components/QueryBuilder/Components.tsx:267
 #, fuzzy
 msgid "recordSetToQuery"
-msgstr "Creando un {recordSetTable:string} desde una consulta"
+msgstr "Creando un {recordSetTable:string} a partir de una consulta"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:272
@@ -156,7 +155,7 @@ msgstr "Agregue campos de latitud y longitud a la consulta."
 #: components/QueryBuilder/Export.tsx:145
 #, fuzzy
 msgid "queryExportStarted"
-msgstr "Se está creando el archivo de exportación"
+msgstr "Archivo de exportación en creación"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:148
@@ -171,7 +170,7 @@ msgstr ""
 #: components/SchemaConfig/Components.tsx:90
 #, fuzzy
 msgid "invalidPicklistValue"
-msgstr "{value:string} (valor actual no válido)"
+msgstr "{value:string} (valor actual, no válido)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
@@ -239,7 +238,7 @@ msgstr "(cualquier rango)"
 #: components/WbPlanView/navigator.ts:383
 #, fuzzy
 msgid "anyTree"
-msgstr "(cualquier arbol)"
+msgstr "(cualquier árbol)"
 
 #. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:205
@@ -450,7 +449,7 @@ msgstr "Definir informe basado en consulta"
 #: components/QueryBuilder/Edit.tsx:104
 #, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "Definir etiqueta en función de la consulta"
+msgstr "Definir etiqueta según consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:43
@@ -474,7 +473,7 @@ msgstr "Árbol Sinónimos"
 #: components/PickLists/definitions.ts:46
 #, fuzzy
 msgid "treeDesynonymize"
-msgstr "Desinonimizar árbol"
+msgstr "Desinonimizar árboles"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
@@ -488,7 +487,7 @@ msgstr "Movimiento masivo de árboles"
 msgid "tooLongErrorMessage"
 msgstr ""
 "El valor del campo es demasiado largo. La longitud máxima permitida es "
-"{maxLength:number|formatted}"
+"{maxLength:number|formatted}."
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:186
