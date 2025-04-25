@@ -29,6 +29,7 @@ import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -74,7 +75,7 @@ export function WbAttachmentsPreview({
 
     // Each row should have comma-separated IDs for SpDataSetAttachments
     const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
-    const dataSetAttachmentIds = selectedCell?.split(',');
+    const dataSetAttachmentIds = selectedCell?.split(',') ?? [];
 
     setAttachments(
       Array.from({ length: dataSetAttachmentIds.length }, () => ({
@@ -192,13 +193,22 @@ function AttachmentViewerDialog({
   return (
     <>
       {attachment !== undefined && (
-        <ImageViewer
-          alt={attachment?.title ?? ''}
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
           header={attachmentsText.attachments()}
-          modal={false}
-          src={attachmentUrl ?? ''}
           onClose={onClose}
-        />
+          modal={false}
+        >
+          <ImageViewer
+            alt={attachment?.title ?? ''}
+            src={attachmentUrl ?? ''}
+          />
+        </Dialog>
       )}
     </>
   );

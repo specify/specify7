@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { headerText } from '../../localization/header';
 import { Button } from '../Atoms/Button';
 import { ImageViewer } from '../Attachments/ImageViewer';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 export function ChronoChart(): JSX.Element {
   const [showChronoChart, handleShowChronoChart, handleHideChronoChart] =
@@ -17,12 +18,21 @@ export function ChronoChart(): JSX.Element {
         onClick={handleShowChronoChart}
       />
       {showChronoChart && (
-        <ImageViewer
-          alt="Chrono Chart"
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
           header={headerText.chronostratigraphicChart()}
-          src="/static/img/chronostratChart2023-09.jpg"
           onClose={handleHideChronoChart}
-        />
+        >
+          <ImageViewer
+            alt="Chrono Chart"
+            src="/static/img/chronostratChart2023-09.jpg"
+          />
+        </Dialog>
       )}
     </>
   );
