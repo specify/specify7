@@ -109,4 +109,8 @@ export const batchEditText = createDictionary({
     'en-us':
       'Batch Edit is disabled for system tables and scoping hierarchy tables',
   },
+  cannotEditAfterRollback: {
+    'en-us':
+      '(Batch Edit datasets cannot be edited after rollback - Read Only)',
+  },
 } as const);
