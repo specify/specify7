@@ -260,7 +260,6 @@ function PreparationReturn({
             resource.set('dateClosed', getDateInputValue(new Date())!);
           }
 
-          console.log(state, resource, isLoanClosed);
           handleClose();
         }}
       >
