@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-26 13:06+0000\n"
+"PO-Revision-Date: 2025-04-26 13:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
@@ -159,13 +159,13 @@ msgstr "Fehler beim Lesen der Datei"
 #: components/AttachmentsBulkImport/utils.ts:483
 #, fuzzy
 msgid "unhandledFatalResourceError"
-msgstr "Unbehandelter schwerwiegender Ressourcenfehler:"
+msgstr "Nicht behandelter schwerwiegender Ressourcenfehler:"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:141
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
-msgstr "Anhänge zum Importieren von Datensätzen ({count:number})"
+msgstr "Anhänge-Importdatensätze ({count:number})"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:240
@@ -191,7 +191,7 @@ msgstr "Upload unterbrochen"
 msgid "uploadInterruptedDescription"
 msgstr ""
 "Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise "
-"wurden einige Dateien hochgeladen."
+"wurden bereits einige Dateien hochgeladen."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:404
@@ -232,7 +232,7 @@ msgstr "Mit dem Hochladen des Anhangs beginnen?"
 msgid "beginUploadDescription"
 msgstr ""
 "Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der "
-"Datenbank „Specify“ erstellt."
+"Specify-Datenbank erstellt."
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
@@ -256,9 +256,7 @@ msgstr "Unterbrochen. Erneuter Versuch in {remainingTime:string}"
 #: components/AttachmentsBulkImport/Rollback.tsx:137
 #, fuzzy
 msgid "rollbackDescription"
-msgstr ""
-"Rollback löscht die Anhänge aus der Datenbank „Specify“ und dem Asset "
-"Server."
+msgstr "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:485
@@ -295,8 +293,8 @@ msgstr "Mehrere Übereinstimmungen"
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr ""
-"Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu "
-"beseitigen."
+"Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit "
+"aufzuheben."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
@@ -314,7 +312,7 @@ msgstr "Korrekt formatiert"
 #: components/AttachmentsBulkImport/utils.ts:488
 #, fuzzy
 msgid "stoppedByUser"
-msgstr "Vom Benutzer angehalten"
+msgstr "Vom Benutzer gestoppt"
 
 #. Used in: Components > Router > Overlay Routes
 #: components/Router/OverlayRoutes.tsx:228
@@ -339,7 +337,7 @@ msgstr "Doppelte Dateien gefunden"
 #, fuzzy
 msgid "duplicateFilesDescription"
 msgstr ""
-"Die folgenden Dateien sind nicht ausgewählt, da sie in diesem Datensatz "
+"Die folgenden Dateien werden nicht ausgewählt, da sie in diesem Datensatz "
 "bereits vorhanden sind."
 
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -390,7 +388,7 @@ msgstr "Rollback-Ergebnisse"
 #, fuzzy
 msgid "resultValue"
 msgstr ""
-"{success: number} von {total: number} Anhängen im Datensatz waren {action: "
+"{success: number} der {total: number} Anhänge im Datensatz waren {action: "
 "string}."
 
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
@@ -400,7 +398,7 @@ msgid "deleteAttachmentDataSetDescription"
 msgstr ""
 "Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad "
 "dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz "
-"außerdem kein Rollback mehr möglich."
+"auch kein Rollback mehr möglich."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:492
