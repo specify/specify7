@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-27 00:07+0000\n"
+"PO-Revision-Date: 2025-04-27 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:65
@@ -52,7 +52,7 @@ msgstr ""
 #, fuzzy
 msgid "fullAddress"
 msgstr ""
-"Especificar Consórcio de Coleções <br />\n"
+"Consórcio de Coleções Específicas <br />\n"
 "Instituto de Biodiversidade <br />\n"
 "Universidade do Kansas <br />\n"
 "1345 Jayhawk Blvd. <br />\n"
@@ -63,24 +63,25 @@ msgstr ""
 #, fuzzy
 msgid "disclosure"
 msgstr ""
-"O software Specify é um produto do Specify Collections Consortium que é "
-"governado e financiado por suas instituições membros. Os membros fundadores "
-"do consórcio incluem: Commonwealth Scientific and Industrial Research "
-"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, "
-"Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
-"University of Florida, University of Kansas e University of Michigan. O "
-"consórcio opera sob o status tributário sem fins lucrativos, 501(c)3, dos "
-"EUA, do University of Kansas Center for Research. O Specify foi apoiado de "
-"1996 a 2018 por subsídios da U.S. National Science Foundation."
+"O software Specify é um produto do Consórcio de Coleções Specify, "
+"administrado e financiado por suas instituições associadas. Os membros "
+"fundadores do consórcio incluem: Organização de Pesquisa Científica e "
+"Industrial da Commonwealth (CSIRO), Consejo Superior de Investigaciones "
+"Científicas, Consórcio de Museus da Dinamarca, Muséum d'Histoire Naturelle "
+"Geneva, Universidade da Flórida, Universidade do Kansas e Universidade de "
+"Michigan. O consórcio opera sob o status tributário americano 501(c)3, sem "
+"fins lucrativos, do Centro de Pesquisa da Universidade do Kansas. O Specify "
+"foi apoiado de 1996 a 2018 por doações da Fundação Nacional de Ciências dos "
+"EUA."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Especifique 7, Copyright 2023, University of Kansas Center for Research. "
-"Especifique vem SEM NENHUMA GARANTIA. Este é um software livre e de código "
-"aberto licenciado sob a GNU General Public License v2."
+"Especifique 7, Copyright 2023, Centro de Pesquisa da Universidade do Kansas. "
+"Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de "
+"código aberto, licenciado sob a Licença Pública Geral GNU v2."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
@@ -98,7 +99,7 @@ msgstr "Especifique 7 versões:"
 #: components/HomePage/AboutSpecify.tsx:100
 #, fuzzy
 msgid "gitSha"
-msgstr "SHA do Git:"
+msgstr "Git SHA:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
@@ -123,7 +124,7 @@ msgstr "Versão do banco de dados:"
 #: components/SchemaViewer/index.tsx:34
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Versão do esquema do BD"
+msgstr "Versão do esquema do banco de dados"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:113
