@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-26 13:06+0000\n"
+"PO-Revision-Date: 2025-04-26 13:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "attachments/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
@@ -45,7 +45,7 @@ msgstr "Não foi possível encontrar o registro relacionado"
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
-"Não foi possível encontrar um registro ao qual este anexo esteja relacionado."
+"Não é possível encontrar um registro ao qual este anexo esteja relacionado."
 
 #. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:87
@@ -94,7 +94,7 @@ msgstr "Formatado incorretamente"
 #: components/AttachmentsBulkImport/utils.ts:470
 #, fuzzy
 msgid "alreadyUploaded"
-msgstr "Já carregado"
+msgstr "Já Enviado"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:471
@@ -125,7 +125,7 @@ msgstr "Erro de correspondência"
 #: components/AttachmentsBulkImport/utils.ts:481
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Erro ao ler arquivo"
+msgstr "Erro ao ler o arquivo"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:483
@@ -169,14 +169,14 @@ msgstr ""
 #: components/AttachmentsBulkImport/Import.tsx:404
 #, fuzzy
 msgid "rollbackInterrupted"
-msgstr "Rollback interrompido"
+msgstr "Reversão interrompida"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:410
 #, fuzzy
 msgid "rollbackInterruptedDescription"
 msgstr ""
-"O rollback estava em andamento quando ocorreu uma interrupção. Alguns "
+"A reversão estava em andamento quando ocorreu uma interrupção. Alguns "
 "arquivos podem ter sido excluídos"
 
 #. Used in: Components > Attachments Bulk Import > Import
@@ -203,8 +203,8 @@ msgstr "Iniciar upload de anexo?"
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"O upload dos anexos fará os anexos no servidor de ativos e no banco de dados "
-"Especificar"
+"O upload dos anexos fará com que os anexos sejam criados no servidor de "
+"ativos e no banco de dados do Specify"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
@@ -229,8 +229,7 @@ msgstr "Interrompido. Tentando novamente em {remainingTime:string}"
 #, fuzzy
 msgid "rollbackDescription"
 msgstr ""
-"A reversão excluirá os anexos do banco de dados Especificar e do Servidor de "
-"Ativos"
+"A reversão excluirá os anexos do banco de dados Especificar e do Asset Server"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:485
@@ -328,7 +327,7 @@ msgstr "Erro ao salvar registro"
 #: components/AttachmentsBulkImport/utils.ts:489
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Parado devido a erro ao carregar um arquivo anterior"
+msgstr "Interrompido devido a erro ao carregar um arquivo anterior"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
@@ -340,7 +339,7 @@ msgstr "Escolha os arquivos ou arraste-os aqui para começar."
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #, fuzzy
 msgid "selectIdentifier"
-msgstr "Selecione um identificador para comparar o nome dos arquivos."
+msgstr "Selecione um identificador para comparar com o nome dos arquivos."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:224
@@ -368,9 +367,9 @@ msgstr ""
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Excluir um Data Set remove permanentemente ele e seu Upload Path. Além "
-"disso, após a exclusão, Rollback não será mais uma opção para um Data Set "
-"carregado."
+"Excluir um Conjunto de Dados remove permanentemente o conjunto e seu Caminho "
+"de Upload. Além disso, após a exclusão, a opção de Reverter não será mais "
+"uma opção para um Conjunto de Dados carregado."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:492
@@ -378,7 +377,7 @@ msgstr ""
 msgid "attachmentUploadError"
 msgstr ""
 "Erro ao carregar anexo. O servidor de anexos pode estar indisponível ou "
-"houve um erro ao ler o arquivo."
+"ocorreu um erro ao ler o arquivo."
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
