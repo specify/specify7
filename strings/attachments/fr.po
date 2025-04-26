@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-26 13:00+0000\n"
+"PO-Revision-Date: 2025-04-26 13:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
@@ -209,7 +209,7 @@ msgstr "Commencer le téléchargement des pièces jointes ?"
 msgid "beginUploadDescription"
 msgstr ""
 "Le téléchargement des pièces jointes créera des pièces jointes dans le "
-"serveur de ressources et dans la base de données de spécification"
+"serveur d'actifs et dans la base de données de spécification"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
@@ -231,8 +231,8 @@ msgstr "Interrompu. Réessayer dans {remainingTime:string}"
 #, fuzzy
 msgid "rollbackDescription"
 msgstr ""
-"La restauration supprimera les pièces jointes de la base de données de "
-"spécification et du serveur d'actifs"
+"La restauration supprimera les pièces jointes de la base de données "
+"spécifiée et du serveur d'actifs."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:485
