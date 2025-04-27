@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-27 06:03+0000\n"
+"PO-Revision-Date: 2025-04-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -224,14 +224,14 @@ msgstr "Analysieren des Ortsdatensatzes"
 #: components/LocalityUpdate/utils.ts:37
 #, fuzzy
 msgid "localityUpdateProgressing"
-msgstr "Importieren eines Ortsdatensatzes"
+msgstr "Importieren des Ortsdatensatzes"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:285
 #, fuzzy
 msgid "localityUpdateParsed"
-msgstr "Analysierter Datensatz zur Ortsaktualisierung"
+msgstr "Lokalitätsaktualisierungsdatensatz analysiert"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:467
@@ -246,7 +246,7 @@ msgstr "Lokalitätsaktualisierung fehlgeschlagen"
 #: components/Notifications/NotificationRenderers.tsx:229
 #, fuzzy
 msgid "localityUpdateParseFailure"
-msgstr "Lokales Update-Parsing fehlgeschlagen"
+msgstr "Lokale Aktualisierungsanalyse fehlgeschlagen"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
@@ -280,7 +280,7 @@ msgstr "Fehler beim Lokalitätsupdate - {date:string}"
 #: components/LocalityUpdate/Status.tsx:494
 #, fuzzy
 msgid "localityUpdateCrashFileName"
-msgstr "Ortsaktualisierung {taskId: string} Absturzbericht - {date: string}"
+msgstr "Ortsaktualisierung {taskId: string} Absturzbericht – {date: string}"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:53
@@ -292,14 +292,14 @@ msgstr "Der Datensatz muss einen GUID-Header enthalten"
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Kein Ort mit GUID: '{guid:string}'"
+msgstr "Kein Ort mit GUID: „{guid:string}“"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
 #, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"Mehr als ein Ort mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: "
+"Mehrere Orte mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: "
 "string}"
 
 #. Used in: Components > Locality Update > Status
@@ -308,8 +308,8 @@ msgstr ""
 msgid "localityUpdateEffectCounts"
 msgstr ""
 "Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wird von "
-"der Aktualisierung betroffen sein und es werden {geoCoordDetailTableLabel: "
-"string}-Datensätze erstellt:"
+"der Aktualisierung betroffen sein und {geoCoordDetailTableLabel: string}-"
+"Datensätze werden erstellt:"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:289
@@ -317,14 +317,13 @@ msgstr ""
 msgid "localityUploadedDescription"
 msgstr ""
 "Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wurde "
-"aktualisiert und {geoCoordDetailTableLabel: string}-Datensätzen wurde "
-"erstellt:"
+"aktualisiert und {geoCoordDetailTableLabel: string}-Datensätzen erstellt:"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:217
 #, fuzzy
 msgid "localityUpdateStarted"
-msgstr "Der Locality Update-Prozess hat begonnen"
+msgstr "Der Locality-Update-Prozess wurde gestartet"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:336
@@ -339,7 +338,7 @@ msgstr "Ergebnisse der Ortsaktualisierung"
 #: components/Notifications/NotificationRenderers.tsx:255
 #, fuzzy
 msgid "localityUpdateFailureResults"
-msgstr "Ergebnisse des fehlgeschlagenen Lokalupdates"
+msgstr "Ergebnisse der fehlgeschlagenen Lokalitätsaktualisierung"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:219
