@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-27 06:02+0000\n"
+"PO-Revision-Date: 2025-04-27 06:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
@@ -121,7 +121,7 @@ msgstr "Esquina SE"
 #: components/FormPlugins/LatLongUi.tsx:251
 #, fuzzy
 msgid "coordinateType"
-msgstr "Tipo de coordenadas"
+msgstr "Tipo de coordenada"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:262
@@ -180,13 +180,13 @@ msgstr "DD.DDDD (32.7619)"
 #: components/WbToolkit/CoordinateConverter.tsx:87
 #, fuzzy
 msgid "degreesMinutes"
-msgstr "DDMMMM (32.45.714)"
+msgstr "DD MMMM (32. 45.714)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:92
 #, fuzzy
 msgid "degreesMinutesSeconds"
-msgstr "DD MM SS.SS (32 45 42,84)"
+msgstr "DD MM SS.SS (32 45 42.84)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:97
@@ -204,13 +204,13 @@ msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
 #: components/WbToolkit/CoordinateConverter.tsx:107
 #, fuzzy
 msgid "degreesMinutesSecondsWithDirection"
-msgstr "DD MM SS.SS N/S/E/O (32 45 42,84 N)"
+msgstr "DD MM SS.SS N/S/E/O (32 45 42.84 N)"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:140
 #, fuzzy
 msgid "localityUpdateHeaderError"
-msgstr "Errores encontrados en los encabezados de columnas"
+msgstr "Errores encontrados en los encabezados de columna"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:151
@@ -230,7 +230,7 @@ msgstr ""
 #: components/LocalityUpdate/index.tsx:169
 #, fuzzy
 msgid "localityUpdateAcceptedHeaders"
-msgstr "Solo se aceptan los siguientes encabezados"
+msgstr "Sólo se aceptan los siguientes encabezados"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
@@ -248,7 +248,7 @@ msgstr "Análisis del conjunto de datos de localidad"
 #: components/LocalityUpdate/utils.ts:37
 #, fuzzy
 msgid "localityUpdateProgressing"
-msgstr "Importación de un conjunto de datos de localidad"
+msgstr "Importación del conjunto de datos de localidad"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
@@ -263,7 +263,7 @@ msgstr "Conjunto de datos de actualización de localidad analizados"
 #: components/Notifications/NotificationRenderers.tsx:253
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Error en la actualización de la localidad"
+msgstr "Error en la actualización de localidad"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
@@ -284,7 +284,7 @@ msgstr "Actualización de localidad cancelada"
 #: components/Notifications/NotificationRenderers.tsx:297
 #, fuzzy
 msgid "localityUpdateSucceeded"
-msgstr "Actualización de localidad realizada con éxito"
+msgstr "Actualización de localidad exitosa"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:471
@@ -305,7 +305,7 @@ msgstr "Errores de actualización de localidad - {date:string}"
 #, fuzzy
 msgid "localityUpdateCrashFileName"
 msgstr ""
-"Actualización de localidad {taskId: string} Informe de fallas - {date: "
+"Informe de fallos de actualización de localidad {taskId: string} - {date: "
 "string}"
 
 #. Used in: Components > Locality Update > Utils
@@ -342,8 +342,8 @@ msgstr ""
 #, fuzzy
 msgid "localityUploadedDescription"
 msgstr ""
-"Se actualizaron los siguientes registros {localityTabelLabel: string} y se "
-"crearon registros {geoCoordDetailTableLabel: string}:"
+"Se actualizó la siguiente cantidad de registros {localityTabelLabel: string} "
+"y se crearon registros {geoCoordDetailTableLabel: string}:"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:217
@@ -356,7 +356,7 @@ msgstr "El proceso de actualización de localidad ha comenzado"
 #: components/Notifications/NotificationRenderers.tsx:299
 #, fuzzy
 msgid "localityUpdateResults"
-msgstr "Resultados de actualización de localidad"
+msgstr "Resultados de la actualización de localidad"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:397
@@ -364,7 +364,7 @@ msgstr "Resultados de actualización de localidad"
 #: components/Notifications/NotificationRenderers.tsx:255
 #, fuzzy
 msgid "localityUpdateFailureResults"
-msgstr "Resultados de fallas en la actualización de localidad"
+msgstr "Resultados de errores de actualización de localidad"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:219
@@ -375,7 +375,7 @@ msgstr "Resultados de fallas en la actualización de localidad"
 #: components/Notifications/NotificationRenderers.tsx:316
 #, fuzzy
 msgid "taskId"
-msgstr "Identificación de la tarea"
+msgstr "ID de tarea"
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:92
