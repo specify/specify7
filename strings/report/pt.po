@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-27 22:03+0000\n"
+"PO-Revision-Date: 2025-04-27 22:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "report/pt/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:86
@@ -81,13 +81,13 @@ msgstr "Escolha o arquivo"
 #: components/Reports/Report.tsx:316
 #, fuzzy
 msgid "reportParameters"
-msgstr "Parâmetros do Relatório"
+msgstr "Parâmetros do relatório"
 
 #. Used in: Components > Reports > Parameters
 #: components/Reports/Parameters.tsx:87
 #, fuzzy
 msgid "runReport"
-msgstr "Executar relatório"
+msgstr "Relatório de execução"
 
 #. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:52
@@ -118,7 +118,7 @@ msgstr ""
 #: components/FormMeta/index.tsx:173
 #, fuzzy
 msgid "generateLabel"
-msgstr "Gerar etiqueta"
+msgstr "Gerar rótulo"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #: components/FormMeta/index.tsx:191
@@ -126,7 +126,7 @@ msgstr "Gerar etiqueta"
 #: components/FormParse/__tests__/fields.test.ts:147
 #, fuzzy
 msgid "generateLabelOnSave"
-msgstr "Gerar etiqueta ao salvar"
+msgstr "Gerar rótulo ao salvar"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:172
