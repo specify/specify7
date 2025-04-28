@@ -154,8 +154,8 @@ def _rewrite_multiple_trees(
             new_rels = [
                 *new_rels,
                 # NOTE: The order between finals_rels_created and rels_created does not matter
-                *final_rels_created,
                 *rels_created,
+                *final_rels_created
             ]
 
     # Now, we'have done the iteration over all the possible treees and have made the corresponding tree query ranks in the columns
