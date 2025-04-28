@@ -942,7 +942,6 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
     if should_list_query:
         return list(query)
     return query
-    return query
 
 def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
