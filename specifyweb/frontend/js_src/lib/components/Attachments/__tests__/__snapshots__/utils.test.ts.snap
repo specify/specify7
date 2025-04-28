@@ -31,6 +31,7 @@ exports[`allTablesWithAttachments 1`] = `
   "[table TreatmentEvent]",
   "[table AbsoluteAge]",
   "[table RelativeAge]",
+  "[table Spdataset]",
 ]
 `;
 
@@ -66,5 +67,6 @@ exports[`attachmentRelatedTables 1`] = `
   "TreatmentEventAttachment",
   "AbsoluteAgeAttachment",
   "RelativeAgeAttachment",
+  "SpDataSetAttachment",
 ]
 `;

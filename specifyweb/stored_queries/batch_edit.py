@@ -322,6 +322,10 @@ class RowPlanMap(NamedTuple):
 
     # to make things simpler, returns the QueryFields along with indexed plan, which are expected to be used together
     def index_plan(self, start_index=1) -> Tuple["RowPlanMap", List[QueryField]]:
+        intermediary_to_tree = any(
+            rowmap.tree_rank is not None for _, rowmap in self.to_one.items()
+        )
+        
         next_index = len(self.columns) + start_index
         # For optimization, and sanity, we remove the field from columns, as they are now completely redundant (we always know what they are using the id)
         _columns = [
@@ -340,7 +344,7 @@ class RowPlanMap(NamedTuple):
         next_index, _to_one, to_one_fields = reduce(
             RowPlanMap._index,
             # makes the order deterministic, would be funny otherwise
-            Func.sort_by_key(self.to_one),
+            Func.obj_to_list(self.to_one) if intermediary_to_tree else Func.sort_by_key(self.to_one),
             init(next_index),
         )
         next_index, _to_many, to_many_fields = reduce(
@@ -940,7 +944,7 @@ class RowPlanCanonical(NamedTuple):
 
         to_one_headers, to_one_upload_tables = reduce(
             _to_one_reducer,
-            Func.sort_by_key(self.to_one),
+            Func.obj_to_list(self.to_one) if intermediary_to_tree else Func.sort_by_key(self.to_one),
             (headers_init, _to_one_table),
         )
 
@@ -1178,7 +1182,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = Func.first(sorted(headers_enumerated, key=lambda tup: tup[1][0]))
+    visual_order = Func.first(headers_enumerated)
 
     headers = Func.second(key_and_headers)
 

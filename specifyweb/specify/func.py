@@ -18,6 +18,10 @@ class Func:
     @staticmethod
     def sort_by_key(to_sort: Dict[I, O], reverse=False) -> List[Tuple[I, O]]:
         return sorted(to_sort.items(), key=lambda t: t[0], reverse=reverse)
+    
+    @staticmethod
+    def obj_to_list(obj: Dict[I, O]) -> List[Tuple[I, O]]:
+        return [(key, val) for key, val in obj.items()]
 
     @staticmethod
     def make_ors(eprns: List[Q]) -> Q:
