@@ -1453,8 +1453,10 @@
 					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="5"/>
-					<cell type="subview" id="5" name="children" colspan="7" viewname="CollectionObjectChild"/>
+					<cell type="subview" viewname="Determination" id="6" name="determinations" colspan="14" defaulttype="table"/>
+				</row>
+				<row>
+					<cell type="subview" id="5" name="children" colspan="14" viewname="CollectionObjectChild" defaulttype="table"/>
 				</row>
 			</rows>
 		</viewdef>
