@@ -795,7 +795,7 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-    return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
+        return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
