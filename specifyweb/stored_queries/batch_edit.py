@@ -938,7 +938,7 @@ class RowPlanCanonical(NamedTuple):
 
         to_one_headers, to_one_upload_tables = reduce(
             _to_one_reducer,
-            Func.obj_to_list(self.to_one) if intermediary_to_tree else Func.sort_by_key(self.to_one),
+            Func.sort_by_key(self.to_one),
             (headers_init, _to_one_table),
         )
 
