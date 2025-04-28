@@ -78,6 +78,7 @@ export type Dataset = DatasetBase &
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
     readonly isupdate: boolean;
+    readonly rolledback: boolean;
   };
 
 /**
