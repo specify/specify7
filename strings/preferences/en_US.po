@@ -447,6 +447,7 @@ msgid "embeddedWebpageDescription"
 msgstr "A URL to a page that would be embedded on the home page:"
 
 #: components/Preferences/CollectionDefinitions.tsx:96
+#: components/Preferences/CollectionDefinitions.tsx:115
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
@@ -1157,3 +1158,8 @@ msgstr "Add Search Bar on home page"
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPref"
 msgstr "Enable the inheritance of the primary catalog number to its empty siblings."
+
+#: components/Preferences/CollectionDefinitions.tsx:118
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberParentCOPref"
+msgstr "Enable the inheritance of the parent catalog number to its empty children."

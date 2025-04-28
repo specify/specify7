@@ -463,6 +463,7 @@ msgid "embeddedWebpageDescription"
 msgstr "Une URL vers une page qui serait intégrée à la page d'accueil :"
 
 #: components/Preferences/CollectionDefinitions.tsx:96
+#: components/Preferences/CollectionDefinitions.tsx:115
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
@@ -1202,4 +1203,9 @@ msgstr "Ajouter une barre de recherche sur la page d'accueil"
 #: components/Preferences/CollectionDefinitions.tsx:99
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPref"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:118
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
