@@ -128,29 +128,56 @@ function Field({
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
+
   const isPartOfCOG = isCO
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
+
+  const hasParentCO = isCO
+    ? resource.get('parentCO') !== null &&
+      resource.get('parentCO') !== undefined
+    : false;
+
   const isCatNumberField = field?.name === 'catalogNumber';
+
   // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
   const [displayPrimaryCatNumberPref] = collectionPreferences.use(
     'catalogNumberInheritance',
     'behavior',
     'inheritance'
   );
-  const displayCatNumberPlaceHolder =
+
+  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
+  const [displayParentCatNumberPref] = collectionPreferences.use(
+    'catalogNumberParentInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  const displayPrimaryCatNumberPlaceHolder =
     isNew === false &&
     isCO &&
     isPartOfCOG &&
     isCatNumberField &&
     displayPrimaryCatNumberPref;
 
+  const displayParentCatNumberPlaceHolder =
+    isNew === false &&
+    isCO &&
+    hasParentCO &&
+    isCatNumberField &&
+    displayParentCatNumberPref;
+
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
   >(null);
 
+  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+    string | null
+  >(null);
+
   React.useEffect(() => {
-    if (resource && displayCatNumberPlaceHolder) {
+    if (resource && displayPrimaryCatNumberPlaceHolder) {
       ajax<string | null>('/api/specify/catalog_number_for_sibling/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -162,8 +189,24 @@ function Field({
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
         });
+    } else if (resource && displayParentCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setParentCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
     }
-  }, [resource, displayCatNumberPlaceHolder]);
+  }, [
+    resource,
+    displayPrimaryCatNumberPlaceHolder,
+    displayParentCatNumberPlaceHolder,
+  ]);
 
   return (
     <Input.Generic
@@ -171,9 +214,13 @@ function Field({
       key={parser.title}
       name={name}
       placeholder={
-        displayCatNumberPlaceHolder && typeof primaryCatalogNumber === 'string'
+        displayPrimaryCatNumberPlaceHolder &&
+        typeof primaryCatalogNumber === 'string'
           ? primaryCatalogNumber
-          : undefined
+          : displayParentCatNumberPlaceHolder &&
+              typeof parentCatalogNumber === 'string'
+            ? parentCatalogNumber
+            : undefined
       }
       {...validationAttributes}
       className={
