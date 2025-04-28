@@ -36,7 +36,6 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
