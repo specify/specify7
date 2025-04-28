@@ -3,6 +3,7 @@ import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
@@ -386,6 +387,7 @@ class QueryFieldSpec(
             else:
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
+
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -482,6 +484,16 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+
+    if parent_inheritance_pref: 
+        op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+    else: 
+        op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+    return op, orm_field, value
+
 def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
         table.name == "CollectionObject"
@@ -495,11 +507,6 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
             value = ','.join(sibling_ids)
             orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
             op = QueryOps(uiformatter).by_op_num(10)
-
-    return op, orm_field, value
-
-def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
-    op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
     return op, orm_field, value
 
@@ -525,3 +532,33 @@ def cog_primary_co_sibling_ids(cat_num):
     ).values_list('id', flat=True)
 
     return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
+
+def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+        and get_parent_cat_num_inheritance_setting(collection, user)
+    ):
+        children_ids = co_children_ids(value)
+        if children_ids:
+            # Modify the query to filter operation and values for children collection objects
+            value = ','.join(children_ids)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
+
+    return op, orm_field, value
+
+def co_children_ids(cat_num):
+    # Get the collection object with the given catalog number
+    parentco = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not parentco:
+        return []
+
+    # Get child objects directly from the related name
+    children = parentco.children.filter(catalognumber=None)
+
+    # Get their IDs
+    target_children_co_ids = children.values_list('id', flat=True)
+
+    return [str(i) for i in [parentco.id] + list(target_children_co_ids)]
