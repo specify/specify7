@@ -156,4 +156,6 @@ def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
         logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
     except Exception as e:
         logger.warning(f"An unexpected error occurred: {e}")
+    
+    return parent_inheritance_enabled
 
