@@ -145,7 +145,9 @@ function fetchRowAttachments(
   setAttachments: (
     attachments:
       | readonly WbAttachmentPreviewCell[]
-      | ((attachments: readonly WbAttachmentPreviewCell[]) => readonly WbAttachmentPreviewCell[])
+      | ((
+          attachments: readonly WbAttachmentPreviewCell[]
+        ) => readonly WbAttachmentPreviewCell[])
   ) => void,
   setSelectedAttachment: (
     attachment: SerializedResource<Attachment> | undefined
