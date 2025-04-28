@@ -1,10 +1,10 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^messages/$', views.get_messages),
-    url(r'^mark_read/$', views.mark_read),
-    url(r'^delete/$', views.delete),
-    url(r"^delete_all/$", views.delete_all)
+    path('messages/', views.get_messages),
+    path('mark_read/', views.mark_read),
+    path('delete/', views.delete),
+    path("delete_all/", views.delete_all)
 ]

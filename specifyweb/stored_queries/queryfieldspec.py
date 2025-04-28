@@ -11,6 +11,7 @@ from sqlalchemy.orm.query import Query
 from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
@@ -294,7 +295,19 @@ class QueryFieldSpec(
     def needs_formatted(self):
         return len(self.join_path) == 0 or self.is_relationship()
     
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False, collection=None, user=None):
+    def apply_filter(
+            self,
+            query,
+            orm_field,
+            field,
+            table,
+            value=None,
+            op_num=None,
+            negate=False,
+            strict=False,
+            collection=None,
+            user=None):
+
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -320,8 +333,9 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                op, mod_orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
+
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -413,6 +427,55 @@ class QueryFieldSpec(
                     orm_field = sql.extract(self.date_part, orm_field)
 
         return query, orm_field, field, table
+
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+
+    if parent_inheritance_pref: 
+        op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+    else: 
+        op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+    return op, orm_field, value
+
+def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+        and get_cat_num_inheritance_setting(collection, user)
+    ):
+        sibling_ids = cog_primary_co_sibling_ids(value)
+        if sibling_ids:
+            # Modify the query to filter operation and values for sibling collection objects
+            value = ','.join(sibling_ids)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
+
+    return op, orm_field, value
+
+def cog_primary_co_sibling_ids(cat_num):
+    # Get the collection object with the given catalog number
+    co = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not co:
+        return []
+
+    # Get the primary group join for the collection object
+    cojo = Collectionobjectgroupjoin.objects.filter(childco=co, isprimary=True).first()
+    if not cojo:
+        return []
+
+    # Get sibling collection objects in the same parent group
+    sibling_co_ids = Collectionobjectgroupjoin.objects.filter(
+        parentcog=cojo.parentcog, childco__isnull=False
+    ).exclude(childco=co).values_list('childco_id', flat=True)
+
+    # Filter siblings with no catalog number and return all IDs as strings
+    target_sibling_co_ids = Collectionobject.objects.filter(
+        id__in=sibling_co_ids, catalognumber=None
+    ).values_list('id', flat=True)
+
+    return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (

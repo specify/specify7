@@ -30,7 +30,8 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.stored_queries.queryfield import fields_from_json
@@ -292,8 +293,7 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
-
-    query = apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=False)
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")
 
@@ -374,7 +374,7 @@ def query_to_kml(
         id_field = getattr(model, model._id)
         query = query.filter(id_field.in_(selected_rows))
 
-    query = apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=False)
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_kml starting")
 
@@ -795,8 +795,7 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        # return {"results": list(query)}
-        return {"results": apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user)}
+    return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
 
 def build_query(
@@ -932,6 +931,19 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    
+    if parent_inheritance_pref:
+        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    else: 
+        query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    
+    if should_list_query:
+        return list(query)
+    return query
+    return query
+
 def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_parent_cat_num_inheritance_setting(collection, user):
@@ -962,9 +974,31 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
         return list(query)
     return query
 
-def apply_special_post_query_processing_parent_co(query, tableid, field_specs, collection, user, should_list_query=True):
-    query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]: 
+        if not get_cat_num_inheritance_setting(collection, user):
+            # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
+            return list(query)
 
-    if should_list_query:
-        return list(query)
-    return query
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
+        for result in results:
+            result = list(result)
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+                cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
+                if cojo:
+                    primary_cojo = Collectionobjectgroupjoin.objects.filter(
+                        parentcog=cojo.parentcog, isprimary=True).first()
+                    if primary_cojo:
+                        result[catalog_number_field_index] = primary_cojo.childco.catalognumber
+            updated_results.append(tuple(result))
+
+        return updated_results

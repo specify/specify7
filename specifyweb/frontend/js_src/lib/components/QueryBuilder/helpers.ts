@@ -387,6 +387,20 @@ const containsRelativeDate = (
       fieldSpec.datePart === 'fullDate'
   );
 
+const containsExpandedStringComparisons = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(([queryField, fieldSpec]) =>
+    queryField.filters.some(
+      (filter) =>
+        fieldSpec.getField()?.type === 'java.lang.String' &&
+        (filter.type === 'greater' ||
+          filter.type === 'less' ||
+          filter.type === 'greaterOrEqual' ||
+          filter.type === 'lessOrEqual')
+    )
+  );
+
 // If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
 export function isModern(query: SpecifyResource<SpQuery>): boolean {
   const serializedQuery = serializeResource(query);
@@ -402,7 +416,8 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
   return (
     containsOr(fieldSpecsMapped) ||
     containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
-    containsRelativeDate(fieldSpecsMapped)
+    containsRelativeDate(fieldSpecsMapped) ||
+    containsExpandedStringComparisons(fieldSpecsMapped)
   );
 }
 
