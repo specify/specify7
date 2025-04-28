@@ -19,17 +19,23 @@ import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { ImageViewer } from '../Attachments/ImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
+import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
+  AnySchema,
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -69,51 +75,13 @@ export function WbAttachmentsPreview({
     setSelectedAttachment(undefined);
     if (selectedRow === undefined) return;
 
-    // Look for Attachments column
-    const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
-    if (attachmentColumnIndex === -1) return;
-
-    // Each row should have comma-separated IDs for SpDataSetAttachments
-    const selectedCell = hot.getDataAtCell(selectedRow, attachmentColumnIndex);
-    const dataSetAttachmentIds = selectedCell?.split(',') ?? [];
-
-    setAttachments(
-      Array.from({ length: dataSetAttachmentIds.length }, () => ({
-        attachment: undefined,
-        isLoading: true,
-      }))
+    fetchRowAttachments(
+      hot,
+      datasetColumns,
+      selectedRow,
+      setAttachments,
+      setSelectedAttachment
     );
-    dataSetAttachmentIds.forEach((cell: string, index: number) => {
-      const dataSetAttachmentId = f.parseInt(cell);
-      if (dataSetAttachmentId !== undefined) {
-        ajax<SerializedRecord<SpDataSetAttachment>>(
-          `/api/specify/spdatasetattachment/${dataSetAttachmentId}/`,
-          {
-            headers: { Accept: 'application/json' },
-            method: 'GET',
-          }
-        ).then(({ data }) => {
-          const resource = toResource(
-            serializeResource(data.attachment),
-            'Attachment'
-          );
-          if (resource !== undefined) {
-            if (index === 0) {
-              // TODO: update ordinal correctly and use data.ordinal === 0
-              setSelectedAttachment(resource);
-            }
-            setAttachments((previousAttachments) => {
-              const newAttachments = Array.from(previousAttachments);
-              newAttachments[index] = {
-                attachment: resource,
-                isLoading: false,
-              };
-              return newAttachments;
-            });
-          }
-        });
-      }
-    });
   }, [selectedRow]);
 
   React.useEffect(() => {
@@ -141,7 +109,7 @@ export function WbAttachmentsPreview({
                     <AttachmentPreview
                       attachment={cell.attachment}
                       key={index}
-                      onOpen={() => {
+                      onOpen={(): void => {
                         handleShowAttachment();
                         setSelectedAttachment(cell.attachment);
                       }}
@@ -170,6 +138,80 @@ export function WbAttachmentsPreview({
   );
 }
 
+function fetchRowAttachments(
+  hot: Handsontable,
+  datasetColumns: RA<string>,
+  row: number,
+  setAttachments: (
+    attachments:
+      | readonly WbAttachmentPreviewCell[]
+      | ((attachments: readonly WbAttachmentPreviewCell[]) => readonly WbAttachmentPreviewCell[])
+  ) => void,
+  setSelectedAttachment: (
+    attachment: SerializedResource<Attachment> | undefined
+  ) => void
+): void {
+  // Look for Attachments column
+  const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
+  if (attachmentColumnIndex === -1) return;
+
+  // Each row should have comma-separated IDs for SpDataSetAttachments
+  const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
+    '') as string;
+  const dataSetAttachmentIds = selectedCell?.split(',') ?? [];
+
+  setAttachments(
+    Array.from({ length: dataSetAttachmentIds.length }, () => ({
+      attachment: undefined,
+      isLoading: true,
+    }))
+  );
+
+  const insertAttachmentPreviewCell = (
+    index: number,
+    attachmentPreviewCell: WbAttachmentPreviewCell
+  ): void => {
+    setAttachments((previousAttachments) => {
+      const newAttachments = Array.from(previousAttachments);
+      newAttachments[index] = attachmentPreviewCell;
+      return newAttachments;
+    });
+  };
+
+  dataSetAttachmentIds.forEach((cell: string, index: number) => {
+    const dataSetAttachmentId = f.parseInt(cell);
+    if (dataSetAttachmentId !== undefined) {
+      ajax<SerializedRecord<SpDataSetAttachment>>(
+        `/api/specify/spdatasetattachment/${dataSetAttachmentId}/`,
+        {
+          headers: { Accept: 'application/json' },
+          method: 'GET',
+        }
+      )
+        .then(({ data }) => {
+          const resource = toResource(
+            serializeResource(data.attachment),
+            'Attachment'
+          );
+          if (resource !== undefined && index === 0) {
+            // TODO: update spDataSetAttachment's ordinal and use data.ordinal === 0
+            setSelectedAttachment(resource);
+          }
+          insertAttachmentPreviewCell(index, {
+            attachment: resource,
+            isLoading: false,
+          });
+        })
+        .catch(() => {
+          insertAttachmentPreviewCell(index, {
+            attachment: undefined,
+            isLoading: false,
+          });
+        });
+    }
+  });
+}
+
 function AttachmentViewerDialog({
   attachment,
   onClose,
@@ -181,14 +223,22 @@ function AttachmentViewerDialog({
     undefined
   );
 
+  const [isImage, setIsImage] = React.useState<boolean>(false);
+
   React.useEffect(() => {
     if (attachment === undefined) return;
+    setIsImage((attachment.mimeType ?? '').startsWith('image/'));
+
     fetchOriginalUrl(attachment).then((url) => {
       if (typeof url === 'string') {
         setAttachmentUrl(`/attachment_gw/proxy/${new URL(url).search}`);
       }
     });
   }, [attachment]);
+
+  const [related, setRelated] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
 
   return (
     <>
@@ -201,13 +251,22 @@ function AttachmentViewerDialog({
             container: dialogClassNames.wideContainer,
           }}
           header={attachmentsText.attachments()}
-          onClose={onClose}
           modal={false}
+          onClose={onClose}
         >
-          <ImageViewer
-            alt={attachment?.title ?? ''}
-            src={attachmentUrl ?? ''}
-          />
+          {isImage ? (
+            <ImageViewer
+              alt={attachment?.title ?? ''}
+              src={attachmentUrl ?? ''}
+            />
+          ) : (
+            <AttachmentViewer
+              attachment={deserializeResource(attachment)}
+              related={[related, setRelated]}
+              showMeta={false}
+              onViewRecord={undefined}
+            />
+          )}
         </Dialog>
       )}
     </>

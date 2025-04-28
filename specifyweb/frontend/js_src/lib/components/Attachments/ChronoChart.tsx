@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { Button } from '../Atoms/Button';
 import { ImageViewer } from '../Attachments/ImageViewer';
