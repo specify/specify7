@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-28 17:39+0000\n"
+"PO-Revision-Date: 2025-04-28 18:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -117,8 +117,8 @@ msgstr "Reduzir a transparência"
 #, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
-"Se deve desabilitar fundos translúcidos para componentes da interface do "
-"usuário sempre que possível (por exemplo, cabeçalhos de tabela na "
+"Se deve ou não desabilitar fundos translúcidos para componentes da interface "
+"do usuário sempre que possível (por exemplo, cabeçalhos de tabela na "
 "visualização em árvore)."
 
 #. Used in: Components > Preferences > User Definitions
@@ -204,7 +204,7 @@ msgstr "Contexto de campo"
 #: components/Preferences/UserDefinitions.tsx:906
 #, fuzzy
 msgid "disabledFieldBackground"
-msgstr "Fundo de campo desabilitado"
+msgstr "Fundo de campo desativado"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:914
@@ -216,7 +216,7 @@ msgstr "Fundo de campo inválido"
 #: components/Preferences/UserDefinitions.tsx:922
 #, fuzzy
 msgid "requiredFieldBackground"
-msgstr "Campo obrigatório de fundo"
+msgstr "Histórico de campo obrigatório"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:930
@@ -228,7 +228,7 @@ msgstr "Fundo de campo (tema escuro)"
 #: components/Preferences/UserDefinitions.tsx:938
 #, fuzzy
 msgid "darkDisabledFieldBackground"
-msgstr "Fundo de campo desabilitado (tema escuro)"
+msgstr "Fundo de campo desativado (tema escuro)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:946
@@ -317,7 +317,7 @@ msgstr "Cor de destaque da árvore"
 #: components/Preferences/UserDefinitions.tsx:1507
 #, fuzzy
 msgid "synonymColor"
-msgstr "Sinônimo de cor"
+msgstr "Cor sinônimo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1839
@@ -347,7 +347,7 @@ msgstr "Aplicativo"
 #: components/Preferences/UserDefinitions.tsx:427
 #, fuzzy
 msgid "allowDismissingErrors"
-msgstr "Permitir ignorar mensagens de erro"
+msgstr "Permitir descartar mensagens de erro"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:439
@@ -384,7 +384,7 @@ msgstr "Caixa de combinação de consulta"
 #: components/Preferences/UserDefinitions.tsx:1369
 #, fuzzy
 msgid "searchAlgorithm"
-msgstr "Algoritmo de busca"
+msgstr "Algoritmo de Busca"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1077
@@ -398,7 +398,7 @@ msgstr "Algoritmo de busca (para relacionamentos com tabelas de árvore)"
 #: components/Preferences/UserDefinitions.tsx:1084
 #, fuzzy
 msgid "startsWithInsensitive"
-msgstr "Começa com (sem distinção entre maiúsculas e minúsculas)"
+msgstr "Começa com (sem distinção de maiúsculas e minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1017
@@ -406,7 +406,8 @@ msgstr "Começa com (sem distinção entre maiúsculas e minúsculas)"
 #: components/Preferences/UserDefinitions.tsx:1085
 #, fuzzy
 msgid "startsWithDescription"
-msgstr "Pesquise valores que começam com uma determinada sequência de consulta."
+msgstr ""
+"Pesquisar valores que começam com uma determinada sequência de consulta."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1021
@@ -418,7 +419,8 @@ msgstr "Começa com (diferencia maiúsculas de minúsculas)"
 #: components/Preferences/UserDefinitions.tsx:1023
 #, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr "Pesquise valores que começam com uma determinada sequência de consulta."
+msgstr ""
+"Pesquisar valores que começam com uma determinada sequência de consulta."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1027
@@ -442,7 +444,7 @@ msgstr "Contém (diferencia maiúsculas de minúsculas)"
 msgid "containsDescription"
 msgstr ""
 "Pesquisar valores que contenham uma determinada sequência de consulta (sem "
-"distinção entre maiúsculas e minúsculas)."
+"distinção de maiúsculas e minúsculas)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1033
@@ -567,8 +569,8 @@ msgstr "Permite consultar dados de qualquer campo em qualquer tabela."
 #, fuzzy
 msgid "noRestrictionsModeWarning"
 msgstr ""
-"AVISO: habilitar isso pode levar à perda de dados ou corrupção do banco de "
-"dados. Certifique-se de que você sabe o que está fazendo."
+"AVISO: habilitar esta opção pode levar à perda de dados ou à corrupção do "
+"banco de dados. Certifique-se de saber o que está fazendo."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
@@ -735,7 +737,7 @@ msgstr "Delimitador de arquivo de exportação"
 #: components/Preferences/UserDefinitions.tsx:1597
 #, fuzzy
 msgid "exportCsvUtf8Bom"
-msgstr "Adicionar UTF-8 BOM às exportações de arquivo CSV"
+msgstr "Adicionar UTF-8 BOM às exportações de arquivos CSV"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1599
@@ -743,7 +745,7 @@ msgstr "Adicionar UTF-8 BOM às exportações de arquivo CSV"
 msgid "exportCsvUtf8BomDescription"
 msgstr ""
 "Adiciona uma BOM (Byte Order Mark) aos arquivos CSV exportados para garantir "
-"que o arquivo seja corretamente reconhecido e exibido por vários programas ("
+"que o arquivo seja reconhecido e exibido corretamente por vários programas ("
 "Excel, OpenRefine, etc.), evitando problemas com caracteres especiais e "
 "formatação."
 
@@ -763,7 +765,7 @@ msgstr "Não diferencia maiúsculas de minúsculas"
 #: components/Preferences/UserDefinitions.tsx:1537
 #, fuzzy
 msgid "showNoReadTables"
-msgstr "Mostrar tabelas sem acesso \"Leitura\""
+msgstr "Mostrar tabelas sem acesso de \"Leitura\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1863
@@ -800,7 +802,7 @@ msgstr "Mostrar filtros de consulta ao executar um relatório de um formulário"
 #: components/Preferences/UserDefinitions.tsx:1045
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Permitir que o preenchimento automático cresça tanto quanto necessário"
+msgstr "Permitir que o preenchimento automático cresça o quanto for necessário"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:753
@@ -812,7 +814,7 @@ msgstr "Incluir nome da tabela no título da página do navegador"
 #: components/Preferences/UserDefinitions.tsx:760
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Foco primeiro campo"
+msgstr "Foco primeiro no campo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1953
@@ -890,7 +892,7 @@ msgstr "Use o seletor de data completo acessível"
 #: components/Preferences/UserDefinitions.tsx:879
 #, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr "Use o seletor de mês acessível"
+msgstr "Use o seletor de meses acessível"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:886
@@ -908,7 +910,7 @@ msgstr "Cantos arredondados"
 #: components/Preferences/UserDefinitions.tsx:858
 #, fuzzy
 msgid "limitMaxFieldWidth"
-msgstr "Limite de largura máxima do campo"
+msgstr "Limite máximo de largura do campo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1619
@@ -932,21 +934,21 @@ msgstr "Isso determina a ordem visual das coleções."
 #: components/Preferences/UserDefinitions.tsx:1109
 #, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr "Registro para abrir por padrão"
+msgstr "Gravar para abrir por padrão"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
 #, fuzzy
 msgid "altClickToSupressNewTab"
 msgstr ""
-"<key>{altKeyName:string}</key>+<key>Clique</key> para suprimir a nova aba"
+"<key>{altKeyName:string}</key>+<key>Clique em</key> para suprimir a nova guia"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
-"<key>{altKeyName:string}</key>+<key>Clique</key> em um link que normalmente "
+"<key>{altKeyName:string}</key>+<key>Clique</key> em um link que geralmente "
 "abre em uma nova aba para abri-lo na aba atual."
 
 #. Used in: Components > Preferences > User Definitions
@@ -954,7 +956,8 @@ msgstr ""
 #, fuzzy
 msgid "makeFormDialogsModal"
 msgstr ""
-"Faça com que as caixas de diálogo do formulário deixem o fundo acinzentado"
+"Faça com que as caixas de diálogo do formulário fiquem com o fundo "
+"acinzentado"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1337
@@ -1057,8 +1060,8 @@ msgstr "Use delimitadores personalizados"
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Uma lista de delimitadores para usar, além dos definidos acima. Coloque um "
-"delimitador por linha."
+"Uma lista de delimitadores a serem usados, além dos definidos acima. Coloque "
+"um delimitador por linha."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:638
@@ -1256,7 +1259,7 @@ msgstr "Mostrar número da linha do resultado da consulta"
 #: components/Preferences/UserDefinitions.tsx:366
 #, fuzzy
 msgid "saveButtonColor"
-msgstr "Salvar cor do botão"
+msgstr "Cor do botão Salvar"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:345
@@ -1284,7 +1287,7 @@ msgstr "Cor do botão de perigo"
 #: components/Preferences/UserDefinitions.tsx:390
 #, fuzzy
 msgid "infoButtonColor"
-msgstr "Cor do botão de informação"
+msgstr "Cor do botão de informações"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:321
@@ -1331,7 +1334,7 @@ msgstr "Visão detalhada"
 #: components/Preferences/UserDefinitions.tsx:1311
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr "Modo de visualização de anexo"
+msgstr "Modo de visualização de anexos"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1318
