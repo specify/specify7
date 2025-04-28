@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-28 17:39+0000\n"
+"PO-Revision-Date: 2025-04-28 18:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -169,10 +169,9 @@ msgstr "Familia de fuentes"
 #, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
-"Puede especificar cualquier fuente que tenga instalada en su equipo, incluso "
-"si no está en la lista. También se admite una lista de fuentes separadas por "
-"comas, en la que se utilizará cada fuente posterior si la anterior no está "
-"disponible."
+"Puede especificar cualquier fuente de su ordenador, incluso si no está en la "
+"lista. También se admite una lista de fuentes separadas por comas, donde se "
+"usará cada fuente subsiguiente si la anterior no está disponible."
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:197
@@ -198,7 +197,7 @@ msgstr "Fondos de campo"
 #: components/Preferences/UserDefinitions.tsx:898
 #, fuzzy
 msgid "fieldBackground"
-msgstr "Fondo del campo"
+msgstr "Fondo de campo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:906
@@ -216,7 +215,7 @@ msgstr "Fondo de campo no válido"
 #: components/Preferences/UserDefinitions.tsx:922
 #, fuzzy
 msgid "requiredFieldBackground"
-msgstr "Campo obligatorio background"
+msgstr "Antecedentes del campo obligatorio"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:930
@@ -265,7 +264,7 @@ msgstr "Apariencia"
 #: components/Preferences/UserDefinitions.tsx:302
 #, fuzzy
 msgid "buttonsLight"
-msgstr "Botones (modo claro)"
+msgstr "Botones (modo luz)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:363
@@ -306,7 +305,7 @@ msgstr "Editor de árboles"
 #: components/Preferences/UserDefinitions.tsx:1499
 #, fuzzy
 msgid "treeAccentColor"
-msgstr "Color de acento de árbol"
+msgstr "Color de acento del árbol"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1402
@@ -317,13 +316,13 @@ msgstr "Color de acento de árbol"
 #: components/Preferences/UserDefinitions.tsx:1507
 #, fuzzy
 msgid "synonymColor"
-msgstr "Sinónimo color"
+msgstr "Color sinónimo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1839
 #, fuzzy
 msgid "showNewDataSetWarning"
-msgstr "Mostrar advertencia sobre nuevo conjunto de datos"
+msgstr "Mostrar nueva advertencia de conjunto de datos"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1840
@@ -390,7 +389,7 @@ msgstr "Algoritmo de búsqueda"
 #: components/Preferences/UserDefinitions.tsx:1077
 #, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr "Algoritmo de búsqueda (para relaciones con tablas de árboles)"
+msgstr "Algoritmo de búsqueda (para relaciones con tablas de árbol)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1016
@@ -412,7 +411,7 @@ msgstr "Busque valores que comiencen con una cadena de consulta determinada."
 #: components/Preferences/UserDefinitions.tsx:1021
 #, fuzzy
 msgid "startsWithCaseSensitive"
-msgstr "Comienza con (distingue entre mayúsculas y minúsculas)"
+msgstr "Comienza con (sensible a mayúsculas y minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1023
@@ -432,7 +431,7 @@ msgstr "Contiene (sin distinguir entre mayúsculas y minúsculas)"
 #: components/Preferences/UserDefinitions.tsx:1032
 #, fuzzy
 msgid "containsCaseSensitive"
-msgstr "Contiene (distingue entre mayúsculas y minúsculas)"
+msgstr "Contiene (sensible a mayúsculas y minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1028
@@ -471,9 +470,7 @@ msgstr "Resaltar la subcadena coincidente"
 #: components/Preferences/UserDefinitions.tsx:725
 #, fuzzy
 msgid "languageDescription"
-msgstr ""
-"Determina los títulos de los campos, las notas de uso y los títulos de las "
-"tablas."
+msgstr "Determina títulos de campos, notas de uso y títulos de tablas."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:462
@@ -529,7 +526,7 @@ msgstr "Página web incrustada"
 #: components/Preferences/Renderers.tsx:257
 #, fuzzy
 msgid "embeddedWebpageDescription"
-msgstr "Una URL a una página que se incrustaría en la página de inicio:"
+msgstr "Una URL a una página que se integrará en la página de inicio:"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:499
@@ -562,14 +559,14 @@ msgstr "Permite cargar datos a cualquier campo de cualquier tabla."
 #: components/Preferences/UserDefinitions.tsx:1528
 #, fuzzy
 msgid "noRestrictionsModeQueryDescription"
-msgstr "Permite consultar datos de cualquier campo en cualquier tabla."
+msgstr "Permite consultar datos de cualquier campo de cualquier tabla."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1853
 #, fuzzy
 msgid "noRestrictionsModeWarning"
 msgstr ""
-"ADVERTENCIA: habilitar esta opción puede provocar la pérdida de datos o la "
+"ADVERTENCIA: Habilitar esta opción podría provocar la pérdida de datos o la "
 "corrupción de la base de datos. Asegúrese de saber lo que está haciendo."
 
 #. Used in: Components > Preferences > Index
@@ -680,7 +677,7 @@ msgstr "La tecla Enter inicia la edición de la celda"
 #: components/Preferences/UserDefinitions.tsx:1743
 #, fuzzy
 msgid "tabMoveDirection"
-msgstr "Dirección del movimiento cuando se presiona la tecla <key>Tab</key>"
+msgstr "Dirección de movimiento cuando se presiona la tecla <key>Tab</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1744
@@ -710,7 +707,7 @@ msgstr "Fila"
 #: components/Preferences/UserDefinitions.tsx:1760
 #, fuzzy
 msgid "enterMoveDirection"
-msgstr "Dirección del movimiento cuando se presiona la tecla <key>Enter</key>"
+msgstr "Dirección de movimiento cuando se presiona la tecla <key>Enter</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1761
@@ -759,7 +756,7 @@ msgstr "Distingue mayúsculas y minúsculas"
 #: components/Preferences/UserDefinitions.tsx:1801
 #, fuzzy
 msgid "caseInsensitive"
-msgstr "Sin distinción entre mayúsculas y minúsculas"
+msgstr "No distingue entre mayúsculas y minúsculas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1537
@@ -815,7 +812,7 @@ msgstr "Incluir el nombre de la tabla en el título de la página del navegador"
 #: components/Preferences/UserDefinitions.tsx:760
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Centrarse en el primer campo"
+msgstr "Enfoque el primer campo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1953
@@ -827,7 +824,7 @@ msgstr "Haga doble clic para ampliar"
 #: components/Preferences/UserDefinitions.tsx:1960
 #, fuzzy
 msgid "closePopupOnClick"
-msgstr "Cerrar ventana emergente al hacer clic desde afuera"
+msgstr "Cerrar ventana emergente al hacer clic desde fuera"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1967
@@ -881,7 +878,7 @@ msgstr "Cerrar al hacer clic desde fuera"
 #: components/Preferences/UserDefinitions.tsx:865
 #, fuzzy
 msgid "specifyNetworkBadge"
-msgstr "Especificar credencial de red"
+msgstr "Especificar la insignia de red"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:872
@@ -905,7 +902,7 @@ msgstr "Justificar a la derecha los campos numéricos"
 #: components/Preferences/UserDefinitions.tsx:293
 #, fuzzy
 msgid "roundedCorners"
-msgstr "Esquinas redondeadas"
+msgstr "esquinas redondeadas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:858
@@ -935,7 +932,7 @@ msgstr "Esto determina el orden visual de las colecciones."
 #: components/Preferences/UserDefinitions.tsx:1109
 #, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr "Grabar para abrir por defecto"
+msgstr "Registro para abrir por defecto"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
@@ -963,13 +960,13 @@ msgstr "Hacer que los cuadros de diálogo del formulario tengan el fondo en gris
 #: components/Preferences/UserDefinitions.tsx:1337
 #, fuzzy
 msgid "autoScrollTree"
-msgstr "Desplazamiento automático del árbol hasta el nodo enfocado"
+msgstr "Desplazamiento automático del árbol al nodo enfocado"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1892
 #, fuzzy
 msgid "lineWrap"
-msgstr "Enrollado de línea"
+msgstr "Ajuste de línea"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1899
@@ -1011,7 +1008,7 @@ msgstr "Altura máxima"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Completar automáticamente"
+msgstr "Autocompletar"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1344
@@ -1060,8 +1057,8 @@ msgstr "Utilice delimitadores personalizados"
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Una lista de delimitadores que se pueden utilizar, además de los definidos "
-"anteriormente. Coloque un delimitador por línea."
+"Una lista de delimitadores para usar, además de los definidos anteriormente. "
+"Coloque un delimitador por línea."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:638
@@ -1129,15 +1126,15 @@ msgstr "Mostrar indicador de cambios no guardados"
 #, fuzzy
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
-"Mostrar un \"*\" en el título de la pestaña cuando haya cambios no "
-"guardados en la pestaña actual."
+"Mostrar un \"*\" en el título de la pestaña cuando haya cambios sin guardar "
+"en la pestaña actual."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1644
 #, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
-"Rellena automáticamente el registro fusionado con valores de duplicados al "
+"Rellene automáticamente el registro fusionado con valores de duplicados al "
 "abrir el cuadro de diálogo de fusión."
 
 #. Used in: Components > Preferences > User Definitions
@@ -1151,7 +1148,7 @@ msgstr "Crear automáticamente registros {agentVariantTable:string}"
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Al fusionar agentes, se crean automáticamente registros "
+"Al fusionar agentes, cree automáticamente registros "
 "{agentVariantTable:string} basados en las variaciones de nombre/apellido."
 
 #. Used in: Components > App Resources > Types
@@ -1176,7 +1173,7 @@ msgstr "Recordar las posiciones de las ventanas de diálogo"
 #: components/Preferences/UserDefinitions.tsx:1304
 #, fuzzy
 msgid "autoPlayMedia"
-msgstr "Reproducir automáticamente los medios"
+msgstr "Reproducir automáticamente medios"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:225
@@ -1238,7 +1235,7 @@ msgstr "URL de imagen expandida"
 #: components/Preferences/UserDefinitions.tsx:600
 #, fuzzy
 msgid "customLogoCollapsed"
-msgstr "URL de imagen colapsada"
+msgstr "URL de imagen contraída"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:597
@@ -1259,7 +1256,7 @@ msgstr "Mostrar el número de línea del resultado de la consulta"
 #: components/Preferences/UserDefinitions.tsx:366
 #, fuzzy
 msgid "saveButtonColor"
-msgstr "Guardar color del botón"
+msgstr "Guardar el color del botón"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:345
