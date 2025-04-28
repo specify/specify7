@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-28 18:01+0000\n"
+"PO-Revision-Date: 2025-04-28 18:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -151,7 +151,7 @@ msgid "fontFamilyDescription"
 msgstr ""
 "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, "
 "même si elle ne figure pas dans la liste. Une liste de polices séparées par "
-"des virgules est également prise en charge, où chaque police suivante sera "
+"des virgules est également prise en charge ; chaque police suivante sera "
 "utilisée si la précédente n'est pas disponible."
 
 #. Used in: Components > Preferences > Renderers
@@ -746,7 +746,7 @@ msgstr "Largeur de colonne flexible"
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largeur de colonne de grille de sous-vue flexible"
+msgstr "Largeur de colonne de la grille de sous-vue flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
