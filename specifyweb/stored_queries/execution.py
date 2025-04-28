@@ -1001,3 +1001,5 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
             updated_results.append(tuple(result))
 
         return updated_results
+
+    return query
