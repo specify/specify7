@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-28 17:01+0000\n"
+"PO-Revision-Date: 2025-04-28 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:1805
@@ -68,7 +68,7 @@ msgstr "Campos obrigatórios"
 #: components/WbPlanView/LineComponents.tsx:213
 #, fuzzy
 msgid "optionalFields"
-msgstr "Campos Opcionais"
+msgstr "Campos opcionais"
 
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #: components/QueryBuilder/Import.tsx:155
@@ -83,7 +83,7 @@ msgstr "Campos Ocultos"
 #: components/WbPlanView/MapperComponents.tsx:61
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Revelar campos de formulário ocultos"
+msgstr "Revelar campos ocultos do formulário"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:574
@@ -106,8 +106,8 @@ msgid "ignoreWhenBlankDescription"
 msgstr ""
 "Quando definido como \"Ignorar quando em branco\", valores em branco nesta "
 "coluna não serão considerados para fins de correspondência. Valores em "
-"branco são ignorados durante a correspondência, mesmo se um valor padrão for "
-"fornecido"
+"branco são ignorados durante a correspondência, mesmo que um valor padrão "
+"seja fornecido."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:51
@@ -160,20 +160,20 @@ msgstr "Relação com a tabela {tableName:string}"
 #: components/WbPlanView/MapperComponents.tsx:355
 #, fuzzy
 msgid "autoMapper"
-msgstr "Mapeador Automático"
+msgstr "Mapeador automático"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:159
 #, fuzzy
 msgid "mappingEditor"
-msgstr "Explorador de Mapas"
+msgstr "Explorador de mapas"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:38
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
-"O Conjunto de Dados Selecionado não tem plano de upload. Selecione um "
+"O conjunto de dados selecionado não possui um plano de upload. Selecione um "
 "diferente."
 
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -201,7 +201,7 @@ msgstr "Nunca ignore"
 #, fuzzy
 msgid "ignoreNeverDescription"
 msgstr ""
-"Esta coluna sempre seria considerada para fins de correspondência, "
+"Esta coluna sempre será considerada para fins de correspondência, "
 "independentemente do seu valor"
 
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -220,7 +220,7 @@ msgstr "Usar valor padrão"
 #: components/WbPlanView/MapperComponents.tsx:296
 #, fuzzy
 msgid "defaultValue"
-msgstr "Valor Padrão"
+msgstr "Valor padrão"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:304
@@ -245,15 +245,15 @@ msgstr "A validação encontrou mapeamentos ausentes:"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Este mapeamento de dados está sem um ou mais campos de dados necessários "
-"para upload pela sua configuração Specify. Adicione os mapeamentos ausentes "
-"mostrados ou salve este Plano de Upload como inacabado."
+"Este mapeamento de dados não possui um ou mais campos de dados necessários "
+"para o upload pela sua configuração \"Especificar\". Adicione os mapeamentos "
+"ausentes ou salve este Plano de Upload como inacabado."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:214
 #, fuzzy
 msgid "mappingIsRequired"
-msgstr "Mapeamento é necessário"
+msgstr "O mapeamento é necessário"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:83
@@ -289,16 +289,17 @@ msgstr "Mostrar todas as tabelas"
 #: components/WbPlanView/Mapper.tsx:412
 #, fuzzy
 msgid "dataSetUploaded"
-msgstr "Conjunto de dados carregado. Este plano de upload não pode ser alterado"
+msgstr ""
+"Conjunto de dados carregado. Este plano de upload não pode ser alterado."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:410
 #, fuzzy
 msgid "dataSetUploadedDescription"
 msgstr ""
-"Você está visualizando os mapeamentos para um conjunto de dados carregado.\n"
+"Você está visualizando os mapeamentos de um conjunto de dados carregado.\n"
 "Para editar os mapeamentos, reverta os dados carregados ou crie um novo "
-"conjunto de dados"
+"conjunto de dados."
 
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/Mapper.tsx:404
@@ -318,10 +319,10 @@ msgstr "Alterar a tabela base para mapear colunas do conjunto de dados?"
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Escolher uma Tabela Base diferente para um Upload de Conjunto de Dados "
+"Escolher uma Tabela Base diferente para o upload de um Conjunto de Dados "
 "tornará essa tabela o novo ponto de partida para mapeamentos de campos de "
-"coluna para dados e apagará os mapeamentos existentes. O AutoMapper tentará "
-"mapear colunas para os novos campos da Tabela Base."
+"coluna para dados e apagará os mapeamentos existentes. O Mapeador Automático "
+"tentará mapear colunas para os novos campos da Tabela Base."
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:153
@@ -386,7 +387,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:350
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Mapeamento automático para iniciar um novo plano de upload?"
+msgstr "Mapear automaticamente para iniciar um novo Plano de Upload?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:351
@@ -430,7 +431,7 @@ msgstr "Este mapeamento não foi salvo."
 #: components/WbPlanView/MapperComponents.tsx:48
 #, fuzzy
 msgid "newHeaderName"
-msgstr "Nova coluna {index:number}"
+msgstr "Nova Coluna {index:number}"
 
 #. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
