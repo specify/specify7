@@ -969,8 +969,6 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
 
         return updated_results
 
-    if should_list_query:
-        return list(query)
     return query
 
 def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
