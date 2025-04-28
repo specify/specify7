@@ -582,6 +582,8 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "Determination remarks #2",
                 "Determination integer1 #3",
                 "Determination remarks #3",
+                "Preparation countAmt",
+                "Preparation text1"
             ],
         )
 
