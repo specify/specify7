@@ -130,6 +130,17 @@ function navigator({
   const childrenAreRanks =
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
+  const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
+  const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
+  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+
+  if (
+    isNonGeoDiscipline &&
+    (table.name === 'PaleoContext' || table.name === 'LithoStrat')
+  ) {
+    return;
+  }
+
   const callbackPayload = {
     table,
     parentRelationship,
