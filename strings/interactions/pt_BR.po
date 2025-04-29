@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-29 20:02+0000\n"
+"PO-Revision-Date: 2025-04-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/pt_BR/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -54,7 +54,7 @@ msgstr "Há problemas com a entrada:"
 #, fuzzy
 msgid "byChoosingRecordSet"
 msgstr ""
-"Ao escolher um conjunto de registros ({{count:none | one | ??}} disponível)"
+"Escolhendo um conjunto de registros ({{count:none | one | ??}} disponível)"
 
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:344
@@ -122,14 +122,14 @@ msgstr "Resolver"
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "Retorne todos os preparativos"
+msgstr "Devolva todos os preparativos"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
 #: components/QueryBuilder/LoanReturn.tsx:162
 #, fuzzy
 msgid "returnSelectedPreparations"
-msgstr "Retornar preparações selecionadas"
+msgstr "Devolver preparações selecionadas"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:96
@@ -205,7 +205,7 @@ msgstr "{giftTable:string} registros"
 #: components/FormCommands/ShowTransactions.tsx:159
 #, fuzzy
 msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} registros"
+msgstr "Registros {exhangeInTable:string} / {exhangeOutTable:string}"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
@@ -273,7 +273,7 @@ msgstr "Criar {table:string}"
 #: components/Interactions/InteractionDialog.tsx:284
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Nenhum desses objetos tem preparações. Você gostaria de continuar?"
+msgstr "Nenhum destes objetos possui preparação. Deseja continuar?"
 
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #: components/Interactions/InteractionDialog.tsx:321
