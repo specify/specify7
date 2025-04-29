@@ -5,9 +5,9 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 
 const comments = { displayDelay: 100 };
 
@@ -47,9 +47,9 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
-          readOnly: [-1, undefined].includes(
-            physicalColToMappingCol(physicalCol)
-          ) || dataset.columns[physicalCol] === ATTACHMENTS_COLUMN,
+          readOnly:
+            [-1, undefined].includes(physicalColToMappingCol(physicalCol)) ||
+            dataset.columns[physicalCol] === ATTACHMENTS_COLUMN,
         })
       ),
     [dataset.columns.length]
