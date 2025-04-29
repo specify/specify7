@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-12-29 20:00+0000\n"
+"PO-Revision-Date: 2025-04-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "interactions/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -27,7 +27,7 @@ msgstr "Взаємодії"
 #: components/Interactions/PrepDialog.tsx:114
 #, fuzzy
 msgid "addItems"
-msgstr "Додати предмети"
+msgstr "Додати елементи"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:331
@@ -39,19 +39,20 @@ msgstr "{table:string} Повернення"
 #: components/Interactions/InteractionDialog.tsx:379
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "Не знайдено жодних препаратів для таких записів:"
+msgstr "Для наступних записів не знайдено жодних підготовчих матеріалів:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:388
 #, fuzzy
 msgid "preparationsNotAvailableFor"
-msgstr "У таких записах відсутні препарати принаймні для одного типу препарату:"
+msgstr ""
+"У наступних записах відсутні препарати принаймні для одного типу препарату:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:369
 #, fuzzy
 msgid "problemsFound"
-msgstr "Є проблеми з входом:"
+msgstr "Є проблеми зі вступом:"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:338
@@ -69,7 +70,7 @@ msgstr "Ввівши {fieldName:string}s"
 #: components/Interactions/InteractionDialog.tsx:309
 #, fuzzy
 msgid "withoutPreparations"
-msgstr "Без препаратів"
+msgstr "Без підготовки"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:269
@@ -82,25 +83,25 @@ msgstr "Продовжуйте без підготовки"
 #: components/Interactions/InteractionDialog.tsx:305
 #, fuzzy
 msgid "addUnassociated"
-msgstr "Додати непов’язаний елемент"
+msgstr "Додати непов'язаний елемент"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:125
 #, fuzzy
 msgid "preparations"
-msgstr "препарати"
+msgstr "Підготовка"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:101
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "У цьому контексті препарати не повертаються."
+msgstr "У цьому контексті препарати не можна повернути."
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:75
 #, fuzzy
 msgid "noUnresolvedPreparations"
-msgstr "Немає жодної невирішеної підготовки щодо цієї позики."
+msgstr "Немає жодних невирішених питань щодо підготовки до цього кредиту."
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:300
@@ -119,20 +120,20 @@ msgstr "Повернення"
 #: components/Interactions/LoanReturn.tsx:306
 #, fuzzy
 msgid "resolve"
-msgstr "Розв'язати"
+msgstr "Вирішити"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:164
 #, fuzzy
 msgid "returnAllPreparations"
-msgstr "Повернути всі препарати"
+msgstr "Поверніть усі заготовки"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:195
 #: components/QueryBuilder/LoanReturn.tsx:162
 #, fuzzy
 msgid "returnSelectedPreparations"
-msgstr "Повернути обрані препарати"
+msgstr "Повернути вибрані препарати"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:96
@@ -151,7 +152,7 @@ msgstr "Виберіть усі доступні препарати"
 #: components/Interactions/PrepReturnRow.tsx:82
 #, fuzzy
 msgid "selectAll"
-msgstr "Виберіть усі"
+msgstr "Вибрати все"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 #: components/Interactions/LoanReturn.tsx:260
@@ -190,13 +191,13 @@ msgstr "{tableName:string}: {resource:string}"
 #: components/FormCommands/ShowTransactions.tsx:136
 #, fuzzy
 msgid "resolvedLoans"
-msgstr "Вирішено записи {loanTable:string}."
+msgstr "Вирішено записів {loanTable:string}"
 
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:125
 #, fuzzy
 msgid "openLoans"
-msgstr "Відкрийте записи {loanTable:string}."
+msgstr "Відкрити записи {loanTable:string}"
 
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:147
@@ -208,28 +209,28 @@ msgstr "{giftTable:string} записи"
 #: components/FormCommands/ShowTransactions.tsx:159
 #, fuzzy
 msgid "exchanges"
-msgstr "Записи {exhangeInTable:string} / {exhangeOutTable:string}."
+msgstr "Записи {exhangeInTable:string} / {exhangeOutTable:string}"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
 #, fuzzy
 msgid "unCataloged"
-msgstr "некаталогований"
+msgstr "некаталогізований"
 
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:238
 #: components/Interactions/InteractionDialog.tsx:279
 #, fuzzy
 msgid "returnedPreparations"
-msgstr "Повернуто {tablePreparation:string} записів"
+msgstr "Повернуто записів {tablePreparation:string}"
 
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:243
 #, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
-"Записи {count:number|formatted} {tablePreparation:string} повернуто та "
-"збережено"
+"Повернуто та збережено записів {count:number|formatted} "
+"{tablePreparation:string}"
 
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #: components/FormMeta/CarryForward.tsx:326
@@ -238,26 +239,26 @@ msgstr ""
 #: components/QueryBuilder/Results.tsx:206
 #, fuzzy
 msgid "deselectAll"
-msgstr "Зняти вибір із усіх"
+msgstr "Зняти вибір усіх"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:208
 #, fuzzy
 msgid "available"
-msgstr "в наявності"
+msgstr "Доступно"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:209
 #, fuzzy
 msgid "unavailable"
-msgstr "Недоступний"
+msgstr "Недоступно"
 
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/InteractionsDialog.tsx:83
 #: components/QueryBuilder/LoanReturn.tsx:148
 #, fuzzy
 msgid "returnLoan"
-msgstr "Повернути записи {tableLoan:string}."
+msgstr "Повернути записи {tableLoan:string}"
 
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:332
@@ -270,7 +271,7 @@ msgstr "Створити {table:string}"
 #: components/Interactions/InteractionDialog.tsx:284
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Жоден із цих об'єктів не має підготовки. Бажаєте продовжити?"
+msgstr "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?"
 
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #: components/Interactions/InteractionDialog.tsx:321
