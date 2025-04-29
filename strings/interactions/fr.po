@@ -250,10 +250,11 @@ msgstr "Créer {table:string}"
 msgid "noPreparationsWarning"
 msgstr "Aucun de ces objets n'a de préparation. Voulez-vous continuer?"
 
+#: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:362
 #: components/TreeView/AddRank.tsx:62
-#. Used in: Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #, fuzzy
 msgid "continue"
 msgstr "Continuer sans préparation"

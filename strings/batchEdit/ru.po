@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:125
+#: components/BatchEdit/index.tsx:167
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -16,24 +16,34 @@ msgstr ""
 msgid "numberOfRecords"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:299
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/QueryError.tsx:42
+#. Used in: Components > Batch Edit > Query Error
 msgid "removeField"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:318
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/MissingRanks.tsx:73
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "addTreeRank"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:111
+#: components/BatchEdit/MissingRanks.tsx:89
+#. Used in: Components > Batch Edit > Missing Ranks
+msgid "pickTreesToFilter"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:149
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:280
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/QueryError.tsx:24
+#. Used in: Components > Batch Edit > Query Error
 msgid "errorInQuery"
+msgstr ""
+
+#: components/BatchEdit/MissingRanks.tsx:48
+#. Used in: Components > Batch Edit > Missing Ranks
+msgid "missingRanksInQuery"
 msgstr ""
 
 #: components/WbUtils/datasetVariants.tsx:110
@@ -119,9 +129,4 @@ msgstr ""
 #: components/WorkBench/RecordSet.tsx:73
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
-msgstr ""
-
-#: components/BatchEdit/index.tsx:90
-#. Used in: Components > Batch Edit > Index
-msgid "treeQueriesDisabled"
 msgstr ""

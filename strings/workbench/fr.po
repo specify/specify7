@@ -75,17 +75,17 @@ msgstr "Téléchargement"
 msgid "validating"
 msgstr "Validation"
 
-#: components/WorkBench/WbSpreadsheet.tsx:154
+#: components/WorkBench/WbSpreadsheet.tsx:157
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Lever l'ambiguïté"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Remplissez"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Remplir"

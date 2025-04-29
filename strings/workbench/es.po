@@ -76,17 +76,17 @@ msgstr "Cargando"
 msgid "validating"
 msgstr "Validando"
 
-#: components/WorkBench/WbSpreadsheet.tsx:154
+#: components/WorkBench/WbSpreadsheet.tsx:157
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Desambiguar"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Rellenar hacia Abajo"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Rellenar hacia Arriba"

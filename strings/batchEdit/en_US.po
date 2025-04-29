@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:125
+#: components/BatchEdit/index.tsx:167
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -16,27 +16,39 @@ msgstr "Batch Edit"
 msgid "numberOfRecords"
 msgstr "Number of records selected from the query"
 
-#: components/BatchEdit/index.tsx:299
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/QueryError.tsx:42
+#. Used in: Components > Batch Edit > Query Error
 msgid "removeField"
 msgstr ""
 "Field not supported for batch edit. Either remove the field, or make it "
 "hidden."
 
-#: components/BatchEdit/index.tsx:318
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/MissingRanks.tsx:73
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "addTreeRank"
-msgstr "Please add the following missing rank to the query"
+msgstr "The following ranks will be added to the query to enable batch editing"
 
-#: components/BatchEdit/index.tsx:111
+#: components/BatchEdit/MissingRanks.tsx:89
+#. Used in: Components > Batch Edit > Missing Ranks
+msgid "pickTreesToFilter"
+msgstr ""
+"The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
+"edit with"
+
+#: components/BatchEdit/index.tsx:149
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
 
-#: components/BatchEdit/index.tsx:280
-#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/QueryError.tsx:24
+#. Used in: Components > Batch Edit > Query Error
 msgid "errorInQuery"
 msgstr "Following errors were found in the query"
+
+#: components/BatchEdit/MissingRanks.tsx:48
+#. Used in: Components > Batch Edit > Missing Ranks
+msgid "missingRanksInQuery"
+msgstr "Query requires additional ranks for batch editing"
 
 #: components/WbUtils/datasetVariants.tsx:110
 #. Used in: Components > Wb Utils > Dataset Variants
@@ -132,8 +144,3 @@ msgstr "Commit Completed with No Errors"
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
 msgstr "BE commit of \"{dataSet:string}\""
-
-#: components/BatchEdit/index.tsx:90
-#. Used in: Components > Batch Edit > Index
-msgid "treeQueriesDisabled"
-msgstr "Batch editing is disabled for trees"

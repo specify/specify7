@@ -82,19 +82,19 @@ msgstr "Hochladen"
 msgid "validating"
 msgstr "Validierung"
 
-#: components/WorkBench/WbSpreadsheet.tsx:154
+#: components/WorkBench/WbSpreadsheet.tsx:157
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "disambiguate"
 msgstr "Disambiguieren"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillDown"
 msgstr "Abfüllen"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillUp"

@@ -78,17 +78,17 @@ msgstr "Загрузка"
 msgid "validating"
 msgstr "Проверка"
 
-#: components/WorkBench/WbSpreadsheet.tsx:154
+#: components/WorkBench/WbSpreadsheet.tsx:157
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Устранить Неоднозначность"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Заполнить Вниз"
 
-#: components/WorkBench/WbSpreadsheet.tsx:263
+#: components/WorkBench/WbSpreadsheet.tsx:266
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Заполнить Вверх"
