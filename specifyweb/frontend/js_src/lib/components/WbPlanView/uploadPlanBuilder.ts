@@ -1,5 +1,5 @@
 import type { IR, RA, RR } from '../../utils/types';
-import { group, removeKey, split, toLowerCase } from '../../utils/utils';
+import { group, split, toLowerCase } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
@@ -143,13 +143,10 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             indexMappings(lines).map(([_index, lines]) =>
-              removeKey(
-                toUploadTable(
-                  table.strictGetRelationship(fieldName).relatedTable,
-                  lines,
-                  mustMatchPreferences
-                ),
-                'toMany'
+              toUploadTable(
+                table.strictGetRelationship(fieldName).relatedTable,
+                lines,
+                mustMatchPreferences
               )
             ),
           ] as const
