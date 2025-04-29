@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0026_taxontreedef_alter_delete'),
+        ('specify', '0027_CO_children'),
     ]
 
     operations = [
