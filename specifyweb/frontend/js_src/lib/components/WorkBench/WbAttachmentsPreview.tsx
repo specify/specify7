@@ -66,6 +66,10 @@ export function WbAttachmentsPreview({
 
   const handleSelection = (row: number | undefined): void => {
     if (!hot) return;
+    if (row === -1) {
+      setSelectedRow(undefined);
+      return;
+    }
     setSelectedRow(row);
   };
 
@@ -105,7 +109,7 @@ export function WbAttachmentsPreview({
             {selectedRow !== undefined && attachments.length >= 0 && (
               <div className="flex flex-col gap-2">
                 {attachments.map((cell, index) =>
-                  !cell.isLoading && cell.attachment ? (
+                  cell !== undefined && !cell.isLoading && cell.attachment ? (
                     <AttachmentPreview
                       attachment={cell.attachment}
                       key={index}
@@ -160,7 +164,14 @@ function fetchRowAttachments(
   // Each row should have comma-separated IDs for SpDataSetAttachments
   const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
     '') as string;
-  const dataSetAttachmentIds = selectedCell?.split(',') ?? [];
+  const dataSetAttachmentIds = (selectedCell?.split(',') ?? [])
+    .map((rawId) => f.parseInt(rawId))
+    .filter((id): id is number => id !== undefined);
+
+  if (dataSetAttachmentIds.length === 0) {
+    setAttachments([]);
+    return;
+  }
 
   setAttachments(
     Array.from({ length: dataSetAttachmentIds.length }, () => ({
@@ -180,37 +191,34 @@ function fetchRowAttachments(
     });
   };
 
-  dataSetAttachmentIds.forEach((cell: string, index: number) => {
-    const dataSetAttachmentId = f.parseInt(cell);
-    if (dataSetAttachmentId !== undefined) {
-      ajax<SerializedRecord<SpDataSetAttachment>>(
-        `/api/specify/spdatasetattachment/${dataSetAttachmentId}/`,
-        {
-          headers: { Accept: 'application/json' },
-          method: 'GET',
+  dataSetAttachmentIds.forEach((id: number, index: number) => {
+    ajax<SerializedRecord<SpDataSetAttachment>>(
+      `/api/specify/spdatasetattachment/${id}/`,
+      {
+        headers: { Accept: 'application/json' },
+        method: 'GET',
+      }
+    )
+      .then(({ data }) => {
+        const resource = toResource(
+          serializeResource(data.attachment),
+          'Attachment'
+        );
+        if (resource !== undefined && index === 0) {
+          // TODO: update spDataSetAttachment's ordinal and use data.ordinal === 0
+          setSelectedAttachment(resource);
         }
-      )
-        .then(({ data }) => {
-          const resource = toResource(
-            serializeResource(data.attachment),
-            'Attachment'
-          );
-          if (resource !== undefined && index === 0) {
-            // TODO: update spDataSetAttachment's ordinal and use data.ordinal === 0
-            setSelectedAttachment(resource);
-          }
-          insertAttachmentPreviewCell(index, {
-            attachment: resource,
-            isLoading: false,
-          });
-        })
-        .catch(() => {
-          insertAttachmentPreviewCell(index, {
-            attachment: undefined,
-            isLoading: false,
-          });
+        insertAttachmentPreviewCell(index, {
+          attachment: resource,
+          isLoading: false,
         });
-    }
+      })
+      .catch(() => {
+        insertAttachmentPreviewCell(index, {
+          attachment: undefined,
+          isLoading: false,
+        });
+      });
   });
 }
 

@@ -29,8 +29,14 @@ export function identifyDefaultValues(
   mappings: WbMapping | undefined
 ): void {
   if (mappings === undefined) return;
+  const currentSettings = hot.getSettings().columns ?? [];
   hot.updateSettings({
-    columns: (index) => ({ placeholder: mappings.defaultValues[index] }),
+    columns: (index) => ({
+      ...(typeof currentSettings === 'function'
+        ? currentSettings(index)
+        : (currentSettings[index] ?? {})),
+      placeholder: mappings.defaultValues[index],
+    }),
   });
 }
 
