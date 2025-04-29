@@ -56,7 +56,7 @@ msgstr "Ordenar por"
 msgid "uploadingInline"
 msgstr "Subiendo…"
 
-#: components/Attachments/Gallery.tsx:107
+#: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:155
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
