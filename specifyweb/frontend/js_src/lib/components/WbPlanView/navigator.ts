@@ -136,7 +136,9 @@ function navigator({
 
   if (
     isNonGeoDiscipline &&
-    (table.name === 'PaleoContext' || table.name === 'LithoStrat')
+    (table.name === 'PaleoContext' ||
+      table.name === 'LithoStrat' ||
+      table.name === 'TectonicUnit')
   ) {
     return;
   }
