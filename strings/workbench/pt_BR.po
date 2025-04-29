@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-03-29 07:01+0000\n"
+"PO-Revision-Date: 2025-04-29 07:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
@@ -23,7 +23,7 @@ msgstr "Bancada de trabalho"
 #: components/WbToolkit/DevShowPlan.tsx:39
 #, fuzzy
 msgid "uploadPlan"
-msgstr "Plano de Carregamento"
+msgstr "Plano de Upload"
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Rollback.tsx:29
@@ -136,13 +136,13 @@ msgstr ""
 #: components/WbToolkit/ChangeOwner.tsx:88
 #, fuzzy
 msgid "changeOwner"
-msgstr "Alterar Proprietário"
+msgstr "Alterar proprietário"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:61
 #, fuzzy
 msgid "convertCoordinates"
-msgstr "Converter Coordenadas"
+msgstr "Converter coordenadas"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:48
@@ -188,7 +188,7 @@ msgstr "Configurar Pesquisar e Substituir"
 #: components/WbUtils/index.tsx:118
 #, fuzzy
 msgid "modifiedCells"
-msgstr "Células modificadas"
+msgstr "Células Modificadas"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:125
@@ -220,9 +220,9 @@ msgstr "Incapaz de desambiguar"
 msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Nenhum dos registros correspondentes existe atualmente no banco de dados. "
-"Isso pode acontecer se todos os registros correspondentes foram excluídos "
-"desde que o processo de validação ocorreu, ou se todas as correspondências "
-"foram ambíguas com relação a outros registros neste conjunto de dados. No "
+"Isso pode ocorrer se todos os registros correspondentes foram excluídos "
+"desde a ocorrência do processo de validação ou se todas as correspondências "
+"forem ambíguas em relação a outros registros neste conjunto de dados. Neste "
 "último caso, você precisará adicionar campos e valores ao conjunto de dados "
 "para resolver a ambiguidade."
 
@@ -230,7 +230,7 @@ msgstr ""
 #: components/WorkBench/Disambiguation.tsx:68
 #, fuzzy
 msgid "disambiguateMatches"
-msgstr "Desambiguar várias correspondências de registros"
+msgstr "Desambiguar múltiplas correspondências de registros"
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:57
@@ -252,10 +252,10 @@ msgstr "Iniciar reversão do conjunto de dados?"
 #, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
-"A reversão removerá os novos registros de dados que este Data Set adicionou "
-"ao banco de dados Specify. A reversão inteira será cancelada se qualquer um "
-"dos dados carregados tiver sido referenciado (reutilizado) por outros "
-"registros de dados desde que foram carregados."
+"A reversão removerá os novos registros de dados que este Conjunto de Dados "
+"adicionou ao banco de dados Especificar. A reversão completa será cancelada "
+"se algum dos dados enviados tiver sido referenciado (reutilizado) por outros "
+"registros de dados desde o envio."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:66
@@ -281,10 +281,11 @@ msgstr "Excluir este conjunto de dados?"
 #, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
-"Excluir um Data Set remove permanentemente ele e seu Plano de Upload. "
-"Mapeamentos de dados não estarão mais disponíveis para reutilização com "
-"outros Data Sets. Além disso, após a exclusão, Rollback não será mais uma "
-"opção para um Data Set carregado."
+"A exclusão de um Conjunto de Dados o remove permanentemente, juntamente com "
+"seu Plano de Upload. Os mapeamentos de dados não estarão mais disponíveis "
+"para reutilização com outros Conjuntos de Dados. Além disso, após a "
+"exclusão, a opção de Reversão não será mais uma opção para um Conjunto de "
+"Dados carregado."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:124
@@ -328,8 +329,7 @@ msgstr "As alterações neste conjunto de dados não foram salvas."
 #: components/WorkBench/WbValidation.tsx:281
 #, fuzzy
 msgid "noMatchErrorMessage"
-msgstr ""
-"Nenhum registro correspondente para a tabela que deve ser correspondida."
+msgstr "Nenhum registro correspondente para a tabela must-match."
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:310
@@ -406,8 +406,9 @@ msgstr "O upload falhou devido a um ou mais erros de valor de célula."
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Valide o Data Set e revise as dicas de mouseover para cada célula de erro, "
-"então faça as correções apropriadas. Salve e tente novamente o Upload."
+"Valide o conjunto de dados e revise as dicas de mouseover para cada célula "
+"com erro. Em seguida, faça as correções apropriadas. Salve e tente o upload "
+"novamente."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:340
@@ -426,7 +427,7 @@ msgstr ""
 #: components/WbActions/index.tsx:213
 #, fuzzy
 msgid "validationCanceled"
-msgstr "Validação Cancelada"
+msgstr "Validação cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:221
@@ -527,8 +528,8 @@ msgstr ""
 #, fuzzy
 msgid "unavailableWhileValidating"
 msgstr ""
-"Esta ação não estará disponível enquanto a Verificação de Dados estiver em "
-"andamento"
+"Esta ação não estará disponível enquanto a verificação de dados estiver em "
+"andamento."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/WbToolkit/CoordinateConverter.tsx:57
@@ -598,7 +599,7 @@ msgstr "Opções de navegação"
 #: components/WorkBench/AdvancedSearch.tsx:118
 #, fuzzy
 msgid "cursorPriority"
-msgstr "Prioridade do Cursor"
+msgstr "Prioridade do cursor"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:131
@@ -646,7 +647,7 @@ msgstr "Pesquisa ao vivo"
 #: components/WorkBench/AdvancedSearch.tsx:170
 #, fuzzy
 msgid "replaceOptions"
-msgstr "Substituir opções"
+msgstr "Opções de substituição"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
@@ -664,7 +665,7 @@ msgstr "Substituir todas as correspondências"
 #: components/WorkBench/AdvancedSearch.tsx:186
 #, fuzzy
 msgid "replaceNext"
-msgstr "Substituir próxima ocorrência"
+msgstr "Substituir a próxima ocorrência"
 
 #. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:207
@@ -887,7 +888,7 @@ msgstr "Carimbo de data e hora carregado"
 #: components/WorkBench/DataSetMeta.tsx:374
 #, fuzzy
 msgid "dataSetUploadedLabel"
-msgstr "(Carregado, somente leitura)"
+msgstr "(Enviado, somente leitura)"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:67
@@ -919,7 +920,7 @@ msgstr "Abortando..."
 #: components/WorkBench/Status.tsx:92
 #, fuzzy
 msgid "wbStatusAbortFailed"
-msgstr "Falha ao abortar {operationName:string}. Tente novamente mais tarde"
+msgstr "Falha ao abortar {operationName:string}. Tente novamente mais tarde."
 
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:119
@@ -947,8 +948,8 @@ msgstr "{operationName:string} deste conjunto de dados deve começar em breve."
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
 "Se esta mensagem persistir por mais de 30 segundos, o processo "
-"{operationName:string} está ocupado com outro Data Set. Tente novamente mais "
-"tarde."
+"{operationName:string} está ocupado com outro conjunto de dados. Tente "
+"novamente mais tarde."
 
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
