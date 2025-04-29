@@ -212,6 +212,7 @@ function Field({
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
+      max={Number.MAX_SAFE_INTEGER}
       name={name}
       placeholder={
         displayPrimaryCatNumberPlaceHolder &&
