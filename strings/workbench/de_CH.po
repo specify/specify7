@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-03-29 07:01+0000\n"
+"PO-Revision-Date: 2025-04-29 07:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
@@ -348,7 +348,7 @@ msgstr "Validierung ohne Fehler abgeschlossen"
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Bei der Validierung wurden keine Fehler gefunden. Der Upload in die "
-"Datenbank ist möglich."
+"Datenbank ist nun möglich."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:307
@@ -522,7 +522,8 @@ msgstr "Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar"
 #: components/WbActions/index.tsx:106
 #, fuzzy
 msgid "unavailableWhileValidating"
-msgstr "Diese Aktion ist nicht verfügbar, während die Datenprüfung läuft."
+msgstr ""
+"Diese Aktion ist während der laufenden Datenüberprüfung nicht verfügbar."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/WbToolkit/CoordinateConverter.tsx:57
