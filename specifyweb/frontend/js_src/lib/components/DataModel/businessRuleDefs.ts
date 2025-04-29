@@ -3,6 +3,7 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
@@ -27,6 +28,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -310,6 +312,33 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
+      childCo: async (
+        cojo: SpecifyResource<CollectionObjectGroupJoin>
+      ): Promise<BusinessRuleResult> => {
+        const childCO = cojo.get('childCo');
+        const childCOId = idFromUrl(childCO!);
+        const CO: SpecifyResource<CollectionObject> | void =
+          await new tables.CollectionObject.Resource({ id: childCOId })
+            .fetch()
+            .then((co) => co)
+            .catch((error) => {
+              console.error('Failed to fetch CollectionObject:', error);
+            });
+        let coParent;
+        if (CO !== undefined) {
+          coParent = CO.get('parentCO');
+        }
+        return coParent === null
+          ? {
+              isValid: true,
+              saveBlockerKey: CO_HAS_PARENT,
+            }
+          : {
+              isValid: false,
+              reason: resourcesText.coHasParent(),
+              saveBlockerKey: CO_HAS_PARENT,
+            };
+      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -351,19 +380,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Collector: {
-    fieldChecks:{
-      isPrimary: (
-        collector: SpecifyResource<Collector>
-      ): void => {
+    fieldChecks: {
+      isPrimary: (collector: SpecifyResource<Collector>): void => {
         if (collector.get('isPrimary') && collector.collection !== undefined) {
-          collector.collection.models.map((other: SpecifyResource<Collector>) => {
-            if (other.cid !== collector.cid) {
-              other.set('isPrimary', false)
+          collector.collection.models.map(
+            (other: SpecifyResource<Collector>) => {
+              if (other.cid !== collector.cid) {
+                other.set('isPrimary', false);
+              }
             }
-          }
-        )
+          );
         }
-      }
+      },
     },
     onRemoved: (collector, collection): void => {
       if (collector.get('isPrimary') && collection.models.length > 0) {
@@ -371,10 +399,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: (collector, collection): void => {
-      if (collection.models.length === 1){
-        collector.set('isPrimary', true)
+      if (collection.models.length === 1) {
+        collector.set('isPrimary', true);
       }
-    }
+    },
   },
 
   Determination: {
@@ -631,6 +659,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepLoaned = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          totalPrepLoaned += quantity;
+        });
+
+        if (totalPrep < totalPrepLoaned) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+        }
+        return undefined;
+      },
+    },
     onRemoved: (preparation, collection): void => {
       if (preparation.get('isOnLoan') === true) {
         setSaveBlockers(
@@ -638,7 +695,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnLoan,
           [resourcesText.deleteLoanedPrep()],
           PREPARATION_LOANED_KEY
-        )
+        );
       }
       if (preparation.get('isOnGift') === true) {
         setSaveBlockers(
@@ -646,7 +703,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnGift,
           [resourcesText.deleteGiftedPrep()],
           PREPARATION_GIFTED_KEY
-        )
+        );
       }
       if (preparation.get('isOnDisposal') === true) {
         setSaveBlockers(
@@ -654,7 +711,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnDisposal,
           [resourcesText.deleteDisposedPrep()],
           PREPARATION_DISPOSED_KEY
-        )
+        );
       }
       if (preparation.get('isOnExchangeOut') === true) {
         setSaveBlockers(
@@ -662,7 +719,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnExchangeOut,
           [resourcesText.deleteExchangeOutPrep()],
           PREPARATION_EXCHANGED_OUT_KEY
-        )
+        );
       }
       if (preparation.get('isOnExchangeIn') === true) {
         setSaveBlockers(
@@ -670,8 +727,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           preparation.specifyTable.field.isOnExchangeIn,
           [resourcesText.deleteExchangeInPrep()],
           PREPARATION_EXCHANGED_IN_KEY
-        )
+        );
       }
-    }
-  }
+    },
+  },
 };

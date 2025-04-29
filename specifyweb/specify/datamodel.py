@@ -619,7 +619,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='tags', type='one-to-many',required=False, relatedModelName='AttachmentTag', otherSideName='attachment'),
             Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='attachment'),
             Relationship(name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='attachment'),
-            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
+            Relationship(name='spDataSetAttachments', type='one-to-many',required=False, relatedModelName='SpDataSetAttachment', otherSideName='attachment')
         ],
         fieldAliases=[
 
@@ -1601,6 +1602,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
+            Relationship(name='parentCO', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ParentCOID', otherSideName='children'),
+            Relationship(name='children', type='one-to-many', required=False, relatedModelName='CollectionObject', otherSideName='parentCO', dependent=True),
         ],
         fieldAliases=[
 
@@ -8226,6 +8229,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
+            Relationship(name='spDataSetAttachments', type='one-to-many',required=False, relatedModelName='SpDataSetAttachment', otherSideName='spdataset', dependent=True),
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
             Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
@@ -8710,6 +8714,36 @@ datamodel = Datamodel(tables=[
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTectonicUnit'}
+        ],
+    ),
+    Table( # SpDataSetAttachment
+        sp7_only=True,
+        classname='edu.ku.brc.specify.datamodel.SpDataSetAttachment',
+        table='spdatasetattachment',
+        tableId=1028,
+        system=True,
+        idColumn='SpDataSetAttachmentID',
+        idFieldName='spDataSetAttachmentId',
+        idField=IdField(name='spDataSetAttachmentId', column='SpDataSetAttachmentID', type='java.lang.Integer'),
+        fields=[
+            Field(name='collectionMemberId', column='CollectionMemberID', indexed=True, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='SpDataSetAttColMemIDX', column_names=['CollectionMemberID'])
+        ],
+        relationships=[
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='spDataSetAttachments', dependent=True),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spdataset', type='many-to-one',required=True, relatedModelName='Spdataset', column='SpDataSetID', otherSideName='spDataSetAttachments')
+        ],
+        fieldAliases=[
+
         ],
     ),
 ])
