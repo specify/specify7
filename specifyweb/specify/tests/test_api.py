@@ -77,6 +77,7 @@ class MainSetupTearDown:
             geographytreedef=self.geographytreedef,
             division=self.division,
             datatype=self.datatype,
+            type='paleobotany'
         )
 
         apply_default_uniqueness_rules(self.discipline)
