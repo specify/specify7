@@ -179,3 +179,7 @@ MIGRATION_0027_UPDATE_FIELDS = {
         ('children', 'Children', 'Children'),
     ]
 }
+
+MIGRATION_0028_TABLES = [
+    ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
+]
