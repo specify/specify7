@@ -2,7 +2,8 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
