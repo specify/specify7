@@ -74,19 +74,25 @@ def make_tree_fieldnames(table: Table, reverse=False):
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
-
 def find_tree_and_field(table, fieldname: str):
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
-    # NOTE: Assumes rank names have no spaces
+
     tree_rank_and_field = fieldname.split(" ")
     mapping = make_tree_fieldnames(table)
+
     if len(tree_rank_and_field) == 1:
         return tree_rank_and_field[0], mapping[""]
+
+    if len(tree_rank_and_field) > 2:
+        tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
+
+    if len(tree_rank_and_field) != 2:
+        raise ValueError(f"Invalid tree field format: '{fieldname}' → {tree_rank_and_field}")
+
     tree_rank, tree_field = tree_rank_and_field
     return tree_rank, mapping.get(tree_field, tree_field)
-
 
 def make_stringid(fs, table_list):
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
