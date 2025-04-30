@@ -43,6 +43,9 @@ export function WbRawPlan({
           datasetId={dataset.id}
           datasetName={dataset.name}
           uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
+          isUploaded={
+            dataset.uploadresult !== null && dataset.uploadresult.success
+          }
           onChanged={(plan) => {
             overwriteReadOnly(dataset, 'uploadplan', plan);
             triggerDatasetRefresh();
@@ -59,6 +62,7 @@ function RawUploadPlan({
   datasetId,
   datasetName: name,
   uploadPlan: rawPlan,
+  isUploaded,
   onClose: handleClose,
   onChanged: handleChanged,
   onDeleted: handleDeleted,
@@ -66,6 +70,7 @@ function RawUploadPlan({
   readonly datasetId: number;
   readonly datasetName: string;
   readonly uploadPlan: UploadPlan;
+  readonly isUploaded: boolean;
   readonly onClose: () => void;
   readonly onChanged: (plan: UploadPlan) => void;
   readonly onDeleted: () => void;
@@ -103,7 +108,9 @@ function RawUploadPlan({
                   .finally(handleClose)
               );
             }}
-            disabled={JSON.stringify(rawPlan, null, 4) === uploadPlan}
+            disabled={
+              JSON.stringify(rawPlan, null, 4) === uploadPlan || isUploaded
+            }
           >
             {commonText.save()}
           </Button.Save>
