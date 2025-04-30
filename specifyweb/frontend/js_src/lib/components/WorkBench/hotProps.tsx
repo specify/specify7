@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
 import { TableIcon } from '../Molecules/TableIcon';
