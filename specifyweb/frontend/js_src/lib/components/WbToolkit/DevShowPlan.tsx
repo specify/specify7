@@ -103,6 +103,7 @@ function RawUploadPlan({
                   .finally(handleClose)
               );
             }}
+            disabled={JSON.stringify(rawPlan, null, 4) === uploadPlan}
           >
             {commonText.save()}
           </Button.Save>
