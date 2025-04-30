@@ -69,7 +69,7 @@ def make_table_list(fs):
 
 
 def make_tree_fieldnames(table: Table, reverse=False):
-    mapping = {"ID": table.idFieldName.lower(), "": "fullname"}
+    mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
