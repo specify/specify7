@@ -79,11 +79,18 @@ def find_tree_and_field(table, fieldname: str):
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
-    # NOTE: Assumes rank names have no spaces
+    
     tree_rank_and_field = fieldname.split(" ")
     mapping = make_tree_fieldnames(table)
+
+    # BUG: Edge case when there's no field AND rank name has a space?
     if len(tree_rank_and_field) == 1:
         return tree_rank_and_field[0], mapping[""]
+    
+    # Handles case where rank name contains spaces
+    if len(tree_rank_and_field) > 2:
+        tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
+    
     tree_rank, tree_field = tree_rank_and_field
     return tree_rank, mapping.get(tree_field, tree_field)
 
