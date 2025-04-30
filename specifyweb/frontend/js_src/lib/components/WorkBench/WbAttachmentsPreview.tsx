@@ -205,7 +205,7 @@ function fetchRowAttachments(
           'Attachment'
         );
         if (resource !== undefined && index === 0) {
-          // TODO: update spDataSetAttachment's ordinal and use data.ordinal === 0
+          // TODO: update spDataSetAttachment's ordinal when uploading multiple attachments to a single row and use data.ordinal === 0
           setSelectedAttachment(resource);
         }
         insertAttachmentPreviewCell(index, {

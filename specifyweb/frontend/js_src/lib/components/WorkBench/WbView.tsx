@@ -164,7 +164,7 @@ export function WbView({
     _openAttachments,
     _closeAttachments,
     toggleAttachments,
-  ] = useBooleanState();
+  ] = useBooleanState(useAttachments);
 
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
