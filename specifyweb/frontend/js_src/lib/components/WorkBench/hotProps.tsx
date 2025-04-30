@@ -11,6 +11,7 @@ import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { attachmentsText } from '../../localization/attachments';
 
 const comments = { displayDelay: 100 };
 
