@@ -22,7 +22,8 @@ from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
-from specifyweb.specify.tree_views import TREE_INFORMATION
+from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_information
+from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
@@ -57,7 +58,7 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 # REFACTOR: Break this file into smaller pieaces
 
 # TODO: Play-around with localizing
-NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
+BATCH_EDIT_NULL_RECORD_DESCRIPTION = ""
 
 # TODO: add backend support for making system tables readonly
 BATCH_EDIT_READONLY_TABLES = [*CONCRETE_HIERARCHY]
@@ -1020,7 +1021,8 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=True
+        omit_relationships=False,
+        treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
     mapped_raws = [
