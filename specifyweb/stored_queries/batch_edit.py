@@ -22,6 +22,7 @@ from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.tree_views import TREE_INFORMATION
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
