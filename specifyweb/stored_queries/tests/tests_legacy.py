@@ -7,9 +7,9 @@ from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 from .. import models
 
 class QueryFieldTests(TestCase):
-    # def test_stringid_roundtrip_from_bug(self) -> None:
-    #     fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
-    #     self.assertEqual("4.taxon.Genus", fs.to_stringid())
+    def test_stringid_roundtrip_from_bug(self) -> None:
+        fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
+        self.assertEqual("4.taxon.Genus", fs.to_stringid())
 
     @expectedFailure
     def test_stringid_roundtrip_en_masse(self) -> None:
