@@ -842,6 +842,9 @@ export const resourcesText = createDictionary({
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
   },
+  coHasParent: {
+    'en-us': 'A CO with a parent cannot be added to a COG.',
+  },
   primaryCogChildRequired: {
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
@@ -867,5 +870,8 @@ export const resourcesText = createDictionary({
   invalidDeterminationTaxon: {
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',
+  },
+  preparationUsedInLoan: {
+    'en-us': 'The preparation is used in a loan.',
   },
 } as const);
