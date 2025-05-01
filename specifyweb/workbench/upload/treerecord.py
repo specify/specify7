@@ -51,6 +51,9 @@ from .uploadable import (
 
 logger = logging.getLogger(__name__)
 
+# Rank keys in the upload plan have the format: <treename>~><rankname>
+RANK_KEY_DELIMITER = "~>"
+
 class TreeRankCell(NamedTuple):
     treedef_id: int
     treedefitem_name: str
@@ -78,7 +81,7 @@ class TreeRank(NamedTuple):
             """
             Extract treedef_name from rank_name if it exists in the format 'treedef_name~>rank_name'.
             """
-            parts = rank_name.split('~>', 1)
+            parts = rank_name.split(RANK_KEY_DELIMITER, 1)
             if len(parts) == 2:
                 treedef_name = parts[0]
                 rank_name = parts[1]
@@ -126,6 +129,7 @@ class TreeRankRecord(NamedTuple):
 
         return treedefitem_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id).exists()
 
+        
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[Union[str, TreeRankRecord], Dict[str, ColumnOptions]]
@@ -135,7 +139,7 @@ class TreeRecord(NamedTuple):
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
-        return apply_scoping(self, collection)
+        return apply_scoping(self, collection, context)
 
     def get_cols(self) -> Set[str]:
         return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
@@ -147,7 +151,7 @@ class TreeRecord(NamedTuple):
             rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
             treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
             
-            if len(cols) == 1:
+            if len(cols) == 1 and not isinstance(rank, TreeRankRecord):
                 result["ranks"][rank_key] = treeNodeCols["name"]
             else:
                 rank_data = {"treeNodeCols": treeNodeCols}
@@ -170,6 +174,7 @@ class ScopedTreeRecord(NamedTuple):
     disambiguation: Dict[str, int]
     batch_edit_pack: Optional[Dict[str, Any]]
     scoped_cotypes: Any
+    cotype_column: Optional[str]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return (
@@ -185,6 +190,8 @@ class ScopedTreeRecord(NamedTuple):
             return self
         # batch-edit considers ranks as self-relationships, and are trivially stored in to-one
         rank_from_pack = batch_edit_pack.get("to_one", {})
+        if rank_from_pack is None:
+            rank_from_pack = {}
         return self._replace(
             batch_edit_pack={
                 rank: pack["self"] for (rank, pack) in rank_from_pack.items()
@@ -317,16 +324,12 @@ class ScopedTreeRecord(NamedTuple):
     
     # Ensure cotype has same taxontreedef for ranks in row
     def _validate_trees_with_cotype(self, row: Row, treedefs_in_row: Set[int]):
-        if self.name.lower() != "taxon":
+        if self.name.lower() != "taxon" or self.cotype_column is None:
             return None
         
-        # TODO: Need a better way to do this
-        # Find a way to send cotype column when ScopedTreeRecord instance is created?
-        COL_NAMES = ["Type", "Collection Object Type"]
         def find_cotype_in_row(row: Row):
-            for col_name, value in row.items():
-                if col_name in COL_NAMES:
-                    return col_name, value
+            if isinstance(self.cotype_column, str) and self.cotype_column in row:
+                return row[self.cotype_column]
                 
             return None
         
@@ -334,10 +337,8 @@ class ScopedTreeRecord(NamedTuple):
             cotypes = self.scoped_cotypes.filter(name=cotype_name)
             return cotypes[0].taxontreedef.id if len(cotypes) > 0 else None
     
-        cotype = find_cotype_in_row(row)
-        if not cotype: return None
-
-        cotype_column, cotype_value = cotype
+        cotype_value = find_cotype_in_row(row)
+        if not cotype_value: return None
 
         cotype_treedef_id = get_cotype_tree_def(cotype_value)
         if not cotype_treedef_id: return None
@@ -347,7 +348,7 @@ class ScopedTreeRecord(NamedTuple):
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
         
-        return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, cotype_column)
+        return self, WorkBenchParseFailure('Invalid type for selected tree rank(s)', {}, self.cotype_column)
 
     def bind(
         self,
@@ -401,7 +402,7 @@ class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
         self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection)
+        s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTreeRecord(*s)
 
 
@@ -905,11 +906,13 @@ class BoundTreeRecord(NamedTuple):
 
         previous_parent_id = None
         for tdi in self.treedefitems[::-1]:
-            if tdi.name not in self.batch_edit_pack:
+            ref_key = f"{tdi.treedef.name}{RANK_KEY_DELIMITER}{tdi.name}{RANK_KEY_DELIMITER}{tdi.treedef.id}"
+            tree_rank_record = TreeRankRecord(tdi.name, tdi.treedef.id)
+            if ref_key not in self.batch_edit_pack:
                 continue
-            columns = [pr.column for pr in self.parsedFields[tdi.name]]
+            columns = [pr.column for pr in self.parsedFields[tree_rank_record]]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
-            pack = self.batch_edit_pack[tdi.name]
+            pack = self.batch_edit_pack[ref_key]
             try:
                 reference = safe_fetch(
                     model, {"id": pack["id"]}, pack.get("version", None)
