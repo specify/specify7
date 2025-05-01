@@ -492,6 +492,20 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="TectonicUnitTreeDef" title="TectonicUnitTreeDef" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDef" default="true">
+		<switch single="true">
+			<fields>
+				<field>name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="TectonicUnitTreeDefItem" title="TectonicUnitTreeDefItem" class="edu.ku.brc.specify.datamodel.TectonicUnitTreeDefItem" default="true">
+		<switch single="true">
+			<fields>
+				<field>name</field>
+			</fields>
+		</switch>
+	</format>
 	<aggregators>
 		<aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" format="AccessionAgent"/>
 		<aggregator name="AccessionAttachment" title="AccessionAttachment" class="edu.ku.brc.specify.datamodel.AccessionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
