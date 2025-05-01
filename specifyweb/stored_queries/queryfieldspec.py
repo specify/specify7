@@ -87,7 +87,7 @@ def find_tree_and_field(table: Table, fieldname: str):
         return tree_rank_and_field[0], mapping[""]
     
     # Handles case where rank name contains spaces
-    if len(tree_rank_and_field) > 2:
+    if len(tree_rank_and_field) >= 2:
         if table.get_field(tree_rank_and_field[-1]) is not None:
             tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
         else:
