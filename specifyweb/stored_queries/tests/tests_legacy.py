@@ -3,13 +3,13 @@ from sqlalchemy import orm, inspect
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, find_tree_and_field
 from .. import models
 
 class QueryFieldTests(TestCase):
-    # def test_stringid_roundtrip_from_bug(self) -> None:
-    #     fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
-    #     self.assertEqual("4.taxon.Genus", fs.to_stringid())
+    def test_stringid_roundtrip_from_bug(self) -> None:
+        fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
+        self.assertEqual("4.taxon.Genus", fs.to_stringid())
 
     @expectedFailure
     def test_stringid_roundtrip_en_masse(self) -> None:
@@ -17,6 +17,39 @@ class QueryFieldTests(TestCase):
             fs = QueryFieldSpec.from_stringid(stringid, relfld)
             self.assertEqual(relfld == 1, fs.is_relationship())
             self.assertEqual(stringid.lower(), fs.to_stringid().lower())
+
+    """
+      Test to ensure tree rank mappings work. Query must use the name field by default instead of fullName
+      Must be able to handle rank names with spaces. If this test breaks, chances are that users have broken labels and reports
+    """
+    def test_find_tree_and_field(self) -> None:
+        geography = spmodels.datamodel.get_table('geography')
+        # Rank with no spaces
+        rank_name, field_name = find_tree_and_field(geography, "Continent")
+        self.assertEqual(rank_name, "Continent")
+        self.assertEqual(field_name, "name")
+
+        rank_name, field_name = find_tree_and_field(geography, "Continent geographyCode")
+        self.assertEqual(rank_name, "Continent")
+        self.assertEqual(field_name, "geographyCode")
+
+        # Rank with one space
+        rank_name, field_name = find_tree_and_field(geography, "Sea Basin geographyCode")
+        self.assertEqual(rank_name, "Sea Basin")
+        self.assertEqual(field_name, "geographyCode")
+
+        rank_name, field_name = find_tree_and_field(geography, "Sea Basin")
+        self.assertEqual(rank_name, "Sea Basin")
+        self.assertEqual(field_name, "name")
+
+        # Rank with multiple spaces
+        rank_name, field_name = find_tree_and_field(geography, "Country / Region")
+        self.assertEqual(rank_name, "Country / Region")
+        self.assertEqual(field_name, "name")
+
+        rank_name, field_name = find_tree_and_field(geography, "Country / Region geographyCode")
+        self.assertEqual(rank_name, "Country / Region")
+        self.assertEqual(field_name, "geographyCode")
 
 @skip("These tests are out of date.")
 class StoredQueriesTests(ApiTests):
