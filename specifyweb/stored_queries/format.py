@@ -351,7 +351,12 @@ class ObjectFormatter(object):
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
         
-        if specify_field is CollectionObject_model.get_field('catalogNumber') and all_numeric_catnum_formats(self.collection):
+        if specify_field is CollectionObject_model.get_field('catalogNumber') \
+                and all_numeric_catnum_formats(self.collection):
+            # While the frontend can format the catalogNumber if needed,
+            # processes like reports, labels, and query exports generally
+            # expect the catalogNumber to be numeric if possible.
+            # See https://github.com/specify/specify7/issues/6464
             return cast(field, types.Numeric(65))
 
         if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
