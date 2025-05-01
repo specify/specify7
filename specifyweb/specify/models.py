@@ -3904,6 +3904,8 @@ class Giftpreparation(models.Model):
     incomments = models.TextField(blank=True, null=True, unique=False, db_column='InComments', db_index=False)
     outcomments = models.TextField(blank=True, null=True, unique=False, db_column='OutComments', db_index=False)
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
+    quantityresolved = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityResolved', db_index=False)
+    quantityreturned = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityReturned', db_index=False)
     receivedcomments = models.TextField(blank=True, null=True, unique=False, db_column='ReceivedComments', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)

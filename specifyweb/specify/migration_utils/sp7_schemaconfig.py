@@ -179,3 +179,14 @@ MIGRATION_0027_UPDATE_FIELDS = {
         ('children', 'Children', 'Children'),
     ]
 }
+
+MIGRATION_0028_FIELDS = {
+    'GiftPreparation': ['quantityResolved', 'quantityReturned'],
+}
+
+MIGRATION_0028_UPDATE_FIELDS = {
+    'GiftPreparation': [
+        ('quantityResolved','Quantity Resolved', 'Number of specimens returned, deaccessioned or otherwise accounted for. (necessary for Lots).'), 
+        ('quantityReturned', 'Quantity Returned', 'Number of specimens returned. (necessary for Lots)'),
+    ]
+}

@@ -188,6 +188,9 @@ export function PrepDialog({
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
+              const giftPreparation = toTable(result, 'GiftPreparation');
+              giftPreparation?.set('quantityReturned', 0);
+              giftPreparation?.set('quantityResolved', 0);
               return result;
             })
           );
