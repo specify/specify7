@@ -7,7 +7,8 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.utils import get_picklists
-from sqlalchemy import orm, Table as SQLTable, inspect
+from sqlalchemy import Table as SQLTable, inspect
+from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import case, func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -277,16 +278,33 @@ class ObjectFormatter(object):
 
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+        subquery_query = Query([]) \
+            .select_from(orm_table) \
+            .filter(join_column == getattr(rel_table, rel_table._id)) \
+            .correlate(rel_table)
+
+        is_self_join_aggregation = specify_model.name.lower() == query.query.selectable.froms[0].name.lower()
+        # is_self_join_aggregation = orm_table.name.lower() == query.query.selectable.froms[0].name.lower()
+        aliased_orm_table = aliased(orm_table)
+
+        if is_self_join_aggregation: # Handle self join aggregation
+            # TODO: Handle self join aggregation in the general case
+            if field.name == 'children' and field.relatedModelName == 'CollectionObject':
+                # Child = aliased(orm_table)
+                subquery_query = Query([]) \
+                    .select_from(aliased_orm_table) \
+                    .filter(aliased_orm_table.ParentCOID == getattr(rel_table, rel_table._id)) \
+                    .correlate(rel_table)
+
         subquery = QueryConstruct(
             collection=query.collection,
             objectformatter=self,
-            query=orm.Query([]).select_from(orm_table) \
-                .filter(join_column == getattr(rel_table, rel_table._id)) \
-                .correlate(rel_table)
+            query=subquery_query
         )
 
-        subquery, formatted = self.objformat(subquery, orm_table,
-                                             formatter_name, cycle_with_self)
+        subquery, formatted = self.objformat(subquery, orm_table, formatter_name, cycle_with_self) \
+            if not is_self_join_aggregation \
+            else self.objformat(subquery, aliased_orm_table, formatter_name, cycle_with_self) 
 
         if order_by != '':
             subquery, order_by_expr, _ = self.make_expr(subquery, order_by, {}, orm_table, specify_model, do_blank_null=False)
@@ -295,7 +313,6 @@ class ObjectFormatter(object):
             order_by_expr = []
 
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
-
 
         aggregator_label = f"aggregator_{self.aggregator_count}"
         self.aggregator_count += 1
