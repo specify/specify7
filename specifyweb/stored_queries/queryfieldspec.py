@@ -69,21 +69,31 @@ def make_table_list(fs):
 
 
 def make_tree_fieldnames(table: Table, reverse=False):
-    mapping = {"ID": table.idFieldName.lower(), "": "fullname"}
+    mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
 
-def find_tree_and_field(table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str):
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
-    # NOTE: Assumes rank names have no spaces
+    
     tree_rank_and_field = fieldname.split(" ")
     mapping = make_tree_fieldnames(table)
+
     if len(tree_rank_and_field) == 1:
         return tree_rank_and_field[0], mapping[""]
+    
+    # Handles case where rank name contains spaces
+    if len(tree_rank_and_field) >= 2:
+        if table.get_field(tree_rank_and_field[-1]) is not None:
+            tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
+        else:
+            # Edge case: when rank name has spaces and there is no field in stringid (ie. fullname query)
+            tree_rank_and_field = [" ".join(tree_rank_and_field), ""]
+    
     tree_rank, tree_field = tree_rank_and_field
     return tree_rank, mapping.get(tree_field, tree_field)
 
