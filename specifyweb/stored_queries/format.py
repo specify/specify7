@@ -292,12 +292,22 @@ class ObjectFormatter(object):
         aliased_orm_table = aliased(orm_table)
 
         if is_self_join_aggregation: # Handle self join aggregation
-            # TODO: Handle self join aggregation in the general case
             if field.name == 'children' and field.relatedModelName == 'CollectionObject':
                 # Child = aliased(orm_table)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
                     .filter(aliased_orm_table.ParentCOID == getattr(rel_table, rel_table._id)) \
+                    .correlate(rel_table)
+            elif field.is_relationship and \
+                field.type == 'one-to-many' and \
+                field.otherSideName in [fld.name for fld in specify_model.relationships]:
+                # Handle self join aggregation in the general case
+                join_field = specify_model.get_field(field.otherSideName)
+                join_column_str = join_field.column
+                join_column = getattr(aliased_orm_table, join_column_str)
+                subquery_query = Query([]) \
+                    .select_from(aliased_orm_table) \
+                    .filter(join_column == getattr(rel_table, rel_table._id)) \
                     .correlate(rel_table)
             else:
                 is_self_join_aggregation = False
