@@ -22,6 +22,7 @@ from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.datamodel import is_tree_table
+from specifyweb.specify.tree_views import get_all_tree_information, TREE_INFORMATION
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
@@ -31,7 +32,7 @@ from specifyweb.stored_queries.queryfieldspec import (
 )
 from specifyweb.workbench.models import Spdataset
 from specifyweb.workbench.permissions import BatchEditDataSetPT
-from specifyweb.workbench.upload.treerecord import TreeRecord
+from specifyweb.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
 from specifyweb.workbench.upload.upload_plan_schema import parse_column_options
 from specifyweb.workbench.upload.upload_table import UploadTable
 from specifyweb.workbench.upload.uploadable import NULL_RECORD, Uploadable
@@ -53,14 +54,15 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 #   - does generation of upload plan in the backend bc upload plan is not known (we don't know count of to-many).
 #       - seemed complicated to merge upload plan from the frontend
 #   - need to place id markers at correct level, so need to follow upload plan anyways.
+# REFACTOR: Break this file into smaller pieaces
 
 # TODO: Play-around with localizing
-NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
+BATCH_EDIT_NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
 
 # TODO: add backend support for making system tables readonly
-READONLY_TABLES = [*CONCRETE_HIERARCHY]
+BATCH_EDIT_READONLY_TABLES = [*CONCRETE_HIERARCHY]
 
-SHARED_READONLY_FIELDS = [
+BATCH_EDIT_SHARED_READONLY_FIELDS = [
     "timestampcreated",
     "timestampmodified",
     "version",
@@ -68,25 +70,27 @@ SHARED_READONLY_FIELDS = [
     "highestchildnodenumber",
     "rankid",
     "fullname",
-    "age"
+    "age",
 ]
 
-SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
+BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
+
+BATCH_EDIT_REQUIRED_TREE_FIELDS = ["name"]
 
 
 def get_readonly_fields(table: Table):
-    fields = [*SHARED_READONLY_FIELDS, table.idFieldName.lower()]
+    fields = [*BATCH_EDIT_SHARED_READONLY_FIELDS, table.idFieldName.lower()]
     relationships = [
         rel.name
         for rel in table.relationships
-        if rel.relatedModelName.lower() in READONLY_TABLES
+        if rel.relatedModelName.lower() in BATCH_EDIT_READONLY_TABLES
     ]
     if table.name.lower() == "determination":
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
         relationships = ["definitionitem"]
 
-    return fields, [*SHARED_READONLY_RELATIONSHIPS, *relationships]
+    return fields, [*BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS, *relationships]
 
 
 FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
@@ -179,7 +183,7 @@ class BatchEditPack(NamedTuple):
             display=True,
             format_name=None,
             sort_type=sort_type,
-            strict=False
+            strict=False,
         )
 
     def _index(
@@ -244,6 +248,12 @@ class BatchEditPack(NamedTuple):
         if len(join_path) < 2:
             return False
         return isinstance(join_path[-2], TreeRankQuery)
+    
+def get_tree_rank_record(key) -> TreeRankRecord:
+    from specifyweb.workbench.upload.treerecord import RANK_KEY_DELIMITER
+
+    tree_name, rank_name, tree_def_id = tuple(key.split(RANK_KEY_DELIMITER))
+    return TreeRankRecord(RANK_KEY_DELIMITER.join([tree_name, rank_name]), int(tree_def_id))
 
 
 # These constants are purely for memory optimization, no code depends and/or cares if this is constant.
@@ -261,6 +271,7 @@ class RowPlanMap(NamedTuple):
     to_one: dict[str, "RowPlanMap"] = {}
     to_many: dict[str, "RowPlanMap"] = {}
     is_naive: bool = True
+    tree_rank: Optional[TreeRankQuery] = None
 
     @staticmethod
     def _merge(
@@ -282,12 +293,16 @@ class RowPlanMap(NamedTuple):
         # That is, we'll currently incorrectly disallow making new ones. Fine for now.
         to_one = reduce(RowPlanMap._merge, other.to_one.items(), self.to_one)
         to_many = reduce(RowPlanMap._merge, other.to_many.items(), self.to_many)
+        assert not (
+            (self.tree_rank is None) ^ (other.tree_rank is None)
+        ), "Trying to merge inconsistent rowplanmaps"
         return RowPlanMap(
             batch_edit_pack,
             new_columns,
             to_one,
             to_many,
             is_naive=is_self_naive,
+            tree_rank=self.tree_rank,
         )
 
     @staticmethod
@@ -306,6 +321,10 @@ class RowPlanMap(NamedTuple):
 
     # to make things simpler, returns the QueryFields along with indexed plan, which are expected to be used together
     def index_plan(self, start_index=1) -> tuple["RowPlanMap", list[QueryField]]:
+        intermediary_to_tree = any(
+            rowmap.tree_rank is not None for _, rowmap in self.to_one.items()
+        )
+        
         next_index = len(self.columns) + start_index
         # For optimization, and sanity, we remove the field from columns, as they are now completely redundant (we always know what they are using the id)
         _columns = [
@@ -324,7 +343,7 @@ class RowPlanMap(NamedTuple):
         next_index, _to_one, to_one_fields = reduce(
             RowPlanMap._index,
             # makes the order deterministic, would be funny otherwise
-            Func.sort_by_key(self.to_one),
+            Func.obj_to_list(self.to_one) if intermediary_to_tree else Func.sort_by_key(self.to_one),
             init(next_index),
         )
         next_index, _to_many, to_many_fields = reduce(
@@ -406,35 +425,36 @@ class RowPlanMap(NamedTuple):
             original_field,
         )
 
-        boiler = RowPlanMap(columns=[], batch_edit_pack=batch_edit_pack)
+        remaining_map = remaining_map._replace(tree_rank=node if isinstance(node, TreeRankQuery) else None)
 
-        def _augment_is_naive(rel_type: Union[Literal["to_one"], Literal["to_many"]]):
+        boiler = RowPlanMap(
+            columns=[],
+            batch_edit_pack=batch_edit_pack,
+        )
 
-            rest_plan = {rel_name: remaining_map}
-            if rel_type == "to_one":
-                # Propagate is_naive up
-                return boiler._replace(
-                    is_naive=remaining_map.is_naive, to_one=rest_plan
-                )
-
-            # bc the user eperience guys want to be able to make new dets/preps one hop away
-            # but, we can't allow it for ordernumber when filtering. pretty annoying.
-            # and definitely not naive for any tree, well, technically it is possible, but for user's sake.
-            is_naive = not is_tree_table(next_table) and (
-                (
-                    len(running_path) == 0
-                    and (remaining_map.batch_edit_pack.order.field is None)
-                )
-                or remaining_map.is_naive
-            )
+        rest_plan = {rel_name: remaining_map}
+        if rel_type == "to_one":
+            # Propagate is_naive up
             return boiler._replace(
-                to_many={
-                    # to force-naiveness
-                    rel_name: remaining_map._replace(is_naive=is_naive)
-                }
+                is_naive=remaining_map.is_naive, to_one=rest_plan
             )
 
-        return _augment_is_naive(rel_type)
+        # bc the user eperience guys want to be able to make new dets/preps one hop away
+        # but, we can't allow it for ordernumber when filtering. pretty annoying.
+        # and definitely not naive for any tree, well, technically it is possible, but for user's sake.
+        is_naive = not is_tree_table(next_table) and (
+            (
+                len(running_path) == 0
+                and (remaining_map.batch_edit_pack.order.field is None)
+            )
+            or remaining_map.is_naive
+        )
+        return boiler._replace(
+            to_many={
+                # to force-naiveness
+                rel_name: remaining_map._replace(is_naive=is_naive)
+            }
+        )
 
     # generates multiple row plan maps, and merges them into one
     # this doesn't index the row plan, bc that is complicated.
@@ -494,7 +514,9 @@ class RowPlanMap(NamedTuple):
         # since is_naive is set,
         is_phantom = parent_is_phantom or not self.is_naive
         columns = [
-            pack._replace(value=NULL_RECORD_DESCRIPTION if is_phantom else None)
+            pack._replace(
+                value=BATCH_EDIT_NULL_RECORD_DESCRIPTION if is_phantom else None
+            )
             for pack in self.columns
         ]
         to_ones = {
@@ -535,6 +557,15 @@ class RowPlanMap(NamedTuple):
             to_one=to_one,
             to_many=to_many,
         )
+
+    def rewrite(
+        self, table: Table, all_tree_info: TREE_INFORMATION, running_path=[]
+    ) -> "RowPlanMap":
+        from .batch_edit_query_rewrites import _batch_edit_rewrite  # ugh, fix this
+
+        # NOTE: This is written in a very generic way, and makes future rewrites also not too hard.
+        # However, tree rank rewrites was probably the hardest that needed to be done.
+        return _batch_edit_rewrite(self, table, all_tree_info, running_path)
 
 
 # the main data-structure which stores the data
@@ -820,7 +851,7 @@ class RowPlanCanonical(NamedTuple):
     def to_upload_plan(
         self,
         base_table: Table,
-        localization_dump: dict[str, str],
+        localization_dump: dict[str, dict[str, str]],
         query_fields: list[QueryField],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
@@ -841,10 +872,15 @@ class RowPlanCanonical(NamedTuple):
             field = query_fields[
                 _id - 1
             ]  # Need to go off by 1, bc we added 1 to account for id fields
+            table_name, field_name = _get_table_and_field(field)
+            field_labels = localization_dump.get(table_name, {})
+            # It could happen that the field we saw doesn't exist.
+            # Plus, the default options get chosen in the cases of
+            if field_name not in field_labels or field.fieldspec.contains_tree_rank():
+                localized_label = naive_field_format(field.fieldspec)
+            else:
+                localized_label = field_labels[field_name]
             string_id = field.fieldspec.to_stringid()
-            localized_label = localization_dump.get(
-                string_id, naive_field_format(field.fieldspec)
-            )
             fields_added[localized_label] = fields_added.get(localized_label, 0) + 1
             _count = fields_added[localized_label]
             if _count > 1:
@@ -856,7 +892,7 @@ class RowPlanCanonical(NamedTuple):
                 or intermediary_to_tree
                 or (fieldspec.is_temporal() and fieldspec.date_part != "Full Date")
                 or fieldspec.get_field().name.lower() in readonly_fields
-                or fieldspec.table.name.lower() in READONLY_TABLES
+                or fieldspec.table.name.lower() in BATCH_EDIT_READONLY_TABLES
             )
             id_in_original_fields = get_column_id(string_id)
             return (
@@ -930,7 +966,7 @@ class RowPlanCanonical(NamedTuple):
             upload_plan: Uploadable = TreeRecord(
                 name=base_table.django_name,
                 ranks={
-                    key: upload_table.wbcols  # type: ignore
+                    get_tree_rank_record(key): upload_table.wbcols  # type: ignore
                     for (key, upload_table) in to_one_upload_tables.items()
                 },
             )
@@ -955,13 +991,16 @@ class RowPlanCanonical(NamedTuple):
 # Using this as a last resort to show fields, for unit tests
 def naive_field_format(fieldspec: QueryFieldSpec):
     field = fieldspec.get_field()
+    tree_rank = fieldspec.get_first_tree_rank()
+    prefix = f"{tree_rank[1].treedef_name} - {tree_rank[1].name} - " if tree_rank else ""
     if field is None:
-        return f"{fieldspec.table.name} (formatted)"
+        return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
-        return f"{fieldspec.table.name} ({'formatted' if field.type.endswith('to-one') else 'aggregatd'})"
-    return f"{fieldspec.table.name} {field.name}"
+        return f"{prefix}{fieldspec.table.name} ({'formatted' if field.type.endswith('to-one') else 'aggregatd'})"
+    return f"{prefix}{fieldspec.table.name} {field.name}"
 
 
+# @transaction.atomic <--- we DONT do this because the query logic could take up possibly multiple minutes
 def run_batch_edit(collection, user, spquery, agent):
     props = BatchEditProps(
         collection=collection,
@@ -972,7 +1011,8 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=True
+        omit_relationships=True,
+        treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
     mapped_raws = [
@@ -992,7 +1032,6 @@ def run_batch_edit(collection, user, spquery, agent):
     )
 
 
-# @transaction.atomic <--- we DONT do this because the query logic could take up possibly multiple minutes
 class BatchEditProps(TypedDict):
     collection: Any
     user: Any
@@ -1003,7 +1042,12 @@ class BatchEditProps(TypedDict):
     session_maker: Any
     fields: list[QueryField]
     omit_relationships: Optional[bool]
+    treedefsfilter: Any
 
+def _get_table_and_field(field: QueryField):
+    table_name = field.fieldspec.table.name
+    field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
+    return (table_name, field_name)
 
 def run_batch_edit_query(props: BatchEditProps):
 
@@ -1017,21 +1061,28 @@ def run_batch_edit_query(props: BatchEditProps):
 
     visible_fields = [field for field in fields if field.display]
 
+    treedefsfilter = props["treedefsfilter"]
+
     assert captions is None or (
         len(visible_fields) == len(captions)
     ), "Got misaligned captions!"
 
-    localization_dump: dict[str, str] = (
-        {
-            # we cannot use numbers since they can very off
-            field.fieldspec.to_stringid(): caption
-            for field, caption in zip(visible_fields, captions)
-        }
-        if captions is not None
-        else {}
-    )
+    localization_dump = {}
+    if captions:
+        for (field, caption) in zip(visible_fields, captions):
+            table_name, field_name = _get_table_and_field(field)
+            field_labels = localization_dump.get(table_name, {})
+            field_labels[field_name] = caption
+            localization_dump[table_name] = field_labels
 
-    row_plan = RowPlanMap.get_row_plan(visible_fields)
+    naive_row_plan = RowPlanMap.get_row_plan(visible_fields)
+    all_tree_info = get_all_tree_information(props["collection"], props["user"].id)
+    base_table = datamodel.get_table_by_id_strict(tableid, strict=True)
+    running_path = [base_table.name]
+
+    if treedefsfilter is not None:
+        all_tree_info = filter_tree_info(treedefsfilter, all_tree_info)
+    row_plan = naive_row_plan.rewrite(base_table, all_tree_info, running_path)
 
     indexed, query_fields = row_plan.index_plan()
     # we don't really care about these fields, since we'have already done the numbering (and it won't break with
@@ -1089,12 +1140,15 @@ def run_batch_edit_query(props: BatchEditProps):
     ), "Made irregular rows somewhere!"
 
     def _get_orig_column(string_id: str):
-        return next(
+        try:
+            return next(
             filter(
                 lambda field: field[1].fieldspec.to_stringid() == string_id,
                 enumerate(visible_fields),
-            )
-        )[0]
+            ))[0]
+        except StopIteration:
+            # Put the other ones at the very last.
+            return len(visible_fields)
 
     # Consider optimizing when relationships are not-editable? May not benefit actually
     # This permission just gets enforced here
@@ -1107,7 +1161,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
-        datamodel.get_table_by_id_strict(tableid, strict=True),
+        base_table,
         localization_dump,
         query_fields,
         {},
@@ -1119,7 +1173,7 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = Func.first(sorted(headers_enumerated, key=lambda tup: tup[1][0]))
+    visual_order = Func.first(headers_enumerated)
 
     headers = Func.second(key_and_headers)
 
@@ -1170,3 +1224,13 @@ def make_dataset(
         ds.save()
 
     return (ds_id, ds_name)
+
+
+def filter_tree_info(filters: Dict[str, List[int]], all_tree_info: Dict[str, List[TREE_INFORMATION]]):
+    for tablename in filters:
+        treetable_key = tablename.title()
+        if treetable_key in all_tree_info:
+            tree_filter = set(filters[tablename])
+            all_tree_info[treetable_key] = list(filter(lambda tree_info : tree_info['definition']['id'] in tree_filter, all_tree_info[treetable_key]))
+
+    return all_tree_info

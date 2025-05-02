@@ -12,6 +12,8 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
+from specifyweb.specify.models import Collectionobject
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
@@ -793,8 +795,6 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
-        # return {"results": list(query)}
         return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
 
@@ -929,6 +929,46 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    
+    if parent_inheritance_pref:
+        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    else: 
+        query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    
+    if should_list_query:
+        return list(query)
+    return query
+
+def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+        if not get_parent_cat_num_inheritance_setting(collection, user):
+            return list(query)
+
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the parent catalog number
+        for result in results:
+            result = list(result)
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+                child_id = result[0]  # Assuming the first column is the child's ID
+                child_obj = Collectionobject.objects.filter(id=child_id).first()
+                if child_obj and child_obj.parentco:
+                    result[catalog_number_field_index] = child_obj.parentco.catalognumber
+            updated_results.append(tuple(result))
+
+        return updated_results
+
+    return query
+
 def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]: 
         if not get_cat_num_inheritance_setting(collection, user):
@@ -958,11 +998,4 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
 
         return updated_results
 
-    return query
-
-def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
-    query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
-    
-    if should_list_query:
-        return list(query)
     return query
