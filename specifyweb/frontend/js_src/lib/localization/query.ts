@@ -606,23 +606,6 @@ export const queryText = createDictionary({
     'uk-ua': 'Так',
     'de-ch': 'Ja',
   },
-  noPreparationsToReturn: {
-    'en-us': 'There are no unresolved items to return',
-    'ru-ru': 'Нет нерешенных вопросов для возврата',
-    'es-es': 'No hay items sin resolver para devolver',
-    'fr-fr': "Il n'y a aucun article non résolu à retourner",
-    'uk-ua': 'Немає невирішених елементів для повернення',
-    'de-ch':
-      'Es gibt keine ungelösten Elemente, die zurückgegeben werden müssen',
-  },
-  itemsReturned: {
-    'en-us': 'Items have been returned',
-    'ru-ru': 'Товары были возвращены',
-    'es-es': 'Los items han sido devueltos',
-    'fr-fr': 'Les articles ont été retournés',
-    'uk-ua': 'Товари повернуто',
-    'de-ch': 'Artikel wurden zurückgegeben',
-  },
   queryResults: {
     'en-us': 'Query Results',
     'ru-ru': 'Результаты запроса',
@@ -918,6 +901,12 @@ export const queryText = createDictionary({
   },
   nonStrict: {
     'en-us': 'Non strict',
+  },
+  catalogNumberInheritance: {
+    'en-us': 'Catalog Number Inheritance',
+  },
+  catalogNumberParentCOInheritance: {
+    'en-us': 'Catalog Number Parent Collection Object Inheritance',
   },
   formatInputAs: {
     comment: `

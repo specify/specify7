@@ -125,6 +125,9 @@ def extend_columnoptions(
         None if ui_formatter is None else ui_formatter.apply_scope(collection)
     )
 
+    if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
+        context.cache['cotype_column'] = colopts.column
+
     # REFACTOR: Make context always required and simply
     date_format = context.cache['date_format']
     date_format = get_date_format() if date_format is None else date_format
@@ -338,7 +341,7 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     treedef = get_default_treedef(table, collection)
@@ -383,5 +386,6 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         root=root[0] if root else None,
         disambiguation={},
         batch_edit_pack=None,
-        scoped_cotypes=scoped_cotypes
+        scoped_cotypes=scoped_cotypes,
+        cotype_column=context.cache['cotype_column'] if context else None
     )

@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (15 April 2025)
+## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (23 April 2025)
 
 ## Added
 
