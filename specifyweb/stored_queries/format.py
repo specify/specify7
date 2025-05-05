@@ -283,11 +283,15 @@ class ObjectFormatter(object):
             .filter(join_column == getattr(rel_table, rel_table._id)) \
             .correlate(rel_table)
 
+        try:
+            from_table_name = query.query.selectable.froms[0].name.lower()
+        except AttributeError:
+            from_table_name = None
         is_self_join_aggregation = len(query.query.column_descriptions) > 0 and \
             query.query.selectable is not None and \
             query.query.selectable.froms is not None and \
             len(query.query.selectable.froms) > 0 and \
-            specify_model.name.lower() == query.query.selectable.froms[0].name.lower()
+            specify_model.name.lower() == from_table_name
         # is_self_join_aggregation = orm_table.name.lower() == query.query.selectable.froms[0].name.lower()
         aliased_orm_table = aliased(orm_table)
 
