@@ -56,7 +56,7 @@ function Controls(): JSX.Element {
         onClick={() => zoomOut()}
       />
       <Button.Icon
-        icon="arrowsExpand"
+        icon="arrowPath"
         title={commonText.reset()}
         onClick={() => resetTransform()}
       />
