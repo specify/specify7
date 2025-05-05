@@ -44,7 +44,7 @@ class MustMatchTests(UploadTestsBase):
             assert isinstance(r.record_result, Uploaded)
 
 
-    def plan(self, must_match: bool) -> Dict:
+    def plan(self, must_match: bool) -> dict:
         reltype = 'mustMatchTable' if must_match else 'uploadTable'
         return dict(
             baseTableName = 'Collectionobject',

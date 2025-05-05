@@ -28,7 +28,7 @@ def truncate_str_to_bytes(string: str, bytes: int) -> str:
     except UnicodeDecodeError as err:
         return str_as_bytes[:err.start].decode()
 
-class AuditLog(object):
+class AuditLog:
 
     _auditingFlds = None
     _auditing = None

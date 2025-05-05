@@ -81,7 +81,7 @@ class DisambiguationTests(UploadTestsBase):
         for result in results:
             assert result.contains_failure()
 
-        disambiguations: Optional[List[Disambiguation]] = [
+        disambiguations: Optional[list[Disambiguation]] = [
             DisambiguationInfo({("authors", "#2", "agent"): senior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): junior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): senior.id, ("authors", "#2", "agent"): junior.id}),

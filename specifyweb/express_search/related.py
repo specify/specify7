@@ -19,7 +19,7 @@ class F(str):
 
 class RelatedSearchMeta(type):
     def __new__(cls, name, bases, dict):
-        Rs = super(RelatedSearchMeta, cls).__new__(cls, name, bases, dict)
+        Rs = super().__new__(cls, name, bases, dict)
         if Rs.definitions is None:
             return Rs
 
@@ -78,7 +78,7 @@ class RelatedSearchMeta(type):
         return Rs
 
 
-class RelatedSearch(object, metaclass=RelatedSearchMeta):
+class RelatedSearch(metaclass=RelatedSearchMeta):
     distinct = False
     filters = []
     excludes = []
