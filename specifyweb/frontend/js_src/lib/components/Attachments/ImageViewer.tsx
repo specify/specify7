@@ -16,7 +16,9 @@ export function ImageViewer({
   readonly alt: string;
 }): JSX.Element {
   return (
-    <TransformWrapper>
+    <TransformWrapper
+      centerOnInit
+    >
       <div
         className="flex flex-col items-center justify-center h-full w-full"
         style={
@@ -28,9 +30,8 @@ export function ImageViewer({
         <TransformComponent>
           <img
             alt={alt}
-            className="max-w-full max-h-full object-contain"
+            className="max-w-full max-h-[70vh] object-contain"
             src={src}
-            width="100%"
           />
         </TransformComponent>
         <div className="flex gap-2 mt-4">
@@ -48,17 +49,17 @@ function Controls(): JSX.Element {
       <Button.Icon
         icon="plus"
         title={commonText.zoom()}
-        onClick={() => zoomIn()}
+        onClick={(): void => zoomIn()}
       />
       <Button.Icon
         icon="minus"
         title={commonText.unzoom()}
-        onClick={() => zoomOut()}
+        onClick={(): void => zoomOut()}
       />
       <Button.Icon
         icon="arrowPath"
         title={commonText.reset()}
-        onClick={() => resetTransform()}
+        onClick={(): void => resetTransform()}
       />
     </>
   );
