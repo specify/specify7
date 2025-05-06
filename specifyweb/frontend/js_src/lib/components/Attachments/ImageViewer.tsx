@@ -16,9 +16,7 @@ export function ImageViewer({
   readonly alt: string;
 }): JSX.Element {
   return (
-    <TransformWrapper
-      centerOnInit
-    >
+    <TransformWrapper centerOnInit>
       <div
         className="flex flex-col items-center justify-center h-full w-full"
         style={
