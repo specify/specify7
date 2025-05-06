@@ -98,7 +98,7 @@ Back-end uses Python and Django. It also works closely with a MySQL/MariaDB
 database both though Django ORM and though SQLAlchemy.
 
 Back-end root directory is
-[./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
+[./specifyweb/](https://github.com/specify/specify7/tree/main/specifyweb)
 
 [We have a video of a full back-end overview from January 2023 available here](https://drive.google.com/file/d/1OW60g99aiPw1Y8uHdCUxZCiVnLbFhObG/view?usp=sharing)
 
@@ -106,7 +106,7 @@ Back-end root directory is
 
 No special IDE configuration is required, but some optional plugins would
 improve developer experience -
-https://github.com/specify/specify7/tree/production/specifyweb/frontend/js_src#js_src
+https://github.com/specify/specify7/tree/main/specifyweb/frontend/js_src#js_src
 
 That document includes a short list. For a full list, see
 https://github.com/specifysystems/code-principles

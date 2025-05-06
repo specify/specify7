@@ -454,7 +454,7 @@ sudo systemctl restart httpd.service
 ### Nginx configuration
 
 Specify 7 is web-server agnostic. Example
-[nginx.conf](https://github.com/specify/specify7/blob/production/nginx.conf)
+[nginx.conf](https://github.com/specify/specify7/blob/main/nginx.conf)
 (note, you would have to adjust the host names and enable HTTPs).
 
 ## Updating Specify 7
