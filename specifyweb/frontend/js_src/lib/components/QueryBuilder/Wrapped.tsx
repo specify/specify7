@@ -301,11 +301,14 @@ function Wrapped({
     undefined
   );
 
-  const showSeries =
-    table.name === 'CollectionObject' &&
-    state.fields.some(
-      (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
-    );
+  const showSeries = React.useMemo(
+    () =>
+      table.name === 'CollectionObject' &&
+      state.fields.some(
+        (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
+      ),
+    [state, table.name]
+  );
 
   React.useEffect(() => {
     if (!showSeries)
