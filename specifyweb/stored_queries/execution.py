@@ -975,6 +975,7 @@ def build_query(
         if field is None:
             continue
 
+        formatted_field = None
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
