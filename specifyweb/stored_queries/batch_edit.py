@@ -17,12 +17,14 @@ from typing import (
     Union,
     Literal,
 )
+
 from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_information
+from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
-from specifyweb.specify.tree_views import get_all_tree_information, TREE_INFORMATION
 from specifyweb.stored_queries.execution import execute
 from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
@@ -45,7 +47,6 @@ from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
-from decimal import Decimal
 
 MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 
@@ -57,7 +58,7 @@ MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
 # REFACTOR: Break this file into smaller pieaces
 
 # TODO: Play-around with localizing
-BATCH_EDIT_NULL_RECORD_DESCRIPTION = "(Not included in the query results)"
+BATCH_EDIT_NULL_RECORD_DESCRIPTION = ""
 
 # TODO: add backend support for making system tables readonly
 BATCH_EDIT_READONLY_TABLES = [*CONCRETE_HIERARCHY]
@@ -410,7 +411,7 @@ class RowPlanMap(NamedTuple):
 
         rel_type = (
             "to_many"
-            if node.type.endswith("to-many") or node.type == "zero-to-one"
+            if node.type.endswith("to-many") or node.type == "zero-to-one" or node.is_remote_to_one()
             else "to_one"
         )
 
@@ -536,6 +537,7 @@ class RowPlanMap(NamedTuple):
             key: RowPlanMap(
                 batch_edit_pack=(
                     BatchEditPack(
+                        # NOTE: Check if default needs to be 1 here as well?
                         order=BatchEditFieldPack(value=0),
                         id=EMPTY_FIELD,
                         version=EMPTY_FIELD,
@@ -543,7 +545,9 @@ class RowPlanMap(NamedTuple):
                     if value.batch_edit_pack.order.idx is not None
                     # only use id if order field is not present
                     else BatchEditPack(
-                        id=BatchEditFieldPack(value=0),
+                        # Default value is 1 to ensure at least one to-many is added to the dataset. 
+                        # Check _extend_id_order for how this is used
+                        id=BatchEditFieldPack(value=1), 
                         order=EMPTY_FIELD,
                         version=EMPTY_FIELD,
                     )
@@ -712,6 +716,8 @@ class RowPlanCanonical(NamedTuple):
         }
         return RowPlanMap(batch_edit_pack=EMPTY_PACK, to_one=to_one, to_many=to_many)
 
+    # Responsible for extending a to-many relationship to include all to-many records in the same row
+    # Example: Consider a CO with 3 determinations. This function ensures all 3 determinations get added to the same row of the dataset
     @staticmethod
     def _extend_id_order(
         values: list["RowPlanCanonical"],
@@ -954,10 +960,14 @@ class RowPlanCanonical(NamedTuple):
         ]
         all_headers = [*raw_headers, *to_one_headers, *to_many_headers]
 
+        def _is_anyrank_tree_relationship(name, value):
+            return name.lower() in SPECIFY_TREES and not isinstance(value, TreeRecord)
+
         def _relationship_is_editable(name, value):
             return (
                 Func.is_not_empty(name, value)
                 and name not in readonly_rels
+                and not _is_anyrank_tree_relationship(name, value)
                 and not omit_relationships
             )
 
@@ -1011,7 +1021,7 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=True,
+        omit_relationships=False,
         treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
@@ -1152,7 +1162,6 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # Consider optimizing when relationships are not-editable? May not benefit actually
     # This permission just gets enforced here
-    # NOTE: Relationships disabled for issue-5413 branch to minimize scope of testing
     omit_relationships = props["omit_relationships"] or not has_target_permission(
         props["collection"].id,
         props["user"].id,
