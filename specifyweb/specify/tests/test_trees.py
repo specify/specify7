@@ -696,7 +696,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         tree = 'taxon'
         tree_def = models.Taxontreedef.objects.create(name='New Blank Tree')
         tree_def_id = tree_def.id
-        root_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        root_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=0, name='Life')
         first_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=100, name='Test', parent=root_rank)
 
         response = c.post(
@@ -704,7 +704,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+        self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Life').exists())
 
         response = c.post(
             f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
@@ -712,7 +712,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
         self.assertEqual(response.status_code, 500)
 
-        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Life').first()
         response = c.post(
             # f'/api/specify/{tree}/{root_node.id}/',
             f'/api/specify/{tree}/',
@@ -760,7 +760,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             rankid=100,
             name="Test",
             parent=models.Taxon.objects.filter(
-                definition=tree_def, rankid=0, name="Root"
+                definition=tree_def, rankid=0, name="Life"
             ).first(),
         ).first()
         self.assertIsNotNone(next_node)
