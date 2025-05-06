@@ -1,4 +1,5 @@
-from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable, cast
+from typing import List, Dict, Union, Optional, TypeVar, Callable, cast
+from collections.abc import Iterable
 from xml.etree import ElementTree
 import os
 import warnings
@@ -36,10 +37,10 @@ def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional
         raise
 
 
-class Datamodel(object):
-    tables: List["Table"]
+class Datamodel:
+    tables: list["Table"]
 
-    def __init__(self, tables: List["Table"] = []):
+    def __init__(self, tables: list["Table"] = []):
         self.tables = tables
 
     def get_table(self, tablename: str, strict: bool = False) -> Optional["Table"]:
@@ -76,7 +77,7 @@ class Datamodel(object):
             return None
 
 
-class Table(object):
+class Table:
     system: bool = False
     classname: str
     table: str
@@ -86,13 +87,13 @@ class Table(object):
     idField: "Field"
     view: Optional[str]
     searchDialog: Optional[str]
-    fields: List["Field"]
-    indexes: List["Index"]
-    relationships: List["Relationship"]
-    fieldAliases: List[Dict[str, str]]
+    fields: list["Field"]
+    indexes: list["Index"]
+    relationships: list["Relationship"]
+    fieldAliases: list[dict[str, str]]
     sp7_only: bool = False
     django_app: str = "specify"
-    virtual_fields: List['Field'] = []
+    virtual_fields: list['Field'] = []
 
     def __init__(
         self,
@@ -104,14 +105,14 @@ class Table(object):
         idField: "Field" = None,
         view: Optional[str] = None,
         searchDialog: Optional[str] = None,
-        fields: List["Field"] = None,
-        indexes: List["Index"] = None,
-        relationships: List["Relationship"] = None,
-        fieldAliases: List[Dict[str, str]] = None,
+        fields: list["Field"] = None,
+        indexes: list["Index"] = None,
+        relationships: list["Relationship"] = None,
+        fieldAliases: list[dict[str, str]] = None,
         system: bool = False,
         sp7_only: bool = False,
         django_app: str = "specify",
-        virtual_fields: List['Field'] = None
+        virtual_fields: list['Field'] = None
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -151,12 +152,10 @@ class Table(object):
         return self.name.capitalize()
 
     @property
-    def all_fields(self) -> List[Union["Field", "Relationship"]]:
+    def all_fields(self) -> list[Union["Field", "Relationship"]]:
         def af() -> Iterable[Union["Field", "Relationship"]]:
-            for f in self.fields:
-                yield f
-            for r in self.relationships:
-                yield r
+            yield from self.fields
+            yield from self.relationships
             yield self.idField
 
         return list(af())
@@ -220,7 +219,7 @@ class Table(object):
         return "<SpecifyTable: %s>" % self.name
 
 
-class Field(object):
+class Field:
     is_relationship: bool = False
     name: str
     column: Optional[str]
@@ -267,11 +266,11 @@ class Field(object):
         )
 
 
-class Index(object):
+class Index:
     name: str
-    column_names: List[str] = []
+    column_names: list[str] = []
 
-    def __init__(self, name: str = None, column_names: List[str] = None):
+    def __init__(self, name: str = None, column_names: list[str] = None):
         if not name:
             raise ValueError("name is required")
         self.name = name or ""
@@ -440,7 +439,7 @@ def make_relationship(reldef: ElementTree.Element) -> Relationship:
     return rel
 
 
-def make_field_alias(aliasdef: ElementTree.Element) -> Dict[str, str]:
+def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
     alias = dict(aliasdef.attrib)
     return alias
 

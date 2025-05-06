@@ -23,7 +23,7 @@ LocalityParseErrorMessageKey = Literal[
 
 # constructs a list with the string literals defined in the
 # base ParseFailureKey and LocalityParseErrorMessageKey types
-localityParseErrorMessages: List[LocalityParseErrorMessageKey] = list(
+localityParseErrorMessages: list[LocalityParseErrorMessageKey] = list(
     set(get_typing_args(LocalityParseErrorMessageKey)) | set(get_typing_args(ParseFailureKey)))
 
 updatable_locality_fields = ['latitude1', 'longitude1', 'datum']
@@ -124,7 +124,7 @@ class LocalityUpdateTask(LogErrorsTask):
 
 
 @app.task(base=LocalityUpdateTask, bind=True)
-def update_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]], create_recordset: bool) -> None:
+def update_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]], create_recordset: bool) -> None:
     def progress(state, current: int, total: int):
         self.update_state(state=state, meta={
                           'current': current, 'total': total})
@@ -171,7 +171,7 @@ def update_locality_task(self, collection_id: int, column_headers: List[str], da
 
 
 @app.task(base=LocalityUpdateTask, bind=True)
-def parse_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]]):
+def parse_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]]):
     def progress(state, current: int, total: int):
         self.update_state(state=state, meta={
                           'current': current, 'total': total})
@@ -220,14 +220,14 @@ def parse_locality_task(self, collection_id: int, column_headers: List[str], dat
 class JSONParseError(TypedDict):
     message: str
     field: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     rowNumber: int
 
 
 class ParseError(NamedTuple):
     message: Union[ParseFailureKey, LocalityParseErrorMessageKey]
     field: Optional[str]
-    payload: Optional[Dict[str, Any]]
+    payload: Optional[dict[str, Any]]
     row_number: Optional[int]
 
     @classmethod
@@ -240,13 +240,13 @@ class ParseError(NamedTuple):
 
 class ParsedRow(TypedDict):
     row_number: int
-    locality: Dict[str, Any]
-    geocoorddetail: Optional[Dict[str, Any]]
+    locality: dict[str, Any]
+    geocoorddetail: Optional[dict[str, Any]]
     locality_id: int
 
 
 class ParseSuccess(NamedTuple):
-    to_upload: Dict[str, Any]
+    to_upload: dict[str, Any]
     model: UpdateModel
     locality_id: Optional[int]
     row_number: Optional[str]
@@ -263,16 +263,16 @@ class UploadSuccessRow(TypedDict):
 
 class UploadSuccess(TypedDict):
     type: Literal["Uploaded"]
-    results: List[UploadSuccessRow]
+    results: list[UploadSuccessRow]
 
 
 class UploadParseError(TypedDict):
     type: Literal["ParseError"]
-    errors: List[ParseError]
+    errors: list[ParseError]
 
 
 @transaction.atomic
-def resolve_localityupdate_result(taskid: str, results: Union[Tuple[List[ParsedRow], List[ParseError]], Union[UploadSuccess, UploadParseError]], collection, create_recordset: bool = False) -> LocalityUpdate:
+def resolve_localityupdate_result(taskid: str, results: Union[tuple[list[ParsedRow], list[ParseError]], Union[UploadSuccess, UploadParseError]], collection, create_recordset: bool = False) -> LocalityUpdate:
 
     lu = LocalityUpdate.objects.get(taskid=taskid)
 
@@ -332,9 +332,9 @@ def resolve_localityupdate_result(taskid: str, results: Union[Tuple[List[ParsedR
     return lu
 
 
-def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Tuple[List[ParsedRow], List[ParseError]]:
-    errors: List[ParseError] = []
-    to_upload: List[ParsedRow] = []
+def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> tuple[list[ParsedRow], list[ParseError]]:
+    errors: list[ParseError] = []
+    to_upload: list[ParsedRow] = []
 
     headers = [header.strip().lower() for header in raw_headers]
 
@@ -403,7 +403,7 @@ def parse_field(collection, table_name: UpdateModel, field_name: str, field_valu
         return ParseSuccess.from_base_parse_success(parsed, table_name, locality_id, row_number)
 
 
-def merge_parse_results(results: List[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> Tuple[ParsedRow, List[ParseError]]:
+def merge_parse_results(results: list[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> tuple[ParsedRow, list[ParseError]]:
     to_upload: ParsedRow = {
         "locality_id": locality_id,
         "row_number": row_number,
@@ -423,7 +423,7 @@ def merge_parse_results(results: List[Union[ParseSuccess, ParseError]], locality
     return to_upload, errors
 
 
-def upload_locality_set(collection, column_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
+def upload_locality_set(collection, column_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
     to_upload, errors = parse_locality_set(
         collection, column_headers, data, progress)
 
@@ -436,11 +436,11 @@ def upload_locality_set(collection, column_headers: List[str], data: List[List[s
     return upload_from_parsed(to_upload, progress)
 
 
-def upload_from_parsed(uploadables: List[ParsedRow], progress: Optional[Progress] = None) -> UploadSuccess:
+def upload_from_parsed(uploadables: list[ParsedRow], progress: Optional[Progress] = None) -> UploadSuccess:
     processed = 0
     total = len(uploadables)
 
-    uploaded: List[UploadSuccessRow] = [
+    uploaded: list[UploadSuccessRow] = [
         {"locality": None, "geocoorddetail": None} for _ in range(total)]
 
     with transaction.atomic():
@@ -483,7 +483,7 @@ def upload_from_parsed(uploadables: List[ParsedRow], progress: Optional[Progress
 DATE_FORMAT = r"%a %b %d %Y"
 
 
-def create_localityupdate_recordset(collection, specifyuser, locality_ids: List[int]):
+def create_localityupdate_recordset(collection, specifyuser, locality_ids: list[int]):
 
     locality_table_id = datamodel.get_table_strict('Locality').tableId
 

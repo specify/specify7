@@ -17,13 +17,13 @@ class BatchEditSelf(TypedDict):
 
 class BatchEditJson(TypedDict):
     self: BatchEditSelf
-    to_one: Dict[str, Any]
-    to_many: Dict[str, List[Any]]
+    to_one: dict[str, Any]
+    to_many: dict[str, list[Any]]
 
 
 class Extra(TypedDict):
     batch_edit: Optional[BatchEditJson]
-    disambiguation: Dict[str, int]
+    disambiguation: dict[str, int]
 
 
 Disambiguation = Optional["DisambiguationInfo"]
@@ -32,9 +32,9 @@ NULL_RECORD = "null_record"
 
 Progress = Callable[[int, Optional[int]], None]
 
-Row = Dict[str, str]
+Row = dict[str, str]
 
-Filter = Dict[str, Any]
+Filter = dict[str, Any]
 
 
 class Uploadable(Protocol):
@@ -46,17 +46,17 @@ class Uploadable(Protocol):
         self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedUploadable": ...
 
-    def get_cols(self) -> Set[str]: ...
+    def get_cols(self) -> set[str]: ...
 
-    def to_json(self) -> Dict: ...
+    def to_json(self) -> dict: ...
 
-    def unparse(self) -> Dict: ...
+    def unparse(self) -> dict: ...
 
 
 class DisambiguationInfo(Protocol):
     def disambiguate(self) -> Optional[int]: ...
 
-    def disambiguate_tree(self) -> Dict[str, int]: ...
+    def disambiguate_tree(self) -> dict[str, int]: ...
 
     def disambiguate_to_one(self, to_one: str) -> "Disambiguation": ...
 
@@ -77,10 +77,10 @@ class ScopedUploadable(Protocol):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[Dict] = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundUploadable", ParseFailures]: ...
 
-    def get_treedefs(self) -> Set: ...
+    def get_treedefs(self) -> set: ...
 
     def apply_batch_edit_pack(
         self, batch_edit_pack: Optional[BatchEditJson]
@@ -95,7 +95,7 @@ class BoundUploadable(Protocol):
     def get_django_predicates(
         self,
         should_defer_match: bool,
-        to_one_override: Dict[str, UploadResult] = {},
+        to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
     ) -> DjangoPredicates: ...
 

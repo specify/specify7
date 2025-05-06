@@ -43,7 +43,7 @@ class SchemaTests(UploadTestsBase):
         self.assertEqual(example_plan.json, parse_plan(example_plan.json).unparse())
 
     def test_reject_internal_tree_columns(self) -> None:
-        def with_field(field: str) -> Dict:
+        def with_field(field: str) -> dict:
             return dict(
                 baseTableName = 'Taxon',
                 uploadable = { 'treeRecord': dict(
@@ -80,13 +80,13 @@ class OtherSchemaTests(unittest.TestCase):
 
     @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(name=infer, wbcols=infer)
-    def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
+    def test_validate_upload_table_to_json(self, name: str, wbcols: dict[str, ColumnOptions]):
         upload_table = UploadTable(name=name, wbcols=wbcols, overrideScope=None, static={}, toOne={}, toMany={})
         validate(upload_table.unparse(), schema)
 
     @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(column_opts=from_schema(schema['definitions']['columnOptions']))
-    def test_column_options_parse(self, column_opts: Dict):
+    def test_column_options_parse(self, column_opts: dict):
         validate(column_opts, schema['definitions']['columnOptions'])
         parse_column_options(column_opts)
 

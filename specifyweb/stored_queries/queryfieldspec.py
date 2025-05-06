@@ -152,7 +152,7 @@ class TreeRankQuery(Relationship):
 
 
 QueryNode = Union[Field, Relationship, TreeRankQuery]
-FieldSpecJoinPath = Tuple[QueryNode]
+FieldSpecJoinPath = tuple[QueryNode]
 
 
 class QueryFieldSpec(
