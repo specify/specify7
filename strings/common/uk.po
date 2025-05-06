@@ -18,7 +18,7 @@ msgid "specifySeven"
 msgstr "Вкажіть 7"
 
 #: components/Preferences/UserDefinitions.tsx:1830
-#: components/WorkBench/DataSetMeta.tsx:285
+#: components/WorkBench/DataSetMeta.tsx:286
 #: utils/parser/definitions.ts:120
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 msgid "no"
@@ -87,13 +87,13 @@ msgstr "Немає"
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:62
 #: components/WbActions/WbUpload.tsx:63
-#: components/WbPlanView/Mapper.tsx:397
-#: components/WbPlanView/MapperComponents.tsx:327
-#: components/WbPlanView/MapperComponents.tsx:353
+#: components/WbPlanView/Mapper.tsx:456
+#: components/WbPlanView/MapperComponents.tsx:333
+#: components/WbPlanView/MapperComponents.tsx:359
 #: components/WbPlanView/State.tsx:92
 #: components/WbToolkit/ChangeOwner.tsx:86
 #: components/WbToolkit/CoordinateConverter.tsx:227
-#: components/WorkBench/DataSetMeta.tsx:154
+#: components/WorkBench/DataSetMeta.tsx:155
 #: components/WorkBench/Disambiguation.tsx:40
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 msgid "cancel"
@@ -256,17 +256,18 @@ msgstr "Створити"
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:405
 #: components/WbActions/WbNoUploadPlan.tsx:43
-#: components/WbActions/index.tsx:211
-#: components/WbActions/index.tsx:222
-#: components/WbPlanView/MapperComponents.tsx:206
-#: components/WbPlanView/MapperComponents.tsx:422
+#: components/WbActions/index.tsx:212
+#: components/WbActions/index.tsx:223
+#: components/WbPlanView/MapperComponents.tsx:212
+#: components/WbPlanView/MapperComponents.tsx:428
+#: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:76
 #: components/WbToolkit/DevShowPlan.tsx:81
 #: components/WbToolkit/GeoLocate.tsx:143
 #: components/WorkBench/AdvancedSearch.tsx:107
-#: components/WorkBench/DataSetMeta.tsx:126
-#: components/WorkBench/DataSetMeta.tsx:180
+#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:181
 #: components/WorkBench/Results.tsx:85
 #: components/WorkBench/Status.tsx:92
 #: components/WorkBench/useDisambiguationDialog.tsx:104
@@ -278,7 +279,8 @@ msgstr "Закрити"
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:139
 #: components/Security/SetPassword.tsx:37
-#: components/WbPlanView/MapperComponents.tsx:423
+#: components/WbPlanView/MapperComponents.tsx:429
+#: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbToolkit/CoordinateConverter.tsx:228
 #: components/WorkBench/Disambiguation.tsx:48
 #. Used in: Components > Data Entry Tables > Edit ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -298,7 +300,7 @@ msgstr "Застосувати все"
 msgid "clearAll"
 msgstr "Очистити все"
 
-#: components/WbPlanView/MapperComponents.tsx:62
+#: components/WbPlanView/MapperComponents.tsx:68
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deleteUnmapped"
 msgstr ""
@@ -319,9 +321,9 @@ msgstr ""
 #: components/Statistics/StatsPageEditing.tsx:46
 #: components/Statistics/index.tsx:594
 #: components/WbActions/WbSave.tsx:66
-#: components/WbPlanView/Mapper.tsx:405
+#: components/WbPlanView/Mapper.tsx:465
 #: components/WbToolkit/DevShowPlan.tsx:107
-#: components/WorkBench/DataSetMeta.tsx:182
+#: components/WorkBench/DataSetMeta.tsx:183
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 msgid "save"
 msgstr "зберегти"
@@ -373,8 +375,8 @@ msgstr "ВІДЧИНЕНО"
 #: components/Security/Role.tsx:223
 #: components/Statistics/DeleteCategory.tsx:38
 #: components/TreeView/Actions.tsx:506
-#: components/WorkBench/DataSetMeta.tsx:150
-#: components/WorkBench/DataSetMeta.tsx:176
+#: components/WorkBench/DataSetMeta.tsx:151
+#: components/WorkBench/DataSetMeta.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 msgid "delete"
 msgstr "Видалити"
@@ -398,7 +400,7 @@ msgid "tool"
 msgstr "Завантаження…"
 
 #: components/WbToolkit/index.tsx:65
-#: components/WorkBench/WbView.tsx:190
+#: components/WorkBench/WbView.tsx:198
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 msgid "tools"
 msgstr "Інструменти"
@@ -471,7 +473,7 @@ msgstr "Завантаження…"
 
 #: components/AttachmentsBulkImport/Upload.tsx:270
 #: components/AttachmentsBulkImport/utils.ts:468
-#: components/WorkBench/DataSetMeta.tsx:292
+#: components/WorkBench/DataSetMeta.tsx:293
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 msgid "uploaded"
 msgstr "Завантажено"
@@ -530,7 +532,7 @@ msgstr "Немає результатів"
 #: components/Merging/Header.tsx:112
 #: components/Merging/Header.tsx:122
 #: components/Merging/Usages.tsx:23
-#: components/WorkBench/DataSetMeta.tsx:323
+#: components/WorkBench/DataSetMeta.tsx:324
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 msgid "notApplicable"
 msgstr "N/A"
@@ -631,8 +633,8 @@ msgstr "Переглянути"
 #: components/Leaflet/index.ts:184
 #: components/Leaflet/index.ts:188
 #: components/Leaflet/index.ts:189
-#: components/WorkBench/WbSpreadsheet.tsx:121
-#: components/WorkBench/WbSpreadsheet.tsx:122
+#: components/WorkBench/WbSpreadsheet.tsx:123
+#: components/WorkBench/WbSpreadsheet.tsx:124
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb Spreadsheet
 msgid "opensInNewTab"
 msgstr "(відкривається в новій вкладці)"
@@ -831,7 +833,7 @@ msgid "filter"
 msgstr "фільтр"
 
 #: components/QueryBuilder/Results.tsx:79
-#: components/WbActions/index.tsx:122
+#: components/WbActions/index.tsx:123
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
 msgstr "Результати"
@@ -955,7 +957,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/HomePage/AboutSpecify.tsx:131
 #: components/Security/RoleTemplate.tsx:182
 #: components/WebLinks/Definition.tsx:44
-#: components/WorkBench/DataSetMeta.tsx:221
+#: components/WorkBench/DataSetMeta.tsx:222
 #. 🟥Example usage: "Choose collection:". Used only if there is nothing else on this line after the colon heading. Used in: Components > Choose Collection > Index ⬤ Components > Formatters > List ⬤ Components > Home Page > About Specify ⬤ Components > Security > Role Template ⬤ Components > Web Links > Definition ⬤ Components > Work Bench > Data Set Meta
 msgid "colonHeader"
 msgstr "{header:string}:"
@@ -991,9 +993,9 @@ msgstr "{header:string}:"
 #: components/Security/Role.tsx:116
 #: components/TreeView/helpers.ts:195
 #: components/TreeView/helpers.ts:203
-#: components/WorkBench/DataSetMeta.tsx:232
-#: components/WorkBench/DataSetMeta.tsx:239
-#: components/WorkBench/DataSetMeta.tsx:372
+#: components/WorkBench/DataSetMeta.tsx:233
+#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:373
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
@@ -1002,12 +1004,12 @@ msgstr "{label:string}: {value:string}"
 
 #: components/Forms/DeleteButton.tsx:167
 #: components/Statistics/DeleteCategory.tsx:54
-#: components/WorkBench/DataSetMeta.tsx:254
-#: components/WorkBench/DataSetMeta.tsx:268
-#: components/WorkBench/DataSetMeta.tsx:291
-#: components/WorkBench/DataSetMeta.tsx:308
-#: components/WorkBench/DataSetMeta.tsx:328
-#: components/WorkBench/DataSetMeta.tsx:338
+#: components/WorkBench/DataSetMeta.tsx:255
+#: components/WorkBench/DataSetMeta.tsx:269
+#: components/WorkBench/DataSetMeta.tsx:292
+#: components/WorkBench/DataSetMeta.tsx:309
+#: components/WorkBench/DataSetMeta.tsx:329
+#: components/WorkBench/DataSetMeta.tsx:339
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Statistics > Delete Category ⬤ Components > Work Bench > Data Set Meta
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"

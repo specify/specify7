@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:1873
 #: components/WbToolkit/DevShowPlan.tsx:111
-#: components/WorkBench/WbView.tsx:196
+#: components/WorkBench/WbView.tsx:203
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Сопоставления"
@@ -19,8 +19,8 @@ msgstr "План загрузки не определен"
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/hotProps.tsx:148
 #: components/WorkBench/hotProps.tsx:150
+#: components/WorkBench/hotProps.tsx:152
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
@@ -41,7 +41,7 @@ msgstr "Не сопоставлений"
 msgid "mapped"
 msgstr "Сопоставлений"
 
-#: components/WbPlanView/MapperComponents.tsx:238
+#: components/WbPlanView/MapperComponents.tsx:244
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
 msgstr "Поведение при совпадении:"
@@ -75,24 +75,24 @@ msgstr "Скрытые поля"
 
 #: components/FormMeta/CarryForward.tsx:376
 #: components/QueryBuilder/Toolbar.tsx:36
-#: components/WbPlanView/MapperComponents.tsx:70
+#: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Показать скрытые поля формы"
 
-#: components/WbPlanView/Mapper.tsx:584
-#: components/WbPlanView/Mapper.tsx:586
-#: components/WbPlanView/Mapper.tsx:594
+#: components/WbPlanView/Mapper.tsx:644
+#: components/WbPlanView/Mapper.tsx:646
+#: components/WbPlanView/Mapper.tsx:654
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Параметры сопоставления"
 
-#: components/WbPlanView/MapperComponents.tsx:242
+#: components/WbPlanView/MapperComponents.tsx:248
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Игнорировать, когда пусто"
 
-#: components/WbPlanView/MapperComponents.tsx:243
+#: components/WbPlanView/MapperComponents.tsx:249
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
@@ -100,61 +100,61 @@ msgstr ""
 "столбце не будет рассматривается для целей сопоставления. Пустые значения "
 "игнорируются при сопоставлении даже если указано значение по умолчанию"
 
-#: components/WbPlanView/MapperComponents.tsx:246
+#: components/WbPlanView/MapperComponents.tsx:252
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Всегда игнорировать"
 
-#: components/WbPlanView/MapperComponents.tsx:247
+#: components/WbPlanView/MapperComponents.tsx:253
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Если задано значение «Всегда игнорировать», значение в этом столбце никогда "
 "не будет рассматривается для целей сопоставления, только для загрузки"
 
-#: components/WbPlanView/MapperComponents.tsx:250
+#: components/WbPlanView/MapperComponents.tsx:256
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Никогда не игнорировать"
 
-#: components/WbPlanView/MapperComponents.tsx:251
+#: components/WbPlanView/MapperComponents.tsx:257
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
 "Этот столбец всегда будет учитываться для целей сопоставления, независимо "
 "от содержимое столбца"
 
-#: components/WbPlanView/MapperComponents.tsx:279
+#: components/WbPlanView/MapperComponents.tsx:285
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Разрешить нулевые значения"
 
-#: components/WbPlanView/MapperComponents.tsx:296
+#: components/WbPlanView/MapperComponents.tsx:302
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Использовать значение по умолчанию"
 
-#: components/WbPlanView/MapperComponents.tsx:305
+#: components/WbPlanView/MapperComponents.tsx:311
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Значение по умолчанию"
 
-#: components/WbPlanView/MapperComponents.tsx:313
+#: components/WbPlanView/MapperComponents.tsx:319
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "Это значение будет использоваться вместо пустых ячеек"
 
-#: components/WbPlanView/MapperComponents.tsx:57
+#: components/WbPlanView/MapperComponents.tsx:63
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
 msgstr "Добавить новую колонку"
 
-#: components/WbPlanView/MapperComponents.tsx:99
+#: components/WbPlanView/MapperComponents.tsx:105
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailed"
 msgstr "Проверка обнаружила недостающие сопоставления:"
 
-#: components/WbPlanView/MapperComponents.tsx:103
+#: components/WbPlanView/MapperComponents.tsx:109
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailedDescription"
 msgstr ""
@@ -168,17 +168,17 @@ msgstr ""
 msgid "mappingIsRequired"
 msgstr "Необходимо сопоставление"
 
-#: components/WbPlanView/MapperComponents.tsx:92
+#: components/WbPlanView/MapperComponents.tsx:98
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
 msgstr "Продолжить редактирование"
 
-#: components/WbPlanView/MapperComponents.tsx:95
+#: components/WbPlanView/MapperComponents.tsx:101
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
 msgstr "Сохранить незаконченное"
 
-#: components/WbPlanView/Mapper.tsx:480
+#: components/WbPlanView/Mapper.tsx:540
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Сопоставить"
@@ -188,7 +188,7 @@ msgstr "Сопоставить"
 msgid "unmap"
 msgstr "Отменить сопоставления"
 
-#: components/WbPlanView/Mapper.tsx:477
+#: components/WbPlanView/Mapper.tsx:537
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Сопоставить выбранное поле с выбранным столбцом"
@@ -214,12 +214,12 @@ msgstr "Выберите существующий план"
 msgid "showAllTables"
 msgstr "Показать дополнительные таблицы"
 
-#: components/WbPlanView/Mapper.tsx:422
+#: components/WbPlanView/Mapper.tsx:482
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Набор данных загружен. Этот план загрузки нельзя изменить"
 
-#: components/WbPlanView/Mapper.tsx:420
+#: components/WbPlanView/Mapper.tsx:480
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
@@ -227,18 +227,18 @@ msgstr ""
 "Чтобы изменить сопоставления, откатите загруженные данные или создайте "
 "новый набор данных"
 
-#: components/WbPlanView/Mapper.tsx:414
-#: components/WbPlanView/MapperComponents.tsx:337
+#: components/WbPlanView/Mapper.tsx:474
+#: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Базовая таблица"
 
-#: components/WbPlanView/MapperComponents.tsx:333
+#: components/WbPlanView/MapperComponents.tsx:339
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Изменить базовую таблицу для сопоставления столбцов набора данных?"
 
-#: components/WbPlanView/MapperComponents.tsx:334
+#: components/WbPlanView/MapperComponents.tsx:340
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTableDescription"
 msgstr ""
@@ -253,97 +253,97 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Очистить сопоставление"
 
-#: components/WbPlanView/MapperComponents.tsx:355
+#: components/WbPlanView/MapperComponents.tsx:361
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "Перезапустить AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:364
+#: components/WbPlanView/MapperComponents.tsx:370
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:168
+#: components/WbPlanView/MapperComponents.tsx:174
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Обзор сопоставлений"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:379
+#: components/WbPlanView/MapperComponents.tsx:385
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Спрятать обзор сопоставлений"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:380
+#: components/WbPlanView/MapperComponents.tsx:386
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Показать обзор сопоставлений"
 
-#: components/WbPlanView/Mapper.tsx:495
+#: components/WbPlanView/Mapper.tsx:555
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Сопоставления"
 
-#: components/WbPlanView/Mapper.tsx:311
+#: components/WbPlanView/Mapper.tsx:347
 #. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Очистить сопоставления"
 
-#: components/WbPlanView/MapperComponents.tsx:207
+#: components/WbPlanView/MapperComponents.tsx:213
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Пустой набор данных"
 
-#: components/WbPlanView/MapperComponents.tsx:211
+#: components/WbPlanView/MapperComponents.tsx:217
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "В этом наборе данных нет столбцов."
 
-#: components/WbPlanView/MapperComponents.tsx:214
+#: components/WbPlanView/MapperComponents.tsx:220
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Нажмите кнопку \"Добавить новый столбец\" под строками сопоставления, чтобы "
 "добавить новые столбцы."
 
-#: components/WbPlanView/MapperComponents.tsx:359
+#: components/WbPlanView/MapperComponents.tsx:365
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
 msgstr "Автоматически сопоставить?"
 
-#: components/WbPlanView/MapperComponents.tsx:360
+#: components/WbPlanView/MapperComponents.tsx:366
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Это сотрет существующие сопоставления."
 
-#: components/WbPlanView/MapperComponents.tsx:429
+#: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Изменить логику соответствия"
 
-#: components/WbPlanView/MapperComponents.tsx:437
+#: components/WbPlanView/MapperComponents.tsx:443
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Требовать сопоставления данных с существующими записями"
 
-#: components/WbPlanView/MapperComponents.tsx:433
+#: components/WbPlanView/MapperComponents.tsx:439
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Логика соответствия недоступна для текущих сопоставлений"
 
-#: components/WbPlanView/MapperComponents.tsx:415
-#: components/WbPlanView/MapperComponents.tsx:449
+#: components/WbPlanView/MapperComponents.tsx:421
+#: components/WbPlanView/MapperComponents.tsx:455
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Логика соответствия"
 
-#: components/WbPlanView/Mapper.tsx:156
+#: components/WbPlanView/Mapper.tsx:181
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "Это сопоставление не было сохранено."
 
-#: components/WbPlanView/MapperComponents.tsx:52
+#: components/WbPlanView/MapperComponents.tsx:58
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
 msgstr "Новый столбец {index:number}"

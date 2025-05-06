@@ -219,7 +219,7 @@ msgstr "KML erstellen"
 
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
-#: components/WorkBench/RecordSet.tsx:38
+#: components/WorkBench/RecordSet.tsx:43
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 #, fuzzy
 msgid "createRecordSet"

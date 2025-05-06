@@ -38,7 +38,7 @@ msgstr "Відкат"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
-#: components/WbPlanView/Mapper.tsx:390
+#: components/WbPlanView/Mapper.tsx:449
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 msgid "validate"
 msgstr "Перевірити"
@@ -75,17 +75,17 @@ msgstr "Завантаження"
 msgid "validating"
 msgstr "Перевірка"
 
-#: components/WorkBench/WbSpreadsheet.tsx:157
+#: components/WorkBench/WbSpreadsheet.tsx:159
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Усунути неоднозначність"
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Заповнити вниз"
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Заповнити"
@@ -148,7 +148,7 @@ msgstr "Відновна вартість"
 msgid "searchResults"
 msgstr "Результати пошуку"
 
-#: components/WbUtils/Navigation.tsx:92
+#: components/WbUtils/Navigation.tsx:97
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Натисніть, щоб увімкнути видимість"
@@ -175,7 +175,7 @@ msgstr "Нові клітини"
 msgid "errorCells"
 msgstr "Комірки помилок"
 
-#: components/WbPlanView/Mapper.tsx:397
+#: components/WbPlanView/Mapper.tsx:456
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataEditor"
 msgstr "Редактор даних"
@@ -231,12 +231,12 @@ msgstr "Почати завантаження набору даних?"
 msgid "startUploadDescription"
 msgstr "Завантаження набору даних додасть дані до бази даних Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:160
+#: components/WorkBench/DataSetMeta.tsx:161
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "Видалити цей набір даних?"
 
-#: components/WorkBench/DataSetMeta.tsx:85
+#: components/WorkBench/DataSetMeta.tsx:86
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -245,12 +245,12 @@ msgstr ""
 "іншими наборами даних. Крім того, після видалення відкат більше не буде "
 "доступним для завантаженого набору даних."
 
-#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:128
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeleted"
 msgstr "Набір даних успішно видалено"
 
-#: components/WorkBench/DataSetMeta.tsx:130
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
 msgstr "Набір даних успішно видалено."
@@ -289,18 +289,18 @@ msgstr ""
 "Це значення збігається з двома чи більше існуючими записами бази даних, і "
 "збіг необхідно усунути перед завантаженням."
 
-#: components/WbActions/index.tsx:314
+#: components/WbActions/index.tsx:319
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Перевірка завершена без помилок"
 
-#: components/WbActions/index.tsx:317
+#: components/WbActions/index.tsx:322
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
 
-#: components/WbActions/index.tsx:320
-#: components/WbActions/index.tsx:331
+#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:336
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -308,12 +308,12 @@ msgstr ""
 "завантаженням слід повторно запустити перевірку, щоб переконатися, що не "
 "було допущено помилок."
 
-#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:330
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Перевірка виконана з помилками"
 
-#: components/WbActions/index.tsx:328
+#: components/WbActions/index.tsx:333
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "Перевірка виявила помилки в наборі даних."
@@ -340,12 +340,12 @@ msgstr "Помилка завантаження через клітинки по
 msgid "uploadErrorsDescription"
 msgstr "Помилка завантаження через одну або кілька помилок значення клітинки."
 
-#: components/WbActions/index.tsx:348
+#: components/WbActions/index.tsx:353
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:355
+#: components/WbActions/index.tsx:360
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "Набір даних успішно повернуто"
@@ -357,24 +357,24 @@ msgstr ""
 "Цей відкочений набір даних зберігається та може бути відредагований або "
 "повторно завантажений."
 
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:226
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Перевірку скасовано"
 
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:234
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Перевірку набору даних скасовано."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:227
+#: components/WbActions/index.tsx:228
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Відкат скасовано"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:235
+#: components/WbActions/index.tsx:236
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Відкат набору даних скасовано."
@@ -406,7 +406,7 @@ msgstr "Виберіть потрібний формат геокоордина�
 msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
-#: components/WbActions/index.tsx:118
+#: components/WbActions/index.tsx:119
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "Набір даних має бути перевірений або завантажений"
@@ -438,7 +438,7 @@ msgstr "Завантаження недоступне, оскільки в де�
 msgid "unavailableWhileViewingResults"
 msgstr "Ця дія недоступна під час перегляду результатів завантаження"
 
-#: components/WbActions/index.tsx:115
+#: components/WbActions/index.tsx:116
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна, поки триває перевірка даних"
@@ -471,7 +471,7 @@ msgstr "Додайте символи DMS"
 msgid "uploadResults"
 msgstr "План завантаження"
 
-#: components/WorkBench/WbSpreadsheet.tsx:92
+#: components/WorkBench/WbSpreadsheet.tsx:94
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "Для цієї клітинки немає результатів завантаження"
@@ -669,35 +669,35 @@ msgstr "Використовуйте «Імпортувати файл» або 
 msgid "createNew"
 msgstr "Створити новий"
 
-#: components/WorkBench/DataSetMeta.tsx:186
+#: components/WorkBench/DataSetMeta.tsx:187
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Властивості набору даних"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
-#: components/WbPlanView/Mapper.tsx:413
-#: components/WorkBench/DataSetMeta.tsx:210
+#: components/WbPlanView/Mapper.tsx:473
+#: components/WorkBench/DataSetMeta.tsx:211
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Назва набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:233
+#: components/WorkBench/DataSetMeta.tsx:234
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Кількість рядів"
 
-#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:241
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Кількість стовпців"
 
-#: components/WorkBench/DataSetMeta.tsx:339
+#: components/WorkBench/DataSetMeta.tsx:340
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Імпортувати ім'я файлу"
 
-#: components/WorkBench/DataSetMeta.tsx:336
+#: components/WorkBench/DataSetMeta.tsx:337
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(без імені файлу)"
@@ -718,7 +718,7 @@ msgstr "Виберіть нового власника:"
 msgid "dataSetOwnerChanged"
 msgstr "Змінено власника набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:373
+#: components/WorkBench/DataSetMeta.tsx:374
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набір даних"
@@ -728,7 +728,7 @@ msgstr "Набір даних"
 msgid "dataSetTimestampUploaded"
 msgstr "Мітка часу завантажено"
 
-#: components/WorkBench/DataSetMeta.tsx:377
+#: components/WorkBench/DataSetMeta.tsx:378
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Завантажено, лише для читання)"
@@ -802,7 +802,7 @@ msgstr "Під час {operationName:string} сталася помилка"
 msgid "updatingTrees"
 msgstr "Оновлення дерев..."
 
-#: components/WorkBench/RecordSet.tsx:74
+#: components/WorkBench/RecordSet.tsx:79
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 msgid "recordSetName"
 msgstr "WB завантаження \"{dataSet:string}\""

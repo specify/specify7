@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:167
+#: components/BatchEdit/index.tsx:170
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -9,6 +9,12 @@ msgstr "Content-Type: text/plain\n"
 #: components/WbUtils/datasetVariants.tsx:104
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:550
+#: components/WbPlanView/MapperComponents.tsx:560
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "batchEditPrefs"
 msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:2042
@@ -31,7 +37,7 @@ msgstr ""
 msgid "pickTreesToFilter"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:149
+#: components/BatchEdit/index.tsx:152
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr ""
@@ -126,7 +132,37 @@ msgstr ""
 msgid "commitSuccessful"
 msgstr ""
 
-#: components/WorkBench/RecordSet.tsx:73
+#: components/WorkBench/RecordSet.tsx:78
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:518
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForMatch"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:519
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForMatchDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:524
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForNullCheck"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:525
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForNullCheckDescription"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:135
+#. Used in: Components > Batch Edit > Index
+msgid "batchEditDisabled"
+msgstr ""
+
+#: components/WorkBench/DataSetMeta.tsx:382
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "cannotEditAfterRollback"
 msgstr ""

@@ -40,7 +40,7 @@ msgstr ""
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
-#: components/WbPlanView/Mapper.tsx:390
+#: components/WbPlanView/Mapper.tsx:449
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "validate"
@@ -83,19 +83,19 @@ msgstr ""
 msgid "validating"
 msgstr ""
 
-#: components/WorkBench/WbSpreadsheet.tsx:157
+#: components/WorkBench/WbSpreadsheet.tsx:159
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "disambiguate"
 msgstr ""
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillDown"
 msgstr ""
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillUp"
@@ -167,7 +167,7 @@ msgstr ""
 msgid "searchResults"
 msgstr ""
 
-#: components/WbUtils/Navigation.tsx:92
+#: components/WbUtils/Navigation.tsx:97
 #. Used in: Components > Wb Utils > Navigation
 #, fuzzy
 msgid "clickToToggle"
@@ -199,7 +199,7 @@ msgstr ""
 msgid "errorCells"
 msgstr ""
 
-#: components/WbPlanView/Mapper.tsx:397
+#: components/WbPlanView/Mapper.tsx:456
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "dataEditor"
@@ -255,25 +255,25 @@ msgstr ""
 msgid "startUploadDescription"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:160
+#: components/WorkBench/DataSetMeta.tsx:161
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSet"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:85
+#: components/WorkBench/DataSetMeta.tsx:86
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:128
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:130
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -315,32 +315,32 @@ msgstr ""
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 
-#: components/WbActions/index.tsx:314
+#: components/WbActions/index.tsx:319
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr ""
 
-#: components/WbActions/index.tsx:317
+#: components/WbActions/index.tsx:322
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:320
-#: components/WbActions/index.tsx:331
+#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:336
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
 
-#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:330
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr ""
 
-#: components/WbActions/index.tsx:328
+#: components/WbActions/index.tsx:333
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -370,13 +370,13 @@ msgstr ""
 msgid "uploadErrorsDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:348
+#: components/WbActions/index.tsx:353
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:355
+#: components/WbActions/index.tsx:360
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -388,27 +388,27 @@ msgstr ""
 msgid "dataSetRollbackDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:226
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr ""
 
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:234
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr ""
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:227
+#: components/WbActions/index.tsx:228
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr ""
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:235
+#: components/WbActions/index.tsx:236
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -446,7 +446,7 @@ msgstr ""
 msgid "emptyStringInline"
 msgstr ""
 
-#: components/WbActions/index.tsx:118
+#: components/WbActions/index.tsx:119
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "wbUploadedUnavailable"
@@ -483,7 +483,7 @@ msgstr ""
 msgid "unavailableWhileViewingResults"
 msgstr ""
 
-#: components/WbActions/index.tsx:115
+#: components/WbActions/index.tsx:116
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "unavailableWhileValidating"
@@ -522,7 +522,7 @@ msgstr ""
 msgid "uploadResults"
 msgstr ""
 
-#: components/WorkBench/WbSpreadsheet.tsx:92
+#: components/WorkBench/WbSpreadsheet.tsx:94
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "noUploadResultsAvailable"
@@ -756,7 +756,7 @@ msgstr ""
 msgid "createNew"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:186
+#: components/WorkBench/DataSetMeta.tsx:187
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetMeta"
@@ -764,32 +764,32 @@ msgstr ""
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
-#: components/WbPlanView/Mapper.tsx:413
-#: components/WorkBench/DataSetMeta.tsx:210
+#: components/WbPlanView/Mapper.tsx:473
+#: components/WorkBench/DataSetMeta.tsx:211
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetName"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:233
+#: components/WorkBench/DataSetMeta.tsx:234
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:241
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:339
+#: components/WorkBench/DataSetMeta.tsx:340
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:336
+#: components/WorkBench/DataSetMeta.tsx:337
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -814,7 +814,7 @@ msgstr ""
 msgid "dataSetOwnerChanged"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:373
+#: components/WorkBench/DataSetMeta.tsx:374
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
@@ -826,7 +826,7 @@ msgstr ""
 msgid "dataSetTimestampUploaded"
 msgstr ""
 
-#: components/WorkBench/DataSetMeta.tsx:377
+#: components/WorkBench/DataSetMeta.tsx:378
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"
@@ -908,7 +908,7 @@ msgstr ""
 msgid "updatingTrees"
 msgstr ""
 
-#: components/WorkBench/RecordSet.tsx:74
+#: components/WorkBench/RecordSet.tsx:79
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 #, fuzzy
 msgid "recordSetName"

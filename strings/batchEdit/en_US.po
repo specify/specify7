@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:167
+#: components/BatchEdit/index.tsx:170
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -10,6 +10,12 @@ msgstr "Content-Type: text/plain\n"
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Batch Edit"
+
+#: components/WbPlanView/MapperComponents.tsx:550
+#: components/WbPlanView/MapperComponents.tsx:560
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "batchEditPrefs"
+msgstr "Batch Edit Preferences"
 
 #: components/Preferences/UserDefinitions.tsx:2042
 #. Used in: Components > Preferences > User Definitions
@@ -35,7 +41,7 @@ msgstr ""
 "The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
 "edit with"
 
-#: components/BatchEdit/index.tsx:149
+#: components/BatchEdit/index.tsx:152
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
@@ -58,14 +64,14 @@ msgstr "Use the query builder to make a new batch edit dataset"
 #: components/Preferences/UserDefinitions.tsx:2057
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
-msgstr "Show revert button"
+msgstr "Show rollback button"
 
 #: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
-"Revert is currently an experimental feature. This preference will hide the "
-"button"
+"Rollback in Batch Edit is an experimental feature. This preference will "
+"hide the button"
 
 #: components/WbUtils/datasetVariants.tsx:115
 #. Used in: Components > Wb Utils > Dataset Variants
@@ -140,7 +146,41 @@ msgstr "Commit Cancelled Description"
 msgid "commitSuccessful"
 msgstr "Commit Completed with No Errors"
 
-#: components/WorkBench/RecordSet.tsx:73
+#: components/WorkBench/RecordSet.tsx:78
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
 msgstr "BE commit of \"{dataSet:string}\""
+
+#: components/WbPlanView/MapperComponents.tsx:518
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForMatch"
+msgstr "Use only visible fields for match"
+
+#: components/WbPlanView/MapperComponents.tsx:519
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForMatchDescription"
+msgstr ""
+"If true, invisible database fields will not be used for matching. Default "
+"value is {default:boolean}"
+
+#: components/WbPlanView/MapperComponents.tsx:524
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForNullCheck"
+msgstr "Use only visible fields for empty record check"
+
+#: components/WbPlanView/MapperComponents.tsx:525
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deferForNullCheckDescription"
+msgstr ""
+"If true, invisible database fields will not be used for determining whether "
+"the record is empty or not. Default value is {default: boolean}"
+
+#: components/BatchEdit/index.tsx:135
+#. Used in: Components > Batch Edit > Index
+msgid "batchEditDisabled"
+msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
+
+#: components/WorkBench/DataSetMeta.tsx:382
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "cannotEditAfterRollback"
+msgstr "(Batch Edit datasets cannot be edited after rollback - Read Only)"

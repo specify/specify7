@@ -39,7 +39,7 @@ msgstr "Retroceder"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
-#: components/WbPlanView/Mapper.tsx:390
+#: components/WbPlanView/Mapper.tsx:449
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 msgid "validate"
 msgstr "Validar"
@@ -76,17 +76,17 @@ msgstr "Cargando"
 msgid "validating"
 msgstr "Validando"
 
-#: components/WorkBench/WbSpreadsheet.tsx:157
+#: components/WorkBench/WbSpreadsheet.tsx:159
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Desambiguar"
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Rellenar hacia Abajo"
 
-#: components/WorkBench/WbSpreadsheet.tsx:266
+#: components/WorkBench/WbSpreadsheet.tsx:268
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Rellenar hacia Arriba"
@@ -149,7 +149,7 @@ msgstr "Valor a sustituir"
 msgid "searchResults"
 msgstr "Buscar resultados"
 
-#: components/WbUtils/Navigation.tsx:92
+#: components/WbUtils/Navigation.tsx:97
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Pinchar para alternar visibilidad"
@@ -176,7 +176,7 @@ msgstr "Celdas Nuevas"
 msgid "errorCells"
 msgstr "Celdas con Error"
 
-#: components/WbPlanView/Mapper.tsx:397
+#: components/WbPlanView/Mapper.tsx:456
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataEditor"
 msgstr "Editor de Datos"
@@ -235,12 +235,12 @@ msgstr ""
 "Cargar el conjunto de datos agregará los datos a la base de datos de "
 "especificación."
 
-#: components/WorkBench/DataSetMeta.tsx:160
+#: components/WorkBench/DataSetMeta.tsx:161
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "¿Eliminar este conjunto de datos?"
 
-#: components/WorkBench/DataSetMeta.tsx:85
+#: components/WorkBench/DataSetMeta.tsx:86
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -249,12 +249,12 @@ msgstr ""
 "reutilización con otros conjuntos de datos. Además, después de eliminar, la "
 "reversión ya no será una opción para un conjunto de datos cargado."
 
-#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:128
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeleted"
 msgstr "Conjunto de datos eliminado con éxito"
 
-#: components/WorkBench/DataSetMeta.tsx:130
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
 msgstr "Conjunto de datos eliminado con éxito."
@@ -293,20 +293,20 @@ msgstr ""
 "Este valor coincide con dos o más registros existentes en la base de datos "
 "y han de desambigüarse antes de cargar."
 
-#: components/WbActions/index.tsx:314
+#: components/WbActions/index.tsx:319
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Validar completado sin errores"
 
-#: components/WbActions/index.tsx:317
+#: components/WbActions/index.tsx:322
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validación no encontró errores, está listo para ser cargado en la base "
 "de datos."
 
-#: components/WbActions/index.tsx:320
-#: components/WbActions/index.tsx:331
+#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:336
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -314,12 +314,12 @@ msgstr ""
 "volver a ejecutar Validar antes de cargar para verificar que no se hayan "
 "introducido errores."
 
-#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:330
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Validar completado con errores"
 
-#: components/WbActions/index.tsx:328
+#: components/WbActions/index.tsx:333
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "La validación encontró errores en el conjunto de datos."
@@ -346,12 +346,12 @@ msgstr "Carga fallida debido a celdas de error"
 msgid "uploadErrorsDescription"
 msgstr "La carga falló debido a uno o más errores de valor de celda."
 
-#: components/WbActions/index.tsx:348
+#: components/WbActions/index.tsx:353
 #. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 
-#: components/WbActions/index.tsx:355
+#: components/WbActions/index.tsx:360
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "El conjunto de datos se revirtió con éxito"
@@ -363,24 +363,24 @@ msgstr ""
 "Este conjunto de datos revertidos se guarda y se puede editar o volver a "
 "cargar."
 
-#: components/WbActions/index.tsx:225
+#: components/WbActions/index.tsx:226
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Validación cancelada"
 
-#: components/WbActions/index.tsx:233
+#: components/WbActions/index.tsx:234
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Se canceló la validación del conjunto de datos."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:227
+#: components/WbActions/index.tsx:228
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Reversión cancelada"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:235
+#: components/WbActions/index.tsx:236
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Reversión del conjunto de datos cancelada."
@@ -412,7 +412,7 @@ msgstr "Elija un formato de geocoordenada preferido"
 msgid "emptyStringInline"
 msgstr "(cadena vacía)"
 
-#: components/WbActions/index.tsx:118
+#: components/WbActions/index.tsx:119
 #. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "Se ha de validar o cargar el conjunto de datos"
@@ -446,7 +446,7 @@ msgstr "Carga de datos no disponible si hay celdas con error de validación"
 msgid "unavailableWhileViewingResults"
 msgstr "Acción no disponible cuando se visualizan resultados de la carga de datos"
 
-#: components/WbActions/index.tsx:115
+#: components/WbActions/index.tsx:116
 #. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
 msgstr "Acción no disponible durante la Comprobación de Datos"
@@ -479,7 +479,7 @@ msgstr "Incluir Símbolos DMS"
 msgid "uploadResults"
 msgstr "Cargar Resultados"
 
-#: components/WorkBench/WbSpreadsheet.tsx:92
+#: components/WorkBench/WbSpreadsheet.tsx:94
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "No hay resultados de carga disponibles para esta celda"
@@ -677,35 +677,35 @@ msgstr "Usar \"Importar un archivo\" o \"Crear Nuevo\" para generar uno nuevo."
 msgid "createNew"
 msgstr "Crear Nuevo"
 
-#: components/WorkBench/DataSetMeta.tsx:186
+#: components/WorkBench/DataSetMeta.tsx:187
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Propiedades del conjunto de datos"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
-#: components/WbPlanView/Mapper.tsx:413
-#: components/WorkBench/DataSetMeta.tsx:210
+#: components/WbPlanView/Mapper.tsx:473
+#: components/WorkBench/DataSetMeta.tsx:211
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Nombre de Conjunto de Datos"
 
-#: components/WorkBench/DataSetMeta.tsx:233
+#: components/WorkBench/DataSetMeta.tsx:234
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Número de filas"
 
-#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:241
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Número de columnas"
 
-#: components/WorkBench/DataSetMeta.tsx:339
+#: components/WorkBench/DataSetMeta.tsx:340
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Importar nombre de archivo"
 
-#: components/WorkBench/DataSetMeta.tsx:336
+#: components/WorkBench/DataSetMeta.tsx:337
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(sin nombre de archivo)"
@@ -726,7 +726,7 @@ msgstr "Seleccionar nuevo propietario:"
 msgid "dataSetOwnerChanged"
 msgstr "El propietario del conjunto de datos cambió"
 
-#: components/WorkBench/DataSetMeta.tsx:373
+#: components/WorkBench/DataSetMeta.tsx:374
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Conjunto de Datos"
@@ -736,7 +736,7 @@ msgstr "Conjunto de Datos"
 msgid "dataSetTimestampUploaded"
 msgstr "Marca de tiempo cargada"
 
-#: components/WorkBench/DataSetMeta.tsx:377
+#: components/WorkBench/DataSetMeta.tsx:378
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Cargado, Solo lectura)"
@@ -810,7 +810,7 @@ msgstr "Ocurrió un error durante {operationName:string}"
 msgid "updatingTrees"
 msgstr "Actualizando árboles..."
 
-#: components/WorkBench/RecordSet.tsx:74
+#: components/WorkBench/RecordSet.tsx:79
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 msgid "recordSetName"
 msgstr "Carga de WB de \"{dataSet:string}\""
