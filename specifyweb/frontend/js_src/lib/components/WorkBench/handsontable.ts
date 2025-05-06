@@ -146,14 +146,24 @@ function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
   const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
     physicalCol === attachmentsColumn
       ? {
-          renderer: (instance, td, row, col, property, value, ...rest): void => {
+          renderer: (
+            instance,
+            td,
+            row,
+            col,
+            property,
+            value,
+            ...rest
+          ): void => {
             Handsontable.renderers.TextRenderer(
               instance,
               td,
               row,
               col,
               property,
-              typeof value === 'string' ? (value.match(/,/gu) ?? '').length + 1 : undefined,
+              typeof value === 'string'
+                ? (value.match(/,/gu) ?? '').length + 1
+                : undefined,
               ...rest
             );
           },
