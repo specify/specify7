@@ -51,6 +51,16 @@ class QueryFieldTests(TestCase):
         self.assertEqual(rank_name, "Country / Region")
         self.assertEqual(field_name, "geographyCode")
 
+        # Test ID mapping
+        rank_name, field_name = find_tree_and_field(geography, "Country ID")
+        self.assertEqual(rank_name, "Country")
+        self.assertEqual(field_name, "geographyid")
+
+        # Test ID mapping with spaces
+        rank_name, field_name = find_tree_and_field(geography, "Country / Region ID")
+        self.assertEqual(rank_name, "Country / Region")
+        self.assertEqual(field_name, "geographyid")
+
 @skip("These tests are out of date.")
 class StoredQueriesTests(ApiTests):
     # def setUp(self):

@@ -87,15 +87,15 @@ def find_tree_and_field(table: Table, fieldname: str):
         return tree_rank_and_field[0], mapping[""]
     
     # Handles case where rank name contains spaces
-    if len(tree_rank_and_field) >= 2:
-        if table.get_field(tree_rank_and_field[-1]) is not None:
-            tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
-        else:
-            # Edge case: when rank name has spaces and there is no field in stringid (ie. fullname query)
-            tree_rank_and_field = [" ".join(tree_rank_and_field), ""]
+    field = tree_rank_and_field[-1]
+    if table.get_field(field) or field in mapping:
+        tree_rank = " ".join(tree_rank_and_field[:-1])
+    else:
+        # Edge case: rank name contains spaces, and no field exists (ie: fullname query)
+        tree_rank = " ".join(tree_rank_and_field)
+        field = ""
     
-    tree_rank, tree_field = tree_rank_and_field
-    return tree_rank, mapping.get(tree_field, tree_field)
+    return tree_rank, mapping.get(field, field)
 
 
 def make_stringid(fs, table_list):
