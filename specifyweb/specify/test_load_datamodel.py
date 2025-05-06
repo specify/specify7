@@ -152,8 +152,8 @@ def compare_models(dynamic_model, static_model):
         return False
 
     # Compare inheritance
-    dynamic_bases = set([base.__name__ for base in dynamic_model.__bases__])
-    static_bases = set([base.__name__ for base in static_model.__bases__])
+    dynamic_bases = {base.__name__ for base in dynamic_model.__bases__}
+    static_bases = {base.__name__ for base in static_model.__bases__}
 
     if dynamic_bases != static_bases:
         print(f"Inheritance differs: {dynamic_bases} != {static_bases}")

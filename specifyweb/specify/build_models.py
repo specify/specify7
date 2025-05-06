@@ -142,7 +142,7 @@ def make_relationship(modelname, rel, datamodel):
         return None
 
     try:
-        on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
+        on_delete = SPECIAL_DELETION_RULES[f"{modelname.capitalize()}.{rel.name.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 
@@ -172,7 +172,7 @@ def make_relationship(modelname, rel, datamodel):
     if rel.type == 'one-to-one' and hasattr(rel, 'column'):
         return make_to_one(models.OneToOneField)
 
-class make_field(object):
+class make_field:
     """An abstract "psuedo" metaclass that produces instances of the
     appropriate Django model field type. Utilizes inheritance
     mechanism to factor out common aspects of Field configuration.
@@ -219,7 +219,7 @@ class make_string_field(make_field):
         """Supplement the standard field options with the 'length'
         and 'blank' options supported by the Django CharField type.
         """
-        args = super(make_string_field, cls).make_args(fld)
+        args = super().make_args(fld)
         args.update(dict(
                 max_length = fld.length,
                 blank = not fld.required))
@@ -254,7 +254,7 @@ class make_decimal_field(make_field):
         """Augment the standard field options with those specific
         to Decimal fields.
         """
-        args = super(make_decimal_field, cls).make_args(fld)
+        args = super().make_args(fld)
         args.update(dict(
             # The precision info is not included in the
             # XML schema def. I don't think it really
@@ -272,7 +272,7 @@ class make_boolean_field(make_field):
     @classmethod
     def make_args(cls, fld):
         """Make False the default as it was in Django 1.5"""
-        args = super(make_boolean_field, cls).make_args(fld)
+        args = super().make_args(fld)
         if fld.required:
             args['default'] = False
         return args

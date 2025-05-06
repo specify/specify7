@@ -213,7 +213,7 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 
     id_clause, id_params = record_set_or_loan_nos(record_set_id, loan_nos, by_id=(not using_loan_nos))
 
-    where_clause = id_clause if using_loan_nos else "LoanID in ({})".format(id_clause)
+    where_clause = id_clause if using_loan_nos else f"LoanID in ({id_clause})"
 
     sql = """
     update loan set

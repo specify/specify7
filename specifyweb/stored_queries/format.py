@@ -38,7 +38,7 @@ Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 
-class ObjectFormatter(object):
+class ObjectFormatter:
     def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False):
 
         formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
@@ -55,10 +55,10 @@ class ObjectFormatter(object):
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
-                'format[@%s=%s]' % (attr, quoteattr(val)))
+                f'format[@{attr}={quoteattr(val)}]')
 
         def lookup_default(attr: str, val: str) -> Optional[Element]:
-            elements = self.formattersDom.findall('format[@%s=%s]' % (attr, quoteattr(val)))
+            elements = self.formattersDom.findall(f'format[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
@@ -120,10 +120,10 @@ class ObjectFormatter(object):
 
     def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
-            return self.formattersDom.find('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            return self.formattersDom.find(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
 
         def lookup_default(attr: str, val: str) -> Optional[Element]:
-            elements = self.formattersDom.findall('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            elements = self.formattersDom.findall(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
@@ -162,7 +162,7 @@ class ObjectFormatter(object):
                   specify_model,
                   previous_tables=None,
                   do_blank_null = True
-                  ) -> Tuple[
+                  ) -> tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
@@ -197,7 +197,7 @@ class ObjectFormatter(object):
         return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
-                  formatter_name, cycle_detector=[]) -> Tuple[QueryConstruct, blank_nulls]:
+                  formatter_name, cycle_detector=[]) -> tuple[QueryConstruct, blank_nulls]:
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__,
                                             strict=True)
@@ -212,7 +212,7 @@ class ObjectFormatter(object):
         cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')] if (
                 cycle_detector is not None) else None
 
-        def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
+        def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
             QueryConstruct, Optional[str], blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):

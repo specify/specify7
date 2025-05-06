@@ -5,7 +5,7 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         gettext \
-        python3.8 \
+        python3.9 \
         libldap-2.4-2 \
         libmariadb3 \
         rsync \
@@ -57,9 +57,9 @@ RUN apt-get update \
         libssl-dev \
         libgmp-dev \
         libffi-dev \
-        python3.8-venv \
-        python3.8-distutils \
-        python3.8-dev \
+        python3.9-venv \
+        python3.9-distutils \
+        python3.9-dev \
         libmariadbclient-dev \
         tzdata \
  && apt-get clean \
@@ -69,7 +69,7 @@ USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.8 -m venv ve \
+RUN python3.9 -m venv ve \
  && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
  && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
@@ -167,7 +167,7 @@ USER root
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
-        python3.8-distutils \
+        python3.9-distutils \
         ca-certificates \
         make
 
