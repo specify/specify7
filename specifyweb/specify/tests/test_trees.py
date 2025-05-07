@@ -775,7 +775,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         tree = 'geography'
         tree_def = models.Geographytreedef.objects.create(name='New Blank Tree')
         tree_def_id = tree_def.id
-        root_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
+        root_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=0, name='Life')
         first_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=100, name='Continent')
 
         response = c.post(
@@ -783,7 +783,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+        self.assertTrue(models.Geography.objects.filter(definition=tree_def, rankid=0, name='Life').exists())
 
         response = c.post(
             f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
@@ -791,6 +791,6 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
         self.assertEqual(response.status_code, 500)
 
-        root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Life').first()
         root_node.delete()
         first_rank.delete()
