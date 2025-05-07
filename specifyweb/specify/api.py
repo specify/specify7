@@ -1173,6 +1173,7 @@ def rows(request, model_name: str) -> HttpResponse:
 
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
+    form.parse_isnull()
 
     query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
     fields = form.cleaned_data['fields'].split(',')
