@@ -315,12 +315,12 @@ def prep_interactions(request):
     select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)),
     group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)),
     group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber)),
-    group_concat(distinct concat(gp.disposalid, '>|<', g.disposalnumber))
+    group_concat(distinct concat(dp.disposalid, '>|<', d.disposalnumber))
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.preparationid = p.preparationid
-    left join disposalpreparation gp on dp.preparationid = p.preparationid
+    left join disposalpreparation dp on dp.preparationid = p.preparationid
     left join loan l on l.loanid = lp.loanid
     left join gift g on g.giftid = gp.giftid
     left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid
