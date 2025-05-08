@@ -2944,6 +2944,8 @@ class Disposalpreparation(models.Model):
     # Fields
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    quantityresolved = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityResolved', db_index=False)
+    quantityreturned = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityReturned', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)

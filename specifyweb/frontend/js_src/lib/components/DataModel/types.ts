@@ -2674,6 +2674,8 @@ export type DisposalPreparation = {
   readonly fields: {
     readonly quantity: number | null;
     readonly remarks: string | null;
+    readonly quantityResolved: number | null;
+    readonly quantityReturned: number | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;

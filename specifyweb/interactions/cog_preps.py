@@ -633,6 +633,8 @@ def get_availability_count(prep, iprepid, iprepid_fld):
             gift_filter = ~Q(**{iprepid_fld: iprepid})
         elif iprepid_fld.startswith('exchangeoutpreps__'):
             exchange_filter = ~Q(**{iprepid_fld: iprepid})
+        elif iprepid_fld.startswith('disposalpreparations__'):
+            exchange_filter = ~Q(**{iprepid_fld: iprepid})
         else:
             loan_filter = ~Q(**{iprepid_fld: iprepid})
             gift_filter = ~Q(**{iprepid_fld: iprepid})
@@ -662,12 +664,17 @@ def get_availability_count(prep, iprepid, iprepid_fld):
                   Value(0),
                   output_field=IntegerField()
               ),
+              disposal_sum=Coalesce(
+                  Sum('disposalpreparations__quantity', filter=gift_filter, output_field=IntegerField()),
+                  Value(0),
+                  output_field=IntegerField()
+              ),
           )
-          .values('countamt', 'loan_sum', 'gift_sum', 'exchange_sum')
+          .values('countamt', 'loan_sum', 'gift_sum', 'exchange_sum', 'disposal_sum')
          )
 
     row = qs.first()
     if row is None:
         return prep.countamt
     else:
-        return row['countamt'] - row['loan_sum'] - row['gift_sum'] - row['exchange_sum']
+        return row['countamt'] - row['loan_sum'] - row['gift_sum'] - row['exchange_sum'] - row['disposal_sum']

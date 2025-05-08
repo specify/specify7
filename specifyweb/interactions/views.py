@@ -49,6 +49,7 @@ def preps_available_rs(request, recordset_id):
            Sum(lp.quantity - lp.quantityreturned)                        Loaned,
            Sum(gp.quantity)                                              Gifted,
            Sum(ep.quantity)                                              Exchanged,
+           Sum(dp.quantity)                                              Disposed,
            p.countamt - Coalesce(Sum(lp.quantity - lp.quantityresolved), 0) -
            Coalesce(Sum(gp.quantity), 0) - Coalesce(Sum(ep.quantity), 0) Available
     FROM   preparation p
@@ -58,6 +59,8 @@ def preps_available_rs(request, recordset_id):
                   ON gp.preparationid = p.preparationid
            LEFT JOIN exchangeoutprep ep
                   ON ep.preparationid = p.preparationid
+           LEFT JOIN disposalpreparation dp
+                  ON dp.preparationid = p.preparationid
            INNER JOIN collectionobject co
                    ON co.collectionobjectid = p.collectionobjectid
            INNER JOIN preptype pt
@@ -114,6 +117,7 @@ def preps_available_ids(request):
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    left join disposalpreparation dp on dp.preparationid = p.preparationid
     inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
     inner join preptype pt on pt.preptypeid = p.preptypeid
     left join determination d on d.CollectionObjectID = co.CollectionObjectID
@@ -282,6 +286,7 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    left join disposalpreparation dp on dp.preparationid = p.preparationid
     where p.preparationid = %s 
     """
     if iprep_id is not None:
@@ -314,9 +319,11 @@ def prep_interactions(request):
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.preparationid = p.preparationid
+    left join disposalpreparation gp on dp.preparationid = p.preparationid
     left join loan l on l.loanid = lp.loanid
     left join gift g on g.giftid = gp.giftid
     left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid
+    left join disposal d on d.disposalid = dp.disposalid
     where (lp.loanpreparationid is null or not lp.isresolved) and p.preparationid in(%s)
     group by 1;
     """
