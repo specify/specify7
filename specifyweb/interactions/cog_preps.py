@@ -625,6 +625,7 @@ def get_availability_count(prep, iprepid, iprepid_fld):
     loan_filter = Q()
     gift_filter = Q()
     exchange_filter = Q()
+    disposal_filter = Q()
 
     if iprepid is not None and iprepid_fld:
         if iprepid_fld.startswith('loanpreparations__'):
@@ -634,11 +635,12 @@ def get_availability_count(prep, iprepid, iprepid_fld):
         elif iprepid_fld.startswith('exchangeoutpreps__'):
             exchange_filter = ~Q(**{iprepid_fld: iprepid})
         elif iprepid_fld.startswith('disposalpreparations__'):
-            exchange_filter = ~Q(**{iprepid_fld: iprepid})
+            disposal_filter = ~Q(**{iprepid_fld: iprepid})
         else:
             loan_filter = ~Q(**{iprepid_fld: iprepid})
             gift_filter = ~Q(**{iprepid_fld: iprepid})
             exchange_filter = ~Q(**{iprepid_fld: iprepid})
+            disposal_filter = ~Q(**{iprepid_fld: iprepid})
 
     qs = (prep.__class__.objects
           .filter(id=prep.id)
@@ -665,7 +667,7 @@ def get_availability_count(prep, iprepid, iprepid_fld):
                   output_field=IntegerField()
               ),
               disposal_sum=Coalesce(
-                  Sum('disposalpreparations__quantity', filter=gift_filter, output_field=IntegerField()),
+                  Sum('disposalpreparations__quantity', filter=disposal_filter, output_field=IntegerField()),
                   Value(0),
                   output_field=IntegerField()
               ),

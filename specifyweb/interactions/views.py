@@ -314,7 +314,8 @@ def prep_interactions(request):
     sql = """
     select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)),
     group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)),
-    group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber))
+    group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber)),
+    group_concat(distinct concat(gp.disposalid, '>|<', g.disposalnumber))
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
