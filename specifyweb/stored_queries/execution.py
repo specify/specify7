@@ -1144,9 +1144,12 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
         if row[co_id_cat_num_pair_col_index] is None:
             return []
 
-        pre_pairs = co_id_cat_num_seq.split(',') if type(co_id_cat_num_seq) is str else None
-        pairs = [pair.split(':') for pair in pre_pairs]
-        sorted_pairs = sorted(pairs, key=catalog_sort_key)
+        sorted_pairs = sorted(
+            [[item if item else '0'
+              for item in pair.split(':')]
+              for pair in co_id_cat_num_seq.split(',') if isinstance(co_id_cat_num_seq, str)],
+            key=catalog_sort_key
+        )
         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
         return [
             [co_id, cat_num_series] + (
