@@ -30,10 +30,10 @@ export function identifyDefaultValues(
 ): void {
   if (mappings === undefined) return;
   const existingColumns = hot.getSettings()
-    .columns as Handsontable.ColumnSettings[];
+    .columns as readonly Handsontable.ColumnSettings[];
   hot.updateSettings({
     columns: (index) => ({
-      ...(existingColumns?.[index] ?? {}),
+      ...(existingColumns?.[index]),
       placeholder: mappings.defaultValues[index],
     }),
   });
