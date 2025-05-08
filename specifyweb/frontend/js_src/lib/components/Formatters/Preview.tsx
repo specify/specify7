@@ -140,11 +140,6 @@ export function ResourcePreview({
     ),
     false
   );
-  /*
-   * Return children((_, index) =>
-   *   formatted === undefined ? commonText.loading() : formatted[index]
-   * );
-   */
   return (
     <ReadOnlyContext.Provider value>
       {children((_, index) =>
