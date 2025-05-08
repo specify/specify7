@@ -230,12 +230,6 @@ class GetCollectionForm(forms.Form):
         filterchronostrat=False,
     )
 
-    def parse_isnull(self):
-        # leftSide__isnull filters are parsed separately because the left side can be anything
-        for key, value in self.data.items():
-            if key.endswith('__isnull'):
-                self.cleaned_data[key] = value.lower() == 'true'
-
     def clean_limit(self):
         limit = self.cleaned_data['limit']
         return 20 if limit is None else limit
@@ -260,7 +254,6 @@ def collection_dispatch(request, model) -> HttpResponse:
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
         try:
-            control_params.parse_isnull()
             data = get_collection(request.specify_collection, model, checker,
                                   control_params.cleaned_data, request.GET)
         except (FilterError, OrderByError) as e:
@@ -1086,7 +1079,9 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             # filter out control parameters
             continue
 
-        if param.endswith('__in') or param.endswith('__range'):
+        if param.endswith('__isnull'):
+            val = val.lower() == 'true'
+        elif param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
 
@@ -1173,7 +1168,6 @@ def rows(request, model_name: str) -> HttpResponse:
 
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
-    form.parse_isnull()
 
     query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
     fields = form.cleaned_data['fields'].split(',')
