@@ -235,6 +235,10 @@ export function InteractionDialog({
       return undefined;
     }
 
+    if (errorMessages.length === 0 && collectionHasSeveralTypes === false) {
+      setValidation([]);
+    }
+
     if (collectionHasSeveralTypes === true) {
       const parsedCatNumber = split(catalogNumbers);
 
