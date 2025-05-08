@@ -13,6 +13,7 @@ from sqlalchemy.sql.expression import case, func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
 from typing import Tuple, Optional, Union
@@ -286,6 +287,8 @@ class ObjectFormatter(object):
         try:
             from_table_name = query.query.selectable.froms[0].name.lower()
         except AttributeError:
+            from_table_name = None
+        except InvalidRequestError:
             from_table_name = None
         is_self_join_aggregation = len(query.query.column_descriptions) > 0 and \
             query.query.selectable is not None and \
