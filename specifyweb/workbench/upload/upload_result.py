@@ -15,17 +15,17 @@ class TreeInfo(NamedTuple):
 class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
     tableName: str
-    columns: List[str]
+    columns: list[str]
     treeInfo: Optional[TreeInfo]
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {
             **self._asdict(),
             **{"treeInfo": self.treeInfo._asdict() if self.treeInfo else None},
         }
 
 
-def json_to_ReportInfo(json: Dict) -> ReportInfo:
+def json_to_ReportInfo(json: dict) -> ReportInfo:
     return ReportInfo(
         tableName=json["tableName"],
         columns=json["columns"],
@@ -43,23 +43,23 @@ class PicklistAddition(NamedTuple):
     caption: str  # The dataset column caption generating the addition
     id: int  # The new picklistitem id
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return self._asdict()
 
 
-def json_to_PicklistAddition(json: Dict) -> PicklistAddition:
+def json_to_PicklistAddition(json: dict) -> PicklistAddition:
     return PicklistAddition(**json)
 
 
 class Uploaded(NamedTuple):
     id: int
     info: ReportInfo
-    picklistAdditions: List[PicklistAddition]
+    picklistAdditions: list[PicklistAddition]
 
     def get_id(self) -> int:
         return self.id
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {
             "Uploaded": dict(
                 id=self.id,
@@ -69,7 +69,7 @@ class Uploaded(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "Uploaded":
+    def from_json(json: dict) -> "Uploaded":
         uploaded = json["Uploaded"]
         return Uploaded(
             id=uploaded["id"],
@@ -83,12 +83,12 @@ class Uploaded(NamedTuple):
 class Updated(NamedTuple):
     id: int
     info: ReportInfo
-    picklistAdditions: List[PicklistAddition]
+    picklistAdditions: list[PicklistAddition]
 
     def get_id(self) -> int:
         return self.id
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {
             "Updated": dict(
                 id=self.id,
@@ -98,7 +98,7 @@ class Updated(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "Updated":
+    def from_json(json: dict) -> "Updated":
         uploaded = json["Updated"]
         return Updated(
             id=uploaded["id"],
@@ -116,21 +116,21 @@ class Matched(NamedTuple):
     def get_id(self) -> int:
         return self.id
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"Matched": dict(id=self.id, info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: Dict) -> "Matched":
+    def from_json(json: dict) -> "Matched":
         matched = json["Matched"]
         return Matched(id=matched["id"], info=json_to_ReportInfo(matched["info"]))
 
 
 class MatchedAndChanged(Matched):
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"MatchedAndChanged": super().to_json()["Matched"]}
 
     @staticmethod
-    def from_json(json: Dict) -> Matched:
+    def from_json(json: dict) -> Matched:
         matchedAndChanged = json["MatchedAndChanged"]
         return MatchedAndChanged(
             id=matchedAndChanged["id"],
@@ -139,7 +139,7 @@ class MatchedAndChanged(Matched):
 
 
 class MatchedMultiple(NamedTuple):
-    ids: List[int]
+    ids: list[int]
     key: str
     info: ReportInfo
 
@@ -154,7 +154,7 @@ class MatchedMultiple(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "MatchedMultiple":
+    def from_json(json: dict) -> "MatchedMultiple":
         matchedMultiple = json["MatchedMultiple"]
         return MatchedMultiple(
             ids=matchedMultiple["ids"],
@@ -173,7 +173,7 @@ class NullRecord(NamedTuple):
         return {"NullRecord": dict(info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: Dict) -> "NullRecord":
+    def from_json(json: dict) -> "NullRecord":
         nullRecord = json["NullRecord"]
         return NullRecord(info=json_to_ReportInfo(nullRecord["info"]))
 
@@ -189,7 +189,7 @@ class NoChange(NamedTuple):
         return {"NoChange": dict(id=self.id, info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: Dict) -> "NoChange":
+    def from_json(json: dict) -> "NoChange":
         noChange = json["NoChange"]
         return NoChange(id=noChange["id"], info=json_to_ReportInfo(noChange["info"]))
 
@@ -206,14 +206,14 @@ class Deleted(NamedTuple):
         return {"Deleted": dict(id=self.id, info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: Dict) -> "Deleted":
+    def from_json(json: dict) -> "Deleted":
         deleted = json["Deleted"]
         return Deleted(id=deleted["id"], info=json_to_ReportInfo(deleted["info"]))
 
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: Dict[str, Union[str, int, List[str], List[int]]]
+    payload: dict[str, Union[str, int, list[str], list[int]]]
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -227,7 +227,7 @@ class FailedBusinessRule(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "FailedBusinessRule":
+    def from_json(json: dict) -> "FailedBusinessRule":
         r = json["FailedBusinessRule"]
         return FailedBusinessRule(
             message=r["message"],
@@ -246,13 +246,13 @@ class NoMatch(NamedTuple):
         return {"NoMatch": dict(info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: Dict) -> "NoMatch":
+    def from_json(json: dict) -> "NoMatch":
         r = json["NoMatch"]
         return NoMatch(info=json_to_ReportInfo(r["info"]))
 
 
 class ParseFailures(NamedTuple):
-    failures: List[WorkBenchParseFailure]
+    failures: list[WorkBenchParseFailure]
 
     def get_id(self) -> Failure:
         return "Failure"
@@ -263,7 +263,7 @@ class ParseFailures(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "ParseFailures":
+    def from_json(json: dict) -> "ParseFailures":
         r = json["ParseFailures"]
         return ParseFailures(
             failures=[WorkBenchParseFailure(*i) for i in r["failures"]]
@@ -278,7 +278,7 @@ class PropagatedFailure(NamedTuple):
         return {"PropagatedFailure": {}}
 
     @staticmethod
-    def from_json(json: Dict) -> "PropagatedFailure":
+    def from_json(json: dict) -> "PropagatedFailure":
         return PropagatedFailure()
 
 
@@ -300,8 +300,8 @@ RecordResult = Union[
 
 class UploadResult(NamedTuple):
     record_result: RecordResult
-    toOne: Dict[str, Any]
-    toMany: Dict[str, List[Any]]
+    toOne: dict[str, Any]
+    toMany: dict[str, list[Any]]
 
     def get_id(self) -> Union[int, None, Failure]:
         return self.record_result.get_id()
@@ -330,7 +330,7 @@ class UploadResult(NamedTuple):
             )
         )
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {
             "UploadResult": {
                 "record_result": self.record_result.to_json(),
@@ -342,7 +342,7 @@ class UploadResult(NamedTuple):
         }
 
     @staticmethod
-    def from_json(json: Dict) -> "UploadResult":
+    def from_json(json: dict) -> "UploadResult":
         return UploadResult(
             record_result=json_to_record_result(json["UploadResult"]["record_result"]),
             toOne={
@@ -356,7 +356,7 @@ class UploadResult(NamedTuple):
         )
 
 
-def json_to_record_result(json: Dict) -> RecordResult:
+def json_to_record_result(json: dict) -> RecordResult:
     for record_type in json:
         if record_type == "Uploaded":
             return Uploaded.from_json(json)

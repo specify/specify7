@@ -60,12 +60,12 @@ REFERENCE_KEY = object()
 
 class UploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, ColumnOptions]
-    static: Dict[str, Any]
-    toOne: Dict[str, Uploadable]
-    toMany: Dict[str, List[Uploadable]]
+    wbcols: dict[str, ColumnOptions]
+    static: dict[str, Any]
+    toOne: dict[str, Uploadable]
+    toMany: dict[str, list[Uploadable]]
 
-    overrideScope: Optional[Dict[Literal["collection"], Optional[int]]] = None
+    overrideScope: Optional[dict[Literal["collection"], Optional[int]]] = None
 
     def apply_scoping(
         self, collection, context: Optional[ScopeContext] = None, row=None
@@ -74,16 +74,16 @@ class UploadTable(NamedTuple):
 
         return apply_scoping_to_uploadtable(self, collection, context, row)
 
-    def get_cols(self) -> Set[str]:
+    def get_cols(self) -> set[str]:
         return (
-            set(cd.column for cd in self.wbcols.values())
-            | set(col for u in self.toOne.values() for col in u.get_cols())
-            | set(
+            {cd.column for cd in self.wbcols.values()}
+            | {col for u in self.toOne.values() for col in u.get_cols()}
+            | {
                 col for rs in self.toMany.values() for r in rs for col in r.get_cols()
-            )
+            }
         )
 
-    def _to_json(self) -> Dict:
+    def _to_json(self) -> dict:
         result = dict(
             wbcols={k: v.to_json() for k, v in self.wbcols.items()}, static=self.static
         )
@@ -97,16 +97,16 @@ class UploadTable(NamedTuple):
         }
         return result
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"uploadTable": self._to_json()}
 
-    def unparse(self) -> Dict:
+    def unparse(self) -> dict:
         return {"baseTableName": self.name, "uploadable": self.to_json()}
 
 
 def static_adjustments(
-    table: str, wbcols: Dict[str, ExtendedColumnOptions], static: Dict[str, Any]
-) -> Dict[str, Any]:
+    table: str, wbcols: dict[str, ExtendedColumnOptions], static: dict[str, Any]
+) -> dict[str, Any]:
     if (
         table.lower() == "agent"
         and "agenttype" not in wbcols
@@ -126,15 +126,15 @@ def static_adjustments(
 
 class ScopedUploadTable(NamedTuple):
     name: str
-    wbcols: Dict[str, ExtendedColumnOptions]
-    static: Dict[str, Any]
-    toOne: Dict[str, ScopedUploadable]
-    toMany: Dict[str, List["ScopedUploadable"]]  # type: ignore
-    scopingAttrs: Dict[str, int]
+    wbcols: dict[str, ExtendedColumnOptions]
+    static: dict[str, Any]
+    toOne: dict[str, ScopedUploadable]
+    toMany: dict[str, list["ScopedUploadable"]]  # type: ignore
+    scopingAttrs: dict[str, int]
     disambiguation: Optional[int]
-    to_one_fields: Dict[str, List[str]]  # TODO: Consider making this a payload..
+    to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
     match_payload: Optional[BatchEditSelf]
-    strong_ignore: List[str]
+    strong_ignore: list[str]
 
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         if disambiguation is None:
@@ -194,22 +194,22 @@ class ScopedUploadTable(NamedTuple):
             },
         )
 
-    def get_treedefs(self) -> Set:
-        return set(
+    def get_treedefs(self) -> set:
+        return {
             td for toOne in self.toOne.values() for td in toOne.get_treedefs()
-        ) | set(
+        } | {
             td
             for toMany in self.toMany.values()
             for tmr in toMany
             for td in tmr.get_treedefs()
-        )
+        }
 
     def bind(
         self,
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[Dict] = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundUploadTable", ParseFailures]:
 
         current_id = (
@@ -217,13 +217,13 @@ class ScopedUploadTable(NamedTuple):
         )
 
         if current_id == NULL_RECORD:
-            parsedFields: List[ParseResult] = []
-            parseFails: List[WorkBenchParseFailure] = []
+            parsedFields: list[ParseResult] = []
+            parseFails: list[WorkBenchParseFailure] = []
             current_id = None
         else:
             parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
 
-        toOne: Dict[str, BoundUploadable] = {}
+        toOne: dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
             result = uploadable.bind(row, uploadingAgentId, auditor, cache)
             if isinstance(result, ParseFailures):
@@ -231,9 +231,9 @@ class ScopedUploadTable(NamedTuple):
             else:
                 toOne[fieldname] = result
 
-        toMany: Dict[str, List[BoundUploadable]] = {}
+        toMany: dict[str, list[BoundUploadable]] = {}
         for fieldname, records in self.toMany.items():
-            boundRecords: List[BoundUploadable] = []
+            boundRecords: list[BoundUploadable] = []
             for record in records:
                 result_ = record.bind(row, uploadingAgentId, auditor, cache)
                 if isinstance(result_, ParseFailures):
@@ -275,7 +275,7 @@ class OneToOneTable(UploadTable):
         s = super().apply_scoping(collection, context, row)
         return ScopedOneToOneTable(*s)
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"oneToOneTable": self._to_json()}
 
 
@@ -285,7 +285,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[Dict] = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -298,7 +298,7 @@ class MustMatchTable(UploadTable):
         s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTable(*s)
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"mustMatchTable": self._to_json()}
 
 
@@ -308,7 +308,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[Dict] = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -316,18 +316,18 @@ class ScopedMustMatchTable(ScopedUploadTable):
 
 class BoundUploadTable(NamedTuple):
     name: str
-    static: Dict[str, Any]
-    parsedFields: List[ParseResult]
-    toOne: Dict[str, BoundUploadable]
-    toMany: Dict[str, List[BoundUploadable]]
-    scopingAttrs: Dict[str, int]
+    static: dict[str, Any]
+    parsedFields: list[ParseResult]
+    toOne: dict[str, BoundUploadable]
+    toMany: dict[str, list[BoundUploadable]]
+    scopingAttrs: dict[str, int]
     disambiguation: Optional[int]
     uploadingAgentId: Optional[int]
     auditor: Auditor
-    cache: Optional[Dict]
-    to_one_fields: Dict[str, List[str]]
+    cache: Optional[dict]
+    to_one_fields: dict[str, list[str]]
     match_payload: Optional[BatchEditSelf]
-    strong_ignore: List[
+    strong_ignore: list[
         str
     ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See comment in "test_batch_edit_table.py/test_to_many_match_is_possible"
 
@@ -372,7 +372,7 @@ class BoundUploadTable(NamedTuple):
     def get_django_predicates(
         self,
         should_defer_match: bool,
-        to_one_override: Dict[str, UploadResult] = {},
+        to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
     ) -> DjangoPredicates:
 
@@ -517,7 +517,7 @@ class BoundUploadTable(NamedTuple):
 
         return reference_record
 
-    def _resolve_reference_attributes(self, model, reference_record) -> Dict[str, Any]:
+    def _resolve_reference_attributes(self, model, reference_record) -> dict[str, Any]:
 
         return resolve_reference_attributes(
             [
@@ -598,7 +598,7 @@ class BoundUploadTable(NamedTuple):
 
         return self._do_upload(model, to_one_results, info)
 
-    def _process_to_ones(self) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> dict[str, UploadResult]:
         return {
             fieldname: to_one_def.process_row()
             for fieldname, to_one_def in Func.sort_by_key(
@@ -616,7 +616,7 @@ class BoundUploadTable(NamedTuple):
 
         cache_key = predicates.get_cache_key(self.name)
 
-        cache_hit: Optional[List[int]] = (
+        cache_hit: Optional[list[int]] = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
         if cache_hit is not None:
@@ -663,7 +663,7 @@ class BoundUploadTable(NamedTuple):
     def _do_upload(
         self,
         model: models.ModelWithTable,
-        to_one_results: Dict[str, UploadResult],
+        to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
 
@@ -691,7 +691,7 @@ class BoundUploadTable(NamedTuple):
             },
         }
 
-        to_one_ids: Dict[str, Optional[int]] = {}
+        to_one_ids: dict[str, Optional[int]] = {}
         for field, result in to_one_results.items():
             id = result.get_id()
             if id == "Failure":
@@ -769,7 +769,7 @@ class BoundUploadTable(NamedTuple):
 
         return _inserter
 
-    def _do_picklist_additions(self) -> List[PicklistAddition]:
+    def _do_picklist_additions(self) -> list[PicklistAddition]:
         added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
@@ -808,7 +808,7 @@ class BoundUploadTable(NamedTuple):
 
         result: Optional[Union[Deleted, FailedBusinessRule]] = None
 
-        to_many_deleted: Dict[str, List[UploadResult]] = {
+        to_many_deleted: dict[str, list[UploadResult]] = {
             key: [record.delete_row() for record in records]
             for (key, records) in self.toMany.items()
             if self._relationship_is_dependent(key)
@@ -829,7 +829,7 @@ class BoundUploadTable(NamedTuple):
             except (BusinessRuleException, IntegrityError) as e:
                 result = FailedBusinessRule(str(e), {}, info)
 
-        to_one_deleted: Dict[str, UploadResult] = {
+        to_one_deleted: dict[str, UploadResult] = {
             key: value.delete_row()
             for (key, value) in self.toOne.items()
             if self._relationship_is_dependent(key)
@@ -839,9 +839,10 @@ class BoundUploadTable(NamedTuple):
 
     def _relationship_is_dependent(self, field_name) -> bool:
         django_model = self.django_model
-        # We could check to_one_fields, but we are not going to, because that is just redundant with is_one_to_one.
-        if field_name in self.toOne:
-            return self.toOne[field_name].is_one_to_one()
+        # One-to-ones can always be considered to be dependent
+        if field_name in self.toOne and self.toOne[field_name].is_one_to_one():
+            return True
+        
         return django_model.specify_model.get_relationship(field_name).dependent
 
 
@@ -857,7 +858,7 @@ class BoundMustMatchTable(BoundUploadTable):
     def force_upload_row(self) -> UploadResult:
         raise Exception("trying to force upload of must-match table")
 
-    def _process_to_ones(self) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> dict[str, UploadResult]:
         return {
             fieldname: to_one_def.match_row()
             for fieldname, to_one_def in self.toOne.items()
@@ -865,14 +866,14 @@ class BoundMustMatchTable(BoundUploadTable):
         }
 
     def _do_upload(
-        self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo
+        self, model, toOneResults: dict[str, UploadResult], info: ReportInfo
     ) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
 def _upload_to_manys(
     parent_model, parent_id, parent_field, is_update, records, is_dependent
-) -> List[UploadResult]:
+) -> list[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
     bound_tables = [
         record._replace(
@@ -929,7 +930,7 @@ class BoundUpdateTable(BoundUploadTable):
 
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
-    def _process_to_ones(self) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> dict[str, UploadResult]:
         return {
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
@@ -940,7 +941,7 @@ class BoundUpdateTable(BoundUploadTable):
         }
 
     def _do_upload(
-        self, model, to_one_results: Dict[str, UploadResult], info: ReportInfo
+        self, model, to_one_results: dict[str, UploadResult], info: ReportInfo
     ) -> UploadResult:
 
         missing_required = self._check_missing_required()
@@ -973,10 +974,8 @@ class BoundUpdateTable(BoundUploadTable):
         )
 
         if self._has_scoping_changes(concrete_field_changes) and not self._is_scope_change_allowed(concrete_field_changes):
-            # I don't know what else to do. I don't think this will ever get raised. I don't know what I'll need to debug this, so showing everything.
-            raise Exception(
-                f"Attempting to change the scope of the record: {reference_record} at {self}. \n\n Diff: {concrete_field_changes}"
-            )
+            scope_change_error = ParseFailures([WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)])
+            return UploadResult(scope_change_error, {}, {})
 
         to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
 
@@ -1081,9 +1080,9 @@ class BoundUpdateTable(BoundUploadTable):
 
     def _clean_up_fks(
         self,
-        to_one_results: Dict[str, UploadResult],
-        to_many_results: Dict[str, List[UploadResult]],
-    ) -> Tuple[Dict[str, UploadResult], Dict[str, List[UploadResult]]]:
+        to_one_results: dict[str, UploadResult],
+        to_many_results: dict[str, list[UploadResult]],
+    ) -> tuple[dict[str, UploadResult], dict[str, list[UploadResult]]]:
 
         to_one_deleted = {
             key: uploadable.delete_row()  # type: ignore
@@ -1111,7 +1110,7 @@ class BoundUpdateTable(BoundUploadTable):
         }
 
     @staticmethod
-    def _field_changed(reference_record, attrs: Dict[str, Any]):
+    def _field_changed(reference_record, attrs: dict[str, Any]):
         def is_equal(old, new):
             if isinstance(old, Decimal):
                 return float(old) == new

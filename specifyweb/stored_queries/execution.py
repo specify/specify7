@@ -598,7 +598,7 @@ def run_ephemeral_query(collection, user, spquery):
         )
 
 
-def augment_field_specs(field_specs: List[QueryField], formatauditobjs=False):
+def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
     print("augment_field_specs ######################################")
     new_field_specs = []
     for fs in field_specs:
@@ -750,7 +750,7 @@ def return_loan_preps(collection, user, agent, data):
             loans_to_close = (
                 Loan.objects.select_for_update()
                 .filter(
-                    pk__in=set((loan_id for _, _, loan_id, _ in to_return)),
+                    pk__in={loan_id for _, _, loan_id, _ in to_return},
                     isclosed=False,
                 )
                 .exclude(loanpreparations__isresolved=False)
@@ -924,15 +924,13 @@ def build_query(
         query=query_construct_query
     )
 
-    tables_to_read = set(
-        [
+    tables_to_read = {
             table
             for fs in field_specs
             for table in query.tables_in_path(
                 fs.fieldspec.root_table, fs.fieldspec.join_path
             )
-        ]
-    )
+    }
 
     for table in tables_to_read:
         check_table_permissions(collection, user, table, "read")

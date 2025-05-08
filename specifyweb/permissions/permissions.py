@@ -6,10 +6,10 @@ from typing import (
     List,
     Dict,
     Union,
-    Iterable,
     Optional,
     NamedTuple,
 )
+from collections.abc import Iterable
 
 import logging
 
@@ -23,7 +23,7 @@ from specifyweb.specify.datamodel import Table
 
 from . import models
 
-registry: Dict[str, List[str]] = dict()
+registry: dict[str, list[str]] = dict()
 
 
 class PermissionTargetAction:
@@ -58,7 +58,7 @@ class PermissionTargetMeta(type):
                     v._action = k
                     actions.append(k)
 
-        return super(PermissionTargetMeta, cls).__new__(cls, name, bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
 
 
 class PermissionTarget(metaclass=PermissionTargetMeta):
@@ -73,7 +73,7 @@ class PermRequest(NamedTuple):
 
 
 def check_permission_targets(
-    collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]
+    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
 ) -> None:
     if not targets:
         return
@@ -90,7 +90,7 @@ def check_permission_targets(
 
 
 def has_target_permission(
-    collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]
+    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
 ):
     try:
         check_permission_targets(collectionid, userid, targets)
@@ -102,29 +102,29 @@ def has_target_permission(
 class PermissionsException(Exception):
     status_code = 500
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"PermissionsException": repr(self)}
 
 
 class NoMatchingRuleException(PermissionsException):
     status_code = 403
 
-    def __init__(self, denials: List[PermRequest]):
+    def __init__(self, denials: list[PermRequest]):
         self.denials = denials
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"NoMatchingRuleException": [d._asdict() for d in self.denials]}
 
 
 class NoAdminUsersException(PermissionsException):
     status_code = 400
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         return {"NoAdminUsersException": {}}
 
 
 def enforce(
-    collection: Union[int, Model, None], actor, resources: List[str], action: str
+    collection: Union[int, Model, None], actor, resources: list[str], action: str
 ) -> None:
     if not resources:
         return
@@ -169,8 +169,8 @@ def enforce(
 
 class QueryResult(NamedTuple):
     allowed: bool
-    matching_user_policies: List
-    matching_role_policies: List
+    matching_user_policies: list
+    matching_role_policies: list
 
 
 def query_pt(

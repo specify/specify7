@@ -77,6 +77,7 @@ class MainSetupTearDown:
             geographytreedef=self.geographytreedef,
             division=self.division,
             datatype=self.datatype,
+            type='paleobotany'
         )
 
         apply_default_uniqueness_rules(self.discipline)
@@ -184,7 +185,7 @@ class SimpleApiTests(ApiTests):
 
 class RecordSetTests(ApiTests):
     def setUp(self):
-        super(RecordSetTests, self).setUp()
+        super().setUp()
         self.recordset = Recordset.objects.create(
             collectionmemberid=self.collection.id,
             dbtableid=Collectionobject.specify_model.tableId,
@@ -247,18 +248,18 @@ class RecordSetTests(ApiTests):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        counts = set(
-            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
-        )
-        self.assertEqual(counts, set([1]))
+        counts = {
+            self.recordset.recordsetitems.filter(recordid=id).count() for id in ids
+        }
+        self.assertEqual(counts, {1})
 
         for co in self.collectionobjects:
             co.delete()
 
-        counts = set(
-            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
-        )
-        self.assertEqual(counts, set([0]))
+        counts = {
+            self.recordset.recordsetitems.filter(recordid=id).count() for id in ids
+        }
+        self.assertEqual(counts, {0})
 
     def test_get_resource_with_recordset_info(self):
         data = api.get_resource(
@@ -529,7 +530,7 @@ class InlineApiTests(ApiTests):
         obj = api.create_obj(self.collection, self.agent, "collectionobject", data)
         co = models.Collectionobject.objects.get(id=obj.id)
         self.assertEqual(
-            set(co.determinations.values_list("number1", flat=True)), set((1, 2))
+            set(co.determinations.values_list("number1", flat=True)), {1, 2}
         )
         self.assertEqual(co.collectionobjectattribute.text1, "some text")
 
@@ -561,7 +562,7 @@ class InlineApiTests(ApiTests):
             ]
         })
         rs = Recordset.objects.get(pk=obj.id)
-        self.assertEqual(set([123, 124]), set(rs.recordsetitems.values_list('recordid', flat=True)))
+        self.assertEqual({123, 124}, set(rs.recordsetitems.values_list('recordid', flat=True)))
 
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
@@ -823,7 +824,7 @@ class InlineApiTests(ApiTests):
 
 class InlineApiRemoteToOneTests(ApiTests): 
     def setUp(self): 
-        super(InlineApiRemoteToOneTests, self).setUp()
+        super().setUp()
         cog_type_picklist = Picklist.objects.create(
             name=SYSTEM_COGTYPES_PICKLIST,
             issystem=True,
@@ -913,7 +914,7 @@ class InlineApiRemoteToOneTests(ApiTests):
 class UserApiTests(ApiTests):
     def setUp(self):
         "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
-        super(UserApiTests, self).setUp()
+        super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
         from specifyweb.context import views
@@ -1017,7 +1018,7 @@ class UserApiTests(ApiTests):
 
 class ScopingTests(ApiTests):
     def setUp(self):
-        super(ScopingTests, self).setUp()
+        super().setUp()
 
         self.other_division = Division.objects.create(
             institution=self.institution,

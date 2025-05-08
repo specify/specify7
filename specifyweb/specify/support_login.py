@@ -16,11 +16,11 @@ def make_digest(msg):
     return hmac.new(settings.SECRET_KEY.encode(), msg.encode(), sha256).hexdigest()
 
 def make_token(user):
-    msg = "%s-%s" % (user.id, int(time()))
+    msg = f"{user.id}-{int(time())}"
     return msg + '-' + make_digest(msg)
 
 
-class SupportLoginBackend(object):
+class SupportLoginBackend:
     def authenticate(self, request, token=None):
         logger.info("attempting support login")
         try:
@@ -28,7 +28,7 @@ class SupportLoginBackend(object):
         except ValueError:
             return None
 
-        msg = "%s-%s" % (userid, timestamp)
+        msg = f"{userid}-{timestamp}"
         if digest == make_digest(msg) and int(timestamp) + TTL > time():
             return self.get_user(userid)
         else:
