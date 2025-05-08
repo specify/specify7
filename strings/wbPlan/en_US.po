@@ -74,7 +74,7 @@ msgid "hiddenFields"
 msgstr "Hidden Fields"
 
 #: components/FormMeta/CarryForward.tsx:376
-#: components/QueryBuilder/Toolbar.tsx:36
+#: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"

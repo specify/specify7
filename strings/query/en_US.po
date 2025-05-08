@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:2039
 #: components/QueryBuilder/Header.tsx:91
-#: components/QueryBuilder/Toolbar.tsx:58
+#: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:93
@@ -32,7 +32,7 @@ msgid "queryBuilder"
 msgstr "Query Builder"
 
 #: components/QueryBuilder/Export.tsx:103
-#: components/QueryBuilder/index.tsx:128
+#: components/QueryBuilder/index.tsx:129
 #: components/Router/OverlayRoutes.tsx:129
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
@@ -91,7 +91,7 @@ msgstr ""
 "There are uncompleted fields in the query definition. Do you want to remove "
 "them?"
 
-#: components/QueryBuilder/Wrapped.tsx:184
+#: components/QueryBuilder/Wrapped.tsx:186
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
@@ -153,20 +153,25 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:468
+#: components/QueryBuilder/Wrapped.tsx:487
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
 
-#: components/QueryBuilder/Toolbar.tsx:55
+#: components/QueryBuilder/Toolbar.tsx:72
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 msgid "countOnly"
 msgstr "Count"
 
-#: components/QueryBuilder/Toolbar.tsx:51
+#: components/QueryBuilder/Toolbar.tsx:68
 #. Used in: Components > Query Builder > Toolbar
 msgid "distinct"
 msgstr "Distinct"
+
+#: components/QueryBuilder/Toolbar.tsx:54
+#. Used in: Components > Query Builder > Toolbar
+msgid "series"
+msgstr "Series"
 
 #: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export

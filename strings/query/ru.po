@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:2039
 #: components/QueryBuilder/Header.tsx:91
-#: components/QueryBuilder/Toolbar.tsx:58
+#: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:93
@@ -46,7 +46,7 @@ msgid "queryBuilder"
 msgstr "Конструктор запросов"
 
 #: components/QueryBuilder/Export.tsx:103
-#: components/QueryBuilder/index.tsx:128
+#: components/QueryBuilder/index.tsx:129
 #: components/Router/OverlayRoutes.tsx:129
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
@@ -115,7 +115,7 @@ msgstr "Определение запроса содержит неполные 
 msgid "queryDeleteIncompleteDescription"
 msgstr "В определении запроса есть незаполненные поля. Вы хотите удалить их?"
 
-#: components/QueryBuilder/Wrapped.tsx:184
+#: components/QueryBuilder/Wrapped.tsx:186
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -186,23 +186,28 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} с помощью «{nodeFullName:string}»"
 
-#: components/QueryBuilder/Wrapped.tsx:468
+#: components/QueryBuilder/Wrapped.tsx:487
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
 msgstr "Настройка видимых таблиц запросов"
 
-#: components/QueryBuilder/Toolbar.tsx:55
+#: components/QueryBuilder/Toolbar.tsx:72
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "countOnly"
 msgstr "Считать"
 
-#: components/QueryBuilder/Toolbar.tsx:51
+#: components/QueryBuilder/Toolbar.tsx:68
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "distinct"
 msgstr "Отчетливый"
+
+#: components/QueryBuilder/Toolbar.tsx:54
+#. Used in: Components > Query Builder > Toolbar
+msgid "series"
+msgstr ""
 
 #: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export

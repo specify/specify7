@@ -348,7 +348,7 @@ msgstr "Сохранить"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:465
+#: components/QueryBuilder/Wrapped.tsx:484
 #: components/SchemaConfig/Format.tsx:291
 #: components/SchemaConfig/Format.tsx:339
 #: components/SchemaConfig/Languages.tsx:75

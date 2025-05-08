@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:2039
 #: components/QueryBuilder/Header.tsx:91
-#: components/QueryBuilder/Toolbar.tsx:58
+#: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:93
@@ -45,7 +45,7 @@ msgid "queryBuilder"
 msgstr "Generador de consultas"
 
 #: components/QueryBuilder/Export.tsx:103
-#: components/QueryBuilder/index.tsx:128
+#: components/QueryBuilder/index.tsx:129
 #: components/Router/OverlayRoutes.tsx:129
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
@@ -116,7 +116,7 @@ msgstr ""
 "Hay campos incompletos en la definición de la consulta. ¿Quieres "
 "eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:184
+#: components/QueryBuilder/Wrapped.tsx:186
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -189,23 +189,28 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:468
+#: components/QueryBuilder/Wrapped.tsx:487
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
 msgstr "Agregar nuevo campo"
 
-#: components/QueryBuilder/Toolbar.tsx:55
+#: components/QueryBuilder/Toolbar.tsx:72
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "countOnly"
 msgstr "Recuento"
 
-#: components/QueryBuilder/Toolbar.tsx:51
+#: components/QueryBuilder/Toolbar.tsx:68
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "distinct"
 msgstr "Distinto"
+
+#: components/QueryBuilder/Toolbar.tsx:54
+#. Used in: Components > Query Builder > Toolbar
+msgid "series"
+msgstr ""
 
 #: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export
