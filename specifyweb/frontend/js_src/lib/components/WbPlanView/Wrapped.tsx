@@ -18,8 +18,8 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
-import type { MappingLine } from './Mapper';
-import { Mapper } from './Mapper';
+import type { MappingLine, ReadonlySpec } from './Mapper';
+import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';
 
@@ -78,6 +78,7 @@ export type Dataset = DatasetBase &
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
     readonly isupdate: boolean;
+    readonly rolledback: boolean;
   };
 
 /**
@@ -87,10 +88,12 @@ export function WbPlanView({
   dataset,
   uploadPlan,
   headers,
+  readonlySpec,
 }: {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
   readonly dataset: Dataset;
+  readonly readonlySpec?: ReadonlySpec;
 }): JSX.Element {
   useTitle(dataset.name);
 
@@ -162,13 +165,24 @@ export function WbPlanView({
           type: 'SelectBaseTable',
         })
       }
-      onSave={async (lines, mustMatchPreferences): Promise<void> =>
+      onSave={async (
+        lines,
+        mustMatchPreferences,
+        batchEditPrefs
+      ): Promise<void> =>
         savePlan({
           dataset,
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
+          batchEditPrefs,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
+      }
+      readonlySpec={readonlySpec}
+      // we add default values by simply passing in a pre-made prefs. If prefs is undefined (only classical workbench), we don't even show anything
+      batchEditPrefs={
+        uploadPlan?.batchEditPrefs ??
+        (dataset.isupdate ? DEFAULT_BATCH_EDIT_PREFS : undefined)
       }
     />
   );
