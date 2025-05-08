@@ -31079,6 +31079,14 @@
         "type": "java.lang.Boolean"
       },
       {
+        "name": "selectSeries",
+        "column": "SelectSeries",
+        "indexed": false,
+        "unique": false,
+        "required": false,
+        "type": "java.lang.Boolean"
+      },
+      {
         "name": "smushed",
         "column": "Smushed",
         "indexed": false,
