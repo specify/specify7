@@ -303,6 +303,9 @@ export const queryText = createDictionary({
     'uk-ua': 'Виразний',
     'de-ch': 'Unterscheidbar',
   },
+  series: {
+    'en-us': 'Series',
+  },
   createCsv: {
     'en-us': 'Create CSV',
     'ru-ru': 'Создать CSV-файл',
@@ -904,6 +907,9 @@ export const queryText = createDictionary({
   },
   catalogNumberInheritance: {
     'en-us': 'Catalog Number Inheritance',
+  },
+  catalogNumberParentCOInheritance: {
+    'en-us': 'Catalog Number Parent Collection Object Inheritance',
   },
   formatInputAs: {
     comment: `

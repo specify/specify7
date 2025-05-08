@@ -871,4 +871,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',
   },
+  preparationUsedInLoan: {
+    'en-us': 'The preparation is used in a loan.',
+  },
 } as const);

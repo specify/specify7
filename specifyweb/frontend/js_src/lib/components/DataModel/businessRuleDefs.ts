@@ -659,6 +659,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepLoaned = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          totalPrepLoaned += quantity;
+        });
+
+        if (totalPrep < totalPrepLoaned) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+        }
+        return undefined;
+      },
+    },
     onRemoved: (preparation, collection): void => {
       if (preparation.get('isOnLoan') === true) {
         setSaveBlockers(

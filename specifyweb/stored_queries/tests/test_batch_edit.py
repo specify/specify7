@@ -86,6 +86,7 @@ class QueryConstructionTests(SQLAlchemySetup):
         )
 
     def test_query_construction(self):
+        self.maxDiff = None
         query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
         visible_fields = [field for field in query_fields if field.display]
@@ -154,9 +155,9 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "CollectionObject catalogNumber",
                 "CollectionObject integer1",
                 "Agent (formatted)",
+                "CollectingEvent (formatted)",
                 "Agent firstName",
                 "Agent lastName",
-                "CollectingEvent (formatted)",
                 "Locality localityName",
             ],
         )
@@ -306,6 +307,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
     @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
     def test_duplicates_flattened(self):
+        self.maxDiff = None
         base_table = "collectionobject"
         query_paths = [
             ["catalognumber"],
@@ -552,14 +554,6 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "CollectionObject catalogNumber",
                 "CollectionObject integer1",
                 "Agent (formatted)",
-                "Determination integer1",
-                "Determination integer1 #2",
-                "Determination integer1 #3",
-                "Determination remarks",
-                "Determination remarks #2",
-                "Determination remarks #3",
-                "Preparation countAmt",
-                "Preparation text1",
                 "Agent firstName",
                 "Agent lastName",
                 "AgentSpecialty specialtyName",
@@ -567,21 +561,29 @@ class QueryConstructionTests(SQLAlchemySetup):
                 "AgentSpecialty specialtyName #3",
                 "AgentSpecialty specialtyName #4",
                 "Collector remarks",
-                "Collector remarks #2",
-                "Collector remarks #3",
-                "Collector remarks #4",
-                "Collector remarks #5",
-                "Collector remarks #6",
-                "Collector remarks #7",
-                "Collector remarks #8",
                 "CollectingEvent stationFieldNumber",
+                "Collector remarks #2",
                 "CollectingEvent stationFieldNumber #2",
+                "Collector remarks #3",
                 "CollectingEvent stationFieldNumber #3",
+                "Collector remarks #4",
                 "CollectingEvent stationFieldNumber #4",
+                "Collector remarks #5",
                 "CollectingEvent stationFieldNumber #5",
+                "Collector remarks #6",
                 "CollectingEvent stationFieldNumber #6",
+                "Collector remarks #7",
                 "CollectingEvent stationFieldNumber #7",
+                "Collector remarks #8",
                 "CollectingEvent stationFieldNumber #8",
+                "Determination integer1",
+                "Determination remarks",
+                "Determination integer1 #2",
+                "Determination remarks #2",
+                "Determination integer1 #3",
+                "Determination remarks #3",
+                "Preparation countAmt",
+                "Preparation text1"
             ],
         )
 
