@@ -179,3 +179,7 @@ MIGRATION_0027_UPDATE_FIELDS = {
         ('children', 'Children', 'Children'),
     ]
 }
+
+MIGRATION_0029_FIELDS = {
+    'CollectionObject': ['children'],
+}
