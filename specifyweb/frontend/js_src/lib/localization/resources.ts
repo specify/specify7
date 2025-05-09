@@ -874,4 +874,7 @@ export const resourcesText = createDictionary({
   preparationUsedInLoan: {
     'en-us': 'The preparation is used in a loan.',
   },
+  preparationMissingCO: {
+    'en-us': 'Preparation requires a CO',
+  },
 } as const);
