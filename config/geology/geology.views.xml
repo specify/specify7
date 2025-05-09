@@ -140,12 +140,14 @@
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" default="today" uifieldformatter="Date"/>
 				</row>
-				<row>
+				<!-- Show if you want to use Collection Object Children (https://discourse.specifysoftware.org/t/collection-object-components/2546) -->
+				<!-- <row>
 					<cell type="subview" viewname="CollectionObjectChild" id="6" name="children" colspan="14" defaulttype="table"/>
-				</row>
-				<row>
+				</row> -->
+				<!-- Show if you want to use Collection Object Group (https://discourse.specifysoftware.org/t/collection-object-groups/2226) -->
+				<!-- <row>
 					<cell type="subview" viewname="CollectionObjectGroupJoin_Sub" id="co_cog_join" name="cojo" colspan="14"/>
-				</row>
+				</row> -->
 				<!-- When PaleoContext is "shared", use a query combo box (querycbx) -->
 				<row>
 					<cell type="label" labelfor="9"/>
