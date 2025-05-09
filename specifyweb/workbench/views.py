@@ -1149,6 +1149,7 @@ def create_recordset(request, ds) -> http.HttpResponse:
         return http.HttpResponseBadRequest("missing parameter: name")
 
     name = request.POST["name"]
+    remarks = request.POST["remarks"]
     max_length = Recordset._meta.get_field("name").max_length
     if max_length is not None and len(name) > max_length:
         return http.HttpResponseBadRequest("name too long")
@@ -1162,5 +1163,5 @@ def create_recordset(request, ds) -> http.HttpResponse:
         request.specify_collection, request.specify_user, Recordset, "create"
     )
 
-    rs = uploader.create_recordset(ds, name)
+    rs = uploader.create_recordset(ds, name, remarks)
     return http.JsonResponse(rs.id, status=201, safe=False)
