@@ -5,6 +5,7 @@ from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
 from specifyweb.specify.models_by_table_id import models_iterator
 from django.db import transaction
+from django.apps import apps
 
 from specifyweb.businessrules.exceptions import AbortSave
 
@@ -13,7 +14,7 @@ JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 attachment_tables = {model for model in models_iterator()
                      if model.__name__.endswith('attachment')}
 
-tables_with_attachments = {getattr(models, model.__name__.replace('attachment', ''))
+tables_with_attachments = {apps.get_model(model._meta.app_label, model.__name__.replace('attachment', ''))
                            for model in attachment_tables}
 
 
