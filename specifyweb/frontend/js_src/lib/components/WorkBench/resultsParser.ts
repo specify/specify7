@@ -155,10 +155,13 @@ type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
 
 type RecordResultTypes =
   | Deleted
+  | Deleted
   | FailedBusinessRule
   | Matched
   | MatchedAndChanged
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
   | NoChange
   | NoMatch
   | NullRecord
@@ -269,6 +272,10 @@ export function resolveValidationMessage(
     return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
+  else if (key === 'scopeChangeError') return backEndText.scopeChangeDetected();
+  else if (key === 'multipleTreeDefsInRow')
+    return backEndText.multipleTreeDefsInRow();
+  else if (key === 'invalidCotype') return backEndText.invalidCotype();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),

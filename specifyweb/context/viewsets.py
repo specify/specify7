@@ -54,10 +54,10 @@ def process_view(match):
     altviews = view.findall('altviews/altview')
 
     # make a set of the viewdefs the view points to
-    viewdefs = set(viewdef
+    viewdefs = {viewdef
                    for altview in altviews
                    for viewdef in viewset.findall(
-        'viewdefs/viewdef[@name=%s]' % quoteattr(altview.attrib['viewdef'])))
+        'viewdefs/viewdef[@name=%s]' % quoteattr(altview.attrib['viewdef']))}
 
     # some viewdefs reference other viewdefs through the 'definition' attribute
     # we will need to make sure those viewdefs are also sent to the client
@@ -67,7 +67,7 @@ def process_view(match):
         definition_viewdef = \
             viewset.find('viewdefs/viewdef[@name=%s]' % quoteattr(definition.text))
         if definition_viewdef is None:
-            raise Http404("no viewdef: %s for definition of viewdef: %s" % (
+            raise Http404("no viewdef: {} for definition of viewdef: {}".format(
                 definition.text, viewdef.attrib['name']))
         return definition_viewdef
 
@@ -79,12 +79,12 @@ def process_view(match):
 
     # build the data to send to the client
     data = view.attrib.copy()
-    data['altviews'] = dict((altview.attrib['name'], altview.attrib.copy())
-                            for altview in altviews)
+    data['altviews'] = {altview.attrib['name']: altview.attrib.copy()
+                            for altview in altviews}
 
-    data['viewdefs'] = dict((viewdef.attrib['name'],
-                             ElementTree.tostring(viewdef, encoding="unicode"))
-                            for viewdef in viewdefs)
+    data['viewdefs'] = {viewdef.attrib['name']:
+                             ElementTree.tostring(viewdef, encoding="unicode")
+                            for viewdef in viewdefs}
 
     # these properties are useful to see where the view was found for debugging
     data['view'] = ElementTree.tostring(view, encoding="unicode")

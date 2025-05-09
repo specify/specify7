@@ -5,7 +5,7 @@ from django.db.models import UniqueConstraint
 
 DEFAULT_INDEX_NAME = 'CollectionID'
 
-def get_index_names(connection) -> Tuple[str]:
+def get_index_names(connection) -> tuple[str]:
     db_name = connection.settings_dict['NAME']
     cursor = connection.cursor()
     sql = """
@@ -22,7 +22,7 @@ def get_index_names(connection) -> Tuple[str]:
         """
     args = [db_name]
     cursor.execute(sql, args)
-    rows: Tuple[Tuple[str], ...] = cursor.fetchall()
+    rows: tuple[tuple[str], ...] = cursor.fetchall()
     return [row[0] for row in rows]
 
 def remove_constraint(apps, schema_editor): 
