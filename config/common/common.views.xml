@@ -221,11 +221,13 @@
 				<altview name="COS Table View" viewdef="CollectionObjectSub Table" mode="view"/>
 			</altviews>
 		</view>
-		<view name="CollectionObjectChild" class="edu.ku.brc.specify.datamodel.CollectionObject" usedefbusrule="false" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectBusRules">
+		<view name="Component" class="edu.ku.brc.specify.datamodel.CollectionObject" usedefbusrule="false" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectBusRules">
 			<desc>The Collection Object Subfrom for Collection Object children.</desc>
 			<altviews>
-				<altview name="COS View" viewdef="CollectionObjectSubChild" mode="view"/>
-				<altview name="COS Edit" viewdef="CollectionObjectSubChild" mode="edit" default="true"/>
+				<altview name="COS View" viewdef="Component" mode="view"/>
+				<altview name="COS Edit" viewdef="Component" mode="edit" default="true"/>
+				<altview name="COS Table View" viewdef="Component Grid" mode="view"/>
+				<altview name="COS Table Edit" viewdef="Component Grid" mode="edit"/>
 			</altviews>
 		</view>
 		<view name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx">
@@ -2156,27 +2158,52 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef name="CollectionObjectSubChild" class="edu.ku.brc.specify.datamodel.CollectionObject" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The Collection Object Subform for appraisal and project forms.</desc>
+		<viewdef type="formtable" name="Component Table" class="edu.ku.brc.specify.datamodel.CollectionObject" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Collection Object subform table for appraisal and Project forms.</desc>
+			<definition>Component Grid</definition>
+		</viewdef>
+		<viewdef name="Component" class="edu.ku.brc.specify.datamodel.CollectionObject" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Collection Object component subform.</desc>
 			<enableRules/>
-			<columnDef>100px,2px,120px,5px,100px,2px,98px,5px,95px,2px,98px,5px,95px,2px,98px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,152px,5px,107px,2px,100px,5px,110px,2px,100px,5px,110px,2px,100px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,150px,5px,127px,2px,121px,5px,120px,2px,121px,5px,119px,2px,121px,p:g</columnDef>
-			<columnDef os="exp">p,2px,min(p;150px),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2),5px:g,p,2px,p:g(2)</columnDef>
+			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,50px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
 					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox" colspan="3"/>
+					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox"/>
+					<!-- You can set a default `collectionobjecttype` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
 				</row>
 				<row>
-					<cell type="subview" viewname="Determination" id="6" name="determinations" colspan="14" defaulttype="table"/>
+					<cell type="subview" viewname="Determination" id="6" name="determinations" colspan="9"/>
 				</row>
-				<row>
+				<!-- <row>
 					<cell type="subview" id="5" name="children" colspan="14" viewname="CollectionObjectChild" defaulttype="table"/>
+				</row> -->
+			</rows>
+		</viewdef>
+		<viewdef name="Component Grid" class="edu.ku.brc.specify.datamodel.CollectionObject" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Table view for the Collection Object component subform.</desc>
+			<enableRules/>
+			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,50px,2px,50px,5px,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox"/>
+					<!-- You can set a default `collectionobjecttype` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
+					<!--<cell type="label" labelfor="currentDet"/>-->
+    			<cell type="field" id="currentDet" name="currentDetermination" uitype="text"/> 
 				</row>
+<!-- 				<row>
+					<cell type="subview" viewname="Determination" id="6" name="determinations" colspan="9"/>
+				</row> -->
+				<!--<row>
+      <cell type="subview" id="5" name="children" colspan="14" viewname="CollectionObjectChild" defaulttype="table"/>
+    </row> -->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
