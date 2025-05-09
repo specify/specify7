@@ -181,5 +181,5 @@ MIGRATION_0027_UPDATE_FIELDS = {
 }
 
 MIGRATION_0029_FIELDS = {
-    'CollectionObject': ['children'],
+    'CollectionObject': ['children', 'parentCO'],
 }
