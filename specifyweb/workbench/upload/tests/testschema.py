@@ -13,11 +13,18 @@ from . import example_plan
 
 def set_plan_treeId():
     # Set the treeId in example_plan.json dynamically, so that the unit test doesn't depend on the static treeId to always be the same.
-    from specifyweb.specify.models import Taxontreedefitem
-    tree_id = Taxontreedefitem.objects.filter(name='Species').first().treedef_id
+    def set_tree_id_for_ranks(ranks, model, name):
+        tree_id = model.objects.filter(name=name).first().treedef_id
+        for rank in ranks.keys():
+            ranks[rank]['treeId'] = tree_id
+
+    from specifyweb.specify.models import Taxontreedefitem, Geographytreedefitem
+    
     example_plan_ranks = example_plan.json['uploadable']['uploadTable']['toMany']['determinations'][0]['toOne']['taxon']['treeRecord']['ranks']
-    for rank in ['Species', 'Subspecies']:
-        example_plan_ranks[rank]['treeId'] = tree_id
+    set_tree_id_for_ranks(example_plan_ranks, Taxontreedefitem, 'Species')
+
+    geography_ranks = example_plan.json['uploadable']['uploadTable']['toOne']['collectingevent']['uploadTable']['toOne']['locality']['uploadTable']['toOne']['geography']['treeRecord']['ranks']
+    set_tree_id_for_ranks(geography_ranks, Geographytreedefitem, 'Continent')
 
 class SchemaTests(UploadTestsBase):
     maxDiff = None

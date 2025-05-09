@@ -905,6 +905,9 @@ export const queryText = createDictionary({
   catalogNumberInheritance: {
     'en-us': 'Catalog Number Inheritance',
   },
+  catalogNumberParentCOInheritance: {
+    'en-us': 'Catalog Number Parent Collection Object Inheritance',
+  },
   formatInputAs: {
     comment: `
       Used to indicate a text field will be formatted with a specific format.
