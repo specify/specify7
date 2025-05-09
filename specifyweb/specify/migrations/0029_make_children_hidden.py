@@ -4,7 +4,6 @@ This migration updates the CO table children field to make hidden by default in 
 
 from django.db import migrations
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0029_FIELDS as SCHEMA_CONFIG_CO_TABLE_FIELDS
-from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 
 def hide_co_children(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
