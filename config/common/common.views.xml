@@ -2174,18 +2174,24 @@
 		<viewdef name="Component" class="edu.ku.brc.specify.datamodel.CollectionObject" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Collection Object component subform.</desc>
 			<enableRules/>
-			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,50px,p:g</columnDef>
+			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,20px,2px,50px,5px,50px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
+					<!-- <cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>-->
+					<cell type="label" labelfor="n"/>
+					<cell type="field" id="n" name="name" uitype="text"/>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox"/>
 					<!-- You can set a default `collectionobjecttype` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
+					<cell type="label" labelfor="role"/>
+					<cell type="field" id="role" name="reservedText" uitype="text"/>
+					<cell type="label" labelfor="proportion"/>
+					<cell type="field" id="proportion" name="reservedText2" uitype="text"/>
 				</row>
 				<row>
-					<cell type="subview" viewname="ComponentDetermination" id="6" name="determinations" colspan="9"/>
+					<cell type="subview" viewname="ComponentDetermination" id="6" name="determinations" colspan="16"/>
 				</row>
 				<!-- <row>
 					<cell type="subview" id="5" name="children" colspan="14" viewname="CollectionObjectChild" defaulttype="table"/>
@@ -2199,11 +2205,17 @@
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
+					<!--<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>-->
+					<cell type="label" labelfor="n"/>
+					<cell type="field" id="n" name="name" uitype="text"/>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="collectionobjecttype" uitype="combobox"/>
 					<!-- You can set a default `collectionobjecttype` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
+					<cell type="label" labelfor="role"/>
+					<cell type="field" id="role" name="reservedText" uitype="text"/>
+					<cell type="label" labelfor="proportion"/>
+					<cell type="field" id="proportion" name="reservedText2" uitype="text"/>
 					<!--<cell type="label" labelfor="currentDet"/>-->
     			<cell type="field" id="currentDet" name="currentDetermination" uitype="text"/> 
 				</row>
