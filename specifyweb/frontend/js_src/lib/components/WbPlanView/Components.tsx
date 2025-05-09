@@ -48,6 +48,31 @@ export function ListOfBaseTables({
   );
 }
 
+export function ListOfAttachmentTables({
+  onClick: handleClick,
+}: {
+  readonly onClick: (table: keyof Tables) => void;
+}): JSX.Element {
+  const filter = React.useCallback(
+    (showAdvancedTables: boolean, table: SpecifyTable): boolean =>
+      {
+        return table.name.toLowerCase().endsWith('attachment')
+      },
+    []
+  );
+
+  return (
+    <TableList
+      cacheKey="wbPlanViewUi"
+      filter={filter}
+      getAction={({ name }) =>
+        () =>
+          handleClick(name)
+        }
+    />
+  );
+}
+
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
   readonly dialogHeader: LocalizedString;

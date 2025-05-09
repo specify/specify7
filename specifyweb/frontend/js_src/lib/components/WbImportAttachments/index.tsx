@@ -38,6 +38,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
+import { AttachmentBaseTableSelection } from '../WbPlanView/State';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
@@ -47,6 +48,10 @@ export function WbImportAttachmentsView(): JSX.Element {
 
   return (
     <Container.Full>
+      <AttachmentBaseTableSelection
+        onClose={(): void=>{}}
+        onSelected={(): void=>{}}
+      />
       <H2>{commonText.multipleFilePickerMessage()}</H2>
       <div className="w-96">
         <FilePicker
