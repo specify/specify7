@@ -1,7 +1,8 @@
 from functools import reduce
 import logging
 import json
-from typing import Dict, List, Union, Iterable
+from typing import Dict, List, Union
+from collections.abc import Iterable
 
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
@@ -14,7 +15,7 @@ from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
 
-DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]]]] = json.load(
+DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, Union[list[list[str]], bool]]]] = json.load(
     open('specifyweb/businessrules/uniqueness_rules.json'))
 
 UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
@@ -101,7 +102,7 @@ def check_unique(model, instance):
                         }
 
             if scope is not None:
-                error_message += ' in {}'.format(scope.fieldPath.lower())
+                error_message += f' in {scope.fieldPath.lower()}'
                 response.update({
                     "parentField": scope.fieldPath,
                     "parentData": serialize_multiple_django(matchable, field_map, [scope.fieldPath.lower()])

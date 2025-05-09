@@ -6,7 +6,7 @@ from specifyweb.specify.uiformatters import UIFormatter, ScopedFormatter
 MatchBehavior = Literal["ignoreWhenBlank", "ignoreAlways", "ignoreNever"]
 
 # A single row in the workbench. Maps column names to values in the row
-Row = Dict[str, str]
+Row = dict[str, str]
 
 class ColumnOptions(NamedTuple):
     column: str
@@ -14,7 +14,7 @@ class ColumnOptions(NamedTuple):
     nullAllowed: bool
     default: Optional[str]
 
-    def to_json(self) -> Union[Dict, str]:
+    def to_json(self) -> Union[dict, str]:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
             return self.column
 

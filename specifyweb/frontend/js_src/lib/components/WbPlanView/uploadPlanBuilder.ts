@@ -1,12 +1,14 @@
 import type { IR, RA, RR } from '../../utils/types';
-import { group, removeKey, split, toLowerCase } from '../../utils/utils';
+import { group, split, toLowerCase } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
+import type { BatchEditPrefs } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
+import { valueIsTreeMeta } from './mappingHelpers';
 import {
   getNameFromTreeDefinitionName,
   valueIsTreeDefinition,
@@ -143,13 +145,10 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             indexMappings(lines).map(([_index, lines]) =>
-              removeKey(
-                toUploadTable(
-                  table.strictGetRelationship(fieldName).relatedTable,
-                  lines,
-                  mustMatchPreferences
-                ),
-                'toMany'
+              toUploadTable(
+                table.strictGetRelationship(fieldName).relatedTable,
+                lines,
+                mustMatchPreferences
               )
             ),
           ] as const
@@ -164,7 +163,11 @@ const toUploadable = (
   mustMatchPreferences: RA<keyof Tables>,
   isRoot = false
 ): Uploadable =>
-  isTreeTable(table.name)
+  /**
+   * NOTE: pathHasTreeMeta handles the case where a Batch Edit dataset has a mapping line with a (any rank) query
+   * A mapping line like that requires a uploadTable record rather than a treeRecord in the upload plan
+   */
+  isTreeTable(table.name) && pathHasTreeMeta(lines)
     ? Object.fromEntries([
         [
           mustMatchPreferences.includes(table.name)
@@ -182,13 +185,19 @@ const toUploadable = (
         ] as const,
       ]);
 
+const pathHasTreeMeta = (lines: RA<SplitMappingPath>) =>
+  lines.some(({ mappingPath }) =>
+    mappingPath.some((value) => valueIsTreeMeta(value))
+  );
+
 /**
  * Build an upload plan from individual mapping lines
  */
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RR<keyof Tables, boolean>
+  mustMatchPreferences: RR<keyof Tables, boolean>,
+  batchEditPrefs?: BatchEditPrefs
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -199,6 +208,7 @@ export const uploadPlanBuilder = (
       .map(([tableName]) => tableName),
     true
   ),
+  batchEditPrefs,
 });
 
 const indexMappings = (

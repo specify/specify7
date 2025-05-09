@@ -11,7 +11,7 @@ from django.conf import settings
 
 class OneToOneTests(UploadTestsBase):
     
-    def plan(self, one_to_one: bool) -> Dict:
+    def plan(self, one_to_one: bool) -> dict:
         reltype = 'oneToOneTable' if one_to_one else 'uploadTable'
         return dict(
             baseTableName = 'Collectionobject',
