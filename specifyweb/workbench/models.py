@@ -170,7 +170,7 @@ class Spdataset(Dataset):
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult["success"]
 
-class SpDataSetAttachment(models.Model):
+class Spdatasetattachment(models.Model):
     specify_model = datamodel.get_table_strict('spdatasetattachment')
 
     # ID Field
