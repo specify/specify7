@@ -1,5 +1,5 @@
 """
-This migration updates the CO tables children field to make it hidden by default in schema config.
+This migration updates the geo tables hidden proprety in schema config.
 """
 
 from django.db import migrations
