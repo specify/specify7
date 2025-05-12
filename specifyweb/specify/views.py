@@ -1419,7 +1419,7 @@ def catalog_number_for_sibling(request: http.HttpRequest):
 @require_POST
 def catalog_number_from_parent(request: http.HttpRequest):
     """
-    Returns the catalog number of the parent CO
+    Returns the catalog number of the parent component
     """
     try:
         request_data = json.loads(request.body)
@@ -1439,7 +1439,7 @@ def catalog_number_from_parent(request: http.HttpRequest):
         child = spmodels.Collectionobject.objects.get(id=object_id)
 
         # Get the parent CO
-        parent = child.parentco
+        parent = child.parentcomponent
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
