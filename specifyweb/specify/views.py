@@ -1439,7 +1439,7 @@ def catalog_number_from_parent(request: http.HttpRequest):
         child = spmodels.Collectionobject.objects.get(id=object_id)
 
         # Get the parent CO
-        parent = child.parentcomponent
+        parent = child.componentParent
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
