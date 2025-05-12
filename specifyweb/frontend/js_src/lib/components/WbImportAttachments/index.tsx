@@ -51,26 +51,31 @@ export function WbImportAttachmentsView(): JSX.Element {
   return (
     <Container.Full>
       {baseTableName === undefined ? (
-      <AttachmentBaseTableSelection
-        onClose={(): void=>{
-          navigate('/specify/')
-        }}
-        onSelected={(tableName): void=>{
-          setBaseTableName(tableName);
-        }}
-      />) : (<>
-      <H2>{commonText.multipleFilePickerMessage()}</H2>
-      <div className="w-96">
-        <FilePicker
-          acceptedFormats={undefined}
-          showFileNames
-          onFilesSelected={(selectedFiles) => {
-            setFiles(Array.from(selectedFiles));
+        <AttachmentBaseTableSelection
+          onClose={(): void => {
+            navigate('/specify/');
+          }}
+          onSelected={(tableName): void => {
+            setBaseTableName(tableName);
           }}
         />
-      </div>
-      {files !== undefined && files.length > 0 && <FilesPicked baseTableName={baseTableName} files={files}/>}
-      </>)}
+      ) : (
+        <>
+          <H2>{commonText.multipleFilePickerMessage()}</H2>
+          <div className="w-96">
+            <FilePicker
+              acceptedFormats={undefined}
+              showFileNames
+              onFilesSelected={(selectedFiles) => {
+                setFiles(Array.from(selectedFiles));
+              }}
+            />
+          </div>
+          {files !== undefined && files.length > 0 && (
+            <FilesPicked baseTableName={baseTableName} files={files} />
+          )}
+        </>
+      )}
     </Container.Full>
   );
 }
@@ -170,7 +175,10 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
-          attachmentsToCell([serializeResource(dataSetAttachment)], baseTableName)
+          attachmentsToCell(
+            [serializeResource(dataSetAttachment)],
+            baseTableName
+          ),
         ]);
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);
