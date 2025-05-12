@@ -1203,8 +1203,8 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
                 component_id = result[0]  # Assuming the first column is the child's ID
                 component_obj = Collectionobject.objects.filter(id=component_id).first()
-                if component_obj and component_obj.parentcomponent:
-                    result[catalog_number_field_index] = component_obj.parentcomponent.catalognumber
+                if component_obj and component_obj.componentParent:
+                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
             updated_results.append(tuple(result))
 
         return updated_results

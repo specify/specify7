@@ -559,7 +559,7 @@ def co_components_ids(cat_num):
         return []
 
     # Get component objects directly from the related name
-    components = parentcomponent.children.filter(catalognumber=None)
+    components = parentcomponent.components.filter(catalognumber=None)
 
     # Get their IDs
     target_component_co_ids = components.values_list('id', flat=True)
