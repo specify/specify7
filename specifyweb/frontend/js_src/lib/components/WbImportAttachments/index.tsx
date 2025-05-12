@@ -39,6 +39,8 @@ import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import { AttachmentBaseTableSelection } from '../WbPlanView/State';
+import type { Tables } from '../DataModel/types';
+import { attachmentsToCell } from './helpers';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
@@ -48,10 +50,15 @@ export function WbImportAttachmentsView(): JSX.Element {
 
   return (
     <Container.Full>
+      {baseTableName === undefined ? (
       <AttachmentBaseTableSelection
-        onClose={(): void=>{}}
-        onSelected={(): void=>{}}
-      />
+        onClose={(): void=>{
+          navigate('/specify/')
+        }}
+        onSelected={(tableName): void=>{
+          setBaseTableName(tableName);
+        }}
+      />) : (<>
       <H2>{commonText.multipleFilePickerMessage()}</H2>
       <div className="w-96">
         <FilePicker
@@ -62,7 +69,8 @@ export function WbImportAttachmentsView(): JSX.Element {
           }}
         />
       </div>
-      {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
+      {files !== undefined && files.length > 0 && <FilesPicked files={files} baseTableName={baseTableName}/>}
+      </>)}
     </Container.Full>
   );
 }
@@ -162,7 +170,7 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
-          dataSetAttachment.id.toString(),
+          attachmentsToCell([serializeResource(dataSetAttachment)], baseTableName)
         ]);
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);

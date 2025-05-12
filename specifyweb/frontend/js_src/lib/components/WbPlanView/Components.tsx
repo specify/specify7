@@ -8,6 +8,7 @@ import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { TableList, tablesFilter } from '../SchemaConfig/Tables';
+import { tablesWithAttachments } from '../Attachments/utils';
 
 export function ListOfBaseTables({
   onClick: handleClick,
@@ -48,15 +49,15 @@ export function ListOfBaseTables({
   );
 }
 
-export function ListOfAttachmentTables({
+export function ListOfTablesWithAttachments({
   onClick: handleClick,
 }: {
   readonly onClick: (table: keyof Tables) => void;
 }): JSX.Element {
   const filter = React.useCallback(
-    (showAdvancedTables: boolean, table: SpecifyTable): boolean =>
+    (_showAdvancedTables: boolean, table: SpecifyTable): boolean =>
       {
-        return table.name.toLowerCase().endsWith('attachment')
+        return tablesWithAttachments().find(module => module.name === table.name) !== undefined
       },
     []
   );
