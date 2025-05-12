@@ -29,6 +29,7 @@ import type {
   Spdataset,
   SpDataSetAttachment,
 } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -39,7 +40,6 @@ import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import { AttachmentBaseTableSelection } from '../WbPlanView/State';
-import type { Tables } from '../DataModel/types';
 import { attachmentsToCell } from './helpers';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
@@ -69,7 +69,7 @@ export function WbImportAttachmentsView(): JSX.Element {
           }}
         />
       </div>
-      {files !== undefined && files.length > 0 && <FilesPicked files={files} baseTableName={baseTableName}/>}
+      {files !== undefined && files.length > 0 && <FilesPicked baseTableName={baseTableName} files={files}/>}
       </>)}
     </Container.Full>
   );

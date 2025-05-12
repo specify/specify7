@@ -1,54 +1,53 @@
-import { Tables } from "../DataModel/types";
-import { SerializedResource } from "../DataModel/helperTypes";
-import { SpDataSetAttachment, Attachment } from "../DataModel/types";
 import type { WritableArray } from '../../utils/types';
+import type { SerializedResource } from "../DataModel/helperTypes";
+import type {
+  Attachment,
+  SpDataSetAttachment,
+  Tables,
+} from "../DataModel/types";
 
-type cellAttachment = {
-  id: number;
-  table: keyof Tables;
+type CellAttachment = {
+  readonly id: number;
+  readonly table: keyof Tables;
 };
 
-type cellAttachments = {
-  attachments: cellAttachment[];
-  formatted: string;
+type CellAttachments = {
+  readonly attachments: readonly CellAttachment[];
+  readonly formatted: string;
 };
 
 export function attachmentsToCell(
-  dataSetAttachments: SerializedResource<SpDataSetAttachment>[],
+  dataSetAttachments: readonly SerializedResource<SpDataSetAttachment>[],
   targetTable: keyof Tables
 ): string {
-  let formattedAttachments: WritableArray<string> = [];
-  let att: WritableArray<cellAttachment> = [];
+  const formattedAttachments: WritableArray<string> = [];
+  const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
     const attachment = dataSetAttachment.attachment as SerializedResource<Attachment>;
     att.push({
       id: dataSetAttachment.id,
       table: targetTable,
-    } as cellAttachment);
+    } as CellAttachment);
     formattedAttachments.push(attachment.origFilename);
   });
   
-  const data: cellAttachments = 
+  const data: CellAttachments = 
     {
       attachments: att,
-      formatted: formattedAttachments.join(", "),
+      formatted: formattedAttachments.join("; "),
     }
   return JSON.stringify(data);
 }
 
 export function getAttachmentsFromCell(
   cellData: string,
-): cellAttachments | undefined {
+): CellAttachments | undefined {
   if (cellData.length === 0) {
     return undefined;
   }
-  try {
-    const data = JSON.parse(cellData) as cellAttachments;
-    if (data.attachments.length > 0) {
-      return data;
-    }
-  } catch (error) {
-    console.error("Error parsing attachment data:", error);
+  const data = JSON.parse(cellData) as CellAttachments;
+  if (data.attachments.length > 0) {
+    return data;
   }
   return undefined;
 }
