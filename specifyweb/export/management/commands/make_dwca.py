@@ -29,7 +29,7 @@ class Command(BaseCommand):
         user = Specifyuser.objects.get(id=kwargs['specifyuser_id'])
 
         if kwargs['definition'] != None:
-            with open(kwargs['definition'], 'r') as f:
+            with open(kwargs['definition']) as f:
                 definition = f.read()
         else:
             definition, _, __ = get_app_resource(collection, user, kwargs['resource'])

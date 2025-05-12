@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Callable, Dict, Generator, List, Optional, Tuple, TypeVar
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar
+from collections.abc import Generator
 from django.db.models import Q
 
 # made as a class to encapsulate type variables and prevent pollution of export
@@ -16,7 +17,7 @@ class Func:
         return callback(value)
 
     @staticmethod
-    def sort_by_key(to_sort: Dict[I, O], reverse=False) -> List[Tuple[I, O]]:
+    def sort_by_key(to_sort: dict[I, O], reverse=False) -> list[tuple[I, O]]:
         return sorted(to_sort.items(), key=lambda t: t[0], reverse=reverse)
     
     @staticmethod
@@ -24,7 +25,7 @@ class Func:
         return [(key, val) for key, val in obj.items()]
 
     @staticmethod
-    def make_ors(eprns: List[Q]) -> Q:
+    def make_ors(eprns: list[Q]) -> Q:
         assert len(eprns) > 0
         return reduce(lambda accum, curr: accum | curr, eprns)
 
@@ -39,7 +40,7 @@ class Func:
         return _generator(step)
 
     @staticmethod
-    def remove_keys(source: Dict[I, O], callback: Callable[[O], bool]) -> Dict[I, O]:
+    def remove_keys(source: dict[I, O], callback: Callable[[O], bool]) -> dict[I, O]:
         return {key: value for key, value in source.items() if callback(key, value)}
 
     @staticmethod
@@ -47,11 +48,11 @@ class Func:
         return bool(val)
 
     @staticmethod
-    def first(source: List[Tuple[I, O]]) -> List[I]:
+    def first(source: list[tuple[I, O]]) -> list[I]:
         return [first for (first, _) in source]
 
     @staticmethod
-    def second(source: List[Tuple[I, O]]) -> List[O]:
+    def second(source: list[tuple[I, O]]) -> list[O]:
         return [second for (_, second) in source]
     
     @staticmethod

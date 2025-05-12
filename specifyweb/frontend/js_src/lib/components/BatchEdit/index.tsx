@@ -123,13 +123,16 @@ export function BatchEditFromQuery({
       })
     );
 
+  const isDisabled =
+    queryFieldSpecs.some(containsSystemTables) ||
+    queryFieldSpecs.some(hasHierarchyBaseTable) ||
+    containsDisallowedTables(query);
+
   return (
     <>
       <Button.Small
-        disabled={
-          queryFieldSpecs.some(containsSystemTables) ||
-          queryFieldSpecs.some(hasHierarchyBaseTable)
-        }
+        disabled={isDisabled}
+        title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
           loading(
             treeRanksPromise.then(async () => {
@@ -203,6 +206,14 @@ const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
+  );
+
+// Using tables.SpAuditLog here leads to an error in some cases where the tables data hasn't loaded correctly
+const DISALLOWED_TABLES = ['spauditlog'];
+
+const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
+  DISALLOWED_TABLES.some(
+    (tableName) => query.get('contextName').toLowerCase() === tableName
   );
 
 // Error filters

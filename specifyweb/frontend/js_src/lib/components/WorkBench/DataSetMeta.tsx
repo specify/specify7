@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { StringToJsx } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
@@ -375,6 +376,11 @@ export function DataSetName({
         })}
         {dataset.uploadresult?.success === true && (
           <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
+        )}
+        {dataset.isupdate && dataset.rolledback && (
+          <span className="text-red-600">
+            {batchEditText.cannotEditAfterRollback()}
+          </span>
         )}
       </h2>
       <Button.Small onClick={handleOpen}>

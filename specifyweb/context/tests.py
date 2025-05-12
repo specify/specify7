@@ -10,7 +10,7 @@ from . import viewsets
 
 class ViewTests(ApiTests):
     def setUp(self):
-        super(ViewTests, self).setUp()
+        super().setUp()
 
         # some views are not defined above the discipline level
         self.discipline.type = "fish"
