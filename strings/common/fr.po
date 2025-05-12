@@ -268,7 +268,7 @@ msgstr "Créer"
 #: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:76
-#: components/WbToolkit/DevShowPlan.tsx:81
+#: components/WbToolkit/DevShowPlan.tsx:86
 #: components/WbToolkit/GeoLocate.tsx:143
 #: components/WorkBench/AdvancedSearch.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:127
@@ -332,7 +332,7 @@ msgstr ""
 #: components/Statistics/index.tsx:594
 #: components/WbActions/WbSave.tsx:66
 #: components/WbPlanView/Mapper.tsx:465
-#: components/WbToolkit/DevShowPlan.tsx:107
+#: components/WbToolkit/DevShowPlan.tsx:115
 #: components/WorkBench/DataSetMeta.tsx:183
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
@@ -847,7 +847,7 @@ msgstr "Ordinal"
 #: components/QueryBuilder/Edit.tsx:79
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
-#: components/WbToolkit/DevShowPlan.tsx:85
+#: components/WbToolkit/DevShowPlan.tsx:90
 #: components/WbToolkit/index.tsx:89
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
 #, fuzzy
