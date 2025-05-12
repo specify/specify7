@@ -782,7 +782,7 @@ describe('set', () => {
       id: 1,
       catalognumber: catalogNumber,
       accession: accessionUrl,
-      determinations: [...serializedDeterminations],
+      determinations: Array.from(serializedDeterminations),
       collectionobjectattribute: {
         text1: attributeText1,
       } as never,
@@ -816,9 +816,9 @@ describe('set', () => {
       determinations: serializedDeterminations,
     };
     resource.set(serializedAttributes as never, { silent: true } as never);
-    expect(resource.needsSaved).toStrictEqual(false);
+    expect(resource.needsSaved).toBe(false);
     resource.set(serializedAttributes as never, { silent: false } as never);
-    expect(resource.needsSaved).toStrictEqual(true);
+    expect(resource.needsSaved).toBe(true);
   });
 });
 
