@@ -15,7 +15,7 @@ class ScopeType:
 
 
 class Scoping(namedtuple('Scoping', 'obj')):
-    def __call__(self) -> Tuple[int, Model]:
+    def __call__(self) -> tuple[int, Model]:
         """
         Returns the ScopeType and related Model instance of the 
         hierarchical position the `obj` occupies. 
@@ -71,13 +71,13 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
 #############################################################################
 
-    def _simple_discipline_scope(self) -> Tuple[int, Model]:
+    def _simple_discipline_scope(self) -> tuple[int, Model]:
         return ScopeType.DISCIPLINE, self.obj.discipline
 
-    def _simple_division_scope(self) -> Tuple[int, Model]:
+    def _simple_division_scope(self) -> tuple[int, Model]:
         return ScopeType.DIVISION, self.obj.division
 
-    def _simple_collection_scope(self) -> Tuple[int, Model]:
+    def _simple_collection_scope(self) -> tuple[int, Model]:
         if hasattr(self.obj, "collectionmemberid"):
             try:
                 """
@@ -107,7 +107,7 @@ class Scoping(namedtuple('Scoping', 'obj')):
         return self._default_institution_scope()
 
     # If the table has no scope, and scope can not be inferred then scope to institution
-    def _default_institution_scope(self) -> Tuple[int, Model]:
+    def _default_institution_scope(self) -> tuple[int, Model]:
         institution = models.Institution.objects.get()
         return ScopeType.INSTITUTION, institution
 

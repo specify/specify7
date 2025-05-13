@@ -29,8 +29,13 @@ export function identifyDefaultValues(
   mappings: WbMapping | undefined
 ): void {
   if (mappings === undefined) return;
+  const existingColumns = hot.getSettings()
+    .columns as readonly Handsontable.ColumnSettings[];
   hot.updateSettings({
-    columns: (index) => ({ placeholder: mappings.defaultValues[index] }),
+    columns: (index) => ({
+      ...(existingColumns?.[index]),
+      placeholder: mappings.defaultValues[index],
+    }),
   });
 }
 

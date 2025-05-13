@@ -1,4 +1,3 @@
-
 import unittest
 
 from specifyweb.specify import models

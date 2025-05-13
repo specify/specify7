@@ -121,7 +121,7 @@ row_plan_map = RowPlanMap(
                                     to_many={},
                                     is_naive=True,
                                 ),
-                                "County": RowPlanMap(
+                                "Province": RowPlanMap(
                                     batch_edit_pack=BatchEditPack(
                                         id=BatchEditFieldPack(
                                             field=None, idx=42, value=None
@@ -142,7 +142,7 @@ row_plan_map = RowPlanMap(
                                     to_many={},
                                     is_naive=True,
                                 ),
-                                "Province": RowPlanMap(
+                                "County": RowPlanMap(
                                     batch_edit_pack=BatchEditPack(
                                         id=BatchEditFieldPack(
                                             field=None, idx=45, value=None
@@ -193,7 +193,7 @@ row_plan_map = RowPlanMap(
                     ),
                     columns=[],
                     to_one={
-                        "Genus": RowPlanMap(
+                        "Subspecies": RowPlanMap(
                             batch_edit_pack=BatchEditPack(
                                 id=BatchEditFieldPack(field=None, idx=53, value=None),
                                 order=BatchEditFieldPack(
@@ -227,7 +227,7 @@ row_plan_map = RowPlanMap(
                             to_many={},
                             is_naive=True,
                         ),
-                        "Subspecies": RowPlanMap(
+                        "Genus": RowPlanMap(
                             batch_edit_pack=BatchEditPack(
                                 id=BatchEditFieldPack(field=None, idx=59, value=None),
                                 order=BatchEditFieldPack(

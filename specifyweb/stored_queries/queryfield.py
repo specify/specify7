@@ -14,13 +14,13 @@ EphemeralField = namedtuple(
 )
 
 
-def fields_from_json(json_fields) -> List["QueryField"]:
+def fields_from_json(json_fields) -> list["QueryField"]:
     """Given deserialized json data representing an array of SpQueryField
     records, return an array of QueryField objects that can build the
     corresponding sqlalchemy query.
     """
 
-    def ephemeral_field_from_json(json: Dict[str, Any]):
+    def ephemeral_field_from_json(json: dict[str, Any]):
         return EphemeralField(
             **{field: json.get(field.lower(), None) for field in EphemeralField._fields}
         )
@@ -63,7 +63,7 @@ class QueryField(NamedTuple):
             strict=field.isStrict,
         )
 
-    def add_to_query(self, query, no_filter=False, formatauditobjs=False):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False, collection=None, user=None):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             "op_true",  # 6
@@ -85,4 +85,6 @@ class QueryField(NamedTuple):
             formatter=self.format_name,
             formatauditobjs=formatauditobjs,
             strict=self.strict,
+            collection=collection,
+            user=user,
         )

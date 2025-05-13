@@ -1,15 +1,17 @@
-from dataclasses import fields
 import logging
 import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
-from specifyweb.specify.models import datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.utils import get_cat_num_inheritance_setting
+from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
 from .query_ops import QueryOps
@@ -28,18 +30,19 @@ STRINGID_RE = re.compile(r"^([^\.]*)\.([^\.]*)\.(.*)$")
 DATE_PART_RE = re.compile(r"(.*)((NumericDay)|(NumericMonth)|(NumericYear))$")
 
 # Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
+TAXON_FIELD_RE = re.compile(r"(.*) ((Author)|(groupNumber))$")
 
 # Pull out geographyCode field from geography query fields.
-GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
+GEOGRAPHY_FIELD_RE = re.compile(r"(.*) ((geographyCode))$")
 
 # Look to see if we are dealing with a tree node ID.
-TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
+TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 
 # Precalculated fields that are not in the database. Map from table name to field name.
 PRECALCULATED_FIELDS = {
-    'CollectionObject': 'age',
+    "CollectionObject": "age",
 }
+
 
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
@@ -114,9 +117,14 @@ def make_stringid(fs, table_list):
         field_name += "Numeric" + fs.date_part
     return table_list, fs.table.name.lower(), field_name.strip()
 
+
 class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
     original_field: str
+    # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
+    treedef_id: Optional[int]
+    # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
+    treedef_name: Optional[str]
 
     def __hash__(self):
         return hash((TreeRankQuery, self.relatedModelName, self.name))
@@ -128,13 +136,33 @@ class TreeRankQuery(Relationship):
             and value.relatedModelName == self.relatedModelName
         )
 
+    @staticmethod
+    def create(name, table_name, treedef_id=None, treedef_name=None):
+        obj = TreeRankQuery(
+            name=name,
+            relatedModelName=table_name,
+            type="many-to-one",
+            column=datamodel.get_table_strict(table_name).idFieldName
+        )
+        obj.treedef_id = treedef_id
+        obj.treedef_name = treedef_name
+        return obj
+
+    def get_workbench_name(self):
+        from specifyweb.workbench.upload.treerecord import RANK_KEY_DELIMITER
+        # Treedef id included to make it easier to pass it to batch edit
+        return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
+
 
 QueryNode = Union[Field, Relationship, TreeRankQuery]
-FieldSpecJoinPath = Tuple[QueryNode]
+FieldSpecJoinPath = tuple[QueryNode]
 
 
 class QueryFieldSpec(
-    namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")
+    namedtuple(
+        "QueryFieldSpec",
+        "root_table root_sql_table join_path table date_part tree_rank tree_field",
+    )
 ):
     root_table: Table
     root_sql_table: SQLTable
@@ -173,7 +201,7 @@ class QueryFieldSpec(
                 "Full Date" if (join_path and join_path[-1].is_temporal()) else None
             ),
             tree_rank=None,
-            tree_field=None
+            tree_field=None,
         )
 
     @classmethod
@@ -206,11 +234,9 @@ class QueryFieldSpec(
         if field is None:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
-                tree_rank = TreeRankQuery(
-                    name=tree_rank_name, 
-                    relatedModelName=node.name, 
-                    type="many-to-one",
-                    column=node.idField.column
+                tree_rank = TreeRankQuery.create(
+                    tree_rank_name,
+                    node.name
                 )
                 # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
                 join_path.append(tree_rank)
@@ -229,7 +255,7 @@ class QueryFieldSpec(
             table=node,
             date_part=date_part,
             tree_rank=tree_rank_name,
-            tree_field=field
+            tree_field=field,
         )
 
         logger.debug(
@@ -244,8 +270,17 @@ class QueryFieldSpec(
     def __init__(self, *args, **kwargs):
         self.validate()
 
+    def get_first_tree_rank(self):
+        for node in enumerate(list(self.join_path)):
+            if isinstance(node[1], TreeRankQuery):
+                return node
+        return None
+
+    def contains_tree_rank(self):
+        return self.get_first_tree_rank() is not None
+
     def validate(self):
-        valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
+        valid_date_parts = ("Full Date", "Day", "Month", "Year", None)
         assert self.is_temporal() or self.date_part is None
         if self.date_part not in valid_date_parts:
             raise AssertionError(
@@ -310,9 +345,23 @@ class QueryFieldSpec(
 
     def needs_formatted(self):
         return len(self.join_path) == 0 or self.is_relationship()
-    
-    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False, strict=False):
-        no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
+
+    def apply_filter(
+        self,
+        query,
+        orm_field,
+        field,
+        table,
+        value=None,
+        op_num=None,
+        negate=False,
+        strict=False,
+        collection=None,
+        user=None
+    ):
+        no_filter = op_num is None or (
+            self.tree_rank is None and self.get_field() is None
+        )
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
                 _, other_field, _ = value.add_to_query(query.reset_joinpoint())
@@ -327,7 +376,9 @@ class QueryFieldSpec(
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(op_num)
             if query_op.is_precalculated(op_num):
-                f = op(orm_field, value, query, is_strict=strict) # Needed if using op_age_range_simple
+                f = op(
+                    orm_field, value, query, is_strict=strict
+                )  # Needed if using op_age_range_simple
                 # Handle modifying query from op_age_range
                 # new_query = op(orm_field, value, query, is_strict=strict)
                 # query = query._replace(query=new_query)
@@ -337,7 +388,9 @@ class QueryFieldSpec(
                     query = query.reset_joinpoint()
                     return query, None, None
             else:
-                f = op(orm_field, value)
+                op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+                f = op(mod_orm_field, value)
+
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
@@ -353,7 +406,9 @@ class QueryFieldSpec(
         negate=False,
         formatter=None,
         formatauditobjs=False,
-        strict=False
+        strict=False,
+        collection=None,
+        user=None,
     ):
         # print "############################################################################"
         # print "formatauditobjs " + str(formatauditobjs)
@@ -362,7 +417,9 @@ class QueryFieldSpec(
         # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
-        return self.apply_filter(query, orm_field, field, table, value, op_num, negate, strict=strict)
+        return self.apply_filter(
+            query, orm_field, field, table, value, op_num, negate, strict=strict, collection=collection, user=user
+        )
 
     def add_spec_to_query(
         self, query, formatter=None, aggregator=None, cycle_detector=[]
@@ -377,7 +434,7 @@ class QueryFieldSpec(
 
         if self.is_relationship():
             # will be formatting or aggregating related objects
-            if self.get_field().type in {'many-to-one', 'one-to-one'}:
+            if self.get_field().type in {"many-to-one", "one-to-one"}:
                 query, orm_model, table, field = self.build_join(query, self.join_path)
                 query, orm_field = query.objectformatter.objformat(
                     query, orm_model, formatter, cycle_detector
@@ -400,7 +457,7 @@ class QueryFieldSpec(
                 query, orm_field, field, table = query.handle_tree_field(
                     orm_model,
                     table,
-                    field.name,
+                    field,
                     self.join_path[tree_rank_idx + 1 :],
                     self,
                 )
@@ -412,7 +469,9 @@ class QueryFieldSpec(
                     if table.name in PRECALCULATED_FIELDS:
                         field_name = PRECALCULATED_FIELDS[table.name]
                         # orm_field = getattr(orm_model, field_name)
-                        orm_field = getattr(orm_model, orm_model._id) # Replace with recordId, future just remove column from results
+                        orm_field = getattr(
+                            orm_model, orm_model._id
+                        )  # Replace with recordId, future just remove column from results
                     else:
                         raise
 
@@ -427,3 +486,82 @@ class QueryFieldSpec(
                     orm_field = sql.extract(self.date_part, orm_field)
 
         return query, orm_field, field, table
+
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+
+    if parent_inheritance_pref: 
+        op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+    else: 
+        op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+    return op, orm_field, value
+
+def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+        and get_cat_num_inheritance_setting(collection, user)
+    ):
+        sibling_ids = cog_primary_co_sibling_ids(value)
+        if sibling_ids:
+            # Modify the query to filter operation and values for sibling collection objects
+            value = ','.join(sibling_ids)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
+
+    return op, orm_field, value
+
+def cog_primary_co_sibling_ids(cat_num):
+    # Get the collection object with the given catalog number
+    co = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not co:
+        return []
+
+    # Get the primary group join for the collection object
+    cojo = Collectionobjectgroupjoin.objects.filter(childco=co, isprimary=True).first()
+    if not cojo:
+        return []
+
+    # Get sibling collection objects in the same parent group
+    sibling_co_ids = Collectionobjectgroupjoin.objects.filter(
+        parentcog=cojo.parentcog, childco__isnull=False
+    ).exclude(childco=co).values_list('childco_id', flat=True)
+
+    # Filter siblings with no catalog number and return all IDs as strings
+    target_sibling_co_ids = Collectionobject.objects.filter(
+        id__in=sibling_co_ids, catalognumber=None
+    ).values_list('id', flat=True)
+
+    return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
+
+def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    if (
+        table.name == "CollectionObject"
+        and field.name == "catalogNumber"
+        and op_num == 1
+        and get_parent_cat_num_inheritance_setting(collection, user)
+    ):
+        children_ids = co_children_ids(value)
+        if children_ids:
+            # Modify the query to filter operation and values for children collection objects
+            value = ','.join(children_ids)
+            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            op = QueryOps(uiformatter).by_op_num(10)
+
+    return op, orm_field, value
+
+def co_children_ids(cat_num):
+    # Get the collection object with the given catalog number
+    parentco = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    if not parentco:
+        return []
+
+    # Get child objects directly from the related name
+    children = parentco.children.filter(catalognumber=None)
+
+    # Get their IDs
+    target_children_co_ids = children.values_list('id', flat=True)
+
+    return [str(i) for i in [parentco.id] + list(target_children_co_ids)]

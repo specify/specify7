@@ -13,16 +13,22 @@ export function QueryToolbar({
   showHiddenFields,
   tableName,
   isDistinct,
+  isSeries,
+  showSeries,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
+  onToggleSeries: handleToggleSeries,
   onRunCountOnly: handleRunCountOnly,
   onSubmitClick: handleSubmitClick,
 }: {
   readonly showHiddenFields: boolean;
   readonly tableName: keyof Tables;
   readonly isDistinct: boolean;
+  readonly isSeries: boolean;
+  readonly showSeries: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
+  readonly onToggleSeries: () => void;
   readonly onRunCountOnly: () => void;
   readonly onSubmitClick: () => void;
 }): JSX.Element {
@@ -38,6 +44,16 @@ export function QueryToolbar({
       <span className="-ml-2 flex-1" />
       {hasPermission('/querybuilder/query', 'execute') && (
         <>
+          {showSeries && (
+            <Label.Inline>
+              <Input.Checkbox
+                checked={isSeries}
+                isReadOnly={isDistinct}
+                onChange={handleToggleSeries}
+              />
+              {queryText.series()}
+            </Label.Inline>
+          )}
           {/*
            * Query Distinct for trees is disabled because of
            * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
@@ -46,6 +62,7 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isDistinct}
+                isReadOnly={isSeries}
                 onChange={handleToggleDistinct}
               />
               {queryText.distinct()}
