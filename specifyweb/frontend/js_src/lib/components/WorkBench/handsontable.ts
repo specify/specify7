@@ -33,7 +33,7 @@ export function identifyDefaultValues(
     .columns as readonly Handsontable.ColumnSettings[];
   hot.updateSettings({
     columns: (index) => ({
-      ...(existingColumns?.[index]),
+      ...existingColumns?.[index],
       placeholder: mappings.defaultValues[index],
     }),
   });
