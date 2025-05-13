@@ -1,7 +1,7 @@
 {
   /* File Inclusion */
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "**/*.svg"],
   "files": ["./lib/declarations.d.ts"],
   "compilerOptions": {
     /* Basic Options */
