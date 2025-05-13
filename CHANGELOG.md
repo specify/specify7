@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.10.2.3](https://github.com/specify/specify7/compare/v7.10.2.2...v7.10.2.3) (13 May 2025)
+
+## Fixed
+* Fixes an issue that caused an "Out of Date" error when updating a related record ([#6488](https://github.com/specify/specify7/issues/6488) – *Reported by Orma J. Smith Museum of Natural History*)
+* Fixes an issue that prevented queries with an 'OR' operator from executing successfully ([#6486](https://github.com/specify/specify7/issues/6486) – *Reported by The Ohio State University Mollusks*)
+
+## [7.10.2.2](https://github.com/specify/specify7/compare/v7.10.2.1...v7.10.2.2) (6 May 2025)
+
+## Fixed
+* Fixes cases where 'Full Name' was returned instead of 'Name' in queries, reports, labels, and data exports ([#6463](https://github.com/specify/specify7/issues/6463))
+* Resolves an issue that prevents queries from running when there is a space in the rank name ([#6459](https://github.com/specify/specify7/issues/6459))
+* Corrects the presence of leading zeroes in queries, reports, and labels ([#6464](https://github.com/specify/specify7/issues/6464))
+
 ## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (15 April 2025)
 
 ## Added
