@@ -18,11 +18,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: specify7
-          # Assumes the strings originally came from production branch
+          # Assumes the strings originally came from main branch
           ref: main
           fetch-depth: 0
           # Using a Personal Access Token from an admin account to bypass branch
-          # protection rules and allow direct pushes to production. Inspirited
+          # protection rules and allow direct pushes to main. Inspirited
           # by: https://github.com/community/community/discussions/13836
           token: ${{ secrets.WEBLATE_PUSH_TO_GITHUB }}
 
