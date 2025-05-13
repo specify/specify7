@@ -1602,6 +1602,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
+            Relationship(name='parentCO', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ParentCOID', otherSideName='children'),
+            Relationship(name='children', type='one-to-many', required=False, relatedModelName='CollectionObject', otherSideName='parentCO', dependent=True),
         ],
         fieldAliases=[
 
@@ -6593,6 +6595,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='searchSynonymy', column='SearchSynonymy', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='selectDistinct', column='SelectDistinct', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='selectSeries', column='SelectSeries', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='smushed', column='Smushed', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='sqlStr', column='SqlStr', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),

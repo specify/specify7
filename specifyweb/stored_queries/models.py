@@ -46,7 +46,7 @@ def generate_models():
 
 tables, classes = generate_models()
 
-models_by_tableid: Dict[int, build_models.Table] = dict((cls.tableid, cls) for cls in list(classes.values()))
+models_by_tableid: dict[int, build_models.Table] = {cls.tableid: cls for cls in list(classes.values())}
 
 globals().update(classes)
 

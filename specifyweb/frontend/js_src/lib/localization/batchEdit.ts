@@ -10,6 +10,9 @@ export const batchEditText = createDictionary({
   batchEdit: {
     'en-us': 'Batch Edit',
   },
+  batchEditPrefs: {
+    'en-us': 'Batch Edit Preferences',
+  },
   numberOfRecords: {
     'en-us': 'Number of records selected from the query',
   },
@@ -18,7 +21,12 @@ export const batchEditText = createDictionary({
       'Field not supported for batch edit. Either remove the field, or make it hidden.',
   },
   addTreeRank: {
-    'en-us': 'Please add the following missing rank to the query',
+    'en-us':
+      'The following ranks will be added to the query to enable batch editing',
+  },
+  pickTreesToFilter: {
+    'en-us':
+      'The selected rank(s) are found in multiple trees. Pick tree(s) to batch edit with',
   },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
@@ -26,15 +34,18 @@ export const batchEditText = createDictionary({
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
   },
+  missingRanksInQuery: {
+    'en-us': 'Query requires additional ranks for batch editing',
+  },
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
   },
   showRollback: {
-    'en-us': 'Show revert button',
+    'en-us': 'Show rollback button',
   },
   showRollbackDescription: {
     'en-us':
-      'Revert is currently an experimental feature. This preference will hide the button',
+      'Rollback in Batch Edit is an experimental feature. This preference will hide the button',
   },
   commit: {
     'en-us': 'Commit',
@@ -80,7 +91,26 @@ export const batchEditText = createDictionary({
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
   },
-  treeQueriesDisabled: {
-    'en-us': 'Batch editing is disabled for trees',
+  deferForMatch: {
+    'en-us': 'Use only visible fields for match',
+  },
+  deferForMatchDescription: {
+    'en-us':
+      'If true, invisible database fields will not be used for matching. Default value is {default:boolean}',
+  },
+  deferForNullCheck: {
+    'en-us': 'Use only visible fields for empty record check',
+  },
+  deferForNullCheckDescription: {
+    'en-us':
+      'If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}',
+  },
+  batchEditDisabled: {
+    'en-us':
+      'Batch Edit is disabled for system tables and scoping hierarchy tables',
+  },
+  cannotEditAfterRollback: {
+    'en-us':
+      '(Batch Edit datasets cannot be edited after rollback - Read Only)',
   },
 } as const);

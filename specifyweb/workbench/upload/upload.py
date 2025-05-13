@@ -10,9 +10,9 @@ from typing import (
     Union,
     Callable,
     Optional,
-    Sized,
     Tuple,
 )
+from collections.abc import Sized
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
@@ -56,7 +56,7 @@ from .uploadable import (
 from .scope_context import ScopeContext
 from ..models import Spdataset
 
-Rows = Union[List[Row], csv.DictReader]
+Rows = Union[list[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
 
 logger = logging.getLogger(__name__)
@@ -160,7 +160,7 @@ def do_upload_dataset(
     no_commit: bool,
     allow_partial: bool,
     progress: Optional[Progress] = None,
-) -> List[UploadResult]:
+) -> list[UploadResult]:
     if ds.was_uploaded():
         raise AssertionError(
             "Dataset already uploaded", {"localizationKey": "datasetAlreadyUploaded"}
@@ -228,7 +228,7 @@ def clear_disambiguation(ds: Spdataset) -> None:
         ds.save(update_fields=["data"])
 
 
-def create_recordset(ds: Spdataset, name: str):
+def create_recordset(ds: Spdataset, name: str, remarks: str):
     table, upload_plan = get_ds_upload_plan(ds.collection, ds)
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
@@ -237,6 +237,7 @@ def create_recordset(ds: Spdataset, name: str):
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
         name=name,
+        remarks=remarks,
         specifyuser=ds.specifyuser,
         type=0,
     )
@@ -256,7 +257,7 @@ def create_recordset(ds: Spdataset, name: str):
     return rs
 
 
-def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
+def get_disambiguation_from_row(ncols: int, row: list) -> Disambiguation:
     extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
     return (
         disambiguation.from_json(extra["disambiguation"])
@@ -265,12 +266,12 @@ def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     )
 
 
-def get_batch_edit_pack_from_row(ncols: int, row: List) -> Optional[BatchEditJson]:
+def get_batch_edit_pack_from_row(ncols: int, row: list) -> Optional[BatchEditJson]:
     extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
     return extra.get("batch_edit") if extra is not None else None
 
 
-def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable, BatchEditPrefs]:
+def get_raw_ds_upload_plan(ds: Spdataset) -> tuple[Table, Uploadable, BatchEditPrefs]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -284,7 +285,7 @@ def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable, BatchEditP
     return base_table, plan, batchEditPrefs
 
 
-def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
+def get_ds_upload_plan(collection, ds: Spdataset) -> tuple[Table, ScopedUploadable]:
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
@@ -293,14 +294,14 @@ def do_upload(
     rows: Rows,
     upload_plan: Uploadable,
     uploading_agent_id: int,
-    disambiguations: Optional[List[Disambiguation]] = None,
+    disambiguations: Optional[list[Disambiguation]] = None,
     no_commit: bool = False,
     allow_partial: bool = True,
     progress: Optional[Progress] = None,
-    batch_edit_packs: Optional[List[Optional[BatchEditJson]]] = None,
+    batch_edit_packs: Optional[list[Optional[BatchEditJson]]] = None,
     auditor_props: Optional[AuditorProps] = None,
-) -> List[UploadResult]:
-    cache: Dict = {}
+) -> list[UploadResult]:
+    cache: dict = {}
     _auditor = Auditor(
         collection=collection,
         props=auditor_props or DEFAULT_AUDITOR_PROPS,
@@ -317,7 +318,7 @@ def do_upload(
 
     with savepoint("main upload"):
         tic = time.perf_counter()
-        results: List[UploadResult] = []
+        results: list[UploadResult] = []
         for i, row in enumerate(rows):
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
@@ -412,7 +413,7 @@ def validate_row(
     return result
 
 
-def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> None:
+def fixup_trees(upload_plan: ScopedUploadable, results: list[UploadResult]) -> None:
     treedefs = upload_plan.get_treedefs()
 
     to_fix = [

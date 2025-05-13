@@ -222,6 +222,17 @@ plan = {
                         "toOne": {},
                         "toMany": {},
                     },
+                ],
+                "preparations": [
+                    {
+                        "wbcols": {
+                            "countamt": "Preparation countAmt",
+                            "text1": "Preparation text1",
+                        },
+                        "static": {},
+                        "toOne": {},
+                        "toMany": {},
+                    },
                 ]
             },
         }

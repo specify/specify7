@@ -5,7 +5,7 @@ from specifyweb.specify import models
 
 class TaxonTreeDefItemTests(ApiTests):
     def setUp(self):
-        super(TaxonTreeDefItemTests, self).setUp()
+        super().setUp()
 
         self.taxontreedef = models.Taxontreedef.objects.create(
             name="Test Taxon tree def")

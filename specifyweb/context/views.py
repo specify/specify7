@@ -52,7 +52,7 @@ def users_collections_for_sp6(cursor, user_id):
 
     return list(cursor.fetchall())
 
-def users_collections_for_sp7(userid: int) -> List:
+def users_collections_for_sp7(userid: int) -> list:
     return [
         c
         for c in Collection.objects.all()
@@ -97,7 +97,7 @@ def set_users_collections_for_sp6(cursor, user, collectionids):
                        "join specifyuser_spprincipal using (spprincipalid) "
                        "where grouptype is null and specifyuserid = %s",
                        [user.id])
-        already_exist = set(r[0] for r in cursor.fetchall())
+        already_exist = {r[0] for r in cursor.fetchall()}
 
         for collectionid in set(collectionids) - already_exist:
             principal = Spprincipal.objects.create(
@@ -777,7 +777,7 @@ def merge_components(components, endpoint_components):
             **(
                 endpoint_components[subspace_name] if subspace_name in endpoint_components else {}
             ),
-        } for subspace_name in set([*components.keys(), *endpoint_components.keys()])
+        } for subspace_name in {*components.keys(), *endpoint_components.keys()}
     }
 
 def get_endpoints(
