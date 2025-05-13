@@ -8,7 +8,7 @@ On any changes to `main` branch, the strings in the branch
 will be synchronized though a GitHub Action.
 
 When strings are modified in Weblate, changes will be pushed to this
-branch and then synchronized back with `production` using GitHub Action.
+branch and then synchronized back with `main` using GitHub Action.
 
 ## Why this solution
 
