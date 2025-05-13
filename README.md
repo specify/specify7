@@ -4,7 +4,7 @@ This branch stores translations produced though the Weblate interface.
 
 This branch should not be modified manually.
 
-On any changes to `production` branch, the strings in the branch
+On any changes to `main` branch, the strings in the branch
 will be synchronized though a GitHub Action.
 
 When strings are modified in Weblate, changes will be pushed to this
