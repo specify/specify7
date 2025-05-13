@@ -11,7 +11,7 @@ import L from 'leaflet';
 // Marker Clustering
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet.markercluster/dist/leaflet.markercluster';
+import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
 import GestureHandling from 'leaflet-gesture-handling';
@@ -19,14 +19,20 @@ import GestureHandling from 'leaflet-gesture-handling';
 import { localityText } from '../../localization/locality';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { className } from '../Atoms/className';
+// @ts-expect-error Path to non-ts file
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+// @ts-expect-error Path to non-ts file
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+// @ts-expect-error Path to non-ts file
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
 });
 
 L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);

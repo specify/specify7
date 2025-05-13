@@ -27,10 +27,10 @@ jobs:
       frontend_changes: ${{ steps.filter.outputs.frontend_files }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Find all changed files
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         id: filter
         with:
           base: ${{ github.ref }}
@@ -64,10 +64,12 @@ jobs:
           MYSQL_PASSWORD: MasterPassword
           MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
-        options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options:
+          --health-cmd="mariadb-admin ping" --health-interval=5s
+          --health-timeout=2s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get Specify 6 from cache
         id: cache-specify6
@@ -82,8 +84,13 @@ jobs:
           wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
-      - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
-        run: sed -i 's/name="origFilename" type="java.lang.String"/name="origFilename" type="text"/' ./Specify6/config/specify_datamodel.xml
+      - name:
+          Patch Specify datamodel (Sam, you made the Attachment.origFilename too
+          long)
+        run:
+          sed -i 's/name="origFilename"
+          type="java.lang.String"/name="origFilename" type="text"/'
+          ./Specify6/config/specify_datamodel.xml
 
       - name: Install ubuntu dependencies
         run: |
@@ -93,7 +100,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install python dependencies
         run: |
@@ -111,7 +118,9 @@ jobs:
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
-        run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+        run:
+          make specifyweb/settings/build_version.py
+          specifyweb/settings/secret_key.py
 
       - name: Verify MariaDB connection
         env:
@@ -124,8 +133,15 @@ jobs:
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
+      # - name: Delete existing test database (if any). Use if database is corrupted
+      #   env:
+      #     PORT: ${{ job.services.mariadb.ports[3306] }}
+      #   run: |
+      #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;';
+      #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'SHOW DATABASES;'
       - name: Run test suite
-        run: ./ve/bin/python manage.py test --keepdb
+        run: ./ve/bin/python manage.py test --verbosity=3 --keepdb
+        # run: ./ve/bin/python manage.py test --verbosity=3 --noinput
 
   test-front-end:
     name: Run front-end tests
@@ -134,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           # Using a Personal Access Token from an admin account to bypass branch
@@ -142,10 +158,10 @@ jobs:
           # by: https://github.com/community/community/discussions/13836
           token: ${{ secrets.TESTS_PUSH_TO_GITHUB }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: "npm"
+          node-version-file: specifyweb/frontend/js_src/package.json
+          cache: 'npm'
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
       - name: Build frontend
@@ -164,7 +180,9 @@ jobs:
 
       - name: Clone branch that stores localization strings
         # Listen for changes to production branch
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        if:
+          github.ref == format('refs/heads/{0}',
+          github.event.repository.default_branch)
         id: weblate
         uses: actions/checkout@v3
         with:
@@ -178,7 +196,9 @@ jobs:
           npm run localizationTests -- --emit ../../../weblate-localization/strings
 
       - name: Sync localization strings with Weblate (only on production branch)
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        if:
+          github.ref == format('refs/heads/{0}',
+          github.event.repository.default_branch)
         working-directory: weblate-localization
         run: |
           git add strings
@@ -221,7 +241,7 @@ jobs:
 
           # Convert to array
           IFS=' ' read -r -a split_files <<< "$changed_files"
-          
+
           # Exclude files that were removed
           for file in "${split_files[@]}"; do
               if [ ! -e "$file" ]; then
@@ -232,7 +252,7 @@ jobs:
 
           # Convert back to string
           changed="${split_files[*]}"
-          
+
           echo "Changed front-end files: ${changed}"
           echo "changed=${changed}" >> $GITHUB_OUTPUT
 
@@ -243,7 +263,9 @@ jobs:
         #  - This would have already run on the feature branch by the time code
         #    is pushed into production.
         #  - There shouldn't be many direct pushes to production anyway
-        if: github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
+        if:
+          github.ref != format('refs/heads/{0}',
+          github.event.repository.default_branch)
         working-directory: specifyweb/frontend/js_src
         run: |
           # TODO: Once most errors are fixed remove "set +e" to not ignore errors

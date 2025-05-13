@@ -16,10 +16,12 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables, tables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -48,7 +50,7 @@ const invisibleCarry = new Set([
 /** Search for all dependent fields using a suffix */
 const dependentFieldSeeker = (suffix: string): IR<string> =>
   Object.fromEntries(
-    Object.values(schema.models)
+    Object.values(genericTables)
       .flatMap(({ literalFields }) =>
         literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
       )
@@ -56,11 +58,20 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
         (v) =>
           [
             v.name,
-            v.model.getField(v.name.slice(0, -suffix.length))?.name,
+            v.table.getField(v.name.slice(0, -suffix.length))?.name,
           ] as const
       )
       .filter(([_dependent, source]) => typeof source === 'string')
   ) as IR<string>;
+
+export const strictDependentFields = f.store<IR<string>>(() => ({
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
 
 /**
  * Dependent -> Source
@@ -72,22 +83,19 @@ export const dependentFields = f.store<IR<string>>(() => ({
   lat2text: 'latitude2',
   long1text: 'longitude1',
   long2text: 'longitude2',
-  // Fields like endDatePrecision
-  ...dependentFieldSeeker('precision'),
-  // Fields like endDateVerbatim
-  ...dependentFieldSeeker('verbatim'),
-  // Fields like endDepthUnit
-  ...dependentFieldSeeker('unit'),
+  ...strictDependentFields(),
 }));
 
 export function CarryForwardConfig({
-  model,
-  parentModel,
+  table,
+  parentTable,
   type,
+  isBulkConfig,
 }: {
-  readonly model: SpecifyModel;
-  readonly parentModel: SpecifyModel | undefined;
+  readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
   readonly type: 'button' | 'cog';
+  readonly isBulkConfig?: boolean;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const [globalEnabled, setGlobalEnabled] = userPreferences.use(
@@ -95,17 +103,17 @@ export function CarryForwardConfig({
     'preferences',
     'enableCarryForward'
   );
-  const isEnabled = globalEnabled.includes(model.name);
-  const canChange = !NO_CLONE.has(model.name);
+  const isCarryForwardEnabled = globalEnabled.includes(table.name);
+  const canChange = !NO_CLONE.has(table.name);
 
   return canChange ? (
     <>
       {type === 'button' ? (
         <Label.Inline className="rounded bg-[color:var(--foreground)]">
           <Input.Checkbox
-            checked={isEnabled}
+            checked={isCarryForwardEnabled}
             onChange={(): void =>
-              setGlobalEnabled(toggleItem(globalEnabled, model.name))
+              setGlobalEnabled(toggleItem(globalEnabled, table.name))
             }
           />
           {formsText.carryForwardEnabled()}
@@ -124,10 +132,14 @@ export function CarryForwardConfig({
           onClick={handleOpen}
         />
       )}
+      {isCarryForwardEnabled ? (
+        <BulkCloneConfig parentTable={parentTable} table={table} />
+      ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
-          model={model}
-          parentModel={parentModel}
+          isBulkConfig={isBulkConfig}
+          parentTable={parentTable}
+          table={table}
           onClose={handleClose}
         />
       )}
@@ -138,29 +150,100 @@ export function CarryForwardConfig({
 const normalize = (fields: RA<string>): RA<string> =>
   Array.from(fields).sort(sortFunction(f.id));
 
-function CarryForwardConfigDialog({
-  model,
-  parentModel,
-  onClose: handleClose,
+/**
+ * FEATURE: Extend this to all tables
+ * See https://github.com/specify/specify7/pull/4804
+ */
+function BulkCloneConfig({
+  table,
+  parentTable,
 }: {
-  readonly model: SpecifyModel;
-  readonly parentModel: SpecifyModel | undefined;
+  readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
+}): JSX.Element | null {
+  const [globalBulkEnabled, setGlobalBulkEnabled] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBukCarryForward'
+  );
+
+  const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
+
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+
+  return tableValidForBulkClone(table) ? (
+    <>
+      <Label.Inline className="rounded bg-[color:var(--foreground)]">
+        <Input.Checkbox
+          checked={isBulkCarryEnabled}
+          onChange={(): void =>
+            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
+          }
+        />
+        {formsText.bulkCarryForwardEnabled()}
+        <Button.Small
+          className="ml-2"
+          title={formsText.bulkCarryForwardSettingsDescription()}
+          onClick={handleOpen}
+        >
+          {icons.cog}
+        </Button.Small>
+      </Label.Inline>
+      {isOpen && (
+        <CarryForwardConfigDialog
+          isBulkConfig
+          parentTable={parentTable}
+          table={table}
+          onClose={handleClose}
+        />
+      )}
+    </>
+  ) : null;
+}
+
+export const tableValidForBulkClone = (
+  table: SpecifyTable,
+  resource?: SpecifyResource<AnySchema>
+): boolean =>
+  table === tables.CollectionObject &&
+  !(
+    tables.CollectionObject.strictGetLiteralField('catalogNumber')
+      .getUiFormatter(resource ?? undefined)
+      ?.fields.some(
+        (field) =>
+          field.type === 'regex' ||
+          field.type === 'alphanumeric' ||
+          (field.type === 'numeric' && !field.canAutonumber())
+      ) ?? false
+  );
+
+function CarryForwardConfigDialog({
+  table,
+  parentTable,
+  onClose: handleClose,
+  isBulkConfig,
+}: {
+  readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
   readonly onClose: () => void;
+  readonly isBulkConfig?: boolean;
 }): JSX.Element {
   const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
-    'carryForwardShowHidden'
+    isBulkConfig === true
+      ? 'bulkCarryForwardShowHidden'
+      : 'carryForwardShowHidden'
   );
 
   const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'carryForward'
+    isBulkConfig === true ? 'bulkCarryForward' : 'carryForward'
   );
 
-  const uniqueFields = getUniqueFields(model);
-  const defaultConfig = getFieldsToClone(model).filter(
+  const uniqueFields = getUniqueFields(table);
+  const defaultConfig = getFieldsToClone(table).filter(
     (fieldName) => !uniqueFields.includes(fieldName)
   );
   const isDefaultConfig = (fields: RA<string>): boolean =>
@@ -168,33 +251,33 @@ function CarryForwardConfigDialog({
     JSON.stringify(normalize(defaultConfig));
 
   const config =
-    (globalConfig[model.name] as RA<string> | undefined)?.filter(
+    (globalConfig[table.name] as RA<string> | undefined)?.filter(
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
 
   const handleChange = (fields: RA<string>): void =>
     setGlobalConfig({
       ...globalConfig,
-      [model.name]: isDefaultConfig(fields) ? undefined : fields,
+      [table.name]: isDefaultConfig(fields) ? undefined : fields,
     });
 
   const reverseRelationships = React.useMemo(
     () =>
       filterArray(
-        parentModel?.relationships
-          .filter(({ relatedModel }) => relatedModel === model)
+        parentTable?.relationships
+          .filter(({ relatedTable }) => relatedTable === table)
           .flatMap(({ otherSideName }) => otherSideName) ?? []
       ),
-    [parentModel, model]
+    [parentTable, table]
   );
 
-  const literalFields = model.literalFields.filter(
+  const literalFields = table.literalFields.filter(
     ({ name, overrides, isVirtual }) =>
       !isVirtual &&
       (!overrides.isHidden || showHiddenFields) &&
       !invisibleCarry.has(name)
   );
-  const relationships = model.relationships.filter(
+  const relationships = table.relationships.filter(
     (field) =>
       !reverseRelationships.includes(field.name) &&
       !field.isVirtual &&
@@ -214,7 +297,7 @@ function CarryForwardConfigDialog({
               handleChange(
                 showHiddenFields
                   ? defaultConfig
-                  : model.fields
+                  : table.fields
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
@@ -234,7 +317,7 @@ function CarryForwardConfigDialog({
                 // Don't deselect hidden fields if they are not visible
                 showHiddenFields
                   ? []
-                  : model.fields
+                  : table.fields
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
@@ -248,14 +331,20 @@ function CarryForwardConfigDialog({
           >
             {interactionsText.deselectAll()}
           </Button.Success>
-          <Submit.Blue form={id('form')} onClick={handleClose}>
+          <Submit.Info form={id('form')} onClick={handleClose}>
             {commonText.close()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
-      header={formsText.carryForwardTableSettingsDescription({
-        tableName: model.label,
-      })}
+      header={
+        isBulkConfig === true
+          ? formsText.bulkCarryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+          : formsText.carryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+      }
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
@@ -264,7 +353,8 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={literalFields}
             header={schemaText.fields()}
-            model={model}
+            isBulkConfig={isBulkConfig}
+            table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
@@ -272,7 +362,8 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={relationships}
             header={schemaText.relationships()}
-            model={model}
+            isBulkConfig={isBulkConfig}
+            table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
@@ -291,18 +382,20 @@ function CarryForwardConfigDialog({
 
 function CarryForwardCategory({
   header,
-  model,
+  table,
   fields,
   uniqueFields,
   carryForward,
   onChange: handleChange,
+  isBulkConfig,
 }: {
   readonly header: string;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: RA<LiteralField | Relationship>;
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
   readonly onChange: (carryForward: RA<string>) => void;
+  readonly isBulkConfig?: boolean;
 }): JSX.Element | null {
   return fields.length > 0 ? (
     <>
@@ -310,23 +403,28 @@ function CarryForwardCategory({
       <Ul>
         {fields.map((field) => {
           const isUnique = uniqueFields.includes(field.name);
+          const isRequired =
+            isBulkConfig === true &&
+            (field.localization.isrequired || field.overrides.isRequired);
           return (
             <li className="flex gap-1" key={field.name}>
               <Label.Inline
                 title={
                   isUnique
                     ? formsText.carryForwardUniqueField()
-                    : field.getLocalizedDesc()
+                    : isRequired
+                      ? formsText.carryForwardRequiredField()
+                      : field.getLocalizedDesc()
                 }
               >
                 <Input.Checkbox
-                  checked={f.includes(carryForward, field.name)}
-                  disabled={isUnique}
+                  checked={f.includes(carryForward, field.name) || isRequired}
+                  disabled={isUnique || isRequired}
                   onValueChange={(isChecked): void => {
                     const dependents = filterArray(
                       Object.entries(dependentFields())
                         .filter(([_dependent, source]) => source === field.name)
-                        .map(([dependent]) => model.getField(dependent)?.name)
+                        .map(([dependent]) => table.getField(dependent)?.name)
                     );
                     handleChange(
                       isChecked
@@ -342,8 +440,9 @@ function CarryForwardCategory({
               </Label.Inline>
               {field.isRelationship && field.isDependent() && !isUnique ? (
                 <CarryForwardConfig
-                  model={field.relatedModel}
-                  parentModel={field.model}
+                  isBulkConfig={isBulkConfig}
+                  parentTable={field.table}
+                  table={field.relatedTable}
                   type="cog"
                 />
               ) : undefined}

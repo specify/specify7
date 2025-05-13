@@ -6,7 +6,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
+import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
@@ -57,7 +57,7 @@ export function CreateRole({
   const currentRoleNames = (
     scope === 'institution'
       ? Object.values(libraryRoles ?? [])
-      : Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? []
+      : (Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? [])
   ).map(({ name }) => name);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ export function CreateRole({
                 handleCreated({
                   id: undefined,
                   name: userText.newRole(),
-                  description: '',
+                  description: localized(''),
                   policies: [],
                 })
               }
@@ -93,7 +93,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={userText.createRole()}
+      header={userText.addRole()}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||
@@ -148,9 +148,6 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                  },
-                                  {
-                                    expectedResponseCodes: [Http.CREATED],
                                   }
                                 ).then(({ data }) => data)
                             ).then((newRole) =>
@@ -182,7 +179,10 @@ export function CreateRole({
             <div className="flex flex-col gap-4">
               {roles.map(([collection, roles]) => (
                 <article key={collection.id}>
-                  {`${collection.collectionName ?? collection.id}:`}
+                  {commonText.colonHeader({
+                    header:
+                      collection.collectionName ?? collection.id.toString(),
+                  })}
                   <Ul>
                     {roles.map((role) => (
                       <li key={role.id}>

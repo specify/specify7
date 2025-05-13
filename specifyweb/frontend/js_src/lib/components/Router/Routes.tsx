@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
@@ -16,7 +17,6 @@ import type { EnhancedRoute } from './RouterUtils';
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
-  // FIXME: replace this with a tab on the stats page
   {
     path: 'specify-network-collection',
     element: () =>
@@ -54,7 +54,7 @@ export const routes: RA<EnhancedRoute> = [
         path: ':tableName',
         element: () =>
           import('../SchemaViewer/helpers').then(
-            ({ DataModelRedirect }) => DataModelRedirect
+            ({ SchemaViewerRedirect }) => SchemaViewerRedirect
           ),
       },
     ],
@@ -176,9 +176,23 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: attachmentsText.attachments(),
-    element: () =>
-      import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
+    children: [
+      {
+        index: true,
+        title: attachmentsText.attachments(),
+        element: () =>
+          import('../Attachments').then(
+            ({ AttachmentsView }) => AttachmentsView
+          ),
+      },
+      {
+        path: 'import/:id',
+        element: () =>
+          import('../AttachmentsBulkImport/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
+      },
+    ],
   },
   {
     path: 'workbench',
@@ -186,7 +200,7 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: ':id',
         element: () =>
-          import('../WorkBench/Template').then(({ WorkBench }) => WorkBench),
+          import('../WorkBench/index').then(({ WorkBench }) => WorkBench),
       },
       {
         path: 'import',
@@ -212,6 +226,19 @@ export const routes: RA<EnhancedRoute> = [
     element: <Redirect to="/specify/workbench/import" />,
   },
   {
+    path: 'import',
+    children: [
+      {
+        path: 'locality-dataset',
+        element: () =>
+          import('../LocalityUpdate').then(
+            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
+              ImportLocalitySet
+          ),
+      },
+    ],
+  },
+  {
     path: 'resources',
     title: resourcesText.appResources(),
     element: () =>
@@ -228,18 +255,20 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'app-resource/:id',
+        path: 'app-resource/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ AppResourceView }) => AppResourceView
           ),
+        isSingleResource: true,
       },
       {
-        path: 'view-set/:id',
+        path: 'view-set/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ ViewSetView }) => ViewSetView
           ),
+        isSingleResource: true,
       },
     ],
   },
@@ -289,19 +318,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'view/:tableName',
-    children: [
-      {
-        /*
-         * Id is set to "new" when adding new resource.
-         * Separate route was not used to prevent reloading everything when
-         * adding new items to record set
-         */
-        path: ':id',
-        element: () =>
-          import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
-      },
-    ],
+    /*
+     * Id is set to "new" when adding new resource.
+     * Separate route was not used to prevent reloading everything when
+     * adding new items to record set
+     */
+    path: 'view/:tableName/:id',
+    element: () =>
+      import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
   },
   {
     path: 'bycatalog/:collectionCode/:catalogNumber/',
@@ -416,15 +440,12 @@ export const routes: RA<EnhancedRoute> = [
       },
     ],
   },
-  // FIXME: re-enable this
-  /*
-   *{
-   *path: 'stats',
-   *title: statsText.statistics(),
-   *element: () =>
-   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
-   *},
-   */
+  {
+    path: 'stats',
+    title: statsText.statistics(),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+  },
   {
     path: 'developer',
     children: [
@@ -450,3 +471,5 @@ export const routes: RA<EnhancedRoute> = [
 ];
 
 /* eslint-enable @typescript-eslint/promise-function-async */
+
+export const inRouterContext = {};

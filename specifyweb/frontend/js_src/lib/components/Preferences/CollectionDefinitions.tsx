@@ -1,12 +1,14 @@
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, localized } from '../../utils/types';
+import type { QueryView } from '../QueryBuilder/Header';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
-import { defineItem } from './types';
+import { definePref } from './types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -15,25 +17,25 @@ export const collectionPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: defineItem<RA<StatLayout> | undefined>({
-            title: 'Defines the layout of the stats page',
+          layout: definePref<RA<StatLayout> | undefined>({
+            title: localized('_Defines the layout of the stats page'),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
             renderer: f.never,
             container: 'label',
           }),
-          showTotal: defineItem<boolean>({
-            title: 'Defines if preparation stats include total',
+          showPreparationsTotal: definePref<boolean>({
+            title: localized('Defines if preparation stats include total'),
             requiresReload: false,
             visible: false,
-            defaultValue: false,
+            defaultValue: true,
             renderer: f.never,
             container: 'label',
             type: 'java.lang.Boolean',
           }),
-          refreshRate: defineItem<number>({
-            title: 'Defines the rate of auto refresh in hours',
+          refreshRate: definePref<number>({
+            title: localized('_Defines the rate of auto refresh in hours'),
             requiresReload: false,
             visible: false,
             defaultValue: 24,
@@ -46,21 +48,80 @@ export const collectionPreferenceDefinitions = {
       specifyNetwork: {
         title: specifyNetworkText.specifyNetwork(),
         items: {
-          publishingOrganization: defineItem<string | undefined>({
-            title: 'Stores GBIF\'s "publishingOrgKey"',
+          publishingOrganization: definePref<string | undefined>({
+            title: localized('_Stores GBIF\'s "publishingOrgKey"'),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
             renderer: f.never,
             container: 'label',
           }),
-          collectionKey: defineItem<string | undefined>({
-            title: 'Stores GBIF\'s "dataSetKey"',
+          collectionKey: definePref<string | undefined>({
+            title: localized('_Stores GBIF\'s "dataSetKey"'),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
             renderer: f.never,
             container: 'label',
+          }),
+        },
+      },
+    },
+  },
+  queryBuilder: {
+    title: queryText.queryBuilder(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          display: definePref<QueryView>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              basicView: [],
+              detailedView: [],
+            },
+            renderer: f.never,
+            container: 'div',
+          }),
+        },
+      },
+    },
+  },
+  catalogNumberInheritance: {
+    title: queryText.catalogNumberInheritance(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.inheritanceCatNumberPref(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  catalogNumberParentInheritance: {
+    title: queryText.catalogNumberParentCOInheritance(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.inheritanceCatNumberParentCOPref(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
           }),
         },
       },

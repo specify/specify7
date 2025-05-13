@@ -3,7 +3,7 @@ name: Sync pre-commit hooks
 on:
   schedule:
     # Twice a month, on the 15th and the 29th
-    - cron: "23 23 15,29 * *"
+    - cron: '23 23 15,29 * *'
 
 jobs:
   update:
@@ -11,18 +11,18 @@ jobs:
 
     steps:
       - name: Checkout current repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout pre-commit-tools repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          repository: maxxxxxdlp/pre-commit-tools
+          repository: maxpatiiuk/pre-commit-tools
           path: ./pre-commit-tools
 
       - name: Install Node.JS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version-file: specifyweb/frontend/js_src/package.json
           cache: npm
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
@@ -31,10 +31,14 @@ jobs:
         run: npm ci
 
       - name: Sync Local and Global pre-commit configs
-        run: node ./pre-commit-tools/pre-commit-tools/syncConfig.js https://raw.githubusercontent.com/maxxxxxdlp/dotfiles/main/git/.pre-commit-config.yaml
+        run:
+          node ./pre-commit-tools/pre-commit-tools/syncConfig.js
+          https://raw.githubusercontent.com/maxpatiiuk/dotfiles/main/git/.pre-commit-config.yaml
 
       - name: Update Local hooks
-        run: node ./pre-commit-tools/pre-commit-tools/updateHooks.js .pre-commit-config.yaml
+        run:
+          node ./pre-commit-tools/pre-commit-tools/updateHooks.js
+          .pre-commit-config.yaml
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9

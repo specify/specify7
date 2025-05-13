@@ -3,20 +3,19 @@ import path from 'node:path';
 
 import type { GetTextTranslations } from 'gettext-parser';
 import gettextParser from 'gettext-parser';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import type { Language } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
 
 function formatComment(rawComment: string | undefined): string | undefined {
   if (rawComment === undefined) return undefined;
-  const comment = whitespaceSensitive(rawComment as LocalizedString);
+  const comment = whitespaceSensitive(localized(rawComment));
   // Red emoji makes comment more prominent in Weblate's sidebar
-  return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
+  return localized(`🟥${comment}${comment.endsWith('.') ? '' : '.'}`);
 }
 
 /**
@@ -56,7 +55,7 @@ export const syncStrings = async (
                   msgid: key,
                   msgstr: [
                     f.maybe(
-                      strings[language] as LocalizedString | undefined,
+                      localized(strings[language]),
                       whitespaceSensitive
                     ) ?? '',
                   ],
@@ -147,7 +146,7 @@ const mergeSpecs = (
                   weblate?.comments?.[key as 'flag'] ||
                   '',
               ])
-            ) as typeof local['comments'],
+            ) as (typeof local)['comments'],
           },
         ];
       })

@@ -8,7 +8,7 @@ import os
 from django.test import LiveServerTestCase
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .api_tests import MainSetupTearDown
+from specifyweb.specify.tests.test_api import MainSetupTearDown
 from .selenium_testsuite_runner import SeleniumTestSuiteRunner as TestRunner
 
 
@@ -17,7 +17,7 @@ def jquery_selector(selector):
 
 class SeleniumTests(LiveServerTestCase):
     def setUp(self):
-        super(SeleniumTests, self).setUp()
+        super().setUp()
         self.selenium = TestRunner.selenium
 
     def selenium_wait(self):
@@ -131,7 +131,7 @@ class FreshDBTests(MainSetupTearDown, SeleniumTests):
     sl = open(sl_filename).read()
 
     def setUp(self):
-        super(FreshDBTests, self).setUp()
+        super().setUp()
         self.selenium = TestRunner.selenium
 
         # some views are not defined above the discipline level
@@ -142,7 +142,7 @@ class FreshDBTests(MainSetupTearDown, SeleniumTests):
         self.schema_localization_cache[self.discipline] = self.sl
 
     def tearDown(self):
-        super(FreshDBTests, self).tearDown()
+        super().tearDown()
         del self.schema_localization_cache[self.discipline]
 
     def test_login(self):

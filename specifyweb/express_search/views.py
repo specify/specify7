@@ -3,28 +3,28 @@ Implements the express search mechanism
 """
 
 import logging
-from django import forms
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_GET
 from functools import reduce
-from sqlalchemy.sql.expression import or_, and_
 from xml.etree import ElementTree
 
+from django import forms
+from django.http import HttpResponse, HttpResponseBadRequest
+from sqlalchemy.sql.expression import or_, and_
+
+from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from ..context.app_resource import get_app_resource
+from ..permissions.permissions import check_table_permissions
 from ..specify.api import toJson
 from ..specify.models import datamodel, Collection
 from ..specify.views import login_maybe_required
 from ..stored_queries import models
 from ..stored_queries.execution import filter_by_collection
 from ..stored_queries.queryfieldspec import QueryFieldSpec
-from ..permissions.permissions import check_table_permissions
-
 
 logger = logging.getLogger(__name__)
 
 def get_express_search_config(collection, user):
-    resource, __ = get_app_resource(collection, user, 'ExpressSearchConfig')
+    resource, _, __ = get_app_resource(collection, user, 'ExpressSearchConfig')
     return ElementTree.XML(resource)
 
 

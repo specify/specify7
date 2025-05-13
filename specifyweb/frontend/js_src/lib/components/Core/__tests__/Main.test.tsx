@@ -2,8 +2,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { LeakContext } from '../../../tests/reactUtils';
+import { MenuContext, SetMenuContext } from '../../Header/MenuContext';
 import { Contexts } from '../Contexts';
-import { MenuContext, SetMenuContext } from '../Main';
 
 test('<Main> is providing MenuContext', () => {
   const handleMenu = jest.fn(

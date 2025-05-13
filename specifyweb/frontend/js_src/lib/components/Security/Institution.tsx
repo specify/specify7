@@ -4,26 +4,25 @@ import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Institution } from '../DataModel/types';
-import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
 import { downloadFile } from '../Molecules/FilePicker';
+import { RecordEdit } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { SecurityOutlet } from '../Toolbar/Security';
@@ -54,7 +53,7 @@ function InstitutionView({
 
   const admins = useAdmins();
 
-  useTitle((institution.name as LocalizedString) ?? undefined);
+  useTitle(localized(institution.name) ?? undefined);
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
@@ -72,11 +71,11 @@ function InstitutionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Institution.label,
+                label: tables.Institution.label,
                 value: institution.name ?? '',
               })}
             </h3>
-            <ViewInstitutionButton institution={institution} />
+            <RecordEdit resource={institution} />
           </div>
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
@@ -101,13 +100,13 @@ function InstitutionView({
                 )}
                 <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
-                    <Link.Green href="/specify/security/institution/role/create/">
+                    <Link.Success href="/specify/security/institution/role/create/">
                       {commonText.create()}
-                    </Link.Green>
+                    </Link.Success>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
-                    baseName={(institution.name as LocalizedString) ?? ''}
+                    baseName={localized(institution.name ?? '')}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}
@@ -118,6 +117,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
+                  {/* REFACTOR: turn this into a CLI command using commander instead */}
                   <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
@@ -130,7 +130,7 @@ function InstitutionView({
                       )
                     }
                   >
-                    <>[DEV] Download policy list</>
+                    {localized('[DEV] Download policy list')}
                   </Button.Info>
                 </div>
               </section>
@@ -138,7 +138,7 @@ function InstitutionView({
             <section className="flex flex-col gap-2">
               <h4 className="text-xl">
                 {userText.institutionUsers({
-                  institutionTable: schema.models.Institution.label,
+                  institutionTable: tables.Institution.label,
                 })}
               </h4>
               {typeof users === 'object' ? (
@@ -181,9 +181,9 @@ function InstitutionView({
                   </Ul>
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
-                      <Link.Green href="/specify/security/user/new/">
+                      <Link.Success href="/specify/security/user/new/">
                         {commonText.create()}
-                      </Link.Green>
+                      </Link.Success>
                     </div>
                   )}
                 </>
@@ -224,6 +224,7 @@ export function useAdmins():
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },
+              errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(
@@ -235,34 +236,4 @@ export function useAdmins():
     ),
     false
   )[0];
-}
-
-function ViewInstitutionButton({
-  institution,
-}: {
-  readonly institution: SerializedResource<Institution>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(
-    () => deserializeResource(institution),
-    [institution]
-  );
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
-    </>
-  );
 }

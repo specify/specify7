@@ -7,9 +7,9 @@ import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -31,7 +31,7 @@ export function EditHistory({
         title={resource.isNew() ? formsText.saveRecordFirst() : undefined}
         onClick={handleOpen}
       >
-        {formsText.historyOfEdits()}
+        {formsText.editHistory()}
       </Button.Small>
       {isOpen && (
         <RecordHistoryDialog resource={resource} onClose={handleClose} />
@@ -54,7 +54,7 @@ function RecordHistoryDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={formsText.historyOfEdits()}
+      header={formsText.editHistory()}
       onClose={handleClose}
     >
       <QueryBuilder
@@ -65,7 +65,9 @@ function RecordHistoryDialog({
         recordSet={undefined}
       />
     </Dialog>
-  ) : null;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 function useEditHistoryQuery(
@@ -77,14 +79,14 @@ function useEditHistoryQuery(
     () =>
       typeof formatted === 'string'
         ? createQuery(
-            formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
-            schema.models.SpAuditLog
+            formsText.editHistoryQueryName({ formattedRecord: formatted }),
+            tables.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
               .set('isDisplay', false)
               .set('operStart', queryFieldFilters.equal.id)
-              .set('startValue', resource.specifyModel.tableId.toString()),
+              .set('startValue', resource.specifyTable.tableId.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['recordId'])
               .toSpQueryField()
               .set('isDisplay', false)

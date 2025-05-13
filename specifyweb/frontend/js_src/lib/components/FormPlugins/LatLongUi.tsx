@@ -3,25 +3,23 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
-import type { FormMode } from '../FormParse';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
-export type CoordinateType = typeof coordinateType[number];
+export type CoordinateType = (typeof coordinateType)[number];
 
 function Coordinate({
   resource,
   coordinateField,
   coordinateTextField,
   fieldType,
-  isReadOnly,
   step,
   onFormatted: handleFormatted,
 }: {
@@ -29,14 +27,13 @@ function Coordinate({
   readonly coordinateField: `${'latitude' | 'longitude'}${1 | 2}`;
   readonly coordinateTextField: `${'lat' | 'long'}${1 | 2}text`;
   readonly fieldType: 'Lat' | 'Long';
-  readonly isReadOnly: boolean;
   readonly step: number | undefined;
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
   const { value, updateValue, validationRef, setValidation, parser } =
     useResourceValue(
       resource,
-      schema.models.Locality.strictGetField(coordinateTextField),
+      tables.Locality.strictGetField(coordinateTextField),
       undefined,
       false
     );
@@ -84,15 +81,22 @@ function Coordinate({
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
-      ? (fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined
+      ? ((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined)
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
-    setValidation(isValid ? '' : formsText.invalidValue());
+    const latLongBlockers = isValid
+      ? []
+      : [
+          fieldType === 'Lat'
+            ? localityText.validLatitude()
+            : localityText.validLongitude(),
+        ];
+    setValidation(latLongBlockers);
     handleFormatted(
       isValid
         ? hasValue
-          ? parsed?.format(step) ?? ''
+          ? (parsed?.format(step) ?? '')
           : commonText.notApplicable()
         : undefined
     );
@@ -137,10 +141,10 @@ function Coordinate({
     fieldType,
     step,
     handleFormatted,
-    setValidation,
     parser,
   ]);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Input.Text
       forwardRef={validationRef}
@@ -155,13 +159,11 @@ function CoordinatePoint({
   resource,
   label,
   index,
-  isReadOnly,
   step,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly label: LocalizedString;
   readonly index: 1 | 2;
-  readonly isReadOnly: boolean;
   readonly step: number | undefined;
 }): JSX.Element {
   const [latitude = '???', setLatitude] = React.useState<string | undefined>(
@@ -180,7 +182,6 @@ function CoordinatePoint({
             coordinateField={`latitude${index}`}
             coordinateTextField={`lat${index}text`}
             fieldType="Lat"
-            isReadOnly={isReadOnly}
             resource={resource}
             step={step}
             onFormatted={setLatitude}
@@ -194,7 +195,6 @@ function CoordinatePoint({
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
             fieldType="Long"
-            isReadOnly={isReadOnly}
             resource={resource}
             step={step}
             onFormatted={setLongitude}
@@ -212,13 +212,11 @@ function CoordinatePoint({
 
 export function LatLongUi({
   resource,
-  mode,
   id,
   step,
   latLongType,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly mode: FormMode;
   readonly id: string | undefined;
   readonly step: number | undefined;
   readonly latLongType: CoordinateType;
@@ -242,6 +240,7 @@ export function LatLongUi({
     [resource]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <fieldset>
       <table className="w-full text-center">
@@ -251,7 +250,7 @@ export function LatLongUi({
               <label>
                 <span className="sr-only">{localityText.coordinateType()}</span>
                 <Select
-                  disabled={mode === 'view'}
+                  disabled={isReadOnly}
                   id={id}
                   name="type"
                   value={coordinateType}
@@ -274,13 +273,12 @@ export function LatLongUi({
         <tbody>
           <CoordinatePoint
             index={1}
-            isReadOnly={mode === 'view'}
             label={
               coordinateType === 'Point'
                 ? localityText.coordinates()
                 : coordinateType === 'Line'
-                ? commonText.start()
-                : localityText.northWestCorner()
+                  ? commonText.start()
+                  : localityText.northWestCorner()
             }
             resource={resource}
             step={step}
@@ -288,7 +286,6 @@ export function LatLongUi({
           {coordinateType === 'Point' ? undefined : (
             <CoordinatePoint
               index={2}
-              isReadOnly={mode === 'view'}
               label={
                 coordinateType === 'Line'
                   ? commonText.end()

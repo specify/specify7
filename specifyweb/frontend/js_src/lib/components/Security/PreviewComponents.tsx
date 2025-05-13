@@ -6,7 +6,7 @@ import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
@@ -23,7 +23,7 @@ export function PreviewRow({
   readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const [view, setView] = React.useState<
-    typeof tableActions[number] | undefined
+    (typeof tableActions)[number] | undefined
   >(undefined);
   const id = useId('preview-row');
   return (
@@ -49,7 +49,7 @@ export function PreviewRow({
         ))}
         <div className="p-2" role="cell">
           <TableIcon label={false} name={tableName} />
-          {schema.models[tableName].label}
+          {genericTables[tableName].label}
         </div>
       </div>
       <div
@@ -86,7 +86,7 @@ export function PermissionExplanation({
         <div role="row">
           {[
             userText.collectionUserRoles({
-              collectionTable: schema.models.Collection.label,
+              collectionTable: tables.Collection.label,
             }),
             userText.action(),
             userText.resource(),
@@ -98,8 +98,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}
@@ -143,7 +143,7 @@ export function PermissionExplanation({
         <div role="row">
           {[
             userText.userPolicies(),
-            schema.models.Collection.label,
+            tables.Collection.label,
             userText.action(),
             userText.resource(),
           ].map((label, index, { length }) => (
@@ -154,8 +154,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}

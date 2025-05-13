@@ -3,7 +3,7 @@ import type { IR, RA } from './types';
 import { filterArray } from './types';
 
 /** A storage for f.store */
-const store = new Map<() => unknown, unknown>();
+const store = new WeakMap<() => unknown, unknown>();
 
 /**
  * A collection of helper functions for functional programming style
@@ -59,7 +59,7 @@ export const f = {
           await promise,
         ])
       )
-    ),
+    ) as T,
   sum: (array: RA<number>): number =>
     array.reduce((total, value) => total + value, 0),
   never: (): never => error('This should never get called'),
@@ -121,7 +121,7 @@ export const f = {
    * @remarks
    * Useful not just for performance reasons, but also for delaying evaluation
    * of an object until the first time it is needed (i.e., if object is in
-   * the global scope, and depends on the datamodel, delaying evaluation
+   * the global scope, and depends on the dataModel, delaying evaluation
    * allows for creation of the object only after schema is loaded)
    *
    * Additionally, this function has commonly used to avoid circular by delaying
@@ -143,6 +143,23 @@ export const f = {
     if (value === undefined) return undefined;
     const number = Number.parseInt(value);
     return Number.isNaN(number) ? undefined : number;
+  },
+  /**
+   * This is 10 times faster then Number.parseInt because of a slow
+   * Babel polyfill.
+   *
+   * Some caveats over f.parseInt or Number.parseInt:
+   * ```ts
+   * f.fastParseInt(undefined) // 0
+   * f.fastParseInt(null) // 0
+   * f.fastParseInt('') // 0
+   * f.fastParseInt('nonNumber') // 0
+   * ```
+   */
+  fastParseInt(value: string): number {
+    // TODO: update babel config to not polyfil Number.parseInt and then replace fastParseInt usages with Number.parseInt
+    // eslint-disable-next-line unicorn/prefer-math-trunc, no-bitwise
+    return (value as unknown as number) | 0;
   },
   /** Like f.parseInt, but for floats */
   parseFloat(value: string | undefined): number | undefined {

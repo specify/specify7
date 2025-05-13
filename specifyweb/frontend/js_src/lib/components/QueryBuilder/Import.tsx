@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -14,17 +15,15 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { fetchRows } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
-import type {
-  SerializedModel,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
@@ -32,11 +31,9 @@ import { QueryFieldSpec } from './fieldSpec';
 
 export function QueryImport({
   onClose: handleClose,
-  queries,
 }: {
   readonly onClose: () => void;
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-}): JSX.Element {
+}): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
@@ -53,21 +50,35 @@ export function QueryImport({
       navigate(`/specify/query/${queryResource.id}/`);
   }, [queryResource, hiddenFields]);
 
-  return typeof queries === 'object' ? (
+  const [queriesNames] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchRows('SpQuery', {
+          fields: { name: ['string'] },
+          domainFilter: false,
+          distinct: true,
+          limit: 0,
+        }),
+      []
+    ),
+    true
+  );
+
+  return typeof queriesNames === 'object' ? (
     <Dialog
       buttons={commonText.cancel()}
       header={commonText.import()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      icon={icons.documentSearch}
       onClose={handleClose}
     >
       <>
         <Form>
           <FilePicker
             acceptedFormats={['.json']}
-            onSelected={(file): void =>
+            onFileSelected={(file): void =>
               loading(
                 fileToText(file)
-                  .then<SerializedModel<SpQuery>>(f.unary(JSON.parse))
+                  .then<SerializedRecord<SpQuery>>(f.unary(JSON.parse))
                   .then((query) => ({
                     ...query,
                     specifyuser: getResourceApiUrl(
@@ -101,7 +112,7 @@ export function QueryImport({
                   })
                   .then(
                     (query) =>
-                      new schema.models.SpQuery.Resource(
+                      new tables.SpQuery.Resource(
                         removeKey(
                           replaceKey(
                             query,
@@ -123,8 +134,8 @@ export function QueryImport({
                       'name',
                       getUniqueName(
                         queryResource.get('name'),
-                        queries.map(({ name }) => name),
-                        getField(schema.models.SpQuery, 'name').length
+                        queriesNames.map(({ name }) => name),
+                        getField(tables.SpQuery, 'name').length
                       )
                     )
                   )
@@ -134,9 +145,9 @@ export function QueryImport({
             }
           />
           {/* This button is never actually clicked. */}
-          <Submit.Green className="sr-only" disabled>
+          <Submit.Success className="sr-only" disabled>
             {commonText.import()}
-          </Submit.Green>
+          </Submit.Success>
         </Form>
         {hiddenFields.length > 0 && (
           <Dialog
@@ -164,7 +175,5 @@ export function QueryImport({
         )}
       </>
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }

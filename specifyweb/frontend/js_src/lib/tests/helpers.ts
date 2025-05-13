@@ -7,7 +7,9 @@ import {
 import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 import { defaultTileLayers } from '../components/Leaflet/layers';
 import { operationPolicies } from '../components/Permissions/definitions';
+import { getAppResourceUrl } from '../utils/ajax/helpers';
 import { overrideAjax } from './ajax';
+import { testTime } from './testTime';
 
 /**
  * Call this in test files that requite initial context to be fetched
@@ -26,7 +28,7 @@ import { overrideAjax } from './ajax';
 export const requireContext = (): void => {
   overrideAjax('/permissions/registry/', operationPolicies, {}, true);
   overrideAjax(
-    '/context/app.resource?name=leaflet-layers&quiet=',
+    getAppResourceUrl('leaflet-layers', 'quiet'),
     defaultTileLayers,
     {},
     true
@@ -37,8 +39,6 @@ export const requireContext = (): void => {
     await treeRanksPromise;
   });
 };
-
-export const testTime = new Date('2022-08-31T03:37:10.4');
 
 export const mockTime = (date = testTime): void =>
   beforeAll(() => {

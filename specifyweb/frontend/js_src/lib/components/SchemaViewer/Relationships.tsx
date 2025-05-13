@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -8,8 +9,8 @@ import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
@@ -18,7 +19,7 @@ import { SchemaViewerTableList } from './TableList';
 export function SchemaViewerRelationships({
   table,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element {
   const data = React.useMemo(() => getRelationships(table), [table]);
 
@@ -52,8 +53,8 @@ export function SchemaViewerRelationships({
                 dependentFilter === undefined
                   ? true
                   : dependentFilter
-                  ? undefined
-                  : true
+                    ? undefined
+                    : true
               )
             }
           >
@@ -68,8 +69,8 @@ export function SchemaViewerRelationships({
                 dependentFilter === undefined
                   ? false
                   : dependentFilter
-                  ? false
-                  : undefined
+                    ? false
+                    : undefined
               )
             }
           >
@@ -79,7 +80,7 @@ export function SchemaViewerRelationships({
       </div>
       <SchemaViewerTableList
         data={filteredDependentData}
-        getLink={({ relatedModel }): string => `#${relatedModel?.[0]}`}
+        getLink={({ relatedTable }): string => `#${relatedTable?.[0]}`}
         headers={relationshipColumns()}
         sortName="schemaViewerRelationships"
       />
@@ -90,22 +91,21 @@ export function SchemaViewerRelationships({
 const relationshipColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
-      label: schemaText.fieldLabel(),
+      name: getField(tables.SpLocaleContainerItem, 'name').label,
+      label: reportsText.labels(),
       description: schemaText.description(),
-      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
-        .label,
-      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
+      type: getField(tables.SpLocaleContainerItem, 'type').label,
       databaseColumn: schemaText.databaseColumn(),
-      relatedModel: schemaText.relatedModel(),
+      relatedTable: schemaText.relatedTable(),
       otherSideName: schemaText.otherSideName(),
       isDependent: schemaText.dependent(),
-    } as const)
+    }) as const
 );
 
-const getRelationships = (model: SpecifyModel) =>
+const getRelationships = (table: SpecifyTable) =>
   ensure<
     RA<
       SchemaViewerRow<
@@ -113,7 +113,7 @@ const getRelationships = (model: SpecifyModel) =>
       >
     >
   >()(
-    model.relationships.map(
+    table.relationships.map(
       (field) =>
         ({
           name: field.name,
@@ -124,15 +124,15 @@ const getRelationships = (model: SpecifyModel) =>
           isRequired: booleanFormatter(field.isRequired),
           type: localizedRelationshipTypes[field.type] ?? field.type,
           databaseColumn: field.databaseColumn,
-          relatedModel: [
-            field.relatedModel.name.toLowerCase(),
+          relatedTable: [
+            field.relatedTable.name.toLowerCase(),
             <>
-              <TableIcon label={false} name={field.relatedModel.name} />
-              {field.relatedModel.name}
+              <TableIcon label={false} name={field.relatedTable.name} />
+              {field.relatedTable.name}
             </>,
           ],
           otherSideName: field.otherSideName,
           isDependent: booleanFormatter(field.isDependent()),
-        } as const)
+        }) as const
     )
   );

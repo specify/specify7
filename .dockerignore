@@ -9,3 +9,5 @@ specifyweb/frontend/locale/*/*.mo
 specifyweb/frontend/js_src/node_modules
 specifyweb/frontend/testBuild
 specifyweb/frontend/static/js
+# Prevent *.env files from being included in a container (for security)
+*.env

@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -16,14 +18,16 @@ export function StatsPageEditing({
   onClose: handleClose,
   onAdd: handleAdd,
 }: {
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onRename: ((value: string) => void) | undefined;
+  readonly onRename: ((label: LocalizedString) => void) | undefined;
   readonly onClose: () => void;
-  readonly onAdd: ((label: string) => void) | undefined;
+  readonly onAdd: ((label: LocalizedString) => void) | undefined;
 }): JSX.Element {
   const id = useId('stats');
-  const [pageName, setPageName] = React.useState<string>(label ?? '');
+  const [pageName, setPageName] = React.useState<LocalizedString>(
+    label ?? localized('')
+  );
   return (
     <Dialog
       buttons={
@@ -37,11 +41,11 @@ export function StatsPageEditing({
           <Button.Secondary onClick={handleClose}>
             {commonText.close()}
           </Button.Secondary>
-          <Submit.Blue form={id('form')}>
+          <Submit.Save form={id('form')}>
             {typeof handleRename === 'function'
               ? commonText.save()
               : commonText.add()}
-          </Submit.Blue>
+          </Submit.Save>
         </>
       }
       header={label === undefined ? statsText.addPage() : statsText.editPage()}
@@ -50,13 +54,7 @@ export function StatsPageEditing({
     >
       <Form
         id={id('form')}
-        onSubmit={(): void =>
-          typeof handleRename === 'function'
-            ? handleRename(pageName)
-            : typeof handleAdd === 'function'
-            ? handleAdd(pageName)
-            : undefined
-        }
+        onSubmit={(): void => (handleRename ?? handleAdd)?.(pageName)}
       >
         <Label.Block>
           {statsText.name()}

@@ -3,21 +3,23 @@ import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { developmentText } from '../../localization/development';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields } from '../QueryBuilder/helpers';
+import { useFetchQueryResults } from '../QueryBuilder/hooks';
 import type { QueryResultRow } from '../QueryBuilder/Results';
-import { useFetchQueryResults } from '../QueryBuilder/Results';
 import { useQueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
   fieldSpecsToLocalityMappings,
@@ -68,12 +70,17 @@ function MapWrapper({
   readonly onClose: () => void;
 }): JSX.Element {
   const [query] = useResource(queryResource);
+  const table = React.useMemo(
+    () => getTableById(query.contextTableId),
+    [query.contextTableId]
+  );
+
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
   );
   const fields = React.useMemo(() => getFields(query), [query]);
   const props = useQueryResultsWrapper({
-    baseTableName: tableName,
+    table,
     queryRunCount: 1,
     queryResource,
     fields,
@@ -97,7 +104,9 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
     return fields;
   }
   const localityField = fields.find(({ mappingPath }) =>
-    mappingPath.join('.').startsWith('collectingEvent.locality')
+    mappingPath
+      .join(backboneFieldSeparator)
+      .startsWith('collectingEvent.locality')
   );
   return localityField === undefined
     ? ([
@@ -112,6 +121,7 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
         },
@@ -164,11 +174,11 @@ export function extractQueryTaxonId(
   baseTableName: keyof Tables,
   fields: RA<QueryField>
 ): number | undefined {
-  const idField = schema.models.Taxon.idField;
+  const idField = tables.Taxon.idField;
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
-      schema.models[baseTableName].getField(
-        getGenericMappingPath(mappingPath).join('.')
+      genericTables[baseTableName].getField(
+        getGenericMappingPath(mappingPath).join(backboneFieldSeparator)
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>
             type === 'equal' && !isNot ? f.parseInt(startValue) : undefined
@@ -214,7 +224,7 @@ export function useExtendedMap(
   ]);
   return items.length === 0 ? undefined : (
     <details>
-      <summary>{specifyNetworkText.mapDetails()}</summary>
+      <summary>{developmentText.details()}</summary>
       {items}
     </details>
   );

@@ -24,7 +24,7 @@ export function useUserPolicies(
   userPolicies: IR<RA<Policy> | undefined> | undefined,
   setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
   initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialUserPolicies = React.useRef<IR<RA<Policy> | undefined>>({});
   const [userPolicies, setUserPolicies] = useAsyncState(
@@ -54,15 +54,13 @@ export function useUserPolicies(
                   `/permissions/user_policies/${collection.id}/${userResource.id}/`,
                   {
                     headers: { Accept: 'application/json' },
-                  },
-                  {
                     /*
                      * When looking at a different collection, it is not yet
                      * know if user has read permission. Instead of waiting for
                      * permission query to complete, query anyway and silently
                      * handle the permission denied error
                      */
-                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                    expectedErrors: [Http.FORBIDDEN],
                   }
                 ).then(
                   ({ data, status }) =>
@@ -100,7 +98,7 @@ export function useUserInstitutionalPolicies(
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
   initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
   const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
@@ -109,20 +107,20 @@ export function useUserInstitutionalPolicies(
         userResource.isNew()
           ? []
           : hasDerivedPermission(
-              '/permissions/institutional_policies/user',
-              'read'
-            )
-          ? ajax<IR<RA<string>>>(
-              `/permissions/user_policies/institution/${userResource.id}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) => {
-              const policies = processPolicies(data);
-              initialInstitutionPolicies.current = policies;
-              return policies;
-            })
-          : undefined,
+                '/permissions/institutional_policies/user',
+                'read'
+              )
+            ? ajax<IR<RA<string>>>(
+                `/permissions/user_policies/institution/${userResource.id}/`,
+                {
+                  headers: { Accept: 'application/json' },
+                }
+              ).then(({ data }) => {
+                const policies = processPolicies(data);
+                initialInstitutionPolicies.current = policies;
+                return policies;
+              })
+            : undefined,
       [userResource]
     ),
     false
@@ -157,7 +155,6 @@ export function useUserProviders(
                     readonly title: LocalizedString;
                   }>
                 >('/accounts/oic_providers/', {
-                  method: 'GET',
                   headers: { Accept: 'application/json' },
                 }).then(({ data }) => data),
                 userProviders:
@@ -168,7 +165,6 @@ export function useUserProviders(
                           readonly title: LocalizedString;
                         }>
                       >(`/accounts/oic_providers/${userId}/`, {
-                        method: 'GET',
                         headers: { Accept: 'application/json' },
                       }).then(({ data }) => data)
                     : [],

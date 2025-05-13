@@ -7,53 +7,45 @@ import { reportsText } from '../../localization/report';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
-import { getField, serializeResource } from '../DataModel/helpers';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type {
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
 
-export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<{ readonly available: boolean }>(
-        cachableUrl('/context/report_runner_status.json'),
-        {
-          headers: { Accept: 'application/json' },
-        },
-        { strict: false }
-      )
-        .then(({ data }) => data.available)
-        .catch(() => false)
-    : false
-);
-
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
-    <ReportsView
-      autoSelectSingle={false}
-      model={undefined}
-      resourceId={undefined}
-      onClose={handleClose}
-    />
+    <ProtectedAction action="execute" resource="/report">
+      <ReportsView
+        autoSelectSingle={false}
+        resourceId={undefined}
+        table={undefined}
+        onClose={handleClose}
+      />
+    </ProtectedAction>
   );
 }
 
@@ -67,13 +59,13 @@ export type ReportEntry = {
 };
 
 export function ReportsView({
-  // If resource ID is provided, model must be too
-  model,
+  // If resource ID is provided, table must be too
+  table,
   resourceId,
   autoSelectSingle,
   onClose: handleClose,
 }: {
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly resourceId: number | undefined;
   readonly autoSelectSingle: boolean;
   readonly onClose: () => void;
@@ -83,14 +75,14 @@ export function ReportsView({
       async () =>
         ajax<{
           readonly objects: RA<{
-            readonly app_resource: SerializedModel<SpAppResource>;
-            readonly report: SerializedModel<SpReport> | null;
-            readonly query: SerializedModel<SpQuery> | null;
+            readonly app_resource: SerializedRecord<SpAppResource>;
+            readonly report: SerializedRecord<SpReport> | null;
+            readonly query: SerializedRecord<SpQuery> | null;
           }>;
         }>(
           formatUrl(
-            typeof model === 'object'
-              ? `/report_runner/get_reports_by_tbl/${model.tableId}/`
+            typeof table === 'object'
+              ? `/report_runner/get_reports_by_tbl/${table.tableId}/`
               : '/report_runner/get_reports/',
             {
               domainFilter: 'false',
@@ -110,7 +102,7 @@ export function ReportsView({
               appResource.mimeType?.includes('report') === true
           )
         ),
-      [model]
+      [table]
     ),
     true
   );
@@ -139,9 +131,9 @@ export function ReportsView({
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissible>
         <Report
-          model={model}
           resource={selectedReport}
           resourceId={resourceId}
+          table={table}
           onClose={handleClose}
         />
       </ErrorBoundary>
@@ -149,7 +141,7 @@ export function ReportsView({
       <Dialog
         buttons={commonText.cancel()}
         header={reportsText.reports()}
-        icon={<span className="text-blue-500">{icons.documentReport}</span>}
+        icon={icons.documentReport}
         onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
@@ -202,18 +194,19 @@ function ReportRow({
         unsortedResources,
         ({ appResource }) => appResource[sortConfig.sortField]
       ),
-    [sortConfig, unsortedResources]
+    [sortConfig, unsortedResources, applySortConfig]
   );
 
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
+    // BUG: replace 1fr with minmax(0,1fr) everywhere where necessary
     <table className="grid-table grid-cols-[1fr_auto_auto_min-content] gap-2">
       <thead>
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(schema.models.SpReport, 'name').label}
+              {getField(tables.SpReport, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -221,14 +214,16 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {getField(schema.models.SpReport, 'timestampCreated').label}
+              {getField(tables.SpReport, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>{getField(schema.models.SpReport, 'createdByAgent').label}</th>
+          <th className={`${className.link} pointer-events-none`}>
+            {getField(tables.SpReport, 'specifyUser').label}
+          </th>
           <td />
         </tr>
       </thead>
@@ -238,27 +233,30 @@ function ReportRow({
             <td>
               <Button.LikeLink
                 className="flex-1"
-                title={entry.appResource.description ?? undefined}
+                title={localized(entry.appResource.description) ?? undefined}
                 onClick={(): void => handleClick(entry)}
               >
                 <TableIcon
                   label
                   name={entry.query?.contextName ?? fallbackIcon}
                 />
-                {entry.appResource.name}
+                {localized(entry.appResource.name)}
               </Button.LikeLink>
             </td>
             <td>
               <DateElement date={entry.appResource.timestampCreated} />
             </td>
             <td>
-              <FormattedResourceUrl
-                resourceUrl={entry.appResource.specifyUser}
-              />
+              <ReadOnlyContext.Provider value>
+                <FormattedResourceUrl
+                  resourceUrl={entry.appResource.specifyUser}
+                />
+              </ReadOnlyContext.Provider>
             </td>
             <td>
               <Link.Icon
                 aria-label={commonText.edit()}
+                className={className.dataEntryEdit}
                 href={`/specify/resources/app-resource/${entry.appResource.id}/`}
                 icon="pencil"
                 title={commonText.edit()}

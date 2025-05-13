@@ -5,14 +5,14 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
@@ -21,13 +21,13 @@ import { queryFromTree } from './fromTree';
 import { QueryBuilder } from './Wrapped';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
-  const [recordsetid = ''] = useSearchParameter('recordsetid');
+  const [recordsetid = ''] = useSearchParameter('recordSetId');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = f.parseInt(recordsetid);
       if (recordSetId === undefined) return false;
-      const recordSet = new schema.models.RecordSet.Resource({
+      const recordSet = new tables.RecordSet.Resource({
         id: recordSetId,
       });
       return recordSet.fetch();
@@ -84,19 +84,20 @@ function QueryById({
   const recordSet = useQueryRecordSet();
 
   return query === undefined || recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={queryId} query={query} recordSet={recordSet} />
   );
 }
 
 export function createQuery(
   name: string,
-  model: SpecifyModel
+  table: SpecifyTable
 ): SpecifyResource<SpQuery> {
-  const query = new schema.models.SpQuery.Resource();
+  const query = new tables.SpQuery.Resource();
   query.set('name', name);
-  query.set('contextName', model.name);
-  query.set('contextTableId', model.tableId);
+  query.set('contextName', table.name);
+  query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
+  query.set('selectSeries', false);
   query.set('countOnly', false);
   query.set('formatAuditRecIds', false);
   query.set('specifyUser', userInformation.resource_uri);
@@ -111,40 +112,40 @@ export function createQuery(
 
 export function NewQueryBuilder(): JSX.Element {
   const { tableName = '' } = useParams();
-  const model = getModel(tableName);
-  return typeof model === 'object' ? (
-    <NewQuery model={model} />
+  const table = getTable(tableName);
+  return typeof table === 'object' ? (
+    <NewQuery table={table} />
   ) : (
     <NotFoundView />
   );
 }
 
 function NewQuery({
-  model,
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element | null {
   const query = React.useMemo<SpecifyResource<SpQuery>>(
-    () => createQuery(queryText.newQueryName(), model),
-    [model]
+    () => createQuery(queryText.newQueryName(), table),
+    [table]
   );
 
   const recordSet = useQueryRecordSet();
 
   return recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={table.name} query={query} recordSet={recordSet} />
   );
 }
 
 export function QueryBuilderFromTree(): JSX.Element | null {
   const { tableName = '', id } = useParams();
   const nodeId = f.parseInt(id);
-  const model = getModel(tableName);
-  return typeof model === 'object' &&
-    isTreeModel(model.name) &&
+  const table = getTable(tableName);
+  return typeof table === 'object' &&
+    isTreeTable(table.name) &&
     typeof nodeId === 'number' ? (
-    <ProtectedTree action="read" treeName={model.name}>
-      <QueryFromTree model={model as SpecifyModel<AnyTree>} nodeId={nodeId} />
+    <ProtectedTree action="read" treeName={table.name}>
+      <QueryFromTree nodeId={nodeId} table={table as SpecifyTable<AnyTree>} />
     </ProtectedTree>
   ) : (
     <NotFoundView />
@@ -152,16 +153,16 @@ export function QueryBuilderFromTree(): JSX.Element | null {
 }
 
 function QueryFromTree({
-  model,
+  table,
   nodeId,
 }: {
-  readonly model: SpecifyModel<AnyTree>;
+  readonly table: SpecifyTable<AnyTree>;
   readonly nodeId: number;
 }): JSX.Element | null {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
-      async () => queryFromTree(model.name, nodeId),
-      [model.name, nodeId]
+      async () => queryFromTree(table.name, nodeId),
+      [table.name, nodeId]
     ),
     true
   );

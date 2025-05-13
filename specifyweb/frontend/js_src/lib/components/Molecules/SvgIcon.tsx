@@ -3,7 +3,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { stringToColor } from './TableIcon';
 
@@ -16,7 +16,7 @@ export function SvgIcon({
   readonly label: string | undefined;
   readonly className: string;
   readonly autoGenerate?: boolean;
-}) {
+}): JSX.Element {
   const shortName = nameMapper()[name] ?? getShortName(name);
   const autoName = name.startsWith(shortName[0]) ? name : shortName;
   const [from, to] = colorMapper()[name] ?? [
@@ -60,6 +60,8 @@ export function SvgIcon({
       </g>
       <g>
         <text
+          alignmentBaseline="middle"
+          baselineShift="-10%"
           dominantBaseline="central"
           fill="#FFFFFF"
           fontFamily="Francois One,sans-serif"
@@ -108,8 +110,8 @@ function getShortName(rawName: keyof Tables): string {
     rawName.endsWith('Attachment') && rawName !== 'Attachment'
       ? rawName.slice(0, -'Attachment'.length)
       : rawName.startsWith('Sp')
-      ? rawName.slice(2)
-      : rawName;
+        ? rawName.slice(2)
+        : rawName;
   const capitalLetters = name.replaceAll(/[^A-Z]/gu, '');
   return capitalLetters.length > 1
     ? capitalLetters.slice(0, 3)
@@ -134,7 +136,7 @@ const startsWith = <T,>(
   resolved: T
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
-    Object.keys(schema.models)
+    Object.keys(tables)
       .filter((tableName) => tableName.startsWith(prefix))
       .map((tableName) => [tableName, resolved])
   );
@@ -144,7 +146,7 @@ const endsWith = <T,>(
   resolved: T
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
-    Object.keys(schema.models)
+    Object.keys(tables)
       .filter((tableName) => tableName.endsWith(prefix))
       .map((tableName) => [tableName, resolved])
   );
@@ -215,7 +217,7 @@ type Gradient = readonly [from: string, to: string];
 
 const colors: IR<Gradient> = {
   // Taxon
-  red: ['#C1272D', '75272D'],
+  red: ['#C1272D', '#75272D'],
   // Storage
   blue: ['#0071BC', '#2E3192'],
   // Audit Log
@@ -239,6 +241,9 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ...startsWith('DNA', colors.purple),
   ...startsWith('Sp', colors.lightBlue),
   ...startsWith('Workbench', colors.green),
+  ...startsWith('AbsoluteAge', colors.blue),
+  ...startsWith('RelativeAge', colors.lightBlue),
+  ...startsWith('TectonicUnit', colors.yellowOrange),
   ...endsWith('Agent', colors.yellowOrange),
   ...endsWith('Citation', colors.red),
   ...endsWith('Authorization', colors.red),
@@ -306,6 +311,8 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   Journal: colors.brown,
   LatLonPolygon: colors.green,
   LatLonPolygonPnt: colors.green,
+  LibraryRole: colors.blue,
+  LibraryRolePolicy: colors.lightBlue,
   LithoStrat: colors.red,
   LithoStratTreeDef: colors.red,
   LithoStratTreeDefItem: colors.red,
@@ -316,7 +323,10 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   LocalityAttachment: colors.green,
   LocalityDetail: colors.green,
   LocalityNameAlias: colors.purple,
+  LocalityUpdate: colors.purple,
+  LocalityUpdateRowResult: colors.purple,
   MaterialSample: colors.blue,
+  Message: colors.yellowOrange,
   MorphBankView: colors.blue,
   OtherIdentifier: colors.purple,
   PcrPerson: colors.blue,
@@ -337,6 +347,8 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   ReferenceWorkAttachment: colors.purple,
   RepositoryAgreement: colors.purple,
   RepositoryAgreementAttachment: colors.purple,
+  Role: colors.blue,
+  RolePolicy: colors.lightBlue,
   Shipment: colors.brown,
   SpSymbiotaInstance: colors.green,
   Storage: colors.blue,
@@ -350,6 +362,10 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   TaxonAttribute: colors.purple,
   TreatmentEvent: colors.red,
   TreatmentEventAttachment: colors.red,
+  UniquenessRule: colors.purple,
+  UniquenessRuleField: colors.purple,
+  UserPolicy: colors.lightBlue,
+  UserRole: colors.blue,
   VoucherRelationship: colors.red,
 }));
 

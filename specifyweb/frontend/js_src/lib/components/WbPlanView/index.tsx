@@ -12,58 +12,74 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { useMenuItem } from '../Header/useMenuItem';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
-import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
-/**
- * Entrypoint React component for the workbench mapper
- */
 export function WbPlanViewWrapper(): JSX.Element | null {
   const { id = '' } = useParams();
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-  useMenuItem('workBench');
-
   const [dataSet] = useAsyncState<Dataset | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       const dataSetId = f.parseInt(id);
       if (dataSetId === undefined) return false;
-      return ajax<Dataset>(
-        `/api/workbench/dataset/${dataSetId}/`,
-        {
-          headers: { Accept: 'application/json' },
-        },
-        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-      ).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
+      return ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
+        headers: { Accept: 'application/json' },
+        expectedErrors: [Http.NOT_FOUND],
+      }).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
     }, [id]),
     true
   );
-  useErrorContext('dataSet', dataSet);
-
   return dataSet === false ? (
     <NotFoundView />
-  ) : treeRanksLoaded && typeof dataSet === 'object' ? (
-    <WbPlanView
-      dataset={dataSet}
-      headers={
-        dataSet.visualorder === null
-          ? dataSet.columns
-          : dataSet.visualorder.map(
-              (physicalCol) => dataSet.columns[physicalCol]
-            )
-      }
-      // Reorder headers if needed
-      isReadOnly={
-        (!hasPermission('/workbench/dataset', 'update') ||
-          dataSet.uploadresult?.success) ??
-        false
-      }
-      uploadPlan={dataSet.uploadplan}
-    />
+  ) : dataSet === undefined ? null : (
+    <WbPlanViewSafe dataSet={dataSet} />
+  );
+}
+
+/**
+ * Entrypoint React component for the workbench mapper
+ */
+function WbPlanViewSafe({
+  dataSet,
+}: {
+  readonly dataSet: Dataset;
+}): JSX.Element | null {
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  useMenuItem(dataSet.isupdate ? 'batchEdit' : 'workBench');
+  useErrorContext('dataSet', dataSet);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !resolveVariantFromDataset(dataSet).canEdit() ||
+    typeof dataSet !== 'object' ||
+    dataSet.uploadresult?.success === true ||
+    // FEATURE: Remove this
+    dataSet.isupdate;
+
+  return treeRanksLoaded && typeof dataSet === 'object' ? (
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <WbPlanView
+        readonlySpec={
+          dataSet.isupdate
+            ? { mustMatch: false, columnOptions: false, batchEditPrefs: false }
+            : undefined
+        }
+        uploadPlan={dataSet.uploadplan}
+        dataset={dataSet}
+        // Reorder headers if needed
+        headers={
+          dataSet.visualorder === null
+            ? dataSet.columns
+            : dataSet.visualorder.map(
+                (physicalCol) => dataSet.columns[physicalCol]
+              )
+        }
+      />
+    </ReadOnlyContext.Provider>
   ) : null;
 }

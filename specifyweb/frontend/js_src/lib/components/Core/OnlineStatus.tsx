@@ -1,56 +1,49 @@
 import React from 'react';
-import { commonText } from '../../localization/common';
+
+import { mainText } from '../../localization/main';
 
 const indicatorTimeOut = 3000;
 
-export function OnlineStatus(): JSX.Element {
-  const [onlineStatus, setOnlineStatus] = React.useState<
-    'online' | 'offline' | 'normal'
-  >('normal');
+export function OnlineStatus(): JSX.Element | null {
+  const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+  // Display online status for a few seconds only
+  const [showOnlineStatus, setShowOnlineStatus] = React.useState(false);
 
   React.useEffect(() => {
-    setTimeout(() => {
-      setOnlineOpen(!onlineOpen);
-    }, indicatorTimeOut);
-  }, [onlineStatus]);
+    function handleOnline(): void {
+      setIsOnline(true);
+      setShowOnlineStatus(true);
 
-  const [onlineOpen, setOnlineOpen] = React.useState(true);
-
-  React.useEffect(() => {
-    function updateOnlineStatus() {
-      const condition = navigator.onLine ? 'online' : 'offline';
-      setOnlineStatus(condition);
+      setTimeout(() => setShowOnlineStatus(false), indicatorTimeOut);
     }
 
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
+    function handleOffline(): void {
+      setIsOnline(false);
+      setShowOnlineStatus(false);
+    }
+
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', updateOnlineStatus);
-      window.removeEventListener('offline', updateOnlineStatus);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
     };
-  }, [onlineStatus]);
+  }, []);
 
-  return (
-    <div className="absolute right-0 bottom-0">
-      {onlineStatus === 'online' ? (
-        <div
-          className={`mr-2 flex items-center justify-end gap-2 ${
-            onlineOpen ? '' : 'hidden'
-          }`}
-        >
-          <span
-            className="h-3 w-3 rounded-full bg-green-700"
-            aria-hidden
-          ></span>
-          <p>{commonText.online()}</p>
-        </div>
-      ) : onlineStatus === 'offline' ? (
-        <div className="mr-2 flex items-center justify-end gap-2">
-          <span className="h-3 w-3 rounded-full bg-red-700" aria-hidden></span>
-          <p>{commonText.offline()}</p>
-        </div>
-      ) : undefined}
+  return isOnline ? (
+    showOnlineStatus ? (
+      <div className={className}>
+        <span aria-hidden className="h-3 w-3 rounded-full bg-green-700" />
+        <p>{mainText.online()}</p>
+      </div>
+    ) : null
+  ) : (
+    <div className={className}>
+      <span aria-hidden className="h-3 w-3 rounded-full bg-red-700" />
+      <p>{mainText.offline()}</p>
     </div>
   );
 }
+
+const className = 'absolute bottom-0 right-0 z-50 flex items-center gap-2 p-1';

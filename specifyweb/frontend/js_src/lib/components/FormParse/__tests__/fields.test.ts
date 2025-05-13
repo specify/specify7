@@ -1,24 +1,28 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { localized } from '../../../utils/types';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { getField } from '../../DataModel/helpers';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
 
 requireContext();
 
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
 const parse = (
-  xml: string,
+  xmlString: string,
   parameters: Partial<Parameters<typeof parseFormField>[0]>
 ): ReturnType<typeof parseFormField> =>
   parseFormField({
-    cell: strictParseXml(xml),
+    cell: xml(xmlString),
     getProperty: generateInit({}),
-    model: schema.models.CollectionObject,
-    fields: [schema.models.CollectionObject.strictGetField('catalogNumber')],
+    table: tables.CollectionObject,
+    fields: [tables.CollectionObject.strictGetField('catalogNumber')],
     ...parameters,
   });
 
@@ -31,6 +35,7 @@ describe('parseFormField', () => {
       min: undefined,
       step: undefined,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Readonly Text field', () =>
@@ -45,6 +50,7 @@ describe('parseFormField', () => {
       min: 4,
       step: 3.2,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Legacy readonly text field', () =>
@@ -59,6 +65,7 @@ describe('parseFormField', () => {
       min: 4,
       step: 3.2,
       type: 'Text',
+      whiteSpaceSensitive: false,
     }));
 
   test('Legacy text field', () =>
@@ -68,6 +75,7 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
       type: 'Text',
     }));
 
@@ -78,29 +86,37 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
       type: 'Text',
     }));
 
   test('Localized checkbox', () =>
-    expect(
-      parse('<cell uiType="checkbox" default="true" label="FINDNEXT" />', {})
-    ).toEqual({
-      defaultValue: true,
+    expect(parse('<cell uiType="checkbox" label="FINDNEXT" />', {})).toEqual({
+      defaultValue: undefined,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'Find Next' as LocalizedString,
+      label: localized('Find Next'),
     }));
 
   test('Raw Localized checkbox', () =>
     expect(
-      parse('<cell uiType="checkbox" default="true" label="some label" />', {})
+      parse('<cell uiType="checkbox" default="false" label="some label" />', {})
     ).toEqual({
-      defaultValue: true,
+      defaultValue: false,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'some label' as LocalizedString,
+      label: localized('some label'),
+    }));
+
+  test('Can set default value to false', () =>
+    expect(parse('<cell uiType="checkbox" default="false" />', {})).toEqual({
+      defaultValue: false,
+      isReadOnly: false,
+      type: 'Checkbox',
+      printOnSave: false,
+      label: undefined,
     }));
 
   test('Print on Save checkbox', () =>
@@ -114,7 +130,7 @@ describe('parseFormField', () => {
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
-      label: 'Select All' as LocalizedString,
+      label: localized('Select All'),
     }));
 
   test('Legacy Print on Save checkbox', () =>
@@ -124,7 +140,7 @@ describe('parseFormField', () => {
         {}
       )
     ).toEqual({
-      defaultValue: false,
+      defaultValue: undefined,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
@@ -185,32 +201,54 @@ describe('parseFormField', () => {
       max: undefined,
       min: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
     });
   });
 
   test('Query Combo Box', () =>
     expect(
       parse('<cell uiType="querycbx"/>', {
-        getProperty: generateInit({ cloneBtn: 'TRUE', name: 'NAME' }),
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
+        getProperty: generateInit({
+          cloneBtn: 'TRUE',
+          newBtn: 'false',
+          searchBtn: 'true',
+          editBtn: 'true',
+          name: 'NAME',
+          searchView: 'a',
+          viewBtn: 'true',
+        }),
+        fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
       isReadOnly: false,
       hasCloneButton: true,
+      hasNewButton: false,
+      hasSearchButton: true,
+      hasEditButton: true,
       type: 'QueryComboBox',
       typeSearch: 'NAME',
+      searchView: 'a',
+      hasViewButton: true,
     }));
 
   test('Readonly Query Combo Box', () =>
     expect(
-      parse('<cell uiType="querycbx" readOnly="true" />', {
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
-      })
+      parse(
+        '<cell uiType="querycbx" readOnly="true" initialize="newBtn=false"/>',
+        {
+          fields: [tables.CollectionObject.strictGetField('accession')],
+        }
+      )
     ).toEqual({
       isReadOnly: true,
       hasCloneButton: false,
+      hasNewButton: true,
+      hasEditButton: true,
+      hasSearchButton: true,
+      searchView: undefined,
       type: 'QueryComboBox',
       typeSearch: undefined,
+      hasViewButton: false,
     }));
 
   test('Query Combo Box for non-relationship', () => {
@@ -242,7 +280,7 @@ describe('parseFormField', () => {
   test('Text component is converted into partial date for data fields', () =>
     expect(
       parse('<cell uiType="text" />', {
-        fields: [getField(schema.models.CollectionObject, 'timestampCreated')],
+        fields: [getField(tables.CollectionObject, 'timestampCreated')],
       })
     ).toEqual({
       isReadOnly: false,
@@ -267,18 +305,19 @@ describe('parseFormField', () => {
       min: undefined,
       minLength: undefined,
       step: undefined,
+      whiteSpaceSensitive: false,
     }));
 });
 
 test('parseFormField handles fields without uiType', () => {
   const consoleWarn = jest.fn();
   jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
-  const cell = strictParseXml('<cell />');
+  const cell = xml('<cell />');
   expect(
     parseFormField({
       cell,
       getProperty: generateInit({}),
-      model: schema.models.CollectionObject,
+      table: tables.CollectionObject,
       fields: undefined,
     })
   ).toEqual({

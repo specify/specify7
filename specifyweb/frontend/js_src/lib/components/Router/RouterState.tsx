@@ -2,39 +2,23 @@ import type { SafeLocation } from 'history';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { AnySchema } from '../DataModel/helperTypes';
-import type {
-  SpAppResource,
-  SpecifyUser,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyUser } from '../DataModel/types';
 import type { NewRole, Role } from '../Security/Role';
 import { isOverlay, OverlayContext } from './Router';
+import { pathIsOverlay } from './UnloadProtect';
 
 /*
- * Symbol() would be better suites for this, but it can't be used because
+ * Symbol() would be better suited for this, but it can't be used because
  * state must be serializable
+ * REFACTOR: reduce usage of Location State as it's quite bug-prone (easy to
+ *   loose state)
  */
 type PureLocationState =
-  | State<
-      'AppResource',
-      {
-        readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
-        readonly directoryKey?: string;
-        readonly initialDataFrom?: number;
-      }
-    >
   | State<
       'BackgroundLocation',
       {
         readonly location: SafeLocation;
-      }
-    >
-  | State<
-      'Command',
-      {
-        readonly nextUrl: string;
       }
     >
   | State<
@@ -53,8 +37,7 @@ type PureLocationState =
   | State<
       'SecurityUser',
       {
-        readonly user?: SerializedResource<SpecifyUser>;
-        readonly initialCollectionId?: number;
+        readonly user: SerializedResource<SpecifyUser>;
       }
     >
   | State<'NotFoundPage'>;
@@ -67,9 +50,7 @@ export type SafeLocationState = PureLocationState | undefined;
  * location
  */
 export function useStableLocation(location: SafeLocation): SafeLocation {
-  const state = location.state;
-
-  const isOverlayOpen = state?.type === 'BackgroundLocation';
+  const isOverlayOpen = pathIsOverlay(location.pathname);
   const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
   /*
    * If non-overlay listens for a state, and you open an overlay, the

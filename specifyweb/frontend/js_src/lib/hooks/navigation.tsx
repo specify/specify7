@@ -2,68 +2,66 @@
  * A wrapper for Backbone's routing API
  */
 
+import type { SafeLocation } from 'history';
 import React from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import {
-  isOverlay,
-  OverlayContext,
-  SetUnloadProtectsContext,
-} from '../components/Router/Router';
+  formatUrl,
+  locationToUrl,
+  parseUrl,
+} from '../components/Router/queryString';
+import { SetUnloadProtectsContext } from '../components/Router/UnloadProtect';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
-import { defined } from '../utils/types';
-import { removeItem } from '../utils/utils';
-import { locationToState } from '../components/Router/RouterState';
+import { removeItem, removeKey } from '../utils/utils';
 
 export function useSearchParameter(
-  name: string | undefined
+  rawName: string | undefined,
+  overrideLocation?: SafeLocation
 ): GetSet<string | undefined> {
-  const [queryString, setQueryString] = useSearchParams();
-
-  const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
+  const name = rawName?.toLowerCase();
   const location = useLocation();
-  const state = locationToState(location, 'BackgroundLocation');
-  const isOverlayOpen = typeof state === 'object';
-  /*
-   * If non-overlay listens for a query string, and you open an overlay, the
-   * previous query string value should be used
-   */
-  const freezeValue = isOverlayComponent !== isOverlayOpen;
+  const resolvedLocation = overrideLocation ?? location;
+  const url = locationToUrl(resolvedLocation);
+  const parameters = React.useMemo(() => parseUrl(url), [url]);
+  const value = parameters[name ?? ''];
+  const navigate = useNavigate();
 
-  /*
-   * Unfortunately, setQueryString changes whenever the URL changes, which can
-   * easily trigger an endless re-render. Thus, have to use a ref
-   */
-  const setQuery = React.useRef(setQueryString);
-  React.useEffect(() => {
-    setQuery.current = setQueryString;
-  }, [setQueryString]);
-
-  const handleChange = React.useCallback(
-    (value: string | undefined) =>
-      setQuery.current(
+  const handleChange = useFunction((value: string | undefined): void => {
+    if (name === undefined)
+      throw new Error('Tried to change query string without providing a name');
+    navigate(
+      formatUrl(
+        url,
         value === undefined
-          ? {}
+          ? removeKey(parameters, name)
           : {
-              [defined(
-                name,
-                'Tried to change query string without providing a name'
-              )]: value,
-            },
-        {
-          replace: true,
-        }
+              ...parameters,
+              [name]: value,
+            }
       ),
-    [name]
+      { replace: true, state: location.state }
+    );
+  });
+
+  return [value, handleChange];
+}
+
+/**
+ * Create a callback that is always using the value from the most recent
+ * render, without causing re-render
+ * FEATURE: use this in more places
+ */
+function useFunction<TYPE extends (...args: RA<never>) => unknown>(
+  callback: TYPE
+): TYPE {
+  const callbackRef = React.useRef(callback);
+  callbackRef.current = callback;
+  return React.useCallback<TYPE>(
+    ((...args) => callbackRef.current(...args)) as TYPE,
+    []
   );
-
-  const value =
-    typeof name === 'string' ? queryString.get(name) ?? undefined : undefined;
-  const valueRef = React.useRef(value);
-  if (!freezeValue) valueRef.current = value;
-
-  return [valueRef.current, handleChange];
 }
 
 export function useUnloadProtect(

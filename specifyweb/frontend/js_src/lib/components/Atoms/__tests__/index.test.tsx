@@ -15,14 +15,15 @@ snapshot(H3, { children: commonText.view() });
 snapshot(Key, { children: commonText.view() });
 
 test('Can use <summary> as a controlled component', async () => {
-  const build = (open: boolean) => (
+  const text = 'a';
+  const build = (open: boolean): JSX.Element => (
     <details open={open}>
-      <Summary onToggle={handleToggle}>a</Summary>
+      <Summary onToggle={handleToggle}>{text}</Summary>
     </details>
   );
   const handleToggle = jest.fn((open: boolean) => rerender(build(open)));
   const { asFragment, rerender, getByText, user } = mount(build(false));
-  const summary = getByText('a');
+  const summary = getByText(text);
 
   await user.click(summary);
   expect(handleToggle).toHaveBeenLastCalledWith(true);

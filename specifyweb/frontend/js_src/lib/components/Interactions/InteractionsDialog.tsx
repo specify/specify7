@@ -1,304 +1,128 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
 import { Ul } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { fetchCollection } from '../DataModel/collection';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type {
-  Disposal,
-  Gift,
-  Loan,
-  RecordSet,
-  Tables,
-} from '../DataModel/types';
-import { error } from '../Errors/assert';
-import { softFail } from '../Errors/Crash';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { fetchView } from '../FormParse';
-import { cachableUrl } from '../InitialContext';
-import { userInformation } from '../InitialContext/userInformation';
+import { EditFormTables } from '../DataEntryTables/Edit';
+import { useDataEntryTables } from '../DataEntryTables/fetchTables';
+import { getResourceViewUrl } from '../DataModel/resource';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, tables } from '../DataModel/tables';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { ReportsView } from '../Reports';
-import { formatUrl } from '../Router/queryString';
+import { hasTablePermission } from '../Permissions/helpers';
+import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { Redirect } from '../Router/Redirect';
 import { OverlayContext } from '../Router/Router';
+import { fetchLegacyInteractions } from './fetch';
+import type { InteractionWithPreps } from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import { InteractionDialog } from './InteractionDialog';
 
-const supportedActions = [
-  'NEW_GIFT',
-  'NEW_LOAN',
-  'RET_LOAN',
-  'PRINT_INVOICE',
-] as const;
-
 /**
- * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
+ * FEATURE: If needed, implement a dialog for:
+ * Accession    -> CollectionObjects
+ * Appraisal    -> CollectionObjects
+ * InfoRequest  -> CollectionObjects
  */
-const stringLocalization = f.store(() => ({
-  RET_LOAN: interactionsText.returnLoan({
-    tableLoan: schema.models.Loan.label,
-  }),
-  PRINT_INVOICE: interactionsText.printInvoice(),
-  LOAN_NO_PRP: interactionsText.loanWithoutPreparation({
-    tableLoan: schema.models.Loan.label,
-    tablePreparation: schema.models.Preparation.label,
-  }),
-  'InteractionsTask.LN_NO_PREP':
-    interactionsText.loanWithoutPreparationDescription({
-      tableLoan: schema.models.Loan.label,
-      tablePreparation: schema.models.Preparation.label,
-    }),
-  'InteractionsTask.NEW_LN': interactionsText.createRecord({
-    table: schema.models.Loan.label,
-  }),
-  'InteractionsTask.EDT_LN': interactionsText.createRecord({
-    table: schema.models.Loan.label,
-  }),
-  'InteractionsTask.NEW_GFT': interactionsText.createRecord({
-    table: schema.models.Gift.label,
-  }),
-  'InteractionsTask.EDT_GFT': interactionsText.editRecord({
-    table: schema.models.Gift.label,
-  }),
-  'InteractionsTask.CRE_IR': interactionsText.createRecord({
-    table: schema.models.InfoRequest.label,
-  }),
-  'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
-}));
 
-export type InteractionEntry = {
-  readonly action: typeof supportedActions[number] | undefined;
-  readonly table: keyof Tables;
-  readonly label: LocalizedString | undefined;
-  readonly tooltip: LocalizedString | undefined;
-  readonly icon: string | undefined;
-};
+export function InteractionsOverlay(): JSX.Element | null {
+  const tables = useDataEntryTables('interactions');
+  const handleClose = React.useContext(OverlayContext);
 
-const url = cachableUrl(
-  formatUrl('/context/app.resource', { name: 'InteractionsTaskInit' })
-);
-const fetchEntries = f.store(
-  async (): Promise<RA<InteractionEntry>> =>
-    ajax<Element>(url, {
-      headers: { Accept: 'text/xml' },
-    }).then<RA<InteractionEntry>>(async ({ data }) =>
-      Promise.all(
-        Array.from(data.querySelectorAll('entry'), async (entry) => {
-          const action = getParsedAttribute(entry, 'action');
-          if (getBooleanAttribute(entry, 'isOnLeft') !== true) return undefined;
-          const table =
-            action === 'NEW_GIFT'
-              ? 'Gift'
-              : action === 'NEW_LOAN'
-              ? 'Loan'
-              : defined(
-                  (await f
-                    .maybe(getParsedAttribute(entry, 'view'), fetchView)
-                    ?.then((view) =>
-                      typeof view === 'object'
-                        ? (parseJavaClassName(view.class) as keyof Tables)
-                        : undefined
-                    )) ??
-                    getModel(getParsedAttribute(entry, 'table') ?? '')?.name,
-                  'Failed to get table name for interaction item. Set table or view attributes'
-                );
-          return {
-            action: f.includes(supportedActions, action) ? action : undefined,
-            table,
-            label: getParsedAttribute(entry, 'label'),
-            tooltip: getParsedAttribute(entry, 'tooltip'),
-            icon: getParsedAttribute(entry, 'icon'),
-          } as const;
-        })
-      ).then(filterArray)
-    )
-);
+  return typeof tables === 'object' ? (
+    <Interactions entries={tables} onClose={handleClose} />
+  ) : null;
+}
 
 function Interactions({
   onClose: handleClose,
   entries,
 }: {
   readonly onClose: () => void;
-  readonly entries: RA<InteractionEntry>;
+  readonly entries: RA<SpecifyTable>;
 }): JSX.Element {
-  const [state, setState] = React.useState<
-    | State<
-        'InteractionState',
-        {
-          readonly table: 'CollectionObject' | 'Disposal' | 'Gift' | 'Loan';
-          readonly actionModel: SpecifyModel<Disposal | Gift | Loan>;
-          readonly action: string;
-          readonly recordSetsPromise: Promise<{
-            readonly records: RA<SerializedResource<RecordSet>>;
-            readonly totalCount: number;
-          }>;
-        }
-      >
-    | State<'MainState'>
-    | State<'ReportsState'>
-  >({ type: 'MainState' });
-  const handleAction = React.useCallback(
-    (action: typeof supportedActions[number], table: keyof Tables): void => {
-      if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
-      else {
-        const isRecordSetAction =
-          action === 'NEW_GIFT' || action === 'NEW_LOAN';
-        const model = isRecordSetAction
-          ? schema.models.CollectionObject
-          : schema.models.Loan;
-        const actionModel =
-          table.toLowerCase() === 'loan'
-            ? schema.models.Loan
-            : table.toLowerCase() === 'gift'
-            ? schema.models.Gift
-            : table.toLowerCase() === 'disposal'
-            ? schema.models.Disposal
-            : undefined;
-        if (actionModel === undefined) {
-          softFail(new Error(`Unknown interaction table: ${table}`));
-          return;
-        }
-        setState({
-          type: 'InteractionState',
-          recordSetsPromise: fetchCollection('RecordSet', {
-            specifyUser: userInformation.id,
-            type: 0,
-            dbTableId: model.tableId,
-            domainFilter: true,
-            orderBy: '-timestampCreated',
-            limit: 5000,
-          }),
-          table: model.name,
-          actionModel,
-          action,
-        });
-      }
-    },
-    []
-  );
-
-  const { action } = useParams();
-  React.useEffect(
-    () =>
-      typeof action === 'string'
-        ? f.maybe(
-            entries.find((entry) => entry.action === action),
-            ({ action, table }) => handleAction(action!, table)
-          )
-        : undefined,
-    [action, entries]
-  );
-
-  return state.type === 'MainState' ? (
+  const [isEditing, handleEditing] = useBooleanState();
+  return isEditing ? (
+    <EditFormTables type="interactions" onClose={handleClose} />
+  ) : (
     <Dialog
       buttons={commonText.cancel()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
       header={interactionsText.interactions()}
-      icon={<span className="text-blue-500">{icons.chat}</span>}
+      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      icon={icons.chat}
       onClose={handleClose}
     >
       <Ul>
         {entries
-          .filter(({ table }) => hasTablePermission(table, 'create'))
-          .map(({ label, table, action, tooltip, icon = table }, index) =>
-            action !== 'PRINT_INVOICE' ||
-            hasPermission('/report', 'execute') ? (
-              <li
-                key={index}
-                title={
-                  typeof tooltip === 'string'
-                    ? stringLocalization()[
-                        tooltip as keyof ReturnType<typeof stringLocalization>
-                      ] ?? tooltip
-                    : undefined
+          .filter((table) => hasTablePermission(table.name, 'create'))
+          .map((table, index) => (
+            <li key={index}>
+              <Link.Default
+                href={
+                  table.name === 'LoanReturnPreparation'
+                    ? `/specify/overlay/interactions/return-loan/`
+                    : interactionsWithPrepTables.includes(
+                          (table as SpecifyTable<InteractionWithPreps>).name
+                        )
+                      ? `/specify/overlay/interactions/create/${table.name}/`
+                      : getResourceViewUrl(table.name)
                 }
               >
-                <Link.Default
-                  href={
-                    typeof action === 'string'
-                      ? `/specify/overlay/interactions/${action}/`
-                      : getResourceViewUrl(table)
-                  }
-                  onClick={
-                    typeof action === 'string'
-                      ? (event): void => {
-                          event.preventDefault();
-                          handleAction(action, table);
-                        }
-                      : undefined
-                  }
-                >
-                  {f.maybe(icon, (icon) => (
-                    <TableIcon label={false} name={icon} />
-                  ))}
-                  {typeof label === 'string'
-                    ? stringLocalization()[
-                        label as keyof ReturnType<typeof stringLocalization>
-                      ] ?? label
-                    : typeof table === 'string'
-                    ? getModel(table)?.label
-                    : (action as LocalizedString)}
-                </Link.Default>
-              </li>
-            ) : undefined
-          )}
+                <TableIcon label={false} name={table.name} />
+                {table.name === 'LoanReturnPreparation'
+                  ? interactionsText.returnLoan({
+                      tableLoan: tables.Loan.label,
+                    })
+                  : table.label}
+              </Link.Default>
+            </li>
+          ))}
       </Ul>
     </Dialog>
-  ) : state.type === 'InteractionState' ? (
-    <InteractionDialog
-      action={{ model: state.actionModel, name: state.action }}
-      model={schema.models[state.table]}
-      recordSetsPromise={state.recordSetsPromise}
-      searchField={strictGetModel(state.table).strictGetLiteralField(
-        state.table === 'Loan'
-          ? 'loanNumber'
-          : state.table === 'Disposal'
-          ? 'disposalNumber'
-          : 'catalogNumber'
-      )}
-      onClose={handleClose}
-    />
-  ) : state.type === 'ReportsState' ? (
-    <ReportsView
-      autoSelectSingle
-      model={schema.models.Loan}
-      resourceId={undefined}
-      onClose={handleClose}
-    />
-  ) : (
-    error('Invalid state')
   );
 }
 
-export function InteractionsOverlay(): JSX.Element | null {
-  const [entries] = useAsyncState(fetchEntries, true);
+export function InteractionAction(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
+  const { tableName = '' } = useParams();
+  const rawTable = React.useMemo(() => getTable(tableName), [tableName]);
+  const table =
+    typeof rawTable === 'object' &&
+    interactionsWithPrepTables.includes(
+      (rawTable as SpecifyTable<InteractionWithPreps>).name
+    )
+      ? (rawTable as SpecifyTable<InteractionWithPreps>)
+      : undefined;
+  return table === undefined ? (
+    <Redirect to="/specify/overlay/interactions/" />
+  ) : (
+    <ProtectedTable action="create" tableName={table.name}>
+      <InteractionDialog actionTable={table} onClose={handleClose} />
+    </ProtectedTable>
+  );
+}
 
-  return typeof entries === 'object' ? (
-    <ErrorBoundary dismissible>
-      <Interactions entries={entries} onClose={handleClose} />
-    </ErrorBoundary>
-  ) : null;
+export function InteractionLoanReturn(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <InteractionDialog
+      actionTable={tables.Loan}
+      isLoanReturn
+      onClose={handleClose}
+    />
+  );
 }
 
 export const exportsForTests = {
-  fetchEntries,
+  fetchEntries: fetchLegacyInteractions,
 };

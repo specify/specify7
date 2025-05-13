@@ -56,19 +56,24 @@ DATABASES = {
     },
  }
 
-SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
+def get_sa_db_url(db_name):
+    return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
         MASTER_PASSWORD,
         DATABASE_HOST,
         DATABASE_PORT or 3306,
-        DATABASE_NAME)
+        db_name)
+
+SA_DATABASE_URL = get_sa_db_url(DATABASE_NAME)
+
+SA_TEST_DB_URL = get_sa_db_url(f'test_{DATABASE_NAME}')
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
-SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', os.path.join(SPECIFY_THICK_CLIENT, "config"))
 
 RO_MODE = False
 
@@ -103,6 +108,7 @@ LANGUAGES = [
     ('fr-fr', 'français'),
     ('es-es', 'español'),
     ('de-ch', 'deutsch (schweiz)'),
+    ('pt-br', 'português (brasil)'),
 ]
 
 SITE_ID = 1
@@ -216,6 +222,7 @@ INSTALLED_APPS = (
     'specifyweb.attachment_gw',
     'specifyweb.frontend',
     'specifyweb.barvis',
+    'specifyweb.patches',
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',
@@ -258,4 +265,6 @@ try:
 except ImportError:
     pass
 
-
+SILENCED_SYSTEM_CHECKS = [
+    "fields.W342", # Allow ForeignKey(unique=True) instead of OneToOneField without gettig a warning
+]

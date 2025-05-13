@@ -11,70 +11,72 @@ from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR
+from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure, ParseSucess
 from .base import UploadTestsBase, get_table
 from ..column_options import ColumnOptions
-from ..parsing import parse_coord, parse_date, ParseResult as PR
 from ..treerecord import TreeRecord
 from ..upload import do_upload, do_upload_csv
 from ..upload_plan_schema import parse_column_options
 from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, \
-    ParseFailure
+    WorkBenchParseFailure
 from ..upload_results_schema import schema as upload_results_schema
 from ..upload_table import UploadTable
+
+from django.conf import settings
 
 co = datamodel.get_table_strict('Collectionobject')
 
 class DateParsingTests(unittest.TestCase):
 
     def test_bad1(self) -> None:
-        result = parse_date(co, 'catalogeddate', '%d/%m/%Y', 'foobar', 'catdate')
-        self.assertEqual(ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='catdate'), result)
+        result = parse_date(co, 'catalogeddate', '%d/%m/%Y', 'foobar')
+        self.assertEqual(ParseFailure(message='invalidYear', payload={'value':'foobar'}), result)
 
     def test_bad2(self) -> None:
-        result = parse_date(co, 'catalogeddate', '%d/%m/%Y', '1978-7-24', 'catdate')
-        self.assertEqual(ParseFailure(message='badDateFormat', payload={'value':'1978-7-24', 'format':'%d/%m/%Y'}, column='catdate'), result)
+        result = parse_date(co, 'catalogeddate', '%d/%m/%Y', '1978-7-24')
+        self.assertEqual(ParseFailure(message='badDateFormat', payload={'value':'1978-7-24', 'format':'%d/%m/%Y'}), result)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_full_date(self, date, format) -> None:
         datestr = date.strftime(format)
-        result = parse_date(co, 'catalogeddate', format, datestr, 'catdate')
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.upload)
+        result = parse_date(co, 'catalogeddate', format, datestr)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_month(self, date, format) -> None:
         datestr = date.strftime(MYSQL_TO_MONTH[format])
-        result = parse_date(co, 'catalogeddate', format, datestr, 'catdate')
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.upload)
+        result = parse_date(co, 'catalogeddate', format, datestr)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_year(self, date, format) -> None:
         datestr = date.strftime(MYSQL_TO_YEAR[format])
-        result = parse_date(co, 'catalogeddate', format, datestr, 'catdate')
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.upload)
+        result = parse_date(co, 'catalogeddate', format, datestr)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_zero_day(self, date, format) -> None:
         datestr = date.strftime(re.sub('%d', '00', format))
         self.assertTrue('00' in datestr)
-        result = parse_date(co, 'catalogeddate', format, datestr, 'catdate')
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.upload)
+        result = parse_date(co, 'catalogeddate', format, datestr)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f and '%b' not in f]))
     def test_zero_month(self, date, format) -> None:
         datestr = date.strftime(re.sub('(%d)|(%m)', '00', format))
         self.assertIn('00', datestr)
-        result = parse_date(co, 'catalogeddate', format, datestr, 'catdate')
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.upload)
+        result = parse_date(co, 'catalogeddate', format, datestr)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.to_upload)
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -147,7 +149,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -190,7 +192,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '123'},
             {'catno': '234'},
@@ -216,7 +218,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
             {'catno': '2', 'bool': 'bogus', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
@@ -238,7 +240,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '', 'habitat': 'River'},
@@ -261,7 +263,7 @@ class ParsingTests(UploadTestsBase):
             static={'agenttype': 1},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'title': "Mr.", 'lastname': 'Doe'},
             {'title': "Dr.", 'lastname': 'Zoidberg'},
@@ -279,7 +281,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(
+        self.assertEqual([WorkBenchParseFailure(
             message='failedParsingPickList',
             payload={'value': 'Hon.'},
             column='title'
@@ -343,7 +345,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='Start Date Collected'), ParseFailure(message='invalidYear', payload={'value': 'bad date'}, column='ID Date')], failed_result.failures)
+        self.assertEqual([WorkBenchParseFailure(message='invalidYear', payload={'value':'foobar'}, column='Start Date Collected'), WorkBenchParseFailure(message='invalidYear', payload={'value': 'bad date'}, column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -354,7 +356,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='latitudeOutOfRange', payload={'value':'128° 06.07\' N'}, column='Latitude1'), ParseFailure(message='longitudeOutOfRange', payload={'value': '191° 02.42\' W'}, column='Longitude1')], failed_result.failures)
+        self.assertEqual([WorkBenchParseFailure(message='latitudeOutOfRange', payload={'value':'128° 06.07\' N'}, column='Latitude1'), WorkBenchParseFailure(message='longitudeOutOfRange', payload={'value': '191° 02.42\' W'}, column='Longitude1')], failed_result.failures)
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
@@ -367,7 +369,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
@@ -387,7 +389,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message='failedParsingAgentType',payload={'badType':'Extra terrestrial','validTypes':['Organization', 'Person', 'Other', 'Group']}, column='agenttype')], result2.failures)
+        self.assertEqual([WorkBenchParseFailure(message='failedParsingAgentType',payload={'badType':'Extra terrestrial','validTypes':['Organization', 'Person', 'Other', 'Group']}, column='agenttype')], result2.failures)
 
         result3 = results[3].record_result
         assert isinstance(result3, Uploaded)
@@ -404,7 +406,7 @@ class ParsingTests(UploadTestsBase):
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': 'L.'},
@@ -412,7 +414,7 @@ class ParsingTests(UploadTestsBase):
         results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='invalidPartialRecord', payload={'column':'Species'}, column='Species Author')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='invalidPartialRecord', payload={'column':'Species'}, column='Species Author')]))
 
     def test_value_too_long(self) -> None:
         plan = TreeRecord(
@@ -421,7 +423,7 @@ class ParsingTests(UploadTestsBase):
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'barelyfits', 'Species Author': 'x'*128},
@@ -431,7 +433,7 @@ class ParsingTests(UploadTestsBase):
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
-        self.assertEqual(results[2].record_result, ParseFailures(failures=[ParseFailure(message='valueTooLong', payload={'maxLength': 128}, column='Species Author')]))
+        self.assertEqual(results[2].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='valueTooLong', payload={'field': 'author', 'maxLength': 128}, column='Species Author')]))
 
 
 class MatchingBehaviorTests(UploadTestsBase):
@@ -444,7 +446,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -467,7 +469,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None)),
                 Subspecies=dict(name=parse_column_options('Subspecies')),
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.', 'Subspecies': 'a'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': '', 'Subspecies': 'a'},
@@ -488,7 +490,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -508,7 +510,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -530,7 +532,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
@@ -555,7 +557,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -581,7 +583,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -613,7 +615,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -638,7 +640,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -666,7 +668,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -694,7 +696,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'John'},
             {'lastname': 'Doe', 'firstname': 'River'},
@@ -725,7 +727,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -754,7 +756,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -784,7 +786,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -795,7 +797,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
 
     def test_wbcols_with_null_disallowed_and_ignoreWhenBlank(self) -> None:
@@ -809,7 +811,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},
@@ -822,7 +824,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Uploaded)
@@ -838,7 +840,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},
@@ -851,7 +853,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Matched)

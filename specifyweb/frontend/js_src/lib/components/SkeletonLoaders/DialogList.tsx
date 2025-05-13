@@ -9,8 +9,8 @@ export function DialogListSkeleton() {
         <Skeleton.Rectangle className="!w-80" />
       </div>
       {Array.from({ length: 5 }, (_, index) => (
-        <div className="flex justify-between gap-6">
-          <div className="flex items-center gap-4" key={index}>
+        <div className="flex justify-between gap-6" key={index}>
+          <div className="flex items-center gap-4">
             <Skeleton.SmallSquare />
             <Skeleton.Line />
           </div>

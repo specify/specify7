@@ -5,6 +5,7 @@ import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
@@ -18,6 +19,7 @@ import {
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
@@ -27,6 +29,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/accounts/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
+      onClick: async () =>
+        clearAllCache()
+          .then(() => {
+            console.log('Cache cleared successfully.');
+          })
+          .catch((error) => {
+            console.error('Error occurred during cache clearing:', error);
+          }),
     },
     changePassword: {
       title: userText.changePassword(),
@@ -95,7 +105,15 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: headerText.updateExportFeed(),
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
-      icon: icons.cloud,
+      icon: icons.rss,
+    },
+  },
+  [commonText.import()]: {
+    localityUpdate: {
+      title: headerText.localityUpdateTool(),
+      enabled: () => userInformation.isadmin,
+      url: '/specify/import/locality-dataset/',
+      icon: icons.globe,
     },
   },
   [headerText.documentation()]: {
@@ -118,7 +136,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [headerText.developers()]: {
     databaseSchema: {
       title: schemaText.databaseSchema(),
-      url: '/specify/datamodel/',
+      url: '/specify/data-model/',
       icon: icons.database,
     },
     clearCache: {
@@ -142,25 +160,27 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
 /**
  * Do not us directly. Use useUserTools() instead
  */
-export const rawUserToolsPromise = Promise.all([
-  userPermission,
-  import('../InitialContext/userInformation').then(
-    async ({ fetchContext }) => fetchContext
-  ),
-])
-  .then(async () =>
-    Promise.all(
-      Object.entries(rawUserTools).map(
-        async ([groupLabel, userTools]) =>
-          [
-            groupLabel,
-            await filterMenuItems(userTools).then((items) =>
-              Object.fromEntries(
-                items.map((item) => [item.name, item] as const)
-              )
-            ),
-          ] as const
+export const rawUserToolsPromise = f.store(async () =>
+  Promise.all([
+    userPermission,
+    import('../InitialContext/userInformation').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ])
+    .then(async () =>
+      Promise.all(
+        Object.entries(rawUserTools).map(
+          async ([groupLabel, userTools]) =>
+            [
+              groupLabel,
+              await filterMenuItems(userTools).then((items) =>
+                Object.fromEntries(
+                  items.map((item) => [item.name, item] as const)
+                )
+              ),
+            ] as const
+        )
       )
     )
-  )
-  .then((groups) => Object.fromEntries(groups));
+    .then((groups) => Object.fromEntries(groups))
+);

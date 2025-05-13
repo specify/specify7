@@ -12,8 +12,8 @@ import {
   fieldPolicy,
   getAllActions,
   partsToResourceName,
-  resourceNameToModel,
   resourceNameToParts,
+  resourceNameToTable,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolPermissionPrefix,
@@ -69,15 +69,15 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
             actions: policy.actions,
           }))
         : policy.resource === anyResource &&
-          getAllActions(anyResource).every((action) =>
-            policy.actions.includes(action)
-          )
-        ? {
-            // Combine separate actions on "any" resource into one
-            resource: anyResource,
-            actions: [anyAction],
-          }
-        : policy
+            getAllActions(anyResource).every((action) =>
+              policy.actions.includes(action)
+            )
+          ? {
+              // Combine separate actions on "any" resource into one
+              resource: anyResource,
+              actions: [anyAction],
+            }
+          : policy
     );
   return Object.fromEntries(
     // If has collection access, add other basic policies
@@ -129,10 +129,10 @@ export function compressPermissionQuery(
         item.resource.startsWith(tablePermissionsPrefix) &&
         resourceNameToParts(item.resource).at(-1) !== anyResource
       ) {
-        const model = resourceNameToModel(item.resource);
-        if (f.has(toolTables(), model.name)) {
+        const table = resourceNameToTable(item.resource);
+        if (f.has(toolTables(), table.name)) {
           const toolName = Object.entries(toolDefinitions()).find(
-            ([_name, { tables }]) => f.includes(tables, model.name)
+            ([_name, { tables }]) => f.includes(tables, table.name)
           )?.[KEY];
           if (typeof toolName === 'string') {
             tools[toolName] ??= {};

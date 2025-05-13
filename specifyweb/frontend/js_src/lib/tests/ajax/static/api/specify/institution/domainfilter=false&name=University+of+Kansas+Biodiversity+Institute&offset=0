@@ -1,0 +1,49 @@
+{
+  "objects": [
+    {
+      "id": 1,
+      "altname": "http://grbio.org/cool/iakn-125z",
+      "code": "KU",
+      "copyright": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "currentmanagedrelversion": "6.4.11",
+      "currentmanagedschemaversion": null,
+      "description": null,
+      "disclaimer": "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
+      "guid": "77ff1bff-af23-4647-b5d1-9d3c414fd003",
+      "hasbeenasked": true,
+      "iconuri": null,
+      "ipr": null,
+      "isaccessionsglobal": false,
+      "isanonymous": false,
+      "isreleasemanagedglobally": false,
+      "issecurityon": true,
+      "isserverbased": false,
+      "issharinglocalities": false,
+      "issinglegeographytree": false,
+      "license": null,
+      "lsidauthority": null,
+      "minimumpwdlength": 0,
+      "name": "University of Kansas Biodiversity Institute",
+      "regnumber": "1344636808.22",
+      "remarks": null,
+      "termsofuse": "http://biodiversity.ku.edu/research/university-kansas-biodiversity-institute-data-publication-and-use-norms",
+      "timestampcreated": "2012-08-09T12:23:29",
+      "timestampmodified": "2020-06-30T14:01:34",
+      "uri": null,
+      "version": 19,
+      "address": null,
+      "createdbyagent": "/api/specify/agent/1986/",
+      "modifiedbyagent": "/api/specify/agent/1514/",
+      "storagetreedef": "/api/specify/storagetreedef/1/",
+      "contentcontacts": "/api/specify/agent/?instcontentcontact=1",
+      "technicalcontacts": "/api/specify/agent/?insttechcontact=1",
+      "divisions": "/api/specify/division/?institution=1",
+      "resource_uri": "/api/specify/institution/1/"
+    }
+  ],
+  "meta": {
+    "limit": 20,
+    "offset": 0,
+    "total_count": 1
+  }
+}

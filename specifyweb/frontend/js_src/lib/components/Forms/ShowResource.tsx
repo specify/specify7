@@ -7,18 +7,18 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { getTable, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 
 export function ShowResource({
@@ -27,7 +27,7 @@ export function ShowResource({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
   // Look to see if we are in the context of a Record Set
-  const [recordsetid] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordSetId');
   const recordSetId = f.parseInt(recordsetid);
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet>>(
     React.useCallback(
@@ -36,22 +36,22 @@ export function ShowResource({
           ? hijackBackboneAjax(
               [Http.OK, Http.NOT_FOUND],
               async () =>
-                new schema.models.RecordSet.Resource({
+                new tables.RecordSet.Resource({
                   id: recordSetId,
                 }).fetch(),
               (status) =>
                 status === Http.NOT_FOUND
                   ? navigate(
                       getResourceViewUrl(
-                        resource.specifyModel.name,
+                        resource.specifyTable.name,
                         resource.id
                       ),
                       { replace: true }
                     )
                   : undefined
             )
-          : new schema.models.RecordSet.Resource({
-              dbTableId: resource.specifyModel.tableId,
+          : new tables.RecordSet.Resource({
+              dbTableId: resource.specifyTable.tableId,
               type: 0,
             }),
       [recordSetId]
@@ -65,9 +65,9 @@ export function ShowResource({
   useMenuItem(
     typeof recordSetId === 'number'
       ? 'recordSets'
-      : interactionTables.has(resource.specifyModel.name)
-      ? 'interactions'
-      : 'dataEntry'
+      : interactionTables.has(resource.specifyTable.name)
+        ? 'interactions'
+        : 'dataEntry'
   );
 
   const navigate = useNavigate();
@@ -93,10 +93,11 @@ export function ViewResourceById({
   id,
 }: {
   readonly tableName: string;
+  // Undefined if you wish to see a new resource
   readonly id: string | undefined;
 }): JSX.Element {
-  const model = getModel(tableName);
-  const location = useStableLocation(useLocation());
+  const table = getTable(tableName);
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),
@@ -107,25 +108,25 @@ export function ViewResourceById({
   const numericId = f.parseInt(id);
   const resource = React.useMemo(
     () =>
-      typeof model === 'object'
-        ? record ?? new model.Resource({ id: numericId })
+      typeof table === 'object'
+        ? (record ?? new table.Resource({ id: numericId }))
         : undefined,
-    [model, record, numericId]
+    [table, record, numericId]
   );
 
   if (
     (numericId === undefined && id?.toLowerCase() !== 'new') ||
-    model === undefined ||
+    table === undefined ||
     resource === undefined
   )
     return <NotFoundView />;
   else if (reGuid.test(id ?? ''))
-    return <ViewResourceByGuid guid={id!} model={model} />;
+    return <ViewResourceByGuid guid={id!} table={table} />;
   else
     return (
       <ProtectedTable
         action={numericId === undefined ? 'create' : 'read'}
-        tableName={model.name}
+        tableName={table.name}
       >
         <CheckLoggedInCollection
           isInRecordSet={isInRecordSet}

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { GetOrSet, IR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { decompressPolicies, processPolicies } from './policyConverter';
@@ -13,18 +12,14 @@ export const createLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
   role: NewRole
 ): Promise<void> =>
-  ajax<BackEndRole>(
-    `/permissions/library_roles/`,
-    {
-      method: 'POST',
-      body: {
-        ...removeKey(role, 'id'),
-        policies: decompressPolicies(role.policies),
-      },
-      headers: { Accept: 'application/json' },
+  ajax<BackEndRole>(`/permissions/library_roles/`, {
+    method: 'POST',
+    body: {
+      ...removeKey(role, 'id'),
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.CREATED] }
-  ).then(({ data: role }) =>
+    headers: { Accept: 'application/json' },
+  }).then(({ data: role }) =>
     handleChange((roles) => ({
       ...roles,
       [role.id]: {

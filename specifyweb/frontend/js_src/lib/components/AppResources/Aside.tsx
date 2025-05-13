@@ -2,58 +2,69 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { ActiveLink, useIsActive } from '../Router/ActiveLink';
 import { scrollIntoView } from '../TreeView/helpers';
 import { appResourceIcon } from './EditorComponents';
-import { useFilteredAppResources } from './Filters';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
-import { getResourceType } from './filtersHelpers';
+import {
+  defaultAppResourceFilters,
+  filterAppResources,
+  getResourceType,
+} from './filtersHelpers';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
 
+const emptyArray = [] as const;
+
 export function AppResourcesAside({
-  resources: initialResources,
-  isReadOnly,
-  initialFilters,
+  resources: unfilteredResources,
+  filters = defaultAppResourceFilters,
   isEmbedded,
   onOpen: handleOpen,
+  conformations: [initialConformations = emptyArray, setConformations],
 }: {
   readonly resources: AppResources;
-  readonly isReadOnly: boolean;
-  readonly initialFilters?: AppResourceFiltersType;
+  readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
     resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
+  readonly conformations: GetSet<RA<AppResourcesConformation> | undefined>;
 }): JSX.Element {
-  const [conformations = [], setConformations] = useCachedState(
-    'appResources',
-    'conformation'
+  const resources = React.useMemo(
+    () => filterAppResources(unfilteredResources, filters),
+    [filters, unfilteredResources]
   );
-  const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   useErrorContext('appResourcesTree', resourcesTree);
 
+  const conformations = React.useMemo(
+    () =>
+      initialConformations === emptyArray
+        ? buildAppResourceConformation(resourcesTree)
+        : initialConformations,
+    [initialConformations, resourcesTree]
+  );
   useOpenCurrent(conformations, setConformations, resourcesTree);
 
   return (
@@ -69,7 +80,6 @@ export function AppResourcesAside({
         {resourcesTree.map((resources) => (
           <TreeItem
             conformations={conformations}
-            isReadOnly={isReadOnly}
             key={resources.key}
             resourcesTree={resources}
             onFold={setConformations}
@@ -87,6 +97,9 @@ export function AppResourcesAside({
   );
 }
 
+/**
+ * Unfold the app resources tree to current resource when the page loads
+ */
 function useOpenCurrent(
   conformation: RA<AppResourcesConformation>,
   setConformations: (value: RA<AppResourcesConformation>) => void,
@@ -107,7 +120,7 @@ function useOpenCurrent(
           updateConformation(
             item,
             conformation?.children.find(
-              (conformation) => conformation.key === category.key
+              (conformation) => conformation.key === item.key
             )
           )
         )
@@ -142,6 +155,11 @@ function useOpenCurrent(
         )
       )
     );
+    /*
+     * Not listening to conformation changes to that this only runs on page
+     * start up
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setConformations, resourcesTree, id]);
 }
 
@@ -177,13 +195,11 @@ function AppResourcesExpand({
 function TreeItem({
   resourcesTree,
   conformations,
-  isReadOnly,
   onFold: handleFold,
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
   readonly conformations: RA<AppResourcesConformation>;
-  readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
@@ -206,6 +222,10 @@ function TreeItem({
       aria-labelledby={id('label')}
       className="flex flex-col gap-2"
       id={id('li')}
+      /*
+       * LOW: add aria-selected for focused row (currently that is denoted by
+       *   button being focused
+       */
       role="treeitem"
     >
       <Button.LikeLink
@@ -222,6 +242,7 @@ function TreeItem({
       >
         <StringToJsx
           components={{
+            // eslint-disable-next-line react/no-unstable-nested-components
             wrap: (count) => (
               <span className="pl-2 text-neutral-500">{count}</span>
             ),
@@ -235,7 +256,6 @@ function TreeItem({
       {isExpanded && (
         <>
           <TreeItemResources
-            isReadOnly={isReadOnly}
             resourcesTree={resourcesTree}
             onOpen={handleOpen}
           />
@@ -248,7 +268,6 @@ function TreeItem({
               {subCategories.map((resources) => (
                 <TreeItem
                   conformations={conformation.children}
-                  isReadOnly={isReadOnly}
                   key={resources.key}
                   resourcesTree={resources}
                   onFold={(newConformation): void =>
@@ -271,16 +290,15 @@ const subTypes = Object.keys(appResourceSubTypes);
 
 function TreeItemResources({
   resourcesTree,
-  isReadOnly,
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
-  readonly isReadOnly: boolean;
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const canCreate = hasToolPermission('resources', 'create') && !isReadOnly;
   const resources = React.useMemo(
     () =>
@@ -289,7 +307,9 @@ function TreeItemResources({
         type: getResourceType(resource),
       })).sort(
         multiSortFunction(
+          // Put view sets first. Sort by type
           ({ type }) => (type === 'viewSet' ? -1 : subTypes.indexOf(type)),
+          // Secondary sort by name
           ({ name }) => name
         )
       ),
@@ -336,6 +356,7 @@ function ResourceItem({
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj> & {
     readonly type: ReturnType<typeof getResourceType>;
+    readonly label?: LocalizedString;
   };
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
@@ -351,9 +372,11 @@ function ResourceItem({
   const isActive = useIsActive(url, false);
 
   React.useEffect(() => {
-    if (isActive && link) {
-      scrollIntoView(link);
-    }
+    if (isActive && link) scrollIntoView(link);
+    /*
+     * Scroll into view on mount only
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [link]);
 
   return (
@@ -361,6 +384,7 @@ function ResourceItem({
       className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
       forwardRef={setLink}
       href={url}
+      mode="startsWith"
       onClick={
         typeof handleOpen === 'function'
           ? (event): void => {
@@ -371,7 +395,9 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {(resource.name as LocalizedString) || commonText.nullInline()}
+      {('label' in resource ? resource.label : undefined) ??
+        localized(resource.name) ??
+        commonText.nullInline()}
     </ActiveLink>
   );
 }

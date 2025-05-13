@@ -2,21 +2,38 @@
 Provides a function that returns the appropriate view for a given context
 hierarchy level. Depends on the user and logged in collectien of the request.
 """
+import itertools
 import logging
 import os
-from django.http import Http404
-from django.utils.encoding import force_bytes
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
+
+from django.conf import settings
+from django.http import Http404
+from django.utils.encoding import force_bytes
 
 from specifyweb.specify.models import Spappresourcedata
 from . import app_resource as AR
 
 logger = logging.getLogger(__name__)
 
-def get_view(collection, user, viewname):
+def get_view(collection, user, viewname, table=None):
+    # take the first view from the generator
+    views = get_views(collection,user,viewname,1,table)
+    if not views:
+        raise Http404("view: %s not found" % viewname)
+
+def get_views(collection, user, viewname, limit=None, table=None):
     """Return the data for the named view for the given user logged into the given collection."""
     logger.debug("get_view %s %s %s", collection, user, viewname)
+
+    if viewname is not None:
+        xpath = 'views/view[@name=%s]' % quoteattr(viewname)
+    elif table is not None:
+        xpath = 'views/view[@class=%s]' % quoteattr(f'edu.ku.brc.specify.datamodel.{table}')
+    else:
+        raise ValueError("Must specify viewname or table")
+
     # setup a generator that looks for the view in the proper discovery order
     matches = ((id, viewset, view, src, level)
                # db first, then disk
@@ -26,51 +43,60 @@ def get_view(collection, user, viewname):
                # then in the viewset files in a given directory level
                for id, viewset in get_viewsets(collection, user, level)
                # finally in the list of views in the file
-               for view in viewset.findall('views/view[@name=%s]' % quoteattr(viewname)))
+               for view in viewset.findall(xpath))
 
-    # take the first view from the generator
-    try:
-        id, viewset, view, source, level = next(matches)
-    except StopIteration:
-        raise Http404("view: %s not found" % viewname)
+    limited_matches = matches if limit is None or limit==0 else itertools.islice(matches, limit)
+    return [process_view(view) for view in limited_matches]
+
+def process_view(match):
+    id, viewset, view, source, level = match
 
     altviews = view.findall('altviews/altview')
 
     # make a set of the viewdefs the view points to
-    viewdefs = set(viewdef
+    viewdefs = {viewdef
                    for altview in altviews
-                   for viewdef in viewset.findall('viewdefs/viewdef[@name=%s]' % quoteattr(altview.attrib['viewdef'])))
+                   for viewdef in viewset.findall(
+        'viewdefs/viewdef[@name=%s]' % quoteattr(altview.attrib['viewdef']))}
 
     # some viewdefs reference other viewdefs through the 'definition' attribute
     # we will need to make sure those viewdefs are also sent to the client
     def get_definition(viewdef):
         definition = viewdef.find('definition')
         if definition is None: return
-        definition_viewdef = viewset.find('viewdefs/viewdef[@name=%s]' % quoteattr(definition.text))
+        definition_viewdef = \
+            viewset.find('viewdefs/viewdef[@name=%s]' % quoteattr(definition.text))
         if definition_viewdef is None:
-            raise Http404("no viewdef: %s for definition of viewdef: %s" % (
-                    definition.text, viewdef.attrib['name']))
+            raise Http404("no viewdef: {} for definition of viewdef: {}".format(
+                definition.text, viewdef.attrib['name']))
         return definition_viewdef
 
     # add any viewdefs referenced in other viewdefs to the set
     viewdefs.update([definition
-                    for viewdef in viewdefs
-                    for definition in [ get_definition(viewdef) ]
-                    if definition is not None])
+                     for viewdef in viewdefs
+                     for definition in [get_definition(viewdef)]
+                     if definition is not None])
 
     # build the data to send to the client
     data = view.attrib.copy()
-    data['altviews'] = dict((altview.attrib['name'], altview.attrib.copy())
-                            for altview in altviews)
+    data['altviews'] = {altview.attrib['name']: altview.attrib.copy()
+                            for altview in altviews}
 
-    data['viewdefs'] = dict((viewdef.attrib['name'], ElementTree.tostring(viewdef, encoding="unicode"))
-                            for viewdef in viewdefs)
+    data['viewdefs'] = {viewdef.attrib['name']:
+                             ElementTree.tostring(viewdef, encoding="unicode")
+                            for viewdef in viewdefs}
 
     # these properties are useful to see where the view was found for debugging
+    data['view'] = ElementTree.tostring(view, encoding="unicode")
     data['viewsetName'] = viewset.attrib['name']
     data['viewsetLevel'] = level
     data['viewsetSource'] = source
-    data['viewsetId'] = id
+    if type(id) is int:
+        data['viewsetId'] = id
+        data['viewsetFile'] = None
+    else:
+        data['viewsetId'] = None
+        data['viewsetFile'] = id
     return data
 
 def get_viewsets_from_db(collection, user, level):
@@ -86,7 +112,10 @@ def get_viewsets_from_db(collection, user, level):
     def viewsets():
         for o in objs:
             try:
-                yield o.spviewsetobj.id, ElementTree.fromstring(force_bytes(o.data))
+                # Like default parser, but preserves comments
+                parser = ElementTree.XMLParser(
+                    target=ElementTree.TreeBuilder(insert_comments=True))
+                yield o.spviewsetobj.id, ElementTree.fromstring(force_bytes(o.data), parser=parser)
             except Exception as e:
                 logger.error("Bad XML in view set: %s\n%s  id = %s", e, o, o.id)
 
@@ -106,7 +135,9 @@ def load_viewsets(collection, user, level):
     def viewsets():
         for f in registry.findall('file'):
             try:
-                yield None, get_viewset_from_file(path, f.attrib['file'])
+                file_name = f.attrib['file']
+                relative_path = os.path.join(os.path.relpath(path, settings.SPECIFY_CONFIG_DIR),file_name)
+                yield relative_path, get_viewset_from_file(path, file_name)
             except Exception:
                 pass
 
@@ -116,7 +147,10 @@ def get_viewset_from_file(path, filename):
     """Just load the XML for a viewset from path and pull out the root."""
     file_path = os.path.join(path, filename)
     try:
-        return ElementTree.parse(file_path).getroot()
+        # Like default parser, but preserves comments
+        parser = ElementTree.XMLParser(
+            target=ElementTree.TreeBuilder(insert_comments=True))
+        return ElementTree.parse(file_path, parser).getroot()
     except Exception as e:
         logger.error("Couldn't load viewset from %s\n$s", file_path, e)
         raise

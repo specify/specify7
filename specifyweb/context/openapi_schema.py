@@ -414,6 +414,7 @@ schema = json.loads(r'''
           "type": "string",
           "enum": [
             "array",
+            "null",
             "boolean",
             "integer",
             "number",

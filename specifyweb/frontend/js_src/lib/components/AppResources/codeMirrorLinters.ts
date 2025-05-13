@@ -5,93 +5,85 @@ import type { Extension, Text } from '@codemirror/state';
 import type { EditorView } from 'codemirror';
 
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
+import { captureLogOutput } from '../Errors/interceptLogs';
+import type { LogPathPart } from '../Errors/logContext';
+import { getLogContext, pathKey, setLogContext } from '../Errors/logContext';
+import type { BaseSpec } from '../Syncer';
+import { findNodePosition } from '../Syncer/findNodePosition';
+import { syncers } from '../Syncer/syncers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { parseXml } from './parseXml';
 
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
-  (handleChange: (results: RA<Diagnostic>) => void): Extension =>
+  (
+    handleChange: (results: RA<Diagnostic>, view: EditorView) => void
+  ): Extension =>
     linter((view) => {
-      const results = handler(view);
-      handleChange(results);
+      let results: RA<Diagnostic>;
+      try {
+        results = handler(view);
+      } catch (error) {
+        console.error(error);
+        results = [
+          {
+            from: 0,
+            to: 0,
+            severity: 'error',
+            message: (error as Error).message,
+          },
+        ];
+      }
+      handleChange(results, view);
       return results;
     });
 
-export const xmlLinter = createLinter(({ state }) => {
-  const parsed = parseXml(state.doc.toString());
-  return typeof parsed === 'string' ? [formatXmlError(state.doc, parsed)] : [];
-});
+export const xmlLinter = (
+  spec: BaseSpec<SimpleXmlNode> | undefined
+): ReturnType<typeof createLinter> =>
+  createLinter(({ state }) => {
+    const string = state.doc.toString();
+    const parsed = parseXml(string);
+    return typeof parsed === 'string'
+      ? [formatXmlError(state.doc, parsed)]
+      : typeof spec === 'object'
+        ? parseXmlUsingSpec(spec, parsed, string)
+        : [];
+  });
+
+function parseXmlUsingSpec(
+  spec: BaseSpec<SimpleXmlNode>,
+  xml: Element,
+  string: string
+): RA<Diagnostic> {
+  const parsed = xmlToJson(xml);
+  const simple = toSimpleXmlNode(parsed);
+  const { serializer } = syncers.object(spec);
+
+  const logContext = getLogContext();
+  const [errors] = captureLogOutput(() => serializer(simple));
+  setLogContext(logContext);
+
+  return filterArray(
+    errors.map(({ context, type, message }) =>
+      Array.isArray(context[pathKey])
+        ? {
+            severity:
+              type === 'error' ? 'error' : type === 'warn' ? 'warning' : 'info',
+            message: message
+              .map((part) => (part as number).toString())
+              .join('\n'),
+            ...findNodePosition(string, context[pathKey] as RA<LogPathPart>),
+          }
+        : undefined
+    )
+  );
+}
 
 export const jsonLinter = createLinter(jsonParseLinter());
-
-/** Convert `<a></a>` to `<a />` */
-const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
-
-/**
- * Handles being called with the Document or with the root element
- * Adds XML declaration, but only if not already present
- * Converts `<a></a>` to `<a />`
- * Splits attributes into multiple lines for long lines
- */
-export function xmlToString(xml: Node, insertDeclaration = true): string {
-  const document =
-    xml.ownerDocument === null ? (xml as Document) : xml.ownerDocument;
-  const isRoot =
-    xml.ownerDocument === null ||
-    xml.parentNode === document ||
-    xml.parentElement === xml.ownerDocument.documentElement;
-  if (isRoot) {
-    const hasXmlDeclaration =
-      document.firstChild instanceof ProcessingInstruction &&
-      document.firstChild.target === 'xml';
-    if (!hasXmlDeclaration && insertDeclaration) {
-      const processingInstruction = document.createProcessingInstruction(
-        'xml',
-        'version="1.0" encoding="UTF-8"'
-      );
-      document.insertBefore(processingInstruction, document.firstChild);
-    }
-  }
-  /*
-   * If element to be serialized is the root element, then serialize the
-   * document element instead (this way XML declaration would be included)
-   */
-  const element = isRoot ? document : xml;
-  return postProcessXml(new XMLSerializer().serializeToString(element));
-}
-
-export const postProcessXml = (xml: string): string =>
-  // Insert new line after XML Declaration
-  xml
-    .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
-    // Use self-closing tags for empty elements
-    .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
-
-export function parseXml(string: string): Document | string {
-  const parsedXml = new globalThis.DOMParser().parseFromString(
-    string,
-    'text/xml'
-  );
-
-  // Chrome, Safari
-  const parseError =
-    parsedXml.documentElement.getElementsByTagName('parsererror')[0];
-  if (typeof parseError === 'object')
-    return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
-  // Firefox
-  else if (parsedXml.documentElement.tagName === 'parsererror')
-    return (
-      parsedXml.documentElement.childNodes[0].nodeValue ??
-      parsedXml.documentElement.textContent ??
-      parsedXml.documentElement.innerHTML
-    ).trim();
-  else return parsedXml;
-}
-
-export function strictParseXml(xml: string): Element {
-  const parsed = parseXml(xml);
-  if (typeof parsed === 'string') throw new Error(parsed);
-  else return parsed.documentElement;
-}
 
 const xmlErrorParsers = [
   /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/u,

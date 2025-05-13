@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
@@ -30,23 +30,23 @@ export const webOnlyViews = f.store(() =>
             verticalAlign: 'stretch',
             colSpan: 1,
             visible: true,
-            ariaLabel: schema.models.Attachment.label,
+            ariaLabel: tables.Attachment.label,
             type: 'Blank',
           },
         ],
       ],
     },
     SpecifyUser: autoGenerateViewDefinition(
-      schema.models.SpecifyUser,
+      tables.SpecifyUser,
       'form',
       'edit',
-      getFieldsForAutoView(schema.models.SpecifyUser, ['password', 'userType'])
+      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType'])
     ),
     SpAppResource: autoGenerateViewDefinition(
-      schema.models.SpAppResource,
+      tables.SpAppResource,
       'form',
       'edit',
-      getFieldsForAutoView(schema.models.SpAppResource, [
+      getFieldsForAutoView(tables.SpAppResource, [
         'allPermissionLevel',
         'groupPermissionLevel',
         'level',
@@ -58,38 +58,28 @@ export const webOnlyViews = f.store(() =>
         'spReports',
       ])
     ),
+    // Hide non-name fields
     CollectionRelType: autoGenerateViewDefinition(
-      schema.models.CollectionRelType,
+      tables.CollectionRelType,
       'form',
       'edit',
       ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
     ),
     CollectionRelationship: autoGenerateViewDefinition(
-      schema.models.CollectionRelationship,
+      tables.CollectionRelationship,
       'form',
       'edit',
       ['collectionRelType', 'leftSide', 'rightSide']
     ),
     [spAppResourceView]: autoGenerateViewDefinition(
-      schema.models.SpAppResource,
+      tables.SpAppResource,
       'form',
       'edit',
       ['name']
     ),
+    // Hide non-name fields
     [spViewSetNameView]: autoGenerateViewDefinition(
-      schema.models.SpViewSetObj,
-      'form',
-      'edit',
-      ['name']
-    ),
-    [recordSetView]: autoGenerateViewDefinition(
-      schema.models.RecordSet,
-      'form',
-      'edit',
-      ['name', 'remarks']
-    ),
-    [recordSetNewView]: autoGenerateViewDefinition(
-      schema.models.RecordSet,
+      tables.SpViewSetObj,
       'form',
       'edit',
       ['name']
@@ -102,4 +92,3 @@ export const attachmentView = 'ObjectAttachment';
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
 export const recordSetView = '_RecordSet_name';
-export const recordSetNewView = '_RecordSet_name';

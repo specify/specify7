@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
+import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
@@ -11,11 +12,13 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
+import { getPref } from '../InitialContext/remotePrefs';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
 
-const preFetchDistance = 200;
+const defaultPreFetchDistance = 200;
+const attachmentSkeletonRows = 2;
 
 export function AttachmentGallery({
   attachments,
@@ -29,10 +32,39 @@ export function AttachmentGallery({
   readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly scale: number;
   readonly isComplete: boolean;
-  readonly onChange: (attachments: RA<SerializedResource<Attachment>>) => void;
+  readonly onChange: (
+    attachment: SerializedResource<Attachment>,
+    index: number
+  ) => void;
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
+
+  const [preFetchDistance, setPreFetchDistance] = React.useState<number>(
+    defaultPreFetchDistance
+  );
+  const [columns, setColumns] = React.useState<number>(3);
+  const attachmentHeight = getPref('attachment.preview_size');
+  React.useEffect(() => {
+    const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
+      if (ref.current) {
+        const rootFontSize = Number.parseFloat(
+          window.getComputedStyle(document.documentElement).fontSize
+        ); // Equivalent to 1rem
+        const gap = rootFontSize;
+        const columnWidth = scale * rootFontSize + gap;
+        setPreFetchDistance(
+          Math.max(
+            defaultPreFetchDistance,
+            (attachmentHeight + gap) * attachmentSkeletonRows + gap
+          )
+        );
+        setColumns(Math.floor((ref.current.clientWidth - gap) / columnWidth));
+      }
+    };
+    calculateColumns(containerRef);
+    return listen(window, 'resize', () => calculateColumns(containerRef));
+  }, [scale]);
 
   const rawFillPage = React.useCallback(
     async () =>
@@ -47,15 +79,16 @@ export function AttachmentGallery({
 
   const fillPage = handleFetchMore === undefined ? undefined : rawFillPage;
 
-  React.useEffect(
-    () =>
-      // Fetch attachments while scroll bar is not visible
-      void (containerRef.current?.scrollHeight ===
-      containerRef.current?.clientHeight
-        ? fillPage?.().catch(raise)
-        : undefined),
-    [fillPage, attachments]
-  );
+  React.useEffect(() => {
+    // Fetch attachments while scroll bar is not visible
+    const noScrollFetch = () => {
+      setTimeout(() => {
+        fillPage?.().catch(raise);
+      }, 10); // Wait for container to re-render before checking if scrolling is disabled
+    };
+    noScrollFetch();
+    return listen(window, 'resize', noScrollFetch);
+  }, [fillPage, attachments, scale]);
 
   const [viewRecord, setViewRecord] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -63,6 +96,7 @@ export function AttachmentGallery({
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
+
   const [related, setRelated] = React.useState<
     RA<SpecifyResource<AnySchema> | undefined>
   >([]);
@@ -71,11 +105,11 @@ export function AttachmentGallery({
   return (
     <>
       <Container.Base
-        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]
-          items-center gap-4"
+        className="grid flex-1 items-center gap-4 shadow-none"
         forwardRef={containerRef}
         style={
           {
+            gridTemplateColumns: `repeat(${columns}, minmax(0px, 1fr))`,
             '--scale': `${scale}rem`,
           } as React.CSSProperties
         }
@@ -94,15 +128,19 @@ export function AttachmentGallery({
                 ? handleClick(attachment)
                 : setOpenIndex(index)
             }
-            onViewRecord={(model, id): void =>
-              setViewRecord(new model.Resource({ id }))
+            onViewRecord={(table, id): void =>
+              setViewRecord(new table.Resource({ id }))
             }
           />
         ))}
         {isComplete ? (
           attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
         ) : (
-          <AttachmentGallerySkeleton />
+          <AttachmentGallerySkeleton
+            fetchNumber={
+              columns * attachmentSkeletonRows - (attachments.length % columns)
+            }
+          />
         )}
       </Container.Base>
       {typeof viewRecord === 'object' && (
@@ -111,7 +149,6 @@ export function AttachmentGallery({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            mode="edit"
             resource={viewRecord}
             onAdd={undefined}
             onClose={(): void => setViewRecord(undefined)}
@@ -129,7 +166,7 @@ export function AttachmentGallery({
             (item): void => setRelated(replaceItem(related, openIndex, item)),
           ]}
           onChange={(newAttachment): void =>
-            handleChange(replaceItem(attachments, openIndex, newAttachment))
+            handleChange(newAttachment, openIndex)
           }
           onClose={(): void => setOpenIndex(undefined)}
           onNext={

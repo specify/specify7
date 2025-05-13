@@ -1,42 +1,48 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
 import { AttachmentViewer } from '../Attachments/Viewer';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
-import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
-import { SearchDialog } from '../Forms/SearchDialog';
 import { SpecifyForm } from '../Forms/SpecifyForm';
-import { useViewDefinition } from '../Forms/useViewDefinition';
+import { SubViewContext } from '../Forms/SubView';
+import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { useSearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
 
 const cellToLabel = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   cell: FormCellDefinition
 ): {
   readonly text: LocalizedString | undefined;
@@ -45,7 +51,9 @@ const cellToLabel = (
   text: cell.ariaLabel,
   title:
     cell.type === 'Field' || cell.type === 'SubView'
-      ? model.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
+      ? table
+          .getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+          ?.getLocalizedDesc()
       : undefined,
 });
 
@@ -63,12 +71,15 @@ export function FormTable<SCHEMA extends AnySchema>({
   totalCount = unsortedResources.length,
   onAdd: handleAdd,
   onDelete: handleDelete,
-  mode,
-  viewName = relationship.relatedModel.view,
+  viewName = relationship.relatedTable.view,
   dialog,
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
+  isCollapsed = false,
+  preHeaderButtons,
+  collection,
+  disableRemove,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -78,12 +89,15 @@ export function FormTable<SCHEMA extends AnySchema>({
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
   readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
+  readonly isCollapsed: boolean | undefined;
+  readonly preHeaderButtons?: JSX.Element;
+  readonly collection: Collection<AnySchema> | undefined;
+  readonly disableRemove?: boolean;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -91,7 +105,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     sortField === undefined
       ? undefined
       : {
-          sortField: sortField.fieldNames.join('.'),
+          sortField: sortField.fieldNames.join(backboneFieldSeparator),
           ascending: sortField.direction === 'asc',
         }
   );
@@ -112,6 +126,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined
   );
+
   const handleAddResources =
     typeof handleAdd === 'function'
       ? function handleAddResources(
@@ -128,7 +143,9 @@ export function FormTable<SCHEMA extends AnySchema>({
           addedResource.current = resources[0];
         }
       : undefined;
+
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
+
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
@@ -141,47 +158,72 @@ export function FormTable<SCHEMA extends AnySchema>({
   }, [resources]);
 
   const isToOne = !relationshipIsToMany(relationship);
+
   const disableAdding = isToOne && resources.length > 0;
+
   const header = commonText.countLine({
     resource: relationship.label,
     count: totalCount ?? resources.length,
   });
-  const viewDefinition = useViewDefinition({
-    model: relationship.relatedModel,
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+
+  const mode = propsToFormMode(isReadOnly, isInSearchDialog);
+
+  const collapsedViewDefinition = useViewDefinition({
+    table: relationship.relatedTable,
     viewName,
-    fallbackViewName: relationship.relatedModel.view,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'formTable',
     mode,
   });
-  const fullViewDefinition = useViewDefinition({
-    model: relationship.relatedModel,
-    viewName: relationship.relatedModel.view,
-    fallbackViewName: viewName,
+
+  const expandedViewDefinition = useViewDefinition({
+    table: relationship.relatedTable,
+    viewName,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'form',
     mode,
   });
 
   const id = useId('form-table');
-  const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
-  const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'SearchState', { readonly resource: SpecifyResource<SCHEMA> }>
-  >({ type: 'MainState' });
+
+  const collectionPreparationPref = getCollectionPref(
+    'CO_CREATE_PREP',
+    schema.domainLevelIds.collection
+  );
+
+  const [isExpanded, setExpandedRecords] = React.useState<
+    IR<boolean | undefined>
+  >(
+    Object.fromEntries(
+      resources.map((resource) => [
+        resource.cid,
+        Boolean(
+          resource.specifyTable.name === 'Preparation' &&
+            collectionPreparationPref
+        ),
+      ])
+    )
+  );
+
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
+
   const [flexibleSubGridColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleSubGridColumnWidth'
   );
+
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  const headerIsVisible =
-    resources.length !== 1 || !isExpanded[resources[0].cid];
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -191,42 +233,83 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
+  const { searchDialog, showSearchDialog } = useSearchDialog({
+    forceCollection: undefined,
+    extraFilters: undefined,
+    table: relationship.relatedTable,
+    multiple: !isToOne,
+    onSelected: handleAddResources,
+  });
+
+  const subviewContext = React.useContext(SubViewContext);
+  const parentContext = React.useMemo(
+    () => subviewContext?.parentContext ?? [],
+    [subviewContext?.parentContext]
+  );
+
+  const renderedResourceId = React.useMemo(
+    () =>
+      parentContext.length === 0 || relationship.isDependent()
+        ? undefined
+        : f.maybe(
+            parentContext.find(
+              ({ relationship: parentRelationship }) =>
+                parentRelationship === relationship.getReverse()
+            ),
+            ({ parentResource: { id } }) => id
+          ),
+    [parentContext, relationship]
+  );
+
   const children =
-    viewDefinition === undefined ? (
+    collapsedViewDefinition === undefined ? (
       commonText.loading()
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className="overflow-x-auto">
+      <div
+        className={
+          isCollapsed
+            ? 'hidden'
+            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+        }
+        onScroll={handleScroll}
+      >
         <DataEntry.Grid
-          className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
+          className="sticky w-fit"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
-              viewDefinition.columns,
+              collapsedViewDefinition.columns,
               flexibleSubGridColumnWidth
             )} min-content`,
             maxHeight: `${maxHeight}px`,
           }}
-          viewDefinition={viewDefinition}
-          onScroll={handleScroll}
+          viewDefinition={collapsedViewDefinition}
         >
-          <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
+          <div
+            /*
+             * If header was ever visible, don't hide the header row anymore to
+             * prevent needless layout shifts, but only make it invisible
+             */
+            className="contents"
+            role="row"
+          >
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.expand()}</span>
             </div>
-            {viewDefinition.rows[0].map((cell, index) => {
+            {collapsedViewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
-                relationship.relatedModel,
+                relationship.relatedTable,
                 cell
               );
               const isSortable =
                 cell.type === 'Field' || cell.type === 'SubView';
               const fieldName = isSortable
-                ? cell.fieldNames?.join('.')
+                ? cell.fieldNames?.join(backboneFieldSeparator)
                 : undefined;
               return (
                 <DataEntry.Cell
@@ -241,7 +324,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={headerIsVisible ? undefined : -1}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -269,7 +351,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             {resources.map((resource) => (
               <React.Fragment key={resource.cid}>
                 <div className="contents" role="row">
-                  {isExpanded[resource.cid] ? (
+                  {isExpanded[resource.cid] === true ? (
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
@@ -288,17 +370,25 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <DataEntry.Cell
                         align="left"
-                        colSpan={viewDefinition.columns.length}
+                        colSpan={collapsedViewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
                         verticalAlign="stretch"
                         visible
                       >
-                        <SpecifyForm
-                          display="inline"
-                          resource={resource}
-                          viewDefinition={fullViewDefinition}
-                        />
+                        <ReadOnlyContext.Provider
+                          value={
+                            isReadOnly ||
+                            (renderedResourceId !== undefined &&
+                              resource.id === renderedResourceId)
+                          }
+                        >
+                          <SpecifyForm
+                            display="inline"
+                            resource={resource}
+                            viewDefinition={expandedViewDefinition}
+                          />
+                        </ReadOnlyContext.Provider>
                       </DataEntry.Cell>
                     </>
                   ) : (
@@ -318,69 +408,95 @@ export function FormTable<SCHEMA extends AnySchema>({
                           {icons.chevronRight}
                         </Button.Small>
                       </div>
-                      {viewDefinition.name === attachmentView ? (
-                        <Attachment resource={resource} />
-                      ) : (
-                        viewDefinition.rows[0].map(
-                          (
-                            {
-                              colSpan,
-                              align,
-                              verticalAlign,
-                              visible,
-                              id: cellId,
-                              ...cellData
-                            },
-                            index
-                          ) => (
-                            <DataEntry.Cell
-                              align={align}
-                              colSpan={colSpan}
-                              key={index}
-                              role="cell"
-                              verticalAlign={verticalAlign}
-                              visible={visible}
-                            >
-                              <FormCell
-                                align={align}
-                                cellData={cellData}
-                                formatId={(suffix: string): string =>
-                                  id(`${index}-${suffix}`)
-                                }
-                                formType="formTable"
-                                id={cellId}
-                                mode={viewDefinition.mode}
-                                resource={resource}
-                                verticalAlign={verticalAlign}
-                              />
-                            </DataEntry.Cell>
-                          )
-                        )
-                      )}
+                      <ReadOnlyContext.Provider
+                        value={
+                          isReadOnly ||
+                          collapsedViewDefinition.mode === 'view' ||
+                          (renderedResourceId !== undefined &&
+                            resource.id === renderedResourceId)
+                        }
+                      >
+                        <SearchDialogContext.Provider
+                          value={
+                            isInSearchDialog ||
+                            collapsedViewDefinition.mode === 'search'
+                          }
+                        >
+                          {collapsedViewDefinition.name === attachmentView ? (
+                            <div className="flex gap-8" role="cell">
+                              <Attachment resource={resource} />
+                            </div>
+                          ) : (
+                            collapsedViewDefinition.rows[0].map(
+                              (
+                                {
+                                  colSpan,
+                                  align,
+                                  verticalAlign,
+                                  visible,
+                                  id: cellId,
+                                  ...cellData
+                                },
+                                index
+                              ) => (
+                                <DataEntry.Cell
+                                  align={align}
+                                  colSpan={colSpan}
+                                  key={index}
+                                  role="cell"
+                                  verticalAlign={verticalAlign}
+                                  visible={visible}
+                                >
+                                  <FormCell
+                                    align={align}
+                                    cellData={cellData}
+                                    formatId={(suffix: string): string =>
+                                      id(`${index}-${suffix}`)
+                                    }
+                                    formType="formTable"
+                                    id={cellId}
+                                    resource={resource}
+                                    verticalAlign={verticalAlign}
+                                  />
+                                </DataEntry.Cell>
+                              )
+                            )
+                          )}
+                        </SearchDialogContext.Provider>
+                      </ReadOnlyContext.Provider>
                     </>
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] ? (
-                      <DataEntry.Visit
-                        className={`flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`}
-                        resource={resource}
-                      />
+                    {displayViewButton &&
+                    isExpanded[resource.cid] === true &&
+                    !resource.isNew() ? (
+                      <Link.Small
+                        aria-label={commonText.openInNewTab()}
+                        className="flex-1"
+                        href={resource.viewUrl()}
+                        title={commonText.openInNewTab()}
+                      >
+                        {icons.externalLink}
+                      </Link.Small>
                     ) : undefined}
                     {displayDeleteButton &&
                     (!resource.isNew() ||
                       hasTablePermission(
-                        relationship.relatedModel.name,
-                        'delete'
+                        relationship.relatedTable.name,
+                        isDependent ? 'delete' : 'update'
                       )) ? (
                       <Button.Small
                         aria-label={commonText.remove()}
                         className="h-full"
                         disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyModel.name,
-                            'delete'
-                          )
+                          (!resource.isNew() &&
+                            !hasTablePermission(
+                              resource.specifyTable.name,
+                              isDependent ? 'delete' : 'update'
+                            )) ||
+                          (renderedResourceId !== undefined &&
+                            resource.id === renderedResourceId) ||
+                          disableRemove
                         }
                         title={commonText.remove()}
                         onClick={(): void => handleDelete(resource)}
@@ -388,11 +504,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                         {icons.trash}
                       </Button.Small>
                     ) : undefined}
-                    {isExpanded[resource.cid] && (
+                    {isExpanded[resource.cid] === true && (
                       <FormMeta
                         className="flex-1"
                         resource={resource}
-                        viewDescription={fullViewDefinition}
+                        viewDescription={expandedViewDefinition}
                       />
                     )}
                   </div>
@@ -410,56 +526,52 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
-  const addButton =
-    typeof handleAddResources === 'function' &&
-    mode !== 'view' &&
-    !disableAdding &&
-    hasTablePermission(
-      relationship.relatedModel.name,
-      isDependent ? 'create' : 'read'
-    ) ? (
-      <DataEntry.Add
-        onClick={
-          disableAdding
-            ? undefined
-            : isDependent
-            ? (): void => {
-                const resource = new relationship.relatedModel.Resource();
-                handleAddResources([resource]);
-              }
-            : (): void =>
-                setState({
-                  type: 'SearchState',
-                  resource: new relationship.relatedModel.Resource(),
-                })
+
+  const addButtons =
+    mode === 'view' || disableAdding ? undefined : relationship.relatedTable
+        .name === 'CollectionObjectGroupJoin' &&
+      relationship.name === 'children' ? (
+      <COJODialog
+        collection={collection}
+        parentResource={
+          collection?.related as
+            | SpecifyResource<CollectionObjectGroup>
+            | undefined
         }
       />
+    ) : typeof handleAddResources === 'function' ? (
+      <>
+        {!isDependent &&
+        hasTablePermission(relationship.relatedTable.name, 'read') ? (
+          <DataEntry.Search disabled={isReadOnly} onClick={showSearchDialog} />
+        ) : undefined}
+        {hasTablePermission(relationship.relatedTable.name, 'create') ? (
+          <DataEntry.Add
+            onClick={(): void => {
+              const resource = new relationship.relatedTable.Resource();
+              handleAddResources([resource]);
+            }}
+          />
+        ) : undefined}
+      </>
     ) : undefined;
+
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
+        {preHeaderButtons}
         <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
-        {addButton}
+        {addButtons}
       </DataEntry.SubFormHeader>
       {children}
-      {state.type === 'SearchState' &&
-      typeof handleAddResources === 'function' ? (
-        <SearchDialog
-          extraFilters={undefined}
-          forceCollection={undefined}
-          multiple
-          templateResource={state.resource}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={handleAddResources}
-        />
-      ) : undefined}
+      {searchDialog}
     </DataEntry.SubForm>
   ) : (
     <Dialog
       buttons={commonText.close()}
       dimensionsKey={relationship.name}
       header={header}
-      headerButtons={addButton}
+      headerButtons={addButtons}
       modal={dialog === 'modal'}
       onClose={handleClose}
     >

@@ -2,12 +2,11 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { To } from 'history';
 import type * as H from 'history';
-import type { localized } from 'typesafe-i18n/types/runtime/src/core';
+import type { To } from 'history';
 
 import type { SafeLocationState } from './components/Router/RouterState';
-import type { IR, RA, RR } from './utils/types';
+import type { IR, RA, RR, ValueOf } from './utils/types';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -36,6 +35,17 @@ declare global {
      * from someValue rather than otherValue
      */
     fill<V>(value: V): RA<V>;
+
+    // This won't be needed in TypeScript 5.0. See https://github.com/microsoft/TypeScript/issues/48829
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
+  }
+
+  interface ReadonlyArray<T> {
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
   }
 
   /**
@@ -48,7 +58,7 @@ declare global {
       object: DICTIONARY
     ): [
       keyof DICTIONARY extends number ? string : string & keyof DICTIONARY,
-      DICTIONARY[keyof DICTIONARY]
+      ValueOf<DICTIONARY>,
     ][];
 
     // Array
@@ -61,6 +71,10 @@ declare global {
 
     // Prevent Object.keys() from widening the key type to string[]
     keys<KEY extends string>(object: RR<KEY, unknown>): RA<KEY>;
+  }
+
+  interface PromiseConstructor {
+    all<T>(values: Iterable<PromiseLike<T> | T>): Promise<RA<Awaited<T>>>;
   }
 }
 
@@ -87,14 +101,6 @@ declare module 'react-router' {
 
 declare module 'history' {
   export type SafeLocation = Location<SafeLocationState>;
-}
-
-declare module 'typesafe-i18n' {
-  export type LocalizedString =
-    | ''
-    | (string & {
-        readonly [localized]: unknown;
-      });
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

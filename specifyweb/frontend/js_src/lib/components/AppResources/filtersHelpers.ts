@@ -10,6 +10,7 @@ import { appResourceSubTypes } from './types';
 export const allAppResources = Array.from(
   Object.keys(appResourceSubTypes)
 ).sort(sortFunction(f.id));
+
 export const defaultAppResourceFilters = {
   appResources: allAppResources,
   viewSets: true,
@@ -20,7 +21,10 @@ export type AppResourceFilters = {
   readonly viewSets: boolean;
 };
 
-export const hasAllAppResources = (
+/**
+ * Determine if all app resource types are visible
+ */
+export const isAllAppResourceTypes = (
   appResources: RA<keyof typeof appResourceSubTypes>
 ): boolean =>
   JSON.stringify(Array.from(appResources).sort(sortFunction(f.id))) ===
@@ -43,11 +47,11 @@ export const filterAppResources = (
   appResources:
     filters.appResources.length === 0
       ? []
-      : hasAllAppResources(filters.appResources)
-      ? resources.appResources
-      : resources.appResources.filter((resource) =>
-          filters.appResources.includes(getAppResourceType(resource))
-        ),
+      : isAllAppResourceTypes(filters.appResources)
+        ? resources.appResources
+        : resources.appResources.filter((resource) =>
+            filters.appResources.includes(getAppResourceType(resource))
+          ),
 });
 
 export const getResourceType = (
@@ -61,8 +65,8 @@ export const getAppResourceType = (
 ): keyof typeof appResourceSubTypes =>
   resource.name === 'preferences' && (resource.mimeType ?? '') === ''
     ? 'otherPropertiesResource'
-    : Object.entries(appResourceSubTypes).find(
-        ([_key, { name, mimeType }]) =>
-          (name === undefined || name === resource.name) &&
-          (mimeType === undefined || mimeType === resource.mimeType)
-      )?.[KEY] ?? 'otherAppResources';
+    : (Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
+        name === undefined
+          ? mimeType === resource.mimeType
+          : name === resource.name
+      )?.[KEY] ?? 'otherAppResources');

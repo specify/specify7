@@ -5,9 +5,9 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import {
-  getTreeDefinitionItems,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import {
@@ -67,11 +67,11 @@ export function TaxonTiles(): JSX.Element {
   return (
     <div className="relative flex h-[473px] w-full text-xl">
       <p
-        className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
+        className="absolute left-3 top-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
             ? welcomeText.taxonTilesDescription({
-                collectionObjectTable: schema.models.CollectionObject.label,
+                collectionObjectTable: tables.CollectionObject.label,
                 count: treeData.threshold,
               })
             : undefined
@@ -80,7 +80,7 @@ export function TaxonTiles(): JSX.Element {
         {welcomeText.taxonTiles()}
       </p>
       {typeof title === 'string' && (
-        <p className="absolute top-3 right-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">
+        <p className="absolute right-3 top-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">
           {title}
         </p>
       )}
@@ -98,7 +98,8 @@ function useGenusRankId(): number | false | undefined {
       async () =>
         treeRanksPromise.then(
           () =>
-            getTreeDefinitionItems('Taxon', false)!.find(
+            // REFACTOR: Narrow the TreeDefinition used to find the rankId of the Genus Rank
+            strictGetTreeDefinitionItems('Taxon', false, 'all').find(
               (item) => (item.name || item.title)?.toLowerCase() === 'genus'
             )?.rankId ?? false
         ),
@@ -120,7 +121,7 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
               rankId: number,
               parentId: number,
               name: string,
-              count: number
+              count: number,
             ]
           >
         >('/barvis/taxon_bar/', {

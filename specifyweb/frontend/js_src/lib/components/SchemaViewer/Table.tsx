@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -9,7 +10,7 @@ import { H2 } from '../Atoms';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
-import { getModel, schema } from '../DataModel/schema';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -25,8 +26,8 @@ export function SchemaViewerTable({
   readonly tableName: keyof Tables;
   readonly forwardRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
-  const model = getModel(tableName);
-  return model === undefined ? (
+  const table = getTable(tableName);
+  return table === undefined ? (
     <NotFoundView />
   ) : (
     <section
@@ -35,17 +36,17 @@ export function SchemaViewerTable({
     >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <TableIcon label={false} name={model.name} />
-          <H2 className="text-2xl" id={model.name.toLowerCase()}>
-            {model.name}
+          <TableIcon label={false} name={table.name} />
+          <H2 className="text-2xl" id={table.name.toLowerCase()}>
+            {table.name}
           </H2>
         </div>
         <Link.Default href={`#${schemaViewerTopId}`}>
           {schemaText.goToTop()}
         </Link.Default>
       </div>
-      <SchemaViewerFields table={model} />
-      <SchemaViewerRelationships table={model} />
+      <SchemaViewerFields table={table} />
+      <SchemaViewerRelationships table={table} />
     </section>
   );
 }
@@ -53,14 +54,14 @@ export function SchemaViewerTable({
 export const schemaViewerTableColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainer, 'name').label,
-      label: schemaText.fieldLabel(),
-      isSystem: getField(schema.models.SpLocaleContainer, 'isSystem').label,
-      isHidden: getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      name: getField(tables.SpLocaleContainer, 'name').label,
+      label: reportsText.labels(),
+      isSystem: getField(tables.SpLocaleContainer, 'isSystem').label,
+      isHidden: getField(tables.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),
       fieldCount: schemaText.fieldCount(),
       relationshipCount: schemaText.relationshipCount(),
-    } as const)
+    }) as const
 );
 
 export const getSchemaViewerTables = () =>
@@ -71,37 +72,37 @@ export const getSchemaViewerTables = () =>
       >
     >
   >()(
-    Object.values(schema.models).map(
-      (model) =>
+    Object.values(genericTables).map(
+      (table) =>
         ({
           name: [
-            model.name.toLowerCase(),
+            table.name.toLowerCase(),
             <>
-              <TableIcon label={false} name={model.name} />
-              {model.name}
+              <TableIcon label={false} name={table.name} />
+              {table.name}
             </>,
           ],
-          label: model.label,
-          isSystem: booleanFormatter(model.isSystem),
-          isHidden: booleanFormatter(model.isHidden),
+          label: table.label,
+          isSystem: booleanFormatter(table.isSystem),
+          isHidden: booleanFormatter(table.isHidden),
           tableId: [
-            model.tableId,
+            table.tableId,
             <span className="flex w-full justify-end tabular-nums" key="">
-              {model.tableId}
+              {table.tableId}
             </span>,
           ],
           fieldCount: [
-            model.fields.length,
+            table.fields.length,
             <span className="flex w-full justify-end tabular-nums" key="">
-              {formatNumber(model.fields.length)}
+              {formatNumber(table.fields.length)}
             </span>,
           ],
           relationshipCount: [
-            model.relationships.length,
+            table.relationships.length,
             <span className="flex w-full justify-end tabular-nums" key="">
-              {formatNumber(model.relationships.length)}
+              {formatNumber(table.relationships.length)}
             </span>,
           ],
-        } as const)
+        }) as const
     )
   );

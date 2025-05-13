@@ -13,11 +13,14 @@ import type {
   SpAppResource,
   SpAppResourceData,
   SpecifyUser,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
+import { userPreferences } from '../Preferences/userPreferences';
+import { getAppResourceType } from './filtersHelpers';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree, getScope } from './tree';
-import { ScopedAppResourceDir } from './types';
+import type { ScopedAppResourceDir } from './types';
+import { appResourceSubTypes } from './types';
 
 export type AppResources = {
   readonly directories: RA<ScopedAppResourceDir>;
@@ -25,38 +28,46 @@ export type AppResources = {
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 };
 
-export function useAppResources(): GetOrSet<AppResources | undefined> {
+export function useAppResources(
+  loadingScreen: boolean = true
+): GetOrSet<AppResources | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
         f.all({
-          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then<
-            AppResources['directories']
-          >(({ records }) =>
+          directories: fetchCollection('SpAppResourceDir', {
+            limit: 0,
+            domainFilter: false,
+          }).then<AppResources['directories']>(({ records }) =>
             records.map((record) => ({ ...record, scope: getScope(record) }))
           ),
-          disciplines: fetchCollection('Discipline', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          collections: fetchCollection('Collection', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          users: fetchCollection('SpecifyUser', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          appResources: fetchCollection('SpAppResource', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          viewSets: fetchCollection('SpViewSetObj', { limit: 0 }).then(
-            ({ records }) => records
-          ),
+          disciplines: fetchCollection('Discipline', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          collections: fetchCollection('Collection', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          users: fetchCollection('SpecifyUser', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          appResources: fetchCollection('SpAppResource', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          viewSets: fetchCollection('SpViewSetObj', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
         }),
       []
     ),
-    true
+    loadingScreen
   );
 }
 
@@ -65,19 +76,57 @@ export type AppResourcesTree = RA<{
   /*
    * A string that would be stable thought the lifecycle of an object.
    * Used to identify a tree node when storing conformation it in localStorage.
+   *
+   * Directory key is created instead of using id, because app resource
+   * needs a way to identify directories that don't yet have IDs (i.e, when
+   * creating an app resource for a collection that didn't have any app resources
+   * before, the collection won't have any SpAppResourceDir record, thus not
+   * directory ID).
    */
   readonly key: string;
   readonly directory: ScopedAppResourceDir | undefined;
-  readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly appResources: RA<
+    SerializedResource<SpAppResource> & {
+      readonly label?: LocalizedString;
+    }
+  >;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
   readonly subCategories: AppResourcesTree;
 }>;
 
 export function useResourcesTree(resources: AppResources): AppResourcesTree {
-  return React.useMemo<AppResourcesTree>(
-    () => getAppResourceTree(resources),
-    [resources]
+  const [localize] = userPreferences.use(
+    'appResources',
+    'appearance',
+    'localizeResourceNames'
   );
+  return React.useMemo<AppResourcesTree>(() => {
+    const tree = getAppResourceTree(resources);
+    return localize ? localizeTree(tree) : tree;
+  }, [resources, localize]);
+}
+
+const localizeTree = (tree: AppResourcesTree): AppResourcesTree =>
+  tree.map(({ appResources, subCategories, ...rest }) => ({
+    ...rest,
+    appResources: appResources.map(localizeResource),
+    subCategories: localizeTree(subCategories),
+  }));
+
+function localizeResource(
+  resource: SerializedResource<SpAppResource> & {
+    readonly label?: LocalizedString;
+  }
+): SerializedResource<SpAppResource> & { readonly label?: LocalizedString } {
+  const type = appResourceSubTypes[getAppResourceType(resource)];
+  // Check that resource of this type can only have one specific name
+  return typeof type.name === 'string'
+    ? {
+        ...resource,
+        // Then replace the name with a localized label unless it's already set
+        label: resource.label ?? type.label,
+      }
+    : resource;
 }
 
 export function useAppResourceCount(
@@ -89,17 +138,19 @@ export function useAppResourceCount(
   );
 }
 
+/**
+ * Fetch resource contents
+ */
 export function useAppResourceData(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>,
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialData: string | undefined
 ): {
-  readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
-  readonly setResourceData: (
-    newResource: SerializedResource<SpAppResourceData> | undefined
-  ) => void;
+  readonly resourceData: GetOrSet<
+    SerializedResource<SpAppResourceData> | undefined
+  >;
   readonly isChanged: boolean;
 } {
-  const initialValue = React.useRef<string | null>('');
+  const initialValue = React.useRef<string>('');
   const [resourceData, setResourceData] = useAsyncState<
     SerializedResource<SpAppResourceData>
   >(
@@ -117,8 +168,14 @@ export function useAppResourceData(
           ? await fetchCollection('SpAppResourceData', {
               limit: 1,
               [relationshipName]: resource.id,
-            }).then(({ records }) =>
-              typeof records[0] === 'object' ? records[0] : newResource
+              domainFilter: false,
+            }).then(
+              ({ records }) =>
+                /*
+                 * For some reason, app resource can have multiple app resource
+                 * datas (but it never does in practice)
+                 */
+                records[0] ?? newResource
             )
           : newResource;
       const newData = fixLineBreaks(dataResource.data ?? '');
@@ -128,8 +185,7 @@ export function useAppResourceData(
     true
   );
   return {
-    resourceData,
-    setResourceData,
+    resourceData: [resourceData, setResourceData],
     isChanged: initialValue.current !== resourceData?.data,
   };
 }
@@ -138,7 +194,7 @@ const fixLineBreaks = (string: string): string =>
   string.replaceAll(/[\n\r]+/gu, '\n');
 
 export const getAppResourceExtension = (
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): string =>
   resource._tableName === 'SpViewSetObj'
     ? 'xml'
@@ -147,10 +203,14 @@ export const getAppResourceExtension = (
 function getResourceExtension(
   resource: SerializedResource<SpAppResource>
 ): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
-  const mimeType = resource.mimeType?.toLowerCase() ?? '';
+  const type = appResourceSubTypes[getAppResourceType(resource)];
+  const mimeType = resource.mimeType?.toLowerCase() ?? type?.mimeType ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
-  else if (resource.name === 'preferences' && mimeType === '')
+  else if (
+    resource.name === 'preferences' &&
+    mimeType === appResourceSubTypes.otherPropertiesResource.mimeType
+  )
     return 'properties';
   else return 'txt';
 }

@@ -7,49 +7,30 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useCollection } from '../../hooks/useCollection';
+import { useSerializedCollection } from '../../hooks/useSerializedCollection';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
-import { DialogContext } from '../Atoms/Button';
+import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
-import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
+import { allTablesWithAttachments, tablesWithAttachments } from './utils';
 
-export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
-);
-
-const allTablesWithAttachments = f.store(() =>
-  filterArray(
-    attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
-    )
-  )
-);
-/** Exclude tables without read access*/
-export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
-  )
-);
-
-const defaultScale = 10;
+export const defaultAttachmentScale = 10;
 const minScale = 4;
 const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
@@ -87,6 +68,8 @@ function Attachments({
 
   const isInDialog = React.useContext(DialogContext);
 
+  const navigate = useNavigate();
+
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
     'sortOrder'
@@ -105,19 +88,18 @@ function Attachments({
             'Attachment',
             {
               limit: 1,
+              domainFilter: true,
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
-              : {
-                  tableId__in: tablesWithAttachments()
-                    .map(({ tableId }) => tableId)
-                    .join(','),
-                }
+              : backendFilter('tableId').isIn(
+                  tablesWithAttachments().map(({ tableId }) => tableId)
+                )
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
-            { limit: 1 },
-            { tableId__isNull: 'true' }
+            { limit: 1, domainFilter: true },
+            backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -125,7 +107,9 @@ function Attachments({
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
+                  domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
             )
@@ -136,12 +120,12 @@ function Attachments({
     false
   );
 
-  const [scale = defaultScale, setScale] = useCachedState(
+  const [scale = defaultAttachmentScale, setScale] = useCachedState(
     'attachments',
     'scale'
   );
 
-  const [collection, setCollection, fetchMore] = useCollection(
+  const [collection, setCollection, fetchMore] = useSerializedCollection(
     React.useCallback(
       async (offset) =>
         fetchCollection(
@@ -153,19 +137,17 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? { tableId__isNull: 'true' }
+            ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
-            ? {
-                tableId: schema.models[filter.tableName].tableId,
-              }
-            : allTablesWithAttachments().length ===
-              tablesWithAttachments().length
-            ? {}
-            : {
-                tableId__in: tablesWithAttachments()
-                  .map(({ tableId }) => tableId)
-                  .join(','),
-              }
+              ? {
+                  tableId: genericTables[filter.tableName].tableId,
+                }
+              : allTablesWithAttachments().length ===
+                  tablesWithAttachments().length
+                ? {}
+                : backendFilter('tableId').isIn(
+                    tablesWithAttachments().map(({ tableId }) => tableId)
+                  )
         ),
       [order, filter]
     )
@@ -181,7 +163,7 @@ function Attachments({
           <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }
@@ -228,8 +210,8 @@ function Attachments({
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
@@ -237,16 +219,25 @@ function Attachments({
         <span className="-ml-2 flex-1" />
         {/* Don't display scale if in dialog to not have resizing/glitching issue */}
         {isInDialog === undefined && (
-          <Label.Inline>
-            {attachmentsText.scale()}
-            <Input.Generic
-              max={maxScale}
-              min={minScale}
-              type="range"
-              value={scale}
-              onValueChange={(value) => setScale(Number.parseInt(value))}
-            />
-          </Label.Inline>
+          <>
+            <Label.Inline>
+              {attachmentsText.scale()}
+              <Input.Generic
+                max={maxScale}
+                min={minScale}
+                type="range"
+                value={scale}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
+              />
+            </Label.Inline>
+            <Button.BorderedGray
+              onClick={() => navigate('/specify/overlay/attachments/import/')}
+            >
+              {commonText.import()}
+            </Button.BorderedGray>
+          </>
         )}
       </header>
       <AttachmentGallery
@@ -257,10 +248,13 @@ function Attachments({
         }
         key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
-        onChange={(records): void =>
+        onChange={(attachment, index): void =>
           collection === undefined
             ? undefined
-            : setCollection({ records, totalCount: collection.totalCount })
+            : setCollection({
+                records: replaceItem(collection.records, index, attachment),
+                totalCount: collection.totalCount,
+              })
         }
         onClick={onClick}
         onFetchMore={collection === undefined ? undefined : fetchMore}

@@ -12,6 +12,7 @@ import type { Tables } from '../DataModel/types';
 import type { AutoMapperResults } from './autoMapper';
 import { AutoMapper } from './autoMapper';
 import type { MappingLine } from './Mapper';
+import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
 
@@ -47,7 +48,7 @@ export function getLinesFromHeaders({
 )): RA<MappingLine> {
   const lines = headers.map(
     (headerName): MappingLine => ({
-      mappingPath: ['0'],
+      mappingPath: [emptyMapping],
       headerName,
       columnOptions: defaultColumnOptions,
     })

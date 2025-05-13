@@ -13,7 +13,6 @@ import {
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { mappingLocalityColumns, requiredLocalityColumns } from './config';
-import { isValidAccuracy } from './index';
 
 export type Field<T extends Readonly<unknown>> = {
   readonly headerName: string;
@@ -96,3 +95,17 @@ export const getLocalityData = (
           : { value: '', headerName: '' },
       }
     : false;
+
+export function isValidAccuracy(
+  latlongaccuracy: string | undefined
+): latlongaccuracy is string {
+  try {
+    return (
+      latlongaccuracy !== undefined &&
+      !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
+      Number.parseFloat(latlongaccuracy) >= 1
+    );
+  } catch {
+    return false;
+  }
+}

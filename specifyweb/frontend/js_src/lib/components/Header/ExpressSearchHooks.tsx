@@ -5,14 +5,14 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { formatUrl } from '../Router/queryString';
 
 export type RawExpressSearchResult = {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly caption: string;
   readonly tableResults: QueryTableResult;
   readonly ajaxUrl: string;
@@ -26,25 +26,19 @@ export function usePrimarySearch(
       if (query === '') return false;
       const ajaxUrl = formatUrl('/express_search/', {
         q: query,
-        limit: expressSearchFetchSize.toString(),
+        limit: expressSearchFetchSize,
       });
-      return ajax<IR<QueryTableResult>>(
-        ajaxUrl,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        },
-        {
-          expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-        }
-      ).then(({ data, status }) =>
+      return ajax<IR<QueryTableResult>>(ajaxUrl, {
+        headers: { Accept: 'application/json' },
+        expectedErrors: [Http.FORBIDDEN],
+      }).then(({ data, status }) =>
         status === Http.FORBIDDEN
           ? false
           : Object.entries(data)
               .filter(([_tableName, { totalCount }]) => totalCount > 0)
               .map(([tableName, tableResults]) => ({
-                model: strictGetModel(tableName),
-                caption: strictGetModel(tableName).label,
+                table: strictGetTable(tableName),
+                caption: strictGetTable(tableName).label,
                 tableResults,
                 ajaxUrl,
               }))
@@ -55,14 +49,13 @@ export function usePrimarySearch(
   return primaryResults;
 }
 
-const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<RA<string>>(
-        '/context/available_related_searches.json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } }
-      ).then(({ data }) => data)
-    : foreverFetch<RA<string>>()
+const relatedSearchesPromise = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? ajax<RA<string>>('/context/available_related_searches.json', {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data)
+      : foreverFetch<RA<string>>()
 );
 export const expressSearchFetchSize = 40;
 
@@ -101,18 +94,12 @@ export function useSecondarySearch(
           const ajaxUrl = formatUrl('/express_search/related/', {
             q: query,
             name,
-            limit: expressSearchFetchSize.toString(),
+            limit: expressSearchFetchSize,
           });
-          return ajax<RelatedTableResult>(
-            ajaxUrl,
-            {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              headers: { Accept: 'application/json' },
-            },
-            {
-              expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-            }
-          ).then(({ data, status }) =>
+          return ajax<RelatedTableResult>(ajaxUrl, {
+            headers: { Accept: 'application/json' },
+            expectedErrors: [Http.FORBIDDEN],
+          }).then(({ data, status }) =>
             status === Http.FORBIDDEN ? undefined : ([ajaxUrl, data] as const)
           );
         })
@@ -120,7 +107,7 @@ export function useSecondarySearch(
       return filterArray(results)
         .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
         .map(([ajaxUrl, tableResult]) => {
-          const model = strictGetModel(tableResult.definition.root);
+          const table = strictGetTable(tableResult.definition.root);
           const idFieldIndex = 0;
           /*
            * FEATURE: decide if this code is needed
@@ -139,16 +126,16 @@ export function useSecondarySearch(
            *  fieldSpecs.slice(-1)[0]?.getField()
            *);
            *if (relationship.isRelationship)
-           *  model = relationship.relatedModel;
+           *  table = relationship.relatedTable;
            * // If field is TaxonID
-           *else if (relationship === relationship.model.idField)
-           *  model = relationship.model;
+           *else if (relationship === relationship.table.idField)
+           *  table = relationship.table;
            *else throw new Error('Unable to extract relationship');
            *}
            */
 
           return {
-            model,
+            table,
             idFieldIndex,
             caption:
               legacyLocalize(tableResult.definition.name) ??

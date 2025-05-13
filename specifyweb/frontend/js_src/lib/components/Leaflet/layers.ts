@@ -2,6 +2,7 @@ import type { TileLayerOptions } from 'leaflet';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
@@ -9,7 +10,6 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import L from './extend';
 
 type SerializedLayer = {
@@ -32,6 +32,9 @@ const layerStyles = {
   // Smartly inverts leaflet layer's color scheme when in dark-mode:
   'auto-dark-mode': 'dark:invert-leaflet-layer',
 };
+
+export const preferredBaseLayer = 'Satellite Map (ESRI)';
+export const preferredOverlay = 'Labels and boundaries';
 
 /**
  * DO NOT USE THIS OBJECT DIRECTLY (except in tests).
@@ -170,8 +173,6 @@ export const defaultTileLayers: Layers<SerializedLayer> = {
     },
   },
 };
-export const preferredBaseLayer = 'Satellite Map (ESRI)';
-export const preferredOverlay = 'Labels and boundaries';
 
 /**
  * By default in Leaflet, all base maps and overlay layers are on the same pane.
@@ -189,22 +190,18 @@ export const fetchLeafletLayers = async (): Promise<Layers<L.TileLayer>> =>
 const layersPromise: Promise<Layers<SerializedLayer>> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(
-          cachableUrl(
-            formatUrl('/context/app.resource', {
-              name: 'leaflet-layers',
-              quiet: '',
-            })
-          ),
-          { headers: { Accept: 'text/plain' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
-        )
+      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+          headers: { Accept: 'text/plain' },
+          errorMode: 'silent',
+        })
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
                   cachableUrl(leafletLayersEndpoint),
-                  { headers: { Accept: 'application/json' } },
-                  { strict: false }
+                  {
+                    headers: { Accept: 'application/json' },
+                    errorMode: 'silent',
+                  }
                 ).then(({ data }) => data)
               : (JSON.parse(data) as Layers<SerializedLayer>)
           )
@@ -212,7 +209,7 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
             softFail(error);
             return defaultTileLayers;
           })
-      : foreverFetch<Layers<SerializedLayer>>()
+      : foreverFetch()
   );
 
 /**

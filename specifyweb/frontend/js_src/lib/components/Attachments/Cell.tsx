@@ -1,26 +1,30 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getModelById } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { tablesWithAttachments } from './index';
+import { fetchOriginalUrl } from './attachments';
 import { AttachmentPreview } from './Preview';
+import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 
 export function AttachmentCell({
   attachment,
@@ -32,21 +36,26 @@ export function AttachmentCell({
   readonly onOpen: () => void;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly onViewRecord:
-    | ((model: SpecifyModel, recordId: number) => void)
+    | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
-  const model = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
+  const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
+
+  const [originalUrl] = useAsyncState(
+    React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
+    false
+  );
 
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
-      model !== undefined &&
-      hasTablePermission(model.name, 'read') ? (
+      table !== undefined &&
+      hasTablePermission(table.name, 'read') ? (
         <AttachmentRecordLink
           attachment={attachment}
-          className="absolute top-0 left-0"
-          model={model}
+          className="absolute left-0 top-0"
           related={[related, setRelated]}
+          table={table}
           variant="icon"
           onViewRecord={handleViewRecord}
         />
@@ -54,20 +63,31 @@ export function AttachmentCell({
       <AttachmentPreview
         attachment={attachment}
         onOpen={(): void => {
-          if (related === undefined && typeof model === 'object')
-            fetchAttachmentParent(model, attachment)
+          if (related === undefined && typeof table === 'object')
+            fetchAttachmentParent(table, attachment)
               .then(setRelated)
               .catch(softFail);
           handleOpen();
         }}
       />
+      {typeof originalUrl === 'string' && (
+        <Link.Icon
+          className="absolute right-0 top-0"
+          download={new URL(originalUrl).searchParams.get('downloadname')}
+          href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+          icon="download"
+          target="_blank"
+          title={notificationsText.download()}
+          onClick={undefined}
+        />
+      )}
     </div>
   );
 }
 
-export function getAttachmentTable(tableId: number): SpecifyModel | undefined {
-  const model = getModelById(tableId);
-  return tablesWithAttachments().includes(model) ? model : undefined;
+export function getAttachmentTable(tableId: number): SpecifyTable | undefined {
+  const table = getTableById(tableId);
+  return tablesWithAttachments().includes(table) ? table : undefined;
 }
 
 /**
@@ -76,16 +96,16 @@ export function getAttachmentTable(tableId: number): SpecifyModel | undefined {
 export function AttachmentRecordLink({
   variant,
   className,
-  model,
+  table,
   attachment,
   onViewRecord: handleViewRecord,
   related: [related, setRelated],
 }: {
   readonly variant: 'button' | 'icon';
   readonly className: string;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly attachment: SerializedResource<Attachment>;
-  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+  readonly onViewRecord: (table: SpecifyTable, recordId: number) => void;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
@@ -95,31 +115,31 @@ export function AttachmentRecordLink({
     <>
       <Component
         className={className}
-        title={model?.label}
+        title={table?.label}
         onClick={(): void =>
           loading(
             (typeof related === 'object'
               ? Promise.resolve(related)
-              : fetchAttachmentParent(model, attachment).then((related) => {
+              : fetchAttachmentParent(table, attachment).then((related) => {
                   setRelated(related);
                   return related;
                 })
             )
               .then((related) =>
                 typeof related === 'object'
-                  ? getBaseResourceId(model, related)
+                  ? getBaseResourceId(table, related)
                   : undefined
               )
               .then((id) =>
                 typeof id === 'number'
-                  ? handleViewRecord(model, id)
+                  ? handleViewRecord(table, id)
                   : handleFailed()
               )
           )
         }
       >
-        <TableIcon label name={model?.name ?? 'Attachment'} />
-        {variant === 'button' && model?.label}
+        <TableIcon label name={table?.name ?? 'Attachment'} />
+        {variant === 'button' && table?.label}
       </Component>
       {isFailed ? (
         <Dialog
@@ -136,12 +156,12 @@ export function AttachmentRecordLink({
 
 /** Fetch CollectionObjectAttachment for a given Attachment */
 async function fetchAttachmentParent(
-  model: SpecifyModel,
+  table: SpecifyTable,
   attachment: SerializedResource<Attachment>
 ): Promise<SpecifyResource<AnySchema> | undefined> {
   const { records } = await fetchRelated(
     attachment,
-    `${model.name as 'collectionObject'}Attachments`
+    getAttachmentRelationship(table)!.name as 'collectionObjectAttachments'
   );
   return deserializeResource(records[0]);
 }
@@ -150,10 +170,10 @@ async function fetchAttachmentParent(
  * Get CollectionObject id from CollectionObjectAttachment
  */
 function getBaseResourceId(
-  model: SpecifyModel,
+  table: SpecifyTable,
   related: SpecifyResource<AnySchema>
 ): number | undefined {
   // This would be a URL to CollectionObject
-  const resourceUrl = related.get(model.name as 'CollectionObject');
+  const resourceUrl = related.get(table.name as 'CollectionObject');
   return idFromUrl(resourceUrl ?? '');
 }

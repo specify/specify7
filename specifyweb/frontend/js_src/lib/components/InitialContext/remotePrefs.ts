@@ -4,6 +4,7 @@
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
 import { formatter, parsers } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
@@ -11,7 +12,6 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 import { cachableUrl, contextUnlockedPromise } from './index';
-import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 const preferences: R<string> = {};
 
@@ -20,7 +20,7 @@ const preferences: R<string> = {};
  * on the choose collection screen (intiail context is not unlocked for that
  * endpoint)
  */
-export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
+export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax(cachableUrl('/context/remoteprefs.properties'), {
         headers: { Accept: 'text/plain' },
@@ -50,15 +50,15 @@ type TypeOf<DEFINITION extends Definition> =
   DEFINITION['defaultValue'] extends string
     ? string
     : DEFINITION['defaultValue'] extends number
-    ? number
-    : boolean;
+      ? number
+      : boolean;
 
 type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
   KEY extends keyof Definitions
     ? Definitions[KEY]
     : KEY extends keyof CollectionDefinitions
-    ? CollectionDefinitions[KEY]
-    : never;
+      ? CollectionDefinitions[KEY]
+      : never;
 
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
@@ -101,7 +101,7 @@ function parsePref(
       ? parsed.isValid
         ? parsed.parsed
         : defaultValue
-      : value ?? defaultValue
+      : (value ?? defaultValue)
   ) as boolean | number | string;
 }
 
@@ -156,6 +156,12 @@ export const remotePrefsDefinitions = f.store(
         formatters: [formatter.trim],
         isLegacy: true,
       },
+      'TectonicUnit.treeview_sort_field': {
+        description: 'Sort order for nodes in the tree viewer',
+        defaultValue: 'name',
+        formatters: [formatter.trim],
+        isLegacy: false,
+      },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
@@ -191,11 +197,19 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Long',
         isLegacy: true,
       },
+      'TreeEditor.Rank.Threshold.TectonicUnit': {
+        description:
+          'Show Collection Object count only for nodes with RankID >= than this value',
+        defaultValue: 99_999,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
 
-      /* This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
-         and went through many iterations and changes.
-         See the Pull Request for the full context and implementation/design decision. 
-      */
+      /*
+       * This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
+       * and went through many iterations and changes.
+       * See the Pull Request for the full context and implementation/design decision.
+       */
       'TaxonTreeEditor.DisplayAuthor': {
         description:
           'Display Authors of Taxons next to nodes in the Tree Viewer',
@@ -265,6 +279,13 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
+        description:
+          'Allowed to add children to synopsized TectonicUnit records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       // This is actually stored in Global Prefs:
       /*
        * 'AUDIT_LIFESPAN_MONTHS': {
@@ -274,7 +295,7 @@ export const remotePrefsDefinitions = f.store(
        *   isLegacy: true,
        * },
        */
-    } as const)
+    }) as const
 );
 
 /**
@@ -301,6 +322,13 @@ export const collectionPrefsDefinitions = {
     description:
       'Whether to create Determination when Collection Object is created',
     defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  sp7_scope_table_picklists: {
+    separator: '_',
+    description:
+      "Whether to scope picklistitems for picklists of type 'Entire Table'",
+    defaultValue: true,
     parser: 'java.lang.Boolean',
   },
 } as const;

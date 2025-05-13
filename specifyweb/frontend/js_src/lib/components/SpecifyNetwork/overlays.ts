@@ -73,24 +73,21 @@ const getIdbLayer = async (
   ajax<{
     readonly itemCount: number;
     readonly tiles: string;
-  }>(
-    'https://search.idigbio.org/v2/mapping/',
-    {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-      },
-      body: {
-        rq: keysToLowerCase({
-          scientificName,
-          collectionCode,
-        }),
-        type: 'auto',
-        threshold: 100_000,
-      },
+  }>('https://search.idigbio.org/v2/mapping/', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
     },
-    { strict: false }
-  )
+    body: {
+      rq: keysToLowerCase({
+        scientificName,
+        collectionCode,
+      }),
+      type: 'auto',
+      threshold: 100_000,
+    },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       data.itemCount === 0
         ? {}

@@ -1,196 +1,115 @@
 /**
- * This is a composition model that loads the Specify datamodel JSON and
- * reifies it into the objects defined in specifymodel.ts and
- * specifyfield.ts.
+ * This module provides base structure for the description of the
+ * Specify datamodel and schema. It is supplemented by the definitions
+ * in specifyTable.ts and specifyField.ts in the module schema.ts
+ * which actually loads and generates the schema model objects.
  */
 
-import type { LocalizedString } from 'typesafe-i18n';
+/**
+ * This module also contains scoping information indicating the
+ * current collection, ..., institution information. This probably
+ * belongs in a separate module because it's not really related to the
+ * schema, but it's here for now.
+ */
 
-import { f } from '../../utils/functools';
-import type { IR, RA, RR } from '../../utils/types';
-import {
-  defined,
-  overwriteReadOnly,
-  setDevelopmentGlobal,
-} from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
-import { error } from '../Errors/assert';
+import type { IR, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
-import { isTreeModel } from '../InitialContext/treeRanks';
-import { formatUrl } from '../Router/queryString';
-import type { AnySchema, AnyTree } from './helperTypes';
-import { schemaBase } from './schemaBase';
-import { schemaExtras } from './schemaExtras';
-import { LiteralField, Relationship } from './specifyField';
-import { type TableDefinition, SpecifyModel } from './specifyModel';
-import type { Agent, Tables } from './types';
 
-export type SchemaLocalization = {
-  readonly name: LocalizedString | null;
-  readonly desc: LocalizedString | null;
-  readonly format: string | null;
-  readonly aggregator: string | null;
-  readonly ishidden: boolean;
-  readonly items: IR<{
-    readonly name: LocalizedString | null;
-    readonly desc: LocalizedString | null;
-    readonly format: string | null;
-    readonly picklistname: string | null;
-    readonly weblinkname: string | null;
-    readonly isrequired: boolean;
-    readonly ishidden: boolean;
-  }>;
+type Schema = {
+  readonly domainLevelIds: RR<(typeof domainLevels)[number], number>;
+  readonly embeddedCollectingEvent: boolean;
+  readonly embeddedPaleoContext: boolean;
+  readonly paleoContextChildTable: string;
+  readonly catalogNumFormatName: string;
+  readonly collectionObjectTypeCatalogNumberFormats: IR<string | null>;
+  readonly defaultCollectionObjectType: string | null;
+  readonly orgHierarchy: readonly [
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution',
+  ];
+  readonly referenceSymbol: string;
+  readonly treeDefinitionSymbol: string;
+  readonly treeRankSymbol: string;
+  readonly fieldPartSeparator: string;
 };
 
-const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
-  fields: RA<FIELD_TYPE>,
-  frontEndFields: RA<FIELD_TYPE>
-): RA<FIELD_TYPE> =>
-  [
-    ...fields,
-    ...frontEndFields.map((field) => {
-      field.overrides.isReadOnly = true;
-      field.isVirtual = true;
-      return field;
-    }),
-    /*
-     * The sort order defined here affects the order of fields in the
-     * WbPlanView, Query builder, Schema Config and all other places
-     */
-  ].sort(sortFunction(({ label = '' }) => label));
+const schemaBase: Writable<Schema> = {
+  /*
+   * Maps levels in the Specify scoping hierarchy to the database IDs of those
+   * records for the currently logged in session.
+   */
+  domainLevelIds: undefined!,
 
-let schemaLocalization: IR<SchemaLocalization> = undefined!;
-const fetchSchemaLocalization = f.store(async () =>
-  import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
-    load<IR<SchemaLocalization>>(
-      formatUrl('/context/schema_localization.json', {
-        lang: userPreferences.get('form', 'schema', 'language'),
-      }),
-      'application/json'
-    )
-  )
-);
-export const getSchemaLocalization = (): IR<SchemaLocalization> =>
-  schemaLocalization ??
-  error('Accessing schema localization before fetching it');
+  // Whether collectingEvent is embedded for the currently logged in collection.
+  embeddedCollectingEvent: undefined!,
 
-const frontEndOnlyFields: Partial<Record<keyof Tables, RA<string>>> = {};
-export const getFrontEndOnlyFields = (): Partial<
-  RR<keyof Tables, RA<string>>
-> => frontEndOnlyFields;
+  // Whether PaleoContext is embedded for the currently logged in collection.
+  embeddedPaleoContext: undefined!,
 
-export const fetchContext = f
-  .all({
-    tables: load<RA<TableDefinition>>(
-      '/context/datamodel.json',
-      'application/json'
-    ),
-    localization: fetchSchemaLocalization(),
-  })
-  .then(({ tables, localization }) => {
-    schemaLocalization = localization;
-    tables
-      .map((tableDefinition) => {
-        const model = new SpecifyModel(tableDefinition);
-        overwriteReadOnly(schemaBase.models, model.name, model);
-        return [tableDefinition, model] as const;
-      })
-      .forEach(([tableDefinition, model]) => {
-        const [frontEndFields, frontEndRelationships, callback] = (
-          schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
-        )?.(model as SpecifyModel<Agent>) ?? [[], []];
+  paleoContextChildTable: undefined!,
+  catalogNumFormatName: undefined!,
 
-        overwriteReadOnly(
-          model,
-          'literalFields',
+  collectionObjectTypeCatalogNumberFormats: {},
 
-          processFields(
-            tableDefinition.fields.map(
-              (fieldDefinition) => new LiteralField(model, fieldDefinition)
-            ),
-            frontEndFields
-          )
-        );
-        overwriteReadOnly(
-          model,
-          'relationships',
-          processFields(
-            tableDefinition.relationships.map(
-              (relationshipDefinition) =>
-                new Relationship(model, relationshipDefinition)
-            ),
-            frontEndRelationships
-          )
-        );
-        overwriteReadOnly(model, 'fields', [
-          ...model.literalFields,
-          ...model.relationships,
-        ]);
-        overwriteReadOnly(
-          model,
-          'field',
-          Object.fromEntries(model.fields.map((field) => [field.name, field]))
-        );
+  // Default collectionObjectType for the collection
+  defaultCollectionObjectType: undefined!,
 
-        frontEndOnlyFields[model.name] = [
-          ...frontEndFields,
-          ...frontEndRelationships,
-        ].map(({ name }) => name);
+  // The scoping hierarchy of Specify objects.
+  orgHierarchy: [
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution',
+  ] as const,
 
-        callback?.();
-      });
-    return schemaBase;
-  });
+  // Prefix for -to-many indexes
+  referenceSymbol: '#',
+  // Prefix for Tree Definitions
+  treeDefinitionSymbol: '%',
+  // Prefix for tree ranks
+  treeRankSymbol: '$',
+  // Separator for partial fields (date parts in Query Builder)
+  fieldPartSeparator: '-',
+};
 
-export const schema = schemaBase;
+const domainLevels = [
+  'collection',
+  'discipline',
+  'division',
+  'institution',
+] as const;
 
-setDevelopmentGlobal('_schema', schema);
+/*
+ * REFACTOR: separate schema base (domain.json) from the rest of the schema
+ * Scoping information is loaded and populated here.
+ */
+export const fetchContext = load<
+  Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
+>('/context/domain.json', 'application/json').then<Schema>((data) => {
+  schemaBase.domainLevelIds = Object.fromEntries(
+    domainLevels.map((level) => [level, data[level]])
+  );
+  schemaBase.embeddedCollectingEvent = data.embeddedCollectingEvent;
+  schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
+  schemaBase.paleoContextChildTable = data.paleoContextChildTable;
+  schemaBase.catalogNumFormatName = data.catalogNumFormatName;
+  schemaBase.collectionObjectTypeCatalogNumberFormats =
+    data.collectionObjectTypeCatalogNumberFormats;
+  schemaBase.defaultCollectionObjectType = data.defaultCollectionObjectType;
+  return schemaBase;
+});
+
+export const schema: Schema = schemaBase;
 
 /**
- * Returns a schema model object describing the named Specify model
- * Can wrap this function call in defined() to cast result to SpecifyModel
+ * Convenience function for unEscaping strings from schema localization information
  */
-export function getModel(name: string): SpecifyModel | undefined {
-  if (
-    process.env.NODE_ENV !== 'production' &&
-    Object.keys(schema.models).length === 0
-  )
-    throw new Error(
-      `Trying to get a table before data model is fetched.${
-        process.env.NODE_ENV === 'test'
-          ? ' If this is part of a test, you need to add requireContext() at the top of the test file'
-          : ''
-      }`
-    );
-  const lowerCase = name.toLowerCase();
-  return name === ''
-    ? undefined
-    : schema.models[name as keyof Tables] ??
-        Object.values(schema.models as unknown as IR<SpecifyModel>).find(
-          (model) => model.name.toLowerCase() === lowerCase
-        ) ??
-        Object.values(schema.models as unknown as IR<SpecifyModel>).find(
-          (model) => model.longName.toLowerCase() === lowerCase
-        );
-}
+export const unescape = (string: string): string =>
+  string.replaceAll(/([^\\])\\n/gu, '$1\n');
 
-export const strictGetModel = (name: string): SpecifyModel =>
-  defined(getModel(name), `Trying to get unknown model: ${name}`);
-
-export function getTreeModel(name: string): SpecifyModel<AnyTree> | undefined {
-  const model = getModel(name);
-  if (typeof model === 'object' && !isTreeModel(model.name))
-    throw new Error(`${name} is not a tree model`);
-  return model as unknown as SpecifyModel<AnyTree> | undefined;
-}
-
-/**
- * Looks up a schema model object describing Specify model using the Specify
- * tableId integer
- */
-export const getModelById = <SCHEMA extends AnySchema>(
-  tableId: number
-): SpecifyModel<SCHEMA> =>
-  (Object.values(schema.models).find((model) => model.tableId === tableId) as
-    | SpecifyModel<SCHEMA>
-    | undefined) ?? error(`Model with id ${tableId} does not exist`);
+if (process.env.NODE_ENV === 'development')
+  import('../../tests/updateDataModel').catch(console.error);

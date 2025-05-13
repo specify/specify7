@@ -1,122 +1,160 @@
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
+import type { RA, ValueOf } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
-import { addMissingFields } from './addMissingFields';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   AnySchema,
   AnyTree,
-  SerializedModel,
   SerializedResource,
   TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { parseResourceUrl, resourceToJson } from './resource';
-import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
-import type { SpecifyModel } from './specifyModel';
+import type { SpecifyTable } from './specifyTable';
 import type { Tables } from './types';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+/**
+ * Lookups for operaters and relationships in Queries on the backend are
+ * separated by `__`
+ * The api supports the same syntax in query paramters.
+ * For example `/api/specify/collectionobject/?collection__discipline__name__startswith="Invert"&catalognumber__gt=000000100`
+ * fetches all collectionobjects in disciplines which names start with
+ * "Invert" with catalognumbers greater than 100
+ */
+export const djangoLookupSeparator = '__';
 
-/** Like resource.toJSON(), but keys are converted to camel case */
-export const serializeResource = <SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
-): SerializedResource<SCHEMA> =>
-  serializeModel<SCHEMA>(
-    'toJSON' in resource ? resourceToJson(resource) : resource,
-    (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
-  );
+export const backboneFieldSeparator = '.';
 
-const specialFields = new Set([
-  'id',
-  'resource_uri',
-  'recordset_info',
-  '_tableName',
-]);
+/**
+ * Formats a relationship lookup which is used in a query passed to the backend.
+ * For example `formatRelationshipPath('collection', 'discipline', 'division')`
+ * becomes `'collection__discipline__division'`
+ */
+export const formatRelationshipPath = (...fields: RA<string>): string =>
+  fields.join(djangoLookupSeparator);
 
-/** Recursive helper for serializeResource */
-function serializeModel<SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA>,
-  tableName?: keyof Tables
-): SerializedResource<SCHEMA> {
-  const model = strictGetModel(
-    defined(
-      (tableName as SCHEMA['tableName']) ??
-        ('_tableName' in resource
-          ? (resource as SerializedResource<SCHEMA>)._tableName
-          : undefined) ??
-        parseResourceUrl(
-          'resource_uri' in resource
-            ? (resource as { readonly resource_uri: string }).resource_uri ?? ''
-            : ''
-        )?.[0],
-      `Unable to serialize resource because table name is unknown.${
-        process.env.NODE_ENV === 'test'
-          ? `\nMake sure your test file calls requireContext();`
-          : ''
-      }`
-    )
-  );
-  const fields = [...model.fields.map(({ name }) => name), model.idField.name];
+const weekDayMap = {
+  Sunday: 1,
+  Monday: 2,
+  Tuesday: 3,
+  Wednesday: 4,
+  Thursday: 5,
+  Friday: 6,
+  Saturday: 7,
+} as const;
 
-  return addMissingFields(
-    model.name,
-    Object.fromEntries(
-      Object.entries(resource).map(([lowercaseFieldName, value]) => {
-        let camelFieldName = fields.find(
-          (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
-        );
-        if (camelFieldName === undefined) {
-          camelFieldName = lowercaseFieldName;
-          if (!specialFields.has(lowercaseFieldName))
-            console.warn(
-              `Trying to serialize unknown field ${lowercaseFieldName} for table ${model.name}`,
-              resource
-            );
-        }
-        if (
-          typeof value === 'object' &&
-          value !== null &&
-          !specialFields.has(camelFieldName)
-        ) {
-          const field = model.getField(lowercaseFieldName);
-          const tableName =
-            field === undefined || !field.isRelationship
-              ? undefined
-              : field.relatedModel.name;
-          return [
-            camelFieldName,
-            Array.isArray(value)
-              ? value.map((value) =>
-                  serializeModel(
-                    value as unknown as SerializedModel<SCHEMA>,
-                    tableName
-                  )
-                )
-              : serializeModel(
-                  value as unknown as SerializedModel<AnySchema>,
-                  tableName
-                ),
-          ];
-        } else return [camelFieldName, value];
-      })
-    )
-  ) as SerializedResource<SCHEMA>;
-}
+const _backendFilters = (field: string, ...fieldTransforms: RA<string>) =>
+  ({
+    equals: (value: number | string) => ({
+      [[field, ...fieldTransforms, 'exact'].join(djangoLookupSeparator)]: value,
+    }),
+    contains: (value: string) => ({
+      [[field, ...fieldTransforms, 'contains'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveContains: (value: string) => ({
+      [[field, ...fieldTransforms, 'icontains'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveStartsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'istartswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    startsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'startswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    caseInsensitiveEndsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'iendswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    endsWith: (value: string) => ({
+      [[field, ...fieldTransforms, 'endswith'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    isIn: (value: RA<number | string>) => ({
+      [[field, ...fieldTransforms, 'in'].join(djangoLookupSeparator)]:
+        value.join(','),
+    }),
+    isNull: (value: 'false' | 'true' = 'true') => ({
+      [[field, ...fieldTransforms, 'isnull'].join(djangoLookupSeparator)]:
+        value,
+    }),
+    greaterThan: (value: number) => ({
+      [[field, ...fieldTransforms, 'gt'].join(djangoLookupSeparator)]: value,
+    }),
+    greaterThanOrEqualTo: (value: number) => ({
+      [[field, ...fieldTransforms, 'gte'].join(djangoLookupSeparator)]: value,
+    }),
+    lessThan: (value: number) => ({
+      [[field, ...fieldTransforms, 'lt'].join(djangoLookupSeparator)]: value,
+    }),
+    lessThanOrEqualTo: (value: number) => ({
+      [[field, ...fieldTransforms, 'lte'].join(djangoLookupSeparator)]: value,
+    }),
+    matchesRegex: (value: string) => ({
+      [[field, ...fieldTransforms, 'regex'].join(djangoLookupSeparator)]:
+        encodeURIComponent(value),
+    }),
+
+    dayEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'day'].join(djangoLookupSeparator)]: value,
+    }),
+    monthEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'month'].join(djangoLookupSeparator)]: value,
+    }),
+    yearEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'year'].join(djangoLookupSeparator)]: value,
+    }),
+    weekEquals: (value: number) => ({
+      [[field, ...fieldTransforms, 'week'].join(djangoLookupSeparator)]: value,
+    }),
+    weekDayEquals: (
+      value: ValueOf<typeof weekDayMap> | keyof typeof weekDayMap
+    ) => ({
+      [[field, ...fieldTransforms, 'week_day'].join(djangoLookupSeparator)]:
+        typeof value === 'number'
+          ? value
+          : caseInsensitiveHash(weekDayMap, value),
+    }),
+  }) as const;
+
+/**
+ * Use this to construct a query using a lookup for Django.
+ * Returns an object which can be used as a filter when fetched from the backend.
+ * Example:
+ * ```ts
+ * backendFilter('number1').isIn([1, 2, 3])
+ * // is the equivalent of
+ * {number1__in: [1, 2, 3].join(',')}
+ *
+ * // Filters can be negated using not
+ * backendFilter('text1').not.contains('someText')
+ * ```
+ *
+ *
+ * See the Django docs at:
+ * https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
+ */
+export const backendFilter = (field: string) => ({
+  not: _backendFilters(field, 'not'),
+  ..._backendFilters(field),
+});
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
   // @ts-expect-error
 ): resource is SpecifyResource<Tables[TABLE_NAME]> =>
-  resource.specifyModel.name === tableName;
+  resource.specifyTable.name === tableName;
 
 export const toTable = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  resource.specifyModel.name === tableName ? resource : undefined;
+  resource.specifyTable.name === tableName
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
@@ -127,17 +165,17 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
     : undefined;
 
 /**
- * The model.field has a very broad type to reduce type conflicts in components
+ * The table.field has a very broad type to reduce type conflicts in components
  * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
  */
 export const getField = <
-  SCHEMA extends Tables[keyof Tables],
-  FIELD extends TableFields<SCHEMA>
+  SCHEMA extends ValueOf<Tables>,
+  FIELD extends TableFields<SCHEMA>,
 >(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   name: FIELD
 ): FIELD extends keyof SCHEMA['fields'] ? LiteralField : Relationship =>
-  model.field[name] as FIELD extends keyof SCHEMA['fields']
+  table.field[name] as FIELD extends keyof SCHEMA['fields']
     ? LiteralField
     : Relationship;
 
@@ -150,19 +188,9 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
-
-export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
-): SpecifyResource<SCHEMA> =>
-  new schema.models[
-    /**
-     * This assertion, while not required by TypeScript, is needed to fix
-     * a typechecking performance issue (it was taking 5s to typecheck this
-     * line according to TypeScript trace analyzer)
-     */
-    (serializedResource as SerializedResource<SCHEMA>)._tableName
-  ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
+  f.includes(tableNames, resource.specifyTable.name)
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 /**
  * Example usage:
@@ -200,13 +228,13 @@ export async function fetchDistantRelated(
     fields === undefined || fields.length === 0
       ? resource
       : fields.length === 1
-      ? await resource.fetch()
-      : await resource.rgetPromise(
-          fields
-            .slice(0, -1)
-            .map(({ name }) => name)
-            .join('.')
-        );
+        ? await resource.fetch()
+        : await resource.rgetPromise(
+            fields
+              .slice(0, -1)
+              .map(({ name }) => name)
+              .join(backboneFieldSeparator)
+          );
 
   const field = fields?.at(-1);
   const relatedResource = related ?? undefined;
@@ -217,3 +245,10 @@ export async function fetchDistantRelated(
         field,
       };
 }
+
+// Cog types: Discrete, Consolidated, Drill Core
+export const cogTypes = {
+  DISCRETE: 'Discrete',
+  CONSOLIDATED: 'Consolidated',
+  DRILL_CORE: 'Drill Core',
+};

@@ -7,24 +7,22 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { fieldFormat } from '../../utils/fieldFormat';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
-  KEY,
-  sortFunction,
-} from '../../utils/utils';
+import { KEY, sortFunction } from '../../utils/utils';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -32,6 +30,12 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from '../Syncer/xmlUtils';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -59,6 +63,10 @@ export type Aggregator = {
   readonly format: string;
 };
 
+/*
+ * Use toSimpleXmlNode(xmlToJson())
+ * also see parseXml function in codeMirrorLinters.ts
+ */
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
@@ -77,33 +85,32 @@ export const fetchFormatters: Promise<{
           Array.from(
             definitions.getElementsByTagName('format'),
             (formatter) => {
-              const switchElement = formatter.getElementsByTagName('switch')[0];
+              const formatterNode = toSimpleXmlNode(xmlToJson(formatter));
+              const switchElement = formatterNode.children.switch[0];
               if (switchElement === undefined) return undefined;
               const isSingle =
                 getBooleanAttribute(switchElement, 'single') ?? true;
               const field = getParsedAttribute(switchElement, 'field');
               const fields = Array.from(
-                switchElement.getElementsByTagName('fields'),
+                switchElement.children.fields,
                 (fields) => ({
                   value: getAttribute(fields, 'value'),
-                  fields: Array.from(
-                    fields.getElementsByTagName('field'),
-                    (field) => ({
-                      fieldName: field.textContent?.trim() ?? '',
-                      separator: getAttribute(field, 'sep') ?? '',
-                      formatter: getParsedAttribute(field, 'formatter') ?? '',
-                      fieldFormatter: getParsedAttribute(field, 'format'),
-                    })
-                  ).filter(({ fieldName }) => fieldName.length > 0),
+                  fields: Array.from(fields.children.field, (field) => ({
+                    fieldName: field.text?.trim() ?? '',
+                    separator: getAttribute(field, 'sep') ?? '',
+                    formatter: getParsedAttribute(field, 'formatter') ?? '',
+                    fieldFormatter: getParsedAttribute(field, 'format'),
+                  })).filter(({ fieldName }) => fieldName.length > 0),
                 })
               ).filter(({ fields }) => fields.length > 0);
               // External DataObjFormatters are not supported
               if (fields.length === 0) return undefined;
               return {
-                name: getParsedAttribute(formatter, 'name'),
-                title: getParsedAttribute(formatter, 'title'),
-                className: getParsedAttribute(formatter, 'class'),
-                isDefault: getBooleanAttribute(formatter, 'default') ?? false,
+                name: getParsedAttribute(formatterNode, 'name'),
+                title: getParsedAttribute(formatterNode, 'title'),
+                className: getParsedAttribute(formatterNode, 'class'),
+                isDefault:
+                  getBooleanAttribute(formatterNode, 'default') ?? false,
                 fields,
                 switchFieldName:
                   typeof field === 'string' && !isSingle ? field : undefined,
@@ -114,14 +121,18 @@ export const fetchFormatters: Promise<{
         aggregators: filterArray(
           Array.from(
             definitions.getElementsByTagName('aggregator'),
-            (aggregator) => ({
-              name: getParsedAttribute(aggregator, 'name'),
-              title: getParsedAttribute(aggregator, 'title'),
-              className: getParsedAttribute(aggregator, 'class'),
-              isDefault: getParsedAttribute(aggregator, 'default') === 'true',
-              separator: getAttribute(aggregator, 'separator') ?? '',
-              format: getAttribute(aggregator, 'format') ?? '',
-            })
+            (aggregator) => {
+              const aggregatorNode = toSimpleXmlNode(xmlToJson(aggregator));
+              return {
+                name: getParsedAttribute(aggregatorNode, 'name'),
+                title: getParsedAttribute(aggregatorNode, 'title'),
+                className: getParsedAttribute(aggregatorNode, 'class'),
+                isDefault:
+                  getParsedAttribute(aggregatorNode, 'default') === 'true',
+                separator: getAttribute(aggregatorNode, 'separator') ?? '',
+                format: getAttribute(aggregatorNode, 'format') ?? '',
+              };
+            }
           )
         ),
       }))
@@ -132,7 +143,7 @@ export const fetchFormatters: Promise<{
 );
 
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  schema.models[tableName].literalFields
+  genericTables[tableName].literalFields
     .filter(
       ({ type, overrides }) =>
         type === 'java.lang.String' &&
@@ -172,30 +183,40 @@ export async function format<SCHEMA extends AnySchema>(
   tryBest: boolean = false
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
-  if (hasTablePermission(resource.specifyModel.name, 'read'))
-    await resource.fetch();
+  if (hasTablePermission(resource.specifyTable.name, 'read')) {
+    /*
+     * Handle the case for when the resource has been deleted from the database
+     * instead of throwing a NOT FOUND Error.
+     * This will use the 'naive' formatter for the resource
+     */
+    await hijackBackboneAjax(
+      [Http.NOT_FOUND],
+      async () => resource.fetch(),
+      () => f.void()
+    );
+  }
   const resolvedFormatterName =
-    formatterName ?? resource.specifyModel.getFormat();
+    formatterName ?? resource.specifyTable.getFormat();
 
   const { formatters } = await fetchFormatters;
   const formatter = resolveFormatter(
     formatters,
     resolvedFormatterName,
-    resource.specifyModel
+    resource.specifyTable
   );
 
   // Doesn't support switch fields that are in child objects
   const fields =
     typeof formatter.switchFieldName === 'string'
-      ? formatter.fields.find(
+      ? (formatter.fields.find(
           ({ value }) =>
             (value?.toString() ?? '') ===
             (resource.get(formatter.switchFieldName ?? '') ?? '').toString()
-        )?.fields ?? formatter.fields[0].fields
+        )?.fields ?? formatter.fields[0].fields)
       : formatter.fields[0].fields;
 
   const automaticFormatter = tryBest
-    ? naiveFormatter(resource.specifyModel.label, resource.id)
+    ? naiveFormatter(resource.specifyTable.label, resource.id)
     : undefined;
 
   /*
@@ -203,11 +224,13 @@ export async function format<SCHEMA extends AnySchema>(
    * no fields
    */
   const isEmptyResource = fields
-    .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
+    .map(({ fieldName }) =>
+      resource.get(fieldName.split(backboneFieldSeparator)[0])
+    )
     .every((value) => value === undefined || value === null || value === '');
 
   return isEmptyResource
-    ? automaticFormatter ?? undefined
+    ? (automaticFormatter ?? undefined)
     : Promise.all(
         fields.map(async (field) => formatField(field, resource, tryBest))
       ).then(
@@ -235,7 +258,7 @@ async function formatField(
   if (typeof fieldFormatter === 'string' && fieldFormatter === '')
     return { formatted: '' };
 
-  const fields = resource.specifyModel.getFields(fieldName);
+  const fields = resource.specifyTable.getFields(fieldName);
   if (fields === undefined) {
     console.error(`Tried to get unknown field: ${fieldName}`);
     return { formatted: '' };
@@ -255,16 +278,16 @@ async function formatField(
         >
       ).then(async (value) =>
         formatter.length > 0 && typeof value === 'object'
-          ? (await format(value, formatter)) ?? ''
+          ? ((await format(value, formatter)) ?? '')
           : fieldFormat(
               field,
-              resolveParser(field),
-              value as string | undefined
+              value as string | undefined,
+              resolveParser(field, undefined, resource)
             )
       )
     : tryBest
-    ? naiveFormatter(resource.specifyModel.name, resource.id)
-    : userText.noPermission();
+      ? naiveFormatter(resource.specifyTable.name, resource.id)
+      : userText.noPermission();
 
   return { formatted, separator: formatted ? separator : '' };
 }
@@ -272,7 +295,7 @@ async function formatField(
 const resolveFormatter = (
   formatters: RA<Formatter>,
   formatterName: string | undefined,
-  model: SpecifyModel
+  model: SpecifyTable
 ): Formatter =>
   formatters.find(({ name }) => name === formatterName) ??
   findDefaultFormatter(formatters, model.longName) ??
@@ -286,7 +309,7 @@ const findDefaultFormatter = (
     .filter(({ className }) => className === modelLongNmae)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
-const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
+const autoGenerateFormatter = (model: SpecifyTable): Formatter => ({
   name: model.name,
   title: model.name,
   className: model.longName,
@@ -312,13 +335,13 @@ export async function aggregate(
 ): Promise<string> {
   const { aggregators } = await fetchFormatters;
 
-  const aggregatorName = collection.model.specifyModel.getAggregator();
+  const aggregatorName = collection.table.specifyTable.getAggregator();
 
   const aggregator =
     aggregators.find(({ name }) => name === aggregatorName) ??
     aggregators.find(
       ({ className, isDefault }) =>
-        className === collection.model.specifyModel.longName && isDefault
+        className === collection.table.specifyTable.longName && isDefault
     );
 
   if (aggregator === undefined) softFail(new Error('Aggregator not found'));

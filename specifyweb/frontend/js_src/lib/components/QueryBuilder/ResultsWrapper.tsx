@@ -1,11 +1,16 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { GetSet, IR, RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
+import type {
+  SerializedRecord,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { SpQuery, Tables } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpQuery } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
@@ -13,6 +18,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
+  queryFieldIsPhantom,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
@@ -25,14 +31,14 @@ const fetchSize = 40;
 export function QueryResultsWrapper({
   createRecordSet,
   extraButtons,
-  model,
   onSelected: handleSelected,
+  onReRun: handleReRun,
   ...props
 }: ResultsProps & {
-  readonly model: SpecifyModel;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -47,7 +53,7 @@ export function QueryResultsWrapper({
           {...newProps}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
-          model={model}
+          onReRun={handleReRun}
           onSelected={handleSelected}
         />
       </ErrorBoundary>
@@ -56,7 +62,7 @@ export function QueryResultsWrapper({
 }
 
 type ResultsProps = {
-  readonly baseTableName: keyof Tables;
+  readonly table: SpecifyTable;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
@@ -65,7 +71,8 @@ type ResultsProps = {
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
-     * all of the fields
+     * all of the fields but still skips phantom fields because they are not displayed
+     * in the results table
      */
     newFields: RA<QueryField>
   ) => void;
@@ -77,18 +84,29 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'model' | 'onSelected'
+  'createRecordSet' | 'extraButtons' | 'model' | 'onReRun' | 'onSelected'
 >;
 
-const fetchResults = async (
-  fetchPayload: IR<unknown>,
-  offset: number
-): Promise<RA<QueryResultRow>> =>
-  ajax<{ readonly results: RA<QueryResultRow> }>('/stored_query/ephemeral/', {
+export const runQuery = async <ROW_TYPE extends QueryResultRow>(
+  query: SerializedRecord<SpQuery> | SerializedResource<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly offset: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<RA<ROW_TYPE>> =>
+  ajax<{
+    readonly results: RA<ROW_TYPE>;
+  }>('/stored_query/ephemeral/', {
     method: 'POST',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    errorMode: 'dismissible',
+
     headers: { Accept: 'application/json' },
-    body: { ...fetchPayload, offset },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+    }),
   }).then(({ data }) => data.results);
 
 /**
@@ -96,7 +114,7 @@ const fetchResults = async (
  * Query Builder (in the Specify Network)
  */
 export function useQueryResultsWrapper({
-  baseTableName,
+  table,
   queryRunCount,
   queryResource,
   fields,
@@ -127,25 +145,29 @@ export function useQueryResultsWrapper({
 
     const isDistinct = queryResource.get('selectDistinct') === true;
     const allFields = augmentQueryFields(
-      baseTableName,
+      table.name,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
       isDistinct
     );
 
-    const fetchPayload = keysToLowerCase({
-      ...queryResource.toJSON(),
-      fields: unParseQueryFields(baseTableName, allFields),
+    const fetchPayload = {
       collectionId: forceCollection,
       recordSetId,
       limit: fetchSize,
-    });
+    };
+
+    const query: SerializedResource<SpQuery> = {
+      ...serializeResource(queryResource),
+      fields: unParseQueryFields(table.name, allFields),
+    };
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
       method: 'POST',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      errorMode: 'dismissible',
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
+        ...query,
         ...fetchPayload,
         countOnly: true,
       }),
@@ -162,9 +184,9 @@ export function useQueryResultsWrapper({
 
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
-      : fetchResults(fetchPayload, 0);
+      : runQuery(query, { offset: 0, ...fetchPayload });
     const fieldSpecsAndFields = queryFieldsToFieldSpecs(
-      baseTableName,
+      table.name,
       displayedFields
     );
     const fieldSpecs = fieldSpecsAndFields.map(
@@ -175,12 +197,12 @@ export function useQueryResultsWrapper({
     initialData
       .then((initialData) =>
         setProps({
-          hasIdField: !isDistinct,
           queryResource,
           fetchSize,
+          table,
           fetchResults: isCountOnly
             ? undefined
-            : fetchResults.bind(undefined, fetchPayload),
+            : async (offset) => runQuery(query, { ...fetchPayload, offset }),
           allFields,
           displayedFields: queryFields,
           fieldSpecs,
@@ -193,15 +215,20 @@ export function useQueryResultsWrapper({
               ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
-                   * index differ
+                   * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const field = displayedFields[index];
+                  const displayField = displayedFields[index];
+                  const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
-                    replaceItem(allFields, index, {
-                      ...field,
-                      sortType,
-                    })
+                    replaceItem(
+                      allFields.filter((field) => !queryFieldIsPhantom(field)),
+                      lineIndex,
+                      {
+                        ...displayField,
+                        sortType,
+                      }
+                    )
                   );
                 }
               : undefined,
@@ -210,8 +237,7 @@ export function useQueryResultsWrapper({
       .catch(raise);
   }, [
     fields,
-    baseTableName,
-    fetchResults,
+    table,
     forceCollection,
     queryResource,
     queryRunCount,

@@ -16,21 +16,18 @@ import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import type { FilterTablesByEndsWith } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { TaxonTreeDef } from '../DataModel/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ResourceView } from '../Forms/ResourceView';
+import { deserializeResource } from '../DataModel/serializers';
+import { genericTables } from '../DataModel/tables';
 import {
   getDisciplineTrees,
+  getTreeDefinitions,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -68,7 +65,32 @@ export function TreeSelectDialog({
   const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
-  return typeof treeRanks === 'object' ? (
+  const treeData = React.useMemo(
+    () =>
+      typeof treeRanks === 'object'
+        ? getDisciplineTrees()
+            .filter((treeName) =>
+              permissionName === 'repair'
+                ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+                : hasTreeAccess(treeName, 'read')
+            )
+            .map((treeName) => {
+              const treeDefinitions = getTreeDefinitions(treeName);
+              if (treeDefinitions.length === 0) {
+                console.warn(`No tree definitions exist for ${treeName}`);
+                return [treeName, undefined] as const;
+              }
+
+              const defaultTreeDefinition = deserializeResource(
+                treeDefinitions[0].definition
+              );
+              return [treeName, defaultTreeDefinition] as const;
+            })
+        : undefined,
+    [permissionName, treeRanks]
+  );
+
+  return typeof treeRanks === 'object' && Array.isArray(treeData) ? (
     <Dialog
       buttons={
         <Button.Secondary onClick={handleClose}>
@@ -76,7 +98,7 @@ export function TreeSelectDialog({
         </Button.Secondary>
       }
       header={title}
-      icon={<span className="text-blue-500">{icons.tree}</span>}
+      icon={icons.tree}
       onClose={handleClose}
     >
       {isFinished ? (
@@ -84,49 +106,37 @@ export function TreeSelectDialog({
       ) : (
         <nav>
           <Ul className="flex flex-col gap-1">
-            {getDisciplineTrees()
-              .filter((treeName) =>
-                permissionName === 'repair'
-                  ? hasPermission(
-                      `/tree/edit/${toLowerCase(treeName)}`,
-                      'repair'
-                    )
-                  : hasTreeAccess(treeName, 'read')
-              )
-              .map((treeName) => {
-                const treeDefinition = treeRanks[treeName]?.definition as
-                  | SpecifyResource<TaxonTreeDef>
-                  | undefined;
-                return (
-                  <li className="contents" key={treeName}>
-                    <div className="flex gap-2">
-                      <Link.Default
-                        className="flex-1"
-                        href={getLink(treeName)}
-                        title={treeDefinition?.get('remarks') ?? undefined}
-                        onClick={(event): void => {
-                          if (handleClick === undefined) return;
-                          event.preventDefault();
-                          loading(
-                            Promise.resolve(handleClick(treeName)).then(() =>
-                              typeof confirmationMessage === 'string'
-                                ? setIsFinished()
-                                : handleClose()
-                            )
-                          );
-                        }}
-                      >
-                        <TableIcon label={false} name={treeName} />
-                        {treeDefinition?.get('name') ??
-                          schema.models[treeName].label}
-                      </Link.Default>
-                      {typeof treeDefinition === 'object' && (
-                        <EditTreeDefinition treeDefinition={treeDefinition} />
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+            {treeData.map(([treeName, treeDefinition]) => (
+              <li className="contents" key={treeName}>
+                <div className="flex gap-2">
+                  <Link.Default
+                    className="flex-1"
+                    href={getLink(treeName)}
+                    title={treeDefinition?.get('remarks') ?? undefined}
+                    onClick={(event): void => {
+                      if (handleClick === undefined) return;
+                      event.preventDefault();
+                      loading(
+                        Promise.resolve(handleClick(treeName)).then(() =>
+                          typeof confirmationMessage === 'string'
+                            ? setIsFinished()
+                            : handleClose()
+                        )
+                      );
+                    }}
+                  >
+                    <TableIcon label={false} name={treeName} />
+                    {genericTables[treeName].label}
+                  </Link.Default>
+                  {typeof treeDefinition === 'object' && (
+                    <ResourceEdit
+                      resource={treeDefinition}
+                      onSaved={(): void => globalThis.location.reload()}
+                    />
+                  )}
+                </div>
+              </li>
+            ))}
           </Ul>
         </nav>
       )}
@@ -137,6 +147,7 @@ export function TreeSelectDialog({
 const handleClick = async (tree: string): Promise<void> =>
   ping(`/api/specify_tree/${tree.toLowerCase()}/repair/`, {
     method: 'POST',
+    errorMode: 'dismissible',
   }).then(f.void);
 
 export function TreeRepairOverlay(): JSX.Element {
@@ -163,31 +174,5 @@ export function TreeRepairOverlay(): JSX.Element {
       onClick={setTree}
       onClose={handleClose}
     />
-  );
-}
-
-export function EditTreeDefinition({
-  treeDefinition,
-}: {
-  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <ErrorBoundary dismissible>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={treeDefinition}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      )}
-    </ErrorBoundary>
   );
 }

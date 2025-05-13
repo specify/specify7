@@ -17,10 +17,11 @@ import { rawUserToolsPromise } from './userToolDefinitions';
 
 const itemsPromise = f.store(async () =>
   f.all({
-    menuItems: rawMenuItemsPromise,
-    userTools: rawUserToolsPromise,
+    menuItems: rawMenuItemsPromise(),
+    userTools: rawUserToolsPromise(),
   })
 );
+
 export function useMenuItems(): RA<MenuItem> | undefined {
   const [preference] = userPreferences.use('header', 'appearance', 'items');
   const [items] = usePromise(itemsPromise(), false);

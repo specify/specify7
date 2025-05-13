@@ -1,32 +1,31 @@
-import { parseXml } from '../../components/AppResources/codeMirrorLinters';
-import { formatConjunction } from '../../components/Atoms/Internationalization';
+import { parseXml } from '../../components/AppResources/parseXml';
 import { handleAjaxError } from '../../components/Errors/FormatError';
-import { f } from '../functools';
-import type { RA } from '../types';
+import type { RA, ValueOf } from '../types';
 import { filterArray } from '../types';
-import { sortFunction } from '../utils';
 import { Http, httpCodeToErrorMessage } from './definitions';
-import type { AjaxResponseObject, MimeType } from './index';
+import type { AjaxErrorMode, AjaxResponseObject, MimeType } from './index';
 
 /**
  * Handle network response (parse the data, handle possible errors)
  */
 export function handleAjaxResponse<RESPONSE_TYPE = string>({
-  expectedResponseCodes,
+  expectedErrors,
   accept,
   response,
-  strict,
+  errorMode,
   text,
+  data,
 }: {
-  readonly expectedResponseCodes: RA<number>;
+  readonly expectedErrors: RA<number>;
   readonly accept: MimeType | undefined;
   readonly response: Response;
-  readonly strict: boolean;
+  readonly errorMode: AjaxErrorMode;
   readonly text: string;
+  readonly data?: unknown;
 }): AjaxResponseObject<RESPONSE_TYPE> {
   // BUG: silence all errors if the page begun reloading
   try {
-    if (expectedResponseCodes.includes(response.status)) {
+    if (response.ok || expectedErrors.includes(response.status)) {
       if (response.ok && accept === 'application/json') {
         try {
           return { data: JSON.parse(text), response, status: response.status };
@@ -52,6 +51,12 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
             statusText: `Failed parsing XML response: ${parsed}`,
             responseText: text,
           };
+      } else if (response.ok && accept === 'application/octet-stream') {
+        return {
+          data: data as RESPONSE_TYPE,
+          response,
+          status: response.status,
+        };
       } else
         return {
           // Assuming that RESPONSE_TYPE extends string
@@ -66,18 +71,11 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
         responseText: text,
       };
     else {
-      console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',
         statusText: filterArray([
-          `Invalid response code ${response.status}. Expected ${
-            expectedResponseCodes.length === 1 ? '' : 'one of '
-          }${formatConjunction(
-            Array.from(expectedResponseCodes)
-              .sort(sortFunction(f.id))
-              .map(f.toString)
-          )}.`,
-          httpCodeToErrorMessage[response.status],
+          `Invalid response code ${response.status}.`,
+          httpCodeToErrorMessage[response.status as ValueOf<typeof Http>],
           'Response:',
         ]),
         responseText: text,
@@ -85,6 +83,6 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
     }
   } catch (error) {
     console.error(error);
-    handleAjaxError(error, response, strict);
+    handleAjaxError(error, response, errorMode);
   }
 }

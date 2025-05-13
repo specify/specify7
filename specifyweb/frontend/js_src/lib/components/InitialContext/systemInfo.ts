@@ -2,25 +2,27 @@
  * Fetch basic server information
  */
 
-import { Http } from '../../utils/ajax/definitions';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ping } from '../../utils/ajax/ping';
 import { softFail } from '../Errors/Crash';
 import { formatUrl } from '../Router/queryString';
 import { load } from './index';
 
 type SystemInfo = {
-  readonly version: string;
-  readonly specify6_version: string;
-  readonly database_version: string;
-  readonly schema_version: string;
+  readonly version: LocalizedString;
+  readonly specify6_version: LocalizedString;
+  readonly database_version: LocalizedString;
+  readonly schema_version: LocalizedString;
   readonly collection: string;
-  readonly collection_guid: string;
+  readonly collection_guid: LocalizedString;
   readonly database: string;
   readonly discipline: string;
   readonly institution: string;
-  readonly institution_guid: string;
-  readonly isa_number: string;
+  readonly institution_guid: LocalizedString;
+  readonly isa_number: LocalizedString;
   readonly stats_url: string | null;
+  readonly discipline_type: string;
 };
 
 let systemInfo: SystemInfo;
@@ -43,6 +45,7 @@ export const fetchContext = load<SystemInfo>(
           collection: systemInfo.collection,
           collectionGUID: systemInfo.collection_guid,
           isaNumber: systemInfo.isa_number,
+          disciplineType: systemInfo.discipline_type,
         },
         /*
          * I don't know if the receiving server handles GET parameters in a
@@ -51,8 +54,7 @@ export const fetchContext = load<SystemInfo>(
          */
         false
       ),
-      {},
-      { strict: false, expectedResponseCodes: [Http.NO_CONTENT] }
+      { errorMode: 'silent' }
     ).catch(softFail);
   return systemInfo;
 });

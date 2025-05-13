@@ -27,7 +27,7 @@ export function Slider({
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
   return count > 0 ? (
-    <div className="flex justify-center gap-2 print:hidden">
+    <nav className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText.firstRecord()}
         disabled={value === 0 || handleChange === undefined}
@@ -49,21 +49,22 @@ export function Slider({
         <label
           className={`
             relative h-full after:invisible after:p-2
-            after:content-[attr(data-value)]
+            after:content-[attr(data-count)]
           `}
-          data-value={value}
+          data-count={count}
         >
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}
           </span>
-          <Input.Number
+          <Input.Integer
             className={`
-              no-arrows absolute top-0 left-0 h-full bg-white
+              no-arrows absolute left-0 top-0 h-full bg-white
               text-center font-bold ring-1 dark:bg-neutral-600
             `}
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)
             }
+            min={1}
             value={resolvedValue}
             onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
@@ -77,9 +78,6 @@ export function Slider({
              * invalid (as min is 1) which inhibits form submission
              */
             max={max}
-            min={1}
-            // Convert 0-based indexing to 1-based
-            step={1}
           />
         </label>
         <span>/</span>
@@ -102,6 +100,6 @@ export function Slider({
       >
         {icons.chevronDoubleRight}
       </Button.Small>
-    </div>
+    </nav>
   ) : null;
 }

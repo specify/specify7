@@ -1,12 +1,12 @@
 import _ from 'underscore';
 
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 import { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 const cacheKey = 'collectionPreferences';
-const throttleRate = 5 * MILLISECONDS;
+const throttleRate = 5 * SECOND;
 
 export const collectionPreferences = new BasePreferences({
   definitions: collectionPreferenceDefinitions,

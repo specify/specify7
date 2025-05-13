@@ -10,11 +10,13 @@ import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { genericTables, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
+import { getUiFormatters } from '../FieldFormatters';
 import { hasToolPermission } from '../Permissions/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
@@ -43,11 +45,12 @@ const auditLogActions = [
   queryText.treeMove(),
   queryText.treeSynonymize(),
   queryText.treeDesynonymize(),
+  queryText.treeBulkMove(),
 ] as const;
 
 const pickListSortTypes = f.store(() => [
   commonText.none(),
-  getField(schema.models.PickListItem, 'title').label,
+  getField(tables.PickListItem, 'title').label,
   commonText.ordinal(),
 ]);
 
@@ -56,6 +59,12 @@ export const userTypes = [
   'FullAccess',
   'LimitedAccess',
   'Guest',
+] as const;
+
+export const collectionObjectGroupTypeTypes = [
+  'Discrete',
+  'Consolidated',
+  'Drill Core',
 ] as const;
 
 export const PickListTypes = {
@@ -81,7 +90,7 @@ export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
-  const pickList = new schema.models.PickList.Resource(
+  const pickList = new tables.PickList.Resource(
     {},
     {
       noBusinessRules: true,
@@ -99,7 +108,7 @@ export function definePicklist(
 export const pickListTablesPickList = f.store(() =>
   definePicklist(
     '_TablesByName',
-    Object.values(schema.models).map(({ name, label }) =>
+    Object.values(genericTables).map(({ name, label }) =>
       createPickListItem(name.toLowerCase(), label)
     )
   )
@@ -146,9 +155,22 @@ export const getFrontEndPickLists = f.store<{
   // Like pickListTablesPickList, but indexed by tableId
   const tablesPickList = definePicklist(
     '_Tables',
-    Object.values(schema.models).map(({ tableId, label }) =>
+    Object.values(genericTables).map(({ tableId, label }) =>
       createPickListItem(tableId.toString(), label)
     )
+  );
+
+  const catalogNumberFormatters = definePicklist(
+    '_CatalogNumberUIFormatters',
+    Object.entries(getUiFormatters())
+      .filter(
+        ([_, formatter]) =>
+          formatter.field ===
+          tables.CollectionObject.strictGetLiteralField('catalogNumber')
+      )
+      .map(([formatterName, _]) =>
+        createPickListItem(formatterName, formatterName)
+      )
   );
 
   const frontEndPickLists = {
@@ -191,8 +213,15 @@ export const getFrontEndPickLists = f.store<{
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
+    CollectionObject: {
+      age: definePicklist('_GeologicTimePeriod', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'geologictimeperiod')
+        .set('fieldName', 'name'),
+    },
     GeographyTreeDef: { fullNameDirection },
     GeologicTimePeriodTreeDef: { fullNameDirection },
+    TectonicUnitTreeDef: { fullNameDirection },
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
@@ -201,6 +230,25 @@ export const getFrontEndPickLists = f.store<{
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
+    },
+    CollectionObjectType: {
+      name: definePicklist('_CollectionObjectType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjecttype')
+        .set('fieldName', 'name'),
+      catalogNumberFormatName: catalogNumberFormatters,
+    },
+    CollectionObjectGroupType: {
+      name: definePicklist('_CollectionObjectGroupType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjectgrouptype')
+        .set('fieldName', 'name'),
+      type: definePicklist(
+        '_CollectionObjectGroupTypeType',
+        collectionObjectGroupTypeTypes.map((title) =>
+          createPickListItem(title, title)
+        )
+      ),
     },
     CollectionRelType: {
       name: definePicklist('_CollectionRelType', [])
@@ -216,6 +264,9 @@ export const getFrontEndPickLists = f.store<{
         )
       ).set('readOnly', false),
     },
+    Collection: {
+      catalogNumFormatName: catalogNumberFormatters,
+    },
   };
 
   pickLists = {
@@ -230,25 +281,24 @@ export const getFrontEndPickLists = f.store<{
   return frontEndPickLists;
 });
 
-export const fetchPickLists = f.store(
-  async (): Promise<IR<SpecifyResource<PickList> | undefined>> =>
-    (hasToolPermission('pickLists', 'read')
-      ? fetchCollection('PickList', {
-          domainFilter: true,
-          limit: 0,
-        }).then(({ records }) => records)
-      : Promise.resolve([])
-    ).then(async (records) => {
-      getFrontEndPickLists();
-      pickLists = {
-        ...pickLists,
-        ...Object.fromEntries(
-          records.map(
-            (pickList) =>
-              [pickList.name, deserializeResource(pickList)] as const
-          )
-        ),
-      };
-      return pickLists;
-    })
-);
+export const fetchPickLists = async (): Promise<
+  IR<SpecifyResource<PickList> | undefined>
+> =>
+  (hasToolPermission('pickLists', 'read')
+    ? fetchCollection('PickList', {
+        domainFilter: true,
+        limit: 0,
+      }).then(({ records }) => records)
+    : Promise.resolve([])
+  ).then(async (records) => {
+    getFrontEndPickLists();
+    pickLists = {
+      ...pickLists,
+      ...Object.fromEntries(
+        records.map(
+          (pickList) => [pickList.name, deserializeResource(pickList)] as const
+        )
+      ),
+    };
+    return pickLists;
+  });

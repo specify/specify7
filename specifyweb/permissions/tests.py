@@ -1,14 +1,14 @@
 import json
 
-from django.test import TestCase, Client
+from django.test import Client
 
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
-from . import models, permissions, views, initialize
+from . import models, permissions, initialize
 
 class PermissionsApiTest(ApiTests):
     def setUp(self):
-        super(PermissionsApiTest, self).setUp()
+        super().setUp()
         initialize.wipe_permissions()
 
         models.UserPolicy.objects.create(

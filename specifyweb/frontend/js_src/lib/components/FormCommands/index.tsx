@@ -5,6 +5,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
+import type { ValueOf } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
@@ -12,7 +14,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { UiCommands } from '../FormParse/commands';
-import { LoanReturn } from '../Interactions/PrepReturnDialog';
+import { LoanReturn } from '../Interactions/LoanReturn';
 import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
@@ -42,8 +44,8 @@ export function GenerateLabel({
       {runReport ? (
         <ReportsView
           autoSelectSingle
-          model={resource.specifyModel}
           resourceId={resource.get('id')}
+          table={resource.specifyTable}
           onClose={handleHideReport}
         />
       ) : undefined}
@@ -80,7 +82,7 @@ const commandRenderers: {
       </>
     );
   },
-  ReturnLoan({ id, label = '', resource }) {
+  ReturnLoan({ id, label = localized(''), resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
     const loan = toTable(resource, 'Loan');
     return loan === undefined ? null : (
@@ -147,8 +149,8 @@ const commandRenderers: {
           onClose={handleHide}
         >
           {formsText.wrongTableForCommand({
-            currentTable: resource.specifyModel.name,
-            correctTable: formatDisjunction(supportedTables),
+            currentTable: resource.specifyTable.name,
+            correctTable: formatDisjunction(supportedTables.map(localized)),
           })}
         </Dialog>
       </>
@@ -165,11 +167,11 @@ export function UiCommand({
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
   readonly label: LocalizedString | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 }): JSX.Element | null {
   const Command = commandRenderers[
     commandDefinition.type
-  ] as typeof commandRenderers['GenerateLabel'];
+  ] as (typeof commandRenderers)['GenerateLabel'];
   return (
     <Command
       commandDefinition={commandDefinition as UiCommands['GenerateLabel']}

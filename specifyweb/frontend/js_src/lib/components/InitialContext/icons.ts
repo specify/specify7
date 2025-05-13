@@ -8,7 +8,7 @@ import type { RA } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import { load } from './index';
 
-const iconGroups = {} as Record<IconGroup, Document>;
+const iconGroups = {} as Record<IconGroup, Element>;
 
 export const fetchContext = Promise.all(
   Object.entries({
@@ -22,7 +22,7 @@ export const fetchContext = Promise.all(
     plugin: 'icons_plugins.xml',
     default: 'icons.xml',
   }).map(async ([iconGroup, fileName]) =>
-    load<Document>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
+    load<Element>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
       iconGroups[iconGroup] = xml;
     })
   )
@@ -56,7 +56,7 @@ export function getIcon(name: string): string | undefined {
 
 function findIconInXml(
   icon: string,
-  xml: Document,
+  xml: Element,
   cycleDetect: RA<string> = []
 ): Element | undefined {
   if (cycleDetect.includes(icon)) {
@@ -69,5 +69,5 @@ function findIconInXml(
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])
-    : iconNode ?? undefined;
+    : (iconNode ?? undefined);
 }

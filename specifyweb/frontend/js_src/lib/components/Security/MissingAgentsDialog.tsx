@@ -14,13 +14,12 @@ import { ErrorMessage, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
-import type { FormMode } from '../FormParse';
+import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { QueryComboBox } from '../QueryComboBox';
 import type { UserAgents } from './UserHooks';
 
 export type SetAgentsResponse = Partial<{
@@ -45,13 +44,11 @@ export function MissingAgentsDialog({
   userAgents,
   userId,
   onClose: handleClose,
-  mode: initialMode,
   response: initialResponse,
 }: {
   readonly userAgents: UserAgents | undefined;
   readonly userId: number;
   readonly onClose: () => void;
-  readonly mode: FormMode;
   readonly response: SetAgentsResponse;
 }): JSX.Element | null {
   const [response, setResponse] = React.useState(initialResponse);
@@ -72,7 +69,9 @@ export function MissingAgentsDialog({
                 }))
               )
             ).then((userAgents) =>
-              userAgents.sort(sortFunction(({ division }) => division.name))
+              Array.from(userAgents).sort(
+                sortFunction(({ division }) => division.name)
+              )
             )
           : undefined,
       [userAgents, response]
@@ -80,10 +79,9 @@ export function MissingAgentsDialog({
     true
   );
 
-  const mode =
-    initialMode === 'view' || !hasPermission('/admin/user/agents', 'update')
-      ? 'view'
-      : 'edit';
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !hasPermission('/admin/user/agents', 'update');
   const id = useId('user-agents-plugin');
   const loading = React.useContext(LoadingContext);
   return Array.isArray(data) ? (
@@ -91,7 +89,7 @@ export function MissingAgentsDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          {mode === 'edit' && (
+          {!isReadOnly && (
             <Submit.Save disabled={userAgents === undefined} form={id('form')}>
               {commonText.save()}
             </Submit.Save>
@@ -109,27 +107,22 @@ export function MissingAgentsDialog({
       <Form
         id={id('form')}
         onSubmit={(): void =>
-          mode === 'view'
+          isReadOnly
             ? undefined
             : loading(
-                ajax(
-                  `/api/set_agents/${userId}/`,
-                  {
-                    method: 'POST',
-                    headers: {},
-                    body: filterArray(
-                      userAgents!.map(({ address }) =>
-                        idFromUrl(address.get('agent') ?? '')
-                      )
-                    ),
-                  },
-                  {
-                    expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
-                  }
-                ).then(({ data, status }) =>
-                  status === Http.NO_CONTENT
-                    ? handleClose()
-                    : setResponse(JSON.parse(data))
+                ajax(`/api/set_agents/${userId}/`, {
+                  method: 'POST',
+                  headers: {},
+                  body: filterArray(
+                    userAgents!.map(({ address }) =>
+                      idFromUrl(address.get('agent') ?? '')
+                    )
+                  ),
+                  expectedErrors: [Http.BAD_REQUEST],
+                }).then(({ data, status }) =>
+                  status === Http.BAD_REQUEST
+                    ? setResponse(JSON.parse(data))
+                    : handleClose()
                 )
               )
         }
@@ -139,12 +132,11 @@ export function MissingAgentsDialog({
             <Label.Block key={division.id}>
               {division.name}
               <QueryComboBox
-                field={schema.models.Address.strictGetRelationship('agent')}
+                field={tables.Address.strictGetRelationship('agent')}
                 forceCollection={collections[0]}
                 formType="form"
                 id={undefined}
                 isRequired={isRequired}
-                mode={mode}
                 /*
                  * Since Agents are scoped to Division, scoping the query to any
                  * collection in that division would scope results to

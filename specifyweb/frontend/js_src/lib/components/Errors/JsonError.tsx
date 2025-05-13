@@ -2,10 +2,9 @@ import React from 'react';
 
 import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
-import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 
 type JsonResponse = {
@@ -17,26 +16,30 @@ type JsonResponse = {
 };
 
 function createJsonResponse(error: string): JsonResponse {
-  const json = JSON.parse(error);
-  const hasLocalizationKey = typeof json.data?.localizationKey === 'string';
+  const json = JSON.parse(error) as JsonResponse;
+  const data =
+    typeof json.data === 'string'
+      ? JSON.parse(json.data.replaceAll("'", '"'))
+      : json.data;
+  const hasLocalizationKey = typeof data?.localizationKey === 'string';
   return {
     exception: json.exception,
     message: hasLocalizationKey
-      ? resolveBackendLocalization(json)
+      ? resolveBackendLocalization(data)
       : json.message,
-    data: json.data,
-    formattedData: jsonStringify(json.data, 2),
+    data,
+    formattedData: JSON.stringify(json.data, null, 2),
     traceback: json.traceback,
   };
 }
 
 export function formatJsonBackendResponse(error: string): JSX.Element {
   const response = createJsonResponse(error);
-  if (response.exception == 'BusinessRuleException')
-    return formatBusinessRuleException(error);
-  else if (response.exception == 'TreeBusinessRuleException')
-    return formatTreeBusinessRuleException(error);
-  else return formatBasicResponse(error);
+  return response.exception === 'BusinessRuleException'
+    ? formatBusinessRuleException(response)
+    : response.exception === 'TreeBusinessRuleException'
+      ? formatTreeBusinessRuleException(response)
+      : formatBasicResponse(response);
 }
 
 /**
@@ -54,7 +57,7 @@ function JsonBackendResponseFooter({
   readonly response: JsonResponse;
   readonly isDataOpen?: boolean;
 }): JSX.Element {
-  const hasData = response.data != null;
+  const hasData = response.data === undefined || response.data === null;
   return (
     <>
       {hasData && (
@@ -98,8 +101,7 @@ function BusinessRuleExceptionHeader({
 /**
  * Formats a general, non-specify specific backend error.
  */
-function formatBasicResponse(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatBasicResponse(response: JsonResponse): JSX.Element {
   return (
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
@@ -109,8 +111,7 @@ function formatBasicResponse(error: string): JSX.Element {
   );
 }
 
-function formatBusinessRuleException(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatBusinessRuleException(response: JsonResponse): JSX.Element {
   const table: string = response.data.table;
   return (
     <>
@@ -127,8 +128,7 @@ function formatBusinessRuleException(error: string): JSX.Element {
  * to potentially stylize/format the json data in an easy to see
  * and read way
  */
-function formatTreeBusinessRuleException(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatTreeBusinessRuleException(response: JsonResponse): JSX.Element {
   const table: string = response.data.tree;
   return (
     <>
@@ -177,10 +177,10 @@ function resolveBackendLocalization(jsonResponseData: any): string {
       operation: jsonResponseData.operation,
       nodeModel: jsonResponseData.nodeModel,
     });
-  else if (localizationKey === 'mergeAcrossTrees')
-    return backEndText.mergeAcrossTrees();
-  else if (localizationKey === 'synonymizeAcrossTrees')
-    return backEndText.synonymizeAcrossTrees();
+  else if (localizationKey === 'operationAcrossTrees')
+    return backEndText.operationAcrossTrees({
+      operation: jsonResponseData.operation,
+    });
   else if (localizationKey === 'limitReachedDeterminingAccepted')
     return backEndText.limitReachedDeterminingAccepted({
       taxonId: jsonResponseData.taxonId,
@@ -202,8 +202,8 @@ function resolveBackendLocalization(jsonResponseData: any): string {
     });
   else if (localizationKey === 'actorIsNotSpecifyUser')
     return backEndText.actorIsNotSpecifyUser({
-      agentTable: schema.models.Agent.label,
-      specifyUserTable: schema.models.SpecifyUser.label,
+      agentTable: tables.Agent.label,
+      specifyUserTable: tables.SpecifyUser.label,
       actor: jsonResponseData.actor,
     });
   else if (localizationKey === 'unexpectedCollectionType')
@@ -213,7 +213,7 @@ function resolveBackendLocalization(jsonResponseData: any): string {
     });
   else if (localizationKey === 'invalidReportMimetype')
     return backEndText.invalidReportMimetype({
-      mimeTypeField: getField(schema.models.SpAppResource, 'mimeType').label,
+      mimeTypeField: getField(tables.SpAppResource, 'mimeType').label,
     });
   else if (localizationKey === 'fieldNotRelationship')
     return backEndText.fieldNotRelationship({ field: jsonResponseData.field });

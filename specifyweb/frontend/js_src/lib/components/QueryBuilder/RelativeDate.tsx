@@ -3,20 +3,16 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { StringToJsx } from '../../localization/utils';
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
-import {
-  parseRelativeDate,
-  reRelativeDate,
-  today,
-} from '../../utils/relativeDate';
+import { parseAnyDate, reRelativeDate, today } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
@@ -31,7 +27,7 @@ export function DateQueryInputField({
   fieldName,
 }: {
   readonly currentValue: string;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly parser: Parser;
   readonly fieldName: string;
   readonly onChange: ((newValue: string) => void) | undefined;
@@ -60,13 +56,17 @@ export function DateQueryInputField({
   const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
     parsed === undefined
   );
-
+  const title = isAbsolute
+    ? queryText.switchToRelative()
+    : queryText.switchToAbsolute();
   return (
     <div className="flex items-center gap-2">
       <Button.Small
-        aria-label={commonText.remove()}
+        aria-label={title}
+        aria-pressed={!isAbsolute}
         className="print:hidden"
-        title={commonText.remove()}
+        disabled={handleChange === undefined}
+        title={title}
         variant={className.secondaryLightButton}
         onClick={(): void => {
           toggleAbsolute();
@@ -80,7 +80,7 @@ export function DateQueryInputField({
             }
           } else {
             if (reRelativeDate.test(currentValue)) {
-              const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
+              const parsedDate = dayjs(parseAnyDate(currentValue)).format(
                 databaseDateFormat
               );
               handleChange?.(parsedDate);
@@ -142,7 +142,7 @@ function DateSplit({
       <StringToJsx
         components={{
           count: (size) => (
-            <Input.Number
+            <Input.Integer
               disabled={handleChange === undefined}
               min={0}
               value={size}

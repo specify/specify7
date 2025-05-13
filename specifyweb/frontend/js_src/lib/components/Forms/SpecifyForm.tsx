@@ -9,8 +9,11 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
@@ -21,8 +24,13 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { FormSkeleton } from '../SkeletonLoaders/Form';
 
-const FormLoadingContext = React.createContext<boolean>(false);
-FormLoadingContext.displayName = 'FormLoadingContext';
+const SpecifyFormContext = React.createContext<{
+  // Used to avoid duplicate loading bars
+  readonly isLoading: boolean;
+  // Used to detect recursion
+  readonly parents: RA<string>;
+}>({ isLoading: false, parents: [] });
+SpecifyFormContext.displayName = 'SpecifyFormContext';
 
 /**
  * Renders a form from ViewDescription and populates it with data from the
@@ -42,7 +50,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const id = useId(
-    `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
+    `form-${resource.specifyTable.name ?? viewDefinition?.table?.name ?? ''}`
   );
   const oldResourceRef = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined
@@ -58,7 +66,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     React.useCallback(
       async () =>
         hijackBackboneAjax(
-          [Http.OK, Http.NOT_FOUND],
+          [Http.NOT_FOUND],
           async () => resource.fetch(),
           (status) =>
             status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
@@ -76,19 +84,33 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
 
   // If parent resource is loading, don't duplicate the loading bar in children
-  const isAlreadyLoading = React.useContext(FormLoadingContext);
+  const formContext = React.useContext(SpecifyFormContext);
+  const isAlreadyLoading = formContext.isLoading;
   const showLoading = !isAlreadyLoading && (isLoading || isShowingOldResource);
+  const viewName = viewDefinition?.name;
+  const newFormContext = React.useMemo(
+    () => ({
+      isLoading: isAlreadyLoading || showLoading,
+      parents: filterArray([...formContext.parents, viewName]),
+    }),
+    [formContext, isAlreadyLoading, showLoading, viewName]
+  );
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
+
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || viewDefinition?.mode === 'view';
+  const isInSearchDialog =
+    React.useContext(SearchDialogContext) || viewDefinition?.mode === 'search';
   const [language] = userPreferences.use('form', 'schema', 'language');
 
   return viewDefinition?.name === attachmentView ? (
-    <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
+    <AttachmentsPlugin resource={resource} />
   ) : (
-    <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
+    <SpecifyFormContext.Provider value={newFormContext}>
       <div
         className={`
           shrink-0
@@ -117,55 +139,61 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
-            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
+            className={`
+              w-full 
+              ${showLoading ? 'pointer-events-none opacity-50' : ''}
+            `}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
             forwardRef={containerRef}
             // This shouldn't be an error
           >
-            {viewDefinition.rows.map((cells, index) => (
-              <React.Fragment key={index}>
-                {cells.map(
-                  (
-                    {
-                      colSpan,
-                      align,
-                      visible,
-                      id: cellId,
-                      verticalAlign,
-                      ...cellData
-                    },
-                    index
-                  ) => (
-                    <DataEntry.Cell
-                      align={align}
-                      colSpan={colSpan}
-                      key={index}
-                      verticalAlign={verticalAlign}
-                      visible={visible}
-                    >
-                      <FormCell
-                        align={align}
-                        cellData={cellData}
-                        formatId={id}
-                        formType={viewDefinition.formType}
-                        id={cellId}
-                        mode={viewDefinition.mode}
-                        resource={resolvedResource}
-                        verticalAlign={verticalAlign}
-                      />
-                    </DataEntry.Cell>
-                  )
-                )}
-              </React.Fragment>
-            ))}
+            <ReadOnlyContext.Provider value={isReadOnly}>
+              <SearchDialogContext.Provider value={isInSearchDialog}>
+                {viewDefinition.rows.map((cells, index) => (
+                  <React.Fragment key={index}>
+                    {cells.map(
+                      (
+                        {
+                          colSpan,
+                          align,
+                          visible,
+                          verticalAlign,
+                          id: cellId,
+                          ...cellData
+                        },
+                        index
+                      ) => (
+                        <DataEntry.Cell
+                          align={align}
+                          colSpan={colSpan}
+                          key={index}
+                          verticalAlign={verticalAlign}
+                          visible={visible}
+                        >
+                          <FormCell
+                            align={align}
+                            cellData={cellData}
+                            formatId={id}
+                            formType={viewDefinition.formType}
+                            id={cellId}
+                            resource={resolvedResource}
+                            verticalAlign={verticalAlign}
+                          />
+                        </DataEntry.Cell>
+                      )
+                    )}
+                  </React.Fragment>
+                ))}
+              </SearchDialogContext.Provider>
+            </ReadOnlyContext.Provider>
           </DataEntry.Grid>
         ) : (
           <FormSkeleton />
         )}
       </div>
-    </FormLoadingContext.Provider>
+    </SpecifyFormContext.Provider>
   );
 }
 

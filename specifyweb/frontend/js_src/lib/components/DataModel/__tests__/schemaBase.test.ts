@@ -1,13 +1,16 @@
 import { requireContext } from '../../../tests/helpers';
-import { removeKey } from '../../../utils/utils';
-import { fetchContext } from '../schemaBase';
+import { fetchContext } from '../schema';
 
 requireContext();
 
-test('domain data is fetched and parsed correctly', async () => {
-  const schema = await fetchContext;
-  expect(removeKey(schema, 'models')).toEqual({
+test('domain data is fetched and parsed correctly', async () =>
+  expect(fetchContext).resolves.toEqual({
     catalogNumFormatName: 'CatalogNumberNumeric',
+    collectionObjectTypeCatalogNumberFormats: {
+      '/api/specify/collectionobjecttype/1/': null,
+      '/api/specify/collectionobjecttype/2/': 'CatalogNumber',
+      '/api/specify/collectionobjecttype/3/': 'CatalogNumberNumericRegex',
+    },
     domainLevelIds: {
       collection: 4,
       discipline: 3,
@@ -16,6 +19,7 @@ test('domain data is fetched and parsed correctly', async () => {
     },
     embeddedCollectingEvent: false,
     embeddedPaleoContext: true,
+    defaultCollectionObjectType: '/api/specify/collectionobjecttype/1/',
     fieldPartSeparator: '-',
     orgHierarchy: [
       'CollectionObject',
@@ -25,8 +29,7 @@ test('domain data is fetched and parsed correctly', async () => {
       'Institution',
     ],
     paleoContextChildTable: 'collectionobject',
-    pathJoinSymbol: '.',
     referenceSymbol: '#',
-    treeSymbol: '$',
-  });
-});
+    treeRankSymbol: '$',
+    treeDefinitionSymbol: '%',
+  }));

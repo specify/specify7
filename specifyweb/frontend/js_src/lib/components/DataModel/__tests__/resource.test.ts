@@ -5,7 +5,6 @@ import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
 import { userPreferences } from '../../Preferences/userPreferences';
 import { addMissingFields } from '../addMissingFields';
-import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
 import type { SpecifyResource } from '../legacyTypes';
 import {
@@ -26,10 +25,13 @@ import {
   strictIdFromUrl,
   strictParseResourceUrl,
 } from '../resource';
-import { schema } from '../schema';
+import { serializeResource } from '../serializers';
+import { tables } from '../tables';
 import type { CollectionObject } from '../types';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
+
+import uniqueFields from '../uniqueFields.json';
 
 mockTime();
 requireContext();
@@ -49,7 +51,7 @@ describe('fetchResource', () => {
       serializeResource(baseAgentRecord)
     ));
   test('not found case', async () =>
-    expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
+    expect(fetchResource('Agent', 2, false)).resolves.toBeUndefined());
 });
 
 overrideAjax('/api/specify/locality/1/', '', {
@@ -74,8 +76,7 @@ overrideAjax(
     method: 'POST',
     responseCode: Http.CREATED,
     body: {
-      resource_uri: '/api/specify/locality/2/',
-      discipline: null,
+      discipline: getResourceApiUrl('Discipline', 3),
       localityname: 'name',
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
@@ -86,16 +87,18 @@ overrideAjax(
 test('createResource', async () =>
   expect(
     createResource('Locality', {
-      resource_uri: getResourceApiUrl('Locality', localityId),
-      id: localityId,
       localityName: 'name',
+      // This should get ignored
+      resource_uri: getResourceApiUrl('Locality', 123),
+      // This should get ignored
+      id: 44,
     })
   ).resolves.toEqual(
     addMissingFields('Locality', {
       resource_uri: getResourceApiUrl('Locality', localityId),
       id: localityId,
-      localityName: 'name',
       discipline: getResourceApiUrl('Discipline', 3),
+      localityName: 'name',
     })
   ));
 
@@ -210,7 +213,7 @@ describe('resourceFromUrl', () => {
     const resource = resourceFromUrl('/api/specify/collectionobject/123/', {
       noBusinessRules: true,
     })!;
-    expect(resource.specifyModel).toBe(schema.models.CollectionObject);
+    expect(resource.specifyTable).toBe(tables.CollectionObject);
     expect(resource.id).toBe(123);
     expect(resource.noBusinessRules).toBe(true);
   });
@@ -230,82 +233,69 @@ theories(parseJavaClassName, [
 ]);
 describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
-    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      getFieldsToClone(schema.models.SpQuery)
+    expect(getCarryOverPreference(tables.SpQuery, true, false)).toEqual(
+      getFieldsToClone(tables.SpQuery)
     ));
   test('customize carry over fields', () => {
     userPreferences.set('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
+    expect(getCarryOverPreference(tables.Locality, false, false)).toEqual([
       'localityName',
       'text1',
     ]);
-    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      getFieldsToClone(schema.models.SpQuery)
+    expect(getCarryOverPreference(tables.SpQuery, true, false)).toEqual(
+      getFieldsToClone(tables.SpQuery)
     );
   });
 });
 
-describe('getUniqueFields', () => {
-  test('CollectionObject', () =>
-    expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
-      'catalogNumber',
-      'guid',
-      'collectionObjectAttachments',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('Locality', () =>
-    expect(getUniqueFields(schema.models.Locality)).toEqual([
-      'localityAttachments',
-      'guid',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('AccessionAttachment', () =>
-    expect(getUniqueFields(schema.models.AccessionAttachment)).toEqual([
-      'attachment',
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
-  test('AccessionAgent', () =>
-    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([
-      'timestampCreated',
-      'version',
-      'timestampModified',
-    ]));
+/**
+ * If this test breaks, uniqueFields.json needs to be regenerated.
+ * 1. Go to the dev console on the browser
+ * 2. Run the function _getUniqueFields()
+ * 3. Paste the text into uniqueFields.json and format with prettier
+ */
+test('checkUniqueFields', () => {
+  Object.values(tables).map((table) =>
+    expect(getUniqueFields(table, false)).toEqual(
+      uniqueFields[table.name.toLowerCase() as keyof typeof uniqueFields]
+    )
+  );
 });
 
 test('getFieldsToNotClone', () => {
   userPreferences.set('form', 'preferences', 'carryForward', {
-    CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
+    CollectionObject: getFieldsToClone(tables.CollectionObject).filter(
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,
   });
-  expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, true, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',
     'projects',
   ]);
-  expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, false, false)).toEqual([
     'actualTotalCountAmt',
+    'age',
     'catalogNumber',
     'timestampModified',
     'guid',
+    'isMemberOfCOG',
     'text1',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',

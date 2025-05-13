@@ -4,7 +4,7 @@ import type {
 } from 'fast-xml-parser';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
-import { postProcessXml } from '../../components/AppResources/codeMirrorLinters';
+import { postProcessXml } from '../../components/Syncer/xmlToString';
 import type { IR, RA } from '../../utils/types';
 
 export type ParsedDom = RA<
@@ -74,7 +74,7 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
     ...(typeof node.tagName === 'string'
       ? { [node.tagName]: node.children }
       : {}),
-  } as ParsedDom[number]);
+  }) as ParsedDom[number];
 
 /**
  * It's important to use the same setting for parser and builder
@@ -107,5 +107,5 @@ export function nodeUnparseXml(dom: ParsedDom): string {
     format: true,
     suppressUnpairedNode: true,
   });
-  return postProcessXml(parser.build(dom));
+  return postProcessXml(parser.build(dom) as string);
 }

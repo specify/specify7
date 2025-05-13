@@ -1,17 +1,15 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { DataSetsDialog } from '../Toolbar/WbsDialog';
+import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
 import { ListOfBaseTables } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
@@ -40,13 +38,12 @@ function TemplateSelection({
           {wbPlanText.invalidTemplatePlan()}
         </Dialog>
       )}
-      <DataSetsDialog
-        showTemplates
+      <GenericDataSetsDialog
+        wbVariant="workbenchChoosePlan"
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>
           loading(
             ajax<Dataset>(`/api/workbench/dataset/${id}/`, {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               headers: { Accept: 'application/json' },
             }).then(({ data: { uploadplan, columns, visualorder } }) =>
               uploadplan === null
@@ -79,11 +76,6 @@ export function BaseTableSelection({
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
 }): JSX.Element {
-  const [showHiddenTables = true, setShowHiddenTables] = useCachedState(
-    'wbPlanViewUi',
-    'showHiddenTables'
-  );
-
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();
 
@@ -109,17 +101,7 @@ export function BaseTableSelection({
       header={wbPlanText.selectBaseTable()}
       onClose={handleClose}
     >
-      <ListOfBaseTables
-        showHiddenTables={showHiddenTables}
-        onChange={handleSelected}
-      />
-      <Label.Inline>
-        <Input.Checkbox
-          checked={showHiddenTables}
-          onChange={(): void => setShowHiddenTables(!showHiddenTables)}
-        />
-        {wbPlanText.showAdvancedTables()}
-      </Label.Inline>
+      <ListOfBaseTables onClick={handleSelected} />
     </Dialog>
   );
 }

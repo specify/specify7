@@ -12,24 +12,22 @@ import { ping } from '../../utils/ajax/ping';
 import { cachableUrls } from '../InitialContext';
 import { Dialog } from '../Molecules/Dialog';
 
-export const clearCache = async (): Promise<true> =>
-  Promise.all(
-    Array.from(cachableUrls, async (endpoint) =>
-      ping(
-        endpoint,
-        { method: 'HEAD', cache: 'no-cache' },
-        {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
-        }
-      ).then(() => console.log(`Cleaned cache from ${endpoint}`))
-    )
-  ).then(() => {
+export const clearAllCache = async (): Promise<true> =>
+  Promise.all(Array.from(cachableUrls, clearUrlCache)).then(() => {
     localStorage.clear();
     return true;
   });
 
+export const clearUrlCache = async (url: string): Promise<void> =>
+  ping(url, {
+    method: 'HEAD',
+    cache: 'no-cache',
+    errorMode: 'silent',
+    expectedErrors: [Http.NOT_FOUND, Http.NOT_ALLOWED],
+  }).then(() => console.log(`Cleaned cache from ${url}`));
+
 export function CacheBuster(): JSX.Element | null {
-  const [isLoaded] = useAsyncState(clearCache, true);
+  const [isLoaded] = useAsyncState(clearAllCache, true);
 
   return isLoaded === true ? (
     <Dialog

@@ -15,19 +15,20 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
+import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
 import type { IR, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { smoothScroll } from '../QueryBuilder/helpers';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
@@ -39,6 +40,7 @@ import type { MappingElementProps } from './LineComponents';
 import { getMappingLineProps, MappingLineComponent } from './LineComponents';
 import { columnOptionsAreDefault } from './linesGetter';
 import {
+  BatchEditPrefsView,
   ChangeBaseTable,
   EmptyDataSetDialog,
   mappingOptionsMenu,
@@ -49,9 +51,11 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './MapperComponents';
+import { emptyMapping } from './mappingHelpers';
 import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
@@ -99,44 +103,66 @@ export type MappingState = State<
     readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
     readonly openSelectElement?: SelectElementPosition;
     readonly validationResults: RA<MappingPath>;
+    readonly batchEditPrefs?: BatchEditPrefs;
   }
 >;
+
+export type ReadonlySpec = {
+  readonly mustMatch: boolean;
+  readonly columnOptions: boolean;
+  readonly batchEditPrefs: boolean;
+};
+
+export type BatchEditPrefs = {
+  readonly deferForNullCheck: boolean;
+  readonly deferForMatch: boolean;
+};
+
+export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
+  deferForMatch: true,
+  deferForNullCheck: false,
+} as const;
 
 export const getDefaultMappingState = ({
   changesMade,
   lines,
   mustMatchPreferences,
+  batchEditPrefs,
 }: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): MappingState => ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
   showMappingView: getCache('wbPlanViewUi', 'showMappingView') ?? true,
-  mappingView: ['0'],
+  mappingView: [emptyMapping],
   mappingsAreValidated: false,
   validationResults: [],
   lines,
   focusedLine: 0,
   changesMade,
   mustMatchPreferences,
+  batchEditPrefs,
 });
 
 // REFACTOR: split component into smaller components
 export function Mapper(props: {
-  readonly isReadOnly: boolean;
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
     lines: RA<MappingLine>,
-    mustMatchPreferences: IR<boolean>
+    mustMatchPreferences: IR<boolean>,
+    batchEditPrefs?: BatchEditPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly readonlySpec?: ReadonlySpec;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -144,6 +170,7 @@ export function Mapper(props: {
       changesMade: props.changesMade,
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
+      batchEditPrefs: props.batchEditPrefs,
     },
     getDefaultMappingState
   );
@@ -262,7 +289,13 @@ export function Mapper(props: {
     const validationResults = ignoreValidation ? [] : validate();
     if (validationResults.length === 0) {
       unsetUnloadProtect();
-      loading(props.onSave(state.lines, state.mustMatchPreferences));
+      loading(
+        props.onSave(
+          state.lines,
+          state.mustMatchPreferences,
+          state.batchEditPrefs
+        )
+      );
     } else
       dispatch({
         type: 'ValidationAction',
@@ -270,21 +303,37 @@ export function Mapper(props: {
       });
   }
 
+  function clearUnmappedLines(): void {
+    const filteredLines = state.lines.filter(
+      (line) => line.mappingPath[0] !== emptyMapping
+    );
+    dispatch({
+      type: 'UpdateLinesAction',
+      lines: filteredLines,
+    });
+  }
+
   const handleClose = (): void =>
     dispatch({
       type: 'CloseSelectElementAction',
     });
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const mapButtonEnabled =
-    !props.isReadOnly &&
+    !isReadOnly &&
     state.lines.length > 0 &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
 
+  const disableSave =
+    props.readonlySpec === undefined
+      ? isReadOnly
+      : Object.values(props.readonlySpec).every(Boolean);
+
   return (
     <Layout
       buttonsLeft={
-        props.isReadOnly ? undefined : (
+        isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
             <Button.Small
@@ -324,40 +373,62 @@ export function Mapper(props: {
               })
             }
           />
-          <MustMatch
-            getMustMatchPreferences={(): IR<boolean> =>
-              getMustMatchTables({
-                baseTableName: props.baseTableName,
-                lines: state.lines,
-                mustMatchPreferences: state.mustMatchPreferences,
-              })
-            }
-            isReadOnly={props.isReadOnly}
-            onChange={(mustMatchPreferences): void =>
-              dispatch({
-                type: 'MustMatchPrefChangeAction',
-                mustMatchPreferences,
-              })
-            }
-            onClose={(): void => {
-              /*
-               * Since setting table as must match causes all of its fields to
-               * be optional, we may have to rerun validation on
-               * mustMatchPreferences changes
-               */
-              if (
-                state.validationResults.length > 0 &&
-                state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
-                )
-              )
+          {typeof props.batchEditPrefs === 'object' ? (
+            <ReadOnlyContext.Provider
+              value={
+                props.dataset.uploadresult?.success ??
+                props.readonlySpec?.batchEditPrefs ??
+                isReadOnly
+              }
+            >
+              <BatchEditPrefsView
+                prefs={props.batchEditPrefs}
+                onChange={(prefs) =>
+                  dispatch({
+                    type: 'ChangeBatchEditPrefs',
+                    prefs,
+                  })
+                }
+              />
+            </ReadOnlyContext.Provider>
+          ) : null}
+          <ReadOnlyContext.Provider
+            value={props.readonlySpec?.mustMatch ?? isReadOnly}
+          >
+            <MustMatch
+              getMustMatchPreferences={(): IR<boolean> =>
+                getMustMatchTables({
+                  baseTableName: props.baseTableName,
+                  lines: state.lines,
+                  mustMatchPreferences: state.mustMatchPreferences,
+                })
+              }
+              onChange={(mustMatchPreferences): void =>
                 dispatch({
-                  type: 'ValidationAction',
-                  validationResults: validate(),
-                });
-            }}
-          />
-          {!props.isReadOnly && (
+                  type: 'ChangeMustMatchPrefAction',
+                  mustMatchPreferences,
+                })
+              }
+              onClose={(): void => {
+                /*
+                 * Since setting table as must match causes all of its fields to
+                 * be optional, we may have to rerun validation on
+                 * mustMatchPreferences changes
+                 */
+                if (
+                  state.validationResults.length > 0 &&
+                  state.lines.some(({ mappingPath }) =>
+                    mappingPathIsComplete(mappingPath)
+                  )
+                )
+                  dispatch({
+                    type: 'ValidationAction',
+                    validationResults: validate(),
+                  });
+              }}
+            />
+          </ReadOnlyContext.Provider>
+          {!isReadOnly && (
             <Button.Small
               className={
                 state.mappingsAreValidated
@@ -382,15 +453,17 @@ export function Mapper(props: {
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
-            {props.isReadOnly ? wbText.dataEditor() : commonText.cancel()}
+            {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
-          {!props.isReadOnly && (
-            <Button.Save
+          {!disableSave && (
+            <Button.Small
               disabled={!state.changesMade}
-              onClick={(): void => handleSave(false)}
+              variant={className.saveButton}
+              // This is a bit complicated to resolve correctly. Each component should have its own validator..
+              onClick={(): void => handleSave(isReadOnly)}
             >
               {commonText.save()}
-            </Button.Save>
+            </Button.Small>
           )}
         </>
       }
@@ -399,7 +472,7 @@ export function Mapper(props: {
           <TableIcon label name={props.baseTableName} />
           <span title={wbText.dataSetName()}>{props.dataset.name}</span>
           <span title={wbPlanText.baseTable()}>
-            {` (${strictGetModel(props.baseTableName).label})`}
+            {` (${strictGetTable(props.baseTableName).label})`}
           </span>
           {props.dataset.uploadresult?.success === true && (
             <span
@@ -413,7 +486,7 @@ export function Mapper(props: {
       }
       onClick={handleClose}
     >
-      {!props.isReadOnly && state.validationResults.length > 0 && (
+      {!isReadOnly && state.validationResults.length > 0 && (
         <ValidationResults
           baseTableName={props.baseTableName}
           getMappedFields={getMappedFieldsBind}
@@ -443,12 +516,13 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
-              else if (!props.isReadOnly)
+              else if (!isReadOnly)
                 dispatch({
                   type: 'ChangeSelectElementValueAction',
                   line: 'mappingView',
@@ -503,7 +577,7 @@ export function Mapper(props: {
 
           const lineData = getMappingLineProps({
             customSelectType: 'CLOSED_LIST',
-            onChange: props.isReadOnly
+            onChange: isReadOnly
               ? undefined
               : (payload): void =>
                   dispatch({
@@ -513,7 +587,7 @@ export function Mapper(props: {
                   }),
             onOpen: handleOpen,
             onClose: handleClose,
-            onAutoMapperSuggestionSelection: props.isReadOnly
+            onAutoMapperSuggestionSelection: isReadOnly
               ? undefined
               : (suggestion: string): void =>
                   dispatch({
@@ -522,7 +596,7 @@ export function Mapper(props: {
                   }),
             openSelectElement,
             autoMapperSuggestions:
-              (!props.isReadOnly && state.autoMapperSuggestions) || [],
+              (!isReadOnly && state.autoMapperSuggestions) || [],
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
@@ -530,6 +604,7 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
           });
 
@@ -542,7 +617,7 @@ export function Mapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    isReadOnly: props.isReadOnly,
+                    isReadOnly: props.readonlySpec?.columnOptions ?? isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({
@@ -596,7 +671,6 @@ export function Mapper(props: {
               <MappingLineComponent
                 headerName={headerName}
                 isFocused={line === state.focusedLine}
-                isReadOnly={props.isReadOnly}
                 lineData={fullLineData}
                 // Same key bindings as in QueryBuilder
                 onClearMapping={(): void =>
@@ -617,38 +691,30 @@ export function Mapper(props: {
                       ? state.openSelectElement.index
                       : undefined;
 
-                  if (typeof openSelectElement === 'number') {
-                    if (key === 'ArrowLeft')
-                      if (openSelectElement > 0)
-                        handleOpen(openSelectElement - 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-                    else if (key === 'ArrowRight')
-                      if (openSelectElement + 1 < fullLineData.length)
-                        handleOpen(openSelectElement + 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-
-                    return;
-                  }
-
-                  if (key === 'ArrowLeft') handleOpen(fullLineData.length - 1);
-                  else if (key === 'ArrowRight' || key === 'Enter')
-                    handleOpen(0);
-                  else if (key === 'ArrowUp' && line > 0)
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line - 1,
-                    });
-                  else if (key === 'ArrowDown' && line + 1 < state.lines.length)
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line + 1,
-                    });
+                  handleMappingLineKey({
+                    key,
+                    openedElement: openSelectElement,
+                    lineLength: fullLineData.length,
+                    onOpen: handleOpen,
+                    onClose: () =>
+                      dispatch({
+                        type: 'CloseSelectElementAction',
+                      }),
+                    onFocusPrevious: () =>
+                      line > 0
+                        ? dispatch({
+                            type: 'FocusLineAction',
+                            line: line - 1,
+                          })
+                        : undefined,
+                    onFocusNext: () =>
+                      line + 1 < state.lines.length
+                        ? dispatch({
+                            type: 'FocusLineAction',
+                            line: line + 1,
+                          })
+                        : undefined,
+                  });
                 }}
               />
             </ErrorBoundary>
@@ -657,9 +723,10 @@ export function Mapper(props: {
       </Ul>
 
       <MappingsControlPanel
+        columnsNotSaved={props.dataset.columns.length === 0}
         showHiddenFields={state.showHiddenFields}
         onAddNewHeader={
-          props.isReadOnly
+          isReadOnly
             ? undefined
             : (newHeaderName): void => {
                 dispatch({ type: 'AddNewHeaderAction', newHeaderName });
@@ -671,6 +738,7 @@ export function Mapper(props: {
                   );
               }
         }
+        onClear={clearUnmappedLines}
         onToggleHiddenFields={(): void =>
           dispatch({ type: 'ToggleHiddenFieldsAction' })
         }
@@ -678,4 +746,38 @@ export function Mapper(props: {
       <EmptyDataSetDialog lineCount={state.lines.length} />
     </Layout>
   );
+}
+
+export function handleMappingLineKey({
+  key,
+  openedElement,
+  lineLength,
+  onOpen: handleOpen,
+  onClose: handleClose,
+  onFocusNext: handleFocusNext,
+  onFocusPrevious: handleFocusPrevious,
+}: {
+  readonly key: string;
+  readonly openedElement: number | undefined;
+  readonly lineLength: number;
+  readonly onOpen: ((index: number) => void) | undefined;
+  readonly onClose: (() => void) | undefined;
+  readonly onFocusNext: () => void;
+  readonly onFocusPrevious: () => void;
+}): void {
+  if (typeof openedElement === 'number') {
+    if (key === 'ArrowLeft')
+      if (openedElement > 0) handleOpen?.(openedElement - 1);
+      else handleClose?.();
+    else if (key === 'ArrowRight')
+      if (openedElement + 1 < lineLength) handleOpen?.(openedElement + 1);
+      else handleClose?.();
+
+    return;
+  }
+
+  if (key === 'ArrowLeft') handleOpen?.(lineLength - 1);
+  else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
+  else if (key === 'ArrowUp') handleFocusPrevious();
+  else if (key === 'ArrowDown') handleFocusNext();
 }

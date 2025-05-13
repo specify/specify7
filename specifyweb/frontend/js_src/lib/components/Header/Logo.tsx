@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 import { userPreferences } from '../Preferences/userPreferences';
 
@@ -16,6 +17,7 @@ export function Logo({
     'appearance',
     'customLogoCollapsed'
   );
+  const hueDifference = useHueDifference();
 
   return (
     <h1 className="contents">
@@ -27,7 +29,7 @@ export function Logo({
     `}
         href="/specify/"
       >
-        {/* Both logs are loaded to prevent flickering on collapse/expand */}
+        {/* Both logos are loaded to prevent flickering on collapse/expand */}
         <img
           alt=""
           className={`
@@ -35,6 +37,7 @@ export function Logo({
         ${isCollapsed ? 'hidden' : ''}
       `}
           src="/static/img/logo.svg"
+          style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
         <img
           alt=""
@@ -44,17 +47,17 @@ export function Logo({
       ${isHorizontal ? 'w-10' : ''}
     `}
           src="/static/img/short_logo.svg"
+          style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
         {logo === '' ? (
           ''
         ) : (
           <img
             alt=""
-            className={`max-h-[theme(spacing.24)] max-w-[theme(spacing.24)]
-        hover:animate-hue-rotate
+            className={`hover:animate-hue-rotate max-h-[theme(spacing.24)]
+        max-w-[theme(spacing.24)]
         ${isCollapsed ? 'hidden' : ''}
       `}
-            crossOrigin="anonymous"
             src={logo}
           />
         )}
@@ -63,12 +66,11 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`max-h-[theme(spacing.16)] max-w-[theme(spacing.16)]
-      hover:animate-hue-rotate
+            className={`hover:animate-hue-rotate max-h-[theme(spacing.16)]
+      max-w-[theme(spacing.16)]
       ${isCollapsed ? '' : 'hidden'}
       ${isHorizontal ? 'w-10' : ''}
     `}
-            crossOrigin="anonymous"
             src={collapsedLogo}
           />
         )}

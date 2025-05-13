@@ -1,5 +1,5 @@
 import dayJs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
+import advancedFormat from 'dayjs/plugin/advancedFormat.js';
 
 /*
  * Day.js is a drop-in replacement for deprecated moment.js

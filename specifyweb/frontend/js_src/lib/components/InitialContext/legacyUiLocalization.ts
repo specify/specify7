@@ -10,13 +10,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { LANGUAGE } from '../../localization/utils/config';
 import { getProperty } from '../../utils/javaProperties';
+import { localized } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =
   bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
-const bundles = {} as Record<typeof bundleNames[number], string>;
+const bundles = {} as Record<(typeof bundleNames)[number], string>;
 
 const bundleNames = [
   'resources',
@@ -37,5 +38,8 @@ export const fetchContext = Promise.all(
 );
 
 export const legacyLocalize = (key: string): LocalizedString =>
-  (mappedFind(Object.values(bundles), (content) => getProperty(content, key)) ??
-    key) as LocalizedString;
+  localized(
+    mappedFind(Object.values(bundles), (content) =>
+      getProperty(content, key)
+    ) ?? key
+  );

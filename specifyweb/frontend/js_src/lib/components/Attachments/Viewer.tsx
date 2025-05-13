@@ -1,22 +1,24 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { serializeResource } from '../DataModel/helpers';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import {
   originalAttachmentsView,
+  propsToFormMode,
   useViewDefinition,
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
@@ -35,7 +37,7 @@ export function AttachmentViewer({
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly showMeta?: boolean;
   readonly onViewRecord:
-    | ((model: SpecifyModel, recordId: number) => void)
+    | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
   const serialized = React.useMemo(
@@ -47,31 +49,33 @@ export function AttachmentViewer({
     false
   );
 
+  const title = localized(attachment.get('title') ?? undefined);
+
   const [displayOriginal] = userPreferences.use(
     'attachments',
     'behavior',
     'displayOriginal'
   );
-
-  const title = attachment.get('title') as LocalizedString | undefined;
   const attachmentTable = React.useMemo(() => {
     const tableId = attachment.get('tableID');
     if (typeof tableId !== 'number') return undefined;
     const table = getAttachmentTable(tableId);
     return typeof table === 'object'
-      ? getModel(`${table.name}Attachment`)
+      ? getTable(`${table.name}Attachment`)
       : undefined;
   }, [attachment]);
 
+  const isReadOnly = augmentMode(
+    React.useContext(ReadOnlyContext),
+    related?.isNew() ?? attachment.isNew(),
+    attachmentTable?.name
+  );
+  const isInSearchDialog = React.useContext(SearchDialogContext);
   const viewDefinition = useViewDefinition({
-    model: attachmentTable,
+    table: attachmentTable,
     viewName: attachmentTable?.name,
     formType: 'form',
-    mode: augmentMode(
-      'edit',
-      related?.isNew() ?? attachment.isNew(),
-      attachmentTable?.name
-    ),
+    mode: propsToFormMode(isReadOnly, isInSearchDialog),
   });
 
   // If view doesn't exists, viewDefinition.name would be empty string
@@ -96,17 +100,22 @@ export function AttachmentViewer({
     false
   );
 
-  const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
+  const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+
   return (
-    <div className="flex h-full justify-center gap-8">
-      <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center justify-center">
+    <>
+      <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
         {displayOriginal === 'full' ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <img alt={title} src={originalUrl} />
+            <img
+              alt={title}
+              className="max-h-full max-w-full object-contain"
+              src={originalUrl}
+            />
           ) : type === 'video' ? (
             /*
              * Subtitles for attachments not yet supported
@@ -146,7 +155,6 @@ export function AttachmentViewer({
         ) : (
           <Thumbnail
             attachment={serializeResource(attachment)}
-            className="!border-none"
             thumbnail={thumbnail}
           />
         )}
@@ -159,12 +167,11 @@ export function AttachmentViewer({
          * won't be applied
          */
         showMeta || attachment.isNew() ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <ResourceView
               dialog={false}
               isDependent={false}
               isSubForm
-              mode="edit"
               resource={showCustomForm ? related : attachment}
               /*
                * Have to override the title because formatted resource string
@@ -206,8 +213,8 @@ export function AttachmentViewer({
                   <AttachmentRecordLink
                     attachment={serialized}
                     className="flex-1"
-                    model={table}
                     related={[related, setRelated]}
+                    table={table}
                     variant="button"
                     onViewRecord={handleViewRecord}
                   />
@@ -217,6 +224,6 @@ export function AttachmentViewer({
           </div>
         ) : undefined
       }
-    </div>
+    </>
   );
 }

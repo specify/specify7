@@ -2,14 +2,18 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
-import { syncFieldFormat } from '../../utils/fieldFormat';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
@@ -17,16 +21,14 @@ import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
 export function QueryResultsTable({
-  model,
+  table,
   fieldSpecs,
-  hasIdField,
   results,
   selectedRows,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly hasIdField: boolean;
   readonly results: RA<QueryResultRow>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
@@ -36,29 +38,28 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
-    () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
-    [fieldSpecs, hasIdField]
+    () => getAuditRecordFormatter(fieldSpecs),
+    [fieldSpecs]
+  );
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
   );
   return (
     <>
       {results.map((result, index, { length }) => (
         <Row
           fieldSpecs={fieldSpecs}
-          hasIdField={hasIdField}
           isLast={index + 1 === length}
-          isSelected={
-            hasIdField &&
-            selectedRows.has(results[index][queryIdField] as number)
-          }
+          isSelected={selectedRows.has(results[index][queryIdField] as number)}
           key={index}
-          model={model}
+          lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
-          onSelected={
-            hasIdField
-              ? (isSelected, isShiftClick): void =>
-                  handleSelected(index, isSelected, isShiftClick)
-              : undefined
+          table={table}
+          onSelected={(isSelected, isShiftClick): void =>
+            handleSelected(index, isSelected, isShiftClick)
           }
         />
       ))}
@@ -67,19 +68,19 @@ export function QueryResultsTable({
 }
 
 function Row({
-  model,
+  table,
   fieldSpecs,
-  hasIdField,
   result,
+  lineIndex,
   recordFormatter,
   isSelected,
   isLast,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly hasIdField: boolean;
   readonly result: QueryResultRow;
+  readonly lineIndex: number | undefined;
   readonly recordFormatter?: (
     result: QueryResultRow
   ) => Promise<RA<JSX.Element | string>>;
@@ -91,12 +92,13 @@ function Row({
   const [resource] = useLiveState<
     SpecifyResource<AnySchema> | false | undefined
   >(
-    React.useCallback((): SpecifyResource<AnySchema> | false => {
-      if (!hasIdField) return false;
-      return new model.Resource({
-        id: result[queryIdField],
-      });
-    }, [hasIdField, model, result])
+    React.useCallback(
+      (): SpecifyResource<AnySchema> | false =>
+        new table.Resource({
+          id: result[queryIdField],
+        }),
+      [table, result]
+    )
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
@@ -111,6 +113,17 @@ function Row({
     'condenseQueryResults'
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
+
+  const splitRecords: RA<number> | undefined = React.useMemo(
+    () =>
+      typeof result[0] === 'string' && result[0].includes(',')
+        ? result[0].split(',').map(Number)
+        : undefined,
+    [result]
+  );
+
+  const [isListOfRecordsOpen, toggleIsListOfRecordsOpen] =
+    React.useState(false);
 
   return (
     <div
@@ -134,12 +147,21 @@ function Row({
       }
     >
       {typeof viewUrl === 'string' && (
-        <>
-          <span
-            className={`
-              ${getCellClassName(condenseQueryResults)} sticky
-              ${isLast ? 'rounded-bl' : ''}
-            `}
+        <div
+          className={`contents ${isLast ? '[*_&:first-child]:rounded-bl' : ''}`}
+        >
+          {typeof lineIndex === 'number' && (
+            <div
+              className={`
+                ${getCellClassName(condenseQueryResults)} sticky content-center
+              `}
+              role="cell"
+            >
+              {lineIndex}
+            </div>
+          )}
+          <div
+            className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
             <Input.Checkbox
@@ -147,21 +169,53 @@ function Row({
               /* Ignore click event, as click would be handled by onClick on row */
               onChange={f.undefined}
             />
-          </span>
-          <span
+          </div>
+          <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <Link.NewTab
-              className="print:hidden"
-              href={viewUrl}
-              rel="noreferrer"
-            />
-          </span>
-        </>
+            {splitRecords === undefined ? (
+              <Link.NewTab
+                className="print:hidden"
+                href={viewUrl}
+                rel="noreferrer"
+              />
+            ) : (
+              <Button.Icon
+                className="print:hidden"
+                icon="viewList"
+                title={queryText.viewRecords()}
+                onClick={() => toggleIsListOfRecordsOpen(true)}
+              />
+            )}
+            {isListOfRecordsOpen && splitRecords !== undefined ? (
+              <RecordSelectorFromIds
+                defaultIndex={0}
+                dialog="modal"
+                headerButtons={undefined}
+                ids={splitRecords}
+                isDependent={false}
+                isInRecordSet={false}
+                newResource={undefined}
+                table={table}
+                title={commonText.colonLine({
+                  label: queryText.queryResults(),
+                  value: table.label,
+                })}
+                totalCount={splitRecords.length}
+                onAdd={undefined}
+                onClone={undefined}
+                onClose={() => toggleIsListOfRecordsOpen(false)}
+                onDelete={undefined}
+                onSaved={f.void}
+                onSlide={undefined}
+              />
+            ) : null}
+          </div>
+        </div>
       )}
       {result
-        .filter((_, index) => !hasIdField || index !== queryIdField)
+        .filter((_, index) => index !== queryIdField)
         .map((value, index) =>
           fieldSpecs[index].isPhantom ? undefined : (
             <Cell
@@ -206,13 +260,13 @@ function Cell({
       !field.isRelationship &&
       typeof fieldSpec === 'object' &&
       !field.isTemporal()
-        ? syncFieldFormat(field, fieldSpec.parser, (value ?? '').toString())
-        : value ?? '',
+        ? syncFieldFormat(field, (value ?? '').toString(), fieldSpec.parser)
+        : (value ?? ''),
     [field, fieldSpec, value]
   );
 
   return (
-    <span
+    <div
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
@@ -229,8 +283,8 @@ function Cell({
       {value === null
         ? undefined
         : fieldSpec === undefined || typeof value === 'object'
-        ? value
-        : formatted}
-    </span>
+          ? value
+          : formatted}
+    </div>
   );
 }

@@ -13,6 +13,7 @@ export function StatsResult({
   value,
   query,
   label,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onEdit: handleEdit,
@@ -21,26 +22,40 @@ export function StatsResult({
 }: {
   readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
+  readonly hasPermission: boolean;
   readonly label: string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
-  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const isDisabled =
-    handleEdit === undefined &&
-    handleRename === undefined &&
-    handleClick === undefined;
-  const handleClickResolved = isDisabled
-    ? undefined
-    : handleClick ?? (query === undefined ? undefined : handleOpen);
+
+  /**
+   * Cases
+   *
+   * 1. In the add stats dialog, default to clicking.
+   *
+   * 2. In the normal page and normal mode
+   *    a. If it doesn't have query, disable
+   *    b. If it has query, allow viewing the query.
+   *
+   * 3. In the normal page and edit mode and have permission
+   *    a. It is a query stat or a back end stat -> use handleRename
+   *
+   * 4. In the normal page and edit mode but no permission
+   *    a. Disable everything.
+   *
+   */
+  const isDisabled = handleRename !== undefined && !hasPermission;
+  const handleClickResolved =
+    handleClick ?? (isDisabled || query === undefined ? undefined : handleOpen);
   return (
     <>
       {label === undefined ? (
         <li>{commonText.loading()}</li>
-      ) : typeof handleRename === 'function' ? (
+      ) : typeof handleRename === 'function' && hasPermission ? (
         <>
           <Button.Icon
             icon="trash"
@@ -54,13 +69,14 @@ export function StatsResult({
         </>
       ) : (
         <li className="flex gap-2">
-          <Button.LikeLink
-            className="flex-1 text-left"
-            onClick={handleClickResolved}
-          >
-            <span className="self-start">{label}</span>
+          <Button.LikeLink className="flex-1" onClick={handleClickResolved}>
+            <span className="self-start" style={{ wordBreak: 'break-word' }}>
+              {label}
+            </span>
             <span className="-ml-2 flex-1" />
-            <span className="self-start">{value ?? commonText.loading()}</span>
+            <span className="min-w-fit self-start">
+              {value ?? commonText.loading()}
+            </span>
           </Button.LikeLink>
         </li>
       )}
@@ -68,11 +84,11 @@ export function StatsResult({
       {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
           label={label}
-          matchClone
           query={query}
-          onClone={handleClone}
+          showClone
+          onClone={hasPermission ? handleClone : undefined}
           onClose={handleClose}
-          onEdit={handleEdit}
+          onEdit={hasPermission ? handleEdit : undefined}
         />
       ) : undefined}
     </>

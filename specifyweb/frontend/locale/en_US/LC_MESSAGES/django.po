@@ -66,12 +66,12 @@ msgid ""
 "Specify version: %(specify_version)s, Schema Version: %(schema_version)s do "
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
-"%(thich_client_location)s to update the database."
+"%(thick_client_location)s to update the database."
 msgstr ""
 "Specify version: %(specify_version)s, Schema Version: %(schema_version)s do "
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
-"%(thich_client_location)s to update the database."
+"%(thick_client_location)s to update the database."
 
 #: specify/load_datamodel.py:45
 #, python-format

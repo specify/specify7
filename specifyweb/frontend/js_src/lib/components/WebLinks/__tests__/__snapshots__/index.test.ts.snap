@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`weblinks are fetched and parsed correctly 1`] = `
+{
+  "AccessionNumber": {
+    "description": "",
+    "name": "AccessionNumber",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "http://specify6-test.nhm.ku.edu/echo.php?text1=",
+      },
+      {
+        "field": [
+          "[literalField Accession.accessionNumber]",
+        ],
+        "type": "Field",
+      },
+    ],
+    "table": "[table Accession]",
+    "usages": [],
+  },
+  "CTScan": {
+    "description": "",
+    "name": "CTScan",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "https://www.morphosource.org/biological_specimens/",
+      },
+      {
+        "type": "ThisField",
+      },
+    ],
+    "usages": [],
+  },
+  "FishBase": {
+    "description": "Displays a FishBase page for the Genus and Species",
+    "name": "FishBase",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "http://www.fishbase.org/Summary/",
+      },
+      {
+        "type": "UrlPart",
+        "value": "",
+      },
+      {
+        "type": "UrlPart",
+        "value": "-",
+      },
+      {
+        "type": "UrlPart",
+        "value": "",
+      },
+      {
+        "type": "UrlPart",
+        "value": ".html",
+      },
+    ],
+    "usages": [],
+  },
+  "GUID": {
+    "description": "",
+    "name": "GUID",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "urn:uuid:",
+      },
+      {
+        "type": "ThisField",
+      },
+    ],
+    "usages": [],
+  },
+  "Genbank": {
+    "description": "",
+    "name": "Genbank",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "http://www.ncbi.nlm.nih.gov/nuccore/",
+      },
+      {
+        "type": "ThisField",
+      },
+    ],
+    "usages": [],
+  },
+  "MailTo": {
+    "description": "Launches an email message window for sending an email.",
+    "name": "MailTo",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "mailto:",
+      },
+      {
+        "field": [
+          "[literalField Agent.email]",
+        ],
+        "type": "Field",
+      },
+    ],
+    "table": "[table Agent]",
+    "usages": [
+      {
+        "fieldName": "email",
+        "table": "[table Agent]",
+      },
+    ],
+  },
+  "Specify7": {
+    "description": "",
+    "name": "Specify7",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/",
+      },
+      {
+        "type": "UrlPart",
+        "value": "",
+      },
+      {
+        "type": "UrlPart",
+        "value": "/",
+      },
+      {
+        "formatter": "Accession",
+        "type": "FormattedResource",
+      },
+    ],
+    "usages": [],
+  },
+  "WEBLINK": {
+    "description": "",
+    "name": "WEBLINK",
+    "parts": [
+      {
+        "type": "UrlPart",
+        "value": "http://specify6-test.nhm.ku.edu/echo.php?text1=",
+      },
+      {
+        "type": "ThisField",
+      },
+    ],
+    "usages": [],
+  },
+}
+`;

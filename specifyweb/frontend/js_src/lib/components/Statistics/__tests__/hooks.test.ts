@@ -1,12 +1,13 @@
 import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
 import type { RA } from '../../../utils/types';
+import { localized } from '../../../utils/types';
 import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
   generateStatUrl,
+  getBackendUrlToFetch,
   getDefaultLayoutFlagged,
-  getDynamicCategoriesToFetch,
   getOffsetOne,
 } from '../hooks';
 import type { StatLayout } from '../types';
@@ -40,7 +41,8 @@ theories(applyStatBackendResponse, [
       backEndResponse,
       defaultLayoutTest[0].categories[3].items,
       '/stats/collection/type_specimens/',
-      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      (rawNumber: number | undefined): string | undefined =>
+        f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
     out: [
@@ -50,7 +52,7 @@ theories(applyStatBackendResponse, [
         pageName: 'collection',
         categoryName: 'type_specimens',
         itemName: 'phantomItem',
-        label: 'Holotype',
+        label: localized('Holotype'),
         itemValue: '19',
         pathToValue: 'Holotype',
       },
@@ -60,7 +62,7 @@ theories(applyStatBackendResponse, [
         pageName: 'collection',
         categoryName: 'type_specimens',
         itemName: 'phantomItem',
-        label: 'Neotype',
+        label: localized('Neotype'),
         itemValue: '1',
         pathToValue: 'Neotype',
       },
@@ -78,7 +80,7 @@ theories(applyStatBackendResponse, [
               readonly total: number;
             }
           | undefined
-      ) =>
+      ): string | undefined =>
         prep === undefined
           ? undefined
           : `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`,
@@ -91,7 +93,7 @@ theories(applyStatBackendResponse, [
         pageName: 'collection',
         categoryName: 'preparations',
         itemName: 'phantomItem',
-        label: 'C&S',
+        label: localized('C&S'),
         itemValue: '826 / 430',
         pathToValue: 'C&S',
       },
@@ -101,7 +103,7 @@ theories(applyStatBackendResponse, [
         pageName: 'collection',
         categoryName: 'preparations',
         itemName: 'phantomItem',
-        label: 'EtOH',
+        label: localized('EtOH'),
         itemValue: '176 / 985',
         pathToValue: 'EtOH',
       },
@@ -111,7 +113,7 @@ theories(applyStatBackendResponse, [
         pageName: 'collection',
         categoryName: 'preparations',
         itemName: 'phantomItem',
-        label: 'X-Ray',
+        label: localized('X-Ray'),
         itemValue: '460 / 460',
         pathToValue: 'X-Ray',
       },
@@ -122,7 +124,8 @@ theories(applyStatBackendResponse, [
       backEndResponse,
       defaultLayoutTest[0].categories[0].items,
       '/stats/collection/type_specimens/',
-      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      (rawNumber: number | undefined): string | undefined =>
+        f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
     out: defaultLayoutTest[0].categories[0].items,
@@ -132,7 +135,8 @@ theories(applyStatBackendResponse, [
       backEndResponse,
       defaultLayoutTest[0].categories[1].items,
       '/stats/collection/type_specimens/',
-      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      (rawNumber: number | undefined): string | undefined =>
+        f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
     out: defaultLayoutTest[0].categories[1].items,
@@ -196,7 +200,7 @@ function flagDefaultItem(
 theories(getDefaultLayoutFlagged, [
   {
     in: [
-      { label: '', lastUpdated: undefined, categories: [] },
+      { label: localized(''), lastUpdated: undefined, categories: [] },
       defaultLayoutTest,
     ],
     out: flagDefaultItem([]),
@@ -204,10 +208,13 @@ theories(getDefaultLayoutFlagged, [
   {
     in: [
       {
-        label: '',
+        label: localized(''),
         lastUpdated: undefined,
         categories: [
-          { label: '', items: [defaultLayoutTest[0].categories[0].items[0]] },
+          {
+            label: localized(''),
+            items: [defaultLayoutTest[0].categories[0].items[0]],
+          },
         ],
       },
       defaultLayoutTest,
@@ -217,15 +224,15 @@ theories(getDefaultLayoutFlagged, [
   {
     in: [
       {
-        label: '',
+        label: localized(''),
         lastUpdated: undefined,
         categories: [
           {
-            label: '',
+            label: localized(''),
             items: [defaultLayoutTest[0].categories[0].items[0]],
           },
           {
-            label: '',
+            label: localized(''),
             items: [defaultLayoutTest[1].categories[0].items[0]],
           },
         ],
@@ -240,18 +247,18 @@ theories(getDefaultLayoutFlagged, [
   {
     in: [
       {
-        label: '',
+        label: localized(''),
         lastUpdated: undefined,
         categories: [
           {
-            label: '',
+            label: localized(''),
             items: [
               defaultLayoutTest[0].categories[2].items[0],
               defaultLayoutTest[0].categories[1].items[0],
             ],
           },
           {
-            label: '',
+            label: localized(''),
             items: [
               defaultLayoutTest[0].categories[0].items[0],
               defaultLayoutTest[1].categories[0].items[0],
@@ -270,7 +277,7 @@ theories(getDefaultLayoutFlagged, [
   },
 ]);
 
-theories(getDynamicCategoriesToFetch, [
+theories(getBackendUrlToFetch, [
   {
     in: [defaultLayoutTest],
     out: [

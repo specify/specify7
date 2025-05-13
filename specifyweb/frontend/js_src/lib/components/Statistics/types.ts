@@ -1,3 +1,4 @@
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
@@ -13,17 +14,23 @@ export type CustomStat = State<
   }
 >;
 
+export type PartialQueryFieldWithPath = Partial<
+  SerializedResource<SpQueryField>
+> & {
+  readonly path: string;
+};
+
 export type DefaultStat = State<
   'DefaultStat',
   {
-    readonly itemType: 'BackEndStat' | 'QueryStat';
+    readonly itemType: 'BackEndStat' | 'DynamicStat' | 'QueryStat';
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: string;
+    readonly pathToValue?: number | string;
   }
 >;
 
@@ -36,30 +43,32 @@ export type StatLayout = {
   readonly lastUpdated: string | undefined;
 };
 
+export type QueryFieldWithPath = Partial<SerializedResource<SpQueryField>> & {
+  readonly path: string;
+};
+
 export type QuerySpec = {
   readonly tableName: keyof Tables;
-  readonly fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >;
+  readonly fields: RA<PartialQueryFieldWithPath>;
   readonly isDistinct?: boolean | null;
 };
 
 export type StatCategoryReturn = IR<{
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly spec: StatItemSpec;
 }>;
 
 export type StatsSpec = IR<{
-  readonly sourceLabel: string;
+  readonly sourceLabel: LocalizedString;
   readonly urlPrefix: string;
   readonly categories: IR<{
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly items: StatCategoryReturn;
   }>;
 }>;
 
 export type QueryBuilderStat = State<
-  'QueryBuilderStat',
+  'QueryStat',
   {
     readonly querySpec: QuerySpec;
   }
@@ -67,25 +76,40 @@ export type QueryBuilderStat = State<
 export type BackendStatsResult = IR<any>;
 
 export type StatFormatterSpec = {
-  readonly showTotal: boolean;
+  readonly showPreparationsTotal: boolean;
 };
 
 export type StatFormatterGenerator = (
   spec: StatFormatterSpec
 ) => (rawResult: any) => string | undefined;
+
 export type BackEndStat = BackEndBase & {
   readonly formatterGenerator: StatFormatterGenerator;
 };
 export type BackEndBase = State<
   'BackEndStat',
   {
-    readonly pathToValue: string | undefined;
-    readonly tableName: keyof Tables;
+    readonly pathToValue: number | string | undefined;
+    readonly querySpec?: (dynamicResult: string) => QuerySpec;
   }
 >;
-export type BackEndStatResolve = BackEndBase & {
+export type BackEndStatResolve = Omit<BackEndBase, 'querySpec'> & {
   readonly fetchUrl: string;
   // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
+  readonly querySpec?: QuerySpec;
 };
-export type StatItemSpec = BackEndStat | QueryBuilderStat;
+export type StatItemSpec = BackEndStat | DynamicStat | QueryBuilderStat;
+
+export type DynamicStat = State<
+  'DynamicStat',
+  {
+    readonly dynamicQuerySpec: QuerySpec;
+    readonly querySpec: (dynamicResult: string) => QuerySpec;
+  }
+>;
+
+export type DynamicQuerySpec = {
+  readonly key: string;
+  readonly spec: QuerySpec;
+};

@@ -8,9 +8,9 @@ from django.http import HttpResponse
 from django.template import loader
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_GET, require_POST, \
-    require_http_methods
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from ..specify.api import obj_to_data, toJson, \
@@ -161,7 +161,8 @@ def template_report_for_query(query_id, name):
     def field_element(field):
         queryfield = QueryField.from_spqueryfield(field)
         fieldspec = queryfield.fieldspec
-        field_type = fieldspec.get_field().type
+        fieldspec_field = fieldspec.get_field()
+        field_type = fieldspec_field.type if fieldspec_field is not None else "java.lang.String"
 
         if field.formatName \
            or field.isRelFld \

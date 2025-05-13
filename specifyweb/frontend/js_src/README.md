@@ -22,7 +22,7 @@ Instead, you should use a system-wide `.gitignore_global` for files specific to
 your development environment.
 
 For example, I used to following
-[`.gitignore_global`](https://github.com/maxxxxxdlp/dotfiles/blob/main/git/.gitignore_global)
+[`.gitignore_global`](https://github.com/maxpatiiuk/dotfiles/blob/main/git/.gitignore_global)
 for my setup (PyCharm, Vim, macOS, Nohup)
 
 Just create a `~/.gitignore_global` file and run the following bash command:

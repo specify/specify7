@@ -19,7 +19,7 @@ export const statsSpecTest: StatsSpec = {
           specimens: {
             label: statsText.collectionObjects(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -42,9 +42,8 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableName: 'Preparation',
               formatterGenerator:
-                ({ showTotal }) =>
+                ({ showPreparationsTotal }) =>
                 (
                   prep:
                     | {
@@ -55,9 +54,9 @@ export const statsSpecTest: StatsSpec = {
                 ) =>
                   prep === undefined
                     ? undefined
-                    : showTotal
-                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-                    : formatNumber(prep.lots),
+                    : showPreparationsTotal
+                      ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+                      : formatNumber(prep.lots),
             },
           },
         },
@@ -72,7 +71,6 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: 'countries',
-              tableName: 'Geography',
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
@@ -88,7 +86,6 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableName: 'Determination',
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
@@ -107,7 +104,7 @@ export const statsSpecTest: StatsSpec = {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [

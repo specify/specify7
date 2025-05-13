@@ -1,13 +1,13 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import {
   allTrees,
   exportsForTests,
   getDisciplineTrees,
   getTreeDefinitionItems,
-  isTreeModel,
   isTreeResource,
+  isTreeTable,
   strictGetTreeDefinitionItems,
 } from '../treeRanks';
 
@@ -18,7 +18,7 @@ requireContext();
 test('getDisciplineTrees', () =>
   expect(getDisciplineTrees()).toMatchSnapshot());
 
-theories(isTreeModel, [
+theories(isTreeTable, [
   { in: ['Taxon'], out: true },
   {
     name: 'GeologicTimePeriod is a tree model, even though we are not in a paleo discipline',
@@ -30,13 +30,13 @@ theories(isTreeModel, [
 
 describe('isTreeResource', () => {
   test('Taxon', () =>
-    expect(isTreeResource(new schema.models.Taxon.Resource())).toBe(true));
+    expect(isTreeResource(new tables.Taxon.Resource())).toBe(true));
   test('GeologicTimePeriod is a tree resource, even though we are not in a paleo discipline', () =>
-    expect(
-      isTreeResource(new schema.models.GeologicTimePeriod.Resource())
-    ).toBe(true));
+    expect(isTreeResource(new tables.GeologicTimePeriod.Resource())).toBe(
+      true
+    ));
   test('Locality', () =>
-    expect(isTreeResource(new schema.models.Locality.Resource())).toBe(false));
+    expect(isTreeResource(new tables.Locality.Resource())).toBe(false));
 });
 
 describe('Get tree definition', () => {
@@ -65,14 +65,18 @@ describe('strictGetTreeDefinitionItems', () => {
     ).toThrow(/Unable to get tree ranks for a/u));
 });
 
-test('getTreeScope', () =>
-  expect(Object.fromEntries(allTrees.map((tree) => [tree, getTreeScope(tree)])))
-    .toMatchInlineSnapshot(`
+describe('tree scopes', () => {
+  test('getTreeScope', () =>
+    expect(
+      Object.fromEntries(allTrees.map((tree) => [tree, getTreeScope(tree)]))
+    ).toMatchInlineSnapshot(`
       {
         "Geography": "discipline",
         "GeologicTimePeriod": "discipline",
         "LithoStrat": "discipline",
         "Storage": "institution",
         "Taxon": "discipline",
+        "TectonicUnit": "discipline",
       }
     `));
+});

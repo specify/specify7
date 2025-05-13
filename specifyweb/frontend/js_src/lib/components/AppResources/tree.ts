@@ -1,8 +1,7 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { resourcesText } from '../../localization/resources';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -16,7 +15,9 @@ import type {
 } from '../DataModel/types';
 import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
-import { AppResourceScope, ScopedAppResourceDir } from './types';
+import type { AppResourceScope, ScopedAppResourceDir } from './types';
+
+export const globalResourceKey = 'globalResource';
 
 export const getScope = (
   directory: SerializedResource<SpAppResourceDir>
@@ -26,8 +27,11 @@ export const getScope = (
   else if (directory.collection === null) return 'discipline';
   else if (directory.userType === null && !directory.isPersonal)
     return 'collection';
-  else if (!directory.isPersonal) return 'userType';
-  else return 'user';
+  else if (directory.isPersonal) {
+    return 'user';
+  } else {
+    return 'userType';
+  }
 };
 
 export const getAppResourceTree = (
@@ -35,7 +39,7 @@ export const getAppResourceTree = (
 ): AppResourcesTree => [
   {
     label: resourcesText.globalResources(),
-    key: 'globalResources',
+    key: globalResourceKey,
     ...getGlobalAllResources(resources),
     subCategories: [],
   },
@@ -103,7 +107,7 @@ const remoteUserType = 'Prefs'.toLowerCase();
 const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
   directories: RA<SerializedResource<SpAppResourceDir>>
-): RA<SerializedResource<SpAppResource>> =>
+): AppResourcesTree[number]['appResources'] =>
   appResources.map((resource) => {
     if (resource.name !== prefResource) return resource;
     const directory = directories.find(
@@ -113,9 +117,9 @@ const disambiguateGlobalPrefs = (
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
     if (userType === globalUserType)
-      return { ...resource, name: resourcesText.globalPreferences() };
+      return { ...resource, label: resourcesText.globalPreferences() };
     else if (userType === remoteUserType)
-      return { ...resource, name: resourcesText.remotePreferences() };
+      return { ...resource, label: resourcesText.remotePreferences() };
     else return resource;
   });
 
@@ -175,7 +179,7 @@ export const getScopedAppResources = (
         collection: undefined,
       });
     return {
-      label: (discipline.name as LocalizedString) ?? '',
+      label: localized(discipline.name ?? ''),
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -202,7 +206,12 @@ const getDisciplineAppResources = (
           discipline: collection.discipline,
         });
       return {
-        label: (collection.collectionName as LocalizedString) ?? '',
+        /*
+         * REFACTOR: should data coming from the database be considered
+         *  localized? It depends... no in the case of agent type, yes in the
+         *  case of collection name
+         */
+        label: localized(collection.collectionName ?? ''),
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
@@ -215,20 +224,20 @@ const getCollectionResources = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: resourcesText.userTypes(),
-    key: 'userTypes',
-    directory: undefined,
-    appResources: [],
-    viewSets: [],
-    subCategories: sortTree(getUserTypeResources(collection, resources)),
-  },
-  {
     label: userText.users(),
     key: 'users',
     directory: undefined,
     appResources: [],
     viewSets: [],
     subCategories: sortTree(getUserResources(collection, resources)),
+  },
+  {
+    label: resourcesText.userTypes(),
+    key: 'userTypes',
+    directory: undefined,
+    appResources: [],
+    viewSets: [],
+    subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
 ];
 
@@ -251,7 +260,7 @@ const getUserTypeResources = (
         userType: userType.toLowerCase(),
       });
     return {
-      label: userType as LocalizedString,
+      label: localized(userType),
       key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -263,29 +272,26 @@ const getUserResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
 ): AppResourcesTree =>
-  resources.users
-    .map((user) => {
-      const directories = resources.directories.filter(
-        (directory) =>
-          directory.collection === collection.resource_uri &&
-          directory.specifyUser === user.resource_uri &&
-          directory.scope === 'user'
-      );
-      const directory =
-        directories[0] ??
-        addMissingFields('SpAppResourceDir', {
-          collection: collection.resource_uri,
-          discipline: collection.discipline,
-          specifyUser: user.resource_uri,
-          isPersonal: true,
-        });
-
-      return {
-        label: user.name as LocalizedString,
-        key: `collection_${collection.id}_user_${user.id}`,
-        directory,
-        ...mergeDirectories(directories, resources),
-        subCategories: [],
-      };
-    })
-    .sort(sortFunction(({ label }) => label));
+  resources.users.map((user) => {
+    const directories = resources.directories.filter(
+      (directory) =>
+        directory.collection === collection.resource_uri &&
+        directory.specifyUser === user.resource_uri &&
+        directory.scope === 'user'
+    );
+    const directory =
+      directories[0] ??
+      addMissingFields('SpAppResourceDir', {
+        collection: collection.resource_uri,
+        discipline: collection.discipline,
+        specifyUser: user.resource_uri,
+        isPersonal: true,
+      });
+    return {
+      label: localized(user.name),
+      key: `collection_${collection.id}_user_${user.id}`,
+      directory,
+      ...mergeDirectories(directories, resources),
+      subCategories: [],
+    };
+  });

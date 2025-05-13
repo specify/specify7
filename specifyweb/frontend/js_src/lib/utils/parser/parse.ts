@@ -1,7 +1,7 @@
-import type { Input } from '../../components/DataModel/saveBlockers';
+import { syncFieldFormat } from '../../components/Formatters/fieldFormat';
+import type { Input } from '../../components/Forms/validationHelpers';
 import { hasNativeErrors } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
-import { syncFieldFormat } from '../fieldFormat';
 import { f } from '../functools';
 import { mappedFind } from '../utils';
 import type { Parser } from './definitions';
@@ -23,9 +23,9 @@ export function parseValue(
   parser: Parser,
   input: Input | undefined,
   value: string,
-  trim: boolean = true
+  trim: boolean = !parser.whiteSpaceSensitive
 ): InvalidParseResult | ValidParseResult {
-  if (trim && value.trim() === '')
+  if (!parser.whiteSpaceSensitive && trim && value.trim() === '')
     return parser.required === true
       ? {
           value,
@@ -68,7 +68,7 @@ export function parseValue(
       };
 }
 
-const parser = f.store(() =>
+const boolParser = f.store(() =>
   resolveParser(
     {},
     {
@@ -77,5 +77,10 @@ const parser = f.store(() =>
   )
 );
 
+export function parseBoolean(value: string): boolean {
+  const parsed = parseValue(boolParser(), undefined, value);
+  return parsed.isValid && parsed.parsed === true;
+}
+
 export const booleanFormatter = (value: boolean): string =>
-  syncFieldFormat(undefined, parser(), value);
+  syncFieldFormat(undefined, value, boolParser());

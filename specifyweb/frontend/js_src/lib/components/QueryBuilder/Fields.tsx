@@ -9,7 +9,10 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
+import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
 export function QueryFields({
@@ -46,7 +49,6 @@ export function QueryFields({
         line: number,
         payload: {
           readonly index: number;
-          readonly close: boolean;
           readonly newValue: string;
           readonly isRelationship: boolean;
           readonly parentTableName: keyof Tables | undefined;
@@ -136,9 +138,7 @@ export function QueryFields({
       mirror?.parentNode?.removeChild(mirror);
     });
 
-    return () => {
-      sortable.destroy();
-    };
+    return () => sortable.destroy();
   }, []);
 
   // Scroll to bottom if added a child
@@ -152,27 +152,55 @@ export function QueryFields({
         fieldsContainerRef.current.clientHeight !==
           fieldsContainerRef.current.scrollHeight &&
         fields.length > oldFieldCount.current
-      )
-        scrollIntoView(
-          fieldsContainerRef.current.lastChild as HTMLElement,
-          'nearest'
-        );
+      ) {
+        const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
+        const firstNonContentsChild =
+          lastElement.querySelector(':not(.contents)');
+        scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
+      }
       oldFieldCount.current = fields.length;
     }, [fields.length])
   );
 
+  const isBasic = React.useContext(IsQueryBasicContext);
+
+  const fieldName = React.useMemo(
+    () =>
+      queryFieldsToFieldSpecs(baseTableName, fields)
+        .map(([_, fieldSpec]) =>
+          generateMappingPathPreview(
+            fieldSpec.baseTable.name,
+            fieldSpec.toMappingPath()
+          )
+        )
+        .join(' '),
+    [baseTableName, fields]
+  );
+
   return (
-    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+    <Ul
+      className={`
+          items-center overflow-y-auto sm:flex-1
+          ${
+            isBasic
+              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
+              : ''
+          }
+        `}
+      forwardRef={fieldsContainerRef}
+    >
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <li key={line}>
+          <li className={`${isBasic ? 'contents' : ''}`} key={line}>
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
               fieldHash={`${line}_${length}`}
+              fieldName={fieldName}
               getMappedFields={getMappedFields}
               isFocused={openedElement?.line === line}
+              isLast={line === fields.length - 1}
               openedElement={
                 openedElement?.line === line ? openedElement?.index : undefined
               }
@@ -187,8 +215,8 @@ export function QueryFields({
                       target === 'previous'
                         ? line - 1
                         : target === 'current'
-                        ? line
-                        : line + 1
+                          ? line
+                          : line + 1
                     )
               }
               onMappingChange={handleMappingChange?.bind(undefined, line)}

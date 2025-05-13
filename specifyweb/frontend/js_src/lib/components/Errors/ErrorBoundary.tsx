@@ -8,6 +8,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { errorDetails } from './assert';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
 
@@ -77,7 +78,7 @@ export class ErrorBoundary extends React.Component<
             // Any arguments that are given to the error() function:
             details: Object.getOwnPropertyDescriptor(
               this.state.error,
-              'details'
+              errorDetails
             )?.value,
           })}
           dismissible={this.props.dismissible}
@@ -88,7 +89,7 @@ export class ErrorBoundary extends React.Component<
           {this.state.errorInfo.componentStack}
         </ErrorDialog>
       ) : (
-        this.props.children ?? null
+        (this.props.children ?? null)
       );
   }
 }

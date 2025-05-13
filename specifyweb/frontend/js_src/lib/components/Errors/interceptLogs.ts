@@ -1,5 +1,13 @@
-import type { IR, R, RA, WritableArray } from '../../utils/types';
-import { jsonStringify } from '../../utils/utils';
+/**
+ * Capture log output to a variable. Allows attaching log output to
+ * stack traces.
+ *
+ * Similar to "Output Buffering" in PHP
+ * (https://www.php.net/outcontrol)
+ */
+
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { deduplicateLogContext, getLogContext } from './logContext';
 
 /**
  * Spy on the calls to these console methods so that can include all console
@@ -18,54 +26,76 @@ const logTypes = [
 
 export type LogMessage = {
   readonly message: RA<unknown>;
-  readonly type: typeof logTypes[number];
+  // Context is not a real type, but is used by deduplicateLogContext()
+  readonly type: (typeof logTypes)[number] | 'context';
   readonly date: string;
   readonly context: IR<unknown>;
 };
 export const consoleLog: WritableArray<LogMessage> = [];
 
-let context: R<unknown> = {};
-let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
-
-export const getLogContext = (): IR<unknown> => context;
-
-export function setLogContext(
-  newContext: IR<unknown>,
-  merge: boolean = true
-): void {
-  context = {
-    ...(merge ? context : undefined),
-    ...Object.fromEntries(
-      Object.entries(newContext)
-        .filter(([_key, value]) => value !== undefined)
-        .map(([key, value]) => [
-          key,
-          // Allows nesting contexts
-          value === context ? context : toSafeValue(value),
-        ])
-    ),
+export function serializeConsoleLog(
+  log: RA<LogMessage>
+): ReturnType<typeof deduplicateLogContext> {
+  const { consoleLog, sharedLogContext } = deduplicateLogContext(log);
+  return {
+    consoleLog: consoleLog.map(({ message, context, ...rest }) => ({
+      ...rest,
+      message: message.map(toSafeObject),
+      context: toSafeObject(context) as IR<unknown>,
+    })),
+    sharedLogContext,
   };
-
-  /*
-   * Reset context on next cycle. This way, you don't have to clear it manually.
-   * Things like form parsing are done in a single cycle, so this works
-   * perfectly.
-   */
-  if (timeout === undefined)
-    timeout = setTimeout(() => {
-      context = {};
-      timeout = undefined;
-    }, 0);
 }
 
-const toSafeValue = (value: unknown): unknown =>
-  typeof value === 'function'
-    ? value.toString()
-    : value === undefined
-    ? 'undefined'
-    : typeof value === 'object'
-    ? jsonStringify(value)
-    : value;
+/**
+ * Syncer emits validation messages as console.log (convenient,
+ * and familiar). Since we intercept console.log calls anyway,
+ * we can capture the log output to an array and then present that
+ * in the UI as validation messages.
+ */
+let redirectLog = false;
+let temporaryLog: typeof consoleLog = [];
+export function captureLogOutput<T>(
+  callback: () => T
+): readonly [typeof consoleLog, T] {
+  if (redirectLog) throw new Error('Already capturing log output');
+  redirectLog = true;
+  try {
+    const result = callback();
+    return [temporaryLog, result];
+  } finally {
+    redirectLog = false;
+    temporaryLog = [];
+  }
+}
+
+/**
+ * Convert any value to a JSON serializable object
+ *
+ * Most of the time this in not needed. It is needed when serializing
+ * unknown data type (i.e, in error messages)
+ */
+export function toSafeObject(object: unknown): unknown {
+  const cache = new Set<unknown>();
+
+  function convert(value: unknown): unknown {
+    if (typeof value === 'function') return value.toString();
+    else if (value === undefined || value === null) return null;
+    else if (Array.isArray(value)) return value.map(convert);
+    else if (typeof value === 'object')
+      if (cache.has(value)) return '[Circular]';
+      else {
+        cache.add(value);
+        // Note: this removes Symbols
+        return Object.fromEntries(
+          Object.entries(value).map(([key, value]) => [key, convert(value)])
+        );
+      }
+    else return value;
+  }
+
+  return convert(object);
+}
 
 export function interceptLogs(): void {
   logTypes.forEach((logType) => {
@@ -84,10 +114,27 @@ export function interceptLogs(): void {
     const defaultFunction = console[logType];
 
     console[logType] = (...args: RA<unknown>): void => {
+      const context = getLogContext();
       const hasContext = Object.keys(context).length > 0;
-      defaultFunction(...args, ...(hasContext ? [context] : []));
-      consoleLog.push({
-        message: args.map(toSafeValue),
+
+      // Silencing https://github.com/reactjs/react-modal/issues/808
+      if (
+        args[0] ===
+        "React-Modal: Cannot register modal instance that's already open"
+      )
+        return;
+
+      /**
+       * If actively redirecting log output, don't print to console
+       * (printing object to console prevents garbage collection
+       * on that object), unless in development
+       */
+      if (process.env.NODE_ENV === 'development' || !redirectLog)
+        defaultFunction(...args, ...(hasContext ? [context] : []));
+
+      const store = redirectLog ? temporaryLog : consoleLog;
+      store.push({
+        message: args,
         type: logType,
         date: new Date().toJSON(),
         context,

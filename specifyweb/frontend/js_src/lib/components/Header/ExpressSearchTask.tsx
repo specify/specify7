@@ -11,12 +11,14 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/serializers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
@@ -34,14 +36,10 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { useMenuItem } from './useMenuItem';
+import { useMenuItem } from './MenuContext';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
-  const [query = ''] = useSearchParameter('q');
-  const value = React.useState(query);
-  const [pendingQuery] = value;
-  const navigate = useNavigate();
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -49,21 +47,36 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
         </>
       }
       header={headerText.simpleSearch()}
+      icon={icons.search}
       onClose={handleClose}
     >
-      <Form
-        id={formId}
-        onSubmit={(): void =>
-          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
-        }
-      >
-        <SearchField value={value} />
-      </Form>
+      <SearchForm formId={formId} />
     </Dialog>
+  );
+}
+
+export function SearchForm({
+  formId,
+}: {
+  readonly formId: string;
+}): JSX.Element {
+  const navigate = useNavigate();
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  return (
+    <Form
+      id={formId}
+      onSubmit={(): void =>
+        navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+      }
+    >
+      <SearchField value={value} />
+    </Form>
   );
 }
 
@@ -76,7 +89,7 @@ function SearchField({
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1"
+      className="flex-1 bg-[color:var(--field-background)]"
       // Name is for autocomplete purposes only
       name="searchQuery"
       placeholder={commonText.search()}
@@ -111,7 +124,7 @@ export function ExpressSearchView(): JSX.Element {
         <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
-          <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
+          <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
       </div>
       {query.length > 0 ? (
@@ -163,7 +176,7 @@ function TableResults({
 }
 
 function TableResult({
-  model,
+  table,
   caption,
   tableResults,
   ajaxUrl,
@@ -172,23 +185,22 @@ function TableResult({
     async (offset: number): Promise<RA<RA<number | string>>> =>
       ajax<IR<QueryTableResult> | QueryTableResult>(
         formatUrl(ajaxUrl, {
-          name: model.name,
+          name: table.name,
           // The URL may already have a "name" parameter
           ...parseUrl(ajaxUrl),
-          offset: offset.toString(),
+          offset,
         }),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }
       ).then(
         ({ data }) =>
-          (model.name in data
-            ? (data as IR<QueryTableResult>)[model.name]
+          (table.name in data
+            ? (data as IR<QueryTableResult>)[table.name]
             : (data as QueryTableResult)
           ).results
       ),
-    [ajaxUrl, model.name]
+    [ajaxUrl, table.name]
   );
 
   const fieldSpecs = React.useMemo(
@@ -217,8 +229,8 @@ function TableResult({
     <details>
       <summary
         className={`
-          link list-item rounded bg-brand-200 p-1.5
-          hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
+          link bg-brand-200 dark:bg-brand-500 hover:dark:!bg-brand-400 list-item
+          rounded p-1.5 hover:!text-white
         `}
       >
         {commonText.countLine({
@@ -235,14 +247,15 @@ function TableResult({
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
-          hasIdField
           initialData={tableResults.results}
-          label={model.label}
-          model={model}
+          label={table.label}
           queryResource={undefined}
           selectedRows={[selectedRows, setSelectedRows]}
+          table={table}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
+          // Note, results won't be refreshed after doing record merging
+          onReRun={f.void}
         />
       </ErrorBoundary>
     </details>

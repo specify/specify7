@@ -1,11 +1,10 @@
 import logging
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import Specifyuser, Collection
-
 from specifyweb.export.dwca import make_dwca
+from specifyweb.specify.models import Specifyuser, Collection
 
 logger = logging.getLogger(__name__)
 
@@ -30,16 +29,16 @@ class Command(BaseCommand):
         user = Specifyuser.objects.get(id=kwargs['specifyuser_id'])
 
         if kwargs['definition'] != None:
-            with open(kwargs['definition'], 'r') as f:
+            with open(kwargs['definition']) as f:
                 definition = f.read()
         else:
-            definition, _ = get_app_resource(collection, user, kwargs['resource'])
+            definition, _, __ = get_app_resource(collection, user, kwargs['resource'])
 
         if kwargs['eml'] != None:
             with open(kwargs['eml']) as f:
                 eml = f.read()
         elif kwargs['metadata'] != None:
-            eml, _ = get_app_resource(collection, user, kwargs['metadata'])
+            eml, _, __ = get_app_resource(collection, user, kwargs['metadata'])
         else:
             eml = None
 

@@ -62,17 +62,20 @@ import {
   autoUpdate,
   flip,
   FloatingPortal,
+  hide,
   offset,
   shift,
   useFloating,
 } from '@floating-ui/react';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { oneRem } from '../Atoms';
 import { userPreferences } from '../Preferences/userPreferences';
 
@@ -105,6 +108,7 @@ export function TooltipManager(): JSX.Element {
         }),
         shift(),
         arrow({ element: arrowRef }),
+        hide(),
       ],
       // Reposition tooltip on scroll
       whileElementsMounted: (...args) =>
@@ -158,12 +162,14 @@ export function TooltipManager(): JSX.Element {
     )[placement.split('-')[0]] ?? 'bottom';
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
 
+  const isHidden = middlewareData.hide?.referenceHidden;
+
   return (
     <FloatingPortal id="portal-root">
-      {isOpen && typeof text === 'string' ? (
-        <span
+      {isOpen && typeof text === 'string' && !isHidden ? (
+        <div
           className={`
-            top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded
+            left-0 top-0 z-[10000] w-max whitespace-pre-line rounded
             bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black
             dark:text-gray-200
           `}
@@ -193,7 +199,7 @@ export function TooltipManager(): JSX.Element {
             }}
           />
           {text}
-        </span>
+        </div>
       ) : null}
     </FloatingPortal>
   );
@@ -213,7 +219,7 @@ let delayFocusIn = 400;
 /** Delay before showing tooltip if using mouse */
 let delayMouseIn = 1000;
 // Disable delays on touch screen devices
-window?.addEventListener(
+globalThis.addEventListener?.(
   'touchstart',
   () => {
     delayFocusIn = 0;
@@ -316,7 +322,7 @@ function useInteraction(
         flush();
         return;
       }
-      const title = target.getAttribute('title');
+      const title = localized(target.getAttribute('title'));
       if (typeof title !== 'string' || title.length === 0) return;
       display(event.type as 'focus' | 'mouseenter', target, title);
     }
@@ -324,7 +330,7 @@ function useInteraction(
     function display(
       type: 'focus' | 'mouseenter',
       element: HTMLElement,
-      title: string
+      title: LocalizedString
     ): void {
       const isDisplayed =
         currentElementRef.current !== undefined && contextRef.current.open;

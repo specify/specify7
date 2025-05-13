@@ -1,11 +1,13 @@
 import type Leaflet from 'leaflet';
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { formatLocalityData } from '../Leaflet';
@@ -13,8 +15,6 @@ import type { LocalityData } from '../Leaflet/helpers';
 import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
 import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { schema } from '../DataModel/schema';
 
 function LeafletDialog({
   locality,
@@ -42,7 +42,7 @@ function LeafletDialog({
       onClose={handleClose}
     >
       {localityText.notEnoughInformationToMap({
-        localityTable: schema.models.Locality.label,
+        localityTable: tables.Locality.label,
       })}
     </Dialog>
   ) : (
@@ -50,9 +50,8 @@ function LeafletDialog({
       localityPoints={[localityData]}
       onClose={handleClose}
       onMarkerClick={async (_, { target: marker }): Promise<void> => {
-        fullLocalityData.current ??= await fetchLocalityDataFromResource(
-          locality
-        );
+        fullLocalityData.current ??=
+          await fetchLocalityDataFromResource(locality);
         if (fullLocalityData.current === false) return;
         (marker as Leaflet.Marker)
           .getPopup()

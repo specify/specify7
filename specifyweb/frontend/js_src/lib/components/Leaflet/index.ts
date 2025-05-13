@@ -21,6 +21,7 @@ import {
 import { mappingLocalityColumns } from './config';
 import L from './extend';
 import type { Field, LocalityData } from './helpers';
+import { isValidAccuracy } from './helpers';
 import type { fetchLeafletLayers } from './layers';
 import { overlayPaneName } from './layers';
 
@@ -128,20 +129,6 @@ export function getLayerPaneZindex(map: L.Map): number {
   return (
     f.parseInt(map.getPane('tilePane')?.style.zIndex) ?? defaultLayersPaneZindex
   );
-}
-
-export function isValidAccuracy(
-  latlongaccuracy: string | undefined
-): latlongaccuracy is string {
-  try {
-    return (
-      latlongaccuracy !== undefined &&
-      !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
-      Number.parseFloat(latlongaccuracy) >= 1
-    );
-  } catch {
-    return false;
-  }
 }
 
 export type MarkerGroups = {

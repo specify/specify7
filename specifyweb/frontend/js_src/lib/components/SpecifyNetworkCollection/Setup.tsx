@@ -6,14 +6,14 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { getDomainResource } from '../DataModel/domain';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getDomainResource } from '../DataModel/scoping';
 import type { Institution } from '../DataModel/types';
 import { loadingGif } from '../Molecules';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
@@ -97,7 +97,7 @@ const fetchPossibleInstitutions = async (
     })
   ).then((results) =>
     results.map(({ title, key }) => ({
-      title: title as LocalizedString,
+      title: localized(title as string),
       key: key as string,
     }))
   );

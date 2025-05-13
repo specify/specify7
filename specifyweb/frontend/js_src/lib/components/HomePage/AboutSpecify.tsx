@@ -12,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { supportLink } from '../Errors/ErrorDialog';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -97,8 +97,8 @@ function AboutDialog({
           <tbody>
             {[
               [welcomeText.specifyVersion(), getSystemInfo().version],
-              [welcomeText.gitSha(), <GitSha />],
-              [welcomeText.buildDate(), <BuildDate />],
+              [welcomeText.gitSha(), <GitSha key="git-sha" />],
+              [welcomeText.buildDate(), <BuildDate key="build-date" />],
               [
                 welcomeText.specifySixVersion(),
                 getSystemInfo().specify6_version,
@@ -107,7 +107,7 @@ function AboutDialog({
               [
                 `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version as LocalizedString}
+                  {getSystemInfo().schema_version}
                 </Link.Default>,
               ],
               [welcomeText.databaseName(), getSystemInfo().database],
@@ -120,15 +120,15 @@ function AboutDialog({
                   ]
                 : []),
               [
-                `${schema.models.Institution.label}:`,
+                commonText.colonHeader({ header: tables.Institution.label }),
                 getSystemInfo().institution,
               ],
               [
-                `${schema.models.Discipline.label}:`,
+                commonText.colonHeader({ header: tables.Discipline.label }),
                 getSystemInfo().discipline,
               ],
               [
-                `${schema.models.Collection.label}:`,
+                commonText.colonHeader({ header: tables.Collection.label }),
                 getSystemInfo().collection,
               ],
               [
@@ -155,7 +155,7 @@ function DatabaseCreationDate(): JSX.Element {
   const [date] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('SpVersion', { limit: 1 }).then(
+        fetchCollection('SpVersion', { limit: 1, domainFilter: false }).then(
           ({ records }) => records[0]?.timestampCreated
         ),
       []
@@ -169,18 +169,14 @@ function GitSha(): JSX.Element {
   const [gitSha] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/git_sha.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax<LocalizedString>('/static/git_sha.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : (data as LocalizedString)
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
+          status === Http.NOT_FOUND ? false : data
         ),
       []
     ),
@@ -208,17 +204,13 @@ function BuildDate(): JSX.Element {
   const [buildDate] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/build_date.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax('/static/build_date.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? commonText.unknown() : data
         ),
       []

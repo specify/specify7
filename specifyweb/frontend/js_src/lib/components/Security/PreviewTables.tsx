@@ -12,7 +12,8 @@ import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
-import { resourceNameToModel } from './utils';
+import { isUncommonPermissionTable } from './registry';
+import { resourceNameToTable } from './utils';
 
 export function PreviewTables({
   query,
@@ -34,9 +35,9 @@ export function PreviewTables({
                 getTablePermissions()[schema.domainLevelIds.collection]
             )
             .map((entry) => {
-              const model = resourceNameToModel(entry.resource);
-              return isSystem === (model.isSystem || model.isHidden)
-                ? ([model.name, entry] as const)
+              const table = resourceNameToTable(entry.resource);
+              return isSystem === isUncommonPermissionTable(table)
+                ? ([table.name, entry] as const)
                 : undefined;
             })
         )
@@ -73,8 +74,8 @@ export function PreviewTables({
                 index === 0
                   ? 'rounded-l'
                   : index + 1 === length
-                  ? 'rounded-r'
-                  : ''
+                    ? 'rounded-r'
+                    : ''
               }
             `}
             key={header}

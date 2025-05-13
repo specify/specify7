@@ -12,11 +12,12 @@ import { formatNumber } from '../../components/Atoms/Internationalization';
 import { error } from '../../components/Errors/assert';
 import { f } from '../../utils/functools';
 import type { IR, RR, WritableArray } from '../../utils/types';
+import { localized } from '../../utils/types';
 import type { Language } from './config';
 import { DEFAULT_LANGUAGE, devLanguage, LANGUAGE } from './config';
 
 export const localizationMetaKeys = ['comment'] as const;
-type MetaKeys = typeof localizationMetaKeys[number];
+type MetaKeys = (typeof localizationMetaKeys)[number];
 export type LocalizationEntry = Partial<RR<Language | MetaKeys, string>> &
   RR<typeof DEFAULT_LANGUAGE, string>;
 export type LocalizationDictionary = IR<LocalizationEntry>;
@@ -161,12 +162,10 @@ export function StringToJsx({
       });
     usedComponents.add(name);
 
-    const label = group.groups?.label ?? '';
+    const label = localized(group.groups?.label ?? '');
     const jsx = (
       <React.Fragment key={groupIndex}>
-        {typeof component === 'function'
-          ? component(label as LocalizedString)
-          : component}
+        {typeof component === 'function' ? component(label) : component}
       </React.Fragment>
     );
 

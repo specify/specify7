@@ -3,11 +3,13 @@
 exports[`queryFromTree 1`] = `
 [
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -19,6 +21,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -30,6 +33,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -41,6 +45,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "localityName",
         "isdisplay": true,
         "isnot": false,
@@ -52,6 +57,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,10,2",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -63,6 +69,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,10,2,3",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "County ID",
         "isdisplay": false,
         "isnot": false,
@@ -79,14 +86,17 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Los Angeles County\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -98,6 +108,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -109,6 +120,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -120,6 +132,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -131,6 +144,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,63-preparations,58",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Cabinet ID",
         "isdisplay": false,
         "isnot": false,
@@ -147,14 +161,17 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Cabinet 1\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -166,6 +183,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -177,6 +195,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Species ID",
         "isdisplay": false,
         "isnot": false,
@@ -188,6 +207,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -199,6 +219,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "localityName",
         "isdisplay": true,
         "isnot": false,
@@ -215,14 +236,17 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Carpiodes velifer\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -234,6 +258,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -245,6 +270,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -256,6 +282,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -267,6 +294,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,32,46-chronosStrat",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Epoch ID",
         "isdisplay": false,
         "isnot": false,
@@ -283,14 +311,17 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Paleocene\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -302,6 +333,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -313,6 +345,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -324,6 +357,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -335,6 +369,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,32,100",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Formation ID",
         "isdisplay": false,
         "isnot": false,
@@ -351,6 +386,82 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Cretaceous\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "selectseries": false,
+    "specifyuser": "/api/specify/specifyuser/2/",
+  },
+  {
+    "_tableName": "SpQuery",
+    "contextname": "CollectionObject",
+    "contexttableid": 1,
+    "countonly": false,
+    "fields": [
+      {
+        "_tableName": "SpQueryField",
+        "fieldname": "catalogNumber",
+        "isdisplay": true,
+        "isnot": false,
+        "isrelfld": false,
+        "operstart": 8,
+        "sorttype": 0,
+        "startvalue": "",
+        "stringid": "1.collectionobject.catalogNumber",
+        "tablelist": "1",
+      },
+      {
+        "_tableName": "SpQueryField",
+        "fieldname": "fullName",
+        "isdisplay": true,
+        "isnot": false,
+        "isrelfld": false,
+        "operstart": 8,
+        "sorttype": 1,
+        "startvalue": "",
+        "stringid": "1,9-determinations,4.taxon.fullName",
+        "tablelist": "1,9-determinations,4",
+      },
+      {
+        "_tableName": "SpQueryField",
+        "fieldname": "isCurrent",
+        "isdisplay": false,
+        "isnot": false,
+        "isrelfld": false,
+        "operstart": 13,
+        "sorttype": 0,
+        "startvalue": "",
+        "stringid": "1,9-determinations.determination.isCurrent",
+        "tablelist": "1,9-determinations",
+      },
+      {
+        "_tableName": "SpQueryField",
+        "fieldname": "fullName",
+        "isdisplay": true,
+        "isnot": false,
+        "isrelfld": false,
+        "operstart": 8,
+        "sorttype": 0,
+        "startvalue": "",
+        "stringid": "1,32,1027.tectonicunit.fullName",
+        "tablelist": "1,32,1027",
+      },
+      {
+        "_tableName": "SpQueryField",
+        "fieldname": "Substructure ID",
+        "isdisplay": false,
+        "isnot": false,
+        "isrelfld": false,
+        "operstart": 1,
+        "sorttype": 0,
+        "startvalue": "20",
+        "stringid": "1,32,1027.tectonicunit.Substructure ID",
+        "tablelist": "1,32,1027",
+      },
+    ],
+    "formatauditrecids": false,
+    "isfavorite": true,
+    "name": "Collection Object using \\"Plate\\"",
+    "ordinal": 32767,
+    "selectdistinct": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
 ]

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
+import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -12,7 +13,8 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
+
 export const languageSeparator = '-';
 
 export function ChooseSchemaLanguage(): JSX.Element {
@@ -23,9 +25,9 @@ export function ChooseSchemaLanguage(): JSX.Element {
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
-            <Link.Blue href="/specify/schema-config/add-language/">
+            <Link.Info href="/specify/schema-config/add-language/">
               {schemaText.addLanguage()}
-            </Link.Blue>
+            </Link.Info>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -41,11 +43,12 @@ export function ChooseSchemaLanguage(): JSX.Element {
             <Link.Default
               className="font-bold"
               href={`/specify/schema-config/${code}/`}
-              role="link"
             >
               {label.includes('(')
                 ? label
-                : `${label} (${code.split(languageSeparator).at(-1)})`}
+                : localized(
+                    `${label} (${code.split(languageSeparator).at(-1) ?? code})`
+                  )}
             </Link.Default>
           </li>
         ))}
@@ -69,7 +72,7 @@ export function AddLanguage(): JSX.Element {
           >
             {commonText.back()}
           </Button.Secondary>
-          <Submit.Blue form={id('form')}>{commonText.add()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.add()}</Submit.Info>
         </>
       }
       header={schemaText.addLanguage()}

@@ -6,15 +6,14 @@ import { resourcesText } from '../../localization/resources';
 import type { IR, RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
-import type { Tables } from '../DataModel/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResourceDir, Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { SpAppResourceDir } from '../DataModel/types';
 
 export type AppResourceScope =
-  | 'global'
-  | 'discipline'
   | 'collection'
+  | 'discipline'
+  | 'global'
   | 'user'
   | 'userType';
 
@@ -41,12 +40,24 @@ export type ScopedAppResourceDir = SerializedResource<SpAppResourceDir> & {
   readonly scope: AppResourceScope;
 };
 
-export type AppResourceSubType = {
+type AppResourceSubType = {
   readonly mimeType: string | undefined;
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
   readonly label: LocalizedString;
+  /**
+   * Whether when creating a new app resource of this type, should copy the
+   * contents from an existing app resource of that type that is in current
+   * scope.
+   * Default value:
+   * If app resource type can only have one specific name, this is true
+   * Else false
+   */
+  readonly useTemplate?: boolean;
+  /**
+   * Only allow creating this app resource at certain levels
+   */
   readonly scope?: RA<AppResourceScope>;
 };
 
@@ -56,7 +67,7 @@ export type AppResourceSubType = {
  * current resource. Thus, subtypes should be sorted from the most
  * specific to the least specific.
  */
-export const appResourceSubTypes = {
+export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
   label: {
     mimeType: 'jrxml/label',
     name: undefined,
@@ -73,13 +84,14 @@ export const appResourceSubTypes = {
     icon: icons.documentReport,
     label: reportsText.report(),
   },
-  user: {
+  userPreferences: {
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
+    useTemplate: false,
     scope: ['user'],
   },
   defaultUserPreferences: {
@@ -90,7 +102,7 @@ export const appResourceSubTypes = {
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
-  collection: {
+  collectionPreferences: {
     mimeType: 'application/json',
     name: 'CollectionPreferences',
     documentationUrl: undefined,
@@ -122,6 +134,14 @@ export const appResourceSubTypes = {
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
+  typeSearches: {
+    mimeType: 'text/xml',
+    name: 'TypeSearches',
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
+    icon: icons.documentSearch,
+    label: resourcesText.typeSearches(),
+  },
   webLinks: {
     mimeType: 'text/xml',
     name: 'WebLinks',
@@ -145,14 +165,6 @@ export const appResourceSubTypes = {
       'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
-  },
-  searchDialogDefinitions: {
-    mimeType: 'text/xml',
-    name: 'DialogDefs',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
-    icon: icons.documentSearch,
-    label: resourcesText.searchDialogDefinitions(),
   },
   dataEntryTables: {
     mimeType: 'text/xml',
@@ -198,6 +210,4 @@ export const appResourceSubTypes = {
     icon: icons.document,
     label: resourcesText.otherAppResource(),
   },
-} as const;
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
+} as const);

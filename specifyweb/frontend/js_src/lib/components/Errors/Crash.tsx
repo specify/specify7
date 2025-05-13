@@ -4,7 +4,7 @@ import type { RA } from '../../utils/types';
 import { displayError } from '../Core/Contexts';
 import { breakpoint } from './assert';
 import { ErrorDialog } from './ErrorDialog';
-import { formatError, handleAjaxError } from './FormatError';
+import { errorHandledBy, formatError, handleAjaxError } from './FormatError';
 
 /**
  * Display an error message. Can be dismissed
@@ -30,7 +30,7 @@ function showError(
   ...args: RA<unknown>
 ): void {
   if (
-    Object.getOwnPropertyDescriptor(error ?? {}, 'handledBy')?.value ===
+    Object.getOwnPropertyDescriptor(error ?? {}, errorHandledBy)?.value ===
     handleAjaxError
   )
     // It is a network error, and it has already been handled

@@ -1,12 +1,12 @@
 import { parserFromType } from '../../utils/parser/definitions';
-import type { RA } from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { getScopingResource } from './domain';
 import type { AnySchema, SerializedResource } from './helperTypes';
-import { strictGetModel } from './schema';
+import { getScopingResource } from './scoping';
 import type { LiteralField, Relationship } from './specifyField';
+import { strictGetTable } from './tables';
 import type { Tables } from './types';
 
 type ResourceSpec = {
@@ -27,7 +27,7 @@ type ResourceSpec = {
  */
 export function addMissingFields<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  record: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   {
     requiredFields = 'set',
     optionalFields = 'define',
@@ -36,7 +36,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships = 'define',
   }: Partial<ResourceSpec> = {}
 ): SerializedResource<Tables[TABLE_NAME]> {
-  const model = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
   const spec = {
     requiredFields,
     optionalFields,
@@ -45,29 +45,29 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships,
   };
 
-  const scoping = getScopingResource(model);
+  const scoping = getScopingResource(table);
 
   return {
     // This is needed to preserve unknown fields
     ...record,
     ...(Object.fromEntries(
       filterArray(
-        model.fields.map((field) =>
+        table.fields.map((field) =>
           shouldIncludeField(field, spec, record.id === undefined)
             ? [
                 field.name,
                 field.isRelationship
                   ? handleRelationship(record, field, spec)
-                  : record[field.name as keyof typeof record] ??
+                  : (record[field.name as keyof typeof record] ??
                     (field.name === 'version'
                       ? 1
                       : (
-                          field.isRequired
-                            ? requiredFields === 'set'
-                            : optionalFields === 'set'
-                        )
-                      ? parserFromType(field.type).value
-                      : null),
+                            field.isRequired
+                              ? requiredFields === 'set'
+                              : optionalFields === 'set'
+                          )
+                        ? parserFromType(field.type).value
+                        : null)),
               ]
             : undefined
         )
@@ -116,18 +116,18 @@ function shouldIncludeField(
 }
 
 function handleRelationship<TABLE_NAME extends keyof Tables>(
-  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  record: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   field: Relationship,
   spec: ResourceSpec
 ) {
   if (relationshipIsToMany(field))
     if (field.isDependent()) {
       const records = record[field.name as keyof typeof record] as
-        | RA<Partial<SerializedResource<AnySchema>>>
+        | RA<DeepPartial<SerializedResource<AnySchema>>>
         | undefined;
       return (
         records?.map((record) =>
-          addMissingFields(field.relatedModel.name, record, spec)
+          addMissingFields(field.relatedTable.name, record, spec)
         ) ?? (spec.toManyRelationships === 'set' ? [] : null)
       );
     } else {
@@ -135,8 +135,8 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
       return (
         record[field.name as keyof Tables[TABLE_NAME]['toManyIndependent']] ??
         (typeof otherSideName === 'string' && typeof record.id === 'number'
-          ? formatUrl(`/api/specify/${field.relatedModel.name}`, {
-              [otherSideName]: record.id.toString(),
+          ? formatUrl(`/api/specify/${field.relatedTable.name}`, {
+              [otherSideName]: record.id,
             })
           : undefined)
       );
@@ -149,7 +149,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
       record[field.name as keyof typeof record] ??
       (field.isDependent() && shouldSet
         ? addMissingFields(
-            field.relatedModel.name,
+            field.relatedTable.name,
             (record[field.name as keyof typeof record] as Partial<
               SerializedResource<AnySchema>
             >) ?? {},

@@ -1,0 +1,28 @@
+{
+    "name": "Collectors",
+    "class": "edu.ku.brc.specify.datamodel.Collector",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.CollectorBusRules",
+    "altviews": {
+        "Collectors Table View": {
+            "name": "Collectors Table View",
+            "viewdef": "Collectors Table",
+            "mode": "view"
+        },
+        "Collectors Table Edit": {
+            "name": "Collectors Table Edit",
+            "viewdef": "Collectors Table",
+            "mode": "edit",
+            "default": "true"
+        }
+    },
+    "viewdefs": {
+        "Collectors Table": "<viewdef type=\"formtable\" name=\"Collectors Table\" class=\"edu.ku.brc.specify.datamodel.Collector\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>Collectors grid view for CollectingEvent form.</desc>\n            <definition>Collectors</definition>\n        </viewdef>\n\n        ",
+        "Collectors": "<viewdef type=\"form\" name=\"Collectors\" class=\"edu.ku.brc.specify.datamodel.Collector\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>The Collectors form - UNKNOWN use in database.</desc>\n            <enableRules />\n\n            <columnDef>p,5dlu,p:g,5dlu,p</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"2px\" />\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"3\" />\n                    <cell type=\"field\" id=\"3\" name=\"agent.lastName\" uitype=\"text\" colspan=\"3\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"5\" />\n                    <cell type=\"field\" id=\"5\" name=\"agent.firstName\" uitype=\"text\" colspan=\"3\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"7\" />\n                    <cell type=\"field\" id=\"7\" name=\"remarks\" uitype=\"text\" colspan=\"3\" />\n                </row>\n            </rows>\n        </viewdef>\n\n        "
+    },
+    "view": "<view name=\"Collectors\" class=\"edu.ku.brc.specify.datamodel.Collector\" busrules=\"edu.ku.brc.specify.datamodel.busrules.CollectorBusRules\">\n            <desc>The Collectors Subform.</desc>\n            <altviews>\n                <!-- <altview name=\"Collectors Icon View\"  viewdef=\"CollectorsIconView\" mode=\"view\"/>\n                <altview name=\"Collectors Icon Edit\"  viewdef=\"CollectorsIconView\" mode=\"edit\"/>  -->\n                <altview name=\"Collectors Table View\" viewdef=\"Collectors Table\" mode=\"view\" />\n                <altview name=\"Collectors Table Edit\" viewdef=\"Collectors Table\" mode=\"edit\" default=\"true\" />\n            </altviews>\n        </view>\n\n        ",
+    "viewsetName": "Common",
+    "viewsetLevel": "Common",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "common/common.views.xml"
+}

@@ -6,6 +6,7 @@ import type { IR, RA } from '../../../utils/types';
 import type { Tables } from '../../DataModel/types';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from '../linesGetter';
 import type { MappingLine } from '../Mapper';
+import { emptyMapping } from '../mappingHelpers';
 import type { UploadPlan } from '../uploadPlanParser';
 
 requireContext();
@@ -32,7 +33,7 @@ theories(getLinesFromHeaders, [
     ],
     out: [
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'BMSM No.',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -50,7 +51,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Superfamily',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -144,7 +145,7 @@ theories(getLinesFromHeaders, [
     ],
     out: [
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'BMSM No.',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -153,7 +154,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Class',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -162,7 +163,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Superfamily',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -171,7 +172,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Family',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -180,7 +181,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Genus',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -189,7 +190,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Subgenus',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -198,7 +199,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Species',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -207,7 +208,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Subspecies',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -216,7 +217,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Species Author',
         columnOptions: {
           matchBehavior: 'ignoreNever',
@@ -225,7 +226,7 @@ theories(getLinesFromHeaders, [
         },
       },
       {
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         headerName: 'Subspecies Author',
         columnOptions: {
           matchBehavior: 'ignoreNever',

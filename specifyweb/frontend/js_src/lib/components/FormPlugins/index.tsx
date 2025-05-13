@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
@@ -12,10 +13,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
 import { Dialog } from '../Molecules/Dialog';
+import { WebLinkField } from '../WebLinks';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
 import { GeoLocatePlugin } from './GeoLocate';
@@ -24,7 +26,6 @@ import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
-import { WebLink } from './WebLink';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
@@ -34,18 +35,16 @@ const pluginRenderers: {
     readonly pluginDefinition: UiPlugins[KEY];
     readonly field: LiteralField | Relationship | undefined;
     readonly formType: FormType;
-    readonly mode: FormMode;
     readonly isRequired: boolean;
   }) => JSX.Element | null;
 } = {
-  LatLonUI({ resource, mode, id, pluginDefinition: { step, latLongType } }) {
+  LatLonUI({ resource, id, pluginDefinition: { step, latLongType } }) {
     if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
       <LatLongUi
         id={id}
         latLongType={latLongType}
-        mode={mode}
         resource={locality}
         step={step}
       />
@@ -54,9 +53,9 @@ const pluginRenderers: {
   PartialDateUI: ({
     id,
     resource,
-    mode,
     formType,
     field,
+    isRequired,
     pluginDefinition: {
       defaultValue,
       defaultPrecision,
@@ -68,11 +67,11 @@ const pluginRenderers: {
       <ErrorBoundary dismissible>
         <PartialDateUi
           canChangePrecision={canChangePrecision && formType === 'form'}
-          dateField={field.name}
+          dateField={field}
           defaultPrecision={defaultPrecision}
           defaultValue={defaultValue}
           id={id}
-          isReadOnly={mode === 'view'}
+          isRequired={isRequired}
           precisionField={precisionField}
           resource={resource}
         />
@@ -126,16 +125,14 @@ const pluginRenderers: {
     field,
     pluginDefinition: { webLink, icon },
     formType,
-    mode,
   }) {
     return (
       <ErrorBoundary dismissible>
-        <WebLink
+        <WebLinkField
           field={field}
           formType={formType}
           icon={icon}
           id={id}
-          mode={mode}
           name={name}
           resource={resource}
           webLink={webLink}
@@ -145,7 +142,6 @@ const pluginRenderers: {
   },
   HostTaxonPlugin({
     resource,
-    mode,
     id,
     formType,
     isRequired,
@@ -169,7 +165,6 @@ const pluginRenderers: {
             formType={formType}
             id={id}
             isRequired={isRequired}
-            mode={mode}
             relationship={relationship}
             resource={collectingEventAttribute}
           />
@@ -207,7 +202,7 @@ const pluginRenderers: {
         >
           {formsText.pluginNotAvailableDescription()}
           <br />
-          {formsText.pluginNotAvailableSecondDescription()}
+          {formsText.commandUnavailableSecondDescription()}
           <br />
           {commonText.colonLine({
             label: formsText.pluginName(),
@@ -224,7 +219,6 @@ export function FormPlugin({
   id,
   name,
   resource,
-  mode,
   fieldDefinition,
   field,
   formType,
@@ -233,7 +227,6 @@ export function FormPlugin({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
   readonly fieldDefinition: FieldTypes['Plugin'];
   readonly field: LiteralField | Relationship | undefined;
   readonly formType: FormType;
@@ -248,7 +241,6 @@ export function FormPlugin({
       formType={formType}
       id={id}
       isRequired={isRequired}
-      mode={mode}
       name={name}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['LocalityGoogleEarth']
@@ -278,8 +270,8 @@ export function WrongPluginTable({
         onClose={handleHide}
       >
         {formsText.wrongTableForPlugin({
-          currentTable: resource.specifyModel.name,
-          supportedTables: formatDisjunction(supportedTables),
+          currentTable: resource.specifyTable.name,
+          supportedTables: formatDisjunction(supportedTables.map(localized)),
         })}
       </Dialog>
     </>

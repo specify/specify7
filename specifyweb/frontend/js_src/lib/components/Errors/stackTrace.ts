@@ -1,6 +1,6 @@
 import { errorContext } from '../../hooks/useErrorContext';
 import type { R } from '../../utils/types';
-import { jsonStringify, removeKey, sortFunction } from '../../utils/utils';
+import { sortFunction } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
 
 const resolvedStackTrace: R<unknown> = {};
@@ -18,17 +18,19 @@ Promise.all(
       async ({ getOperationPermissions, fetchContext }) =>
         fetchContext.then(getOperationPermissions)
     ),
-    schema: import('../DataModel/schema')
-      .then(async ({ fetchContext }) => fetchContext)
-      .then((schema) => removeKey(schema, 'models')),
+    schema: import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    ),
     remotePrefs: import('../InitialContext/remotePrefs').then(
       async ({ fetchContext }) => fetchContext
     ),
     userPreferences: import('../Preferences/userPreferences').then(
-      ({ userPreferences }) => userPreferences.getRaw()
+      async ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
     ),
     collectionPreferences: import('../Preferences/collectionPreferences').then(
-      ({ collectionPreferences }) => collectionPreferences.getRaw()
+      async ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
       async ({ fetchContext }) => fetchContext
@@ -44,7 +46,7 @@ Promise.all(
  * The stack trace is about 83KB in size
  */
 export const produceStackTrace = (message: unknown): string =>
-  jsonStringify(
+  JSON.stringify(
     Object.fromEntries(
       Object.entries({
         message,

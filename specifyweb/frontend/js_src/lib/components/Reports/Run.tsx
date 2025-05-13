@@ -4,9 +4,9 @@ import { useId } from '../../hooks/useId';
 import { csrfToken } from '../../utils/ajax/csrfToken';
 import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { xmlToString } from '../AppResources/codeMirrorLinters';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
+import { xmlToString } from '../Syncer/xmlToString';
 
 export function RunReport({
   query,
@@ -17,7 +17,7 @@ export function RunReport({
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly recordSetId: number | undefined;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -54,7 +54,7 @@ export function RunReport({
         type="hidden"
       />
       <input
-        defaultValue={xmlToString(definition.documentElement, false)}
+        defaultValue={xmlToString(definition, false)}
         name="report"
         type="hidden"
       />

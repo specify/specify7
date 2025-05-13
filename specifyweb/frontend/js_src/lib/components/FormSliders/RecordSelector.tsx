@@ -1,5 +1,4 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -7,44 +6,12 @@ import { clamp } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SearchDialog } from '../Forms/SearchDialog';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { useSearchDialog } from '../SearchDialog';
 import { Slider } from './Slider';
 
-function Search<SCHEMA extends AnySchema>({
-  model,
-  onAdd: handleAdd,
-  onClose: handleClose,
-}: {
-  readonly model: SpecifyModel<SCHEMA>;
-  readonly onAdd: (resources: RA<SpecifyResource<SCHEMA>>) => void;
-  readonly onClose: () => void;
-}): JSX.Element {
-  const resource = React.useMemo(
-    () =>
-      new model.Resource(
-        {},
-        {
-          noBusinessRules: true,
-          noValidation: true,
-        }
-      ),
-    [model]
-  );
-  return (
-    <SearchDialog<SCHEMA>
-      extraFilters={undefined}
-      forceCollection={undefined}
-      multiple
-      templateResource={resource}
-      onClose={handleClose}
-      onSelected={handleAdd}
-    />
-  );
-}
-
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   // Related field
   readonly field?: Relationship;
   // A record on which this record set is dependent
@@ -66,6 +33,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
+  readonly isCollapsed?: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -80,17 +48,20 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
   // Use this to render <ResourceView>
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   // Set this as an "Add" button event listener
-  readonly onAdd: (() => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Set this as an "Remove" button event listener
   readonly onRemove:
     | ((source: 'deleteButton' | 'minusButton') => void)
     | undefined;
+  readonly showSearchDialog: () => void;
   // True while fetching new record
   readonly isLoading: boolean;
 };
 
 export function useRecordSelector<SCHEMA extends AnySchema>({
-  model,
+  table,
   field,
   records,
   onAdd: handleAdded,
@@ -111,9 +82,35 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     [index]
   );
 
-  const [state, setState] = React.useState<
-    State<'AddBySearch'> | State<'Main'>
-  >({ type: 'Main' });
+  const isToOne =
+    field === undefined ? false : !field.type.includes('-to-many');
+
+  const handleResourcesSelected = React.useMemo(
+    () =>
+      typeof handleAdded === 'function'
+        ? (resources: RA<SpecifyResource<SCHEMA>>): void => {
+            if (field?.isDependent() ?? true)
+              f.maybe(field?.otherSideName, (fieldName) =>
+                f.maybe(relatedResource?.url(), (url) =>
+                  resources.forEach((resource) => {
+                    resource.set(fieldName, url as never);
+                  })
+                )
+              );
+            handleAdded(resources);
+          }
+        : undefined,
+    [handleAdded, relatedResource, field]
+  );
+
+  const { searchDialog, showSearchDialog } = useSearchDialog({
+    extraFilters: undefined,
+    forceCollection: undefined,
+    multiple: !isToOne,
+    table,
+    onSelected: handleResourcesSelected,
+    onAdd: handleAdded,
+  });
 
   return {
     slider: (
@@ -123,7 +120,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
         onChange={
           handleSlide === undefined
             ? undefined
-            : (index) => handleSlide?.(index, false)
+            : (index): void => handleSlide?.(index, false)
         }
       />
     ),
@@ -132,35 +129,20 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     isLoading: records[index] === undefined && totalCount !== 0,
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
-    dialogs:
-      state.type === 'AddBySearch' && typeof handleAdded === 'function' ? (
-        <Search
-          model={model}
-          onAdd={(resources): void => {
-            f.maybe(field?.otherSideName, (fieldName) =>
-              f.maybe(relatedResource?.url(), (url) =>
-                resources.forEach((resource) =>
-                  resource.set(fieldName, url as never)
-                )
-              )
-            );
-            handleAdded(resources);
-          }}
-          onClose={(): void => setState({ type: 'Main' })}
-        />
-      ) : null,
+    dialogs: searchDialog,
     onAdd:
       typeof handleAdded === 'function'
-        ? (): void => {
+        ? (resources: RA<SpecifyResource<SCHEMA>>): void => {
             if (typeof relatedResource === 'object') {
-              const resource = new model.Resource();
+              const resource = resources[0];
               if (
                 typeof field?.otherSideName === 'string' &&
+                field.isDependent() &&
                 !relatedResource.isNew()
               )
                 resource.set(field.otherSideName, relatedResource.url() as any);
               handleAdded([resource]);
-            } else setState({ type: 'AddBySearch' });
+            } else showSearchDialog();
           }
         : undefined,
     onRemove:
@@ -182,5 +164,6 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
                 )
               : undefined
         : undefined,
+    showSearchDialog,
   };
 }

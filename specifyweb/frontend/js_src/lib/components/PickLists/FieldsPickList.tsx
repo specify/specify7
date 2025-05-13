@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
@@ -14,12 +14,12 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const getItems = React.useCallback(
     () =>
       props.resource?.get('type') === PickListTypes.FIELDS
-        ? getModel(props.resource.get('tableName') ?? '')?.fields.map(
+        ? (getTable(props.resource.get('tableName') ?? '')?.fields.map(
             (field) => ({
               value: field.name,
               title: field.label,
             })
-          ) ?? []
+          ) ?? [])
         : [],
     [props.resource]
   );

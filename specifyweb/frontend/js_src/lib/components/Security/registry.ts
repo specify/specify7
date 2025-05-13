@@ -7,9 +7,10 @@ import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, localized } from '../../utils/types';
 import { lowerToHuman } from '../../utils/utils';
-import { schema } from '../DataModel/schema';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -57,6 +58,11 @@ type WritableRegistry = {
   isInstitutional: boolean;
 };
 
+export const isUncommonPermissionTable = ({
+  isSystem,
+  isHidden,
+}: SpecifyTable): boolean => isSystem || isHidden;
+
 /** Build a registry of all permissions, their labels and possible actions */
 const buildRegistry = f.store((): IR<Registry> => {
   const rules: RA<{
@@ -65,40 +71,42 @@ const buildRegistry = f.store((): IR<Registry> => {
     readonly actions: RA<string>;
     readonly groupName: LocalizedString;
   }> = [
-    ...Object.values(schema.models)
+    ...Object.values(genericTables)
       .filter(({ name }) => !f.has(toolTables(), name))
-      .map(({ name, label, isHidden, isSystem }) => ({
-        resource: tableNameToResourceName(name),
-        localized: [schemaText.table(), label],
+      .map((table) => ({
+        resource: tableNameToResourceName(table.name),
+        localized: [schemaText.table(), table.label],
         actions: tableActions,
-        groupName: isSystem || isHidden ? userText.advancedTables() : '',
+        groupName: localized(
+          isUncommonPermissionTable(table) ? userText.advancedTables() : ''
+        ),
       })),
     ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
       resource: partsToResourceName([toolPermissionPrefix, name]),
       localized: [commonText.tool(), label],
       actions: tableActions,
-      groupName: '',
+      groupName: localized(''),
     })),
     ...Object.entries(operationPolicies).map(([resource, actions]) => ({
       resource,
       localized: resourceNameToParts(resource).map(lowerToHuman),
       actions,
-      groupName: '',
+      groupName: localized(''),
     })),
     ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
       resource,
       localized: resourceNameToParts(resource).map(lowerToHuman),
       actions,
-      groupName: '',
+      groupName: localized(''),
     })),
   ];
   return rules.reduce<R<WritableRegistry>>(
-    (registry, { resource, localized, groupName }) => {
+    (registry, { resource, localized: localizedItems, groupName }) => {
       const resourceParts = resourceNameToParts(resource);
       resourceParts.reduce<R<WritableRegistry>>(
         (place, part, index, { length }) => {
           place[part] ??= {
-            label: localized[index],
+            label: localizedItems[index],
             children:
               index + 1 === length
                 ? {}
@@ -111,11 +119,11 @@ const buildRegistry = f.store((): IR<Registry> => {
                       actions: getAllActions(
                         partsToResourceName(resourceParts.slice(0, index + 1))
                       ),
-                      groupName: '',
+                      groupName: localized(''),
                       isInstitutional: false,
                     },
                   },
-            groupName: index + 1 === length ? groupName : '',
+            groupName: localized(index + 1 === length ? groupName : ''),
             actions:
               index + 1 === length
                 ? getAllActions(
@@ -137,7 +145,7 @@ const buildRegistry = f.store((): IR<Registry> => {
         label: commonText.all(),
         children: {},
         actions: getAllActions(partsToResourceName([])),
-        groupName: '',
+        groupName: localized(''),
         isInstitutional: false,
       },
     }
@@ -158,19 +166,19 @@ export function policiesToTsv(): string {
       key === '%'
         ? []
         : Object.keys(entry.children).length > 0
-        ? iterate(
-            entry.children,
-            [...path, entry.label],
-            isInstitutional || entry.isInstitutional
-          )
-        : entry.actions.map((action) => [
-            [...path, entry.label].join(' > '),
-            actionToLabel(action),
-            isInstitutional || entry.isInstitutional
-              ? 'Institution'
-              : 'Collection',
-            entry.groupName,
-          ])
+          ? iterate(
+              entry.children,
+              [...path, entry.label],
+              isInstitutional || entry.isInstitutional
+            )
+          : entry.actions.map((action) => [
+              [...path, entry.label].join(' > '),
+              actionToLabel(action),
+              isInstitutional || entry.isInstitutional
+                ? 'Institution'
+                : 'Collection',
+              entry.groupName,
+            ])
     );
 
   return [
@@ -216,11 +224,11 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: schema.models.PickList.label,
+      label: tables.PickList.label,
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {
-      label: schema.models.SpAuditLog.label,
+      label: tables.SpAuditLog.label,
       tables: ['SpAuditLog', 'SpAuditLogField'],
     },
   } as const)

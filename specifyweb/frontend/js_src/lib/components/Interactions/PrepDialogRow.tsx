@@ -3,10 +3,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { interactionsText } from '../../localization/interactions';
-import type { Preparations } from '../../utils/ajax/specifyApi';
-import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import type { RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -15,16 +13,19 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import type { PreparationData } from './helpers';
+import { getInteractionsForPrepId } from './helpers';
 
 export function PrepDialogRow({
   preparation,
   selected,
   onChange: handleChange,
 }: {
-  readonly preparation: Preparations[number];
+  readonly preparation: PreparationData;
   readonly selected: number;
   readonly onChange: (newSelected: number) => void;
 }): JSX.Element {
@@ -66,7 +67,6 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-
         <td className="justify-end tabular-nums">
           <Link.NewTab
             href={getResourceViewUrl(
@@ -74,23 +74,26 @@ export function PrepDialogRow({
               preparation.collectionObjectId
             )}
           >
-            {
-              syncFieldFormat(
-                getField(schema.models.CollectionObject, 'catalogNumber'),
-                undefined,
-                preparation.catalogNumber
-              ) as LocalizedString
-            }
+            {syncFieldFormat(
+              getField(tables.CollectionObject, 'catalogNumber'),
+              preparation.catalogNumber
+            )}
           </Link.NewTab>
         </td>
         <td>
-          <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
-            {preparation.taxon as LocalizedString}
-          </Link.NewTab>
+          {preparation.taxon ? (
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {localized(preparation.taxon)}
+            </Link.NewTab>
+          ) : (
+            <span>{interactionsText.notAvailable()}</span>
+          )}
         </td>
         <td>{preparation.prepType}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.selectedAmount()}
             max={preparation.available}
             min={0}
@@ -120,21 +123,20 @@ export function PrepDialogRow({
                                 .map((object) => object.split('>|<'))
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
-                                  label: label as LocalizedString,
+                                  label: localized(label),
                                 })) ?? []
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
-
                           setState(
                             count === 1
                               ? {
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
-                                    ? schema.models.Loan
+                                    ? tables.Loan
                                     : gifts.length === 1
-                                    ? schema.models.Gift
-                                    : schema.models.ExchangeOut
+                                      ? tables.Gift
+                                      : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,
@@ -166,15 +168,16 @@ export function PrepDialogRow({
             {Object.entries(state.items).map(([tableName, items]) =>
               items.map(({ id, label }) => (
                 <Button.LikeLink
+                  key={id}
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',
-                      resource: new schema.models[tableName].Resource({ id }),
+                      resource: new genericTables[tableName].Resource({ id }),
                     })
                   }
                 >
                   {interactionsText.prepReturnFormatter({
-                    tableName: schema.models[tableName].label,
+                    tableName: genericTables[tableName].label,
                     resource: label,
                   })}
                 </Button.LikeLink>
@@ -188,7 +191,6 @@ export function PrepDialogRow({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}

@@ -4,9 +4,10 @@ import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { toTreeTable } from '../DataModel/helpers';
-import type { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
+import { idFromUrl, resourceOn } from '../DataModel/resource';
+import type { TreeDefItem } from '../DataModel/treeBusinessRules';
 import type { Geography } from '../DataModel/types';
 import type {
   DefaultComboBoxProps,
@@ -20,42 +21,63 @@ import {
 import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
 
-const fetchPossibleRanks = async (
-  lowestChildRank: number,
-  parentRankId: number,
-  treeName: AnyTree['tableName']
-): Promise<RA<PickListItemSimple>> =>
+const fetchTreeRoot = async (
+  treeName: AnyTree['tableName'],
+  treeDefinitionId: number
+): Promise<SerializedResource<TreeDefItem<AnyTree>>> =>
+  treeRanksPromise.then(
+    () =>
+      strictGetTreeDefinitionItems(treeName, true, treeDefinitionId).find(
+        ({ rankId }) => rankId === 0
+      )!
+  );
+
+export const fetchPossibleRanks = async (
+  resource: SpecifyResource<AnyTree>,
+  parentDefinitionRankId: number,
+  treeDefinitionId: number
+): Promise<RA<SerializedResource<TreeDefItem<AnyTree>>>> =>
   treeRanksPromise
-    .then(() =>
-      strictGetTreeDefinitionItems(treeName as 'Geography', false)
-        .filter(
-          ({ rankId }) =>
-            rankId > parentRankId &&
-            (lowestChildRank <= 0 || rankId < lowestChildRank)
+    .then(async () =>
+      fetchLowestChildRank(resource).then((lowestChildRank) =>
+        strictGetTreeDefinitionItems(
+          resource.specifyTable.name,
+          false,
+          treeDefinitionId
         )
-        .sort(sortFunction(({ rankId }) => rankId))
+          .filter(
+            ({ rankId }) =>
+              rankId > parentDefinitionRankId &&
+              (lowestChildRank <= 0 || rankId < lowestChildRank)
+          )
+          .sort(sortFunction(({ rankId }) => rankId))
+      )
     )
     .then((ranks) => {
       const enforcedIndex = ranks.findIndex(({ isEnforced }) => isEnforced) + 1;
       // Remove ranks after enforced rank
-      return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
-        (rank) => ({
-          value: rank.id.toString(),
-          title: rank.title || rank.name,
-        })
-      );
+      return enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex);
     });
 
-export const fetchLowestChildRank = async (
+const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>
 ): Promise<number> =>
   resource.isNew()
     ? Promise.resolve(-1)
-    : fetchCollection(resource.specifyModel.name, {
+    : fetchCollection(resource.specifyTable.name, {
         limit: 1,
         parent: resource.id,
         orderBy: 'rankId',
+        domainFilter: false,
       }).then(({ records }) => records[0]?.rankId ?? -1);
+
+const ranksToPicklistItems = (
+  ranks: RA<SerializedResource<TreeDefItem<AnyTree>>> | undefined
+): RA<PickListItemSimple> | undefined =>
+  ranks?.map((rank) => ({
+    value: rank.resource_uri,
+    title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
+  }));
 
 /**
  * Pick list to choose a tree rank for a tree node
@@ -64,17 +86,17 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(
     undefined
   );
+
   React.useEffect(() => {
-    if (props.model === undefined) return undefined;
-    const resource = toTreeTable(props.model);
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
     if (
       resource === undefined ||
-      !hasTreeAccess(resource.specifyModel.name, 'read')
+      !hasTreeAccess(resource.specifyTable.name, 'read')
     )
       return undefined;
-    const lowestChildRank = fetchLowestChildRank(resource);
     const destructor = resourceOn(
-      props.model,
+      props.resource,
       'change:parent',
       (): void =>
         void resource
@@ -85,18 +107,27 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
               'definitionItem'
             )
           )
-          .then((treeDefinitionItem) =>
+          .then(async (treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
-              ? lowestChildRank.then(async (rankId) =>
-                  fetchPossibleRanks(
-                    rankId,
-                    treeDefinitionItem.get('rankId'),
-                    resource.specifyModel.name
-                  )
+              ? fetchPossibleRanks(
+                  resource,
+                  treeDefinitionItem.get('rankId'),
+                  idFromUrl(treeDefinitionItem.get('treeDef'))!
                 )
-              : undefined
+              : typeof resource.get('definitionItem') === 'string' &&
+                  !resource.isNew()
+                ? ([
+                    await fetchTreeRoot(
+                      resource.specifyTable.name,
+                      idFromUrl(resource.get('definition'))!
+                    ),
+                  ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
+                : undefined
           )
-          .then((items) => (destructorCalled ? undefined : setItems(items))),
+          .then((items) => {
+            if (destructorCalled) return undefined;
+            return void setItems(ranksToPicklistItems(items));
+          }),
       true
     );
     let destructorCalled = false;
@@ -104,26 +135,57 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.model]);
+  }, [props.resource, props.defaultValue]);
+
+  React.useEffect(() => {
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
+    const definitionItem = resource?.get('definitionItem');
+
+    const newDefinitionItem =
+      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
+
+    const isDifferentDefinitionItem =
+      newDefinitionItem !== (definitionItem ?? '');
+
+    const invalidDefinitionItem =
+      typeof definitionItem !== 'string' ||
+      (!(items?.map(({ value }) => value).includes(definitionItem) ?? true) &&
+        !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
+
+    if (
+      isDifferentDefinitionItem &&
+      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
+      invalidDefinitionItem
+    ) {
+      resource?.set('definitionItem', newDefinitionItem);
+      return void resource?.businessRuleManager?.checkField('parent');
+    }
+    return undefined;
+  }, [items]);
 
   return (
     <PickListComboBox
       {...props}
-      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
-        props.model === undefined ||
-        !isTreeResource(props.model) ||
-        props.model.get('parent') === null
+        props.resource === undefined ||
+        items?.length === 0 ||
+        !isTreeResource(props.resource) ||
+        typeof props.resource.get('parent') !== 'string'
       }
       isRequired={
-        props.model?.specifyModel.getRelationship('definitionItem')
+        props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
-      items={items}
-      // Select next enforced rank by default
+      items={items ?? []}
       pickList={undefined}
-      onAdd={undefined}
     />
   );
 }
+
+export const exportsForTests = {
+  fetchPossibleRanks,
+  fetchLowestChildRank,
+  ranksToPicklistItems,
+};

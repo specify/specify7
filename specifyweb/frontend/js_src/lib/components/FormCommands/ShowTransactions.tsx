@@ -7,14 +7,17 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 
 function List({
@@ -29,12 +32,12 @@ function List({
   const [entries] = useAsyncState(
     React.useCallback(async () => {
       const interactions: RA<SpecifyResource<AnySchema>> = await Promise.all(
-        resources.map((resource) => resource.rgetPromise(fieldName))
+        resources.map(async (resource) => resource.rgetPromise(fieldName))
       );
       return interactions
         .map((resource) => ({
           label: resource.get(displayFieldName),
-          href: resource.viewUrl(),
+          resource,
         }))
         .sort(sortFunction(({ label }) => label));
     }, [resources, fieldName, displayFieldName]),
@@ -45,9 +48,16 @@ function List({
     <>{commonText.noResults()}</>
   ) : Array.isArray(entries) ? (
     <Ul>
-      {entries.map(({ label, href }, index) => (
+      {entries.map(({ label, resource }, index) => (
         <li key={index}>
-          <Link.NewTab href={href}>{label}</Link.NewTab>
+          <ResourceLink
+            component={Link.Default}
+            props={{}}
+            resource={resource}
+            resourceView={{ onDeleted: undefined }}
+          >
+            {label}
+          </ResourceLink>
         </li>
       ))}
     </Ul>
@@ -72,6 +82,7 @@ export function ShowLoansCommand({
                 isResolved: false,
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           resolvedLoans: hasTablePermission('LoanPreparation', 'read')
@@ -79,18 +90,21 @@ export function ShowLoansCommand({
                 isResolved: true,
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           gifts: hasTablePermission('GiftPreparation', 'read')
             ? fetchCollection('GiftPreparation', {
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           exchanges: hasTablePermission('ExchangeOutPrep', 'read')
             ? fetchCollection('ExchangeOutPrep', {
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
         }),
@@ -102,12 +116,14 @@ export function ShowLoansCommand({
   return typeof data === 'object' ? (
     <Dialog
       buttons={commonText.close()}
-      header={commonText.transactions()}
+      header={interactionsText.interactions()}
+      icon={icons.chat}
       onClose={handleClose}
     >
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.openLoans({
-          loanTable: schema.models.Loan.label,
+          loanTable: tables.Loan.label,
         })}
       </H3>
       <List
@@ -115,9 +131,10 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.resolvedLoans({
-          loanTable: schema.models.Loan.label,
+          loanTable: tables.Loan.label,
         })}
       </H3>
       <List
@@ -125,9 +142,10 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Gift.name} />
         {interactionsText.gifts({
-          giftTable: schema.models.Gift.label,
+          giftTable: tables.Gift.label,
         })}
       </H3>
       <List
@@ -139,8 +157,8 @@ export function ShowLoansCommand({
         <>
           <H3>
             {interactionsText.exchanges({
-              exhangeInTable: schema.models.ExchangeIn.label,
-              exhangeOutTable: schema.models.ExchangeOut.label,
+              exhangeInTable: tables.ExchangeIn.label,
+              exhangeOutTable: tables.ExchangeOut.label,
             })}
           </H3>
           <List

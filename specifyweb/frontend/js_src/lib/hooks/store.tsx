@@ -6,7 +6,7 @@
 import React from 'react';
 
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { strictGetModel } from '../components/DataModel/schema';
+import { strictGetTable } from '../components/DataModel/tables';
 import type { Tables } from '../components/DataModel/types';
 import { crash } from '../components/Errors/Crash';
 import { f } from '../utils/functools';
@@ -15,11 +15,20 @@ import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 
 /*
- * FEATURE: when creating an object singleton, support not just existing resources
  * FEATURE: add agent and accessible collections to store
  * FEATURE: don't reRun format() unless changed
  * FEATURE: evaluate relevancy of resource collection
+ * FEATURE: cache formatted resources
  * REFACTOR: integrate with useCollection when rewriting the ORM
+ */
+/*
+ * REFACTOR: experiment with an object singleton:
+ * There is only ever one instance of a record with the same table name
+ * and id. Any changes in one place propagate to all the other places where
+ * that record is used. Record is only fetched once and updates are kept track
+ * of. When requesting object fetch, return the previous fetched version, while
+ * fetching the new one.
+ * FEATURE: when creating an object singleton, support not just existing resources
  */
 
 type Buckets = {
@@ -33,7 +42,7 @@ type Store<
   BUCKETS extends Record<
     number | string,
     Record<number | string, boolean | number | object | string>
-  >
+  >,
 > = {
   readonly [BUCKET_NAME in keyof BUCKETS]: {
     readonly listeners: readonly (() => void)[];
@@ -54,7 +63,7 @@ const store: Store<Buckets> = {};
  */
 export function useStore<
   BUCKET_NAME extends keyof Buckets,
-  ID extends keyof Buckets[BUCKET_NAME]
+  ID extends keyof Buckets[BUCKET_NAME],
 >(
   callback: (id: ID) => Promise<Buckets[BUCKET_NAME][ID]>,
   deleteCallback: (
@@ -123,7 +132,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   return useStore(
     React.useCallback(
       async (id: number) => {
-        const resource = new (strictGetModel(tableName).Resource)({ id });
+        const resource = new (strictGetTable(tableName).Resource)({ id });
         return resource.fetch();
       },
       [tableName]

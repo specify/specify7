@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { IR, RA } from '../../utils/types';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
@@ -25,7 +25,7 @@ export function SpecifyNetworkOccurrence({
     ) : (
       <Dialog
         buttons={commonText.close()}
-        header={schema.models.CollectionObject.label}
+        header={tables.CollectionObject.label}
         modal={false}
         onClose={handleClose}
       >
@@ -91,7 +91,7 @@ function OccurrenceTable({
     }));
 
   return (
-    <BrokerSection label={schema.models.CollectionObject.label}>
+    <BrokerSection label={tables.CollectionObject.label}>
       <SpecifyNetworkResponse responses={alteredResponse} />
     </BrokerSection>
   );
@@ -111,7 +111,7 @@ export function SpecifyNetworkSpecies({
   ) : (
     <Dialog
       buttons={commonText.close()}
-      header={speciesName ?? schema.models.Taxon.label}
+      header={speciesName ?? tables.Taxon.label}
       modal={false}
       onClose={handleClose}
     >

@@ -5,16 +5,21 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { ValueOf } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
-import { toTable } from '../DataModel/helpers';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
+import { genericTables } from '../DataModel/tables';
+import { softFail } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
+import { EMPTY_VALUE_CONDITION } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type {
   cellAlign,
@@ -23,26 +28,23 @@ import type {
 } from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
+import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { PickListTypes } from '../PickLists/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormTableInteraction } from './FormTableInteraction';
 import { PickListEditor } from './PickListEditor';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
-    readonly mode: FormMode;
     readonly cellData: CellTypes[KEY];
     readonly id: string | undefined;
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
-    readonly align: typeof cellAlign[number];
-    readonly verticalAlign: typeof cellVerticalAlign[number];
+    readonly align: (typeof cellAlign)[number];
+    readonly verticalAlign: (typeof cellVerticalAlign)[number];
   }) => JSX.Element | null;
 } = {
   Field({
-    mode,
     cellData: { fieldDefinition, fieldNames, isRequired },
     id,
     formatId,
@@ -50,8 +52,11 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
-      [resource.specifyModel, fieldNames]
+      () =>
+        resource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
+      [resource.specifyTable, fieldNames]
     );
     return (
       <FormField
@@ -60,7 +65,6 @@ const cellRenderers: {
         formType={formType}
         id={typeof id === 'string' ? formatId(id.toString()) : undefined}
         isRequired={isRequired}
-        mode={mode}
         resource={resource}
       />
     );
@@ -87,14 +91,14 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? schema.models[forClass].localization.desc ?? undefined
+            ? (genericTables[forClass].localization.desc ?? undefined)
             : undefined
         }
       >
         {typeof forClass === 'string' ? (
           <>
             <TableIcon label={false} name={forClass} />
-            {schema.models[forClass].label}
+            {genericTables[forClass].label}
           </>
         ) : (
           <>
@@ -111,18 +115,32 @@ const cellRenderers: {
   },
   SubView({
     resource: rawResource,
-    mode: rawMode,
     formType: parentFormType,
-    cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
+    cellData: {
+      fieldNames,
+      formType,
+      isButton,
+      icon,
+      viewName,
+      sortField,
+      isCollapsed,
+    },
   }) {
     const fields = React.useMemo(
-      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        rawResource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [rawResource, fieldNames]
     );
     const data = useDistantRelated(rawResource, fields);
 
     const relationship =
       data?.field?.isRelationship === true ? data.field : undefined;
+
+    const isReadOnly =
+      React.useContext(ReadOnlyContext) || rawResource !== data?.resource;
+    const isInSearchDialog = React.useContext(SearchDialogContext);
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -132,38 +150,23 @@ const cellRenderers: {
       React.useCallback(
         async () =>
           typeof relationship === 'object'
-            ? fetchView(viewName ?? relationship.relatedModel.view)
+            ? fetchView(viewName ?? relationship.relatedTable.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? resolveViewDefinition(viewDefinition, formType, rawMode)
+                    ? resolveViewDefinition(
+                        viewDefinition,
+                        formType,
+                        propsToFormMode(isReadOnly, isInSearchDialog)
+                      )
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')
             : undefined,
-        [viewName, formType, rawMode, relationship]
+        [viewName, formType, isReadOnly, isInSearchDialog, relationship]
       ),
       false
     );
 
-    const [interactionCollection] = useAsyncState<
-      Collection<AnySchema> | false
-    >(
-      React.useCallback(
-        async () =>
-          typeof relationship === 'object' &&
-          relationshipIsToMany(relationship) &&
-          typeof data?.resource === 'object' &&
-          [
-            'LoanPreparation',
-            'GiftPreparation',
-            'DisposalPreparation',
-          ].includes(relationship.relatedModel.name)
-            ? data?.resource.rgetCollection(relationship.name)
-            : false,
-        [relationship, data?.resource]
-      ),
-      false
-    );
     const currentResource = data?.resource;
 
     const [showPickListForm, setShowPickListForm] =
@@ -184,62 +187,110 @@ const cellRenderers: {
       [currentResource]
     );
 
-    const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
       currentResource === undefined ||
-      interactionCollection === undefined ||
       actualFormType === undefined
     )
       return null;
+
     const pickList = toTable(currentResource, 'PickList');
 
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
-    else if (interactionCollection === false || actualFormType === 'form')
-      return (
+
+    return isInSearchDialog ? null : (
+      <ReadOnlyContext.Provider value={isReadOnly}>
         <SubView
           formType={actualFormType}
           icon={icon}
           isButton={isButton}
-          mode={mode}
+          isCollapsed={isCollapsed}
           parentFormType={parentFormType}
           parentResource={currentResource}
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
         />
+      </ReadOnlyContext.Provider>
+    );
+  },
+  Panel({ formType, resource, cellData: { display, definitions } }) {
+    const [definitionIndex, setDefinitionIndex] = React.useState(0);
+    React.useEffect(() => {
+      let destructorCalled = false;
+      const watchFields = f.unique(
+        filterArray(
+          definitions.map(({ condition }) =>
+            condition?.type === 'Value' ? condition?.field[0].name : undefined
+          )
+        )
       );
-    else
-      return (
-        <FormTableInteraction
-          collection={interactionCollection}
-          dialog={false}
-          mode={mode}
-          sortField={sortField}
-          onClose={f.never}
-          onDelete={undefined}
+
+      async function handleChange(): Promise<void> {
+        let foundIndex = 0;
+        for (const [index, { condition }] of Object.entries(definitions)) {
+          if (condition === undefined) continue;
+          if (condition.type === 'Always') {
+            foundIndex = Number.parseInt(index);
+            break;
+          }
+          const value = await fetchPathAsString(resource, condition.field);
+          if (
+            (!destructorCalled && value === condition.value) ||
+            (condition.value === EMPTY_VALUE_CONDITION && value === '')
+          ) {
+            foundIndex = Number.parseInt(index);
+            break;
+          }
+        }
+        setDefinitionIndex(foundIndex);
+      }
+
+      handleChange().catch(softFail);
+
+      const destructors = watchFields.map((fieldName) =>
+        resourceOn(
+          resource,
+          `change:${fieldName}`,
+          async () => handleChange().catch(softFail),
+          false
+        )
+      );
+
+      return (): void => {
+        destructors.forEach((destructor) => destructor());
+        destructorCalled = true;
+      };
+    }, [resource, definitions]);
+
+    const isReadOnly = React.useContext(ReadOnlyContext);
+    const isInSearchDialog = React.useContext(SearchDialogContext);
+    const definition = definitions.at(definitionIndex)?.definition;
+    const mode = propsToFormMode(isReadOnly, isInSearchDialog);
+    const viewDefinition = React.useMemo(
+      () =>
+        definition === undefined
+          ? undefined
+          : {
+              ...definition,
+              mode,
+              name: 'panel',
+              formType,
+              table: resource.specifyTable,
+            },
+      [definition, formType, resource.specifyTable, mode]
+    );
+
+    const form =
+      viewDefinition === undefined ? null : (
+        <SpecifyForm
+          display={display}
+          key={definitionIndex}
+          resource={resource}
+          viewDefinition={viewDefinition}
         />
       );
-  },
-  Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
-    const viewDefinition = React.useMemo(
-      () => ({
-        ...cellData,
-        mode,
-        name: 'panel',
-        formType,
-        model: resource.specifyModel,
-      }),
-      [cellData, mode, formType, resource.specifyModel]
-    );
-    const form = (
-      <SpecifyForm
-        display={display}
-        resource={resource}
-        viewDefinition={viewDefinition}
-      />
-    );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
   },
   Command({
@@ -275,7 +326,6 @@ const cellRenderers: {
 
 export function FormCell({
   resource,
-  mode,
   cellData,
   id,
   formatId,
@@ -284,15 +334,16 @@ export function FormCell({
   verticalAlign,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
-  readonly cellData: CellTypes[keyof CellTypes];
+  readonly cellData: ValueOf<CellTypes>;
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
-  readonly align: typeof cellAlign[number];
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly align: (typeof cellAlign)[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
+  const Render = cellRenderers[
+    cellData.type
+  ] as (typeof cellRenderers)['Field'];
   return (
     <Render
       align={align}
@@ -300,7 +351,6 @@ export function FormCell({
       formatId={formatId}
       formType={formType}
       id={id}
-      mode={mode}
       resource={resource}
       verticalAlign={verticalAlign}
     />

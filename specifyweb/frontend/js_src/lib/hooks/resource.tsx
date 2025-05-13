@@ -1,25 +1,23 @@
 import React from 'react';
 
-import {
-  fetchDistantRelated,
-  serializeResource,
-} from '../components/DataModel/helpers';
+import { SearchDialogContext } from '../components/Core/Contexts';
+import { fetchDistantRelated } from '../components/DataModel/helpers';
 import type {
   AnySchema,
   SerializedResource,
 } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
+import { serializeResource } from '../components/DataModel/serializers';
 import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import {
-  getValidationAttributes,
-  resolveParser,
-} from '../utils/parser/definitions';
-import type { GetOrSet, IR, RA } from '../utils/types';
 import { raise } from '../components/Errors/Crash';
+import type { Parser } from '../utils/parser/definitions';
+import { mergeParsers, resolveParser } from '../utils/parser/definitions';
+import type { GetOrSet, RA } from '../utils/types';
+import { useLiveState } from './useLiveState';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -31,20 +29,20 @@ import { raise } from '../components/Errors/Crash';
  *   React.useEffect(()=>{}, [resource.name, resource.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
-  model: SpecifyResource<SCHEMA>
+  table: SpecifyResource<SCHEMA>
 ): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
-    () => serializeResource(model)
+    () => serializeResource(table)
   );
 
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(() =>
     resourceOn(
-      model,
+      table,
       'change',
       () => {
         if (isChanging.current) return;
-        const newResource = serializeResource(model);
+        const newResource = serializeResource(table);
         previousResourceRef.current = newResource;
         setResource(newResource);
       },
@@ -54,11 +52,11 @@ export function useResource<SCHEMA extends AnySchema>(
 
   const previousResourceRef =
     React.useRef<SerializedResource<SCHEMA>>(resource);
-  const previousModel = React.useRef(model);
+  const previousTable = React.useRef(table);
   React.useEffect(() => {
-    if (previousModel.current !== model) {
-      previousModel.current = model;
-      const newResource = serializeResource(model);
+    if (previousTable.current !== table) {
+      previousTable.current = table;
+      const newResource = serializeResource(table);
       previousResourceRef.current = newResource;
       setResource(newResource);
       return;
@@ -71,46 +69,25 @@ export function useResource<SCHEMA extends AnySchema>(
 
     isChanging.current = true;
     changes.forEach(([key, newValue]) =>
-      model.set(key as 'resource_uri', newValue as never)
+      table.set(key as 'resource_uri', newValue as never)
     );
     isChanging.current = false;
 
     previousResourceRef.current = resource;
-  }, [resource, model]);
+  }, [resource, table]);
 
   return [resource, setResource];
 }
 
-/** Hook for getting save blockers for a model's field */
-export function useSaveBlockers({
-  resource,
-  fieldName,
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly fieldName: string;
-}): string {
-  const [errors, setErrors] = React.useState<string>(
-    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-  );
-  React.useEffect(
-    () =>
-      resource === undefined
-        ? undefined
-        : resourceOn(
-            resource,
-            'blockersChanged',
-            (): void =>
-              setErrors(
-                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
-                  ''
-              ),
-            false
-          ),
-    [resource, fieldName]
-  );
-  return errors;
-}
-
+/**
+ * I.e, if you have a Collection Object resource and the following fields:
+ * [accession, accessionNumber], this function will fetch the accession and
+ * return accession and accession number field. Basically, it climbs the fields
+ * until it gets to the last field and corresponding resource, which are
+ * returned.
+ *
+ * If collection object has no accession, undefined is returned.
+ */
 export function useDistantRelated(
   resource: SpecifyResource<AnySchema>,
   fields: RA<LiteralField | Relationship> | undefined
@@ -142,20 +119,31 @@ export function useDistantRelated(
   return data;
 }
 
-/**
- * Derive validation attributes for an <Input> from a field schema
- *
- */
-export function useValidationAttributes(
-  field: LiteralField | Relationship
-): IR<string> {
-  const [attributes, setAttributes] = React.useState<IR<string>>(() => {
-    const parser = resolveParser(field);
-    return getValidationAttributes(parser);
-  });
-  React.useEffect(() => {
-    const parser = resolveParser(field);
-    setAttributes(getValidationAttributes(parser));
-  }, [field]);
-  return attributes;
+export function useParser(
+  field: LiteralField | Relationship | undefined,
+  resource?: SpecifyResource<AnySchema> | undefined,
+  defaultParser?: Parser
+): Parser {
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  const formatter =
+    field?.isRelationship === false
+      ? field.getUiFormatter(resource)
+      : undefined;
+  return useLiveState<Parser>(
+    React.useCallback(() => {
+      /*
+       * Disable parser when in search dialog as space and quote characters are
+       * interpreted differently in them  thus validation for them should be
+       * disabled.
+       */
+      const parser =
+        isInSearchDialog || field === undefined
+          ? { type: 'text' as const }
+          : resolveParser(field, undefined, resource);
+
+      return typeof defaultParser === 'object'
+        ? mergeParsers(parser, defaultParser)
+        : parser;
+    }, [isInSearchDialog, field, resource, formatter, defaultParser])
+  )[0];
 }

@@ -19,45 +19,39 @@ import {
 } from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
-  PreferenceItemComponent,
+  PreferenceRendererProps,
 } from '../Preferences/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping(
-    '/context/language/',
-    {
-      method: 'POST',
-      body: {
-        language,
-        csrfmiddlewaretoken: csrfToken,
-      },
+  ping('/context/language/', {
+    method: 'POST',
+    body: {
+      language,
+      csrfmiddlewaretoken: csrfToken,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(f.void);
+  }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
-  isReadOnly = false,
   showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV ===
     'development',
   // Whether the language picker is for the UI language (rather than schema)
@@ -66,7 +60,6 @@ export function LanguageSelection<LANGUAGES extends string>({
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
-  readonly isReadOnly?: boolean;
   readonly showDevLanguages?: boolean;
   readonly isForInterface: boolean;
 }): JSX.Element {
@@ -75,6 +68,7 @@ export function LanguageSelection<LANGUAGES extends string>({
     LANGUAGES | undefined
   >(undefined);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       {showSupportDialog && (
@@ -139,12 +133,12 @@ export function LanguageSelection<LANGUAGES extends string>({
         <Select
           disabled={isReadOnly}
           value={value}
-          onValueChange={(value): void =>
+          onValueChange={(value: string): void =>
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
               : !isForInterface || f.has(completeLanguages, value)
-              ? handleChange(value as LANGUAGES)
-              : setWarningLanguage(value as LANGUAGES)
+                ? handleChange(value as LANGUAGES)
+                : setWarningLanguage(value as LANGUAGES)
           }
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
@@ -181,51 +175,52 @@ const url = cachableUrl(
     languages: languages.join(','),
   })
 );
-export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({
-    isReadOnly,
-    definition,
-    category,
-    subcategory,
-    item,
-  }) {
-    const [languages] = useAsyncState<IR<string>>(
-      React.useCallback(
-        async () =>
-          ajax<
-            RA<{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              readonly name_local: string;
-              readonly code: string;
-            }>
-          >(url, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'application/json' },
-          }).then(({ data }) =>
-            Object.fromEntries(
-              Object.entries(data)
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                .map(([code, { name_local }]) => [code, name_local])
-            )
-          ),
-        []
-      ),
-      false
-    );
-    const [language, setLanguage] = React.useState(
-      (devLanguage as Language) ?? LANGUAGE
-    );
 
-    /**
-     * When editing someone else's user preferences, disable the language
-     * selector, since language preference is stored in session storage.
-     */
-    const isRedirecting =
-      React.useContext(userPreferences.Context) !== undefined;
-    return (
+export function LanguagePreferencesItem({
+  definition,
+  category,
+  subcategory,
+  item,
+}: PreferenceRendererProps<Language>): JSX.Element {
+  const [languages] = useAsyncState<IR<string>>(
+    React.useCallback(
+      async () =>
+        ajax<
+          RA<{
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            readonly name_local: string;
+            readonly code: string;
+          }>
+        >(url, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) =>
+          Object.fromEntries(
+            Object.entries(data)
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              .map(([code, { name_local }]) => [code, name_local])
+          )
+        ),
+      []
+    ),
+    false
+  );
+  const [language, setLanguage] = React.useState(
+    (devLanguage as Language) ?? LANGUAGE
+  );
+
+  /**
+   * When editing someone else's user preferences, disable the language
+   * selector, since language preference is stored in session storage.
+   */
+  const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    isRedirecting ||
+    languages === undefined;
+  return (
+    <ReadOnlyContext.Provider value={isReadOnly}>
       <LanguageSelection<Language>
         isForInterface
-        isReadOnly={isReadOnly || isRedirecting || languages === undefined}
         languages={languages ?? { loading: commonText.loading() }}
         value={language}
         onChange={(language): void => {
@@ -245,76 +240,78 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           });
         }}
       />
-    );
-  };
-
-export function useSchemaLanguages(
-  loadingScreen: boolean
-): IR<LocalizedString> | undefined {
-  const [languages] = useAsyncState<IR<LocalizedString>>(
-    React.useCallback(
-      async () =>
-        ajax<
-          RA<{
-            readonly country: string | null;
-            readonly language: string;
-          }>
-        >('/context/schema/language/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          cache: 'no-cache',
-        })
-          .then(({ data }) =>
-            // Sometimes languages are duplicated. Need to make the list unique
-            f.unique(
-              data.map(
-                ({ country, language }) =>
-                  `${language}${
-                    country === null || country === ''
-                      ? ''
-                      : `${languageSeparator}${country}`
-                  }`
-              )
-            )
-          )
-          .then((languages) =>
-            // Get translated language names
-            Object.fromEntries(
-              languages
-                .map(
-                  (language) =>
-                    [
-                      language,
-                      (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                        language
-                      ) ?? language) as LocalizedString,
-                    ] as const
-                )
-                .sort(sortFunction(([_code, localized]) => localized))
-            )
-          ),
-      []
-    ),
-    loadingScreen
+    </ReadOnlyContext.Provider>
   );
-  return languages;
 }
 
-export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
-  function SchemaLanguagePreferenceItem({
-    value,
-    onChange: handleChange,
-    isReadOnly,
-  }) {
-    const languages = useSchemaLanguages(false);
-    return (
+export function SchemaLanguagePreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const languages = useSchemaLanguages(false);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || languages === undefined;
+  return (
+    <ReadOnlyContext.Provider value={isReadOnly}>
       <LanguageSelection<string>
         isForInterface={false}
-        isReadOnly={isReadOnly || languages === undefined}
         languages={languages ?? { loading: commonText.loading() }}
         showDevLanguages={false}
         value={value}
         onChange={handleChange}
       />
+    </ReadOnlyContext.Provider>
+  );
+}
+
+export function useSchemaLanguages(
+  loadingScreen: boolean
+): IR<LocalizedString> | undefined {
+  const [languages] = useAsyncState<IR<LocalizedString>>(
+    fetchSchemaLanguages,
+    loadingScreen
+  );
+  return languages;
+}
+
+export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
+  ajax<
+    RA<{
+      readonly country: string | null;
+      readonly language: string;
+    }>
+  >('/context/schema/language/', {
+    headers: { Accept: 'application/json' },
+    cache: 'no-cache',
+  })
+    .then(({ data }) =>
+      // Sometimes languages are duplicated. Need to make the list unique
+      f.unique(
+        data.map(
+          ({ country, language }) =>
+            `${language}${
+              country === null || country === ''
+                ? ''
+                : `${languageSeparator}${country}`
+            }`
+        )
+      )
+    )
+    .then((languages) =>
+      // Get translated language names
+      Object.fromEntries(
+        languages
+          .map(
+            (language) =>
+              [
+                language,
+                localized(
+                  new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                    language
+                  ) ?? language
+                ),
+              ] as const
+          )
+          .sort(sortFunction(([_code, localized]) => localized))
+      )
     );
-  };

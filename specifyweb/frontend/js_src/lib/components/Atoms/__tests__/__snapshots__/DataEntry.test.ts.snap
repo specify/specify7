@@ -5,7 +5,6 @@ exports[` renders without errors 1`] = `
   <button
     aria-label="Add"
     class="icon link rounded !text-green-700 print:hidden "
-    icon="plus"
     title="Add"
     type="button"
   >
@@ -30,8 +29,7 @@ exports[` renders without errors 2`] = `
 <DocumentFragment>
   <button
     aria-label="View"
-    class="icon link rounded !text-orange-400 print:hidden "
-    icon="eye"
+    class="icon link rounded !text-cyan-400 print:hidden "
     title="View"
     type="button"
   >
@@ -60,7 +58,6 @@ exports[` renders without errors 3`] = `
   <button
     aria-label="Edit"
     class="icon link rounded !text-orange-400 print:hidden "
-    icon="pencil"
     title="Edit"
     type="button"
   >
@@ -84,7 +81,6 @@ exports[` renders without errors 4`] = `
   <button
     aria-label="Clone"
     class="icon link rounded !text-amber-700 print:hidden "
-    icon="clipboard"
     title="Clone"
     type="button"
   >
@@ -111,7 +107,6 @@ exports[` renders without errors 5`] = `
   <button
     aria-label="Search"
     class="icon link rounded !text-blue-500 print:hidden "
-    icon="search"
     title="Search"
     type="button"
   >
@@ -137,7 +132,6 @@ exports[` renders without errors 6`] = `
   <button
     aria-label="Remove"
     class="icon link rounded !text-red-700 print:hidden "
-    icon="minus"
     title="Remove"
     type="button"
   >
@@ -205,7 +199,7 @@ exports[`DataEntry.Footer renders without errors 1`] = `
 exports[`DataEntry.Grid renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="grid items-center p-1 -ml-1 gap-2"
+    class="grid items-center p-1 gap-2"
     style="grid-template-columns: 1fr 2fr 3fr auto;"
   >
     Test
@@ -236,11 +230,11 @@ exports[`DataEntry.SubForm renders without errors 1`] = `
 exports[`DataEntry.SubFormHeader renders without errors 1`] = `
 <DocumentFragment>
   <legend>
-    <span
-      class="gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center"
+    <div
+      class="gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center"
     >
       Test
-    </span>
+    </div>
   </legend>
 </DocumentFragment>
 `;

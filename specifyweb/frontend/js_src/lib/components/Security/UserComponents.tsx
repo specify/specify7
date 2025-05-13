@@ -12,12 +12,13 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyUser } from '../DataModel/types';
+import { tables } from '../DataModel/tables';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
-import type { FormMode } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -94,14 +95,13 @@ export function UserRoles({
   collectionId,
   userRoles,
   onChange: handleChange,
-  isReadOnly,
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
-  readonly isReadOnly?: boolean;
 }): JSX.Element | null {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
@@ -110,7 +110,7 @@ export function UserRoles({
       </legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-          ? collectionRoles[collectionId]?.map((role) => (
+          ? (collectionRoles[collectionId]?.map((role) => (
               <li className="flex items-center gap-2" key={role.id}>
                 <Label.Inline>
                   <Input.Checkbox
@@ -161,7 +161,7 @@ export function UserRoles({
             )) ??
             userRoles[collectionId]!.map(({ roleId, roleName }) => (
               <li key={roleId}>{roleName}</li>
-            ))
+            )))
           : commonText.loading()}
       </Ul>
     </fieldset>
@@ -225,10 +225,10 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
-  mode,
+  collections,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -237,20 +237,21 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = getField(schema.models.SpecifyUser, 'userType');
+  const userType = getField(tables.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>
       {hasPermission('/permissions/list_admins', 'read') && (
         <div className="flex gap-2">
           <AdminStatusPlugin
+            collections={collections}
             isAdmin={isAdmin}
             user={userResource}
             onChange={setIsAdmin}
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}
@@ -260,13 +261,11 @@ export function LegacyPermissions({
       >
         {userType.label}
         <Combobox
-          defaultValue={undefined}
+          defaultValue={userResource.get('userType') || undefined}
           field={userType}
           id={undefined}
           isDisabled={false}
           isRequired
-          mode={mode}
-          model={userResource}
           pickListName={defined(
             userType.getPickList(),
             'UserType pick list not found'

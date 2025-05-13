@@ -3,31 +3,35 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Taxon } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function DisambiguationDialog({
   matches,
+  liveValidationStack,
+  defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly liveValidationStack?: WritableArray<number>;
+  readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selected, setSelected] = React.useState<
     SpecifyResource<AnySchema> | undefined
-  >(undefined);
+  >(defaultResource);
 
   return (
     <Dialog
@@ -44,7 +48,14 @@ export function DisambiguationDialog({
             {commonText.apply()}
           </Button.Info>
           <Button.Info
-            disabled={selected === undefined}
+            disabled={
+              selected === undefined || liveValidationStack?.length !== 0
+            }
+            title={
+              liveValidationStack?.length === 0
+                ? undefined
+                : wbText.applyAllUnavailable()
+            }
             onClick={(): void => {
               handleSelectedAll(selected!);
               handleClose();
@@ -81,13 +92,14 @@ function Row({
   const [fullName] = useAsyncState<string | false>(
     React.useCallback(
       async () =>
-        isTreeModel(resource.specifyModel.name) &&
-        hasTablePermission(resource.specifyModel.name, 'read')
+        isTreeTable(resource.specifyTable.name) &&
+        hasTablePermission(resource.specifyTable.name, 'read')
           ? (resource as SpecifyResource<Taxon>)
               .rgetPromise('parent')
               .then((parent) =>
                 wbText.ambiguousTaxaChild({
                   node: resource.get('fullname'),
+                  author: resource.get('author'),
                   parent: parent.get('fullName'),
                 })
               )

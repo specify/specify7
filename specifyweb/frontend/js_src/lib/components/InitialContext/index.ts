@@ -3,10 +3,7 @@
  */
 
 import type { MimeType } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
-import { formatNumber } from '../Atoms/Internationalization';
-import { MILLISECONDS } from '../Atoms/timeUnits';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -56,35 +53,23 @@ export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   contextUnlockedPromise.then(async (entrypoint) => {
     if (entrypoint !== 'main') return foreverFetch<T>();
-    const startTime = Date.now();
 
     // Doing async import to avoid a circular dependency
     const { ajax } = await import('../../utils/ajax');
 
     const { data } = await ajax<T>(cachableUrl(path), {
+      errorMode: 'visible',
       headers: { Accept: mimeType },
     });
-    const endTime = Date.now();
-    const timePassed = endTime - startTime;
-    // A very crude detection mechanism
-    const isCached = timePassed < 100;
 
-    console.log(
-      `${path} %c[${
-        isCached
-          ? 'cached'
-          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-      }]`,
-      `color: ${isCached ? '#9fa' : '#f99'}`
-    );
     return data;
   });
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
-  import('../DataModel/schemaBase'),
-  // Fetch schema (cached)
   import('../DataModel/schema'),
+  // Fetch data model (cached)
+  import('../DataModel/tables'),
   // Fetch remote preferences (cached)
   import('./remotePrefs'),
   // Fetch icon definitions (cached)
@@ -92,13 +77,15 @@ export const initialContext = Promise.all([
   // Fetch general system information (cached)
   import('./systemInfo'),
   // Fetch UI formatters (cached)
-  import('../Forms/uiFormatters'),
-  // Fetch Specify 6 UI localization strings (CACHED)
+  import('../FieldFormatters'),
+  // Fetch Specify 6 UI localization strings (cached)
   import('./legacyUiLocalization'),
   // Fetch user information (NOT CACHED)
   import('./userInformation'),
   // Fetch user permissions (NOT CACHED)
   import('../Permissions'),
+  // Fetch the discipline's uniquenessRules (NOT CACHED)
+  import('../DataModel/uniquenessRules'),
 ]).then(async (modules) =>
   Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
 );

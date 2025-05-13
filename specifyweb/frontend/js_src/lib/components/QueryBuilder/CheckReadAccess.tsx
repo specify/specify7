@@ -26,7 +26,7 @@ export function CheckReadAccess({
         field.isRelFld ?? false
       );
       return fieldSpec.joinPath.map((field) =>
-        field.isRelationship ? field.relatedModel.name : field.model.name
+        field.isRelationship ? field.relatedTable.name : field.table.name
       );
     });
 

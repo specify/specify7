@@ -3,6 +3,7 @@
  *
  * @module
  */
+import type { LocalizedString } from 'typesafe-i18n';
 
 // Record
 export type R<V> = Record<string, V>;
@@ -16,8 +17,10 @@ export type RA<V> = readonly V[];
 export type GetSet<T> = readonly [T, (value: T) => void];
 export type GetOrSet<T> = readonly [
   T,
-  (value: T | ((oldValue: T) => T)) => void
+  (value: T | ((oldValue: T) => T)) => void,
 ];
+
+export type ValueOf<T> = T[keyof T];
 
 /**
  * It is a widely used convention in TypeScript to use T[] to denote arrays.
@@ -45,13 +48,52 @@ export const filterArray = <T>(array: RA<T | undefined>): RA<T> =>
 /** Make some keys on a record optional */
 export type PartialBy<
   RECORD extends IR<unknown>,
-  OPTIONAL_KEYS extends keyof RECORD
+  OPTIONAL_KEYS extends keyof RECORD,
 > = Omit<RECORD, OPTIONAL_KEYS> & Partial<Pick<RECORD, OPTIONAL_KEYS>>;
+
+/**
+ * Like Partial, but recursively applies to nested records and arrays
+ */
+export type DeepPartial<RECORD extends IR<unknown>> = {
+  readonly [KEY in keyof RECORD]?: RECORD[KEY] extends RA<IR<unknown>>
+    ? RA<DeepPartial<RECORD[KEY][number]>>
+    : RECORD[KEY] extends IR<unknown>
+      ? DeepPartial<RECORD[KEY]>
+      : RECORD[KEY];
+};
 
 // eslint-disable-next-line functional/prefer-readonly-type
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
+
+/**
+ * Inspired by https://stackoverflow.com/a/69676731
+ * Constructs a tuple type which must contain exactly one of every possible
+ * type of VALUES along with the values in RESULT
+ *
+ * @remarks
+ * While the RESULT parameter can be explicitly provided, it is primarily used
+ * to recursively generate the tuple
+ *
+ * @example
+ * ```ts
+ * type Colors = RestrictedTuple<'blue' | 'green' | 'red'>;
+ * const missing: Colors = ['blue']; // Invalid
+ * const duplicates: Colors = ['blue', 'blue', 'red']; // Invalid
+ * const wrongColor: Colors = ['green', 'blue', 'yellow']; // Invalid
+ * const wrongLength: Colors = ['blue', 'red', 'green', 'green']; // Invalid
+ * const rightColors: Colors = ['blue', 'red', 'green']; // Valid
+ * ```
+ */
+export type RestrictedTuple<
+  VALUES extends string,
+  RESULT extends RA<unknown> = readonly [],
+> = ValueOf<{
+  readonly [KEY in VALUES]: Exclude<VALUES, KEY> extends never
+    ? readonly [KEY, ...RESULT]
+    : RestrictedTuple<Exclude<VALUES, KEY>, readonly [KEY, ...RESULT]>;
+}>;
 
 /**
  * Cast type to writable. Equivalent to doing "as Writable<T>", except this
@@ -61,8 +103,11 @@ export const writable = <T>(value: T): Writable<T> => value;
 
 /**
  * "typeof value === 'function'" does not narrow the type in some cases where
- * a generic is involed
+ * a generic is involved (in particular, when the generic itself could be a
+ * function)
  * See more: https://github.com/microsoft/TypeScript/issues/37663
+ * Note, this is not completely type safe, so prefer typeof value === 'function'
+ * unless that doesn't work
  */
 export const isFunction = <T>(
   value: T
@@ -81,7 +126,7 @@ export const isFunction = <T>(
  */
 export function overwriteReadOnly<
   KEY extends string,
-  OBJECT extends { readonly [key in KEY]?: unknown }
+  OBJECT extends { readonly [key in KEY]?: unknown },
 >(object: OBJECT, key: KEY, value: unknown): void {
   // @ts-expect-error Overwriting read-only
   object[key] = value;
@@ -136,10 +181,56 @@ export function setDevelopmentGlobal(name: string, value: unknown): void {
  * @example Usage without wrapping
  * ```ts
  * const tools = ['CollectionObject', 'Locality'] as const;
- * ensure<RA<tools>>(tools);
+ * ensure<RA<TableName>>(tools);
  * ```
+ *
+ * REFACTOR: update typescript, and replace this function with TypeScript's satisfies operator
  */
 export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
+
+/**
+ * We define "LocalizedString" as string that can be shown to the user, not
+ * necessarily a string that has been translated (for example, Collection name
+ * should be considered localized, even if it's not translated)
+ *
+ * This function marks a string as localized, thus making it eligible for being
+ * shown to the user. UI elements like buttons and dialogs require that only
+ * localized strings be used. For example, output of a catalog number formatter
+ * function is considered localized, as well as output from the
+ * internationalization helpers.
+ *
+ * @remarks
+ *
+ * LocalizedString is a useful type provided by typesafe-i18n library.
+ * It's equivalent to string, but in places where LocalizedString is required,
+ * providing string results in a type error (but not the other way around).
+ *
+ * This makes it perfect for enforcing for example that a dialog header string
+ * must be localized.
+ *
+ * Often times, when localized value is missing or a default value is needed,
+ * empty string is used. However, empty string is not a LocalizedString, so
+ * this hack is needed
+ *
+ * @example Valid use case
+ * localized('')
+ *
+ * @example Invalid use case
+ * ```ts
+ * // Wrong:
+ * localized(table.name)
+ * // Should use table label instead (unless there is a good reason to use
+ * // table name)
+ * table.label
+ * ```
+ *
+ * Generics are needed to transform types like `string | undefined` into
+ * `LocalizedString | undefined`
+ */
+export const localized = <T>(
+  string: T
+): Exclude<T, string> | (T extends string ? LocalizedString : never) =>
+  string as Exclude<T, string> | (T extends string ? LocalizedString : never);

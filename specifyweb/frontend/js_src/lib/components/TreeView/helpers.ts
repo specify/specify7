@@ -7,7 +7,7 @@ import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { throttle } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import { getTransitionDuration } from '../Preferences/Hooks';
@@ -24,12 +24,12 @@ export const fetchRows = async (fetchUrl: string) =>
         number,
         number | null,
         string | null,
-        string,
-        number
+        string | null,
+        number,
+        string | null,
       ]
     >
   >(fetchUrl, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
@@ -45,6 +45,7 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedName = undefined,
           author = undefined,
           children,
+          synonyms = undefined,
         ],
         index,
         { length }
@@ -60,6 +61,7 @@ export const fetchRows = async (fetchUrl: string) =>
         author,
         children,
         isLastChild: index + 1 === length,
+        synonyms,
       })
     )
   );
@@ -76,14 +78,10 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(
-    url,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    },
-    { strict: false }
-  )
+  ajax<RA<readonly [number, number, number]>>(url, {
+    headers: { Accept: 'application/json' },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       Object.fromEntries(
         data.map(([childId, directCount, allCount]) => [
@@ -153,8 +151,7 @@ export const scrollIntoView = throttle(function scrollIntoView(
   } catch {
     element.scrollIntoView(mode === 'start');
   }
-},
-throttleRate);
+}, throttleRate);
 
 export type KeyAction =
   | 'child'
@@ -197,7 +194,7 @@ export const formatTreeStats = (
   title: filterArray([
     commonText.colonLine({
       label: treeText.directCollectionObjectCount({
-        collectionObjectTable: schema.models.CollectionObject.label,
+        collectionObjectTable: tables.CollectionObject.label,
       }),
       value: nodeStats.directCount.toString(),
     }),
@@ -205,7 +202,7 @@ export const formatTreeStats = (
       ? undefined
       : commonText.colonLine({
           label: treeText.indirectCollectionObjectCount({
-            collectionObjectTable: schema.models.CollectionObject.label,
+            collectionObjectTable: tables.CollectionObject.label,
           }),
           value: nodeStats.childCount.toString(),
         }),

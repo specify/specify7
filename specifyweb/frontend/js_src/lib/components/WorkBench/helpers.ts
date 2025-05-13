@@ -1,23 +1,21 @@
 import { stringify } from 'csv-stringify/browser/esm';
 
+import type { RA } from '../../utils/types';
 import { downloadFile } from '../Molecules/FilePicker';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { userPreferences } from '../Preferences/userPreferences';
 
-export const downloadDataSet = async ({
-  name,
-  rows,
-  columns,
-}: Dataset): Promise<void> =>
+export const downloadDataSet = async (
+  name: string,
+  rows: RA<RA<string>>,
+  columns: RA<string>,
+  delimiter: string,
+  bom: boolean = false
+): Promise<void> =>
   new Promise((resolve, reject) =>
     stringify(
       [columns, ...rows],
       {
-        delimiter: userPreferences.get(
-          'workBench',
-          'editor',
-          'exportFileDelimiter'
-        ),
+        delimiter,
+        bom,
       },
       (error, output) => {
         if (error === undefined)

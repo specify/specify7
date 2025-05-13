@@ -54,9 +54,9 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply rounded border-none bg-[color:var(--field-background)] p-1 text-[length:inherit] leading-[unset]
-      accent-brand-200 shadow-sm ring-1 ring-gray-400
-      dark:accent-brand-400 dark:ring-0
+    @apply accent-brand-200 dark:accent-brand-400 rounded border-none bg-[color:var(--field-background)] p-1
+      text-[length:inherit] leading-[unset] shadow-sm ring-1
+      ring-gray-400 dark:ring-0
       [.has-alt-background_&]:optional:bg-white
       dark:[.has-alt-background_&]:optional:bg-neutral-900;
   }
@@ -101,8 +101,8 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply cursor-pointer text-brand-200 focus:border-none focus:!ring-2 focus:!ring-offset-0
-      dark:text-brand-400;
+    @apply text-brand-200 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
+      focus:!ring-offset-0;
   }
 
   :is([type='checkbox'], [type='radio']):is([readonly], :disabled) {
@@ -151,19 +151,25 @@
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
-    @apply absolute top-0 right-0 h-full w-[2];
+    @apply absolute right-0 top-0 h-full w-2;
   }
 
   [type='number']:not([readonly], .no-arrows) {
-    @apply relative;
+    @apply relative pr-4;
   }
 
-  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
+  .button {
+    @apply text-center;
+  }
+
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(
+      .aria-handled
+    ) {
     @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
-    @apply !bg-transparent text-brand-300 dark:text-brand-400;
+    @apply text-brand-300 dark:text-brand-400 !bg-transparent;
   }
 
   a.button {
@@ -171,9 +177,10 @@
   }
 
   .link {
-    @apply inline-flex cursor-pointer items-center gap-2
-      text-black active:underline
-      enabled:hover:text-brand-300 disabled:cursor-text disabled:!ring-0 disabled:active:no-underline dark:text-gray-200;
+    @apply enabled:hover:text-brand-300 inline-flex cursor-pointer items-center
+      gap-2 text-left text-black active:underline
+      disabled:cursor-text disabled:!ring-0 disabled:active:no-underline
+      dark:text-gray-200;
   }
 
   a.link {
@@ -185,9 +192,9 @@
   }
 
   .icon {
-    @apply active:bg-brand-100 disabled:!cursor-not-allowed
-      disabled:!text-gray-400 disabled:hover:!text-gray-400
-      dark:active:bg-brand-500 disabled:dark:!text-neutral-600
+    @apply active:bg-brand-100 dark:active:bg-brand-500
+      disabled:!cursor-not-allowed disabled:!text-gray-400
+      disabled:hover:!text-gray-400 disabled:dark:!text-neutral-600
       disabled:hover:dark:!text-neutral-600;
   }
 
@@ -196,11 +203,11 @@
   }
 
   progress::-webkit-progress-value {
-    @apply rounded bg-brand-200 dark:bg-brand-400;
+    @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
 
   progress::-moz-progress-bar {
-    @apply rounded bg-brand-200 dark:bg-brand-400;
+    @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
 
   /*
@@ -249,19 +256,25 @@
     --invalid-cell: theme('colors.red.300');
     --modified-cell: theme('colors.yellow.250');
     --search-result: theme('colors.green.300');
-    @apply dark:[--new-cell:theme('colors.indigo.900')]
+    --updated-cell: theme('colors.cyan.200');
+    --deleted-cell: theme('colors.amber.500');
+    --matched-and-changed-cell: theme('colors.blue.200');
+    @apply dark:[--deleted-cell:theme('colors.amber.600')]
       dark:[--invalid-cell:theme('colors.red.900')]
+      dark:[--matched-and-changed-cell:theme('colors.fuchsia.700')]
       dark:[--modified-cell:theme('colors.yellow.900')]
-      dark:[--search-result:theme('colors.green.900')];
+      dark:[--new-cell:theme('colors.indigo.900')]
+      dark:[--search-result:theme('colors.green.900')]
+      dark:[--updated-cell:theme('colors.cyan.800')];
   }
 
   .custom-select {
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
-    @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.brand.500')]
-      dark:[--custom-select-accent:theme('colors.brand.500')];
+    @apply dark:[--custom-select-accent:theme('colors.brand.500')]
+      dark:[--custom-select-b1:theme('colors.neutral.800')]
+      dark:[--custom-select-b2:theme('colors.brand.500')];
   }
 
   .custom-select-group-required-fields,
@@ -269,9 +282,9 @@
     --custom-select-b1: theme('colors.cyan.100');
     --custom-select-b2: theme('colors.cyan.200');
     --custom-select-accent: theme('colors.cyan.300');
-    @apply dark:[--custom-select-b1:theme('colors.cyan.900')]
-      dark:[--custom-select-b2:theme('colors.cyan.800')]
-      dark:[--custom-select-accent:theme('colors.cyan.700')];
+    @apply dark:[--custom-select-accent:theme('colors.cyan.700')]
+      dark:[--custom-select-b1:theme('colors.cyan.900')]
+      dark:[--custom-select-b2:theme('colors.cyan.800')];
   }
 
   .custom-select-group-hidden-fields,
@@ -280,17 +293,17 @@
     --custom-select-b2: theme('colors.gray.300');
     --custom-select-accent: theme('colors.gray.350');
     @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.neutral.700')]
-      dark:[--custom-select-accent:theme('colors.neutral.600')];
+      dark:[--custom-select-accent:theme('colors.neutral.600')]
+      dark:[--custom-select-b2:theme('colors.neutral.700')];
   }
 
   .custom-select-group-suggested-mappings {
     --custom-select-b1: theme('colors.green.200');
     --custom-select-b2: theme('colors.green.300');
     --custom-select-accent: theme('colors.green.400');
-    @apply dark:[--custom-select-b1:theme('colors.green.700')]
-      dark:[--custom-select-b2:theme('colors.green.600')]
-      dark:[--custom-select-accent:theme('colors.green.500')];
+    @apply dark:[--custom-select-accent:theme('colors.green.500')]
+      dark:[--custom-select-b1:theme('colors.green.700')]
+      dark:[--custom-select-b2:theme('colors.green.600')];
   }
 }
 
@@ -311,10 +324,20 @@
   }
 }
 
+.\! {
+  /**
+   * In Chrome DevTools, in the "Element Classes" box (where you customize
+   * element class names), DevTools apply the first matching class name even
+   * before you started typing. The first matching happens to be !absolute,
+   * which breaks the UI. This noop is a workaround for that UX issue
+   */
+  --dev-tools-hack: 0;
+}
+
 /* Leaflet dark mode */
 .leaflet-bar a {
-  @apply dark:!border-b-neutral-600 dark:!bg-black dark:!text-white
-    hover:dark:!bg-brand-400;
+  @apply hover:dark:!bg-brand-400 dark:!border-b-neutral-600 dark:!bg-black
+    dark:!text-white;
 }
 
 .leaflet-control-layers,

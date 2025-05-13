@@ -6,24 +6,25 @@ import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import { Textarea } from '../Atoms/Form';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { FieldTypes, FormFieldDefinition } from '../FormParse/fields';
 import { FormPlugin } from '../FormPlugins';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { userPreferences } from '../Preferences/userPreferences';
+import { QueryComboBox } from '../QueryComboBox';
 import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
-import { QueryComboBox } from './QueryComboBox';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
     readonly resource: SpecifyResource<AnySchema> | undefined;
-    readonly mode: FormMode;
     readonly fieldDefinition: FieldTypes[KEY];
     readonly id: string | undefined;
     readonly isRequired: boolean;
@@ -35,29 +36,27 @@ const fieldRenderers: {
   Checkbox({
     id,
     resource,
-    mode,
     name,
     field,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
-    const table = resource?.specifyModel ?? field?.model;
+    const table = resource?.specifyTable ?? field?.table;
     return printOnSave ? (
       table === undefined ? null : (
         <PrintOnSave
           defaultValue={defaultValue}
           field={field}
           id={id}
-          model={table}
           name={name}
+          table={table}
           text={label}
         />
       )
-    ) : field?.isRelationship ? null : (
+    ) : field?.isRelationship === true ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
         field={field}
         id={id}
-        isReadOnly={mode === 'view'}
         name={name}
         resource={resource}
         text={label}
@@ -68,7 +67,6 @@ const fieldRenderers: {
     id,
     name,
     resource,
-    mode,
     field,
     isRequired,
     fieldDefinition: { defaultValue, rows },
@@ -102,15 +100,16 @@ const fieldRenderers: {
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
+    const isReadOnly = React.useContext(ReadOnlyContext);
     return (
       <ErrorBoundary dismissible>
         <Component
           {...validationAttributes}
           forwardRef={validationRef}
           id={id}
-          isReadOnly={mode === 'view' || field === undefined}
+          isReadOnly={isReadOnly || field === undefined}
           name={name}
-          required={'required' in validationAttributes && mode !== 'search'}
+          required={'required' in validationAttributes}
           rows={formType === 'formTable' ? 1 : rows}
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
@@ -122,7 +121,6 @@ const fieldRenderers: {
   ComboBox({
     id,
     resource,
-    mode,
     field,
     isRequired,
     fieldDefinition: { defaultValue, pickList },
@@ -134,8 +132,6 @@ const fieldRenderers: {
         id={id}
         isDisabled={false}
         isRequired={isRequired}
-        mode={mode}
-        model={resource}
         pickListName={pickList}
         resource={resource}
       />
@@ -144,22 +140,35 @@ const fieldRenderers: {
   QueryComboBox({
     id,
     resource,
-    mode,
     formType,
     field,
     isRequired,
-    fieldDefinition: { hasCloneButton, typeSearch },
+    fieldDefinition: {
+      hasCloneButton,
+      typeSearch,
+      searchView,
+      hasNewButton,
+      hasEditButton,
+      hasSearchButton,
+      hasViewButton,
+      defaultRecord,
+    },
   }) {
     return field === undefined || !field.isRelationship ? null : (
       <QueryComboBox
+        defaultRecord={defaultRecord}
         field={field}
         forceCollection={undefined}
         formType={formType}
         hasCloneButton={hasCloneButton}
+        hasEditButton={hasEditButton}
+        hasNewButton={hasNewButton}
+        hasSearchButton={hasSearchButton}
+        hasViewButton={hasViewButton}
         id={id}
         isRequired={isRequired}
-        mode={mode}
         resource={resource}
+        searchView={searchView}
         typeSearch={typeSearch}
       />
     );
@@ -167,11 +176,18 @@ const fieldRenderers: {
   Text({
     id,
     resource,
-    mode,
     name,
     field,
     isRequired,
-    fieldDefinition: { defaultValue, min, max, step, maxLength, minLength },
+    fieldDefinition: {
+      defaultValue,
+      min,
+      max,
+      step,
+      maxLength,
+      minLength,
+      whiteSpaceSensitive,
+    },
   }) {
     const parser = React.useMemo<Parser>(
       () => ({
@@ -182,14 +198,23 @@ const fieldRenderers: {
         required: isRequired,
         maxLength,
         minLength,
+        whiteSpaceSensitive,
       }),
-      [defaultValue, min, max, step, isRequired, maxLength, minLength]
+      [
+        defaultValue,
+        min,
+        max,
+        step,
+        isRequired,
+        maxLength,
+        minLength,
+        whiteSpaceSensitive,
+      ]
     );
     return (
       <UiField
         field={field}
         id={id}
-        mode={mode}
         name={name}
         parser={parser}
         resource={resource}
@@ -201,14 +226,12 @@ const fieldRenderers: {
 };
 
 export function FormField({
-  mode,
   resource,
   fields,
-  fieldDefinition: { isReadOnly, ...fieldDefinition },
+  fieldDefinition,
   ...rest
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
   readonly id: string | undefined;
   readonly fieldDefinition: FormFieldDefinition;
   readonly fields: RA<LiteralField | Relationship> | undefined;
@@ -220,7 +243,9 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
 
   const data = useDistantRelated(resource, fields);
-
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || fieldDefinition.isReadOnly;
+  const isSearchDialog = React.useContext(SearchDialogContext);
   const isIndependent =
     fields
       ?.slice(0, -1)
@@ -228,19 +253,18 @@ export function FormField({
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
-        <Render
-          mode={
-            isReadOnly || data.resource === undefined || isIndependent
-              ? 'view'
-              : mode
-          }
-          {...rest}
-          field={data.field}
-          fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
-          isRequired={rest.isRequired && mode !== 'search'}
-          name={fields?.map(({ name }) => name).join('.')}
-          resource={data.resource}
-        />
+        <ReadOnlyContext.Provider
+          value={isReadOnly || isIndependent || data.resource === undefined}
+        >
+          <Render
+            {...rest}
+            field={data.field}
+            fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
+            isRequired={rest.isRequired && !isSearchDialog}
+            name={fields?.map(({ name }) => name).join(backboneFieldSeparator)}
+            resource={data.resource}
+          />
+        </ReadOnlyContext.Provider>
       )}
     </ErrorBoundary>
   );

@@ -13,13 +13,13 @@ import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { findArrayDivergencePoint } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables, getTable, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,
-  isTreeModel,
+  isTreeTable,
 } from '../InitialContext/treeRanks';
 import type { Options, TableSynonym } from './autoMapperDefinitions';
 import { autoMapperDefinitions } from './autoMapperDefinitions';
@@ -30,6 +30,7 @@ import {
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -211,7 +212,7 @@ export class AutoMapper {
 
   private readonly pathOffset: number = 0;
 
-  private readonly baseTable: SpecifyModel;
+  private readonly baseTable: SpecifyTable;
 
   // For AutoMapper suggestions, starting table can be different from base table
   private readonly startingTable: keyof Tables;
@@ -373,7 +374,7 @@ export class AutoMapper {
     // Whether to use getMappedFields to check for existing mappings
     this.checkForExistingMappings = scope === 'suggestion';
     this.pathOffset = path.length - pathOffset;
-    this.baseTable = strictGetModel(baseTableName);
+    this.baseTable = strictGetTable(baseTableName);
     this.startingTable = startingTable;
     this.startingPath = path;
     this.getMappedFields = getMappedFields;
@@ -569,7 +570,7 @@ export class AutoMapper {
   }
 
   private readonly findFormattedHeaderFieldSynonyms = <
-    TABLE_NAME extends keyof Tables
+    TABLE_NAME extends keyof Tables,
   >(
     tableName: TABLE_NAME,
     fieldName: string
@@ -620,11 +621,11 @@ export class AutoMapper {
     const treeTableName = tableName as AnyTree['tableName'];
     const ranksData = getTreeDefinitionItems(treeTableName, false);
 
-    const model = strictGetModel(tableName);
-    const fields = model.fields.filter(
+    const table = strictGetTable(tableName);
+    const fields = table.fields.filter(
       ({ overrides }) => !overrides.isHidden && !overrides.isReadOnly
     );
-    const label = model.label.toLowerCase();
+    const label = table.label.toLowerCase();
 
     if (Array.isArray(ranksData)) {
       let ranks = ranksData.map(({ name }) => name).slice(1);
@@ -692,7 +693,7 @@ export class AutoMapper {
       });
 
       return;
-    } else if (isTreeModel(tableName)) {
+    } else if (isTreeTable(tableName)) {
       // No read access to this tree
       return;
     }
@@ -799,17 +800,20 @@ export class AutoMapper {
       );
     });
 
-    model.relationships
+    table.relationships
       .filter(
-        ({ overrides, relatedModel }) =>
+        ({ overrides, relatedTable }) =>
           !overrides.isHidden &&
           !overrides.isReadOnly &&
-          !relatedModel.overrides.isSystem
+          !relatedTable.overrides.isSystem
       )
       .forEach((relationship) => {
         const localPath = [...mappingPath, relationship.name];
 
-        if (relationshipIsToMany(relationship))
+        if (
+          relationshipIsToMany(relationship) ||
+          relationshipIsRemoteToOne(relationship)
+        )
           localPath.push(formatToManyIndex(1));
 
         const newDepthLevel = localPath.length;
@@ -826,7 +830,7 @@ export class AutoMapper {
           this.tableWasIterated(
             mode,
             newDepthLevel,
-            relationship.relatedModel.name
+            relationship.relatedTable.name
           ) ||
           (typeof parentRelationship === 'object' &&
             ((mode !== 'synonymsAndMatches' &&
@@ -841,7 +845,7 @@ export class AutoMapper {
           type: 'enqueue',
           level: newDepthLevel,
           value: {
-            tableName: relationship.relatedModel.name,
+            tableName: relationship.relatedTable.name,
             mappingPath: localPath,
             parentRelationship: relationship,
           },
@@ -885,17 +889,17 @@ export class AutoMapper {
      *  lowercase, we need to convert them back to their proper case
      */
     let fixedNewPathParts = newPathParts;
-    if (isTreeModel(tableName)) {
+    if (isTreeTable(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
-          ? f.maybe(
-              getTreeDefinitionItems(tableName as 'Geography', false)?.find(
+          ? (f.maybe(
+              getTreeDefinitionItems(tableName, false, 'all')?.find(
                 ({ name }) =>
                   name.toLowerCase() ===
                   getNameFromTreeRankName(mappingPathPart).toLowerCase()
               )?.name,
               formatTreeRank
-            ) ?? mappingPathPart
+            ) ?? mappingPathPart)
           : mappingPathPart
       );
     }
@@ -972,8 +976,8 @@ export class AutoMapper {
         return false;
     }
 
-    const field = getModel(tableName)?.getField(newPathParts[0] ?? '');
-    if (field?.isRelationship === true && field.relatedModel === this.baseTable)
+    const field = getTable(tableName)?.getField(newPathParts[0] ?? '');
+    if (field?.isRelationship === true && field.relatedTable === this.baseTable)
       return false;
 
     // Remove header from the list of unmapped headers
@@ -997,8 +1001,8 @@ export class AutoMapper {
 /**
  * Tables that have relationships to themself
  */
-export const circularTables = f.store<RA<SpecifyModel>>(() =>
-  Object.values(schema.models).filter(({ relationships, name }) =>
-    relationships.some(({ relatedModel }) => relatedModel.name === name)
+export const circularTables = f.store<RA<SpecifyTable>>(() =>
+  Object.values(genericTables).filter(({ relationships, name }) =>
+    relationships.some(({ relatedTable }) => relatedTable.name === name)
   )
 );

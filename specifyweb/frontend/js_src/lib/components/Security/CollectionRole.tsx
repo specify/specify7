@@ -2,25 +2,25 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey, replaceItem, replaceKey } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
-import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
+import { SearchDialog } from '../SearchDialog';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { createCollectionRole } from './CreateRole';
 import { decompressPolicies } from './policyConverter';
@@ -31,24 +31,20 @@ export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
   role: Role
 ): Promise<void> =>
-  ping(
-    `/permissions/role/${role.id}/`,
-    {
-      method: 'PUT',
-      body: {
-        ...role,
-        policies: decompressPolicies(role.policies),
-      },
+  ping(`/permissions/role/${role.id}/`, {
+    method: 'PUT',
+    body: {
+      ...role,
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then((): void =>
+  }).then((): void =>
     setRoles(replaceKey(defined(roles), role.id.toString(), role))
   );
 
 export function SecurityCollectionRole(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityRole');
   const initialRole = state?.role;
 
@@ -89,16 +85,12 @@ export function SecurityCollectionRole(): JSX.Element {
           // Noop if user is already part of this role
           return currentUserRoles.includes(role.id!)
             ? undefined
-            : ping(
-                `/permissions/user_roles/${collection.id}/${user.id}/`,
-                {
-                  method: 'PUT',
-                  body: [...currentUserRoles, role.id].map((id) => ({
-                    id,
-                  })),
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              ).then(() => ({
+            : ping(`/permissions/user_roles/${collection.id}/${user.id}/`, {
+                method: 'PUT',
+                body: [...currentUserRoles, role.id].map((id) => ({
+                  id,
+                })),
+              }).then(() => ({
                 userIndex,
                 updatedRoles: {
                   ...userRoles[userIndex],
@@ -128,7 +120,7 @@ export function SecurityCollectionRole(): JSX.Element {
     <RoleView
       closeUrl={`/specify/security/collection/${collection.id}/`}
       collectionId={collection.id}
-      parentName={collection.collectionName ?? ''}
+      parentName={localized(collection.collectionName ?? '')}
       permissionName="/permissions/roles"
       role={role}
       roleUsers={
@@ -144,13 +136,9 @@ export function SecurityCollectionRole(): JSX.Element {
       onDelete={(): void =>
         typeof role.id === 'number'
           ? loading(
-              ping(
-                `/permissions/role/${role.id}/`,
-                {
-                  method: 'DELETE',
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              )
+              ping(`/permissions/role/${role.id}/`, {
+                method: 'DELETE',
+              })
                 .then((): void =>
                   navigate(`/specify/security/collection/${collection.id}/`, {
                     replace: true,
@@ -189,9 +177,8 @@ function RoleUsers({
   readonly userRoles: UserRoles | undefined;
   readonly onAddUsers: (users: RA<SpecifyResource<SpecifyUser>>) => void;
 }): JSX.Element | null {
-  const [addingUser, setAddingUser] = React.useState<
-    SpecifyResource<SpecifyUser> | undefined
-  >(undefined);
+  const [isAdding, handleAdding, handleNotAdding] = useBooleanState();
+
   return typeof role.id === 'number' &&
     hasPermission('/permissions/user/roles', 'read', collectionId) ? (
     <fieldset className="flex flex-col gap-2">
@@ -216,31 +203,31 @@ function RoleUsers({
           </Ul>
           {hasPermission('/permissions/user/roles', 'update', collectionId) && (
             <div>
-              <Button.Success
-                onClick={(): void =>
-                  setAddingUser(new schema.models.SpecifyUser.Resource())
-                }
-              >
+              <Button.Success onClick={handleAdding}>
                 {commonText.add()}
               </Button.Success>
             </div>
           )}
-          {typeof addingUser === 'object' ? (
+          {isAdding && (
             <SearchDialog
               extraFilters={[
                 {
                   field: 'id',
-                  operation: 'notIn',
-                  values: userRoles.map(({ userId }) => userId.toString()),
+                  isRelationship: false,
+                  isNot: true,
+                  operation: 'in',
+                  value: userRoles
+                    .map(({ userId }) => userId.toString())
+                    .join(','),
                 },
               ]}
               forceCollection={undefined}
               multiple
-              templateResource={addingUser}
-              onClose={(): void => setAddingUser(undefined)}
+              table={tables.SpecifyUser}
+              onClose={handleNotAdding}
               onSelected={handleAddUsers}
             />
-          ) : undefined}
+          )}
         </>
       ) : (
         commonText.loading()

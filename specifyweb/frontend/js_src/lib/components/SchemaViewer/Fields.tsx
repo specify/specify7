@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -9,8 +10,8 @@ import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { formatNumber } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { javaTypeToHuman } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
@@ -18,10 +19,10 @@ import { SchemaViewerTableList } from './TableList';
 export function SchemaViewerFields({
   table,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(table), [table]);
-  const scope = table.getScopingRelationship()?.relatedModel.name;
+  const scope = table.getScopingRelationship()?.relatedTable.name;
 
   return (
     <>
@@ -53,20 +54,19 @@ export function SchemaViewerFields({
 const fieldColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
-      label: schemaText.fieldLabel(),
+      name: getField(tables.SpLocaleContainerItem, 'name').label,
+      label: reportsText.labels(),
       description: schemaText.description(),
-      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
-        .label,
-      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
+      type: getField(tables.SpLocaleContainerItem, 'type').label,
       length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
-    } as const)
+    }) as const
 );
 
-const getFields = (table: SpecifyModel) =>
+const getFields = (table: SpecifyTable) =>
   ensure<
     RA<
       SchemaViewerRow<
@@ -91,6 +91,6 @@ const getFields = (table: SpecifyModel) =>
             </span>,
           ],
           databaseColumn: field.databaseColumn,
-        } as const)
+        }) as const
     )
   );

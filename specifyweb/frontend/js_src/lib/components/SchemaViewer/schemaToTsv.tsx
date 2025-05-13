@@ -1,8 +1,9 @@
 import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { booleanFormatter } from '../../utils/parser/parse';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
@@ -12,34 +13,34 @@ export const schemaToTsv = (): string =>
   [
     [
       schemaText.table(),
-      schemaText.fieldLabel(),
-      getField(schema.models.SpLocaleContainer, 'isSystem').label,
-      getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      reportsText.labels(),
+      getField(tables.SpLocaleContainer, 'isSystem').label,
+      getField(tables.SpLocaleContainer, 'isHidden').label,
       schemaText.tableId(),
-      getField(schema.models.SpLocaleContainerItem, 'name').label,
-      schemaText.fieldLabel(),
+      getField(tables.SpLocaleContainerItem, 'name').label,
+      reportsText.labels(),
       schemaText.description(),
-      getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      getField(tables.SpLocaleContainerItem, 'isHidden').label,
       schemaText.readOnly(),
-      getField(schema.models.SpLocaleContainerItem, 'isRequired').label,
+      getField(tables.SpLocaleContainerItem, 'isRequired').label,
       formsText.relationship(),
-      getField(schema.models.SpLocaleContainerItem, 'type').label,
+      getField(tables.SpLocaleContainerItem, 'type').label,
       schemaText.fieldLength(),
       schemaText.databaseColumn(),
-      schemaText.relatedModel(),
+      schemaText.relatedTable(),
       schemaText.otherSideName(),
       schemaText.dependent(),
     ],
-    ...Object.values(schema.models).flatMap((model) => {
+    ...Object.values(genericTables).flatMap((table) => {
       const commonColumns = [
-        model.name,
-        model.label.replace('\n', ' '),
-        booleanFormatter(model.isSystem),
-        booleanFormatter(model.isHidden),
-        model.tableId,
+        table.name,
+        table.label.replace('\n', ' '),
+        booleanFormatter(table.isSystem),
+        booleanFormatter(table.isHidden),
+        table.tableId,
       ];
       return [
-        ...model.literalFields.map((field) => [
+        ...table.literalFields.map((field) => [
           ...commonColumns,
           field.name,
           field.label.replace('\n', ' '),
@@ -55,7 +56,7 @@ export const schemaToTsv = (): string =>
           '',
           '',
         ]),
-        ...model.relationships.map((relationship) => [
+        ...table.relationships.map((relationship) => [
           ...commonColumns,
           relationship.name,
           relationship.label.replace('\n', ' '),
@@ -67,7 +68,7 @@ export const schemaToTsv = (): string =>
           localizedRelationshipTypes[relationship.type] ?? relationship.type,
           '',
           relationship.databaseColumn,
-          relationship.relatedModel.name,
+          relationship.relatedTable.name,
           relationship.otherSideName,
           booleanFormatter(relationship.isDependent()),
         ]),

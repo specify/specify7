@@ -12,15 +12,17 @@ import { Http } from '../../utils/ajax/definitions';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { SECOND } from '../Atoms/timeUnits';
 import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
-const REFRESH_RATE = 2000;
+const REFRESH_RATE = 2 * SECOND;
 
 export function WbStatus({
   dataset,
@@ -32,6 +34,9 @@ export function WbStatus({
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
+  const viewerLocalization =
+    resolveVariantFromDataset(dataset).localization.viewer;
+
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
     false
@@ -41,7 +46,6 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {
@@ -63,7 +67,7 @@ export function WbStatus({
 
   const title = {
     validating: wbText.wbStatusValidation(),
-    uploading: wbText.wbStatusUpload(),
+    uploading: viewerLocalization.doStatus,
     unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
@@ -72,13 +76,13 @@ export function WbStatus({
 
   const mappedOperation = {
     validating: wbText.validation(),
-    uploading: wbText.upload(),
+    uploading: viewerLocalization.do,
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
   const standardizedOperation = {
     validating: wbText.validating(),
-    uploading: wbText.uploading(),
+    uploading: viewerLocalization.doing,
     unuploading: wbText.rollingBack(),
   }[status.uploaderstatus.operation];
 
@@ -144,10 +148,11 @@ export function WbStatus({
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNAVAILABLE],
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>

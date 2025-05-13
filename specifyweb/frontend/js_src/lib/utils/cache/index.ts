@@ -51,7 +51,7 @@ let eventListenerIsInitialized = false;
 
 /** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.addEventListener(
+  globalThis.addEventListener?.(
     'storage',
     ({ storageArea, key: formattedKey, newValue }) => {
       // "key" is null only when running `localStorage.clear()`
@@ -87,7 +87,7 @@ function fetchBucket(formattedKey: string): void {
  */
 export const getCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY
@@ -116,7 +116,7 @@ function genericGet<TYPE>(
 
 export const setCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY,
@@ -145,7 +145,13 @@ function genericSet<T>(
 
   const formattedKey = formatCacheKey(category, key);
   if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
-  if (cache[formattedKey] === value) return value;
+  if (
+    cache[formattedKey] === value ||
+    (typeof value === 'object' &&
+      typeof cache[formattedKey] === 'object' &&
+      JSON.stringify(cache[formattedKey]) === JSON.stringify(value))
+  )
+    return value;
 
   cache[formattedKey] = value;
 
