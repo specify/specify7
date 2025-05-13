@@ -75,7 +75,7 @@ WORKDIR /opt/specify7
 # Retry loop to help GitHub arm64 build
 RUN set -eux; \
     for i in 1 2 3; do \
-        python3.8 -m venv ve && \
+        python3.9 -m venv ve && \
         ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
         ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
         break; \
