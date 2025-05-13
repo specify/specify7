@@ -13,7 +13,7 @@ import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
-export type CoordinateType = typeof coordinateType[number];
+export type CoordinateType = (typeof coordinateType)[number];
 
 function Coordinate({
   resource,
@@ -81,7 +81,7 @@ function Coordinate({
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
-      ? (fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined
+      ? ((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined)
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
@@ -96,7 +96,7 @@ function Coordinate({
     handleFormatted(
       isValid
         ? hasValue
-          ? parsed?.format(step) ?? ''
+          ? (parsed?.format(step) ?? '')
           : commonText.notApplicable()
         : undefined
     );
@@ -277,8 +277,8 @@ export function LatLongUi({
               coordinateType === 'Point'
                 ? localityText.coordinates()
                 : coordinateType === 'Line'
-                ? commonText.start()
-                : localityText.northWestCorner()
+                  ? commonText.start()
+                  : localityText.northWestCorner()
             }
             resource={resource}
             step={step}

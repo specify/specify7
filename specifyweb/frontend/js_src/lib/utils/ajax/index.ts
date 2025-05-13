@@ -7,7 +7,11 @@ import { handleAjaxResponse } from './response';
 
 // FEATURE: make all back-end endpoints accept JSON
 
-export type MimeType = 'application/json' | 'text/plain' | 'text/xml';
+export type MimeType =
+  | 'application/json'
+  | 'application/octet-stream'
+  | 'text/plain'
+  | 'text/xml';
 
 export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*
@@ -15,6 +19,7 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
    * Parser is selected based on the value of options.headers.Accept:
    *   - application/json - json
    *   - text/xml - xml
+   *   - application/octet-stream - binary data
    *   - else (i.e text/plain) - string
    */
   readonly data: RESPONSE_TYPE;
@@ -116,6 +121,7 @@ export async function ajax<RESPONSE_TYPE = string>(
   }
   if (method === 'GET' && typeof pendingRequests[url] === 'object')
     return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+  const acceptBlobResponse = accept === 'application/octet-stream';
   pendingRequests[url] = fetch(url, {
     ...options,
     method,
@@ -137,16 +143,22 @@ export async function ajax<RESPONSE_TYPE = string>(
       ...(typeof accept === 'string' ? { Accept: accept } : {}),
     },
   })
-    .then(async (response) => Promise.all([response, response.text()]))
+    .then(async (response) =>
+      Promise.all([
+        response,
+        acceptBlobResponse && response.ok ? response.blob() : response.text(),
+      ])
+    )
     .then(
-      ([response, text]: readonly [Response, string]) => {
+      ([response, text]: readonly [Response, Blob | string]) => {
         extractAppResourceId(url, response);
         return handleAjaxResponse<RESPONSE_TYPE>({
           expectedErrors,
           accept,
           errorMode,
           response,
-          text,
+          text: typeof text === 'string' ? text : '',
+          data: typeof text === 'string' ? undefined : text,
         });
       },
       // This happens when request is aborted (i.e, page is restarting)

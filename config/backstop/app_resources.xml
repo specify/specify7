@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+    <file level="0" mimetype="text/xml" name="UIFormatters"  description="UIFormatters" file="uiformatters.xml"/>
+    <file level="0" mimetype="text/xml" name="DataObjFormatters" description="DataObjFormatters" file="dataobj_formatters.xml"/>
+    <file level="0" mimetype="text/xml" name="TypeSearches"  description="TypeSearches" file="typesearch_def.xml"/>
+</files>

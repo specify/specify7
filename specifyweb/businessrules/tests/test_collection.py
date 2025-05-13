@@ -55,6 +55,6 @@ class CollectionTests(ApiTests):
         with self.assertRaises(ProtectedError):
             self.collection.delete()
 
-        models.CollectionObjectType.objects.filter(collection=self.collection).delete()
+        models.Collectionobjecttype.objects.filter(collection=self.collection).delete()
         models.Collectionobject.objects.filter(collection=self.collection).delete()
         self.collection.delete()

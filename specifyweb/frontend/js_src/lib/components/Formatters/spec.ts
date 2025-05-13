@@ -147,7 +147,7 @@ const aggregatorSpec = f.store(() =>
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),
-      syncers.default(localized('; '))
+      syncers.fallback(localized('; '))
     ),
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(

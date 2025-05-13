@@ -134,17 +134,40 @@ type ParseFailures = State<
   }
 >;
 
+type Updated = State<'Updated', Omit<Uploaded, 'type'>>;
+
+type NoChange = State<
+  'NoChange',
+  {
+    readonly id: number;
+    readonly info: ReportInfo;
+  }
+>;
+
+type Deleted = State<
+  'Deleted',
+  { readonly id: number; readonly info: ReportInfo }
+>;
 // Indicates failure due to a failure to upload a related record
 type PropagatedFailure = State<'PropagatedFailure'>;
 
+type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
+
 type RecordResultTypes =
+  | Deleted
+  | Deleted
   | FailedBusinessRule
   | Matched
+  | MatchedAndChanged
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
+  | NoChange
   | NoMatch
   | NullRecord
   | ParseFailures
   | PropagatedFailure
+  | Updated
   | Uploaded;
 
 // Records the specific result of attempting to upload a particular record
@@ -249,6 +272,10 @@ export function resolveValidationMessage(
     return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
+  else if (key === 'scopeChangeError') return backEndText.scopeChangeDetected();
+  else if (key === 'multipleTreeDefsInRow')
+    return backEndText.multipleTreeDefsInRow();
+  else if (key === 'invalidCotype') return backEndText.invalidCotype();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),

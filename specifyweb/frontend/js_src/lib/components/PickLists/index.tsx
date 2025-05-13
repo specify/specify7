@@ -93,8 +93,8 @@ export function PickListComboBox({
   const value = React.useMemo(
     () =>
       typeof rawValue === 'object'
-        ? (rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null
-        : (rawValue as number | string | undefined)?.toString() ?? null,
+        ? ((rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null)
+        : ((rawValue as number | string | undefined)?.toString() ?? null),
     [rawValue]
   );
 
@@ -104,8 +104,8 @@ export function PickListComboBox({
         value === '' && parser.required !== true
           ? null
           : parser?.type === 'number'
-          ? f.parseInt(value) ?? null
-          : value
+            ? (f.parseInt(value) ?? null)
+            : value
       ),
     [rawUpdateValue, parser]
   );
@@ -173,8 +173,8 @@ export function PickListComboBox({
             newValue === ''
               ? updateValue('')
               : items.some(({ value }) => value === newValue)
-              ? updateValue(newValue)
-              : undefined
+                ? updateValue(newValue)
+                : undefined
           }
         >
           {isExistingValue ? (

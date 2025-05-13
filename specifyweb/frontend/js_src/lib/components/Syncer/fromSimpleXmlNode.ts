@@ -125,10 +125,10 @@ function mergeNodes(
       return newChildren === undefined
         ? child
         : // Child was removed
-        newChild === undefined
-        ? undefined
-        : // Child was modified
-          fromSimpleXmlNode(newChild);
+          newChild === undefined
+          ? undefined
+          : // Child was modified
+            fromSimpleXmlNode(newChild);
     })
   );
   return Object.values(writableChildren)

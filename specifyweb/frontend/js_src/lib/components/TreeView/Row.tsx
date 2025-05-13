@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { fetchRows } from '../DataModel/collection';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -76,18 +75,37 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const isExpanded = Array.isArray(conformation);
   const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
+  const orderByField = userPreferences.get(
+    'treeEditor',
+    'behavior',
+    'orderByField'
+  );
+
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
-    void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
+    void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
+      const sortedRows = Array.from(fetchedRows).sort(
+        sortFunction<Row, number | string>(
+          orderByField === 'rankId'
+            ? (row) => row.rankId
+            : orderByField === 'nodeNumber'
+              ? (row) => row.nodeNumber
+              : orderByField === 'name'
+                ? (row) => row.name
+                : orderByField === 'fullName'
+                  ? (row) => row.fullName
+                  : () => 0
+        )
+      );
+      destructorCalled ? undefined : setRows(sortedRows);
+    });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row]);
+  }, [isLoading, getRows, row, orderByField]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;
@@ -150,21 +168,6 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  const acceptedChildrenKey = `accepted${treeName.toLowerCase()}`;
-  const [synonymsNames] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchRows(treeName as 'Taxon', {
-          fields: { name: ['string'] },
-          limit: 0,
-          [acceptedChildrenKey]: row.nodeId,
-          domainFilter: false,
-        }).then((rows) => rows.map(({ name }) => name)),
-      [acceptedChildrenKey, treeName, row.nodeId]
-    ),
-    false
-  );
-
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -189,8 +192,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   isAction
                     ? 'outline outline-1 outline-red-500'
                     : isFocused
-                    ? 'outline outline-1 outline-blue-500'
-                    : ''
+                      ? 'outline outline-1 outline-blue-500'
+                      : ''
                 }
                 ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
@@ -222,19 +225,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
                     ? isLoading
                       ? commonText.loading()
                       : row.children === 0
-                      ? treeText.leafNode()
-                      : displayChildren
-                      ? treeText.opened()
-                      : treeText.closed()
+                        ? treeText.leafNode()
+                        : displayChildren
+                          ? treeText.opened()
+                          : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
-                  ? icons.blank
-                  : displayChildren
-                  ? icons.chevronDown
-                  : icons.chevronRight}
+                    ? icons.blank
+                    : displayChildren
+                      ? icons.chevronDown
+                      : icons.chevronRight}
               </span>
               <span
                 className={
@@ -247,12 +250,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : synonymsNames === undefined ||
-                        synonymsNames.length === 0
-                      ? undefined
-                      : treeText.synonyms({
-                          names: synonymsNames.join(', '),
-                        })
+                      : typeof row.synonyms === 'string'
+                        ? treeText.synonyms({
+                            names: row.synonyms,
+                          })
+                        : undefined
                   }
                 >
                   {doIncludeAuthorPref &&

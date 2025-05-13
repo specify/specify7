@@ -676,4 +676,16 @@ export const attachmentsText = createDictionary({
       під час читання файлу сталася помилка.
     `,
   },
+  downloadAll: {
+    'en-us': 'Download All',
+  },
+  downloadAllDescription: {
+    'en-us': 'Download all found attachments',
+  },
+  deleteAttachmentWarning: {
+    'en-us': 'Are you sure you want to delete this attachment?',
+  },
+  attachmentDelition: {
+    'en-us': 'Attachment deletion',
+  },
 } as const);

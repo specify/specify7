@@ -1060,6 +1060,26 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Роздільник файлу експорту',
     'de-ch': 'Trennzeichen für Exportdateien',
   },
+  exportCsvUtf8Bom: {
+    'en-us': 'Add UTF-8 BOM to CSV file exports',
+    'ru-ru': 'Добавить UTF-8 BOM в экспорт CSV-файла',
+    'es-es': 'Agregar BOM UTF-8 a las exportaciones de archivos CSV',
+    'fr-fr': 'Ajouter UTF-8 BOM aux exportations de fichiers CSV',
+    'uk-ua': 'Додайте специфікацію UTF-8 до експорту файлу CSVу',
+    'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
+  },
+  exportCsvUtf8BomDescription: {
+    'en-us':
+      'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
+    'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
+    'es-es':
+      'Hace que las exportaciones de archivos CSV se muestren correctamente en Excel.',
+    'fr-fr':
+      "Permet aux exportations de fichiers CSV de s'afficher correctement dans Excel.",
+    'uk-ua': 'Змушує експорт файлів CSV правильно відображатися в Excel.',
+    'de-ch':
+      'Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden.',
+  },
   caseSensitive: {
     'en-us': 'Case-sensitive',
     'ru-ru': 'С учетом регистра',
@@ -1392,6 +1412,9 @@ export const preferencesText = createDictionary({
       gelangen
     `,
   },
+  sortByField: {
+    'en-us': 'Order By Field',
+  },
   lineWrap: {
     'en-us': 'Line wrap',
     'ru-ru': 'Перенос строки',
@@ -1472,7 +1495,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поиск с учетом регистра',
   },
   searchField: {
-    'en-us': 'Search field',
+    'en-us': 'Search Field',
     'ru-ru': 'Поле поиска',
     'es-es': 'Campo de búsqueda',
     'fr-fr': 'Champ de recherche',
@@ -1939,6 +1962,13 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Отобразить базовый вид',
     'uk-ua': 'Відобразити базовий вигляд',
   },
+  showComparisonOperatorsForString: {
+    'en-us': 'Show comparison operators for text-based fields',
+  },
+  showComparisonOperatorsDescription: {
+    'en-us':
+      'Allows the following filters to apply to text fields: Greater Than, Less Than, Greater Than or Equal to, and Less Than or Equal to',
+  },
   basicView: {
     'en-us': 'Basic view',
     'de-ch': 'Basisansicht',
@@ -1986,5 +2016,15 @@ export const preferencesText = createDictionary({
     'fr-fr': "Ajouter une barre de recherche sur la page d'accueil",
     'ru-ru': 'Добавить панель поиска на главную страницу',
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
+  },
+  inheritanceCatNumberPref: {
+    // TODO: improve
+    'en-us':
+      'Enable the inheritance of the primary catalog number to its empty siblings.',
+  },
+  inheritanceCatNumberParentCOPref: {
+    // TODO: improve
+    'en-us':
+      'Enable the inheritance of the parent catalog number to its empty children.',
   },
 } as const);

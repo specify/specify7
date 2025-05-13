@@ -537,4 +537,61 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить предметы',
     'uk-ua': 'Переміщення елементів',
   },
+  addTree: {
+    'en-us': 'Add Tree',
+  },
+  addRootNode: {
+    'en-us': 'Add root node',
+  },
+  treePicker: {
+    'en-us': 'Tree Picker',
+  },
+  botany: {
+    'en-us': 'Botany',
+  },
+  entomology: {
+    'en-us': 'Entomology',
+  },
+  herpetology: {
+    'en-us': 'Herpetology',
+  },
+  ichthyology: {
+    'en-us': 'Ichthyology',
+  },
+  invertpaleo: {
+    'en-us': 'Invertebrate Paleontology',
+  },
+  invertzoo: {
+    'en-us': 'Invertebrate Zoology',
+  },
+  mammalogy: {
+    'en-us': 'Mammalogy',
+  },
+  ornithology: {
+    'en-us': 'Ornithology',
+  },
+  paleobot: {
+    'en-us': 'Paleobotany',
+  },
+  vascplant: {
+    'en-us': 'Vascular Plants',
+  },
+  vertpaleo: {
+    'en-us': 'Vertebrate Paleontology',
+  },
+  defaultRemarks: {
+    'en-us': 'A default taxon tree',
+  },
+  emptyTree: {
+    'en-us': 'Empty Tree',
+  },
+  minerals: {
+    'en-us': 'Minerals',
+  },
+  rocks: {
+    'en-us': 'Rocks',
+  },
+  meteorites: {
+    'en-us': 'Meteorites',
+  },
 } as const);

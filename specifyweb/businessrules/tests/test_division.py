@@ -14,6 +14,5 @@ class DivisionTests(ApiTests):
                 name='foobar')
 
         naive_insitution = business_rule_exception.exception.args[1].get('parentField', None)
-        self.assertEquals(naive_insitution is not None and naive_insitution.lower() == 'institution', True)
+        self.assertEqual(naive_insitution is not None and naive_insitution.lower() == 'institution', True)
 
-    

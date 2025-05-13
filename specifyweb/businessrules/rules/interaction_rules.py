@@ -32,8 +32,8 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
     if ipreparation.preparation is not None:
         available = get_availability(
             ipreparation.preparation, ipreparation.id, "loanpreparationid") or 0
-        quantity = ipreparation.quantity or 0
-        quantityresolved = ipreparation.quantityresolved or 0
+        quantity = int(ipreparation.quantity) or 0
+        quantityresolved = int(ipreparation.quantityresolved) or 0
         if available < (quantity - quantityresolved):
             raise BusinessRuleException(
                 f"loan preparation quantity exceeds availability ({ipreparation.id}: {quantity - quantityresolved} {available})",
@@ -50,7 +50,7 @@ def giftprep_quantity_must_be_lte_availability(ipreparation):
     if ipreparation.preparation is not None:
         available = get_availability(
             ipreparation.preparation, ipreparation.id, "giftpreparationid") or 0
-        quantity = ipreparation.quantity or 0
+        quantity = int(ipreparation.quantity) or 0
         if available < quantity:
             raise BusinessRuleException(
                 f"gift preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})",
@@ -66,7 +66,7 @@ def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
     if ipreparation.preparation is not None:
         available = get_availability(
             ipreparation.preparation, ipreparation.id, "exchangeoutprepid") or 0
-        quantity = ipreparation.quantity or 0
+        quantity = int(ipreparation.quantity) or 0
         if available < quantity:
             raise BusinessRuleException(
                 "exchangeout preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})",

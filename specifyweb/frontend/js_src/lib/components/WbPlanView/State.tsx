@@ -9,7 +9,7 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { DataSetsDialog } from '../Toolbar/WbsDialog';
+import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
 import { ListOfBaseTables } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
@@ -38,8 +38,8 @@ function TemplateSelection({
           {wbPlanText.invalidTemplatePlan()}
         </Dialog>
       )}
-      <DataSetsDialog
-        showTemplates
+      <GenericDataSetsDialog
+        wbVariant="workbenchChoosePlan"
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>
           loading(

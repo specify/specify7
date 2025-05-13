@@ -574,18 +574,18 @@ export function CustomSelectElement({
         aria-haspopup="listbox"
         className={`
           flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
-          items-center gap-1 rounded px-1 text-left
+          items-center gap-1 rounded border border-gray-500 px-1 text-left
           md:min-w-[unset] dark:border-none
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
-              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
+                ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                 dark:!border-solid`
-              : customSelectType === 'OPTIONS_LIST' &&
-                defaultOption?.isRelationship === true
-              ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
+                : customSelectType === 'OPTIONS_LIST' &&
+                    defaultOption?.isRelationship === true
+                  ? 'bg-yellow-250 dark:bg-yellow-900'
+                  : customSelectElementBackground
           }
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
           ${handleClick === undefined ? '' : 'border border-gray-500'}
@@ -682,9 +682,7 @@ export function CustomSelectElement({
             {...selectGroupData}
             hasArrow={has('arrow')}
             hasIcon={has('icon')}
-            selectGroupLabel={
-              customSelectSubtype === 'simple' ? selectGroupLabel : undefined
-            }
+            selectGroupLabel={selectGroupLabel}
           />
         )
       );

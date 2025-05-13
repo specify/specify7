@@ -1,13 +1,15 @@
-FROM ubuntu:18.04 AS common
+FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         gettext \
-        python3.8 \
+        python3.9 \
         libldap-2.4-2 \
-        libmariadbclient18 \
+        libmariadb3 \
+        rsync \
+        tzdata \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -41,25 +43,35 @@ RUN npx webpack --mode production
 
 FROM common AS build-backend
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         build-essential \
         ca-certificates \
         curl \
         git \
-        libldap2-dev \
-        libmariadbclient-dev \
         libsasl2-dev \
-        python3.8-venv \
-        python3.8-distutils \
-        python3.8-dev
+        libsasl2-modules \
+        libldap2-dev \
+        libssl-dev \
+        libgmp-dev \
+        libffi-dev \
+        python3.9-venv \
+        python3.9-distutils \
+        python3.9-dev \
+        libmariadbclient-dev \
+        tzdata \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.8 -m venv ve \
- && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
+RUN python3.9 -m venv ve \
+ && ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
@@ -68,6 +80,7 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
+COPY --chown=specify:specify config /opt/specify7/config
 
 ARG BUILD_VERSION
 ARG GIT_SHA
@@ -120,12 +133,15 @@ RUN echo \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
-        "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)" \
+        "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', DATABASE_NAME) or DATABASE_NAME" \
         "\nSEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)" \
         "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
+        "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
+        "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
+        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
@@ -151,7 +167,7 @@ USER root
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
-        python3.8-distutils \
+        python3.9-distutils \
         ca-certificates \
         make
 

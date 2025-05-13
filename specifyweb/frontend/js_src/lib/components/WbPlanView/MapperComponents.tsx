@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -23,7 +25,11 @@ import type {
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
-import type { MappingPath } from './Mapper';
+import {
+  type BatchEditPrefs,
+  type MappingPath,
+  DEFAULT_BATCH_EDIT_PREFS,
+} from './Mapper';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
@@ -32,10 +38,14 @@ export function MappingsControlPanel({
   showHiddenFields,
   onToggleHiddenFields: handleToggleHiddenFields,
   onAddNewHeader: handleAddNewHeader,
+  onClear: handleClear,
+  columnsNotSaved,
 }: {
   readonly showHiddenFields: boolean;
   readonly onToggleHiddenFields?: () => void;
   readonly onAddNewHeader?: (newHeaderName: string) => void;
+  readonly onClear: () => void;
+  readonly columnsNotSaved: boolean;
 }): JSX.Element {
   const newHeaderIdRef = React.useRef(1);
 
@@ -51,6 +61,11 @@ export function MappingsControlPanel({
           }}
         >
           {wbPlanText.addNewColumn()}
+        </Button.Small>
+      )}
+      {columnsNotSaved && (
+        <Button.Small onClick={handleClear}>
+          {commonText.deleteUnmapped()}
         </Button.Small>
       )}
       <Label.Inline>
@@ -481,6 +496,91 @@ export function MustMatch({
               </table>
             </>
           )}
+        </Dialog>
+      )}
+    </>
+  );
+}
+
+export function BatchEditPrefsView({
+  prefs,
+  onChange: handleChange,
+}: {
+  readonly prefs: BatchEditPrefs;
+  readonly onChange: (prefs: BatchEditPrefs) => void;
+}): JSX.Element {
+  //
+  const prefLocalization: RR<
+    keyof BatchEditPrefs,
+    { readonly title: LocalizedString; readonly description: LocalizedString }
+  > = {
+    deferForMatch: {
+      title: batchEditText.deferForMatch(),
+      description: batchEditText.deferForMatchDescription({
+        default: DEFAULT_BATCH_EDIT_PREFS.deferForMatch,
+      }),
+    },
+    deferForNullCheck: {
+      title: batchEditText.deferForNullCheck(),
+      description: batchEditText.deferForNullCheckDescription({
+        default: DEFAULT_BATCH_EDIT_PREFS.deferForNullCheck,
+      }),
+    },
+  };
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const [isOpen, handleOpen, handleClose] = useBooleanState(false);
+
+  const [localPrefs, setLocalPrefs] = React.useState<BatchEditPrefs>(prefs);
+
+  const isChanged = React.useMemo(
+    () => JSON.stringify(localPrefs) !== JSON.stringify(prefs),
+    [localPrefs, prefs]
+  );
+
+  const handleCommit = () => {
+    if (isChanged) handleChange(localPrefs);
+    handleClose();
+  };
+
+  return (
+    <>
+      <Button.Small aria-haspopup="dialog" onClick={handleOpen}>
+        {batchEditText.batchEditPrefs()}
+      </Button.Small>
+      {isOpen && (
+        <Dialog
+          buttons={
+            <Button.Info onClick={handleCommit}>
+              {isChanged ? commonText.apply() : commonText.close()}
+            </Button.Info>
+          }
+          className={{ container: dialogClassNames.narrowContainer }}
+          header={batchEditText.batchEditPrefs()}
+          onClose={handleCommit}
+        >
+          <div>
+            <Ul>
+              {Object.entries(prefLocalization).map(
+                ([id, { title, description }]) => (
+                  <li key={id}>
+                    <Label.Inline title={description}>
+                      <Input.Checkbox
+                        checked={localPrefs[id]}
+                        isReadOnly={isReadOnly}
+                        name="batch-edit-prefs"
+                        onValueChange={(isChecked) =>
+                          setLocalPrefs({ ...localPrefs, [id]: isChecked })
+                        }
+                      />
+                      {` ${title}`}
+                    </Label.Inline>
+                  </li>
+                )
+              )}
+            </Ul>
+          </div>
         </Dialog>
       )}
     </>

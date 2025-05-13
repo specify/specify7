@@ -18,7 +18,7 @@ import type { GetOrSet } from '../utils/types';
  */
 export function useCachedState<
   CATEGORY extends keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY

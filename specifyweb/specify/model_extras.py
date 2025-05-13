@@ -5,7 +5,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
 from django.utils import timezone
 
-from .model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
+from .model_timestamp import save_auto_timestamp_field_with_override
 from .tree_extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
@@ -20,7 +20,21 @@ class SpecifyUserManager(BaseUserManager):
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
 
-class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel):
+def is_legacy_admin(specifyuser) -> bool: 
+    "Returns true if user is a Specify 6 admin."
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("""
+    SELECT 1
+    FROM specifyuser_spprincipal, spprincipal
+    WHERE %s = specifyuser_spprincipal.SpecifyUserId
+    AND specifyuser_spprincipal.SpPrincipalId = spprincipal.SpPrincipalId
+    AND spprincipal.Name = 'Administrator'
+    LIMIT 1
+    """, [specifyuser.id])
+    return cursor.fetchone() is not None
+
+class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
     is_active = True
@@ -61,18 +75,7 @@ class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel)
         ).exists()
 
     def is_legacy_admin(self):
-        "Returns true if user is a Specify 6 admin."
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-        SELECT 1
-        FROM specifyuser_spprincipal, spprincipal
-        WHERE %s = specifyuser_spprincipal.SpecifyUserId
-        AND specifyuser_spprincipal.SpPrincipalId = spprincipal.SpPrincipalId
-        AND spprincipal.Name = 'Administrator'
-        LIMIT 1
-        """, [self.id])
-        return cursor.fetchone() is not None
+        return is_legacy_admin(self)
 
     def set_admin(self):
         "Make the user a Specify 6 admin."
@@ -117,15 +120,14 @@ class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel)
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        pre_save_auto_timestamp_field_with_override(self)
-        return super(Specifyuser, self).save(*args, **kwargs)
+        return save_auto_timestamp_field_with_override(super().save, args, kwargs, self)
 
     class Meta:
         abstract = True
 
 
 
-class Preparation(models.Model): # FUTURE: class Preparation(SpTimestampedModel):
+class Preparation(models.Model):
     def isonloan(self):
         # TODO: needs unit tests
         from django.db import connection
@@ -142,10 +144,88 @@ class Preparation(models.Model): # FUTURE: class Preparation(SpTimestampedModel)
         result = cursor.fetchone()
         return result[0] > 0
 
+    def isongift(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM giftpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
+    def isondisposal(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM disposalpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangeout(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeoutprep
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangein(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeinprep
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
     class Meta:
         abstract = True
 
+PALEO_DISCIPLINES = {'paleobotany', 'invertpaleo', 'vertpaleo'}
+GEOLOGY_DISCIPLINES = {'geology'}
 
+class Discipline(models.Model):
+    def is_paleo(self):
+         return self.type.lower() in PALEO_DISCIPLINES
+    
+    def is_geo(self):
+         return self.type.lower() in GEOLOGY_DISCIPLINES
+    
+    def is_paleo_geo(self): 
+        return self.is_paleo() or self.is_geo()
+    
+    class Meta:
+        abstract = True
 
 class Taxon(Tree):
     class Meta:
@@ -167,6 +247,10 @@ class Lithostrat(Tree):
     class Meta:
         abstract = True
 
+class Tectonicunit(Tree):
+    class Meta:
+        abstract = True
+
 class Geographytreedefitem(TreeRank):
     class Meta:
         abstract = True
@@ -184,5 +268,9 @@ class Storagetreedefitem(TreeRank):
         abstract = True
 
 class Taxontreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Tectonicunittreedefitem(TreeRank):
     class Meta:
         abstract = True
