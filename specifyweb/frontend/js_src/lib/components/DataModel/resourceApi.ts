@@ -443,7 +443,7 @@ export const ResourceBase = Backbone.Model.extend({
            * on their models holding the resource are not incidently notified
            * of a change event
            * See https://github.com/specify/specify7/issues/6488
-           * 
+           *
            */
           {
             silent: typeof key === 'object' && options?.silent === true,
