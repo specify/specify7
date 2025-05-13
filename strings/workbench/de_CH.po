@@ -82,19 +82,19 @@ msgstr "Hochladen"
 msgid "validating"
 msgstr "Validierung"
 
-#: components/WorkBench/WbSpreadsheet.tsx:159
+#: components/WorkBench/WbSpreadsheet.tsx:161
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "disambiguate"
 msgstr "Disambiguieren"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillDown"
 msgstr "Abfüllen"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "fillUp"
@@ -557,7 +557,7 @@ msgstr "DMS-Symbole einbinden"
 msgid "uploadResults"
 msgstr "Ergebnisse hochladen"
 
-#: components/WorkBench/WbSpreadsheet.tsx:94
+#: components/WorkBench/WbSpreadsheet.tsx:96
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "noUploadResultsAvailable"

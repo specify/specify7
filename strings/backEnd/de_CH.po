@@ -28,7 +28,7 @@ msgstr "\"{value:string}\" ist kein gültiger Dezimalwert"
 msgid "failedParsingFloat"
 msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
 
-#: components/WorkBench/CellMeta.ts:152
+#: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
 #: components/WorkBench/resultsParser.ts:258

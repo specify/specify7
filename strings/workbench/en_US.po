@@ -64,17 +64,17 @@ msgstr "Uploading"
 msgid "validating"
 msgstr "Validating"
 
-#: components/WorkBench/WbSpreadsheet.tsx:159
+#: components/WorkBench/WbSpreadsheet.tsx:161
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Disambiguate"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Fill Down"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Fill Up"
@@ -459,7 +459,7 @@ msgstr "Include DMS Symbols"
 msgid "uploadResults"
 msgstr "Upload Results"
 
-#: components/WorkBench/WbSpreadsheet.tsx:94
+#: components/WorkBench/WbSpreadsheet.tsx:96
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "No upload results are available for this cell"

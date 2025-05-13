@@ -27,7 +27,7 @@ msgstr "значення \"{value:string}\" не є дійсним цілим ч
 msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є раціональним числом"
 
-#: components/WorkBench/CellMeta.ts:152
+#: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
 #: components/WorkBench/resultsParser.ts:258

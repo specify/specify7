@@ -26,7 +26,7 @@ msgstr "valeur \"{value:string}\" n'est pas une valeur décimale valide"
 msgid "failedParsingFloat"
 msgstr "valeur \"{value:string}\" n'est pas une valeur à virgule flottante valide"
 
-#: components/WorkBench/CellMeta.ts:152
+#: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
 #: components/WorkBench/resultsParser.ts:258

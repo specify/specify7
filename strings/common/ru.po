@@ -667,8 +667,8 @@ msgstr "Смотрет"
 #: components/Leaflet/index.ts:184
 #: components/Leaflet/index.ts:188
 #: components/Leaflet/index.ts:189
-#: components/WorkBench/WbSpreadsheet.tsx:123
-#: components/WorkBench/WbSpreadsheet.tsx:124
+#: components/WorkBench/WbSpreadsheet.tsx:125
+#: components/WorkBench/WbSpreadsheet.tsx:126
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb Spreadsheet
 #, fuzzy
 msgid "opensInNewTab"

@@ -76,17 +76,17 @@ msgstr "Cargando"
 msgid "validating"
 msgstr "Validando"
 
-#: components/WorkBench/WbSpreadsheet.tsx:159
+#: components/WorkBench/WbSpreadsheet.tsx:161
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Desambiguar"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Rellenar hacia Abajo"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Rellenar hacia Arriba"
@@ -479,7 +479,7 @@ msgstr "Incluir Símbolos DMS"
 msgid "uploadResults"
 msgstr "Cargar Resultados"
 
-#: components/WorkBench/WbSpreadsheet.tsx:94
+#: components/WorkBench/WbSpreadsheet.tsx:96
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "No hay resultados de carga disponibles para esta celda"

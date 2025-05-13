@@ -78,17 +78,17 @@ msgstr "Загрузка"
 msgid "validating"
 msgstr "Проверка"
 
-#: components/WorkBench/WbSpreadsheet.tsx:159
+#: components/WorkBench/WbSpreadsheet.tsx:161
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Устранить Неоднозначность"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Заполнить Вниз"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Заполнить Вверх"
@@ -477,7 +477,7 @@ msgstr "Включить символы DMS"
 msgid "uploadResults"
 msgstr "Результаты загрузки"
 
-#: components/WorkBench/WbSpreadsheet.tsx:94
+#: components/WorkBench/WbSpreadsheet.tsx:96
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "Для этой ячейки нет результатов загрузки"

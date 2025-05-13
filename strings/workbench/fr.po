@@ -75,17 +75,17 @@ msgstr "Téléchargement"
 msgid "validating"
 msgstr "Validation"
 
-#: components/WorkBench/WbSpreadsheet.tsx:159
+#: components/WorkBench/WbSpreadsheet.tsx:161
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Lever l'ambiguïté"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Remplissez"
 
-#: components/WorkBench/WbSpreadsheet.tsx:268
+#: components/WorkBench/WbSpreadsheet.tsx:270
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Remplir"
@@ -498,7 +498,7 @@ msgstr "Inclure les symboles DMS"
 msgid "uploadResults"
 msgstr "Télécharger le forfait"
 
-#: components/WorkBench/WbSpreadsheet.tsx:94
+#: components/WorkBench/WbSpreadsheet.tsx:96
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"
