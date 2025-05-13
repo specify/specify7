@@ -676,7 +676,8 @@ export const ResourceBase = Backbone.Model.extend({
            * This is needed to prevent refetching the collection with the default
            * limit of 20
            */ else if (isRelationshipCollection(value)) return value;
-          else if (typeof value.fetch === 'function') return value.fetch(options);
+          else if (typeof value.fetch === 'function')
+            return value.fetch(options);
         }
         return value;
       });
