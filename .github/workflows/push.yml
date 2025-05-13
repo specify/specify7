@@ -19,7 +19,7 @@ jobs:
         with:
           path: specify7
           # Assumes the strings originally came from production branch
-          ref: production
+          ref: main
           fetch-depth: 0
           # Using a Personal Access Token from an admin account to bypass branch
           # protection rules and allow direct pushes to production. Inspirited
