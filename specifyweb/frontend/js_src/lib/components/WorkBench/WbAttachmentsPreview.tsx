@@ -165,13 +165,10 @@ function fetchRowAttachments(
   const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
     '') as string;
   const cellData = getAttachmentsFromCell(selectedCell);
-  if (cellData === undefined) {
-    setAttachments([]);
-    return;
-  }
-  const dataSetAttachmentIds = cellData.attachments.map(
-    (attachment) => attachment.id
-  );
+  const dataSetAttachmentIds =
+    cellData === undefined
+      ? []
+      : cellData.attachments.map((attachment) => attachment.id);
 
   if (dataSetAttachmentIds.length === 0) {
     setAttachments([]);
