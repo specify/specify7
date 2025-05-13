@@ -13,7 +13,7 @@ from collections.abc import Iterable
 
 from urllib.parse import urlencode
 
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
@@ -1072,6 +1072,7 @@ class CollectionPayloadMeta(TypedDict):
 class CollectionPayload(TypedDict):
     objects: list[dict[str, Any]]
     meta: CollectionPayloadMeta
+    _tableName: NotRequired[str]
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
