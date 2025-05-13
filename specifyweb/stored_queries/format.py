@@ -299,7 +299,7 @@ class ObjectFormatter(object):
         aliased_orm_table = aliased(orm_table)
 
         if is_self_join_aggregation: # Handle self join aggregation
-            if field.name == 'children' and field.relatedModelName == 'CollectionObject':
+            if field.name in {'children', 'components'} and field.relatedModelName == 'CollectionObject':
                 # Child = aliased(orm_table)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
