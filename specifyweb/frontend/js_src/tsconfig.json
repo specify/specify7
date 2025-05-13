@@ -1,6 +1,6 @@
 {
   /* File Inclusion */
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx","lib/localization/utils/weblateLoader.js"],
   "exclude": ["node_modules"],
   "files": ["./lib/declarations.d.ts"],
   "compilerOptions": {
