@@ -63,9 +63,14 @@ export function Navigation({
   }, [totalCount]);
 
   const isDisabled =
-    !['newCells', 'searchResults', 'updatedCells', 'deletedCells'].includes(
-      name
-    ) && isReadOnly;
+    ![
+      'newCells',
+      'searchResults',
+      'updatedCells',
+      'deletedCells',
+      'matchedAndChangedCells',
+    ].includes(name) && isReadOnly;
+
   return (
     <span
       aria-atomic

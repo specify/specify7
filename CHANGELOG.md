@@ -8,6 +8,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.10.2.1](https://github.com/specify/specify7/compare/v7.10.2...v7.10.2.1) (5 May 2025)
+
+## Fixed
+* Fixes cases where 'Full Name' was returned instead of 'Name' in queries, reports, labels, and data exports ([#6463](https://github.com/specify/specify7/issues/6463))
+* Resolves an issue that prevents queries from running when there is a space in the rank name ([#6459](https://github.com/specify/specify7/issues/6459))
+* Corrects the presence of leading zeroes in queries, reports, and labels ([#6464](https://github.com/specify/specify7/issues/6464))
+
+## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (23 April 2025)
+
+## Added
+
+* **[Batch Editing](https://discourse.specifysoftware.org/t/batch-edit/2248)** for simple fields ([#5417](https://github.com/specify/specify7/pull/5417) – *Requested by many, many members*)
+* [**Added a 'Download' button** to record set and query results attachments](https://discourse.specifysoftware.org/t/bulk-download-attachments-from-a-query-result-or-record-set/2456) ([#6052](https://github.com/specify/specify7/pull/6052) – *Requested by The University of Michigan, Naturhistorisches Museum Bern, Beaty Biodiversity Museum, Agriculture and Agri-Food Canada, Muséum d'Histoire Naturelle Geneva, and Queensland Herbarium*)
+* The [Form Meta menu](https://discourse.specifysoftware.org/t/form-meta-menu/844) is now accessible when using "View in Forms" ([#5416](https://github.com/specify/specify7/pull/5416))
+* A default value can now be used for a query combo box ([#6037]([https://github.com/specify/specify7/pull/6037]) – *Requested by South African Institute for Aquatic Biodiversity and The Ohio State University Mollusk Division*)
+* Adds tooltip for required fields in bulk carry forward config ([#6202](https://github.com/specify/specify7/pull/6202))
+* Specify will use the default `TypeSearches` when a custom one is not defined for a table ([#6236](https://github.com/specify/specify7/pull/6236))
+* Adds a new `uniqueIdentifier` field to Storage ([#6249](https://github.com/specify/specify7/pull/6249))
+
+## Changed
+
+* Non-default Taxon trees can be deleted if they are not used ([#6186](https://github.com/specify/specify7/pull/6186))
+* Adds modern attachment placeholder icons for video, audio, text, and other attachment filetypes ([#6119](https://github.com/specify/specify7/pull/6119))
+
+## Fixed
+
+* Fixes an issue that caused some WorkBench data sets to match to the incorrect ranks ([#6322](https://github.com/specify/specify7/pull/6322))
+* Fixes an issue where the defaults for insect collections were missing ([#6383](https://github.com/specify/specify7/pull/6383))
+* Field formats in the Schema Config utility are selected automatically again ([#6255](https://github.com/specify/specify7/pull/6255))
+* Primary Collection Objects (COs) in a consolidated Collection Object Group (COG) can no longer be deleted unless another CO is marked as primary ([#6181](https://github.com/specify/specify7/pull/6181))
+* Fixes all cases where table aggregation separators were missing ([#6115](https://github.com/specify/specify7/pull/6115))
+* Fixes all cases where taxon tree structure is invalid due to accepted names not being designated as accepted ([#5366](https://github.com/specify/specify7/pull/5366))
+* Fixes all cases where coordinate text fields are empty but decimal coordinate fields contain values ([#5368](https://github.com/specify/specify7/pull/5368) – *Reported by The University of Michigan, College of Idaho, and several others*)
+* Fixes an issue where the Data Entry screen does not appear in the 'Geology' discipline ([#6365](https://github.com/specify/specify7/pull/6365))
+* Fixes an issue where unsaved changes would be lost when toggling the "Use Localized Field Labels" setting in the Form Meta menu
+
 ## [7.10.1](https://github.com/specify/specify7/compare/v7.10.0...v7.10.1) (10 March 2025)
 
 ## Added

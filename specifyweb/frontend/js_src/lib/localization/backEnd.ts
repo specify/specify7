@@ -687,4 +687,14 @@ export const backEndText = createDictionary({
     'uk-ua': 'Таблиця уже завантажена',
     'de-ch': 'Datensatz bereits hochgeladen',
   },
+  scopeChangeDetected: {
+    'en-us':
+      'Scope change detected in this row. It is recommended to delete this row from the dataset',
+  },
+  multipleTreeDefsInRow: {
+    'en-us': 'Multiple tree definitions in row',
+  },
+  invalidCotype: {
+    'en-us': 'Invalid type for selected tree rank(s)',
+  },
 } as const);
