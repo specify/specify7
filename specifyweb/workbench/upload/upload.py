@@ -37,6 +37,7 @@ from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import (
     Deleted,
     MatchedAndChanged,
+    NoChange,
     RecordResult,
     Updated,
     Uploaded,
@@ -110,14 +111,25 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress] = None) 
         ds.save(update_fields=["uploadresult"])
 
 
-def unupload_record(upload_result: UploadResult, agent) -> None:
-    if isinstance(upload_result.record_result, Uploaded):
-        for _, toMany in sorted(
-            upload_result.toMany.items(), key=lambda kv: kv[0], reverse=True
-        ):
-            for record in reversed(toMany):
-                unupload_record(record, agent)
+ACTION_RESULTS = [
+    Uploaded, 
+    Updated, 
+    NoChange
+]
 
+def unupload_record(upload_result: UploadResult, agent) -> None:
+    
+    is_action_result = any(isinstance(upload_result.record_result, cls) for cls in ACTION_RESULTS)
+
+    if not is_action_result: return
+
+    for _, toMany in sorted(
+        upload_result.toMany.items(), key=lambda kv: kv[0], reverse=True
+    ):
+        for record in reversed(toMany):
+            unupload_record(record, agent)
+
+    if isinstance(upload_result.record_result, Uploaded):
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
         obj_q = model.objects.select_for_update().filter(id=upload_result.get_id())
         try:
@@ -134,6 +146,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                     f"Unable to roll back {obj} because it is now referenced by another record."
                 ) from e
 
+    if isinstance(upload_result.record_result, Uploaded) or isinstance(upload_result.record_result, Updated):
         for addition in reversed(upload_result.record_result.picklistAdditions):
             pli_q = models.Picklistitem.objects.select_for_update().filter(
                 id=addition.id
@@ -145,7 +158,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
             else:
                 logger.debug(f"deleting {pli}")
                 auditlog.remove(pli, agent, None)
-                pli_q._raw_delete(obj_q.db)  # type: ignore
+                pli_q._raw_delete(pli_q.db)  # type: ignore
 
     for _, record in sorted(
         upload_result.toOne.items(), key=lambda kv: kv[0], reverse=True
