@@ -60,7 +60,7 @@ def hide_co_component(apps, schema_editor):
                 discipline_id=discipline.id,
             )
             for container in containers:
-                for field_name in fields:
+                for field_name, _, _ in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
                         name=field_name.lower()
@@ -108,7 +108,7 @@ def reverse_hide_co_component(apps, schema_editor):
                 discipline_id=discipline.id,
             )
             for container in containers:
-                for field_name in fields:
+                for field_name, _, _ in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
                         name=field_name.lower()
