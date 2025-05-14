@@ -134,7 +134,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         props = self.build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         self.assertEqual(
             headers,
@@ -545,7 +545,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         props = self.build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         visual = apply_visual_order(headers, order)
         self.assertEqual(
@@ -1317,7 +1317,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         props = self.build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         correct_rows = [
             [
@@ -1533,7 +1533,7 @@ class QueryConstructionTests(SQLAlchemySetup):
         self._update(self.collectionobjects[0], {"cataloger": self.agents_created[0]})
 
         props = self.build_props(query_fields, base_table)
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         self.assertEqual(
             headers,
@@ -1739,7 +1739,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         props = self.build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         ordered_headers = apply_visual_order(headers, order)
 
@@ -2045,7 +2045,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
         props = self.build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+        (headers, rows, packs, plan, order, _) = run_batch_edit_query(props)
 
         self.assertEqual(
             headers,
