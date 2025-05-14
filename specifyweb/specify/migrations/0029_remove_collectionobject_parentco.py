@@ -46,6 +46,30 @@ def update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name.text = new_name
                     localized_items_name.save() 
 
+def hide_co_component(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    disciplines = Discipline.objects.all()
+
+    for discipline in disciplines:
+        for table, fields in SCHEMA_CONFIG_CO_TABLE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+
+                    for item in items:
+                        item.ishidden = True
+                        item.save()
+
 def revert_update_fields(apps):
     for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items(): 
         for field in fields: 
@@ -70,6 +94,30 @@ def revert_update_schema_field(apps, schema_editor):
                     item.ishidden = False
                     item.save()
 
+def reverse_hide_co_component(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    disciplines = Discipline.objects.all()
+
+    for discipline in disciplines:
+        for table, fields in SCHEMA_CONFIG_CO_TABLE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+
+                    for item in items:
+                        item.ishidden = False
+                        item.save()
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -79,10 +127,12 @@ class Migration(migrations.Migration):
     def consolidated_python_django_migration_operations(apps, schema_editor):
         update_fields(apps)
         update_schema_config_field_desc(apps, schema_editor)
+        hide_co_component(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_update_fields(apps)
         revert_update_schema_field(apps, schema_editor)
+        reverse_hide_co_component(apps, schema_editor)
 
     operations = [
         migrations.RemoveField(
