@@ -81,6 +81,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
+          file: Dockerfile_GitHub
           platforms: ${{ matrix.platform }}
           build-args: |
             BUILD_VERSION=${{ steps.prep.outputs.version }}
