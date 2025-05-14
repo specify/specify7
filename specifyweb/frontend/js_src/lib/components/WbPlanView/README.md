@@ -15,7 +15,7 @@ Model fields.
 Upload Plan is the final product of any WbPlanView mapping. It is used by the
 back-end during the validation/upload process.
 
-[JSON Schema](https://github.com/specify/specify7/blob/production/specifyweb/workbench/upload/upload_plan_schema.py)
+[JSON Schema](https://github.com/specify/specify7/blob/main/specifyweb/workbench/upload/upload_plan_schema.py)
 
 Example:
 
