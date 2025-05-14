@@ -101,7 +101,7 @@ export class Disambiguation {
       return;
     this.changeDisambiguation(
       physicalRow,
-      (row) => removeKey(row, 'disambiguation'),
+      ()=>({}),
       'Disambiguation.Clear'
     );
   }
