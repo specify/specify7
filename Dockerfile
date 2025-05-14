@@ -2,16 +2,22 @@ FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
+RUN set -eux; \
+    for i in 1 2 3; do \
+      apt-get update && \
+      apt-get -y install --no-install-recommends \
         gettext \
         python3.9 \
         libldap-2.4-2 \
         libmariadb3 \
         rsync \
         tzdata \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+      && break; \
+      echo "apt-get install failed (attempt $i), retrying in 5s…"; \
+      sleep 5; \
+    done; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g 999 specify \
  && useradd -r -u 999 -g specify specify
