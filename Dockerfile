@@ -127,11 +127,16 @@ COPY --chown=specify:specify specifyweb/settings/__init__.py /opt/specify7/speci
 
 FROM common AS run-common
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
-        rsync \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    for i in 1 2 3; do \
+      apt-get update && \
+      apt-get -y install --no-install-recommends rsync && \
+      break; \
+      echo "apt-get install rsync failed (attempt $i), retrying in 5s…"; \
+      sleep 5; \
+    done; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /volumes/static-files/depository \
  && chown -R specify.specify /volumes/static-files
@@ -186,11 +191,19 @@ FROM run-common AS run-development
 
 USER root
 
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
+RUN set -eux; \
+    for i in 1 2 3; do \
+      apt-get update && \
+      apt-get -y install --no-install-recommends \
         python3.9-distutils \
         ca-certificates \
-        make
+        make && \
+      break; \
+      echo "apt-get install (python3.9-distutils, ca-certificates, make) failed (attempt $i), retrying in 5s…"; \
+      sleep 5; \
+    done; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
 
 USER specify
 
