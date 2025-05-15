@@ -233,7 +233,7 @@ msgstr "Créer"
 #: components/QueryBuilder/Export.tsx:152
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:560
+#: components/QueryComboBox/index.tsx:573
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -458,7 +458,7 @@ msgstr "Outils"
 #: components/QueryBuilder/QueryLineFilter.tsx:75
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
-#: components/QueryComboBox/index.tsx:402
+#: components/QueryComboBox/index.tsx:415
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
