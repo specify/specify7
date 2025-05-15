@@ -1,6 +1,7 @@
 import { Backbone } from '../../components/DataModel/backbone';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
 import { formatUrl } from '../../components/Router/queryString';
+import { f } from '../functools';
 import type { RA, ValueOf } from '../types';
 import { defined } from '../types';
 import { Http } from './definitions';
@@ -63,7 +64,7 @@ Backbone.ajax = function (request): JQueryXHR {
     )
       .then(({ data, status }) => {
         requestCallbackCopy?.(status);
-        if (status === Http.CONFLICT) throw new Error(data);
+        if (f.includes([Http.CONFLICT, Http.NOT_FOUND], status)) throw new Error(data);
         else if (typeof request.success === 'function')
           request.success(data, 'success', undefined as never);
       })
