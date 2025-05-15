@@ -658,7 +658,7 @@ export const ResourceBase = Backbone.Model.extend({
       : fieldName.split(backboneFieldSeparator);
 
     // First make sure we actually have this object.
-    return this.fetch(options)
+    return this.fetch()
       .then((_this) => _this._rget(path, options))
       .then((value) => {
         /*
