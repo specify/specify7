@@ -117,7 +117,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    filters?: CollectionFetchFilters<VALUE[number]> & { strict?: boolean }
+    filters?: CollectionFetchFilters<VALUE[number]> & { readonly strict?: boolean }
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
