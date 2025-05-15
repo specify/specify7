@@ -9,6 +9,7 @@ RUN apt-get update \
         libldap-2.4-2 \
         libmariadb3 \
         rsync \
+        mariadb-client \
         tzdata \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
@@ -61,7 +62,6 @@ RUN apt-get update \
         python3.9-distutils \
         python3.9-dev \
         libmariadbclient-dev \
-        tzdata \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -81,6 +81,8 @@ COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 COPY --chown=specify:specify config /opt/specify7/config
+COPY --chown=specify:specify sp7_db_setup_check.sh /opt/specify7/
+RUN chmod +x /opt/specify7/sp7_db_setup_check.sh
 
 ARG BUILD_VERSION
 ARG GIT_SHA
@@ -121,28 +123,43 @@ COPY --from=build-backend /opt/specify7 /opt/specify7
 WORKDIR /opt/specify7
 RUN cp -r specifyweb/settings .
 
-RUN echo \
-        "import os" \
-        "\nDATABASE_NAME = os.environ['DATABASE_NAME']" \
-        "\nDATABASE_HOST = os.environ['DATABASE_HOST']" \
-        "\nDATABASE_PORT = os.environ.get('DATABASE_PORT', '')" \
-        "\nMASTER_NAME = os.environ['MASTER_NAME']" \
-        "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
-        "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
-        "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
-        "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
-        "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
-        "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
-        "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', DATABASE_NAME) or DATABASE_NAME" \
-        "\nSEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)" \
-        "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
-        "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
-        "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
-        "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
-        "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
-        "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
-        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
-        > settings/local_specify_settings.py
+RUN echo 'export PATH="/opt/specify7/ve/bin:$PATH"' > ~/.bashrc
+
+RUN cat <<EOF > settings/local_specify_settings.py
+import os
+
+DATABASE_NAME = os.environ['DATABASE_NAME']
+DATABASE_HOST = os.environ['DATABASE_HOST']
+DATABASE_PORT = os.environ.get('DATABASE_PORT', '')
+
+ROOT_PASSWORD = os.environ['MYSQL_ROOT_PASSWORD']
+MASTER_NAME = os.getenv('MASTER_NAME')
+MASTER_PASSWORD = os.getenv('MASTER_PASSWORD')
+SUPER_NAME = os.getenv('SUPER_NAME', os.getenv('MASTER_NAME', 'root'))
+SUPER_PASSWORD = os.getenv('SUPER_PASSWORD')
+TARGET_NAME = os.getenv('TARGET_NAME', MASTER_NAME)
+TARGET_PASSWORD = os.getenv('TARGET_PASSWORD')
+
+DEPOSITORY_DIR = '/volumes/static-files/depository'
+
+REPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')
+REPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')
+
+WEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)
+WEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)
+WEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', os.getenv('WEB_ATTACHMENT_COLLECTION', DATABASE_NAME) or DATABASE_NAME)
+SEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)
+CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
+
+ANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)
+SPECIFY_CONFIG_DIR = os.getenv('SPECIFY_CONFIG_DIR', '/opt/Specify/config')
+
+host = os.getenv('CSRF_TRUSTED_ORIGINS', None)
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []
+EOF
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
         > settings/debug.py
