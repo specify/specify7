@@ -74,7 +74,7 @@ function WbSpreadsheetComponent({
                 upload_results: {
                   disableSelection: true,
                   isCommand: false,
-                  renderer: (hot, wrapper) => {
+                  renderer: (_, wrapper) => {
                     const { endRow: visualRow, endCol: visualCol } =
                       getSelectedRegions(hot).at(-1) ?? {};
                     const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
@@ -89,7 +89,9 @@ function WbSpreadsheetComponent({
                       visualRow === undefined ||
                       visualCol === undefined ||
                       createdRecords === undefined ||
-                      !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
+                      !cells.isResultCell(
+                        cells.getCellMetaArray(physicalRow, physicalCol)
+                      )
                     ) {
                       wrapper.textContent = wbText.noUploadResultsAvailable();
                       wrapper.parentElement?.classList.add('htDisabled');
@@ -230,9 +232,6 @@ function WbSpreadsheetComponent({
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
-        contextMenu={contextMenuConfig}
-        // eslint-disable-next-line functional/prefer-readonly-type
-        data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
         hiddenColumns={hiddenColumns}
@@ -251,6 +250,9 @@ function WbSpreadsheetComponent({
         rowHeaders
         stretchH="all"
         tabMoves={tabMoves}
+        contextMenu={contextMenuConfig}
+        // eslint-disable-next-line functional/prefer-readonly-type
+        data={data as (string | null)[][]}
         {...hooks}
       />
     </section>

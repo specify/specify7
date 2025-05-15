@@ -228,7 +228,7 @@ def clear_disambiguation(ds: Spdataset) -> None:
         ds.save(update_fields=["data"])
 
 
-def create_recordset(ds: Spdataset, name: str):
+def create_recordset(ds: Spdataset, name: str, remarks: str):
     table, upload_plan = get_ds_upload_plan(ds.collection, ds)
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
@@ -237,6 +237,7 @@ def create_recordset(ds: Spdataset, name: str):
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
         name=name,
+        remarks=remarks,
         specifyuser=ds.specifyuser,
         type=0,
     )

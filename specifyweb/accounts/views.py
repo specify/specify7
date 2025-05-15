@@ -231,7 +231,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     login(request,
           cast(AbstractBaseUser, spuserexternalid.specifyuser),
           backend='django.contrib.auth.backends.ModelBackend')
-    return http.HttpResponseRedirect('/specify')
+    return http.HttpResponseRedirect('/accounts/choose_collection')
 
 class InviteLinkPT(PermissionTarget):
     resource = "/admin/user/invite_link"
