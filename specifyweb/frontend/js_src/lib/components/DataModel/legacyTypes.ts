@@ -80,7 +80,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME,
     prePopulate?: boolean,
-    strict?: boolean
+    strict?: boolean // Whether to trigger 404 on resource not found
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -117,7 +117,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    filters?: CollectionFetchFilters<VALUE[number]>
+    filters?: CollectionFetchFilters<VALUE[number]> & { strict?: boolean }
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
