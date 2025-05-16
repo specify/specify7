@@ -891,7 +891,7 @@
                     <cell labelfor="7" type="label" />
                     <cell id="7" name="prepType" picklist="PrepType" type="field" uitype="combobox" />
                     <cell labelfor="3" type="label" />
-                    <cell id="3" name="countAmt" type="field" uitype="text" />
+                    <cell id="3" name="countAmt" type="field" uitype="text" initialize="min=0"/>
                     <cell labelfor="8" type="label" />
                     <cell colspan="5" id="8" name="text2" type="field" uitype="text" />
                 </row>

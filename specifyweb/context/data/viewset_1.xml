@@ -263,7 +263,7 @@
                 </row>
                 <row>
                     <cell labelfor="3" type="label" />
-                    <cell id="3" name="countAmt" type="field" uitype="text" />
+                    <cell id="3" name="countAmt" type="field" uitype="text" initialize="min=0"/>
                     <cell labelfor="2" type="label" />
                     <cell id="2" initialize="name=Agent" name="preparedByAgent" type="field" uitype="querycbx" />
                     <cell labelfor="4" type="label" />
