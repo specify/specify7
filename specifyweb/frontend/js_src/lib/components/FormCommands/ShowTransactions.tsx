@@ -107,6 +107,13 @@ export function ShowLoansCommand({
                 domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
+          disposed: hasTablePermission('DisposalPreparation', 'read')
+            ? fetchCollection('DisposalPreparation', {
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+                domainFilter: false,
+              }).then(({ records }) => records.map(deserializeResource))
+            : undefined,
         }),
       [preparation]
     ),
