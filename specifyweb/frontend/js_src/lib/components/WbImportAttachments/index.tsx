@@ -29,6 +29,7 @@ import type {
   Spdataset,
   SpDataSetAttachment,
 } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -38,26 +39,47 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
+import { AttachmentBaseTableSelection } from '../WbPlanView/State';
+import { attachmentsToCell } from './helpers';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
+  const navigate = useNavigate();
   const [files, setFiles] = React.useState<readonly File[] | undefined>();
+  const [baseTableName, setBaseTableName] = React.useState<
+    keyof Tables | undefined
+  >();
 
   return (
     <Container.Full>
-      <H2>{commonText.multipleFilePickerMessage()}</H2>
-      <div className="w-96">
-        <FilePicker
-          acceptedFormats={undefined}
-          showFileNames
-          onFilesSelected={(selectedFiles) => {
-            setFiles(Array.from(selectedFiles));
+      {baseTableName === undefined ? (
+        <AttachmentBaseTableSelection
+          onClose={(): void => {
+            navigate('/specify/');
+          }}
+          onSelected={(tableName): void => {
+            setBaseTableName(tableName);
           }}
         />
-      </div>
-      {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
+      ) : (
+        <>
+          <H2>{commonText.multipleFilePickerMessage()}</H2>
+          <div className="w-96">
+            <FilePicker
+              acceptedFormats={undefined}
+              showFileNames
+              onFilesSelected={(selectedFiles) => {
+                setFiles(Array.from(selectedFiles));
+              }}
+            />
+          </div>
+          {files !== undefined && files.length > 0 && (
+            <FilesPicked baseTableName={baseTableName} files={files} />
+          )}
+        </>
+      )}
     </Container.Full>
   );
 }
@@ -116,8 +138,10 @@ async function saveDataSetAttachments(
 
 function FilesPicked({
   files,
+  baseTableName,
 }: {
   readonly files: readonly File[];
+  readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
@@ -145,9 +169,9 @@ function FilesPicked({
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => 
+          .then(async ({ dataSet, attachments }) =>
             // Create SpDataSetAttachments for each attachment
-             f.all({
+            f.all({
               dataSetAttachments: createDataSetAttachments(
                 attachments,
                 dataSet
@@ -161,7 +185,10 @@ function FilesPicked({
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
-          dataSetAttachment.id.toString(),
+          attachmentsToCell(
+            [serializeResource(dataSetAttachment)],
+            baseTableName
+          ),
         ]);
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);
