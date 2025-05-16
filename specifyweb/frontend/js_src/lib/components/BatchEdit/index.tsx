@@ -2,7 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { batchEditText } from '../../localization/batchEdit';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -15,6 +18,7 @@ import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
+import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { QueryField } from '../QueryBuilder/helpers';
@@ -26,10 +30,6 @@ import { MissingRanksDialog } from './MissingRanks';
 import { findAllMissing } from './missingRanksUtils';
 import type { QueryError } from './QueryError';
 import { ErrorsDialog } from './QueryError';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 
 const queryFieldSpecHeader = (queryFieldSpec: QueryFieldSpec) =>
   generateMappingPathPreview(
@@ -134,8 +134,7 @@ export function BatchEditFromQuery({
     queryFieldSpecs.some(hasHierarchyBaseTable) ||
     containsDisallowedTables(query);
 
-  const handleClickBatchEdit = () => {
-    return loading(
+  const handleClickBatchEdit = () => loading(
       treeRanksPromise.then(async () => {
         const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
           filters.some((filter) => filter(fieldSpec))
@@ -166,7 +165,6 @@ export function BatchEditFromQuery({
         return handleCreateDataset(newName);
       })
     );
-  };
 
   return (
     <>
@@ -194,11 +192,9 @@ export function BatchEditFromQuery({
       {hasUnsavedQuery && (
         <Dialog
           buttons={
-            <>
-              <Button.Danger onClick={closeWarningDialog}>
+            <Button.Danger onClick={closeWarningDialog}>
                 {commonText.close()}
               </Button.Danger>
-            </>
           }
           header={queryText.unsavedChangesInQuery()}
           onClose={closeWarningDialog}
