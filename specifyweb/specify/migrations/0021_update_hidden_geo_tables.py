@@ -27,10 +27,7 @@ def fix_hidden_geo_prop(apps, schema_editor):
                         container=container,
                         name=field_name.lower()
                     )
-
-                    for item in items:
-                        item.ishidden = True
-                        item.save()
+                    items.update(ishidden=True)
 
 def reverse_fix_hidden_geo_prop(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -53,10 +50,7 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor):
                         container=container,
                         name=field_name.lower()
                     )
-
-                    for item in items:
-                        item.ishidden = False
-                        item.save()
+                    items.update(ishidden=True)
 
 class Migration(migrations.Migration):
     dependencies = [
