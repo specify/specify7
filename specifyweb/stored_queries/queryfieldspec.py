@@ -483,7 +483,26 @@ class QueryFieldSpec(
                     orm_field = sql.func.DATE(orm_field)
 
                 if field.is_temporal() and self.date_part != "Full Date":
-                    orm_field = sql.extract(self.date_part, orm_field)
+                    precision_field_name = field.name + "Precision"
+                    precision_field = getattr(orm_model, precision_field_name, None)
+                    if precision_field is not None:
+                        if self.date_part == "Day":
+                            # only return day if precision is 1 (full date)
+                            orm_field = sql.case(
+                                [(precision_field == 1, sql.extract(self.date_part, orm_field))],
+                                else_=None
+                            )
+                        elif self.date_part == "Month":
+                            # return month only if precision is 1 (full date) or 2 (month precision)
+                            orm_field = sql.case(
+                                [(precision_field.in_([1, 2]), sql.extract(self.date_part, orm_field))],
+                                else_=None
+                            )
+                        else:
+                            # always return year as it's valid for all precision levels
+                            orm_field = sql.extract(self.date_part, orm_field)
+                    else:
+                        orm_field = sql.extract(self.date_part, orm_field)
 
         return query, orm_field, field, table
 
