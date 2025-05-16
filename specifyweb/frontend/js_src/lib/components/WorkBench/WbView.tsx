@@ -165,6 +165,9 @@ export function WbView({
     _closeAttachments,
     toggleAttachments,
   ] = useBooleanState(useAttachments);
+  React.useEffect(() => {
+    hot?.refreshDimensions();
+  }, [showAttachments]);
 
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
