@@ -594,4 +594,10 @@ export const treeText = createDictionary({
   meteorites: {
     'en-us': 'Meteorites',
   },
+  populatedTrees: {
+    'en-us': 'Populated trees',
+  },
+  emptyTrees: {
+    'en-us': 'Empty Trees',
+  },
 } as const);
