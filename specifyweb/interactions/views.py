@@ -282,11 +282,12 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    left join disposalpreparation dp on dp.preparationid = p.preparationid
     where p.preparationid = %s 
     """
     if iprep_id is not None:
         from specifyweb.specify import models
-        keyfld = models.datamodel.get_table(iprep_name).idFieldName
+        keyfld = models.datamodel.get_table(iprep_name).idField.column
         sql += " and " + keyfld + " != %s "
         args.append(iprep_id)
 
