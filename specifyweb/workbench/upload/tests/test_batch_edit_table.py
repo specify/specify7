@@ -554,7 +554,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
         props = self._build_props(query_fields, "Collectionobject")
 
-        (headers, rows, packs, plan_json, _) = run_batch_edit_query(props)
+        (headers, rows, packs, plan_json, _, _) = run_batch_edit_query(props)
 
         regularized_rows = regularize_rows(len(headers), rows)
 
@@ -593,7 +593,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
     def query_to_results(self, base_table, query_fields):
         props = self._build_props(query_fields, base_table)
 
-        (headers, rows, packs, plan_json, _) = run_batch_edit_query(props)
+        (headers, rows, packs, plan_json, _, _) = run_batch_edit_query(props)
 
         plan = parse_plan(plan_json)
 
@@ -615,7 +615,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
 
         props = self._build_props(query_fields, "Collectionobject")
 
-        (headers, rows, pack, plan_json, _) = run_batch_edit_query(props)
+        (headers, rows, pack, plan_json, _, _) = run_batch_edit_query(props)
 
         validate(plan_json, schema)
         plan = parse_plan(plan_json)
