@@ -215,13 +215,6 @@ export function Tree<
           })}
         </div>
       </div>
-      {rows.length === 0 ? (
-        <Button.Icon
-          icon="plus"
-          title={treeText.addRootNode()}
-          onClick={createRootNode}
-        />
-      ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
           <TreeRow
@@ -276,6 +269,22 @@ export function Tree<
           />
         ))}
       </ul>
+      <div className='flex flex-col m-4'>
+      {rows.length === 0 ? (
+        <Button.Icon
+          icon="plus"
+          title={treeText.addRootNode()}
+          onClick={createRootNode}
+        />
+      ) : undefined}
+      {rows.length === 0 || rows[0].children === 0 ? 
+      <Button.Icon
+      icon="folderArrowDown"
+      title={treeText.downloadTreeDefault()}
+      onClick={() => window.open("https://files.specifysoftware.org/taxonfiles/", "_blank")}
+    />
+      : undefined}
+      </div>
     </div>
   );
 }

@@ -543,6 +543,9 @@ export const treeText = createDictionary({
   addRootNode: {
     'en-us': 'Add root node',
   },
+  downloadTreeDefault: {
+    'en-us': 'Download Default Tree',
+  },
   treePicker: {
     'en-us': 'Tree Picker',
   },
