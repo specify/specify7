@@ -264,6 +264,18 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </ErrorBoundary>
     ) : undefined;
 
+  const showUsagesButton =
+    !isDependent &&
+    !isSubForm &&
+    typeof resource === 'object' &&
+    !resource.isNew() &&
+    hasTablePermission(resource.specifyTable.name, 'read') &&
+    !isInFormEditor ? (
+      <ErrorBoundary dismissible>
+        <DeleteButton resource={resource} showUsages />
+      </ErrorBoundary>
+    ) : undefined;
+
   const hasNoData =
     !resource || (Array.isArray(resource) && resource.length === 0);
 
@@ -293,6 +305,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
+            {showUsagesButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -356,6 +369,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         isSubForm ? undefined : (
           <>
             {deleteButton}
+            {showUsagesButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

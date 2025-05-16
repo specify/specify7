@@ -80,12 +80,21 @@ export const formsText = createDictionary({
     'de-ch': 'Werte von {values:string} müssen in der Datenbank eindeutig sein',
   },
   checkingIfResourceCanBeDeleted: {
-    'en-us': 'Checking if resource can be deleted…',
+    'en-us': 'Checking if this record can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
     'es-es': 'Comprobando si el recurso se puede eliminar…',
     'fr-fr': 'Vérification de si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
     'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
+  },
+  checkingIfResourceIsUsed: {
+    'en-us': 'Checking if this record is currently in use…',
+  },
+  noLinkedRecords: {
+    'en-us': 'No linked records',
+  },
+  recordUsedDescription: {
+    'en-us': 'This resource is currently linked to the following records:',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
