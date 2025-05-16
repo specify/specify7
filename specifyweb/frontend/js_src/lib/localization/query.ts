@@ -922,4 +922,10 @@ export const queryText = createDictionary({
     `,
     'en-us': 'Format As: {commaSeparatedFormats:string}',
   },
+  unsavedChangesInQuery: {
+    'en-us': 'Query has unsaved changes',
+  },
+  unsavedChangesInQueryDescription: {
+    'en-us': 'Please save the query before running Batch Edit',
+  },
 } as const);
