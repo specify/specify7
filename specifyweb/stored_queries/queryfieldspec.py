@@ -543,7 +543,7 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
         and op_num == 1
         and get_parent_cat_num_inheritance_setting(collection, user)
     ):
-        components_ids = co_components_ids(value)
+        components_ids = co_components_ids(value, collection)
         if components_ids:
             # Modify the query to filter operation and values for component collection objects
             value = ','.join(components_ids)
@@ -552,9 +552,9 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
 
     return op, orm_field, value
 
-def co_components_ids(cat_num):
+def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
     if not parentcomponent:
         return []
 
