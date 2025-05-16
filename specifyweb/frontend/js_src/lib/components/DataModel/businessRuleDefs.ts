@@ -11,6 +11,7 @@ import {
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PREP_MISSING_CO,
   PREPARATION_DISPOSED_KEY,
   PREPARATION_EXCHANGED_IN_KEY,
   PREPARATION_EXCHANGED_OUT_KEY,
@@ -659,6 +660,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Preparation: {
+    customInit: (prep) => {
+      if (prep.get('collectionObject') === undefined) {
+        setSaveBlockers(
+          prep,
+          prep.specifyTable.field.collectionObject,
+          [resourcesText.preparationMissingCO()],
+          PREP_MISSING_CO
+        );
+      } else {
+        setSaveBlockers(
+          prep,
+          prep.specifyTable.field.collectionObject,
+          [],
+          PREP_MISSING_CO
+        );
+      }
+    },
     fieldChecks: {
       countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
         const loanPrep = await prep.rgetCollection('loanPreparations');
@@ -686,6 +704,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           );
         }
         return undefined;
+      },
+      collectionObject: (prep) => {
+        if (prep.get('collectionObject') === null) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.collectionObject,
+            [resourcesText.preparationMissingCO()],
+            PREP_MISSING_CO
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.collectionObject,
+            [],
+            PREP_MISSING_CO
+          );
+        }
       },
     },
     onRemoved: (preparation, collection): void => {
