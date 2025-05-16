@@ -504,7 +504,7 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
         and op_num == 1
         and get_cat_num_inheritance_setting(collection, user)
     ):
-        sibling_ids = cog_primary_co_sibling_ids(value)
+        sibling_ids = cog_primary_co_sibling_ids(value, collection)
         if sibling_ids:
             # Modify the query to filter operation and values for sibling collection objects
             value = ','.join(sibling_ids)
@@ -513,9 +513,9 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
 
     return op, orm_field, value
 
-def cog_primary_co_sibling_ids(cat_num):
+def cog_primary_co_sibling_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    co = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    co = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
     if not co:
         return []
 
