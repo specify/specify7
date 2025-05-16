@@ -3424,6 +3424,8 @@ export type GiftPreparation = {
     readonly inComments: string | null;
     readonly outComments: string | null;
     readonly quantity: number | null;
+    readonly quantityResolved: number | null;
+    readonly quantityReturned: number | null;
     readonly receivedComments: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
