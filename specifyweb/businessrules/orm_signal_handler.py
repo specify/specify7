@@ -1,3 +1,5 @@
+import logging
+
 from inspect import getfullargspec
 from typing import Callable, Literal, Optional
 from collections.abc import Hashable
@@ -6,6 +8,8 @@ from django.db.models import signals
 from django.dispatch import receiver
 
 from specifyweb.specify import models
+
+logger = logging.getLogger(__name__)
 
 # See https://docs.djangoproject.com/en/3.2/ref/signals/#module-django.db.models.signals
 MODEL_SIGNAL = Literal["pre_init", "post_init", "pre_save",
@@ -17,6 +21,10 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
     def _dec(rule):
         receiver_kwargs = kwargs
         if model is not None:
+            if not hasattr(models, model): 
+                logger.warning(f"{model} not a valid model. Skipping rule")
+                return
+
             receiver_kwargs['sender'] = getattr(models, model)
 
             def handler(sender, **kwargs):

@@ -64,7 +64,8 @@ Backbone.ajax = function (request): JQueryXHR {
     )
       .then(({ data, status }) => {
         requestCallbackCopy?.(status);
-        if (f.includes([Http.CONFLICT, Http.NOT_FOUND], status)) throw new Error(data);
+        if (f.includes([Http.CONFLICT, Http.NOT_FOUND], status))
+          throw new Error(data);
         else if (typeof request.success === 'function')
           request.success(data, 'success', undefined as never);
       })
