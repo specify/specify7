@@ -94,14 +94,19 @@ export const webOnlyViews = f.store(() =>
       tables.Institution,
       'form',
       'edit',
-      ['name', 'code', 'isAccessionsGlobal', 'isSingleGeographyTree', 'isSecurityOn', 'isServerBased']
+      [
+        'name',
+        'code',
+        'isAccessionsGlobal',
+        'isSingleGeographyTree',
+        'isSecurityOn',
+        'isServerBased',
+      ]
     ),
-    [division]: autoGenerateViewDefinition(
-      tables.Division,
-      'form',
-      'edit',
-      ['name', 'abbrev']
-    ),
+    [division]: autoGenerateViewDefinition(tables.Division, 'form', 'edit', [
+      'name',
+      'abbrev',
+    ]),
     [discipline]: autoGenerateViewDefinition(
       tables.Discipline,
       'form',
@@ -123,8 +128,8 @@ export const attachmentView = 'ObjectAttachment';
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
 export const recordSetView = '_RecordSet_name';
-export const adminUser = '_AdminUser_setup';
-export const institution = '_Institution_setup';
-export const division = '_Division_setup';
-export const discipline = '_Discipline_setup';
-export const collection = '_Collection_setup';
+export const adminUser: string = '_AdminUser_setup';
+export const institution: string = '_Institution_setup';
+export const division: string = '_Division_setup';
+export const discipline: string = '_Discipline_setup';
+export const collection: string = '_Collection_setup';
