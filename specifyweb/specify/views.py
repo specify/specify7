@@ -5,9 +5,13 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-import re
+import time
+import logging
+import os
 from typing import Union, List, Tuple, Dict, Any
 from uuid import uuid4
+from zipfile import ZipFile, BadZipFile
+from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
@@ -15,7 +19,7 @@ from django.db import router, transaction, connection
 from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
@@ -24,8 +28,9 @@ from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
-from .specify_jar import specify_jar
+from .specify_jar import specify_jar, specify_jar_path
 
+logger = logging.getLogger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -145,10 +150,49 @@ def images(request, path):
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=24 * 60 * 60, public=True)
 def properties(request, name):
-    """Returns the <name>.properities file from the thickclient jar file."""
-    path = name + '.properties'
-    return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+    """
+    Returns the <name>.properties file from the thickclient jar.
+    Retries on BadZipFile and falls back to manual extraction.
+    """
+    path = f"{name}.properties"
+    max_retries = 2
+    delay = 0.1
 
+    for attempt in range(1, max_retries + 2):
+        try:
+            data = specify_jar.read(path)
+            break
+        except BadZipFile:
+            logger.warning(
+                "Attempt %d to read from %r failed with BadZipFile. Retrying…",
+                attempt, path,
+                exc_info=True
+            )
+            if attempt <= max_retries:
+                time.sleep(delay * attempt)
+            else:
+                # Final fallback: manually extract just this one entry
+                try:
+                    with TemporaryDirectory() as td:
+                        with ZipFile(specify_jar_path, 'r') as jar:
+                            jar.extract(path, td)
+                        with open(os.path.join(td, path), 'rb') as f:
+                            data = f.read()
+                    logger.info("Successfully extracted %r via fallback extraction.", path)
+                    break
+                except Exception as fallback_exc:
+                    logger.error(
+                        "Fallback extract also failed for %r: %s",
+                        path, fallback_exc,
+                        exc_info=True
+                    )
+                    return http.HttpResponseServerError(
+                        f"Could not read {path} from JAR."
+                    )
+    else:
+        return http.HttpResponseServerError(f"Failed to load {path}.")
+
+    return http.HttpResponse(data, content_type='text/plain')
 
 class SetPasswordPT(PermissionTarget):
     resource = '/admin/user/password'
@@ -889,7 +933,7 @@ def upload_locality_set(request: http.HttpRequest):
     return http.JsonResponse(result, status=201 if run_in_background else 200, safe=False)
 
 
-def start_locality_set_background(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
+def start_locality_set_background(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
     task_id = str(uuid4())
     args = [collection.id, column_headers, data]
     if not parse_only:
@@ -915,7 +959,7 @@ def start_locality_set_background(collection, specify_user, agent, column_header
     return task.id
 
 
-def upload_locality_set_foreground(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool):
+def upload_locality_set_foreground(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool):
     result = _upload_locality_set(collection, column_headers, data)
 
     if result["type"] == 'ParseError':
@@ -1359,7 +1403,7 @@ def parse_locality_set(request: http.HttpRequest):
     return http.JsonResponse(result, status=status, safe=False)
 
 
-def parse_locality_set_foreground(collection, column_headers: List[str], data: List[List[str]]) -> Tuple[int, Dict[str, Any]]:
+def parse_locality_set_foreground(collection, column_headers: list[str], data: list[list[str]]) -> tuple[int, dict[str, Any]]:
     parsed, errors = _parse_locality_set(
         collection, column_headers, data)
 

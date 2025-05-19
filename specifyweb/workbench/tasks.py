@@ -92,4 +92,5 @@ def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None:
             unupload_dataset(ds, agent, progress)
 
         ds.uploaderstatus = None
-        ds.save(update_fields=['uploaderstatus'])
+        ds.rolledback = True
+        ds.save(update_fields=['uploaderstatus', 'rolledback'])
