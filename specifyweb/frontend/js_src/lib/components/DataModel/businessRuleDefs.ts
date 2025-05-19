@@ -671,7 +671,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           totalPrepLoaned += quantity;
         });
 
-        if (totalPrep < 0 && totalPrepLoaned === 0) {
+        if (totalPrep < 0) {
           setSaveBlockers(
             prep,
             prep.specifyTable.field.countAmt,
@@ -691,6 +691,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             prep.specifyTable.field.countAmt,
             [],
             PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
           );
         }
         return undefined;
