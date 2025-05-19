@@ -51,6 +51,7 @@ export function ConfigurationTool(): JSX.Element {
           console.log(`${resourceLabel} created successfully:`, data);
         } else {
           console.error(`Error creating ${resourceLabel}:`, data);
+          throw error;
         }
       })
       .catch((error) => {
@@ -72,12 +73,10 @@ export function ConfigurationTool(): JSX.Element {
           issinglegeographytree:
             (data.get('issinglegeographytree') as boolean) || false,
         };
-        loading(
-          onResourceSaved(
-            '/api/specify/institution/create/',
-            new tables.Institution.Resource().specifyTable.name,
-            body
-          )
+        return onResourceSaved(
+          '/api/specify/institution/create/',
+          new tables.Institution.Resource().specifyTable.name,
+          body
         );
       },
     },
@@ -89,12 +88,10 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           abbreviation: data.get('abbrev'),
         };
-        loading(
-          onResourceSaved(
-            '/api/specify/division/create/',
-            new tables.Division.Resource().specifyTable.name,
-            body
-          )
+        return onResourceSaved(
+          '/api/specify/division/create/',
+          new tables.Division.Resource().specifyTable.name,
+          body
         );
       },
     },
@@ -106,12 +103,10 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           type: data.get('type'),
         };
-        loading(
-          onResourceSaved(
-            '/api/specify/discipline/create/',
-            new tables.Discipline.Resource().specifyTable.name,
-            body
-          )
+        return onResourceSaved(
+          '/api/specify/discipline/create/',
+          new tables.Discipline.Resource().specifyTable.name,
+          body
         );
       },
     },
@@ -125,12 +120,10 @@ export function ConfigurationTool(): JSX.Element {
           catalognumformatname: data.get('catalognumformatname'),
           discipline: data.get('discipline'),
         };
-        loading(
-          onResourceSaved(
-            '/api/specify/collection/create/',
-            new tables.Collection.Resource().specifyTable.name,
-            body
-          )
+        return onResourceSaved(
+          '/api/specify/collection/create/',
+          new tables.Collection.Resource().specifyTable.name,
+          body
         );
       },
     },
@@ -142,12 +135,10 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           password: data.get('password'),
         };
-        loading(
-          onResourceSaved(
-            '/api/specify/specifyuser/create/',
-            new tables.SpecifyUser.Resource().specifyTable.name,
-            body
-          )
+        return onResourceSaved(
+          '/api/specify/specifyuser/create/',
+          new tables.SpecifyUser.Resource().specifyTable.name,
+          body
         );
       },
     },
@@ -174,9 +165,11 @@ export function ConfigurationTool(): JSX.Element {
           onSaving={(unsetUnloadProtect): false => {
             unsetUnloadProtect();
 
+            const resource = resources[currentStep];
+
             loading(
-              resources[currentStep]
-                .onClick(resources[currentStep].resource)
+              resource
+                .onClick(resource.resource)
                 .then(() => {
                   setCurrentStep(currentStep + 1);
                 })
