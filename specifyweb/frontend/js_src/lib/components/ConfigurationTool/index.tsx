@@ -29,6 +29,8 @@ type ConfigResourceType = {
 export function ConfigurationTool(): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
+  const [currentStep, setCurrentStep] = React.useState(0);
+
   const onInstitutionSaved = async (data: any): Promise<void> =>
     ajax('/api/specify/institution/create/', {
       method: 'POST',
@@ -41,7 +43,7 @@ export function ConfigurationTool(): JSX.Element {
       expectedErrors: [Http.CREATED],
     })
       .then(({ data, status }) => {
-        if (status === Http.CREATED) {
+        if (status === Http.OK) {
           console.log('Institution created successfully:', data);
         } else {
           console.error('Error creating institution:', data);
@@ -63,7 +65,7 @@ export function ConfigurationTool(): JSX.Element {
       expectedErrors: [Http.CREATED],
     })
       .then(({ data, status }) => {
-        if (status === Http.CREATED) {
+        if (status === Http.OK) {
           console.log('Division created successfully:', data);
         } else {
           console.error('Error creating division:', data);
@@ -85,7 +87,7 @@ export function ConfigurationTool(): JSX.Element {
       expectedErrors: [Http.CREATED],
     })
       .then(({ data, status }) => {
-        if (status === Http.CREATED) {
+        if (status === Http.OK) {
           console.log('Discipline created successfully:', data);
         } else {
           console.error('Error creating discipline:', data);
@@ -107,7 +109,7 @@ export function ConfigurationTool(): JSX.Element {
       expectedErrors: [Http.CREATED],
     })
       .then(({ data, status }) => {
-        if (status === Http.CREATED) {
+        if (status === Http.OK) {
           console.log('Collection created successfully:', data);
         } else {
           console.error('Error creating collection:', data);
@@ -129,7 +131,7 @@ export function ConfigurationTool(): JSX.Element {
       expectedErrors: [Http.CREATED],
     })
       .then(({ data, status }) => {
-        if (status === Http.CREATED) {
+        if (status === Http.OK) {
           console.log('Specify user created successfully:', data);
         } else {
           console.error('Error creating specify user:', data);
@@ -212,25 +214,51 @@ export function ConfigurationTool(): JSX.Element {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
-      {resources.map((resource, index) => (
+
+      {currentStep < resources.length ? (
         <ResourceView
           dialog={false}
           isDependent={false}
           isSubForm={false}
-          key={index}
-          resource={resource.resource as SpecifyResource<Collection>}
-          viewName={resource.viewName}
+          key={currentStep}
+          resource={
+            resources[currentStep].resource as SpecifyResource<Collection>
+          }
+          viewName={resources[currentStep].viewName}
           onAdd={undefined}
-          onClose={() => onClose()}
+          onClose={onClose}
           onDeleted={undefined}
           onSaved={f.never}
+          /*
+           * OnSaving={(unsetUnloadProtect): false => {
+           *   unsetUnloadProtect();
+           *   resources[currentStep].onClick(resources[currentStep].resource);
+           *   setCurrentStep(currentStep + 1);
+           *   return false;
+           * }}
+           */
           onSaving={(unsetUnloadProtect): false => {
             unsetUnloadProtect();
-            resource.onClick(resource.resource);
+
+            loading(
+              resources[currentStep]
+                .onClick(resources[currentStep].resource)
+                .then(() => {
+                  setCurrentStep(currentStep + 1);
+                })
+                .catch((error) => {
+                  console.error('Step failed:', error);
+                })
+            );
+
             return false;
           }}
         />
-      ))}
+      ) : (
+        <p className="mt-6 text-green-600 font-semibold">
+          🎉 All resources have been created successfully!
+        </p>
+      )}
     </Container.FullGray>
   );
 }
