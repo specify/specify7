@@ -557,3 +557,13 @@ msgstr ""
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 msgid "formatInputAs"
 msgstr ""
+
+#: components/BatchEdit/index.tsx:199
+#. Used in: Components > Batch Edit > Index
+msgid "unsavedChangesInQuery"
+msgstr ""
+
+#: components/BatchEdit/index.tsx:202
+#. Used in: Components > Batch Edit > Index
+msgid "unsavedChangesInQueryDescription"
+msgstr ""

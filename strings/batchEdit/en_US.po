@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:170
+#: components/BatchEdit/index.tsx:179
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -175,7 +175,7 @@ msgstr ""
 "If true, invisible database fields will not be used for determining whether "
 "the record is empty or not. Default value is {default: boolean}"
 
-#: components/BatchEdit/index.tsx:135
+#: components/BatchEdit/index.tsx:173
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"

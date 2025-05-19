@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:170
+#: components/BatchEdit/index.tsx:179
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
@@ -157,7 +157,7 @@ msgstr ""
 msgid "deferForNullCheckDescription"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:135
+#: components/BatchEdit/index.tsx:173
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""
