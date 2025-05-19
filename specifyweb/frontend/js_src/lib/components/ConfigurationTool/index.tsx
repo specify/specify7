@@ -23,7 +23,7 @@ import { ResourceView } from '../Forms/ResourceView';
 type ConfigResourceType = {
   readonly resource: SpecifyResource<AnySchema>;
   readonly viewName: string;
-  readonly onClick: (data: ReadonlyMap<string, unknown>) => Promise<void>;
+  readonly onClick: (data: SpecifyResource<AnySchema>) => Promise<void>;
 };
 
 export function ConfigurationTool(): JSX.Element {
@@ -61,7 +61,7 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.Institution.Resource(),
       viewName: institution,
-      onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
         const body = {
           name: data.get('name') as string,
           code: data.get('code') as string,
@@ -84,7 +84,7 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.Division.Resource(),
       viewName: division,
-      onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
         const body = {
           name: data.get('name'),
           abbreviation: data.get('abbrev'),
@@ -101,7 +101,7 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.Discipline.Resource(),
       viewName: discipline,
-      onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
         const body = {
           name: data.get('name'),
           type: data.get('type'),
@@ -118,7 +118,7 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.Collection.Resource(),
       viewName: collection,
-      onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
         const body = {
           collectionname: data.get('collectionname'),
           code: data.get('code'),
@@ -137,7 +137,7 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.SpecifyUser.Resource(),
       viewName: adminUser,
-      onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
         const body = {
           name: data.get('name'),
           password: data.get('password'),
