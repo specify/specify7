@@ -1109,6 +1109,7 @@ def run_batch_edit_query(props: BatchEditProps):
             user=props["user"],
             tableid=tableid,
             distinct=True,
+            series=False,
             count_only=False,
             field_specs=query_with_hidden,
             limit=limit,
