@@ -333,7 +333,6 @@ def do_upload(
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
-            logger.info("HELLLLOOOOOOOOOO")
             logger.debug("Row: %s", row)
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
@@ -380,11 +379,14 @@ def do_upload(
                 # Check if we can find an attachment
                 logger.debug("result: %s", result)
                 attachment_failure = False
-                if validate_attachment(row, scoped_table): # TODO: There should be a check to see if attachments exist. A failed validation should alway count as a failure
-                    if not move_attachment(row, scoped_table):
+                if has_attachments(row):
+                    if validate_attachment(row, scoped_table): # TODO: There should be a check to see if attachments exist. A failed validation should alway count as a failure
+                        if not move_attachment(row, scoped_table):
+                            attachment_failure = True
+                            
+                            logger.info("Attachment moved successfully")
+                    else:
                         attachment_failure = True
-                        
-                        logger.info("Attachment moved successfully")
 
                 if result.contains_failure() or attachment_failure:
                     cache = _cache
@@ -620,12 +622,22 @@ def rollback_batch_edit(
 
 ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
 
+def get_attachments(
+    row: Row,
+):
+    return row.get(ATTACHMENTS_COLUMN)
+
+def has_attachments(
+    row: Row,
+):
+    return get_attachments(row) is not None
+
 def validate_attachment(
     row: Row,
     scoped_table: ScopedUploadable,
 ):
     # Example row: Row: {'Attachments': '{'attachments':[{'id':123,'table':CollectionObject}]}', 'Catalog #': '', 'OK For Online': ''}
-    attachment_column = row.get(ATTACHMENTS_COLUMN)
+    attachment_column = get_attachments(row)
     if attachment_column:
         logger.debug("Attachments found in: %s", row)
         data = json.loads(attachment_column)
