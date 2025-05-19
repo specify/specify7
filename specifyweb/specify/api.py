@@ -1254,29 +1254,45 @@ def create_institution(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 
+# def create_division(request, direct=False):
+#     from specifyweb.specify.models import Division
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         if not Division.objects.exists():
+#             max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+#             data['id'] = max_id + 1
+#             try:
+#                 new_division = Division.objects.create(**data)
+#                 return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+#             except Exception as e:
+#                 return JsonResponse({"error": str(e)}, status=400)
+#         else:
+#             division = Division.objects.first()
+#             fields_to_update = [
+#                 'name',
+#                 'abbreviation',
+#             ]
+#             for field in fields_to_update:
+#                 if field in data:
+#                     setattr(division, field, data[field])
+#             division.save()
+#             return JsonResponse({"success": True, "division_id": division.id}, status=200)
+#     return JsonResponse({"error": "Invalid request"}, status=400)
+
 def create_division(request, direct=False):
-    from specifyweb.specify.models import Division
+    from specifyweb.specify.models import Division, Institution
     if request.method == 'POST':
         data = json.loads(request.body)
-        if not Division.objects.exists():
-            max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
-            data['id'] = max_id + 1
-            try:
-                new_division = Division.objects.create(**data)
-                return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
-            except Exception as e:
-                return JsonResponse({"error": str(e)}, status=400)
-        else:
-            division = Division.objects.first()
-            fields_to_update = [
-                'name',
-                'abbreviation',
-            ]
-            for field in fields_to_update:
-                if field in data:
-                    setattr(division, field, data[field])
-            division.save()
-            return JsonResponse({"success": True, "division_id": division.id}, status=200)
+        max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+        data['id'] = max_id + 1
+        data['abbrev'] = data.get('abbreviation', data.get('abbrev', ''))
+        data['institutionid'] = Institution.objects.last().id
+        data.pop('abbreviation', None)
+        try:
+            new_division = Division.objects.create(**data)
+            return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_discipline(request, direct=False):
