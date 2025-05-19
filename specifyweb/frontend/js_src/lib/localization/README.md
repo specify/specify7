@@ -37,8 +37,8 @@
 
 8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
 9. Add newly created language to `LANGUAGES` array.
-10. Push the changes to `main` branch (weblate is setup to only look at
-    that branch).
+10. Push the changes to `main` branch (weblate is setup to only look at that
+    branch).
 11. Weblate should do automatic translation for the language using Google
     Translate. If this did not happen automatically, you can trigger it
     manually:
