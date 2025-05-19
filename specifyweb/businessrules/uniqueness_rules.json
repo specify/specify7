@@ -147,6 +147,12 @@
       "isDatabaseConstraint": false
     }
   ],
+  "Exchangeout": [
+    {
+      "rule": [["exchangeOutNumber"], ["division"]],
+      "isDatabaseConstraint": false
+    }
+  ],
   "Extractor": [
     {
       "rule": [["agent"], ["dnaSequence"]],
