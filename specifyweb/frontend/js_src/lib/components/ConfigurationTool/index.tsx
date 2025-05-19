@@ -26,15 +26,6 @@ type ConfigResourceType = {
   readonly onClick: (data: ReadonlyMap<string, unknown>) => Promise<void>;
 };
 
-type InstitutionRequestBody = {
-  readonly name: string;
-  readonly code: string;
-  readonly isaccessionsglobal: boolean;
-  readonly issecurityon: boolean;
-  readonly isserverbased: boolean;
-  readonly issinglegeographytree: boolean;
-};
-
 export function ConfigurationTool(): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
@@ -153,7 +144,7 @@ export function ConfigurationTool(): JSX.Element {
       resource: new tables.Institution.Resource(),
       viewName: institution,
       onClick: async (data: ReadonlyMap<string, unknown>): Promise<void> => {
-        const body: InstitutionRequestBody = {
+        const body = {
           name: data.get('name') as string,
           code: data.get('code') as string,
           isaccessionsglobal:
