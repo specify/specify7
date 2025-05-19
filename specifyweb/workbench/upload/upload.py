@@ -55,6 +55,8 @@ from .uploadable import (
 )
 from .scope_context import ScopeContext
 from ..models import Spdataset
+from specifyweb.specify.models_by_table_id import models_iterator
+from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -313,12 +315,16 @@ def do_upload(
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
 
+    logger.debug("upload plan: %s", upload_plan)
+
     scope_context = ScopeContext()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
+            logger.info("HELLLLOOOOOOOOOO")
+            logger.debug("Row: %s", row)
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
@@ -333,6 +339,8 @@ def do_upload(
                         cached_scope_table = scoped_table
                 else:
                     scoped_table = cached_scope_table
+
+                logger.debug("Scoped table: %s", scoped_table)
 
                 bind_result = (
                     scoped_table.disambiguate(da)
@@ -358,7 +366,17 @@ def do_upload(
                 logger.info(
                     f"finished row {len(results)}, cache size: {cache and len(cache)}"
                 )
-                if result.contains_failure():
+
+                # Check if we can find an attachment
+                logger.debug("result: %s", result)
+                attachment_failure = False
+                if validate_attachment(row, scoped_table): # TODO: There should be a check to see if attachments exist. A failed validation should alway count as a failure
+                    if not move_attachment(row, scoped_table):
+                        attachment_failure = True
+                        
+                        logger.info("Attachment moved successfully")
+
+                if result.contains_failure() or attachment_failure:
                     cache = _cache
                     raise Rollback("failed row")
 
@@ -589,3 +607,41 @@ def rollback_batch_edit(
 
     parent.rowresults = None
     parent.save(update_fields=["rowresults"])
+
+ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
+
+def validate_attachment(
+    row: Row,
+    scoped_table: ScopedUploadable,
+):
+    # Example row: Row: {'Attachments': '{'attachments':[{'id':123,'table':CollectionObject}]}', 'Catalog #': '', 'OK For Online': ''}
+    attachment_column = row.get(ATTACHMENTS_COLUMN)
+    if attachment_column:
+        logger.debug("Attachments found in: %s", row)
+        data = json.loads(attachment_column)
+        logger.debug("Parsed attachment data: %s", data)
+        if data and isinstance(data, dict):
+            for attachment in data.get("attachments", []):
+                logger.debug("Attachment: %s", attachment)
+                if attachment.get("id") and attachment.get("table"):
+                    attachment_id = attachment["id"]
+                    # TODO: Check if SpDataSetAttachment with id exists (maybe not needed, this can be done in move_attachment)
+                    table_name = attachment["table"]
+                    # Check if table exists (Maybe not needed)
+                    # Use models_iterator instead!!
+                    # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
+                    supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
+                    logger.debug(
+                        "Table %s supports attachments: %s",
+                        table_name,
+                        supports_attachments,
+                    )
+                        
+                    return supports_attachments
+    logger.debug("No attachments found in: %s", row)
+    return False
+
+def move_attachment(
+    row: Row,
+) -> bool:
+    pass
