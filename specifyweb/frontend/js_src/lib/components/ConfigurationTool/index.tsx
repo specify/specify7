@@ -31,8 +31,12 @@ export function ConfigurationTool(): JSX.Element {
 
   const [currentStep, setCurrentStep] = React.useState(0);
 
-  const onInstitutionSaved = async (data: any): Promise<void> =>
-    ajax('/api/specify/institution/create/', {
+  const onResourceSaved = async (
+    endpoint: string,
+    resourceLabel: string,
+    data: any
+  ): Promise<void> =>
+    ajax(endpoint, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -44,101 +48,13 @@ export function ConfigurationTool(): JSX.Element {
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
-          console.log('Institution created successfully:', data);
+          console.log(`${resourceLabel} created successfully:`, data);
         } else {
-          console.error('Error creating institution:', data);
+          console.error(`Error creating ${resourceLabel}:`, data);
         }
       })
       .catch((error) => {
-        console.error('Request failed:', error);
-      });
-
-  const onDivisionSaved = async (data: any): Promise<void> =>
-    ajax('/api/specify/division/create/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      errorMode: 'visible',
-      expectedErrors: [Http.CREATED],
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log('Division created successfully:', data);
-        } else {
-          console.error('Error creating division:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Request failed:', error);
-      });
-
-  const onDisciplineSaved = async (data: any): Promise<void> =>
-    ajax('/api/specify/discipline/create/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      errorMode: 'visible',
-      expectedErrors: [Http.CREATED],
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log('Discipline created successfully:', data);
-        } else {
-          console.error('Error creating discipline:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Request failed:', error);
-      });
-
-  const onCollectionSaved = async (data: any): Promise<void> =>
-    ajax('/api/specify/collection/create/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      errorMode: 'visible',
-      expectedErrors: [Http.CREATED],
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log('Collection created successfully:', data);
-        } else {
-          console.error('Error creating collection:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Request failed:', error);
-      });
-
-  const onSpecifyUserSaved = async (data: any): Promise<void> =>
-    ajax('/api/specify/specifyuser/create/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      errorMode: 'visible',
-      expectedErrors: [Http.CREATED],
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log('Specify user created successfully:', data);
-        } else {
-          console.error('Error creating specify user:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Request failed:', error);
+        console.error(`Request failed for ${resourceLabel}:`, error);
       });
 
   const resources: RA<ConfigResourceType> = [
@@ -156,7 +72,13 @@ export function ConfigurationTool(): JSX.Element {
           issinglegeographytree:
             (data.get('issinglegeographytree') as boolean) || false,
         };
-        loading(onInstitutionSaved(body));
+        loading(
+          onResourceSaved(
+            '/api/specify/institution/create/',
+            new tables.Institution.Resource().specifyTable.name,
+            body
+          )
+        );
       },
     },
     {
@@ -167,7 +89,13 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           abbreviation: data.get('abbrev'),
         };
-        loading(onDivisionSaved(body));
+        loading(
+          onResourceSaved(
+            '/api/specify/division/create/',
+            new tables.Division.Resource().specifyTable.name,
+            body
+          )
+        );
       },
     },
     {
@@ -178,7 +106,13 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           type: data.get('type'),
         };
-        loading(onDisciplineSaved(body));
+        loading(
+          onResourceSaved(
+            '/api/specify/discipline/create/',
+            new tables.Discipline.Resource().specifyTable.name,
+            body
+          )
+        );
       },
     },
     {
@@ -191,7 +125,13 @@ export function ConfigurationTool(): JSX.Element {
           catalognumformatname: data.get('catalognumformatname'),
           discipline: data.get('discipline'),
         };
-        loading(onCollectionSaved(body));
+        loading(
+          onResourceSaved(
+            '/api/specify/collection/create/',
+            new tables.Collection.Resource().specifyTable.name,
+            body
+          )
+        );
       },
     },
     {
@@ -202,14 +142,16 @@ export function ConfigurationTool(): JSX.Element {
           name: data.get('name'),
           password: data.get('password'),
         };
-        loading(onSpecifyUserSaved(body));
+        loading(
+          onResourceSaved(
+            '/api/specify/specifyuser/create/',
+            new tables.SpecifyUser.Resource().specifyTable.name,
+            body
+          )
+        );
       },
     },
   ];
-
-  const onClose = (): void => {
-    console.log('close');
-  };
 
   return (
     <Container.FullGray>
@@ -226,17 +168,9 @@ export function ConfigurationTool(): JSX.Element {
           }
           viewName={resources[currentStep].viewName}
           onAdd={undefined}
-          onClose={onClose}
+          onClose={f.never}
           onDeleted={undefined}
           onSaved={f.never}
-          /*
-           * OnSaving={(unsetUnloadProtect): false => {
-           *   unsetUnloadProtect();
-           *   resources[currentStep].onClick(resources[currentStep].resource);
-           *   setCurrentStep(currentStep + 1);
-           *   return false;
-           * }}
-           */
           onSaving={(unsetUnloadProtect): false => {
             unsetUnloadProtect();
 
