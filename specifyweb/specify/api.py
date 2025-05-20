@@ -1225,6 +1225,8 @@ def _handle_special_update_priors(obj, data):
 
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
+    if Institution.objects.exists():
+        return JsonResponse({"error": "Institution already exists"}, status=400)
     if request.method == 'POST':
         if Institution.objects.exists():
             # TODO: Require login if editing existing institution
@@ -1253,34 +1255,10 @@ def create_institution(request, direct=False):
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-
-# def create_division(request, direct=False):
-#     from specifyweb.specify.models import Division
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         if not Division.objects.exists():
-#             max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
-#             data['id'] = max_id + 1
-#             try:
-#                 new_division = Division.objects.create(**data)
-#                 return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
-#             except Exception as e:
-#                 return JsonResponse({"error": str(e)}, status=400)
-#         else:
-#             division = Division.objects.first()
-#             fields_to_update = [
-#                 'name',
-#                 'abbreviation',
-#             ]
-#             for field in fields_to_update:
-#                 if field in data:
-#                     setattr(division, field, data[field])
-#             division.save()
-#             return JsonResponse({"success": True, "division_id": division.id}, status=200)
-#     return JsonResponse({"error": "Invalid request"}, status=400)
-
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
+    if Division.objects.exists():
+        return JsonResponse({"error": "Division already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
@@ -1304,6 +1282,8 @@ def create_division(request, direct=False):
 
 def create_discipline(request, direct=False):
     from specifyweb.specify.models import Discipline
+    if Discipline.objects.exists():
+        return JsonResponse({"error": "Discipline already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Discipline.objects.exists():
@@ -1329,6 +1309,8 @@ def create_discipline(request, direct=False):
 
 def create_collection(request, direct=False):
     from specifyweb.specify.models import Collection
+    if Collection.objects.exists():
+        return JsonResponse({"error": "Collection already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Collection.objects.exists():
@@ -1357,6 +1339,8 @@ def create_collection(request, direct=False):
     
 def create_specifyuser(request, direct=False):
     from specifyweb.specify.models import Specifyuser
+    if Specifyuser.objects.exists():
+        return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Specifyuser.objects.exists():
