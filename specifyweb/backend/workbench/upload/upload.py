@@ -4,6 +4,16 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from typing import (
+    List,
+    Dict,
+    Union,
+    Callable,
+    Optional,
+    Sized,
+    Tuple,
+    cast,
+)
 from collections.abc import Callable
 from collections.abc import Sized
 
@@ -663,7 +673,7 @@ def get_attachments(
     row: Row,
 ):
     if has_attachments(row):
-        return json.loads(row.get(ATTACHMENTS_COLUMN))
+        return json.loads(cast(str, row.get(ATTACHMENTS_COLUMN)))
     return None
 
 def has_attachments(
