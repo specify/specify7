@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import type { RA } from '../../utils/types';
+import { type RA, localized } from '../../utils/types';
 import { Container, H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -123,7 +124,11 @@ export function SystemConfigurationTool(): JSX.Element | null {
         )}
       </div>
       {newResourceOpen ? (
-        <Dialog header="Add new Resource" onClose={closeNewResource}>
+        <Dialog
+          buttons={commonText.cancel()}
+          header={localized('Add new Resource')}
+          onClose={closeNewResource}
+        >
           <ResourceView
             dialog="modal"
             isDependent={false}
