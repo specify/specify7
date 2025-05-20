@@ -1286,7 +1286,7 @@ def create_division(request, direct=False):
         max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
         data['id'] = max_id + 1
         data['abbrev'] = data.get('abbreviation', data.get('abbrev', ''))
-        data['institutionid'] = Institution.objects.last().id
+        data['institution_id'] = Institution.objects.last().id
         data.pop('abbreviation', None)
         try:
             new_division = Division.objects.create(**data)
