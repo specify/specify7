@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0028_selectseries'),
+        ('specify', '0029_remove_collectionobject_parentco'),
     ]
 
     operations = [
