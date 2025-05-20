@@ -4,7 +4,7 @@
  * "NOTE:" comments
  *
  * Schema version: 2.13
- * Date generated: March 3, 2025
+ * Date generated: May 20, 2025
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -1444,6 +1444,7 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
+    readonly componentParent: CollectionObject | null;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
@@ -1453,16 +1454,15 @@ export type CollectionObject = {
     readonly inventorizedBy: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
-    readonly parentCO: CollectionObject | null;
     readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
-    readonly children: RA<CollectionObject>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
     readonly collectionObjectProperties: RA<CollectionObjectProperty>;
+    readonly components: RA<CollectionObject>;
     readonly conservDescriptions: RA<ConservDescription>;
     readonly determinations: RA<Determination>;
     readonly dnaSequences: RA<DNASequence>;
