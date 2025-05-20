@@ -2053,6 +2053,14 @@ export const userPreferenceDefinitions = {
       editor: {
         title: preferencesText.general(),
         items: {
+          enableRelationships: definePref<boolean>({
+            title: batchEditText.enableRelationships(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.enableRelationshipsDescription(),
+          }),
           showRollback: definePref<boolean>({
             title: batchEditText.showRollback(),
             requiresReload: false,
