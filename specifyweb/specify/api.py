@@ -1258,7 +1258,7 @@ def create_institution(request, direct=False):
             return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
         try:
             data = json.loads(request.body)
-            data['id'] = 10
+            data['id'] = 1
             new_institution = Institution.objects.create(**data)
             return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
         except Exception as e:
