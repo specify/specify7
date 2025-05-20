@@ -20,6 +20,7 @@ urlpatterns = [
     re_path(r'^api_endpoints_all.json$', views.api_endpoints_all),
     re_path(r'^user.json$', views.user),
     re_path(r'^system_info.json$', views.system_info),
+    re_path(r'^all_system_data.json$', views.all_system_data),
     re_path(r'^domain.json$', views.domain),
     re_path(r'^view.json$', views.view),
     re_path(r'^views.json$', views.views),
