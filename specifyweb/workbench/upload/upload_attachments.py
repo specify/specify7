@@ -66,9 +66,9 @@ def add_attachments_to_plan(row: Row, upload_plan: Uploadable) -> Tuple["Row", "
         spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
         new_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
         new_row[f"_ATTACHMENT_ISPUBLIC_{index}"] = str(spdatasetattachment.attachment.ispublic)
-        new_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title
         new_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
-        new_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation
+        new_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title or ""
+        new_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation or ""
 
         # Inject attachment tables into upload plan
         attachment_table = attachment["table"].lower() + "attachments"
