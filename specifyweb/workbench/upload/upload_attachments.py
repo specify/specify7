@@ -1,6 +1,9 @@
 import json
 import logging
-from typing import cast
+from typing import (
+    Tuple,
+    cast,
+)
 
 from .uploadable import (
     Row,
@@ -9,6 +12,7 @@ from .uploadable import (
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
 from .column_options import ColumnOptions
 from .upload_table import UploadTable
+from ..models import Spdatasetattachment
 
 logger = logging.getLogger(__name__)
 
@@ -48,17 +52,31 @@ def validate_attachment(
                     return supports_attachments
     return False
 
-def add_attachments_to_plan(upload_plan: Uploadable, attachments: list) -> "UploadTable":
-    copy = upload_plan._replace()
+def add_attachments_to_plan(row: Row, upload_plan: Uploadable) -> Tuple["Row", "UploadTable"]:
+    attachments_data = get_attachments(row)
+    assert attachments_data is not None, "Dataset does not actually have attachments"
+    attachments = attachments_data.get("attachments", [])
+
+    new_upload_plan = upload_plan._replace()  # type: ignore[attr-defined]
+    new_row = row.copy()
     logger.debug("Attachments: %s", attachments)
+
     for index, attachment in enumerate(attachments):
+        # Add columns to row for this attachment
+        spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
+        new_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
+        new_row[f"_ATTACHMENT_ISPUBLIC_{index}"] = str(spdatasetattachment.attachment.ispublic)
+        new_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title
+        new_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
+        new_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation
+
+        # Inject attachment tables into upload plan
         attachment_table = attachment["table"].lower() + "attachments"
         attachment_field = (attachment["table"].lower() + "attachment").capitalize()
-        if attachment_table not in copy.toMany:
-            copy.toMany[attachment_table] = []
-        # inject new attachment
-        if len(copy.toMany[attachment_table]) <= index:
-            copy.toMany[attachment_table].append(
+        if attachment_table not in new_upload_plan.toMany:
+            new_upload_plan.toMany[attachment_table] = []
+        if len(new_upload_plan.toMany[attachment_table]) <= index:
+            new_upload_plan.toMany[attachment_table].append(
                 UploadTable(
                     name=attachment_field,
                     wbcols={
@@ -109,4 +127,4 @@ def add_attachments_to_plan(upload_plan: Uploadable, attachments: list) -> "Uplo
                     toMany={},
                     overrideScope=None,
             ))
-    return copy
+    return new_row, new_upload_plan
