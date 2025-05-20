@@ -1224,9 +1224,12 @@ def _handle_special_update_priors(obj, data):
     return data
 
 def create_institution(request, direct=False):
-    from specifyweb.specify.models import Institution
+    from specifyweb.specify.models import Institution, Specifyuser
     if Institution.objects.exists():
-        return JsonResponse({"error": "Institution already exists"}, status=400)
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         if Institution.objects.exists():
             # TODO: Require login if editing existing institution
@@ -1256,9 +1259,12 @@ def create_institution(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_division(request, direct=False):
-    from specifyweb.specify.models import Division, Institution
+    from specifyweb.specify.models import Division, Institution, Specifyuser
     if Division.objects.exists():
-        return JsonResponse({"error": "Division already exists"}, status=400)
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
@@ -1281,9 +1287,12 @@ def create_division(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_discipline(request, direct=False):
-    from specifyweb.specify.models import Discipline
+    from specifyweb.specify.models import Discipline, Specifyuser
     if Discipline.objects.exists():
-        return JsonResponse({"error": "Discipline already exists"}, status=400)
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Discipline.objects.exists():
@@ -1308,9 +1317,12 @@ def create_discipline(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_collection(request, direct=False):
-    from specifyweb.specify.models import Collection
+    from specifyweb.specify.models import Collection, Specifyuser
     if Collection.objects.exists():
-        return JsonResponse({"error": "Collection already exists"}, status=400)
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Collection.objects.exists():
@@ -1340,7 +1352,10 @@ def create_collection(request, direct=False):
 def create_specifyuser(request, direct=False):
     from specifyweb.specify.models import Specifyuser
     if Specifyuser.objects.exists():
-        return JsonResponse({"error": "Specifyuser already exists"}, status=400)
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return JsonResponse({"error": "Specifyuser already exists"}, status=400)
     if request.method == 'POST':
         data = json.loads(request.body)
         if not Specifyuser.objects.exists():
