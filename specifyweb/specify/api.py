@@ -1234,8 +1234,8 @@ def _wizard_condition(request):
 
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
-    if Institution.objects.exists():
-        return JsonResponse({"error": "Specifyuser already exists"}, status=400)
+    if Institution.objects.exists() and not _wizard_condition(request):
+        return JsonResponse({"error": "Institution already exists"}, status=400)
     if request.method == 'POST':
         if Institution.objects.exists():
             if not _wizard_condition(request):
