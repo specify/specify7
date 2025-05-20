@@ -73,6 +73,69 @@ class UploadTable(NamedTuple):
         from .scoping import apply_scoping_to_uploadtable
 
         return apply_scoping_to_uploadtable(self, collection, context, row)
+    
+    def set_attachments(self, attachments: list) -> "UploadTable":
+        copy = self._replace()
+        logger.debug("Attachments: %s", attachments)
+        for index, attachment in enumerate(attachments):
+            attachment_table = attachment["table"].lower() + "attachments"
+            attachment_field = (attachment["table"].lower() + "attachment").capitalize()
+            if attachment_table not in copy.toMany:
+                copy.toMany[attachment_table] = []
+            # inject new attachment
+            if len(copy.toMany[attachment_table]) <= index:
+                copy.toMany[attachment_table].append(
+                    UploadTable(
+                        name=attachment_field,
+                        wbcols={
+                            'ordinal': ColumnOptions(
+                                column=f"_ATTACHMENT_ORDINAL_{index}",
+                                matchBehavior='ignoreNever',
+                                nullAllowed=True,
+                                default='0'
+                            )
+
+                        },
+                        static={},
+                        toOne={
+                            "attachment": UploadTable(
+                                name="Attachment",
+                                wbcols={
+                                    'ispublic': ColumnOptions(
+                                        column=f"_ATTACHMENT_ISPUBLIC_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='FALSE'
+                                    ),
+                                    'origfilename': ColumnOptions(
+                                        column=f"_ATTACHMENT_ORIGFILENAME_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                    'title': ColumnOptions(
+                                        column=f"_ATTACHMENT_TITLE_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                    'attachmentlocation': ColumnOptions(
+                                        column=f"_ATTACHMENT_ATTACHMENTLOCATION_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                },
+                                static={},
+                                toOne={},
+                                toMany={},
+                                overrideScope=None,
+                            )
+                        },
+                        toMany={},
+                        overrideScope=None,
+                ))
+        return copy
 
     def get_cols(self) -> Set[str]:
         return (

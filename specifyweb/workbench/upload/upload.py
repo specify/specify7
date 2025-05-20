@@ -57,6 +57,19 @@ from .scope_context import ScopeContext
 from ..models import Spdataset
 from specifyweb.specify.models_by_table_id import models_iterator
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
+from .upload_result import (
+    UploadResult,
+    NullRecord,
+    NoMatch,
+    Matched,
+    MatchedMultiple,
+    Uploaded,
+    ParseFailures,
+    FailedBusinessRule,
+    ReportInfo,
+    TreeInfo,
+)
+from specifyweb.workbench.models import Spdatasetattachment
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -331,8 +344,43 @@ def do_upload(
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
-                if cached_scope_table is None:
-                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
+                # Check if we can find an attachment
+                row_row = row
+                row_has_attachments = False
+                attachment_failure = False
+                if has_attachments(row):
+                    if validate_attachment(row):
+                        # if not move_attachment(row):
+                        #     attachment_failure = True
+                        # else:
+                        #     row_has_attachments = True
+                        row_has_attachments = True
+                    else:
+                        attachment_failure = True
+
+                if attachment_failure:
+                    info = ReportInfo(tableName="Attachment", columns=["UPLOADED_ATTACHMENTS"], treeInfo=None)
+                    result = UploadResult(NullRecord(info), {}, {})
+                    results.append(result)
+                    cache = _cache
+                    raise Rollback("failed row")
+
+                if (cached_scope_table is None) or row_has_attachments:
+                    row_upload_plan = upload_plan
+                    if row_has_attachments:
+                        attachments = get_attachments(row)
+                        row_row = row.copy()
+                        for index, attachment in enumerate(attachments["attachments"]):
+                            spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
+                            row_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
+                            row_row[f"_ATTACHMENT_ISPUBLIC_{index}"] = str(spdatasetattachment.attachment.ispublic)
+                            row_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title
+                            row_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
+                            row_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation
+
+                        row_upload_plan = upload_plan.set_attachments(attachments["attachments"])
+                    logger.debug("Row upload plan: %s", row_upload_plan)
+                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row_row)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table
@@ -344,7 +392,7 @@ def do_upload(
                 bind_result = (
                     scoped_table.disambiguate(da)
                     .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(row, uploading_agent_id, _auditor, cache)
+                    .bind(row_row, uploading_agent_id, _auditor, cache)
                 )
                 if isinstance(bind_result, ParseFailures):
                     result = UploadResult(bind_result, {}, {})
@@ -366,19 +414,8 @@ def do_upload(
                     f"finished row {len(results)}, cache size: {cache and len(cache)}"
                 )
 
-                # Check if we can find an attachment
                 logger.debug("result: %s", result)
-                attachment_failure = False
-                if has_attachments(row):
-                    if validate_attachment(row, scoped_table): # TODO: There should be a check to see if attachments exist. A failed validation should alway count as a failure
-                        if not move_attachment(row, scoped_table):
-                            attachment_failure = True
-                            
-                            logger.info("Attachment moved successfully")
-                    else:
-                        attachment_failure = True
-
-                if result.contains_failure() or attachment_failure:
+                if result.contains_failure():
                     cache = _cache
                     raise Rollback("failed row")
 
@@ -615,32 +652,26 @@ ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
 def get_attachments(
     row: Row,
 ):
-    return row.get(ATTACHMENTS_COLUMN)
+    if has_attachments(row):
+        return json.loads(row.get(ATTACHMENTS_COLUMN))
+    return None
 
 def has_attachments(
     row: Row,
 ):
-    return get_attachments(row) is not None
+    return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
 
 def validate_attachment(
     row: Row,
-    scoped_table: ScopedUploadable,
 ):
     # Example row: Row: {'Attachments': '{'attachments':[{'id':123,'table':CollectionObject}]}', 'Catalog #': '', 'OK For Online': ''}
-    attachment_column = get_attachments(row)
-    if attachment_column:
-        logger.debug("Attachments found in: %s", row)
-        data = json.loads(attachment_column)
-        logger.debug("Parsed attachment data: %s", data)
+    if has_attachments(row):
+        data = get_attachments(row)
         if data and isinstance(data, dict):
             for attachment in data.get("attachments", []):
                 logger.debug("Attachment: %s", attachment)
                 if attachment.get("id") and attachment.get("table"):
-                    attachment_id = attachment["id"]
-                    # TODO: Check if SpDataSetAttachment with id exists (maybe not needed, this can be done in move_attachment)
                     table_name = attachment["table"]
-                    # Check if table exists (Maybe not needed)
-                    # Use models_iterator instead!!
                     # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
                     supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
                     logger.debug(
@@ -650,7 +681,6 @@ def validate_attachment(
                     )
                         
                     return supports_attachments
-    logger.debug("No attachments found in: %s", row)
     return False
 
 def move_attachment(
