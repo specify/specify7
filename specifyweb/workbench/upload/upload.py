@@ -12,6 +12,7 @@ from typing import (
     Optional,
     Sized,
     Tuple,
+    cast,
 )
 
 from django.db import transaction
@@ -653,7 +654,7 @@ def get_attachments(
     row: Row,
 ):
     if has_attachments(row):
-        return json.loads(row.get(ATTACHMENTS_COLUMN))
+        return json.loads(cast(str, row.get(ATTACHMENTS_COLUMN)))
     return None
 
 def has_attachments(
