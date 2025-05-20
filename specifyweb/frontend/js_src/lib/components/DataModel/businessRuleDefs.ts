@@ -17,7 +17,7 @@ import {
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
 } from './businessRuleUtils';
-import { cogTypes } from './helpers';
+import { agentTypes, cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -123,7 +123,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   Agent: {
     customInit: (agent) => {
       if (agent.isNew() && agent.get('agentType') === undefined) {
-        agent.set('agentType', 1);
+        agent.set('agentType', agentTypes.PERSON);
       }
     },
   },
