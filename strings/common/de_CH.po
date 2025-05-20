@@ -160,7 +160,7 @@ msgstr "Erstellen"
 #: components/AttachmentsBulkImport/Upload.tsx:263
 #: components/BatchEdit/MissingRanks.tsx:42
 #: components/BatchEdit/QueryError.tsx:23
-#: components/BatchEdit/index.tsx:196
+#: components/BatchEdit/index.tsx:204
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
@@ -942,7 +942,7 @@ msgstr "Keine Verfügbar"
 #: components/WbActions/WbValidate.tsx:53
 #: components/WbUtils/datasetVariants.tsx:29
 #: components/WbUtils/datasetVariants.tsx:88
-#: components/WbUtils/datasetVariants.tsx:103
+#: components/WbUtils/datasetVariants.tsx:104
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Utils > Dataset Variants
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"

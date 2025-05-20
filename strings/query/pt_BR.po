@@ -637,12 +637,12 @@ msgstr ""
 msgid "formatInputAs"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:199
+#: components/BatchEdit/index.tsx:207
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:202
+#: components/BatchEdit/index.tsx:210
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr ""

@@ -1,12 +1,12 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:179
+#: components/BatchEdit/index.tsx:187
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
-#: components/WbUtils/datasetVariants.tsx:104
+#: components/WbUtils/datasetVariants.tsx:105
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Batch Edit"
@@ -41,7 +41,7 @@ msgstr ""
 "The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
 "edit with"
 
-#: components/BatchEdit/index.tsx:152
+#: components/BatchEdit/index.tsx:160
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
@@ -56,92 +56,92 @@ msgstr "Following errors were found in the query"
 msgid "missingRanksInQuery"
 msgstr "Query requires additional ranks for batch editing"
 
-#: components/WbUtils/datasetVariants.tsx:110
+#: components/WbUtils/datasetVariants.tsx:111
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr "Use the query builder to make a new batch edit dataset"
 
-#: components/Preferences/UserDefinitions.tsx:2057
+#: components/Preferences/UserDefinitions.tsx:2065
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Show rollback button"
 
-#: components/Preferences/UserDefinitions.tsx:2062
+#: components/Preferences/UserDefinitions.tsx:2070
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
 "Rollback in Batch Edit is an experimental feature. This preference will "
 "hide the button"
 
-#: components/WbUtils/datasetVariants.tsx:115
+#: components/WbUtils/datasetVariants.tsx:116
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr "Commit"
 
-#: components/WbUtils/datasetVariants.tsx:120
+#: components/WbUtils/datasetVariants.tsx:121
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 "Commiting the Data Set will update, add, and delete the data from the "
 "spreadsheet to the  Specify database."
 
-#: components/WbUtils/datasetVariants.tsx:124
+#: components/WbUtils/datasetVariants.tsx:125
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 "Rolling back the dataset will re-update the values, delete created records, "
 "and create new records"
 
-#: components/WbUtils/datasetVariants.tsx:125
+#: components/WbUtils/datasetVariants.tsx:126
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Click on the \"Results\" button to see the number of records affected in "
 "each database table"
 
-#: components/WbUtils/datasetVariants.tsx:126
+#: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 "This rolled-back Data Set is saved, however, it cannot be edited. Please "
 "re-run the query"
 
-#: components/WbUtils/datasetVariants.tsx:127
+#: components/WbUtils/datasetVariants.tsx:128
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr "Committing"
 
-#: components/WbUtils/datasetVariants.tsx:128
+#: components/WbUtils/datasetVariants.tsx:129
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr "Data Set Commit Status"
 
-#: components/WbUtils/datasetVariants.tsx:116
+#: components/WbUtils/datasetVariants.tsx:117
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr "Begin Data Set Commit?"
 
-#: components/WbUtils/datasetVariants.tsx:117
+#: components/WbUtils/datasetVariants.tsx:118
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr "Commit Failed due to Error Cells"
 
-#: components/WbUtils/datasetVariants.tsx:119
+#: components/WbUtils/datasetVariants.tsx:120
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr "The Commit failed due to one or more cell value errors."
 
-#: components/WbUtils/datasetVariants.tsx:118
+#: components/WbUtils/datasetVariants.tsx:119
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr "Commit Cancelled"
 
-#: components/WbUtils/datasetVariants.tsx:121
+#: components/WbUtils/datasetVariants.tsx:122
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr "Commit Cancelled Description"
 
-#: components/WbUtils/datasetVariants.tsx:129
+#: components/WbUtils/datasetVariants.tsx:130
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr "Commit Completed with No Errors"
@@ -175,7 +175,7 @@ msgstr ""
 "If true, invisible database fields will not be used for determining whether "
 "the record is empty or not. Default value is {default: boolean}"
 
-#: components/BatchEdit/index.tsx:173
+#: components/BatchEdit/index.tsx:181
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
@@ -184,3 +184,15 @@ msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr "(Batch Edit datasets cannot be edited after rollback - Read Only)"
+
+#: components/Preferences/UserDefinitions.tsx:2057
+#. Used in: Components > Preferences > User Definitions
+msgid "enableRelationships"
+msgstr "Enable relationships"
+
+#: components/Preferences/UserDefinitions.tsx:2062
+#. Used in: Components > Preferences > User Definitions
+msgid "enableRelationshipsDescription"
+msgstr ""
+"Allows batch editing relationships of the base table. Rollback is disabled "
+"when relationships are enabled"

@@ -1,12 +1,12 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:179
+#: components/BatchEdit/index.tsx:187
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
-#: components/WbUtils/datasetVariants.tsx:104
+#: components/WbUtils/datasetVariants.tsx:105
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr ""
@@ -37,7 +37,7 @@ msgstr ""
 msgid "pickTreesToFilter"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:152
+#: components/BatchEdit/index.tsx:160
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr ""
@@ -52,82 +52,82 @@ msgstr ""
 msgid "missingRanksInQuery"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:110
+#: components/WbUtils/datasetVariants.tsx:111
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr ""
 
-#: components/Preferences/UserDefinitions.tsx:2057
+#: components/Preferences/UserDefinitions.tsx:2065
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr ""
 
-#: components/Preferences/UserDefinitions.tsx:2062
+#: components/Preferences/UserDefinitions.tsx:2070
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:115
+#: components/WbUtils/datasetVariants.tsx:116
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:120
+#: components/WbUtils/datasetVariants.tsx:121
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:124
+#: components/WbUtils/datasetVariants.tsx:125
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:125
+#: components/WbUtils/datasetVariants.tsx:126
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:126
+#: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:127
+#: components/WbUtils/datasetVariants.tsx:128
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:128
+#: components/WbUtils/datasetVariants.tsx:129
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:116
+#: components/WbUtils/datasetVariants.tsx:117
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:117
+#: components/WbUtils/datasetVariants.tsx:118
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:119
+#: components/WbUtils/datasetVariants.tsx:120
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:118
+#: components/WbUtils/datasetVariants.tsx:119
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:121
+#: components/WbUtils/datasetVariants.tsx:122
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr ""
 
-#: components/WbUtils/datasetVariants.tsx:129
+#: components/WbUtils/datasetVariants.tsx:130
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr ""
@@ -157,7 +157,7 @@ msgstr ""
 msgid "deferForNullCheckDescription"
 msgstr ""
 
-#: components/BatchEdit/index.tsx:173
+#: components/BatchEdit/index.tsx:181
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""
@@ -165,4 +165,14 @@ msgstr ""
 #: components/WorkBench/DataSetMeta.tsx:382
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2057
+#. Used in: Components > Preferences > User Definitions
+msgid "enableRelationships"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2062
+#. Used in: Components > Preferences > User Definitions
+msgid "enableRelationshipsDescription"
 msgstr ""

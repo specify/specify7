@@ -545,12 +545,12 @@ msgstr "Catalog Number Parent Collection Object Inheritance"
 msgid "formatInputAs"
 msgstr "Format As: {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:199
+#: components/BatchEdit/index.tsx:207
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr "Query has unsaved changes"
 
-#: components/BatchEdit/index.tsx:202
+#: components/BatchEdit/index.tsx:210
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Please save the query before running Batch Edit"

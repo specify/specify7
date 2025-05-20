@@ -30,7 +30,7 @@ msgstr "Télécharger le forfait"
 #: components/AttachmentsBulkImport/Rollback.tsx:130
 #: components/AttachmentsBulkImport/utils.ts:479
 #: components/WbUtils/datasetVariants.tsx:48
-#: components/WbUtils/datasetVariants.tsx:122
+#: components/WbUtils/datasetVariants.tsx:123
 #: components/WorkBench/Status.tsx:80
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
 msgid "rollback"
@@ -212,7 +212,7 @@ msgstr ""
 
 #: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WbUtils/datasetVariants.tsx:49
-#: components/WbUtils/datasetVariants.tsx:123
+#: components/WbUtils/datasetVariants.tsx:124
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
 msgid "beginRollback"
 msgstr "Commencer la restauration de l'ensemble de données ?"
@@ -678,13 +678,13 @@ msgstr "Nouvel ensemble de données {date}"
 
 #: components/WbUtils/datasetVariants.tsx:30
 #: components/WbUtils/datasetVariants.tsx:89
-#: components/WbUtils/datasetVariants.tsx:104
+#: components/WbUtils/datasetVariants.tsx:105
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "dataSets"
 msgstr ""
 
 #: components/WbUtils/datasetVariants.tsx:34
-#: components/WbUtils/datasetVariants.tsx:108
+#: components/WbUtils/datasetVariants.tsx:109
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "wbsDialogEmpty"
 msgstr "Actuellement, aucun ensemble de données n'existe."
