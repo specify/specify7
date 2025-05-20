@@ -160,8 +160,10 @@ export function ConfigurationTool(): JSX.Element {
           }
           viewName={resources[currentStep].viewName}
           onAdd={undefined}
+          // eslint-disable-next-line react/jsx-handler-names
           onClose={f.never}
           onDeleted={undefined}
+          // eslint-disable-next-line react/jsx-handler-names
           onSaved={f.never}
           onSaving={(unsetUnloadProtect): false => {
             unsetUnloadProtect();
