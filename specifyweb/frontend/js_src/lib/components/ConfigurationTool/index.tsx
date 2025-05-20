@@ -56,6 +56,7 @@ export function ConfigurationTool(): JSX.Element {
       })
       .catch((error) => {
         console.error(`Request failed for ${resourceLabel}:`, error);
+        throw error;
       });
 
   const resources: RA<ConfigResourceType> = [
