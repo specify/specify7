@@ -45,6 +45,8 @@ from .upload_result import (
     Uploaded,
     UploadResult,
     ParseFailures,
+    NullRecord,
+    ReportInfo,
 )
 from .uploadable import (
     BatchEditSelf,
@@ -57,24 +59,7 @@ from .uploadable import (
     BatchEditJson,
 )
 from .scope_context import ScopeContext
-from ..models import (
-    Spdataset,
-    Spdatasetattachment,
-)
-from specifyweb.specify.models_by_table_id import models_iterator
-from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
-from .upload_result import (
-    UploadResult,
-    NullRecord,
-    NoMatch,
-    Matched,
-    MatchedMultiple,
-    Uploaded,
-    ParseFailures,
-    FailedBusinessRule,
-    ReportInfo,
-    TreeInfo,
-)
+from ..models import Spdataset
 
 from .upload_attachments import (
     get_attachments,
@@ -356,15 +341,12 @@ def do_upload(
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
 
-    logger.debug("upload plan: %s", upload_plan)
-
     scope_context = ScopeContext()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
-            logger.debug("Row: %s", row)
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
@@ -373,7 +355,6 @@ def do_upload(
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
                 # Check if we can find an attachment
-                row_row = row
                 row_has_attachments = False
                 attachment_failure = False
                 if has_attachments(row):
@@ -392,31 +373,18 @@ def do_upload(
                 if (cached_scope_table is None) or row_has_attachments:
                     row_upload_plan = upload_plan
                     if row_has_attachments:
-                        attachments = get_attachments(row)
-                        row_row = row.copy()
-                        for index, attachment in enumerate(attachments["attachments"]):
-                            spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
-                            row_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
-                            row_row[f"_ATTACHMENT_ISPUBLIC_{index}"] = str(spdatasetattachment.attachment.ispublic)
-                            row_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title
-                            row_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
-                            row_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation
-
-                        row_upload_plan = add_attachments_to_plan(upload_plan, attachments["attachments"])
-                    logger.debug("Row upload plan: %s", row_upload_plan)
-                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row_row)
+                        row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
+                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table
                 else:
                     scoped_table = cached_scope_table
 
-                logger.debug("Scoped table: %s", scoped_table)
-
                 bind_result = (
                     scoped_table.disambiguate(da)
                     .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(row_row, uploading_agent_id, _auditor, cache)
+                    .bind(row, uploading_agent_id, _auditor, cache)
                 )
                 if isinstance(bind_result, ParseFailures):
                     result = UploadResult(bind_result, {}, {})
@@ -437,8 +405,6 @@ def do_upload(
                 logger.info(
                     f"finished row {len(results)}, cache size: {cache and len(cache)}"
                 )
-
-                logger.debug("result: %s", result)
                 if result.contains_failure():
                     cache = _cache
                     raise Rollback("failed row")
