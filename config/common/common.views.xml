@@ -222,7 +222,7 @@
 			</altviews>
 		</view>
 		<view name="Component" class="edu.ku.brc.specify.datamodel.CollectionObject" usedefbusrule="false" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.CollectionObjectBusRules">
-			<desc>The Collection Object Subfrom for Collection Object children.</desc>
+			<desc>The Collection Object Subfrom for Collection Object components.</desc>
 			<altviews>
 				<altview name="COS View" viewdef="Component" mode="view"/>
 				<altview name="COS Edit" viewdef="Component" mode="edit" default="true"/>
