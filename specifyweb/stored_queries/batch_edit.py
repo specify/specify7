@@ -1038,7 +1038,7 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=False,
+        omit_relationships=spquery.get("omitrelationships", False),
         treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)

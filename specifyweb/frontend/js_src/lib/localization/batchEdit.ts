@@ -113,4 +113,11 @@ export const batchEditText = createDictionary({
     'en-us':
       '(Batch Edit datasets cannot be edited after rollback - Read Only)',
   },
+  enableRelationships: {
+    'en-us': 'Enable relationships',
+  },
+  enableRelationshipsDescription: {
+    'en-us':
+      'Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled',
+  },
 } as const);

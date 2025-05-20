@@ -55,6 +55,12 @@ export function BatchEditFromQuery({
   readonly baseTableName: keyof Tables;
   readonly recordSetId?: number;
 }) {
+  const hasRelationships = userPreferences.get(
+    'batchEdit',
+    'editor',
+    'enableRelationships'
+  );
+
   const navigate = useNavigate();
   const post = async (dataSetName: string) =>
     ajax<{ readonly id: number }>('/stored_query/batch_edit/', {
@@ -72,6 +78,7 @@ export function BatchEditFromQuery({
         recordSetId,
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
         treeDefsFilter,
+        omitRelationships: !hasRelationships,
       }),
     });
 
@@ -134,7 +141,8 @@ export function BatchEditFromQuery({
     queryFieldSpecs.some(hasHierarchyBaseTable) ||
     containsDisallowedTables(query);
 
-  const handleClickBatchEdit = () => loading(
+  const handleClickBatchEdit = () =>
+    loading(
       treeRanksPromise.then(async () => {
         const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
           filters.some((filter) => filter(fieldSpec))
@@ -193,8 +201,8 @@ export function BatchEditFromQuery({
         <Dialog
           buttons={
             <Button.Danger onClick={closeWarningDialog}>
-                {commonText.close()}
-              </Button.Danger>
+              {commonText.close()}
+            </Button.Danger>
           }
           header={queryText.unsavedChangesInQuery()}
           onClose={closeWarningDialog}
