@@ -850,7 +850,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             setOnBlurOnly: true,
             visible: true,
-            defaultValue: 1200,
+            defaultValue: 1600,
             type: 'java.lang.Float',
             parser: {
               min: 100,
