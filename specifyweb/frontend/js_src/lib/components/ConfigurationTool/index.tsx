@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { configurationText } from '../../localization/configuration';
 import { ajax } from '../../utils/ajax';
@@ -30,6 +31,8 @@ export function ConfigurationTool(): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
   const [currentStep, setCurrentStep] = React.useState(0);
+
+  const navigate = useNavigate();
 
   const onResourceSaved = async (
     endpoint: string,
@@ -141,7 +144,9 @@ export function ConfigurationTool(): JSX.Element {
               resource
                 .onClick(resource.resource)
                 .then(() => {
-                  setCurrentStep(currentStep + 1);
+                  resource.resource.specifyTable.name === 'SpecifyUser'
+                    ? navigate('/accounts/login/')
+                    : setCurrentStep(currentStep + 1);
                 })
                 .catch((error) => {
                   console.error('Step failed:', error);
