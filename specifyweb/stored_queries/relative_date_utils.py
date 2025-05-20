@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import re
 
 
-relative_date_re = "today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
+relative_date_re = r"today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
 def apply_absolute_date(query_field):
     if query_field.fieldspec.date_part is None or query_field.fieldspec.date_part != 'Full Date':
         return query_field

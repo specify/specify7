@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 
 from .accounts import urls as accounts_urls
@@ -21,43 +21,45 @@ from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
 from .stats import urls as stat_urls
 
+# print(get_resolver().reverse_dict.keys()) # Use for debugging urls
+
 urlpatterns = [
 
     # This will redirect all browsers looking for the favicon to the SVG.
-    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
+    re_path(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
 
     # just redirect root url to the main specify view
-    url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
+    path('', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
 
-    url(r'^opensearch.xml$', search_view),
+    re_path(r'^opensearch.xml$', search_view),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
     # by the frontend. 'frontend.urls' just serves the
     # empty webapp container for all these URLs.
-    url(r'^specify/', include(frontend_urls)),
+    path('specify/', include(frontend_urls)),
 
     # primary api
-    url(r'^api/', include(api_urls)),
-    url(r'^images/(?P<path>.+)$', images),
-    url(r'^properties/(?P<name>.+).properties$', properties),
+    path('api/', include(api_urls)),
+    path('images/<path:path>', images),
+    re_path(r'^properties/(?P<name>.+).properties$', properties), # Note fully supported since remmoving dependence on specify.jar
 
-    url(r'^documentation/', include(doc_urls)),
+    path('documentation/', include(doc_urls)),
 
     # submodules
-    url(r'^accounts/', include(accounts_urls)),
-    url(r'^api/workbench/', include(wb_urls)), # permissions added
-    url(r'^express_search/', include(es_urls)),
-    url(r'^context/', include(context_urls)),
-    url(r'^stored_query/', include(query_urls)), # permissions added
-    url(r'^attachment_gw/', include(attachment_urls)),
-    url(r'^barvis/', include(tt_urls)),
-    url(r'^businessrules/', include(bus_urls)),
-    url(r'^report_runner/', include(report_urls)), # permissions added
-    url(r'^interactions/', include(interaction_urls)), # permissions added
-    url(r'^notifications/', include(notification_urls)),
-    url(r'^export/', include(export_urls)), # permissions added
-    url(r'^permissions/', include(permissions_urls)), # permissions added
+    path('accounts/', include(accounts_urls)),
+    path('api/workbench/', include(wb_urls)), # permissions added
+    path('express_search/', include(es_urls)),
+    path('context/', include(context_urls)),
+    path('stored_query/', include(query_urls)), # permissions added
+    path('attachment_gw/', include(attachment_urls)),
+    path('barvis/', include(tt_urls)),
+    path('businessrules/', include(bus_urls)),
+    path('report_runner/', include(report_urls)), # permissions added
+    path('interactions/', include(interaction_urls)), # permissions added
+    path('notifications/', include(notification_urls)),
+    path('export/', include(export_urls)), # permissions added
+    path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    url(r'^stats/', include(stat_urls))
+    path('stats/', include(stat_urls))
 ]

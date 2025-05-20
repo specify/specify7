@@ -120,7 +120,7 @@ class Specifyuser(models.Model):
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        return save_auto_timestamp_field_with_override(super(Specifyuser, self).save, args, kwargs, self)
+        return save_auto_timestamp_field_with_override(super().save, args, kwargs, self)
 
     class Meta:
         abstract = True
@@ -139,6 +139,70 @@ class Preparation(models.Model):
            0)
         FROM loanpreparation
         WHERE PreparationID = %s AND NOT IsResolved
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
+    def isongift(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM giftpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+
+    def isondisposal(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM disposalpreparation
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangeout(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeoutprep
+        WHERE PreparationID = %s
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
+    
+    def isonexchangein(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+        SUM({GREATEST}(0, COALESCE(Quantity, 0))),
+        0)
+        FROM exchangeinprep
+        WHERE PreparationID = %s
         """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
 
         result = cursor.fetchone()
