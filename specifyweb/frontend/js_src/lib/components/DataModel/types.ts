@@ -1454,7 +1454,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    readonly parentCO: CollectionObject | null;
+    readonly componentParent: CollectionObject | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
@@ -1473,7 +1473,7 @@ export type CollectionObject = {
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;
-    readonly children: RA<CollectionObject>;
+    readonly components: RA<CollectionObject>;
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
