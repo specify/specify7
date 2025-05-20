@@ -12,7 +12,6 @@ from typing import (
     Optional,
     Sized,
     Tuple,
-    cast,
 )
 from collections.abc import Callable
 from collections.abc import Sized
@@ -58,7 +57,10 @@ from .uploadable import (
     BatchEditJson,
 )
 from .scope_context import ScopeContext
-from ..models import Spdataset
+from ..models import (
+    Spdataset,
+    Spdatasetattachment,
+)
 from specifyweb.specify.models_by_table_id import models_iterator
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
 from .upload_result import (
@@ -73,7 +75,13 @@ from .upload_result import (
     ReportInfo,
     TreeInfo,
 )
-from specifyweb.workbench.models import Spdatasetattachment
+
+from .upload_attachments import (
+    get_attachments,
+    has_attachments,
+    validate_attachment,
+    add_attachments_to_plan,
+)
 
 Rows = list[Row] | csv.DictReader
 Progress = Callable[[int, int | None], None]
@@ -370,10 +378,6 @@ def do_upload(
                 attachment_failure = False
                 if has_attachments(row):
                     if validate_attachment(row):
-                        # if not move_attachment(row):
-                        #     attachment_failure = True
-                        # else:
-                        #     row_has_attachments = True
                         row_has_attachments = True
                     else:
                         attachment_failure = True
@@ -398,7 +402,7 @@ def do_upload(
                             row_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
                             row_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation
 
-                        row_upload_plan = upload_plan.set_attachments(attachments["attachments"])
+                        row_upload_plan = add_attachments_to_plan(upload_plan, attachments["attachments"])
                     logger.debug("Row upload plan: %s", row_upload_plan)
                     scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row_row)
                     if not scope_context.is_variable:
@@ -666,44 +670,3 @@ def rollback_batch_edit(
 
     parent.rowresults = None
     parent.save(update_fields=["rowresults"])
-
-ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
-
-def get_attachments(
-    row: Row,
-):
-    if has_attachments(row):
-        return json.loads(cast(str, row.get(ATTACHMENTS_COLUMN)))
-    return None
-
-def has_attachments(
-    row: Row,
-):
-    return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
-
-def validate_attachment(
-    row: Row,
-):
-    # Example row: Row: {'Attachments': '{'attachments':[{'id':123,'table':CollectionObject}]}', 'Catalog #': '', 'OK For Online': ''}
-    if has_attachments(row):
-        data = get_attachments(row)
-        if data and isinstance(data, dict):
-            for attachment in data.get("attachments", []):
-                logger.debug("Attachment: %s", attachment)
-                if attachment.get("id") and attachment.get("table"):
-                    table_name = attachment["table"]
-                    # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
-                    supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
-                    logger.debug(
-                        "Table %s supports attachments: %s",
-                        table_name,
-                        supports_attachments,
-                    )
-                        
-                    return supports_attachments
-    return False
-
-def move_attachment(
-    row: Row,
-) -> bool:
-    pass
