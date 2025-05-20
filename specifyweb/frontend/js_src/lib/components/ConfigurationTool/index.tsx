@@ -51,7 +51,7 @@ export function ConfigurationTool(): JSX.Element {
           console.log(`${resourceLabel} created successfully:`, data);
         } else {
           console.error(`Error creating ${resourceLabel}:`, data);
-          throw error;
+          throw new Error(`Issue when creating ${resourceLabel}`);
         }
       })
       .catch((error) => {
