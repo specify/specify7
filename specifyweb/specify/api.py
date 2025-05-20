@@ -1289,7 +1289,9 @@ def create_division(request, direct=False):
         if 'institution' not in data:
             data['institution_id'] = Institution.objects.last().id
         else:
-            data['institution_id'] = Institution.objects.last().id # TODO: Edit
+            institution_url = data['institution']
+            institution = strict_uri_to_model(institution_url, 'institution')
+            data['institution_id'] = institution[1]
             data.pop('institution', None)
         data.pop('abbreviation', None)
         data.pop('_tableName', None)
