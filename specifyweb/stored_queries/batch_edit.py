@@ -1024,7 +1024,7 @@ def run_batch_edit(collection, user, spquery, agent):
         omit_relationships=False,
         treedefsfilter=spquery.get("treedefsfilter", None)
     )
-    (headers, rows, packs, json_upload_plan, visual_order, json_rollback_plan) = run_batch_edit_query(props)
+    (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
     mapped_raws = [
         [*row, json.dumps({"batch_edit": pack})] for (row, pack) in zip(rows, packs)
     ]
@@ -1039,7 +1039,6 @@ def run_batch_edit(collection, user, spquery, agent):
         agent=agent,
         json_upload_plan=json_upload_plan,
         visual_order=visual_order,
-        json_rollback_plan=json_rollback_plan
     )
 
 
@@ -1180,16 +1179,6 @@ def run_batch_edit_query(props: BatchEditProps):
         omit_relationships,
     )
 
-    # NOTE: Rollback does not consider relationships
-    _, rollback_plan = extend_row.to_upload_plan(
-        base_table,
-        localization_dump,
-        query_fields,
-        {},
-        _get_orig_column,
-        omit_relationships=True,
-    )
-
     headers_enumerated = enumerate(key_and_headers)
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
@@ -1199,9 +1188,7 @@ def run_batch_edit_query(props: BatchEditProps):
     headers = Func.second(key_and_headers)
 
     json_upload_plan = upload_plan.unparse()
-    json_rollback_plan = rollback_plan.unparse()
     validate(json_upload_plan, schema)
-    validate(json_rollback_plan, schema)
 
     return (
         headers,
@@ -1209,7 +1196,6 @@ def run_batch_edit_query(props: BatchEditProps):
         Func.second(raw_rows),
         json_upload_plan,
         visual_order,
-        json_rollback_plan
     )
 
 
@@ -1222,7 +1208,6 @@ def make_dataset(
     agent,
     json_upload_plan,
     visual_order,
-    json_rollback_plan
 ):
     # We are _finally_ ready to make a new dataset
 
@@ -1242,12 +1227,9 @@ def make_dataset(
         )
 
         ds_id, ds_name = (ds.id, ds.name)
-
-        # Creates the rollback ds from the one we created above
         ds.id = None
         ds.name = f"Backs - {ds.name}"
         ds.parent_id = ds_id
-        ds.uploadplan=json.dumps(json_rollback_plan)
         # Create the backer.
         ds.save()
 
