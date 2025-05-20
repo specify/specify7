@@ -34,7 +34,7 @@ export function ConfigurationTool(): JSX.Element {
   const onResourceSaved = async (
     endpoint: string,
     resourceLabel: string,
-    data: any
+    data: SpecifyResource<AnySchema>
   ): Promise<void> =>
     ajax(endpoint, {
       method: 'POST',
@@ -63,85 +63,52 @@ export function ConfigurationTool(): JSX.Element {
     {
       resource: new tables.Institution.Resource(),
       viewName: institution,
-      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
-        const body = {
-          name: data.get('name') as string,
-          code: data.get('code') as string,
-          isaccessionsglobal:
-            (data.get('isaccessionsglobal') as boolean) || false,
-          issecurityon: (data.get('issecurityon') as boolean) || false,
-          isserverbased: (data.get('isserverbased') as boolean) || false,
-          issinglegeographytree:
-            (data.get('issinglegeographytree') as boolean) || false,
-        };
-        return onResourceSaved(
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> =>
+        onResourceSaved(
           '/api/specify/institution/create/',
           new tables.Institution.Resource().specifyTable.name,
-          body
-        );
-      },
+          data
+        ),
     },
     {
       resource: new tables.Division.Resource(),
       viewName: division,
-      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
-        const body = {
-          name: data.get('name'),
-          abbreviation: data.get('abbrev'),
-        };
-        return onResourceSaved(
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> =>
+        onResourceSaved(
           '/api/specify/division/create/',
           new tables.Division.Resource().specifyTable.name,
-          body
-        );
-      },
+          data
+        ),
     },
     {
       resource: new tables.Discipline.Resource(),
       viewName: discipline,
-      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
-        const body = {
-          name: data.get('name'),
-          type: data.get('type'),
-        };
-        return onResourceSaved(
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> =>
+        onResourceSaved(
           '/api/specify/discipline/create/',
           new tables.Discipline.Resource().specifyTable.name,
-          body
-        );
-      },
+          data
+        ),
     },
     {
       resource: new tables.Collection.Resource(),
       viewName: collection,
-      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
-        const body = {
-          collectionname: data.get('collectionname'),
-          code: data.get('code'),
-          catalognumformatname: data.get('catalognumformatname'),
-          discipline: data.get('discipline'),
-        };
-        return onResourceSaved(
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> =>
+        onResourceSaved(
           '/api/specify/collection/create/',
           new tables.Collection.Resource().specifyTable.name,
-          body
-        );
-      },
+          data
+        ),
     },
     {
       resource: new tables.SpecifyUser.Resource(),
       viewName: adminUser,
-      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> => {
-        const body = {
-          name: data.get('name'),
-          password: data.get('password'),
-        };
-        return onResourceSaved(
+      onClick: async (data: SpecifyResource<AnySchema>): Promise<void> =>
+        onResourceSaved(
           '/api/specify/specifyuser/create/',
           new tables.SpecifyUser.Resource().specifyTable.name,
-          body
-        );
-      },
+          data
+        ),
     },
   ];
 
