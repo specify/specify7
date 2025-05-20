@@ -142,7 +142,7 @@
 				</row>
 				<!-- Show if you want to use Collection Object Components (https://discourse.specifysoftware.org/t/collection-object-components/2546) -->
 				<row>
-					<cell type="subview" viewname="Component" id="6" name="children" colspan="14" defaulttype="table"/>
+					<cell type="subview" viewname="Component" id="6" name="components" colspan="14" defaulttype="table"/>
 				</row>
 				<!-- Show if you want to use Collection Object Group (https://discourse.specifysoftware.org/t/collection-object-groups/2226) -->
 				<!-- <row>
