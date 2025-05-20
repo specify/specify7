@@ -140,6 +140,10 @@ class TreeRecord(NamedTuple):
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
         return apply_scoping(self, collection, context)
+    
+    def set_attachments(
+        self, attachments: list
+    ) -> "Uploadable": ...
 
     def get_cols(self) -> Set[str]:
         return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
