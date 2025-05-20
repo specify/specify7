@@ -1,5 +1,5 @@
 import { commonText } from '../../localization/common';
-import { configurationText } from '../../localization/configurationText';
+import { configurationText } from '../../localization/configuration';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { configurationText } from '../../localization/configurationText';
+import { configurationText } from '../../localization/configuration';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
