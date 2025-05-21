@@ -97,7 +97,7 @@ def clone_record(
             ).all()  # Clone all records separatetly
         ]
         for (field, is_dependent) in marked
-        if is_dependent and not field.concrete
+        if is_dependent and not field.concrete and not (field.one_to_one or field.many_to_one)
     ]  # Should be a relationship, but not on our side
 
     return inserted
