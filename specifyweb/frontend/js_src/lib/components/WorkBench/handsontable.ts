@@ -160,7 +160,9 @@ function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
               row,
               col,
               property,
-              typeof value === 'string' ? JSON.parse(value)?.formatted : undefined,
+              typeof value === 'string'
+                ? JSON.parse(value)?.formatted
+                : undefined,
               ...rest
             );
           },
