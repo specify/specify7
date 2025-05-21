@@ -186,9 +186,17 @@ export function WbView({
 
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
+  const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
+
   return (
     <ReadOnlyContext.Provider
-      value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
+      value={
+        isAlreadyReadOnly ||
+        isUploaded ||
+        showResults ||
+        !canUpdate ||
+        hasBatchEditRolledBack
+      }
     >
       <section
         className={`wbs-form ${className.containerFull}`}
@@ -207,8 +215,7 @@ export function WbView({
             {commonText.tools()}
           </Button.Small>
           <span className="-ml-1 flex-1" />
-          {/* NOTE: Data Mapper temporarily disabled in #5413 */}
-          {!dataset.isupdate && (canUpdate || isMapped) ? (
+          {canUpdate || isMapped ? (
             <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
               {wbPlanText.dataMapper()}
             </Link.Small>
@@ -255,6 +262,7 @@ export function WbView({
             checkDeletedFail={checkDeletedFail}
             data={data}
             dataset={dataset}
+            hasBatchEditRolledBack={hasBatchEditRolledBack}
             hot={hot}
             isResultsOpen={showResults}
             isUploaded={isUploaded}

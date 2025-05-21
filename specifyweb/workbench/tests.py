@@ -111,7 +111,7 @@ class DataSetTests(ApiTests):
 
         response = c.post(
             f"/api/workbench/create_recordset/{datasetid}/",
-            data={"name": "Foobar upload"},
+            data={"name": "Foobar upload", "remarks": ""},
         )
         self.assertEqual(response.status_code, 201)
         recordset_id = json.loads(response.content)

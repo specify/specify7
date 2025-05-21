@@ -145,6 +145,7 @@ class Spdataset(Dataset):
     rowresults = models.TextField(null=True)
 
     isupdate = models.BooleanField(default=False, null=True)
+    rolledback = models.BooleanField(default=False, null=True)
 
     # very complicated. Essentially, each batch-edit dataset gets backed by another dataset (for rollbacks).
     # This should be a one-to-one field, imagine the mess otherwise.
@@ -163,6 +164,7 @@ class Spdataset(Dataset):
                 "visualorder": self.visualorder,
                 "rowresults": self.rowresults and json.loads(self.rowresults),
                 "isupdate": self.isupdate == True,
+                "rolledback": self.rolledback == True,
             }
         )
         return ds_dict

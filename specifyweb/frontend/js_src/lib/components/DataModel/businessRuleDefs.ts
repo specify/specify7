@@ -326,7 +326,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             });
         let coParent;
         if (CO !== undefined) {
-          coParent = CO.get('parentCO');
+          coParent = CO.get('componentParent');
         }
         return coParent === null
           ? {

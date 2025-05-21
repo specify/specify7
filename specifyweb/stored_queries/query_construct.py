@@ -26,7 +26,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # In that case, the cycle will end (unlike other cyclical cases).
         kwargs['tree_rank_count'] = 0
         kwargs['internal_filters'] = []
-        return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
+        return super().__new__(cls, *args, **kwargs)
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
@@ -64,7 +64,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
+        treedefs_with_ranks: list[tuple[int, int]] = [tup for tup in [
             (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list('id', flat=True)))
             for treedef_id, _ in treedefs
             # For constructing tree queries for batch edit
