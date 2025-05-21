@@ -3122,8 +3122,6 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
-            Field(name='quantityResolved', column='QuantityResolved', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='quantityReturned', column='QuantityReturned', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
