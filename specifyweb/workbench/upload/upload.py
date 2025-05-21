@@ -43,7 +43,7 @@ from .upload_result import (
     Uploaded,
     UploadResult,
     ParseFailures,
-    NullRecord,
+    NoMatch,
     ReportInfo,
 )
 from .uploadable import (
@@ -67,7 +67,7 @@ from .upload_attachments import (
 )
 
 from .upload_attachments import (
-    get_attachments,
+    ATTACHMENTS_COLUMN,
     has_attachments,
     validate_attachment,
     add_attachments_to_plan,
@@ -356,27 +356,17 @@ def do_upload(
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
-                # Check if we can find an attachment
-                row_has_attachments = False
-                attachment_failure = False
                 if has_attachments(row):
-                    if validate_attachment(row):
-                        row_has_attachments = True
-                    else:
-                        attachment_failure = True
-
-                if attachment_failure:
-                    info = ReportInfo(tableName="Attachment", columns=["UPLOADED_ATTACHMENTS"], treeInfo=None)
-                    result = UploadResult(NullRecord(info), {}, {})
-                    results.append(result)
-                    cache = _cache
-                    raise Rollback("failed row")
-
-                if (cached_scope_table is None) or row_has_attachments:
-                    row_upload_plan = upload_plan
-                    if row_has_attachments:
-                        row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
+                    # If there's an attachments column, add attachments to upload plan
+                    if not validate_attachment(row, upload_plan):
+                        info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN], treeInfo=None)
+                        results.append(UploadResult(NoMatch(info), {}, {}))
+                        cache = _cache
+                        raise Rollback("failed row")
+                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
                     scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
+                elif cached_scope_table is None:
+                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table

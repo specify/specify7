@@ -6,9 +6,12 @@ import type {
   Tables,
 } from "../DataModel/types";
 
+export const BASE_TABLE_NAME = 'baseTable' as const;
+type AttachmentTargetTable = keyof Tables | typeof BASE_TABLE_NAME;
+
 type CellAttachment = {
   readonly id: number;
-  readonly table: keyof Tables;
+  readonly table: AttachmentTargetTable;
 };
 
 type CellAttachments = {
@@ -18,7 +21,7 @@ type CellAttachments = {
 
 export function attachmentsToCell(
   dataSetAttachments: readonly SerializedResource<SpDataSetAttachment>[],
-  targetTable: keyof Tables
+  targetTable: AttachmentTargetTable,
 ): string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];

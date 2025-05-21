@@ -16,115 +16,125 @@ from ..models import Spdatasetattachment
 
 logger = logging.getLogger(__name__)
 
+BASE_TABLE_NAME = "baseTable"
 ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
 
-def get_attachments(
-    row: Row,
-):
+def get_attachments(row: Row):
     if has_attachments(row):
         return json.loads(cast(str, row.get(ATTACHMENTS_COLUMN)))
     return None
 
-def has_attachments(
-    row: Row,
-):
+def has_attachments(row: Row) -> bool:
     return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
 
 def validate_attachment(
-    row: Row,
-):
-    # Example row: Row: {'Attachments': '{'attachments':[{'id':123,'table':CollectionObject}]}', 'Catalog #': '', 'OK For Online': ''}
+    row: Row, upload_plan: Uploadable
+) -> bool:
     if has_attachments(row):
         data = get_attachments(row)
         if data and isinstance(data, dict):
+            base_table = upload_plan.name
             for attachment in data.get("attachments", []):
-                logger.debug("Attachment: %s", attachment)
                 if attachment.get("id") and attachment.get("table"):
                     table_name = attachment["table"]
+                    if table_name == BASE_TABLE_NAME:
+                        table_name = base_table
                     # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
                     supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
-                    logger.debug(
-                        "Table %s supports attachments: %s",
-                        table_name,
-                        supports_attachments,
-                    )
                         
                     return supports_attachments
     return False
 
-def add_attachments_to_plan(row: Row, upload_plan: Uploadable) -> Tuple["Row", "UploadTable"]:
+def add_attachments_to_plan(
+    row: Row, upload_plan: Uploadable
+) -> Tuple["Row", "UploadTable"]:
     attachments_data = get_attachments(row)
     assert attachments_data is not None, "Dataset does not actually have attachments"
     attachments = attachments_data.get("attachments", [])
+
+    base_table = upload_plan.name
 
     new_upload_plan = upload_plan._replace()  # type: ignore[attr-defined]
     new_row = row.copy()
     logger.debug("Attachments: %s", attachments)
 
+    attachment_fields_to_copy = [
+        "ispublic",
+        "origfilename",
+        "title",
+        "attachmentlocation",
+    ]
+
     for index, attachment in enumerate(attachments):
         # Add columns to row for this attachment
         spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
+
         new_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
-        new_row[f"_ATTACHMENT_ISPUBLIC_{index}"] = str(spdatasetattachment.attachment.ispublic)
-        new_row[f"_ATTACHMENT_ORIGFILENAME_{index}"] = spdatasetattachment.attachment.origfilename
-        new_row[f"_ATTACHMENT_TITLE_{index}"] = spdatasetattachment.attachment.title or ""
-        new_row[f"_ATTACHMENT_ATTACHMENTLOCATION_{index}"] = spdatasetattachment.attachment.attachmentlocation or ""
+        for field in attachment_fields_to_copy:
+            new_row[f"_ATTACHMENT_{field.upper()}_{index}"] = str(getattr(spdatasetattachment.attachment, field) or "")
 
         # Inject attachment tables into upload plan
-        attachment_table = attachment["table"].lower() + "attachments"
-        attachment_field = (attachment["table"].lower() + "attachment").capitalize()
-        if attachment_table not in new_upload_plan.toMany:
-            new_upload_plan.toMany[attachment_table] = []
-        if len(new_upload_plan.toMany[attachment_table]) <= index:
-            new_upload_plan.toMany[attachment_table].append(
-                UploadTable(
-                    name=attachment_field,
-                    wbcols={
-                        'ordinal': ColumnOptions(
-                            column=f"_ATTACHMENT_ORDINAL_{index}",
-                            matchBehavior='ignoreNever',
-                            nullAllowed=True,
-                            default='0'
-                        )
+        table_name = attachment["table"]
+        logger.debug("Table name: %s", table_name)
+        if table_name == BASE_TABLE_NAME:
+            # Only base table attachments are supported for now
+            table_name = base_table
 
-                    },
-                    static={},
-                    toOne={
-                        "attachment": UploadTable(
-                            name="Attachment",
-                            wbcols={
-                                'ispublic': ColumnOptions(
-                                    column=f"_ATTACHMENT_ISPUBLIC_{index}",
-                                    matchBehavior='ignoreNever',
-                                    nullAllowed=True,
-                                    default='FALSE'
-                                ),
-                                'origfilename': ColumnOptions(
-                                    column=f"_ATTACHMENT_ORIGFILENAME_{index}",
-                                    matchBehavior='ignoreNever',
-                                    nullAllowed=True,
-                                    default='0'
-                                ),
-                                'title': ColumnOptions(
-                                    column=f"_ATTACHMENT_TITLE_{index}",
-                                    matchBehavior='ignoreNever',
-                                    nullAllowed=True,
-                                    default='0'
-                                ),
-                                'attachmentlocation': ColumnOptions(
-                                    column=f"_ATTACHMENT_ATTACHMENTLOCATION_{index}",
-                                    matchBehavior='ignoreNever',
-                                    nullAllowed=True,
-                                    default='0'
-                                ),
-                            },
-                            static={},
-                            toOne={},
-                            toMany={},
-                            overrideScope=None,
-                        )
-                    },
-                    toMany={},
-                    overrideScope=None,
-            ))
+            attachment_table = table_name.lower() + "attachments"
+            attachment_field = (table_name + "attachment").capitalize()
+
+            if attachment_table not in new_upload_plan.toMany:
+                new_upload_plan.toMany[attachment_table] = []
+
+            if len(new_upload_plan.toMany[attachment_table]) <= index:
+                new_upload_plan.toMany[attachment_table].append(
+                    UploadTable(
+                        name=attachment_field,
+                        wbcols={
+                            'ordinal': ColumnOptions(
+                                column=f"_ATTACHMENT_ORDINAL_{index}",
+                                matchBehavior='ignoreNever',
+                                nullAllowed=True,
+                                default='0'
+                            )
+                        },
+                        static={},
+                        toOne={
+                            "attachment": UploadTable(
+                                name="Attachment",
+                                wbcols={
+                                    'ispublic': ColumnOptions(
+                                        column=f"_ATTACHMENT_ISPUBLIC_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='FALSE'
+                                    ),
+                                    'origfilename': ColumnOptions(
+                                        column=f"_ATTACHMENT_ORIGFILENAME_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                    'title': ColumnOptions(
+                                        column=f"_ATTACHMENT_TITLE_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                    'attachmentlocation': ColumnOptions(
+                                        column=f"_ATTACHMENT_ATTACHMENTLOCATION_{index}",
+                                        matchBehavior='ignoreNever',
+                                        nullAllowed=True,
+                                        default='0'
+                                    ),
+                                },
+                                static={},
+                                toOne={},
+                                toMany={},
+                                overrideScope=None,
+                            )
+                        },
+                        toMany={},
+                        overrideScope=None,
+                ))
     return new_row, new_upload_plan
