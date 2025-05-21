@@ -28,12 +28,12 @@ def has_attachments(row: Row) -> bool:
     return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
 
 def validate_attachment(
-    row: Row, upload_plan: Uploadable
+    row: Row, upload_plan: UploadTable
 ) -> bool:
     if has_attachments(row):
         data = get_attachments(row)
         if data and isinstance(data, dict):
-            base_table = upload_plan.name  # type: ignore[attr-defined]
+            base_table = upload_plan.name
             for attachment in data.get("attachments", []):
                 if attachment.get("id") and attachment.get("table"):
                     table_name = attachment["table"]
@@ -46,15 +46,15 @@ def validate_attachment(
     return False
 
 def add_attachments_to_plan(
-    row: Row, upload_plan: Uploadable
-) -> Tuple["Row", "UploadTable"]:
+    row: Row, upload_plan: UploadTable
+) -> Tuple["Row", "Uploadable"]:
     attachments_data = get_attachments(row)
     assert attachments_data is not None, "Dataset does not actually have attachments"
     attachments = attachments_data.get("attachments", [])
 
-    base_table = upload_plan.name  # type: ignore[attr-defined]
+    base_table = upload_plan.name
 
-    new_upload_plan = upload_plan._replace()  # type: ignore[attr-defined]
+    new_upload_plan = upload_plan._replace()
     new_row = row.copy()
     logger.debug("Attachments: %s", attachments)
 
