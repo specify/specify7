@@ -39,8 +39,10 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import { AttachmentBaseTableSelection } from '../WbPlanView/State';
-import { attachmentsToCell } from './helpers';
+import {
+  attachmentsToCell,
+  BASE_TABLE_NAME,
+} from './helpers';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
@@ -50,32 +52,19 @@ export function WbImportAttachmentsView(): JSX.Element {
 
   return (
     <Container.Full>
-      {baseTableName === undefined ? (
-        <AttachmentBaseTableSelection
-          onClose={(): void => {
-            navigate('/specify/');
-          }}
-          onSelected={(tableName): void => {
-            setBaseTableName(tableName);
-          }}
-        />
-      ) : (
-        <>
-          <H2>{commonText.multipleFilePickerMessage()}</H2>
-          <div className="w-96">
-            <FilePicker
-              acceptedFormats={undefined}
-              showFileNames
-              onFilesSelected={(selectedFiles) => {
-                setFiles(Array.from(selectedFiles));
-              }}
-            />
-          </div>
-          {files !== undefined && files.length > 0 && (
-            <FilesPicked baseTableName={baseTableName} files={files} />
-          )}
-        </>
-      )}
+        <H2>{commonText.multipleFilePickerMessage()}</H2>
+        <div className="w-96">
+          <FilePicker
+            acceptedFormats={undefined}
+            showFileNames
+            onFilesSelected={(selectedFiles) => {
+              setFiles(Array.from(selectedFiles));
+            }}
+          />
+        </div>
+        {files !== undefined && files.length > 0 && (
+          <FilesPicked files={files} />
+        )}
     </Container.Full>
   );
 }
@@ -177,7 +166,7 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
         const data = dataSetAttachments.map((dataSetAttachment) => [
           attachmentsToCell(
             [serializeResource(dataSetAttachment)],
-            baseTableName
+            BASE_TABLE_NAME
           ),
         ]);
         dataSet.set('data', data as never);
