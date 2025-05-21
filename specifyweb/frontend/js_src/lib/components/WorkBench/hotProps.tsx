@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
@@ -28,6 +29,7 @@ export function useHotProps({
   readonly mappings: WbMapping | undefined;
   readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
 }) {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [autoWrapCol] = userPreferences.use(
     'workBench',
     'editor',
@@ -48,12 +50,12 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
-          readOnly: [-1, undefined].includes(
-            physicalColToMappingCol(physicalCol)
-          )
+          readOnly:
+            isReadOnly ||
+            [-1, undefined].includes(physicalColToMappingCol(physicalCol)),
         })
       ),
-    [dataset.columns.length]
+    [dataset.columns.length, isReadOnly]
   );
 
   const [enterMovesPref] = userPreferences.use(
