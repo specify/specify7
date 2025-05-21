@@ -33,7 +33,7 @@ def validate_attachment(
     if has_attachments(row):
         data = get_attachments(row)
         if data and isinstance(data, dict):
-            base_table = upload_plan.name
+            base_table = upload_plan.name  # type: ignore[attr-defined]
             for attachment in data.get("attachments", []):
                 if attachment.get("id") and attachment.get("table"):
                     table_name = attachment["table"]
@@ -52,7 +52,7 @@ def add_attachments_to_plan(
     assert attachments_data is not None, "Dataset does not actually have attachments"
     attachments = attachments_data.get("attachments", [])
 
-    base_table = upload_plan.name
+    base_table = upload_plan.name  # type: ignore[attr-defined]
 
     new_upload_plan = upload_plan._replace()  # type: ignore[attr-defined]
     new_row = row.copy()
