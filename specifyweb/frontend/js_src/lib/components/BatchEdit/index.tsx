@@ -2,7 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { batchEditText } from '../../localization/batchEdit';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -15,6 +18,7 @@ import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
+import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { QueryField } from '../QueryBuilder/helpers';
@@ -51,6 +55,12 @@ export function BatchEditFromQuery({
   readonly baseTableName: keyof Tables;
   readonly recordSetId?: number;
 }) {
+  const hasRelationships = userPreferences.get(
+    'batchEdit',
+    'editor',
+    'enableRelationships'
+  );
+
   const navigate = useNavigate();
   const post = async (dataSetName: string) =>
     ajax<{ readonly id: number }>('/stored_query/batch_edit/', {
@@ -68,6 +78,7 @@ export function BatchEditFromQuery({
         recordSetId,
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
         treeDefsFilter,
+        omitRelationships: !hasRelationships,
       }),
     });
 
@@ -77,6 +88,8 @@ export function BatchEditFromQuery({
   const [treeDefsFilter, setTreeDefsFilter] = React.useState<TreeDefsFilter>(
     {}
   );
+  const [hasUnsavedQuery, openWarningDialog, closeWarningDialog] =
+    useBooleanState();
   const loading = React.useContext(LoadingContext);
 
   const queryFieldSpecs = React.useMemo(
@@ -128,43 +141,47 @@ export function BatchEditFromQuery({
     queryFieldSpecs.some(hasHierarchyBaseTable) ||
     containsDisallowedTables(query);
 
+  const handleClickBatchEdit = () =>
+    loading(
+      treeRanksPromise.then(async () => {
+        const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
+          filters.some((filter) => filter(fieldSpec))
+        );
+
+        const hasErrors = invalidFields.length > 0;
+        if (hasErrors) {
+          setErrors({
+            invalidFields: invalidFields.map(queryFieldSpecHeader),
+          });
+          return;
+        }
+
+        const missingRanks = findAllMissing(queryFieldSpecs);
+        const newName = batchEditText.datasetName({
+          queryName: query.get('name'),
+          datePart: new Date().toDateString(),
+        });
+        const hasMissingRanks = Object.entries(missingRanks).some(
+          ([_, rankData]) => Object.values(rankData).length > 0
+        );
+        if (hasMissingRanks) {
+          setMissingRanks(missingRanks);
+          setDatasetName(newName);
+          return;
+        }
+
+        return handleCreateDataset(newName);
+      })
+    );
+
   return (
     <>
       <Button.Small
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          loading(
-            treeRanksPromise.then(async () => {
-              const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
-                filters.some((filter) => filter(fieldSpec))
-              );
-
-              const hasErrors = invalidFields.length > 0;
-              if (hasErrors) {
-                setErrors({
-                  invalidFields: invalidFields.map(queryFieldSpecHeader),
-                });
-                return;
-              }
-
-              const missingRanks = findAllMissing(queryFieldSpecs);
-              const newName = batchEditText.datasetName({
-                queryName: query.get('name'),
-                datePart: new Date().toDateString(),
-              });
-              const hasMissingRanks = Object.entries(missingRanks).some(
-                ([_, rankData]) => Object.values(rankData).length > 0
-              );
-              if (hasMissingRanks) {
-                setMissingRanks(missingRanks);
-                setDatasetName(newName);
-                return;
-              }
-
-              return handleCreateDataset(newName);
-            })
-          );
+          if (query.needsSaved) openWarningDialog();
+          else handleClickBatchEdit();
         }}
       >
         <>{batchEditText.batchEdit()}</>
@@ -180,6 +197,19 @@ export function BatchEditFromQuery({
           onSelectTreeDef={handleCheckboxChange}
         />
       ) : undefined}
+      {hasUnsavedQuery && (
+        <Dialog
+          buttons={
+            <Button.Danger onClick={closeWarningDialog}>
+              {commonText.close()}
+            </Button.Danger>
+          }
+          header={queryText.unsavedChangesInQuery()}
+          onClose={closeWarningDialog}
+        >
+          {queryText.unsavedChangesInQueryDescription()}
+        </Dialog>
+      )}
     </>
   );
 }
