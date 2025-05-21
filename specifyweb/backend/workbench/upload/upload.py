@@ -58,6 +58,7 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
+from .upload_table import UploadTable
 from .scope_context import ScopeContext
 from ..models import Spdataset
 
@@ -356,6 +357,8 @@ def do_upload(
 
                 if has_attachments(row):
                     # If there's an attachments column, add attachments to upload plan
+                    if not isinstance(upload_plan, UploadTable):
+                        raise Exception("Attachments column found, but upload plan is not an UploadTable")
                     if not validate_attachment(row, upload_plan):
                         info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN], treeInfo=None)
                         results.append(UploadResult(NoMatch(info), {}, {}))
