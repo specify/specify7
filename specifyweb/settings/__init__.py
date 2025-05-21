@@ -57,7 +57,7 @@ DATABASES = {
  }
 
 def get_sa_db_url(db_name):
-    return 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
+    return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
         MASTER_PASSWORD,
         DATABASE_HOST,

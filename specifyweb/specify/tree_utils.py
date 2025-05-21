@@ -23,7 +23,7 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
         discipline_query |= Q(id=tree_at_discipline.id)
     return discipline_query
 
-def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int]]:
+def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  list[tuple[int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
 
     # Mimic the old behavior of limiting the query to the first item for trees other than taxon.

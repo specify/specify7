@@ -241,7 +241,7 @@ expected_errors = {
   },
   "CollectionObject": {
     "not_found": [
-      "projects", 
+      "projects"
     ],
     "incorrect_direction": {
       "cojo": [

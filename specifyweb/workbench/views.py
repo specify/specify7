@@ -30,15 +30,15 @@ logger = logging.getLogger(__name__)
 
 def resolve_permission(
     dataset: models.Spdataset,
-) -> Union[Type[DataSetPT], Type[BatchEditDataSetPT]]:
+) -> Union[type[DataSetPT], type[BatchEditDataSetPT]]:
     return BatchEditDataSetPT if dataset.isupdate else DataSetPT
 
 WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
 
-def regularize_rows(ncols: int, rows: List[List], skip_empty=True) -> List[List[str]]:
+def regularize_rows(ncols: int, rows: list[list], skip_empty=True) -> list[list[str]]:
     n = ncols + 1  # extra row info such as disambiguation in hidden col at end
 
-    def regularize(row: List) -> Optional[List]:
+    def regularize(row: list) -> Optional[list]:
         data = (row + [""] * n)[:n]  # pad / trim row length to match columns
         cleaned = [
             "" if v is None else str(v).strip() for v in data
@@ -807,7 +807,7 @@ def status(request, ds_id: int) -> http.HttpResponse:
     if ds.uploaderstatus is None:
         return http.JsonResponse(None, safe=False)
     
-    task_status_map: Dict[str, WorkbenchUpdateStatus]  = {
+    task_status_map: dict[str, WorkbenchUpdateStatus]  = {
         CELERY_TASK_STATE.RECEIVED: "PENDING",
         CELERY_TASK_STATE.STARTED: "PENDING",
         CELERY_TASK_STATE.SUCCESS: "PENDING",
@@ -1149,6 +1149,7 @@ def create_recordset(request, ds) -> http.HttpResponse:
         return http.HttpResponseBadRequest("missing parameter: name")
 
     name = request.POST["name"]
+    remarks = request.POST["remarks"]
     max_length = Recordset._meta.get_field("name").max_length
     if max_length is not None and len(name) > max_length:
         return http.HttpResponseBadRequest("name too long")
@@ -1162,5 +1163,5 @@ def create_recordset(request, ds) -> http.HttpResponse:
         request.specify_collection, request.specify_user, Recordset, "create"
     )
 
-    rs = uploader.create_recordset(ds, name)
+    rs = uploader.create_recordset(ds, name, remarks)
     return http.JsonResponse(rs.id, status=201, safe=False)
