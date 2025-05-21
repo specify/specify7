@@ -4,6 +4,7 @@ import json
 from typing import Union, Dict, List, Any, TypedDict, Optional
 from collections.abc import Iterable
 
+from django.apps import apps
 from django.db import connections
 from django.db.models import Q, Count
 from django.db.migrations.recorder import MigrationRecorder
@@ -41,8 +42,10 @@ def validate_unique(model, instance):
     if not cannonical_model:
         # The model is not a Specify Model
         # probably a Django-specific model
-        logger.info(
-            f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
+        # Skip logging for Migration class to not pollute migration log output
+        if model_name != "Migration":
+            logger.info(
+                f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
     applied_migrations = MigrationRecorder(
@@ -144,14 +147,14 @@ class UniquenessCheck(TypedDict):
     fields: List[ViolatedUniquenessCheck]
 
 
-def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str]) -> Optional[UniquenessCheck]:
+def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> Optional[UniquenessCheck]:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
     are models of model_name which have duplicate values of fields in scopes. 
     Returns None if model_name is invalid.
     """
     table = datamodel.get_table(model_name)
-    django_model = get_model(model_name)
+    django_model = get_model(model_name, registry or apps)
     if table is None or django_model is None:
         return None
     fields = [field.lower() for field in raw_fields]
