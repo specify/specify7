@@ -35,6 +35,7 @@ def validate_attachment(
                         table_name = base_table
                     # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
                     supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
+                    # TODO: When not uploading to the base table, make sure the target table exists in the upload plan.
                         
                     return supports_attachments
     return False
@@ -63,6 +64,7 @@ def add_attachments_to_plan(
     for index, attachment in enumerate(attachments):
         # Add columns to row for this attachment
         spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
+        assert spdatasetattachment.attachment is not None, "Attachment does not exist"
 
         new_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
         for field in attachment_fields_to_copy:
@@ -150,5 +152,6 @@ def unlink_attachments(
 ) -> None:
     spdatasetattachments = Spdatasetattachment.objects.filter(spdataset=ds.id)
     for spdatasetattachment in spdatasetattachments:
-        spdatasetattachment.attachment.tableid = ds.specify_model.tableId  # type: ignore[union-attr]
-        spdatasetattachment.attachment.save()
+        attachment: Attachment = spdatasetattachment.attachment
+        attachment.tableid = ds.specify_model.tableId  # type: ignore[union-attr]
+        attachment.save()  # type: ignore[attr-defined]
