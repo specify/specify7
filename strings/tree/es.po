@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 16:00+0000\n"
+"PO-Revision-Date: 2025-04-17 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish "
-"<https://hosted.weblate.org/projects/specify-7/tree/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
+"es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:54
 #: components/Router/OverlayRoutes.tsx:79
@@ -19,8 +19,8 @@ msgstr ""
 msgid "trees"
 msgstr "Árboles"
 
-#: components/DataModel/treeBusinessRules.ts:68
 #. Used in: Components > Data Model > Tree Business Rules
+#: components/DataModel/treeBusinessRules.ts:68
 #, fuzzy
 msgid "badStructure"
 msgstr "Mala estructura de árbol."
@@ -49,13 +49,13 @@ msgstr "Unir"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "undoSynonymy"
-msgstr "Nodo hoja"
+msgstr "Deshacer sinónimo"
 
 #: components/TreeView/Actions.tsx:204
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymize"
-msgstr "Sinonimizar"
+msgstr "Sinónimos"
 
 #: components/TreeView/Actions.tsx:406
 #. Used in: Components > Tree View > Actions
@@ -67,7 +67,7 @@ msgstr "Operación fallida"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailedDescription"
-msgstr "Conteo directo [X7X]"
+msgstr "La operación no se pudo completar debido a los siguientes errores:"
 
 #: components/TreeView/Actions.tsx:428
 #: components/TreeView/Actions.tsx:441
@@ -92,21 +92,23 @@ msgstr "Mueva \"{nodeName:string}\" aquí"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr "Mueva todos los preparativos de \"{nodeName:string}\" aquí"
+msgstr "Mueva todas las preparaciones \"{nodeName:string}\" aquí"
 
 #: components/TreeView/Actions.tsx:453
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
-"El nodo {treeName:string} \"{nodeName:string}\" se colocará, junto con "
-"todos sus descendientes, bajo el nuevo padre \"{parentName:string}\"."
+"El nodo {treeName:string} \"{nodeName:string}\" se colocará, junto con todos "
+"sus descendientes, bajo el nuevo padre \"{parentName:string}\"."
 
 #: components/TreeView/Actions.tsx:459
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeBulkMoveMessage"
-msgstr "Deshacer sinonimia"
+msgstr ""
+"Los preparativos del nodo {treeName:string} \"{nodeName:string}\" se "
+"colocarán en la nueva ubicación \"{parentName:string}\"."
 
 #: components/TreeView/Actions.tsx:359
 #. Used in: Components > Tree View > Actions
@@ -124,19 +126,19 @@ msgstr "No se puede fusionar este nodo de árbol aquí"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveToSynonym"
-msgstr "No puedo pasar a un sinónimo"
+msgstr "No se puede mover a un sinónimo"
 
 #: components/TreeView/Actions.tsx:367
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeIntoSynonym"
-msgstr "No se puede fusionar en sinónimos"
+msgstr "No se pueden fusionar en sinónimos"
 
 #: components/TreeView/Actions.tsx:370
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantSynonymizeSynonym"
-msgstr "No puedo sinonimizar con un sinónimo"
+msgstr "No se puede sinonimizar con un sinónimo"
 
 #: components/TreeView/Actions.tsx:339
 #. Used in: Components > Tree View > Actions
@@ -149,7 +151,7 @@ msgstr "Seleccione un nuevo padre para \"{nodeName:string}\""
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNode"
-msgstr "Fusionar nodo"
+msgstr "Nodo de fusión"
 
 #: components/TreeView/Actions.tsx:392
 #. Used in: Components > Tree View > Actions
@@ -161,15 +163,15 @@ msgstr "Fusionar \"{nodeName:string}\" aquí"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHintMessage"
-msgstr "Seleccione un nuevo objetivo para \"{nodeName:string}\" para fusionarlo"
+msgstr "Seleccione un nuevo objetivo para fusionar \"{nodeName:string}\""
 
 #: components/TreeView/Actions.tsx:343
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
-"Seleccione un nuevo objetivo para los preparativos \"{nodeName:string}\" al "
-"que se trasladará"
+"Seleccione un nuevo objetivo para los preparativos \"{nodeName:string}\" que "
+"se trasladarán a"
 
 #: components/TreeView/Actions.tsx:465
 #. Used in: Components > Tree View > Actions
@@ -179,15 +181,15 @@ msgstr ""
 "Todas las referencias al nodo {treeName:string} \"{nodeName:string}\" serán "
 "reemplazadas por \"{parentName:string}\", y todos los descendientes de "
 "\"{nodeName:string}\" se moverán a \"{parentName:string}\" y todos los "
-"descendientes que coincidan en nombre y rango serán ellos mismos. "
-"fusionados recursivamente."
+"descendientes que coincidan en nombre y rango se fusionarán de forma "
+"recursiva."
 
 #: components/TreeView/Actions.tsx:434
 #: components/TreeView/Actions.tsx:447
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNode"
-msgstr "El nodo [X4X] \"[X28X]\" se convertirá en sinónimo de \"[X74X]\"."
+msgstr "Sinónimos de nodo"
 
 #: components/TreeView/Actions.tsx:394
 #. Used in: Components > Tree View > Actions
@@ -199,7 +201,9 @@ msgstr "Hacer de {nodeName:string} un sinónimo de {synonymName:string}"
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNodeHintMessage"
-msgstr "Seleccione un destino para que \"{nodeName:string}\" se sinonimice"
+msgstr ""
+"Seleccione un objetivo para que \"{nodeName:string}\" se convierta en "
+"sinónimo"
 
 #: components/TreeView/Actions.tsx:471
 #. Used in: Components > Tree View > Actions
@@ -237,16 +241,16 @@ msgstr "Preferido: {name:string}"
 msgid "synonyms"
 msgstr "Sinónimos: {names:string}"
 
-#: components/TreeView/index.tsx:155
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:155
 #, fuzzy
 msgid "treeViewTitle"
 msgstr "{treeName:string} Árbol"
 
+#. Used in: Components > Tree View > Search
 #: components/TreeView/Search.tsx:70
 #: components/TreeView/Search.tsx:71
 #: components/TreeView/Search.tsx:72
-#. Used in: Components > Tree View > Search
 #, fuzzy
 msgid "searchTreePlaceholder"
 msgstr "Árbol de búsqueda"
@@ -255,7 +259,7 @@ msgstr "Árbol de búsqueda"
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
-msgstr "Abrió"
+msgstr "Abierto"
 
 #: components/TreeView/Row.tsx:231
 #. Used in: Components > Tree View > Row
@@ -267,7 +271,7 @@ msgstr "Cerrado"
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"
-msgstr "Nodo hoja"
+msgstr "Nodo de hoja"
 
 #: components/TreeView/helpers.ts:212
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
@@ -285,7 +289,7 @@ msgstr "({directCount:number|formatted})"
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Conteo directo {collectionObjectTable:string}"
+msgstr "Recuento directo {collectionObjectTable:string}"
 
 #: components/TreeView/helpers.ts:204
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
@@ -299,55 +303,55 @@ msgstr "Recuento indirecto {collectionObjectTable:string}"
 msgid "editRanks"
 msgstr "Editar rangos"
 
-#: components/Forms/DeleteButton.tsx:168
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:168
 #, fuzzy
 msgid "resourceToDelete"
-msgstr "Esto eliminará permanentemente el siguiente recurso."
+msgstr "Esto eliminará permanentemente el siguiente recurso"
 
-#: components/TreeView/index.tsx:387
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:387
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Vertical"
+msgstr "Mostrar solo nodos con objetos asociados"
 
-#: components/TreeView/index.tsx:319
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:319
 #, fuzzy
 msgid "splitView"
 msgstr "Vista dividida"
 
-#: components/TreeView/index.tsx:325
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:325
 #, fuzzy
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:325
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:325
 #, fuzzy
 msgid "vertical"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:334
 #. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:334
 #, fuzzy
 msgid "synchronize"
 msgstr "Sincronizar"
 
+#. Used in: Components > Tree View > Add Rank
 #: components/TreeView/AddRank.tsx:47
 #: components/TreeView/AddRank.tsx:95
-#. Used in: Components > Tree View > Add Rank
 #, fuzzy
 msgid "addNewRank"
-msgstr "Agregar nuevo rango"
+msgstr "Añadir nuevo rango"
 
+#. Used in: Components > Tree View > Add Rank
 #: components/TreeView/AddRank.tsx:66
 #: components/TreeView/AddRank.tsx:71
-#. Used in: Components > Tree View > Add Rank
 #, fuzzy
 msgid "chooseParentRank"
-msgstr "Elija el rango de padres"
+msgstr "Elija el rango de los padres"
 
 #: components/TreeView/Actions.tsx:174
 #: components/TreeView/Actions.tsx:430
@@ -357,92 +361,93 @@ msgstr "Elija el rango de padres"
 msgid "moveItems"
 msgstr "Mover elementos"
 
+#. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:64
 #: components/TreeView/CreateTree.tsx:77
-#. Used in: Components > Tree View > Create Tree
 #, fuzzy
 msgid "addTree"
-msgstr ""
+msgstr "Agregar árbol"
 
 #: components/TreeView/Tree.tsx:221
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "addRootNode"
-msgstr ""
+msgstr "Agregar nodo raíz"
 
+#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:271
 #: components/TreeView/index.tsx:273
-#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"
-msgstr ""
+msgstr "Recolector de árboles"
 
-#: components/TreeView/defaults.ts:413
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:413
 #, fuzzy
 msgid "botany"
-msgstr ""
+msgstr "Botánica"
 
-#: components/TreeView/defaults.ts:441
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:441
 #, fuzzy
 msgid "entomology"
-msgstr ""
+msgstr "Entomología"
 
-#: components/TreeView/defaults.ts:469
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:469
 #, fuzzy
 msgid "herpetology"
-msgstr ""
+msgstr "Herpetología"
 
-#: components/TreeView/defaults.ts:491
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:491
 #, fuzzy
 msgid "ichthyology"
-msgstr ""
+msgstr "Ictiología"
 
-#: components/TreeView/defaults.ts:515
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:515
 #, fuzzy
 msgid "invertpaleo"
-msgstr ""
+msgstr "Paleontología de invertebrados"
 
-#: components/TreeView/defaults.ts:534
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:534
 #, fuzzy
 msgid "invertzoo"
-msgstr ""
+msgstr "Zoología de invertebrados"
 
-#: components/TreeView/defaults.ts:559
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:559
 #, fuzzy
 msgid "mammalogy"
-msgstr ""
+msgstr "Mastozoología"
 
-#: components/TreeView/defaults.ts:578
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:578
 #, fuzzy
 msgid "ornithology"
-msgstr ""
+msgstr "Ornitología"
 
-#: components/TreeView/defaults.ts:599
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr ""
+msgstr "Paleobotánica"
 
-#: components/TreeView/defaults.ts:618
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:618
 #, fuzzy
 msgid "vascplant"
-msgstr ""
+msgstr "Plantas vasculares"
 
-#: components/TreeView/defaults.ts:645
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:645
 #, fuzzy
 msgid "vertpaleo"
-msgstr ""
+msgstr "Paleontología de vertebrados"
 
+#. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:414
 #: components/TreeView/defaults.ts:442
 #: components/TreeView/defaults.ts:470
@@ -458,31 +463,30 @@ msgstr ""
 #: components/TreeView/defaults.ts:672
 #: components/TreeView/defaults.ts:680
 #: components/TreeView/defaults.ts:701
-#. Used in: Components > Tree View > Defaults
 #, fuzzy
 msgid "defaultRemarks"
-msgstr ""
+msgstr "Un árbol de taxones predeterminado"
 
-#: components/TreeView/defaults.ts:700
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:700
 #, fuzzy
 msgid "emptyTree"
-msgstr ""
+msgstr "Árbol vacío"
 
-#: components/TreeView/defaults.ts:662
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:662
 #, fuzzy
 msgid "minerals"
-msgstr ""
+msgstr "Minerales"
 
-#: components/TreeView/defaults.ts:679
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:679
 #, fuzzy
 msgid "rocks"
-msgstr ""
+msgstr "Rocas"
 
-#: components/TreeView/defaults.ts:671
 #. Used in: Components > Tree View > Defaults
+#: components/TreeView/defaults.ts:671
 #, fuzzy
 msgid "meteorites"
-msgstr ""
+msgstr "Meteoritos"
