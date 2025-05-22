@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -501,7 +501,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Formatvorschau',
+    'de-ch': '(Standard)',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -734,7 +734,7 @@ export const resourcesText = createDictionary({
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
-    'de-ch': 'Erstellen einer neuen Ansichtsdefinition',
+    'de-ch': 'Definition',
     'es-es': 'Crear una nueva definición de vista',
     'fr-fr': 'Créer une nouvelle définition de vue',
     'ru-ru': 'Создайте новое определение представления',
@@ -751,10 +751,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default view definition',
     'de-ch': 'Standardansichtsdefinition kopieren',
-    'es-es': 'Copiar definición de vista predeterminada',
-    'fr-fr': 'Copier la définition de vue par défaut',
-    'ru-ru': 'Скопировать определение представления по умолчанию',
-    'uk-ua': 'Копіювати визначення перегляду за замовчуванням',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Формати записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -825,10 +825,53 @@ export const resourcesText = createDictionary({
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': 'Formatvorschau',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Vista previa de formato',
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
+  },
+  currentDeterminationRequired: {
+    'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
+  },
+  cogAddedToItself: {
+    'en-us': 'A COG cannot be added to itself.',
+  },
+  coHasParent: {
+    'en-us': 'A CO with a parent cannot be added to a COG.',
+  },
+  primaryCogChildRequired: {
+    'en-us':
+      'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+  },
+  deleteLoanedPrep: {
+    'en-us': 'A loaned preparation cannot be deleted',
+  },
+  deleteGiftedPrep: {
+    'en-us': 'A gifted preparation cannot be deleted',
+  },
+  deleteDisposedPrep: {
+    'en-us': 'A disposed preparation cannot be deleted',
+  },
+  deleteExchangeOutPrep: {
+    'en-us': 'A exchanged out preparation cannot be deleted',
+  },
+  deleteExchangeInPrep: {
+    'en-us': 'A exchanged in preparation cannot be deleted',
+  },
+  invalidDeterminationTaxon: {
+    'en-us':
+      'Determination does not belong to the taxon tree associated with the Collection Object Type',
+  },
+  preparationUsedInLoan: {
+    'en-us': 'The preparation is used in a loan.',
   },
 } as const);

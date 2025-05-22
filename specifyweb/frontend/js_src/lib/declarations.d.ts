@@ -58,7 +58,7 @@ declare global {
       object: DICTIONARY
     ): [
       keyof DICTIONARY extends number ? string : string & keyof DICTIONARY,
-      ValueOf<DICTIONARY>
+      ValueOf<DICTIONARY>,
     ][];
 
     // Array

@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { treeText } from '../../localization/tree';
+import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -14,11 +15,15 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
+import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
+import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AddRank } from './AddRank';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
@@ -29,9 +34,13 @@ const treeToPref = {
   Storage: 'storage',
   GeologicTimePeriod: 'geologicTimePeriod',
   LithoStrat: 'lithoStrat',
+  TectonicUnit: 'tectonicUnit',
 } as const;
 
-export function Tree<SCHEMA extends AnyTree>({
+export function Tree<
+  SCHEMA extends AnyTree,
+  TREE_NAME extends SCHEMA['tableName'],
+>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
@@ -47,12 +56,12 @@ export function Tree<SCHEMA extends AnyTree>({
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
-  handleToggleEditingRanks,
+  onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly tableName: SCHEMA['tableName'];
+  readonly tableName: TREE_NAME;
   readonly isEditingRanks: boolean;
   readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;
@@ -66,7 +75,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
-  readonly handleToggleEditingRanks: () => void;
+  readonly onToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -100,6 +109,28 @@ export function Tree<SCHEMA extends AnyTree>({
     [baseUrl, statsThreshold]
   );
 
+  const treeDefinition = treeDefinitionItems[0].treeDef;
+  const treeDefId = idFromUrl(treeDefinition);
+  const createRootNode = async (): Promise<void> => {
+    if (treeDefId === undefined) {
+      softError('treeDefId is undefined');
+    } else {
+      await ping(
+        `/api/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
+        {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+        }
+      )
+        .then(() => {
+          globalThis.location.reload();
+        })
+        .catch((error) => {
+          softError('Error creating root node:', error);
+        });
+    }
+  };
+
   return (
     <div
       className={`
@@ -126,12 +157,6 @@ export function Tree<SCHEMA extends AnyTree>({
         // If user wants to edit tree ranks, allow tree ranks to receive focus
         if (isEditingRanks) return;
         event.preventDefault();
-        // Unset and set focus path to trigger a useEffect hook in <TreeNode>
-        setFocusPath([-1]);
-        globalThis.setTimeout(
-          () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
-          0
-        );
       }}
     >
       <div role="none rowgroup">
@@ -151,12 +176,21 @@ export function Tree<SCHEMA extends AnyTree>({
                 role="columnheader"
               >
                 {index === 0 ? (
-                  <Button.Icon
-                    aria-pressed={isEditingRanks}
-                    icon="pencil"
-                    title={treeText.editRanks()}
-                    onClick={handleToggleEditingRanks}
-                  />
+                  <>
+                    <Button.Icon
+                      aria-pressed={isEditingRanks}
+                      icon="pencil"
+                      title={treeText.editRanks()}
+                      onClick={handleToggleEditingRanks}
+                    />
+                    {isEditingRanks &&
+                    hasTablePermission(
+                      treeDefinitionItems[0]._tableName,
+                      'create'
+                    ) ? (
+                      <AddRank treeDefinitionItems={treeDefinitionItems} />
+                    ) : null}
+                  </>
                 ) : null}
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}
@@ -167,7 +201,7 @@ export function Tree<SCHEMA extends AnyTree>({
                   }
                 >
                   {
-                    (collapsedRanks?.includes(rank.rankId) ?? false
+                    ((collapsedRanks?.includes(rank.rankId) ?? false)
                       ? rankName[0]
                       : rankName) as LocalizedString
                   }
@@ -181,6 +215,13 @@ export function Tree<SCHEMA extends AnyTree>({
           })}
         </div>
       </div>
+      {rows.length === 0 ? (
+        <Button.Icon
+          icon="plus"
+          title={treeText.addRootNode()}
+          onClick={createRootNode}
+        />
+      ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
           <TreeRow
@@ -257,7 +298,7 @@ function EditTreeRank({
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
-          onDeleted={undefined}
+          onDeleted={(): void => globalThis.location.reload()}
           onSaved={(): void => globalThis.location.reload()}
         />
       ) : null}

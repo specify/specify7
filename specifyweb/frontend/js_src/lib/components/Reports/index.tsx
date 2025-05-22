@@ -14,6 +14,7 @@ import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type {
   SerializedRecord,
@@ -140,7 +141,7 @@ export function ReportsView({
       <Dialog
         buttons={commonText.cancel()}
         header={reportsText.reports()}
-        icon={<span className="text-blue-500">{icons.documentReport}</span>}
+        icon={icons.documentReport}
         onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
@@ -246,9 +247,11 @@ function ReportRow({
               <DateElement date={entry.appResource.timestampCreated} />
             </td>
             <td>
-              <FormattedResourceUrl
-                resourceUrl={entry.appResource.specifyUser}
-              />
+              <ReadOnlyContext.Provider value>
+                <FormattedResourceUrl
+                  resourceUrl={entry.appResource.specifyUser}
+                />
+              </ReadOnlyContext.Provider>
             </td>
             <td>
               <Link.Icon

@@ -19,6 +19,7 @@ import {
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
@@ -28,6 +29,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/accounts/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
+      onClick: async () =>
+        clearAllCache()
+          .then(() => {
+            console.log('Cache cleared successfully.');
+          })
+          .catch((error) => {
+            console.error('Error occurred during cache clearing:', error);
+          }),
     },
     changePassword: {
       title: userText.changePassword(),
@@ -97,6 +106,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
       icon: icons.rss,
+    },
+  },
+  [commonText.import()]: {
+    localityUpdate: {
+      title: headerText.localityUpdateTool(),
+      enabled: () => userInformation.isadmin,
+      url: '/specify/import/locality-dataset/',
+      icon: icons.globe,
     },
   },
   [headerText.documentation()]: {

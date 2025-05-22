@@ -117,7 +117,7 @@ def get_schema_localization(collection, schematype, lang):
     cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui', 'name', 'desc')
 
     containers = {
-        row[0]: dict(items={}, **{field: row[i+1] for i, field in enumerate(cfields)})
+        row[0].lower(): dict(items={}, **{field: row[i+1] for i, field in enumerate(cfields)})
         for row in cursor.fetchall()
     }
 
@@ -172,7 +172,7 @@ def get_schema_localization(collection, schematype, lang):
     ifields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'isrequired', 'weblinkname', 'name', 'desc')
 
     for row in cursor.fetchall():
-        containers[row[0]]['items'][row[1].lower()] = {field: row[i+2] for i, field in enumerate(ifields)}
+        containers[row[0].lower()]['items'][row[1].lower()] = {field: row[i+2] for i, field in enumerate(ifields)}
 
     return containers
 

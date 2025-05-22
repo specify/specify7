@@ -37,6 +37,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -46,6 +47,13 @@ export const operationPolicies = {
     'repair',
   ],
   '/tree/edit/lithostrat': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
+  '/tree/edit/tectonicunit': [
     'merge',
     'move',
     'synonymize',
@@ -74,6 +82,18 @@ export const operationPolicies = {
     'delete',
     'upload',
     'rollback',
+  ],
+  '/batch_edit/dataset': [
+    'create',
+    'update',
+    'delete',
+    'commit',
+    'rollback',
+    'validate',
+    'transfer',
+    'create_recordset',
+    'delete_dependents',
+    'edit_multiple_tables',
   ],
 } as const;
 

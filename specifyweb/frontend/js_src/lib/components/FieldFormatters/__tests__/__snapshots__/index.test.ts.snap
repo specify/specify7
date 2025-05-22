@@ -3,12 +3,14 @@
 exports[`field formatters are fetched and parsed correctly 1`] = `
 {
   "AccessionNumber": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -16,6 +18,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       AlphaNumberField {
@@ -23,6 +26,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 2,
+        "type": "alphanumeric",
         "value": "AA",
       },
       SeparatorField {
@@ -30,6 +34,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -37,6 +42,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -45,12 +51,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionNumber",
   },
   "AccessionNumberByYear": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -58,6 +66,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       AlphaNumberField {
@@ -65,6 +74,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 2,
+        "type": "alphanumeric",
         "value": "AA",
       },
       SeparatorField {
@@ -72,6 +82,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       AlphaNumberField {
@@ -79,6 +90,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "alphanumeric",
         "value": "AAA",
       },
     ],
@@ -87,12 +99,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionNumberByYear",
   },
   "AccessionStringFormatter": UiFormatter {
+    "field": "[literalField Accession.accessionNumber]",
     "fields": [
       AlphaNumberField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 10,
+        "type": "alphanumeric",
         "value": "AAAAAAAAAA",
       },
     ],
@@ -101,12 +115,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "AccessionStringFormatter",
   },
   "CatalogNumber": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -114,6 +130,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -121,6 +138,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 6,
+        "type": "numeric",
         "value": "######",
       },
     ],
@@ -129,12 +147,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumber",
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -142,6 +162,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -149,6 +170,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 6,
+        "type": "numeric",
         "value": "######",
       },
     ],
@@ -157,12 +179,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumberAlphaNumByYear",
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       CatalogNumberNumericField {
         "autoIncrement": true,
         "byYear": false,
         "pattern": undefined,
         "size": 9,
+        "type": "numeric",
         "value": "#########",
       },
     ],
@@ -171,12 +195,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "Catalog Number Numeric",
   },
   "CatalogNumberNumericRegex": UiFormatter {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       RegexField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": "####[-A]",
         "size": 1,
+        "type": "regex",
         "value": "[0-9]{4}(-[A-Z])?",
       },
     ],
@@ -185,18 +211,21 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "CatalogNumberNumericRegex",
   },
   "Date": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": true,
     "table": undefined,
     "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
+    "field": "[literalField Deaccession.deaccessionNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -204,6 +233,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       AlphaNumberField {
@@ -211,6 +241,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 2,
+        "type": "alphanumeric",
         "value": "AA",
       },
       SeparatorField {
@@ -218,6 +249,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -225,6 +257,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -233,12 +266,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "DeaccessionNumber",
   },
   "GiftNumber": UiFormatter {
+    "field": "[literalField Gift.giftNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -246,6 +281,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -253,6 +289,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -261,12 +298,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "GiftNumber",
   },
   "InfoRequestNumber": UiFormatter {
+    "field": "[literalField InfoRequest.infoReqNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -274,6 +313,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -281,6 +321,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -289,12 +330,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "InfoRequestNumber",
   },
   "KUITeach": CatalogNumberNumeric {
+    "field": "[literalField CollectionObject.catalogNumber]",
     "fields": [
       CatalogNumberNumericField {
         "autoIncrement": true,
         "byYear": false,
         "pattern": undefined,
         "size": 9,
+        "type": "numeric",
         "value": "#########",
       },
     ],
@@ -303,12 +346,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "Catalog Number Numeric",
   },
   "LoanNumber": UiFormatter {
+    "field": "[literalField Loan.loanNumber]",
     "fields": [
       YearField {
         "autoIncrement": false,
         "byYear": true,
         "pattern": undefined,
         "size": 4,
+        "type": "year",
         "value": "YEAR",
       },
       SeparatorField {
@@ -316,6 +361,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 1,
+        "type": "separator",
         "value": "-",
       },
       NumericField {
@@ -323,6 +369,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -331,12 +378,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "LoanNumber",
   },
   "NumericBigDecimal": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 15,
+        "type": "numeric",
         "value": "###############",
       },
     ],
@@ -345,12 +394,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericBigDecimal",
   },
   "NumericByte": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 3,
+        "type": "numeric",
         "value": "###",
       },
     ],
@@ -359,12 +410,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericByte",
   },
   "NumericDouble": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 10,
+        "type": "numeric",
         "value": "##########",
       },
     ],
@@ -373,12 +426,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericDouble",
   },
   "NumericFloat": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 10,
+        "type": "numeric",
         "value": "##########",
       },
     ],
@@ -387,12 +442,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericFloat",
   },
   "NumericInteger": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 10,
+        "type": "numeric",
         "value": "##########",
       },
     ],
@@ -401,12 +458,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericInteger",
   },
   "NumericLong": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 10,
+        "type": "numeric",
         "value": "##########",
       },
     ],
@@ -415,12 +474,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericLong",
   },
   "NumericShort": UiFormatter {
+    "field": undefined,
     "fields": [
       NumericField {
         "autoIncrement": false,
         "byYear": false,
         "pattern": undefined,
         "size": 5,
+        "type": "numeric",
         "value": "#####",
       },
     ],
@@ -429,24 +490,28 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "title": "NumericShort",
   },
   "PartialDate": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": false,
     "table": undefined,
     "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
+    "field": undefined,
     "fields": [],
     "isSystem": true,
     "table": undefined,

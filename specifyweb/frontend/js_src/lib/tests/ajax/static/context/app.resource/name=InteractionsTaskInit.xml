@@ -68,7 +68,7 @@
     issrchsrv="true"
     order="0"
     enabled="true"
-    visible="false"
+    visible="true"
     tooltip=""
   >
     <draggableFlavors />

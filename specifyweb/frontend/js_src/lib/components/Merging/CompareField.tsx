@@ -130,6 +130,7 @@ function fieldToDefinition(
       hasViewButton: false,
       typeSearch: undefined,
       searchView: undefined,
+      defaultRecord: undefined,
     };
   else if (field.type === 'java.lang.Boolean')
     return {
@@ -173,6 +174,7 @@ function fieldToDefinition(
       minLength: undefined,
       maxLength: undefined,
       step: undefined,
+      whiteSpaceSensitive: undefined,
     };
 }
 

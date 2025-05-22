@@ -81,9 +81,15 @@ export function PrepDialogRow({
           </Link.NewTab>
         </td>
         <td>
-          <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
-            {localized(preparation.taxon)}
-          </Link.NewTab>
+          {preparation.taxon ? (
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {localized(preparation.taxon)}
+            </Link.NewTab>
+          ) : (
+            <span>{interactionsText.notAvailable()}</span>
+          )}
         </td>
         <td>{preparation.prepType}</td>
         <td>
@@ -129,8 +135,8 @@ export function PrepDialogRow({
                                   resource: new (loans.length === 1
                                     ? tables.Loan
                                     : gifts.length === 1
-                                    ? tables.Gift
-                                    : tables.ExchangeOut
+                                      ? tables.Gift
+                                      : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,

@@ -6,6 +6,8 @@ requireContext();
 test('Parent table relationships are calculated properly', () =>
   expect(parentTableRelationship()).toMatchInlineSnapshot(`
     {
+      "AbsoluteAgeAttachment": "[relationship AbsoluteAgeAttachment.absoluteAge]",
+      "AbsoluteAgeCitation": "[relationship AbsoluteAgeCitation.absoluteAge]",
       "AccessionAgent": "[relationship AccessionAgent.accession]",
       "AccessionAttachment": "[relationship AccessionAttachment.accession]",
       "AccessionAuthorization": "[relationship AccessionAuthorization.accession]",
@@ -31,6 +33,7 @@ test('Parent table relationships are calculated properly', () =>
       "CollectionObjectAttachment": "[relationship CollectionObjectAttachment.collectionObject]",
       "CollectionObjectAttr": "[relationship CollectionObjectAttr.collectionObject]",
       "CollectionObjectCitation": "[relationship CollectionObjectCitation.collectionObject]",
+      "CollectionObjectGroupJoin": "[relationship CollectionObjectGroupJoin.parentCog]",
       "CollectionObjectProperty": "[relationship CollectionObjectProperty.collectionObject]",
       "Collector": "[relationship Collector.collectingEvent]",
       "CommonNameTx": "[relationship CommonNameTx.taxon]",
@@ -67,6 +70,7 @@ test('Parent table relationships are calculated properly', () =>
       "GiftPreparation": "[relationship GiftPreparation.gift]",
       "LatLonPolygon": "[relationship LatLonPolygon.locality]",
       "LatLonPolygonPnt": "[relationship LatLonPolygonPnt.latLonPolygon]",
+      "LibraryRolePolicy": "[relationship LibraryRolePolicy.role]",
       "LithoStratTreeDefItem": "[relationship LithoStratTreeDefItem.treeDef]",
       "LoanAgent": "[relationship LoanAgent.loan]",
       "LoanAttachment": "[relationship LoanAttachment.loan]",
@@ -84,7 +88,10 @@ test('Parent table relationships are calculated properly', () =>
       "PreparationProperty": "[relationship PreparationProperty.preparation]",
       "RecordSetItem": "[relationship RecordSetItem.recordSet]",
       "ReferenceWorkAttachment": "[relationship ReferenceWorkAttachment.referenceWork]",
+      "RelativeAgeAttachment": "[relationship RelativeAgeAttachment.relativeAge]",
+      "RelativeAgeCitation": "[relationship RelativeAgeCitation.relativeAge]",
       "RepositoryAgreementAttachment": "[relationship RepositoryAgreementAttachment.repositoryAgreement]",
+      "RolePolicy": "[relationship RolePolicy.role]",
       "SpAppResourceData": "[relationship SpAppResourceData.spAppResource]",
       "SpAuditLogField": "[relationship SpAuditLogField.spAuditLog]",
       "SpExportSchemaItem": "[relationship SpExportSchemaItem.spExportSchema]",
@@ -96,7 +103,9 @@ test('Parent table relationships are calculated properly', () =>
       "TaxonAttachment": "[relationship TaxonAttachment.taxon]",
       "TaxonCitation": "[relationship TaxonCitation.taxon]",
       "TaxonTreeDefItem": "[relationship TaxonTreeDefItem.treeDef]",
+      "TectonicUnitTreeDefItem": "[relationship TectonicUnitTreeDefItem.treeDef]",
       "TreatmentEventAttachment": "[relationship TreatmentEventAttachment.treatmentEvent]",
+      "UniquenessRuleField": "[relationship UniquenessRuleField.uniquenessrule]",
       "WorkbenchRow": "[relationship WorkbenchRow.workbench]",
       "WorkbenchRowImage": "[relationship WorkbenchRowImage.workbenchRow]",
     }

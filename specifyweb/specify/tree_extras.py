@@ -1,6 +1,12 @@
 import re
 from contextlib import contextmanager
 import logging
+from typing import List
+
+from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
+    verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
+from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
+from specifyweb.specify.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 
 
@@ -9,8 +15,9 @@ from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+import specifyweb.specify.models as spmodels
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -28,7 +35,7 @@ class Tree(models.Model):
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
-            super(Tree, self).save(*args, **kwargs)
+            save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
 
         if skip_tree_extras:
             return save()
@@ -67,7 +74,7 @@ class Tree(models.Model):
             save()
 
         try:
-            model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
+            model.objects.get(Q(id=self.id) & (Q(parent__rankid__lt=F('rankid'))|Q(parent__isnull=True)))
         except model.DoesNotExist:
             raise TreeBusinessRuleException(
                 "Tree node's parent has rank greater than itself",
@@ -85,7 +92,7 @@ class Tree(models.Model):
                     "rankid" : self.parent.rankid,
                     "fullName": self.parent.fullname,
                     "parentid": self.parent.parent.id,
-                    "children": list(self.parent.children.values('id', 'fullName'))
+                    "children": list(self.parent.children.values('id', 'fullname'))
                  }
                  })
 
@@ -112,7 +119,7 @@ class Tree(models.Model):
             set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
-        return 'accepted{}_id'.format(self._meta.db_table)
+        return f'accepted{self._meta.db_table}_id'
 
     @property
     def accepted_id(self):
@@ -122,6 +129,42 @@ class Tree(models.Model):
     def accepted_id(self, value):
         setattr(self, self.accepted_id_attr(), value)
 
+class TreeRank(models.Model):
+    class Meta:
+            abstract = True
+
+    def save(self, *args, **kwargs):
+        # pre_save
+        if self.pk is None: # is it a new object?
+            pre_tree_rank_init(self)
+            verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
+        else:
+            verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
+        
+        # save
+        super().save(*args, **kwargs)
+
+        # post_save
+        post_tree_rank_save(self.__class__, self)
+
+    def delete(self, *args, allow_root_del=False, **kwargs):
+        # pre_delete
+        if not allow_root_del and self.__class__.objects.get(id=self.id).parent is None:
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": 'deletingTreeRoot',
+                 "node": {
+                     "id": self.id
+                 }})
+        pre_tree_rank_deletion(self.__class__, self)
+        verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
+
+        # delete
+        super().delete(*args, **kwargs)
+
+        # post_delete
+        post_tree_rank_deletion(self)
 
 
 def open_interval(model, parent_node_number, size):
@@ -201,7 +244,7 @@ def moving_node(to_save):
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
     if new_parent.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Moving node "{node.fullname}" to synonymized parent "{parent.fullname}"'.format(node=to_save, parent=new_parent),
+            f'Moving node "{to_save.fullname}" to synonymized parent "{new_parent.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Moving",
@@ -232,7 +275,7 @@ def moving_node(to_save):
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
-def mutation_log(action, node, agent, parent, dirty_flds):
+def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo]):
     from .auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
@@ -247,10 +290,10 @@ def merge(node, into, agent):
         "operation" : "merge",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "operationAcrossTrees", "operation": "merge"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
+            f'Merging node "{node.fullname}" with synonymized node "{into.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
@@ -284,7 +327,7 @@ def merge(node, into, agent):
             node.delete()
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
-                         [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+                        [FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)])
             return
         except ProtectedError as e: 
             """ Cannot delete some instances of TREE because they are referenced 
@@ -299,6 +342,24 @@ def merge(node, into, agent):
 
     assert False, "failed to move all referrences to merged tree node"
 
+def bulk_move(node, into, agent):
+    from . import models
+    logger.info('Bulk move preparations from %s to %s', node, into)
+    model = type(node)
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "bulk_move",
+        "localizationKey" : "invalidNodeType"})
+    target = model.objects.select_for_update().get(id=into.id)
+    if not (node.definition_id == target.definition_id): raise AssertionError("Bulk move across trees", {"localizationKey" : "operationAcrossTrees", "operation": "bulk move"})
+
+    models.Preparation.objects.filter(storage = node).update(storage = into)
+
+    field_change_info: FieldChangeInfo = FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)
+    mutation_log(TREE_BULK_MOVE, node, agent, node.parent, [field_change_info])
+
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
@@ -309,10 +370,10 @@ def synonymize(node, into, agent):
         "operation" : "synonymize",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "operationAcrossTrees", "operation": "synonymize"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
+            f'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonymizeToSynonymized",
              "node" : {
@@ -339,7 +400,7 @@ def synonymize(node, into, agent):
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
     if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
         raise TreeBusinessRuleException(
-            'Synonymizing node "{node.fullname}" which has children'.format(node=node),
+            f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
              "node" : {
@@ -357,9 +418,11 @@ def synonymize(node, into, agent):
              }})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
-    mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,
-                 [{'field_name': 'acceptedid','old_value': None, 'new_value': target.id},
-                  {'field_name': 'isaccepted','old_value': True, 'new_value': False}])
+    field_change_infos = [
+        FieldChangeInfo(field_name='acceptedid', old_value=None, new_value=target.id),
+        FieldChangeInfo(field_name='isaccepted', old_value=True, new_value=False)
+        ]
+    mutation_log(TREE_SYNONYMIZE, node, agent, node.parent, field_change_infos)
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
@@ -373,9 +436,12 @@ def desynonymize(node, agent):
     node.accepted_id = None
     node.isaccepted = True
     node.save()
-    mutation_log(TREE_DESYNONYMIZE, node, agent, node.parent,
-                 [{'field_name': 'acceptedid','old_value': old_acceptedid, 'new_value': None},
-                  {'field_name': 'isaccepted','old_value': False, 'new_value': True}])
+
+    field_change_infos = [
+        FieldChangeInfo(field_name='acceptedid', old_value=old_acceptedid, new_value=None),
+        FieldChangeInfo(field_name='isaccepted', old_value=False, new_value=True)
+    ]
+    mutation_log(TREE_DESYNONYMIZE, node, agent, node.parent, field_change_infos)
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=F('taxon'))
@@ -398,7 +464,7 @@ def IF(if_expr, then_expr, else_expr=EMPTY):
     elif if_expr == FALSE:
         return else_expr
     else:
-        return 'if({}, {}, {})'.format(if_expr, then_expr, else_expr)
+        return f'if({if_expr}, {then_expr}, {else_expr})'
 
 def CONCAT(exprs, separator=''):
     exprs = [e for e in exprs if e != EMPTY]
@@ -412,25 +478,25 @@ def CONCAT(exprs, separator=''):
         return "concat_ws('{}', {})".format(separator, ', '.join(exprs))
 
 def NAME(index):
-    return 't{}.name'.format(index)
+    return f't{index}.name'
 
 def IN_NAME(index):
-    return 'd{}.isinfullname'.format(index)
+    return f'd{index}.isinfullname'
 
 def SEPARATOR(index):
-    return 'd{}.fullnameseparator'.format(index)
+    return f'd{index}.fullnameseparator'
 
 def BEFORE(index):
-    return 'd{}.textbefore'.format(index)
+    return f'd{index}.textbefore'
 
 def AFTER(index):
-    return 'd{}.textafter'.format(index)
+    return f'd{index}.textafter'
 
 def ID(table, index):
-    return 't{}.{table}id'.format(index, table=table)
+    return f't{index}.{table}id'
 
 def NODENUMBER(index):
-    return 't{}.nodenumber'.format(index)
+    return f't{index}.nodenumber'
 
 def fullname_expr(depth, reverse):
     fullname = CONCAT([
@@ -493,11 +559,11 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
         root=depth-1,
         table=table,
         treedefid=treedefid,
-        set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
+        set_expr=f"t0.fullname = {fullname_expr(depth, reverse)}",
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
-        node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
+        node_number_range=f"and t0.nodenumber between {node_number_range[0]} and {node_number_range[1]}" if not (node_number_range is None) else ''
     )
 
     logger.debug('fullname update sql:\n%s', sql)
@@ -553,7 +619,7 @@ def validate_tree_numbering(table):
     ).format(table=table))
     not_nested_count, = cursor.fetchone()
     assert not_nested_count == 0, \
-        "found {} nodenumbers not nested by parent".format(not_nested_count)
+        f"found {not_nested_count} nodenumbers not nested by parent"
 
 def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
@@ -607,12 +673,15 @@ def renumber_tree(table):
     }
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
-    if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
-        formattedResults)
+    if bad_ranks_count > 0:
+        # raise AssertionError( # Phasing out node numbering, logging as warning instead of raising an exception
+        logger.warning(
+            f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
+            formattedResults,
+        )
 
     # Get the tree ranks in leaf -> root order.
-    cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
+    cursor.execute(f"select distinct rankid from {table} order by rankid desc")
     ranks = [rank for (rank,) in cursor.fetchall()]
     depth = len(ranks)
 
@@ -660,3 +729,13 @@ def renumber_tree(table):
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
+
+def is_treedefitem(obj):
+    return issubclass(obj.__class__, TreeRank) or bool(
+        re.search(r"treedefitem'>$", str(obj.__class__), re.IGNORECASE)
+    )
+
+def is_treedef(obj):
+    return issubclass(obj.__class__, Tree) or bool(
+        re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
+    )

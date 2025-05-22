@@ -7,6 +7,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -16,6 +17,7 @@ import { tables } from '../DataModel/tables';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 
 function List({
@@ -114,10 +116,12 @@ export function ShowLoansCommand({
   return typeof data === 'object' ? (
     <Dialog
       buttons={commonText.close()}
-      header={commonText.transactions()}
+      header={interactionsText.interactions()}
+      icon={icons.chat}
       onClose={handleClose}
     >
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.openLoans({
           loanTable: tables.Loan.label,
         })}
@@ -127,7 +131,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.resolvedLoans({
           loanTable: tables.Loan.label,
         })}
@@ -137,7 +142,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Gift.name} />
         {interactionsText.gifts({
           giftTable: tables.Gift.label,
         })}

@@ -134,17 +134,40 @@ type ParseFailures = State<
   }
 >;
 
+type Updated = State<'Updated', Omit<Uploaded, 'type'>>;
+
+type NoChange = State<
+  'NoChange',
+  {
+    readonly id: number;
+    readonly info: ReportInfo;
+  }
+>;
+
+type Deleted = State<
+  'Deleted',
+  { readonly id: number; readonly info: ReportInfo }
+>;
 // Indicates failure due to a failure to upload a related record
 type PropagatedFailure = State<'PropagatedFailure'>;
 
+type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
+
 type RecordResultTypes =
+  | Deleted
+  | Deleted
   | FailedBusinessRule
   | Matched
+  | MatchedAndChanged
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
+  | NoChange
   | NoMatch
   | NullRecord
   | ParseFailures
   | PropagatedFailure
+  | Updated
   | Uploaded;
 
 // Records the specific result of attempting to upload a particular record
@@ -172,21 +195,16 @@ export type UploadResult = {
   };
 };
 
-/** Back-end sends a validation key. Front-end translates it */
-export function resolveValidationMessage(
+export function resolveBackendParsingMessage(
   key: string,
   payload: IR<unknown>
-): LocalizedString {
+): LocalizedString | undefined {
   if (key === 'failedParsingBoolean')
     return backEndText.failedParsingBoolean({ value: payload.value as string });
   else if (key === 'failedParsingDecimal')
     return backEndText.failedParsingDecimal({ value: payload.value as string });
   else if (key === 'failedParsingFloat')
     return backEndText.failedParsingFloat({ value: payload.value as string });
-  else if (key === 'failedParsingPickList')
-    return backEndText.failedParsingPickList({
-      value: `"${payload.value as string}"`,
-    });
   else if (key === 'failedParsingAgentType')
     return backEndText.failedParsingAgentType({
       agentTypeField: getField(tables.Agent, 'agentType').label,
@@ -194,12 +212,6 @@ export function resolveValidationMessage(
       validTypes: formatDisjunction(
         (payload.validTypes as RA<LocalizedString>) ?? []
       ),
-    });
-  else if (key === 'pickListValueTooLong')
-    return backEndText.pickListValueTooLong({
-      pickListTable: tables.PickList.label,
-      pickList: payload.pickList as string,
-      maxLength: payload.maxLength as number,
     });
   else if (key === 'valueTooLong')
     return backEndText.valueTooLong({
@@ -226,6 +238,32 @@ export function resolveValidationMessage(
     return backEndText.longitudeOutOfRange({
       value: payload.value as string,
     });
+  else if (key === 'formatMismatch')
+    return backEndText.formatMismatch({
+      value: payload.value as string,
+      formatter: payload.formatter as string,
+    });
+  else return undefined;
+}
+
+/** Back-end sends a validation key. Front-end translates it */
+export function resolveValidationMessage(
+  key: string,
+  payload: IR<unknown>
+): LocalizedString {
+  const baseParsedMessage = resolveBackendParsingMessage(key, payload);
+  if (baseParsedMessage !== undefined) {
+    return baseParsedMessage;
+  } else if (key === 'failedParsingPickList')
+    return backEndText.failedParsingPickList({
+      value: `"${payload.value as string}"`,
+    });
+  else if (key === 'pickListValueTooLong')
+    return backEndText.pickListValueTooLong({
+      pickListTable: tables.PickList.label,
+      pickList: payload.pickList as string,
+      maxLength: payload.maxLength as number,
+    });
   else if (key === 'invalidPartialRecord')
     return backEndText.invalidPartialRecord({
       column: payload.column as string,
@@ -234,6 +272,10 @@ export function resolveValidationMessage(
     return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
+  else if (key === 'scopeChangeError') return backEndText.scopeChangeDetected();
+  else if (key === 'multipleTreeDefsInRow')
+    return backEndText.multipleTreeDefsInRow();
+  else if (key === 'invalidCotype') return backEndText.invalidCotype();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),

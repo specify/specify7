@@ -5,9 +5,199 @@
 
 All notable changes to this project will be documented in this file.
 
-  
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [7.10.2.1](https://github.com/specify/specify7/compare/v7.10.2...v7.10.2.1) (5 May 2025)
+
+## Fixed
+* Fixes cases where 'Full Name' was returned instead of 'Name' in queries, reports, labels, and data exports ([#6463](https://github.com/specify/specify7/issues/6463))
+* Resolves an issue that prevents queries from running when there is a space in the rank name ([#6459](https://github.com/specify/specify7/issues/6459))
+* Corrects the presence of leading zeroes in queries, reports, and labels ([#6464](https://github.com/specify/specify7/issues/6464))
+
+## [7.10.2](https://github.com/specify/specify7/compare/v7.10.1...v7.10.2) (23 April 2025)
+
+## Added
+
+* **[Batch Editing](https://discourse.specifysoftware.org/t/batch-edit/2248)** for simple fields ([#5417](https://github.com/specify/specify7/pull/5417) – *Requested by many, many members*)
+* [**Added a 'Download' button** to record set and query results attachments](https://discourse.specifysoftware.org/t/bulk-download-attachments-from-a-query-result-or-record-set/2456) ([#6052](https://github.com/specify/specify7/pull/6052) – *Requested by The University of Michigan, Naturhistorisches Museum Bern, Beaty Biodiversity Museum, Agriculture and Agri-Food Canada, Muséum d'Histoire Naturelle Geneva, and Queensland Herbarium*)
+* The [Form Meta menu](https://discourse.specifysoftware.org/t/form-meta-menu/844) is now accessible when using "View in Forms" ([#5416](https://github.com/specify/specify7/pull/5416))
+* A default value can now be used for a query combo box ([#6037]([https://github.com/specify/specify7/pull/6037]) – *Requested by South African Institute for Aquatic Biodiversity and The Ohio State University Mollusk Division*)
+* Adds tooltip for required fields in bulk carry forward config ([#6202](https://github.com/specify/specify7/pull/6202))
+* Specify will use the default `TypeSearches` when a custom one is not defined for a table ([#6236](https://github.com/specify/specify7/pull/6236))
+* Adds a new `uniqueIdentifier` field to Storage ([#6249](https://github.com/specify/specify7/pull/6249))
+
+## Changed
+
+* Non-default Taxon trees can be deleted if they are not used ([#6186](https://github.com/specify/specify7/pull/6186))
+* Adds modern attachment placeholder icons for video, audio, text, and other attachment filetypes ([#6119](https://github.com/specify/specify7/pull/6119))
+
+## Fixed
+
+* Fixes an issue that caused some WorkBench data sets to match to the incorrect ranks ([#6322](https://github.com/specify/specify7/pull/6322))
+* Fixes an issue where the defaults for insect collections were missing ([#6383](https://github.com/specify/specify7/pull/6383))
+* Field formats in the Schema Config utility are selected automatically again ([#6255](https://github.com/specify/specify7/pull/6255))
+* Primary Collection Objects (COs) in a consolidated Collection Object Group (COG) can no longer be deleted unless another CO is marked as primary ([#6181](https://github.com/specify/specify7/pull/6181))
+* Fixes all cases where table aggregation separators were missing ([#6115](https://github.com/specify/specify7/pull/6115))
+* Fixes all cases where taxon tree structure is invalid due to accepted names not being designated as accepted ([#5366](https://github.com/specify/specify7/pull/5366))
+* Fixes all cases where coordinate text fields are empty but decimal coordinate fields contain values ([#5368](https://github.com/specify/specify7/pull/5368) – *Reported by The University of Michigan, College of Idaho, and several others*)
+* Fixes an issue where the Data Entry screen does not appear in the 'Geology' discipline ([#6365](https://github.com/specify/specify7/pull/6365))
+* Fixes an issue where unsaved changes would be lost when toggling the "Use Localized Field Labels" setting in the Form Meta menu
+
+## [7.10.1](https://github.com/specify/specify7/compare/v7.10.0...v7.10.1) (10 March 2025)
+
+## Added
+* A Catalog Number format can now be linked to a specific Collection Object Type (COT)! ([#6277](https://github.com/specify/specify7/pull/6277))
+* Added a `uniqueIdentifier` field to the Storage table ([#6249](https://github.com/specify/specify7/pull/6249))
+
+## Fixed
+* Allow bulk carry for COType cat num format ([#6285](https://github.com/specify/specify7/pull/6285))
+* Fixed an issue where Specify would not auto-select a field format in Schema Config ([#6255](https://github.com/specify/specify7/pull/6255))
+
+
+## [7.10.0](https://github.com/specify/specify7/compare/v7.9.6.2...v7.10.0) (5 March 2025)
+
+This release of Specify 7 now falls under the [GPL-3.0 license](https://github.com/specify/specify7?tab=GPL-3.0-1-ov-file#readme).
+
+### Added
+* **Geology** has been added as a new discipline to Specify! ([#5032](https://github.com/specify/specify7/pull/5032))
+* Subviews now have borders to make it easier to distinguish where a subview starts and ends ([#6031](https://github.com/specify/specify7/pull/6031))
+* Added **bulk carry forward** ([#4804](https://github.com/specify/specify7/pull/4804), [#5120](https://github.com/specify/specify7/pull/5120))– _Requested by University of Minnesota Entomology, Bulgarian Academy of Sciences, KU Entomology, and many others_)
+* Added support for Geography Code at any level in queries ([#5094](https://github.com/specify/specify7/pull/5094) – _Requested by Museu de Ciències Naturals de Barcelona, KU Ichthyology, and many others_)
+* Added preference to add UTF-8 BOM to CSV exports (For Excel) ([#5204](https://github.com/specify/specify7/pull/5204) – _Requested by Natural History Museum of Denmark and many others_)
+* Added support for **Independent Subviews** on data entry forms ([#5253](https://github.com/specify/specify7/pull/5253) – _Requested by The University of Kansas, The University of Michigan, and many others_)
+	* For example, this enables adding:
+		* Collection Objects to an Accession *from* the Accession form
+		* Collection Objects to a Collecting Event *from* the Collecting Event form
+		* Treatment Events to an Accession  *from* the Accession form
+		* and much more
+	* Independent relationships (e.g. Collecting Event to Locality) can now be displayed as a subview rather than a query combo box
+* Added **Collection Object Types (COTs)** 
+	* The Taxon Tree can be based on the COT ([#5248](https://github.com/specify/specify7/pull/5248), [#5127](https://github.com/specify/specify7/pull/5127))
+	* Added the ability to create new Taxon trees ([#5080](https://github.com/specify/specify7/pull/5080), [#5372](https://github.com/specify/specify7/pull/5372))
+	* Multiple Taxon trees can be viewed in the tree viewer ([#5036](https://github.com/specify/specify7/pull/5036))
+	* Added COT pick list ([#5170](https://github.com/specify/specify7/pull/5170))
+	* Added a feature to choose type of Taxon tree in WB ([#5091](https://github.com/specify/specify7/pull/5091))
+* Extended Paleo Context to **Geologic Context**, **Relative Age**, and **Absolute Age**
+   * Added **Extended Age Query** functionality ([#5272](https://github.com/specify/specify7/pull/5272), [#5411](https://github.com/specify/specify7/pull/5411))
+   * Added a dialog with the chrono chart image for geologic table ([#5262](https://github.com/specify/specify7/pull/5262))
+   * Add Absolute and Relative Age Citations ([#5341](https://github.com/specify/specify7/pull/5341))
+* Added a new **Tectonic Unit Tree** ([#5178](https://github.com/specify/specify7/issues/5178), [#5316](https://github.com/specify/specify7/pull/5316), [#5345](https://github.com/specify/specify7/pull/5345) – _Requested for GeoSpecify_)
+* Added **Collection Object Groups (COGs)** ([#5032](https://github.com/specify/specify7/pull/5032)) 
+	* Added COG related business rules ([#5442](https://github.com/specify/specify7/pull/5442), [#5449](https://github.com/specify/specify7/pull/5449), [#5275](https://github.com/specify/specify7/pull/5275), [#5374](https://github.com/specify/specify7/pull/5374), [#5403](https://github.com/specify/specify7/pull/5403), [#5406](https://github.com/specify/specify7/pull/5406))
+	* Added 3 types of COG: `Consolidated`, `Discrete`, and `Drill Core`
+		* `Consolidated` COG preparations are transacted together when used with interactions ([#5445](https://github.com/specify/specify7/pull/5445)) 
+* Record Sets can now be merged together ([#5405](https://github.com/specify/specify7/pull/5405) – _Requested by The University of Kansas, Museum of Natural History of Geneva, The University of Texas, Museum für Naturkunde Berlin, Natural History Museum Basel, and many others_)
+* Record Sets can now be selected when adding new items to a record (e.g. Collection Objects to an Accession or COG) ([#5263](https://github.com/specify/specify7/pull/5263), [#5498](https://github.com/specify/specify7/pull/5498))
+* Added a tool to remove unmapped lines in WorkBench data sets ([#5265](https://github.com/specify/specify7/pull/5265) – _Requested by Royal Botanic Gardens Edinburgh)
+* Batch Attachment Uploader now supports more tables ([#5332](https://github.com/specify/specify7/pull/5332))
+	* Storage (Full Name)
+	* Preparation (Barcode, GUID)
+	* Treatment Event (FieldNumber)
+	* Exchange In (ExchangeInNumber)
+	* Exchange Out (ExchangeOutNumber)
+	* Reference Work (Title, GUID)
+	* Locality (UniqueIdentifier, GUID)
+	* Permit (PermitNumber)
+	* Agent (GUID)
+	* Collecting Trip (CollectingTripName)
+	* Deaccession (DeaccessionNumber)
+
+
+
+### Changed
+* Catalog numbers are no longer required by Specify to be unique, although they are set to be unique by default ([#5400](https://github.com/specify/specify7/pull/5400))
+* Tree nodes can now be deleted along with all their unused children, making tree cleaning much easier  ([#5324](https://github.com/specify/specify7/pull/5324))
+* Tree searches now return more than 20 results ([#5125](https://github.com/specify/specify7/pull/5125))
+* The Audit Log is now accessible via the query menu ([#5133](https://github.com/specify/specify7/pull/5133))
+* A new white space sensitivity attribute has been added for form fields ([#5086](https://github.com/specify/specify7/pull/5086))
+* The Specify interface schema has been updated to include new GeoSpecify fields and pick lists ([#5257](https://github.com/specify/specify7/pull/5257))
+* Added **new default app resources and form  definitions** ([#5367](https://github.com/specify/specify7/pull/5367))
+	* Added the ability to transfer the ownership of Record Sets and Queries.
+   * When using the default form definitions and app resources:
+	   * Collection Relationships can now be created
+	   * Agents will default to "Person" instead of "Organization"
+	   * Agent "Members" will only appear when the Agent is a "Group"
+	   * Agent Identifiers for ORCID, WikiData, and other IDs is now included by default
+	   * Taxon "Hybrid" fields only display if the Taxon is marked as a hybrid
+	   * Tree Definition tables now allow the user to customize and see all ranks in a single subview
+	   * Tree full name direction can now be customized
+	   * Preparation count can no longer be set to a negative number--antimatter will no longer be cataloged.
+
+### Fixed
+* Fixed an issue that caused table/grid view results to not show more than 20 items at a time ([#5298](https://github.com/specify/specify7/issues/5298) – *Reported by CSIRO and OSU*)
+* Fixed an issue preventing non-loanable Preparations from being used in other interactions
+ ([#5271](https://github.com/specify/specify7/pull/5271))
+* Cloning an interaction no longer clones the interaction preparations ([#4905](https://github.com/specify/specify7/pull/4905))
+* Fixed an issue that removed any table aggregation separator if it matches the default (`"; "`) ([#5240](https://github.com/specify/specify7/pull/5240))
+* A tool has been added to create a root node in trees if one is not already present ([#5394](https://github.com/specify/specify7/pull/5394))
+* Saving an `ExportFeed` with an invalid user is no longer possible ([#5042](https://github.com/specify/specify7/pull/5042))
+* Fixed cases where "Deselect All" did not disable the "Select" button ([#5270](https://github.com/specify/specify7/pull/5270))
+* Fixed an issue with the Specify 7 version being missing ([#5397](https://github.com/specify/specify7/pull/5397))
+* Workbench column headers now use the new table icons ([#5176](https://github.com/specify/specify7/pull/5176))
+
+## [7.9.6.2](https://github.com/specify/specify7/compare/v7.9.6.1...v7.9.6.2) (22 July 2024)
+
+- Fixed an issue that prevented `TimestampModified` from being captured upon saving a record since the `v7.9.6` release ([#5108](https://github.com/specify/specify7/issues/5108) – *Reported by the University of Kansas and Ohio State University*)
+- Fixed an issue that caused large trees to perform slowly or crash the browser due to using too much memory ([#5115](https://github.com/specify/specify7/pull/5115) – *Reported by The Hebrew University of Jerusalem and Royal Botanic Gardens Edinburgh*)
+
+## [7.9.6.1](https://github.com/specify/specify7/compare/v7.9.6...v7.9.6.1) (9 July 2024)
+
+- Fixes an issue that led to tree definition item separators being trimmed ([#5076](https://github.com/specify/specify7/pull/5076))
+- The form system now includes a `whiteSpaceSensitive` attribute, which allows any field to preserve whitespace upon saving
+
+## [7.9.6](https://github.com/specify/specify7/compare/v7.9.5...v7.9.6) (1 July 2024)
+
+
+### Added
+-  Added a **[tree rank editor](https://discourse.specifysoftware.org/t/editing-tree-definitions-ranks-in-specify-7/1783)** to add, edit, and remove tree ranks ([#4257](https://github.com/specify/specify7/pull/4257) – *Requested by University of Kansas, The University of Michigan, Commonwealth Scientific and Industrial Research Organisation, Natural Resources Canada, College of Idaho, New Mexico State Herbarium, and many others*)
+-  **[Extended record merging](https://discourse.specifysoftware.org/t/record-merging/1324#record-merging-1)** to several new tables ([#4606](https://github.com/specify/specify7/pull/4606) – *Requested by Calvert Marine Museum, Commonwealth Scientific and Industrial Research Organisation, Royal Botanic Garden Edinburgh, and many more*)
+   - Locality
+   - Paleo Context
+   - Collecting Event 
+- Added a new tool to [**bulk update Locality and Geo Coord Details records**](https://discourse.specifysoftware.org/t/locality-update-tool/1784) that were georeferenced in external applications such as [CoGe](https://coge.geo-locate.org/About.htm) ([#4548](https://github.com/specify/specify7/pull/4548) – *Requested by Specify users in the DigIn TCN, formalized by Dean Pentcheff and Nelson Rios*)
+- Added a new tool to **[bulk move preparations](https://discourse.specifysoftware.org/t/trees-in-specify-7/534/7?u=specify)** from one storage location to another ([#4682](https://github.com/specify/specify7/pull/4682) – *Requested by University of Kansas*)
+-  Added **[Deaccessions](https://discourse.specifysoftware.org/t/interactions-in-specify/961#deaccessions-16)** to the Interactions list ([#4806](https://github.com/specify/specify7/pull/4806))
+-  The name of the accepted node will now show when hovering over a synonymized node ([#4704](https://github.com/specify/specify7/pull/4704) – *Requested by University of Kansas*)
+-  Table aggregations can now be chosen explicitly in the Query Builder ([#4646](https://github.com/specify/specify7/pull/4646))
+-  Calculated fields for the total number of preparations and total items in Exchange Outs, Disposals, Gifts, and Deaccessions have been added ([#4824](https://github.com/specify/specify7/pull/4824) – *Requested by Royal Botanic Garden Edinburgh, Pioneer Trails Regional Museum, The University of Michigan, and Museu de Ciències Naturals de Barcelona*)
+-  Added support for the 'Group Number' field in Taxon queries ([#4724](https://github.com/specify/specify7/pull/4724) – *Requested by the Florida Museum of Natural History and others*)
+-  Added validation to the Locality form to prevent users from saving invalid latitude and longitude values ([#4939](https://github.com/specify/specify7/pull/4939))
+
+### Changed
+-  'Timestamp Modified' and 'Timestamp Created' field values can now be overridden when uploading data in the WorkBench ([#4618](https://github.com/specify/specify7/pull/4618) – *Requested by New Mexico State Herbarium*)
+-  Users can no longer save a Collection Object with a determination without a *current* determination ([#4901](https://github.com/specify/specify7/pull/4901))
+-  GeoMap in the WorkBench now displays only the selected rows when a row is selected, or all rows when no row is selected ([#4943](https://github.com/specify/specify7/pull/4943))
+-  Changed 'Transactions' dialog header to 'Interactions' and refactored dialog with new icons ([#4474](https://github.com/specify/specify7/pull/4474))
+-  The separator used in query results is now a hyphen (-) character instead of a dot (·) character. This change prevents encoding issues when opening query results directly in Excel ([#4678](https://github.com/specify/specify7/pull/4678) – *Requested by South African Institute for Aquatic Biodiversity*)
+-  When granting the Specify 6 "Admin" permission, access to all collections will now be granted by default  ([#4652](https://github.com/specify/specify7/pull/4652))
+-  Changed unavailable preparations wording to be more clear ([#4890](https://github.com/specify/specify7/pull/4890))
+-  Added a view button by default to `parent` query combo boxes ([#4903](https://github.com/specify/specify7/pull/4903))
+-  Removed the "Clone" option from certain app resources that are identified by name alone ([#4902](https://github.com/specify/specify7/pull/4902))
+-  A warning will now appear when deleting a category on the Statistics page ([#3732](https://github.com/specify/specify7/pull/3732))
+-  The 'Without Preparations' and 'Add Unassociated Item' buttons have been moved to the left of the "Add Items" dialog  ([#4577](https://github.com/specify/specify7/pull/4577))
+
+
+### Fixed
+-  Exchange Out 'Add Items' dialog is now triggered when adding Exchange Out Preps from the form ([#4805](https://github.com/specify/specify7/pull/4805))
+-  Fixed an issue where some subviews would not expand when new records are added ([#4899](https://github.com/specify/specify7/pull/4899))
+-  Fixed an issue that prevented some agent merges from completing successfully ([#4699](https://github.com/specify/specify7/pull/4699))
+-  Fixed an issue preventing suggested mappings from being selected in the WorkBench ([#4926](https://github.com/specify/specify7/pull/4926))
+-  Disabled the 'Save' and 'Delete' buttons when editing forms, table formats, and table aggregation ([#4891](https://github.com/specify/specify7/pull/4891))
+-  Fixed an issue that would show an error when attempting to add children to a synonymized node ([#4874](https://github.com/specify/specify7/pull/4874))
+-  Fixed the `condition="always"` attribute being unrecognized when defining conditional forms ([#4879](https://github.com/specify/specify7/pull/4879))
+-  When updating the RSS feed, notifications will now be sent to the user specified in the `ExportFeed` app resource in addition to the current user ([#4956](https://github.com/specify/specify7/pull/4956))
+- The new record set and gallery icons now only appear within a record set containing records from the same table ([#4904](https://github.com/specify/specify7/pull/4904))
+
+## [7.9.5](https://github.com/specify/specify7/compare/v7.9.4...v7.9.5) (20 May 2024)
+
+This release has for objective to migrated Workbench to React to align it with the rest of the application to ensure consistency and modernising the codebase.
+Workbench functionalities remain unchanged but this release helps improve internal development and maintenance of the workbench going forward. 
+[Workbench Conversion](https://github.com/specify/specify7/pull/4637)
+
+### Added
+
+- **Live Search feature in Workbench**
 
 ## [7.9.4](https://github.com/specify/specify7/compare/v7.9.3.1...v7.9.4) (13 May 2024)
 

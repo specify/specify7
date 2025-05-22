@@ -3,13 +3,13 @@
  */
 
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { getField } from './helpers';
-import type { FilterTablesByEndsWith, TableFields } from './helperTypes';
+import type { TableFields } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
-import type { Tables } from './types';
+import type { CollectionObject, Tables } from './types';
 
 export const schemaAliases: RR<'', IR<string>> & {
   readonly [TABLE_NAME in keyof Tables]?: IR<TableFields<Tables[TABLE_NAME]>>;
@@ -25,36 +25,12 @@ export const schemaAliases: RR<'', IR<string>> & {
   },
 };
 
-const treeDefinitionFields = [
-  'fullNameSeparator',
-  'isEnforced',
-  'isInFullName',
-  'textAfter',
-  'textBefore',
-];
-
-const treeDefItem = (
-  table: SpecifyTable<FilterTablesByEndsWith<'TreeDefItem'>>
-) =>
-  [
-    [],
-    (): void =>
-      filterArray(
-        treeDefinitionFields.map((fieldName) =>
-          table.getLiteralField(fieldName)
-        )
-      ).forEach((field) => {
-        field.isReadOnly = true;
-        field.overrides.isReadOnly = true;
-      }),
-  ] as const;
-
 export const schemaExtras: {
   readonly [TABLE_NAME in keyof Tables]?: (
     table: SpecifyTable<Tables[TABLE_NAME]>
   ) => readonly [
     fields: RA<LiteralField | Relationship>,
-    callback?: () => void
+    callback?: () => void,
   ];
 } = {
   Agent: (table) => [
@@ -108,18 +84,44 @@ export const schemaExtras: {
         indexed: false,
         unique: false,
       }),
+      new LiteralField(table, {
+        name: 'isMemberOfCOG',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        // TODO: LiteralField or Relationship?
+        name: 'age',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.String',
+        indexed: false,
+        unique: false,
+      }),
     ],
     (): void => {
       const collection = getField(table, 'collection');
       collection.otherSideName = 'collectionObjects';
 
       /*
-       * Catalog number formatter is taken from the field on the collection,
-       * if present
+       * The Catalog number format is determined in the following heirarchy,
+       * using the 'next level' if the format is not defined (or falsy):
+       *
+       * - The Collection Object's collectionObjectType -> catalogNumberFormatName
+       * - Collection -> catalogNumFormatName
+       * - Schema Configuration format for catalognumber
        */
       const catalognumber = getField(table, 'catalogNumber');
-      catalognumber.getFormat = (): string | undefined =>
-        schema.catalogNumFormatName ||
+      catalognumber.getFormat = (
+        resource?: SpecifyResource<CollectionObject>
+      ): string | undefined =>
+        (schema.collectionObjectTypeCatalogNumberFormats[
+          resource?.get('collectionObjectType') ?? ''
+        ] ??
+          schema.catalogNumFormatName) ||
         LiteralField.prototype.getFormat.call(catalognumber);
     },
   ],
@@ -173,6 +175,86 @@ export const schemaExtras: {
     (): void => {
       getField(table, 'division').otherSideName = 'accessions';
     },
+  ],
+  Deaccession: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+    ],
+  ],
+  Disposal: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+    ],
+  ],
+  ExchangeOut: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+    ],
+  ],
+  Gift: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+    ],
   ],
   Loan: (table) => [
     [
@@ -249,6 +331,38 @@ export const schemaExtras: {
         unique: false,
       }),
       new LiteralField(table, {
+        name: 'isOnGift',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'isOnDisposal',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'isOnExchangeOut',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'isOnExchangeIn',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
         name: 'actualCountAmt',
         required: false,
         readOnly: true,
@@ -304,9 +418,4 @@ export const schemaExtras: {
       }),
     ],
   ],
-  GeographyTreeDefItem: treeDefItem,
-  StorageTreeDefItem: treeDefItem,
-  TaxonTreeDefItem: treeDefItem,
-  GeologicTimePeriodTreeDefItem: treeDefItem,
-  LithoStratTreeDefItem: treeDefItem,
 };

@@ -4,16 +4,16 @@ from ..models import Role
 
 
 def add_stats_edit_permission(apps, schema_editor):
-    for collection in Collection.objects.all():
+    for collection_id in Collection.objects.values_list('id', flat=True):
         try:
-            all_full_access_roles = Role.objects.filter(collection=collection, name="Full Access - Legacy")
+            all_full_access_roles = Role.objects.filter(collection_id=collection_id, name="Full Access - Legacy")
             for full_access_role in all_full_access_roles:
                 full_access_role.policies.create(resource="/preferences"
                                                           "/statistics",
                                                  action="edit")
         except:
             print("Failed to assign stats edit permission in collection: ",
-                  collection.id)
+                  collection_id)
 
 
 class Migration(migrations.Migration):

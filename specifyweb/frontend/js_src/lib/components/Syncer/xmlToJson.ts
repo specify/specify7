@@ -37,13 +37,13 @@ export const xmlToJson = (element: Element): XmlNode => ({
           comment: node.data,
         }
       : node instanceof Text
-      ? {
-          type: 'Text',
-          string: node.data,
-        }
-      : node instanceof Element
-      ? xmlToJson(node)
-      : error('Unknown element type', node)
+        ? {
+            type: 'Text',
+            string: node.data,
+          }
+        : node instanceof Element
+          ? xmlToJson(node)
+          : error('Unknown element type', node)
   ),
 });
 
@@ -62,8 +62,8 @@ export function jsonToXml(node: XmlNode): Element {
       child.type === 'Text'
         ? xmlDocument.createTextNode(child.string)
         : child.type === 'Comment'
-        ? xmlDocument.createComment(child.comment)
-        : jsonToXml(child)
+          ? xmlDocument.createComment(child.comment)
+          : jsonToXml(child)
     )
   );
   return element;

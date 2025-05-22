@@ -4,14 +4,20 @@ import { ping } from '../../utils/ajax/ping';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { DeepPartial, RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
+import type { InteractionWithPreps } from '../Interactions/helpers';
+import {
+  interactionPrepTables,
+  interactionsWithPrepTables,
+} from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { getFieldsFromPath } from './businessRules';
 import type {
+  AnyInteractionPreparation,
   AnySchema,
   SerializedRecord,
   SerializedResource,
@@ -20,7 +26,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { serializeResource } from './serializers';
 import type { SpecifyTable } from './specifyTable';
-import { genericTables, getTable } from './tables';
+import { genericTables, getTable, tables } from './tables';
 import type { Tables } from './types';
 import { getUniquenessRules } from './uniquenessRules';
 
@@ -36,7 +42,7 @@ export const resourceEvents = eventListener<{
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
-  STRICT extends boolean = true
+  STRICT extends boolean = true,
 >(
   tableName: TABLE_NAME,
   id: number,
@@ -227,9 +233,10 @@ export const parseJavaClassName = (className: string): string =>
 
 export function getFieldsToNotClone(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const fieldsToClone = getCarryOverPreference(table, cloneAll, isBulkCarry);
   const uniqueFields = getUniqueFields(table);
   return table.fields
     .map(({ name }) => name)
@@ -241,11 +248,16 @@ export function getFieldsToNotClone(
 
 function getCarryOverPreference(
   table: SpecifyTable,
-  cloneAll: boolean
+  cloneAll: boolean,
+  isBulkCarry: boolean
 ): RA<string> {
   const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
     ? {}
-    : userPreferences.get('form', 'preferences', 'carryForward');
+    : userPreferences.get(
+        'form',
+        'preferences',
+        isBulkCarry ? 'bulkCarryForward' : 'carryForward'
+      );
   return config?.[table.name] ?? getFieldsToClone(table);
 }
 
@@ -265,26 +277,30 @@ const uniqueFields = [
   'timestampCreated',
   'version',
   'isCurrent',
-  'isPrimary',
   'timestampModified',
 ];
 
-export const getUniqueFields = (table: SpecifyTable): RA<string> =>
+const getUniqueFieldsFromRules = (table: SpecifyTable) =>
+  (getUniquenessRules(table.name) ?? [])
+    .filter(({ rule: { scopes } }) =>
+      scopes.every(
+        (fieldPath) =>
+          (
+            getFieldsFromPath(table, fieldPath).at(-1)?.name ?? ''
+          ).toLowerCase() in schema.domainLevelIds
+      )
+    )
+    .flatMap(({ rule: { fields } }) =>
+      fields.flatMap((field) => table.getField(field)?.name)
+    );
+
+// WARNING: Changing the behaviour here will also change how batch-edit clones records.
+export const getUniqueFields = (
+  table: SpecifyTable,
+  schemaAware: boolean = true
+): RA<string> =>
   f.unique([
-    ...filterArray(
-      (getUniquenessRules(table.name) ?? [])
-        .filter(({ rule: { scopes } }) =>
-          scopes.every(
-            (fieldPath) =>
-              (
-                getFieldsFromPath(table, fieldPath).at(-1)?.name ?? ''
-              ).toLowerCase() in schema.domainLevelIds
-          )
-        )
-        .flatMap(({ rule: { fields } }) =>
-          fields.flatMap((field) => table.getField(field)?.name)
-        )
-    ),
+    ...filterArray(schemaAware ? getUniqueFieldsFromRules(table) : []),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
@@ -293,6 +309,28 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
     ...table.relationships
       .filter(({ relatedTable }) => relatedTable.name.endsWith('Attachment'))
       .map(({ name }) => name),
+    /*
+     * Interaction Preparations should be considered unique for each
+     * Interaction
+     * See https://github.com/specify/specify7/issues/4012
+     */
+    ...table.relationships
+      .filter(
+        ({ relatedTable }) =>
+          interactionsWithPrepTables.includes(
+            table.name as InteractionWithPreps['tableName']
+          ) &&
+          interactionPrepTables.includes(
+            relatedTable.name as AnyInteractionPreparation['tableName']
+          )
+      )
+      .map(({ name }) => name),
+    // Don't clone specifyuser.
+    ...(table.name === 'Agent'
+      ? table.relationships
+          .filter(({ relatedTable }) => relatedTable.name === 'SpecifyUser')
+          .map(({ name }) => name)
+      : []),
     ...filterArray(
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),
@@ -302,3 +340,18 @@ export const exportsForTests = {
   getCarryOverPreference,
   getFieldsToClone,
 };
+
+setDevelopmentGlobal('_getUniqueFields', (): void => {
+  /*
+   * Batch-editor clones records in independent-to-one no-match cases. It needs to be aware of the fields to not clone. It's fine if it doesn't respect user preferences (for now), but needs to be replicate
+   * front-end logic. So, the "fields to not clone" must be identical. This is done by storing them as a static file, which frontend and backend both access + a unit test to make sure the file is up-to-date.
+   * In the case where the user is really doesn't want to carry-over some fields, they can simply add those fields in batch-edit query (and then set them to null) so it handles general use case pretty well.
+   */
+  const allTablesResult = Object.fromEntries(
+    Object.values(tables).map((table) => [
+      table.name.toLowerCase(),
+      getUniqueFields(table, false),
+    ])
+  );
+  document.body.textContent = JSON.stringify(allTablesResult);
+});

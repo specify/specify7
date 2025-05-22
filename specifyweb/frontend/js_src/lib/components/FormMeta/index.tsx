@@ -22,17 +22,21 @@ import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { interactionTables } from '../Interactions/config';
+import { recordMergingTableSpec } from '../Merging/definitions';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { canMerge } from '../QueryBuilder/Results';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
 import { EditHistory } from './EditHistory';
+import { MergeRecord } from './MergeRecord';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
@@ -127,6 +131,7 @@ function MetaDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
+  const canMergeTable = canMerge(resource.specifyTable);
   return (
     <Dialog
       buttons={commonText.close()}
@@ -213,8 +218,13 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
-            {/* FEATURE: A merge records button. See previous implementation at
-            commit 0274eb2 */}
+            {resource.specifyTable.name in recordMergingTableSpec &&
+            hasPermission('/record/merge', 'update') &&
+            hasPermission('/record/merge', 'delete') &&
+            hasTablePermission(resource.specifyTable.name, 'update') &&
+            canMergeTable ? (
+              <MergeRecord resource={resource} />
+            ) : undefined}
           </>
         }
         header={formsText.recordInformation()}

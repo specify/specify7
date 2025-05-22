@@ -20,7 +20,7 @@ import {
   parseViewDefinition,
   resolveViewDefinition,
 } from '../index';
-import { spAppResourceView } from '../webOnlyViews';
+import { attachmentView } from '../webOnlyViews';
 
 const {
   views,
@@ -106,6 +106,7 @@ const parsedFormView = {
           step: undefined,
           isReadOnly: false,
           defaultValue: undefined,
+          whiteSpaceSensitive: false,
         },
         fieldNames: ['catalogNumber'],
         isRequired: false,
@@ -270,7 +271,7 @@ describe('fetchView', () => {
     await expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
   });
 
-  const frontEndOnlyView = spAppResourceView;
+  const frontEndOnlyView = attachmentView;
   overrideAjax(
     formatUrl('/context/view.json', { name: frontEndOnlyView, quiet: '' }),
     viewDefinition,
@@ -584,6 +585,7 @@ test('parseRows', async () => {
           minLength: undefined,
           step: undefined,
           type: 'Text',
+          whiteSpaceSensitive: false,
         },
         fieldNames: ['stationFieldNumber'],
         id: 'tt',

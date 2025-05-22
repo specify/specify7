@@ -10,6 +10,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
+import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
@@ -46,7 +47,8 @@ export const fetchContext = Promise.all([
               formatter.isSystem,
               formatter.title ?? formatter.name,
               fields,
-              formatter.table
+              formatter.table,
+              formatter.field
             );
           }
 
@@ -66,7 +68,9 @@ export class UiFormatter {
     public readonly isSystem: boolean,
     public readonly title: LocalizedString,
     public readonly fields: RA<Field>,
-    public readonly table: SpecifyTable | undefined
+    public readonly table: SpecifyTable | undefined,
+    // The field which this formatter is formatting
+    public readonly field: LiteralField | undefined
   ) {}
 
   /**
@@ -124,6 +128,9 @@ abstract class Field {
 
   public readonly pattern: LocalizedString | undefined;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
+  public type: keyof typeof formatterTypeMapper = undefined!;
+
   public constructor({
     size,
     value,
@@ -174,12 +181,22 @@ abstract class Field {
 }
 
 class ConstantField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'constant';
+  }
+
   public valueRegexp(): LocalizedString {
     return this.wildRegexp();
   }
 }
 
 class AlphaField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'alpha';
+  }
+
   public valueRegexp(): LocalizedString {
     return localized(`[a-zA-Z]{${this.size}}`);
   }
@@ -193,6 +210,7 @@ class NumericField extends Field {
       ...options,
       value: localized(''.padStart(options.size, '#')),
     });
+    this.type = 'numeric';
   }
 
   public valueRegexp(): LocalizedString {
@@ -201,30 +219,55 @@ class NumericField extends Field {
 }
 
 class YearField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'year';
+  }
+
   public valueRegexp(): LocalizedString {
     return localized(`\\d{${this.size}}`);
   }
 }
 
 class AlphaNumberField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'alphanumeric';
+  }
+
   public valueRegexp(): LocalizedString {
     return localized(`[a-zA-Z0-9]{${this.size}}`);
   }
 }
 
 class AnyCharField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'anychar';
+  }
+
   public valueRegexp(): LocalizedString {
     return localized(`.{${this.size}}`);
   }
 }
 
 class RegexField extends Field {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'regex';
+  }
+
   public valueRegexp(): LocalizedString {
     return this.value;
   }
 }
 
-class SeparatorField extends ConstantField {}
+class SeparatorField extends ConstantField {
+  public constructor(options: ConstructorParameters<typeof Field>[0]) {
+    super(options);
+    this.type = 'separator';
+  }
+}
 
 class CatalogNumberNumericField extends NumericField {
   public valueRegexp(): LocalizedString {
@@ -236,6 +279,7 @@ class CatalogNumberNumericField extends NumericField {
   }
 }
 
+// REFACTOR: tables.CollectionObject is always undefined in the global scope
 export class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
     super(
@@ -248,7 +292,8 @@ export class CatalogNumberNumeric extends UiFormatter {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber')
     );
   }
 }

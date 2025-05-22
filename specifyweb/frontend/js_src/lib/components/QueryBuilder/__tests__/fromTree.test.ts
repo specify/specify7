@@ -13,6 +13,7 @@ const rankNames = {
   Storage: 'Cabinet',
   GeologicTimePeriod: 'Epoch',
   LithoStrat: 'Formation',
+  TectonicUnit: 'Substructure',
 };
 const fullNames = {
   Taxon: 'Carpiodes velifer',
@@ -20,7 +21,9 @@ const fullNames = {
   Storage: 'Cabinet 1',
   GeologicTimePeriod: 'Paleocene',
   LithoStrat: 'Cretaceous',
+  TectonicUnit: 'Plate',
 };
+
 allTrees.map((table, rankId) => {
   const nodeId = rankId * 4;
   const rankUrl = getResourceApiUrl(`${table}TreeDefItem`, rankId);

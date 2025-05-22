@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Dict
 
 from MySQLdb.cursors import SSCursor
 import sqlalchemy
@@ -6,18 +7,23 @@ from sqlalchemy.orm import sessionmaker
 
 from django.conf import settings
 
-from specifyweb.specify.models import datamodel
+# from specifyweb.specify.models import datamodel
+from specifyweb.specify.datamodel import datamodel
 from . import build_models
 
 engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,
                                   connect_args={'cursorclass': SSCursor})
 Session = sessionmaker(bind=engine)
 
+
 def make_session_context(session_maker):
     @contextmanager
     def _session_context():
-        session = session_maker()
+        session, connection = session_maker()
         try:
+            if connection is None:
+                connection = session.connection()
+            session.info['connection'] = connection
             yield session
             session.commit()
         except:
@@ -27,7 +33,9 @@ def make_session_context(session_maker):
             session.close()
     return _session_context
 
-session_context = make_session_context(Session)
+
+session_context = make_session_context(lambda: (Session(), None))
+
 
 def generate_models():
     tables = build_models.make_tables(datamodel)
@@ -35,9 +43,10 @@ def generate_models():
     build_models.map_classes(datamodel, tables, classes)
     return tables, classes
 
+
 tables, classes = generate_models()
 
-models_by_tableid = dict((cls.tableid, cls) for cls in list(classes.values()))
+models_by_tableid: dict[int, build_models.Table] = {cls.tableid: cls for cls in list(classes.values())}
 
 globals().update(classes)
 

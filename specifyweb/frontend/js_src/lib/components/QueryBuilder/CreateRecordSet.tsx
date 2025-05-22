@@ -12,24 +12,30 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import { strictGetTable, tables } from '../DataModel/tables';
-import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
+import type { RecordSet, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
-import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import { RecordSetCreated } from './Components';
 
 /**
- * Create a record set from selected records.
+ * Renders a button to creates a record set from a group of records.
  * See also `MakeRecordSetButton`
  */
 export function CreateRecordSet({
-  getIds,
+  recordIds,
   baseTableName,
-  queryResource,
+  defaultRecordSetName,
+  buttonType = 'Small',
+  saveComponent,
 }: {
-  readonly getIds: () => RA<number>;
+  readonly recordIds: RA<number> | (() => RA<number>);
   readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery> | undefined;
+  readonly defaultRecordSetName?: string;
+  readonly buttonType?: Exclude<keyof typeof Button, 'Icon'>;
+  readonly saveComponent?: () => JSX.Element;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
@@ -38,14 +44,21 @@ export function CreateRecordSet({
     | State<'Saving'>
   >({ type: 'Main' });
 
+  const resolvedRecordIds = React.useMemo(
+    () => (typeof recordIds === 'function' ? recordIds() : recordIds),
+    [recordIds]
+  );
+
+  const ResolvedButton = Button[buttonType];
+
   return (
     <>
-      <Button.Small
+      <ResolvedButton
         aria-haspopup="dialog"
         onClick={(): void => {
           const recordSet = new tables.RecordSet.Resource();
-          if (queryResource !== undefined && !queryResource.isNew())
-            recordSet.set('name', queryResource.get('name'));
+          if (defaultRecordSetName !== undefined)
+            recordSet.set('name', defaultRecordSetName);
           setState({
             type: 'Editing',
             recordSet,
@@ -55,7 +68,7 @@ export function CreateRecordSet({
         {queryText.createRecordSet({
           recordSetTable: tables.RecordSet.label,
         })}
-      </Button.Small>
+      </ResolvedButton>
       {state.type === 'Editing' && (
         <ResourceView
           dialog="modal"
@@ -81,7 +94,7 @@ export function CreateRecordSet({
                * duplicate IDs (when displaying a -to-many relationship)
                */
               // @ts-expect-error
-              recordSetItems: f.unique(getIds()).map((id) => ({
+              recordSetItems: f.unique(resolvedRecordIds).map((id) => ({
                 recordId: id,
               })),
             })
@@ -99,7 +112,11 @@ export function CreateRecordSet({
           }}
         />
       )}
-      {state.type === 'Saving' && recordSetFromQueryLoading()}
+      {state.type === 'Saving'
+        ? typeof saveComponent === 'function'
+          ? saveComponent()
+          : LoadingDialog()
+        : null}
       {state.type === 'Saved' && (
         <RecordSetCreated
           recordSet={state.recordSet}
@@ -107,5 +124,19 @@ export function CreateRecordSet({
         />
       )}
     </>
+  );
+}
+
+function LoadingDialog(): JSX.Element {
+  return (
+    <Dialog
+      buttons={undefined}
+      header={queryText.recordSetToQueryDescription({
+        recordSetTable: tables.RecordSet.label,
+      })}
+      onClose={undefined}
+    >
+      {loadingBar}
+    </Dialog>
   );
 }

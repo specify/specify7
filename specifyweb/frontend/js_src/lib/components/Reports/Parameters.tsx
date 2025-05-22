@@ -99,7 +99,7 @@ export function QueryParametersDialog({
           </Button.Small>
         </>
       }
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={handleClose}
     >
       <IsQueryBasicContext.Provider value={isBasic}>

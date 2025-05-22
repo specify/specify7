@@ -200,7 +200,7 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: ':id',
         element: () =>
-          import('../WorkBench/Template').then(({ WorkBench }) => WorkBench),
+          import('../WorkBench/index').then(({ WorkBench }) => WorkBench),
       },
       {
         path: 'import',
@@ -224,6 +224,19 @@ export const routes: RA<EnhancedRoute> = [
   {
     path: 'workbench-import',
     element: <Redirect to="/specify/workbench/import" />,
+  },
+  {
+    path: 'import',
+    children: [
+      {
+        path: 'locality-dataset',
+        element: () =>
+          import('../LocalityUpdate').then(
+            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
+              ImportLocalitySet
+          ),
+      },
+    ],
   },
   {
     path: 'resources',

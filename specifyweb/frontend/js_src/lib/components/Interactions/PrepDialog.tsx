@@ -5,29 +5,30 @@ import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
+import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
+import {
+  getResourceApiUrl,
+  getResourceViewUrl,
+  idFromUrl,
+} from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { strictGetTable, tables } from '../DataModel/tables';
-import type {
-  Disposal,
-  DisposalPreparation,
-  Gift,
-  GiftPreparation,
-  Loan,
-  LoanPreparation,
-} from '../DataModel/types';
+import { tables } from '../DataModel/tables';
+import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
-import type { PreparationData } from './helpers';
+import type { InteractionWithPreps, PreparationData } from './helpers';
+import { interactionPrepTables } from './helpers';
 import { PrepDialogRow } from './PrepDialogRow';
 
 export function PrepDialog({
@@ -38,10 +39,8 @@ export function PrepDialog({
 }: {
   readonly onClose: () => void;
   readonly preparations: RA<PreparationData>;
-  readonly table: SpecifyTable<Disposal | Gift | Loan>;
-  readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation
-  >;
+  readonly table: SpecifyTable<InteractionWithPreps>;
+  readonly itemCollection?: Collection<AnyInteractionPreparation>;
 }): JSX.Element {
   const preparations = React.useMemo(() => {
     if (itemCollection === undefined) return rawPreparations;
@@ -89,6 +88,19 @@ export function PrepDialog({
 
   const [bulkValue, setBulkValue] = React.useState(0);
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
+  const fetchSiblings = async (
+    preparationIds: RA<number>
+  ): Promise<RA<number>> =>
+    ajax<RA<number>>(`/interactions/sibling_preps/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: {
+        ids: preparationIds,
+      },
+    }).then(({ data }) => data);
 
   return (
     <Dialog
@@ -152,14 +164,21 @@ export function PrepDialog({
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const itemTable = strictGetTable(
-            `${table.name}Preparation`
-          ) as SpecifyTable<
-            DisposalPreparation | GiftPreparation | LoanPreparation
-          >;
+          const itemTable = defined(
+            table.relationships.find((relationship) =>
+              interactionPrepTables.includes(
+                (
+                  relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>
+                ).name
+              )
+            )?.relatedTable
+          ) as SpecifyTable<AnyInteractionPreparation>;
+
           const items = filterArray(
             preparations.map((preparation, index) => {
-              if (selected[index] === 0) return undefined;
+              if (selected[index] === 0 || Number.isNaN(selected[index]))
+                return undefined;
+
               const result = new itemTable.Resource();
               result.set(
                 'preparation',
@@ -173,32 +192,46 @@ export function PrepDialog({
             })
           );
 
-          if (typeof itemCollection === 'object') {
-            itemCollection.add(items);
-            handleClose();
-          } else {
-            const interaction = new table.Resource();
-            const loan = toTable(interaction, 'Loan');
-            loan?.set(
-              'loanPreparations',
-              items as RA<SpecifyResource<LoanPreparation>>
-            );
-            loan?.set('isClosed', false);
-            toTable(interaction, 'Gift')?.set(
-              'giftPreparations',
-              items as RA<SpecifyResource<GiftPreparation>>
-            );
-            toTable(interaction, 'Disposal')?.set(
-              'disposalPreparations',
-              items as RA<SpecifyResource<DisposalPreparation>>
-            );
-            navigate(getResourceViewUrl(table.name, undefined), {
-              state: {
-                type: 'RecordSet',
-                resource: serializeResource(interaction),
-              },
-            });
-          }
+          const preparationIds: RA<number> = items
+            .map((item) => idFromUrl(item.get('preparation') ?? ''))
+            .filter((id): id is number => id !== undefined);
+
+          void fetchSiblings(preparationIds)
+            .then((siblings) => {
+              const siblingsPreps = siblings.map((preparation) => {
+                const result = new itemTable.Resource();
+                result.set(
+                  'preparation',
+                  getResourceApiUrl('Preparation', preparation)
+                );
+                // Need to find a way to set the maximum
+                result.set('quantity', 1);
+                const loanPreparation = toTable(result, 'LoanPreparation');
+                loanPreparation?.set('quantityReturned', 0);
+                loanPreparation?.set('quantityResolved', 0);
+                return result;
+              });
+
+              const mergedPreparations = [...items, ...siblingsPreps];
+
+              if (typeof itemCollection === 'object') {
+                itemCollection.add(mergedPreparations);
+                handleClose();
+              } else {
+                const interaction = new table.Resource();
+                setPreparationItems(interaction, mergedPreparations);
+
+                const loan = toTable(interaction, 'Loan');
+                loan?.set('isClosed', false);
+                navigate(getResourceViewUrl(table.name, undefined), {
+                  state: {
+                    type: 'RecordSet',
+                    resource: serializeResource(interaction),
+                  },
+                });
+              }
+            })
+            .catch((error) => softFail(error));
         }}
       >
         <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
@@ -236,5 +269,25 @@ export function PrepDialog({
         </table>
       </Form>
     </Dialog>
+  );
+}
+
+function setPreparationItems(
+  interaction: SpecifyResource<InteractionWithPreps>,
+  items: RA<SpecifyResource<AnyInteractionPreparation>>
+): void {
+  const preparationRelationship = defined(
+    interaction.specifyTable.relationships.find((relationship) =>
+      interactionPrepTables.includes(
+        (relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>)
+          .name
+      )
+    )
+  );
+
+  // Typecast as a single case because the relatiships do not exist in the union type.
+  (interaction as SpecifyResource<ExchangeOut>).set(
+    preparationRelationship.name as 'exchangeOutPreps',
+    items as RA<SpecifyResource<ExchangeOutPrep>>
   );
 }

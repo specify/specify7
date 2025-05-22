@@ -3,6 +3,8 @@
  * parsing it and formatting it
  */
 
+import type { AnySchema } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type {
   JavaType,
   LiteralField,
@@ -50,7 +52,7 @@ export const validators: IR<(value: unknown) => string | undefined> = {
 } as const;
 
 export type Parser = Partial<{
-  readonly type: 'checkbox' | 'date' | 'number' | 'text';
+  readonly type: 'age' | 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
   // Number, or a string date in yyyy-mm-dd format
@@ -71,9 +73,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -83,12 +85,13 @@ export type Parser = Partial<{
   readonly value: boolean | number | string;
   // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
+  readonly whiteSpaceSensitive: boolean;
 }>;
 
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
-    : (value as number)?.toString() ?? '';
+    : ((value as number)?.toString() ?? '');
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
 
@@ -113,8 +116,8 @@ export const parsers = f.store(
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText.yes()
-          : commonText.no(),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -268,7 +271,8 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
+  resource?: SpecifyResource<AnySchema>
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -283,12 +287,18 @@ export function resolveParser(
     parser = parsers()[fullField.datePart] as Parser;
 
   const formatter =
-    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
+    field.isRelationship === false
+      ? field.getUiFormatter?.(resource)
+      : undefined;
+
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
+    whiteSpaceSensitive: fullField.isRelationship
+      ? undefined
+      : (fullField as LiteralField).whiteSpaceSensitive,
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
@@ -308,13 +318,17 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         'required',
         base?.required === true || extra?.required === true ? true : undefined,
       ],
+      [
+        'whiteSpaceSensitive',
+        base.whiteSpaceSensitive || extra.whiteSpaceSensitive,
+      ],
+      ['step', resolveStep(base.step, extra.step)],
       ...uniqueConcat
         .map((key) => [
           key,
           f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
         ])
         .filter(([_key, value]) => value.length > 0),
-      ['step', resolveStep(base.step, extra.step)],
       ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
         .map((key) => [key, resolveDate(base[key], extra[key], false)])
@@ -387,6 +401,10 @@ export function formatterToParser(
         value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
+    type:
+      field.type === undefined
+        ? undefined
+        : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
     value: canAutoNumber ? formatter.valueOrWild() : undefined,

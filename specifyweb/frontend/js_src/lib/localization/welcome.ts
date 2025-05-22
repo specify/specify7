@@ -185,15 +185,15 @@ export const welcomeText = createDictionary({
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
-      Consortium, яким керують і фінансують установи-члени. Серед
-      членів-засновників консорціуму: Організація наукових і промислових
-      досліджень Співдружності (CSIRO), Consejo Superior de Investigaciones
-      Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle
-      Geneva, Університет Флориди, Університет Канзасу та Мічиганський
-      університет. Консорціум працює відповідно до некомерційного, 501(c)3,
-      податкового статусу США Дослідницького центру Університету Канзасу. З
-      1996 по 2018 рік Specify підтримувався грантами Національного наукового
-      фонду США.
+      Consortium, яким керують і фінансують установи-члени. Члени-засновники
+      консорціуму включають: Науково-промислову дослідницьку організацію
+      Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
+      Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
+      Університет Флориди, Університет Канзасу та Університет Мічигану.
+      Консорціум працює відповідно до некомерційного, 501(c)3, податкового
+      статусу США дослідницького центру Канзаського університету. З 1996 по
+      2018 рік Specify підтримувався грантами Національного наукового фонду
+      США.
     `,
     'de-ch': `
       Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
@@ -210,35 +210,35 @@ export const welcomeText = createDictionary({
   },
   licence: {
     'en-us': `
-      Specify 7, Copyright 2023, University of Kansas Center for Research.
+      Specify 7, Copyright 2025, University of Kansas Center for Research.
       Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source
       software licensed under GNU General Public License v2.
     `,
     'ru-ru': `
-      Specify 7, Авторские права 2023, University of Kansas для исследования.
+      Specify 7, Авторские права 2025, University of Kansas для исследования.
       Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное
       программное обеспечение с открытым исходным кодом под лицензией GNU
       General Public License v2.
     `,
     'es-es': `
-      Specify 7 Copyright © 2023 University of Kansas Center for Research.
+      Specify 7 Copyright © 2025 University of Kansas Center for Research.
       Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa
       libre, bajo licencia GNU General Public License 2 (GPL2).
     `,
     'fr-fr': `
-      Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du
+      Spécifiez 7, Copyright 2025, Centre de recherche de l'Université du
       Kansas. Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un
       logiciel gratuit et open source sous licence GNU General Public License
       v2.
     `,
     'uk-ua': `
-      Укажіть 7, Copyright 2023, Дослідницький центр Канзаського університету.
-      Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне
-      забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public
-      License v2.
+      Укажіть 7, авторське право 2025, Дослідницький центр Канзаського
+      університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це
+      безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з
+      GNU General Public License v2.
     `,
     'de-ch': `
-      Specify 7, Copyright 2023, University of Kansas Center for Research.
+      Specify 7, Copyright 2025, University of Kansas Center for Research.
       Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene
       Software, lizenziert unter GNU General Public License v2.
     `,

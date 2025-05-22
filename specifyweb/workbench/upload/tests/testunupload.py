@@ -1,12 +1,12 @@
 from specifyweb.specify import auditcodes
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
-from ..upload import do_upload, do_upload_csv, unupload_record
+from ..upload import do_upload, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
-from ..tomany import ToManyRecord
 from ..upload_plan_schema import parse_column_options
 
+from django.conf import settings
 
 class UnUploadTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -49,7 +49,7 @@ class UnUploadTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -107,7 +107,7 @@ class UnUploadTests(UploadTestsBase):
                 'State': {'name': parse_column_options('State/Prov/Pref')},
                 'County': {'name': parse_column_options('Co')},
             }
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Douglass'},
@@ -139,12 +139,12 @@ class UnUploadTests(UploadTestsBase):
             (400, "Greene"),
             (400, "Christian"),
             (400, "Johnson"),
-        }, set((record.rankid, record.name) for record in get_table('Geography').objects.all()))
+        }, {(record.rankid, record.name) for record in get_table('Geography').objects.all()})
 
         for result in reversed(results):
             unupload_record(result, self.agent)
 
-        self.assertEqual(set(), set((record.rankid, record.name) for record in get_table('Geography').objects.all()))
+        self.assertEqual(set(), {(record.rankid, record.name) for record in get_table('Geography').objects.all()})
 
         self.assertEqual(9,
                          get_table('Spauditlog').objects.filter(
@@ -192,7 +192,7 @@ class UnUploadTests(UploadTestsBase):
                     static={},
                     toOne={},
                     toMany={
-                        'collectors': [ToManyRecord(
+                        'collectors': [UploadTable(
                             name='Collector',
                             wbcols={},
                             static={},
@@ -206,12 +206,15 @@ class UnUploadTests(UploadTestsBase):
                                     toOne={},
                                     toMany={},
                                 ),
-                            })]
+                            },
+                            toMany={}
+                            )
+                            ]
                     }
                 )
             },
             toMany={}
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},

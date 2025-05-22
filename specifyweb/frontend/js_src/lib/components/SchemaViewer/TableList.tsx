@@ -14,7 +14,7 @@ export function SchemaViewerTableList<
     | 'schemaViewerRelationships'
     | 'schemaViewerTables',
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
-  DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
+  DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>,
 >({
   sortName,
   headers,

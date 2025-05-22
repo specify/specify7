@@ -15,6 +15,8 @@ pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt
 
 django_migrations:
+	$(PYTHON) manage.py base_specify_migration
+	$(PYTHON) manage.py migrate specify
 	$(PYTHON) manage.py migrate notifications
 	$(PYTHON) manage.py migrate workbench
 	$(PYTHON) manage.py migrate accounts
