@@ -21,8 +21,8 @@ msgstr "Уведомлений: …"
 msgid "mostRecentNotificationsTop"
 msgstr "(В порядке от самого последнего к самому старому.)"
 
-#: components/Notifications/NotificationRenderers.tsx:62
-#: components/Notifications/NotificationRenderers.tsx:90
+#: components/Notifications/NotificationRenderers.tsx:64
+#: components/Notifications/NotificationRenderers.tsx:94
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 msgid "exception"
 msgstr "Ошибка"
@@ -31,9 +31,9 @@ msgstr "Ошибка"
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:201
 #: components/LocalityUpdate/Status.tsx:393
-#: components/Notifications/NotificationRenderers.tsx:76
-#: components/Notifications/NotificationRenderers.tsx:104
-#: components/Notifications/NotificationRenderers.tsx:118
+#: components/Notifications/NotificationRenderers.tsx:80
+#: components/Notifications/NotificationRenderers.tsx:110
+#: components/Notifications/NotificationRenderers.tsx:126
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "download"
 msgstr "Скачать"
@@ -43,32 +43,32 @@ msgstr "Скачать"
 msgid "feedItemUpdated"
 msgstr "Элемент фида экспорта обновлен."
 
-#: components/Notifications/NotificationRenderers.tsx:56
+#: components/Notifications/NotificationRenderers.tsx:58
 #. Used in: Components > Notifications > Notification Renderers
 msgid "updateFeedFailed"
 msgstr "Не удалось обновить экспортный канал."
 
-#: components/Notifications/NotificationRenderers.tsx:70
+#: components/Notifications/NotificationRenderers.tsx:72
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dwcaExportCompleted"
 msgstr "Экспорт в DwCA завершен."
 
-#: components/Notifications/NotificationRenderers.tsx:84
+#: components/Notifications/NotificationRenderers.tsx:88
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dwcaExportFailed"
 msgstr "Не удалось экспортировать DwCA."
 
-#: components/Notifications/NotificationRenderers.tsx:98
+#: components/Notifications/NotificationRenderers.tsx:102
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToCsvCompleted"
 msgstr "Экспорт запроса в CSV завершен."
 
-#: components/Notifications/NotificationRenderers.tsx:112
+#: components/Notifications/NotificationRenderers.tsx:118
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToKmlCompleted"
 msgstr "Экспорт запроса в KML завершен."
 
-#: components/Notifications/NotificationRenderers.tsx:136
+#: components/Notifications/NotificationRenderers.tsx:144
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""

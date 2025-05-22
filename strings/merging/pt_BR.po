@@ -133,31 +133,31 @@ msgstr ""
 msgid "merging"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:150
+#: components/Notifications/NotificationRenderers.tsx:158
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:205
+#: components/Notifications/NotificationRenderers.tsx:213
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:167
+#: components/Notifications/NotificationRenderers.tsx:175
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:185
+#: components/Notifications/NotificationRenderers.tsx:193
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:170
+#: components/Notifications/NotificationRenderers.tsx:178
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"

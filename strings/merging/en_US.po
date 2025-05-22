@@ -108,27 +108,27 @@ msgstr "Merge Succeeded"
 msgid "merging"
 msgstr "Merging"
 
-#: components/Notifications/NotificationRenderers.tsx:150
+#: components/Notifications/NotificationRenderers.tsx:158
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasStarted"
 msgstr "The merge process has started."
 
-#: components/Notifications/NotificationRenderers.tsx:205
+#: components/Notifications/NotificationRenderers.tsx:213
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasSucceeded"
 msgstr "The merge process has succeeded."
 
-#: components/Notifications/NotificationRenderers.tsx:167
+#: components/Notifications/NotificationRenderers.tsx:175
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasFailed"
 msgstr "The merge process has failed."
 
-#: components/Notifications/NotificationRenderers.tsx:185
+#: components/Notifications/NotificationRenderers.tsx:193
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasBeenCanceled"
 msgstr "The merge process has been cancelled."
 
-#: components/Notifications/NotificationRenderers.tsx:170
+#: components/Notifications/NotificationRenderers.tsx:178
 #. Used in: Components > Notifications > Notification Renderers
 msgid "retryMerge"
 msgstr "Retry merge."
