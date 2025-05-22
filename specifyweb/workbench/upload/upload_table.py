@@ -432,7 +432,7 @@ class BoundUploadTable(NamedTuple):
             filters={**attrs, **direct_filters, **to_ones, **to_many}
         )
 
-        if combined_filters.is_reducible() and not isinstance(self.current_id, int):
+        if combined_filters.is_reducible():
             # This is a very hot path, being called for every object on a row. We'd need to be very minimal in what we consider when considering dependents.
             # So, we:
             # 1. ^ all other attrs are null (otherwise, we won't delete this obj anyways, don't need to waste time looking at deps)
