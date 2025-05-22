@@ -42,7 +42,7 @@ export const notificationRenderers: IR<
           <Link.Success
             className="w-fit normal-case"
             download
-            href={`/static/depository/export_feed/${filename}`}
+            href={`/static/depository/export_feed/${encodeURIComponent(filename)}`}
           >
             {filename}
           </Link.Success>
@@ -71,7 +71,7 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(filename)}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -93,13 +93,17 @@ export const notificationRenderers: IR<
     );
   },
   'query-export-to-csv-complete'(notification) {
+    const filename = notification.payload.file;
+    const displayName = filename.replace(/\.csv$/, '');
     return (
       <>
         {notificationsText.queryExportToCsvCompleted()}
+        <br />
+        <em>{displayName}</em>
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(filename)}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -107,13 +111,17 @@ export const notificationRenderers: IR<
     );
   },
   'query-export-to-kml-complete'(notification) {
+    const filename = notification.payload.file;
+    const displayName = filename.replace(/\.csv$/, '');
     return (
       <>
         {notificationsText.queryExportToKmlCompleted()}
+        <br />
+        <em>{displayName}</em>
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(filename)}`}
         >
           {notificationsText.download()}
         </Link.Success>
