@@ -48,6 +48,7 @@ def add_attachments_to_plan(
 
     base_table = upload_plan.name
 
+    # Create copy of upload plan and row for modification
     new_upload_plan = upload_plan._replace()
     new_row = row.copy()
     logger.debug("Attachments: %s", attachments)
@@ -77,69 +78,69 @@ def add_attachments_to_plan(
             attachment_table = table_name.lower() + "attachments"
             attachment_field = (table_name + "attachment").capitalize()
 
+            # Create plan for parent attachment table if its not already there
             if attachment_table not in new_upload_plan.toMany:
                 new_upload_plan.toMany[attachment_table] = []
+            attachment_table_plan = new_upload_plan.toMany[attachment_table]
 
-            # We only want attachments to be matched. New attachment records should not be created.
-            # Any attachment fields will be overwritten on purpose. Perhaps this should also result in an error?
+            # Map newly created columns
+            ordinal_column = ColumnOptions(
+                column=f"_ATTACHMENT_ORDINAL_{index}",
+                matchBehavior="ignoreNever",
+                nullAllowed=True,
+                default="0"
+            )
+            attackment_columns = {}
+            for field in attachment_fields_to_copy:
+                attackment_columns[field] = ColumnOptions(
+                    column=f"_ATTACHMENT_{field.upper()}_{index}",
+                    matchBehavior="ignoreNever",
+                    nullAllowed=True,
+                    default="0"
+                )
+            attachment_uploadable = UploadTable(
+                name="Attachment",
+                wbcols=attackment_columns,
+                static={},
+                toOne={},
+                toMany={},
+                overrideScope=None,
+            )
 
-            if len(new_upload_plan.toMany[attachment_table]) <= index:
-                new_upload_plan.toMany[attachment_table].append(
+            # Insert into upload plan
+            if index >= len(attachment_table_plan):
+                # Create new attachment parent record and match existing attachment
+                attachment_table_plan.append(
                     UploadTable(
                         name=attachment_field,
                         wbcols={
-                            'ordinal': ColumnOptions(
-                                column=f"_ATTACHMENT_ORDINAL_{index}",
-                                matchBehavior='ignoreNever',
-                                nullAllowed=True,
-                                default='0'
-                            )
+                            "ordinal": ordinal_column,
                         },
                         static={},
                         toOne={
-                            "attachment": UploadTable(
-                                name="Attachment",
-                                wbcols={
-                                    'ispublic': ColumnOptions(
-                                        column=f"_ATTACHMENT_ISPUBLIC_{index}",
-                                        matchBehavior='ignoreNever',
-                                        nullAllowed=True,
-                                        default='FALSE'
-                                    ),
-                                    'origfilename': ColumnOptions(
-                                        column=f"_ATTACHMENT_ORIGFILENAME_{index}",
-                                        matchBehavior='ignoreNever',
-                                        nullAllowed=True,
-                                        default='0'
-                                    ),
-                                    'title': ColumnOptions(
-                                        column=f"_ATTACHMENT_TITLE_{index}",
-                                        matchBehavior='ignoreNever',
-                                        nullAllowed=True,
-                                        default='0'
-                                    ),
-                                    'attachmentlocation': ColumnOptions(
-                                        column=f"_ATTACHMENT_ATTACHMENTLOCATION_{index}",
-                                        matchBehavior='ignoreNever',
-                                        nullAllowed=True,
-                                        default='0'
-                                    ),
-                                },
-                                static={},
-                                toOne={},
-                                toMany={},
-                                overrideScope=None,
-                            )
+                            "attachment": attachment_uploadable
                         },
                         toMany={},
                         overrideScope=None,
                 ))
+            else:
+                # We only want attachments to be matched. New attachment records should not be created.
+                # Any attachment fields will be overwritten on purpose. Perhaps this should also result in an error?
+                attachment_table_record_plan = attachment_table_plan[index]
+                if attachment_table_record_plan.toOne.get("attachment") is not None:
+                    raise ValueError("There cannot be any Attachment fields in the upload plan when uploading attachments.")
+                attachment_table_plan[index].wbcols = {
+                    "ordinal": ordinal_column,
+                    **attachment_table_plan[index].wbcols,
+                }
+                attachment_table_plan[index].toOne = {
+                    "attachment": attachment_uploadable
+                }
     return new_row, new_upload_plan
 
 def unlink_attachments(
     ds: Spdataset,
 ) -> None:
-    # Django: search any Spdatasetattachments that point to dataset
     spdatasetattachments = Spdatasetattachment.objects.filter(spdataset=ds.id)
     for spdatasetattachment in spdatasetattachments:
         attachment = spdatasetattachment.attachment
