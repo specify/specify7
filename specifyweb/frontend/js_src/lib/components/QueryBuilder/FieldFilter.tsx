@@ -1,11 +1,11 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -18,17 +18,13 @@ import type {
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
 import type { RA, RR } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
-import { fetchPickList, getPickListItems } from '../PickLists/fetch';
-import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
-import type { QueryField } from './helpers';
 import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
 
@@ -37,6 +33,7 @@ import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'age'
   | 'aggregator'
   | 'checkbox'
   | 'date'
@@ -45,6 +42,8 @@ export type QueryFieldType =
   | 'number'
   | 'text';
 export type QueryFieldFilter =
+  | 'ageName'
+  | 'ageRange'
   | 'any'
   | 'between'
   | 'contains'
@@ -68,7 +67,7 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
 
 export function QueryInputField({
   currentValue,
-  // Used only to help browsers with autocomplet
+  // Used only to help browsers with autocomplete
   fieldName,
   parser,
   label = commonText.searchQuery(),
@@ -222,7 +221,7 @@ export function QueryInputField({
   );
 }
 
-const resolvePickListItem = (
+export const resolvePickListItem = (
   items: RA<PickListItemSimple>,
   currentValue: string
 ): string =>
@@ -396,42 +395,41 @@ function In({
   );
 }
 
-export const queryFieldFilters: RR<
-  QueryFieldFilter,
-  {
-    readonly id: number;
-    readonly label: LocalizedString;
-    readonly description: LocalizedString | undefined;
-    // If true, show pick list item titles. Else, show free input
-    readonly renderPickList: boolean;
-    readonly types: RA<QueryFieldType>;
-    readonly component?: typeof SingleField;
-    // Whether to do front-end validation
-    readonly hasParser: boolean;
-  }
-> = {
+type FieldFilter = {
+  readonly id: number;
+  readonly label: LocalizedString;
+  readonly description: LocalizedString | undefined;
+  // If true, show pick list item titles. Else, show free input
+  readonly renderPickList: boolean;
+  readonly component?: typeof SingleField;
+  // Whether to do front-end validation
+  readonly hasParser: boolean;
+};
+
+/**
+ * Basic QueryFieldFilter spec for non-React components and general use.
+ * React components should use the useQueryFieldFilters hook as some
+ * user preferences can modify/expand the spec, and the hook can listen to
+ * preference changes and update the object accordingly
+ *
+ * REFACTOR: Include attributes of the full field filters of
+ * useQueryFieldFilters with this object?
+ * So that they can still be easily accessed if needed by helper functions, but
+ * in a potentially stale state.
+ */
+export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
   any: {
     id: 8,
     label: queryText.any(),
     description: undefined,
     renderPickList: false,
     hasParser: false,
-    types: [
-      'checkbox',
-      'date',
-      'id',
-      'number',
-      'text',
-      'formatter',
-      'aggregator',
-    ],
   },
   like: {
     id: 0,
     label: queryText.like(),
     description: queryText.likeDescription(),
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
     component: SingleField,
     hasParser: false,
   },
@@ -442,14 +440,12 @@ export const queryFieldFilters: RR<
     renderPickList: true,
     component: SingleField,
     hasParser: true,
-    types: ['text', 'number', 'date', 'id'],
   },
   greater: {
     id: 2,
     label: queryText.greaterThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
@@ -458,7 +454,6 @@ export const queryFieldFilters: RR<
     label: queryText.lessThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
@@ -467,7 +462,6 @@ export const queryFieldFilters: RR<
     label: queryText.greaterOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
@@ -476,7 +470,6 @@ export const queryFieldFilters: RR<
     label: queryText.lessOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
@@ -485,7 +478,6 @@ export const queryFieldFilters: RR<
     label: queryText.true(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   false: {
@@ -493,7 +485,6 @@ export const queryFieldFilters: RR<
     label: queryText.false(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   between: {
@@ -501,7 +492,6 @@ export const queryFieldFilters: RR<
     label: queryText.between(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
     component: Between,
     hasParser: true,
   },
@@ -510,11 +500,6 @@ export const queryFieldFilters: RR<
     label: queryText.in(),
     description: queryText.inDescription(),
     renderPickList: true,
-    /*
-     * Can't use "date" for IN because date picker does not allow separating
-     * multiple values with a comma. Instead, OR filters should be used
-     */
-    types: ['text', 'number', 'id'],
     component: In,
     hasParser: true,
   },
@@ -524,7 +509,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   startsWith: {
@@ -533,7 +517,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   empty: {
@@ -541,7 +524,6 @@ export const queryFieldFilters: RR<
     label: queryText.empty(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox', 'date', 'id', 'number', 'text'],
     hasParser: false,
   },
   trueOrNull: {
@@ -549,7 +531,6 @@ export const queryFieldFilters: RR<
     label: queryText.trueOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   falseOrNull: {
@@ -557,88 +538,22 @@ export const queryFieldFilters: RR<
     label: queryText.falseOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
+  ageName: {
+    id: 17,
+    label: resourcesText.name(),
+    description: undefined,
+    renderPickList: true,
+    hasParser: true,
+    component: In,
+  },
+  ageRange: {
+    id: 16,
+    label: queryText.range(),
+    description: undefined,
+    renderPickList: false,
+    hasParser: true,
+    component: Between,
+  },
 };
-
-export function QueryLineFilter({
-  filter,
-  fieldName,
-  terminatingField,
-  parser: originalParser,
-  enforceLengthLimit,
-  onChange: handleChange,
-}: {
-  readonly filter: QueryField['filters'][number];
-  readonly fieldName: string;
-  readonly terminatingField: LiteralField | Relationship | undefined;
-  readonly parser: Parser;
-  readonly enforceLengthLimit: boolean;
-  readonly onChange: ((newValue: string) => void) | undefined;
-}): JSX.Element | null {
-  const parser = queryFieldFilters[filter.type].hasParser
-    ? originalParser
-    : ({
-        ...removeKey(
-          originalParser,
-          'pattern',
-          'min',
-          'step',
-          'formatters',
-          'parser',
-          'validators'
-        ),
-        type: 'text',
-      } as const);
-
-  const [pickListItems] = useAsyncState(
-    React.useCallback(
-      async () =>
-        typeof parser.pickListName === 'string'
-          ? fetchPickList(parser.pickListName).then((pickList) =>
-              typeof pickList === 'object' ? getPickListItems(pickList) : false
-            )
-          : false,
-      [parser.pickListName]
-    ),
-    false
-  );
-
-  // Fix for https://github.com/specify/specify7/issues/2296
-  React.useEffect(() => {
-    if (pickListItems === undefined || pickListItems === false) return;
-    const newStartValue = filter.startValue
-      .split(',')
-      .map((value) => resolvePickListItem(pickListItems, value))
-      .join(',');
-    if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
-  }, [pickListItems, filter]);
-
-  const Component = queryFieldFilters[filter.type].component;
-
-  const isBasic = React.useContext(IsQueryBasicContext);
-
-  return Component === undefined ? null : pickListItems === undefined ? (
-    <>{commonText.loading()}</>
-  ) : (
-    <>
-      {isBasic ? null : mappingElementDivider}
-      <Component
-        currentValue={filter.startValue}
-        enforceLengthLimit={enforceLengthLimit}
-        fieldName={fieldName}
-        parser={parser}
-        pickListItems={
-          queryFieldFilters[filter.type].renderPickList
-            ? pickListItems === false
-              ? undefined
-              : pickListItems
-            : undefined
-        }
-        terminatingField={terminatingField}
-        onChange={handleChange}
-      />
-    </>
-  );
-}

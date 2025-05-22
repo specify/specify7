@@ -18,23 +18,23 @@ requireContext();
 
 const tests: {
   readonly [SYNCER in keyof typeof syncers]: RA<
-    (typeof syncers[SYNCER] extends (
+    ((typeof syncers)[SYNCER] extends (
       ...args: RA<any>
     ) => Syncer<unknown, unknown>
       ? {
           readonly arguments:
-            | Parameters<typeof syncers[SYNCER]>
-            | (() => Parameters<typeof syncers[SYNCER]>);
+            | Parameters<(typeof syncers)[SYNCER]>
+            | (() => Parameters<(typeof syncers)[SYNCER]>);
         }
       : RR<never, never>) & {
-      readonly in: SyncerIn<ExtractSyncer<typeof syncers[SYNCER]>>;
+      readonly in: SyncerIn<ExtractSyncer<(typeof syncers)[SYNCER]>>;
       readonly out:
-        | SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>
-        | (() => SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>);
+        | SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>
+        | (() => SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>);
       readonly newOut?:
-        | SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>
-        | (() => SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>);
-      readonly final?: SyncerIn<ExtractSyncer<typeof syncers[SYNCER]>>;
+        | SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>
+        | (() => SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>);
+      readonly final?: SyncerIn<ExtractSyncer<(typeof syncers)[SYNCER]>>;
       readonly logContext?: LogPathPart;
       readonly error?: RA<unknown>;
       readonly warn?: RA<unknown>;

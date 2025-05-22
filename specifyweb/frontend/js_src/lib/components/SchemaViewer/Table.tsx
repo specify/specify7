@@ -61,7 +61,7 @@ export const schemaViewerTableColumns = f.store(
       tableId: schemaText.tableId(),
       fieldCount: schemaText.fieldCount(),
       relationshipCount: schemaText.relationshipCount(),
-    } as const)
+    }) as const
 );
 
 export const getSchemaViewerTables = () =>
@@ -103,6 +103,6 @@ export const getSchemaViewerTables = () =>
               {formatNumber(table.relationships.length)}
             </span>,
           ],
-        } as const)
+        }) as const
     )
   );

@@ -51,8 +51,8 @@ export function WbGeoLocate({
             ? isUploaded
               ? wbText.unavailableWhenUploaded()
               : isResultsOpen
-              ? wbText.unavailableWhileViewingResults()
-              : undefined
+                ? wbText.unavailableWhileViewingResults()
+                : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openGeoLocate}

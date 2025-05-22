@@ -23,7 +23,7 @@ export function PreviewRow({
   readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const [view, setView] = React.useState<
-    typeof tableActions[number] | undefined
+    (typeof tableActions)[number] | undefined
   >(undefined);
   const id = useId('preview-row');
   return (
@@ -98,8 +98,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}
@@ -154,8 +154,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}

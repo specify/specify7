@@ -146,7 +146,7 @@ const mergeSpecs = (
                   weblate?.comments?.[key as 'flag'] ||
                   '',
               ])
-            ) as typeof local['comments'],
+            ) as (typeof local)['comments'],
           },
         ];
       })

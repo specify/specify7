@@ -76,7 +76,7 @@ export function XmlEntryList<
   ITEM extends {
     readonly table: SpecifyTable | undefined;
     readonly name: string;
-  }
+  },
 >({
   items: [items, setItems],
   tableName,

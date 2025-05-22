@@ -30,7 +30,7 @@ import type { FormatterTypesOutlet } from './Types';
  */
 export function XmlEditorShell<
   ITEM extends { readonly name: string },
-  OUTLET_CONTEXT extends { readonly items: GetSet<RA<ITEM>> }
+  OUTLET_CONTEXT extends { readonly items: GetSet<RA<ITEM>> },
 >({
   header,
   children,

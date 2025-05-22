@@ -106,10 +106,10 @@ export function Header({
           position === 'left'
             ? 'dark:border-r'
             : position === 'top'
-            ? 'dark:border-b'
-            : position === 'right'
-            ? 'dark:border-l'
-            : 'dark:border-t'
+              ? 'dark:border-b'
+              : position === 'right'
+                ? 'dark:border-l'
+                : 'dark:border-t'
         }
         ${
           isMenuLight
@@ -215,8 +215,8 @@ export function MenuButton({
       isActive
         ? 'bg-brand-300 !text-white'
         : isSideBarDark
-        ? 'text-white'
-        : 'text-gray-700'
+          ? 'text-white'
+          : 'text-gray-700'
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

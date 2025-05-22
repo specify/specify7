@@ -334,10 +334,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
    */
   const attachmentUpload =
     uploadableFile.attachmentFromPreviousTry ??
-    (await (uploadableFile.uploadTokenSpec === undefined
-      ? Promise.resolve(undefined)
-      : // Connection could be lost here, so silencing errors
-        fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
+    (await (
+      uploadableFile.uploadTokenSpec === undefined
+        ? Promise.resolve(undefined)
+        : // Connection could be lost here, so silencing errors
+          fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
     )
       .then(async (token) =>
         /*

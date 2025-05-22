@@ -229,6 +229,19 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
 
+  const isCOGorCOJO =
+    resource.specifyTable.name === 'CollectionObjectGroup' ||
+    resource.specifyTable.name === 'CollectionObjectGroupJoin';
+
+  // Disable bulk carry forward for COType cat num format that are undefined or one of types listed in tableValidForBulkClone()
+  const formatter =
+    tables.CollectionObject.strictGetLiteralField(
+      'catalogNumber'
+    ).getUiFormatter(resource)!;
+  const disableBulk =
+    !tableValidForBulkClone(resource.specifyTable, resource) ||
+    formatter === undefined;
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
@@ -237,79 +250,81 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
           showCarry &&
-          showBulkCarry ? (
+          showBulkCarry &&
+          !isCOGorCOJO &&
+          !disableBulk ? (
             <Input.Integer
               aria-label={formsText.bulkCarryForwardCount()}
               className="!w-fit"
+              max={5000}
               min={1}
               placeholder="1"
               value={carryForwardAmount}
               onValueChange={(value): void =>
-                Number.isNaN(value)
-                  ? setCarryForwardAmount(1)
-                  : setCarryForwardAmount(Number(value))
+                setCarryForwardAmount(Number(value))
               }
             />
           ) : null}
-          {showCarry &&
-            copyButton(
-              formsText.carryForward(),
-              formsText.carryForwardDescription(),
-              /**
-               * FEATURE: Extend this functionality to all tables
-               * See https://github.com/specify/specify7/pull/4804
-               *
-               */
-              resource.specifyTable.name === 'CollectionObject' &&
-                carryForwardAmount > 1
-                ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
-                    const formatter =
-                      tables.CollectionObject.strictGetLiteralField(
-                        'catalogNumber'
-                      ).getUiFormatter()!;
-                    const wildCard = formatter.valueOrWild();
+          {showCarry && !isCOGorCOJO
+            ? copyButton(
+                formsText.carryForward(),
+                formsText.carryForwardDescription(),
+                /**
+                 * FEATURE: Extend this functionality to all tables
+                 * See https://github.com/specify/specify7/pull/4804
+                 *
+                 */
+                resource.specifyTable.name === 'CollectionObject' &&
+                  carryForwardAmount > 1
+                  ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
+                      const wildCard = formatter.valueOrWild();
 
-                    const clonePromises = Array.from(
-                      { length: carryForwardAmount },
-                      async () => {
-                        const clonedResource = await resource.clone(
-                          false,
-                          true
-                        );
-                        clonedResource.set('catalogNumber', wildCard as never);
-                        return clonedResource;
-                      }
-                    );
+                      const clonePromises = Array.from(
+                        { length: carryForwardAmount },
+                        async () => {
+                          const clonedResource = await resource.clone(
+                            false,
+                            true
+                          );
+                          clonedResource.set(
+                            'catalogNumber',
+                            wildCard as never
+                          );
+                          return clonedResource;
+                        }
+                      );
 
-                    const clones = await Promise.all(clonePromises);
+                      const clones = await Promise.all(clonePromises);
 
-                    const backendClones = await ajax<
-                      RA<SerializedRecord<SCHEMA>>
-                    >(
-                      `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
-                      {
-                        method: 'POST',
-                        headers: { Accept: 'application/json' },
-                        body: clones,
-                      }
-                    ).then(({ data }) =>
-                      data.map((resource) =>
-                        deserializeResource(serializeResource(resource))
-                      )
-                    );
+                      const backendClones = await ajax<
+                        RA<SerializedRecord<SCHEMA>>
+                      >(
+                        `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+                        {
+                          method: 'POST',
+                          headers: { Accept: 'application/json' },
+                          body: clones,
+                        }
+                      ).then(({ data }) =>
+                        data.map((resource) =>
+                          deserializeResource(serializeResource(resource))
+                        )
+                      );
 
-                    return Promise.all([resource, ...backendClones]);
-                  }
-                : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
-                    await resource.clone(false),
-                  ]
-            )}
-          {showClone &&
-            copyButton(
-              formsText.clone(),
-              formsText.cloneDescription(),
-              async () => [await resource.clone(true)]
-            )}
+                      return Promise.all([resource, ...backendClones]);
+                    }
+                  : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
+                      await resource.clone(false),
+                    ]
+              )
+            : undefined}
+          {showClone && !isCOGorCOJO
+            ? copyButton(
+                formsText.clone(),
+                formsText.cloneDescription(),
+                async () => [await resource.clone(true)]
+              )
+            : undefined}
           {showAdd &&
             copyButton(
               commonText.add(),

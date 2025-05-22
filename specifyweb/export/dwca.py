@@ -12,8 +12,8 @@ from django.utils.translation import gettext as _
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
 
-from specifyweb.stored_queries.execution import EphemeralField, query_to_csv
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.stored_queries.execution import query_to_csv
+from specifyweb.stored_queries.queryfield import QueryField, EphemeralField
 from specifyweb.stored_queries.models import session_context
 
 logger = logging.getLogger(__name__)
@@ -162,6 +162,7 @@ class QueryDefField(namedtuple('QueryDefField', 'field_spec term is_core_id')):
                 isDisplay  = 'term' in node.attrib or node.tag == 'id',
                 formatName = node.attrib.get('formatName', None),
                 sortType   = 0,
+                isStrict=False
             ),
 
             term = node.attrib.get('term', None),

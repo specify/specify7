@@ -32,7 +32,7 @@ export type SyncerIn<SYNCER extends Syncer<unknown, unknown>> =
 export type SyncerOut<SYNCER extends Syncer<unknown, unknown>> =
   SYNCER extends Syncer<unknown, infer OUTPUT> ? OUTPUT : never;
 
-export type ExtractSyncer<T extends typeof syncers[keyof typeof syncers]> =
+export type ExtractSyncer<T extends (typeof syncers)[keyof typeof syncers]> =
   T extends (...args: RA<any>) => Syncer<unknown, unknown> ? ReturnType<T> : T;
 
 /**
