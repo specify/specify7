@@ -61,10 +61,10 @@ from .scope_context import ScopeContext
 from ..models import Spdataset
 
 from .upload_attachments import (
-    get_attachments,
     has_attachments,
     validate_attachment,
     add_attachments_to_plan,
+    unlink_attachments,
 )
 
 from .upload_attachments import (
@@ -124,6 +124,8 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress] = None) 
             current += 1
             if progress is not None:
                 progress(current, total)
+        # Un-link attachments, if any
+        unlink_attachments(ds)
         ds.uploadresult = None
         ds.save(update_fields=["uploadresult"])
 

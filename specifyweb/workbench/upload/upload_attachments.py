@@ -1,18 +1,12 @@
 import json
 import logging
-from typing import (
-    Tuple,
-    cast,
-)
+from typing import Tuple, cast
 
-from .uploadable import (
-    Row,
-    Uploadable,
-)
+from .uploadable import Row, Uploadable
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
 from .column_options import ColumnOptions
 from .upload_table import UploadTable
-from ..models import Spdatasetattachment
+from ..models import Spdataset, Spdatasetattachment
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +80,9 @@ def add_attachments_to_plan(
             if attachment_table not in new_upload_plan.toMany:
                 new_upload_plan.toMany[attachment_table] = []
 
+            # We only want attachments to be matched. New attachment records should not be created.
+            # Any attachment fields will be overwritten on purpose. Perhaps this should also result in an error?
+
             if len(new_upload_plan.toMany[attachment_table]) <= index:
                 new_upload_plan.toMany[attachment_table].append(
                     UploadTable(
@@ -138,3 +135,13 @@ def add_attachments_to_plan(
                         overrideScope=None,
                 ))
     return new_row, new_upload_plan
+
+def unlink_attachments(
+    ds: Spdataset,
+) -> None:
+    # Django: search any Spdatasetattachments that point to dataset
+    spdatasetattachments = Spdatasetattachment.objects.filter(spdataset=ds.id)
+    for spdatasetattachment in spdatasetattachments:
+        attachment = spdatasetattachment.attachment
+        attachment.tableid = ds.specify_model.tableId
+        attachment.save()
