@@ -29,6 +29,7 @@ import type {
   Spdataset,
   SpDataSetAttachment,
 } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -38,6 +39,10 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
+import {
+  attachmentsToCell,
+  BASE_TABLE_NAME,
+} from './helpers';
 
 export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
@@ -47,17 +52,19 @@ export function WbImportAttachmentsView(): JSX.Element {
 
   return (
     <Container.Full>
-      <H2>{commonText.multipleFilePickerMessage()}</H2>
-      <div className="w-96">
-        <FilePicker
-          acceptedFormats={undefined}
-          showFileNames
-          onFilesSelected={(selectedFiles) => {
-            setFiles(Array.from(selectedFiles));
-          }}
-        />
-      </div>
-      {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
+        <H2>{commonText.multipleFilePickerMessage()}</H2>
+        <div className="w-96">
+          <FilePicker
+            acceptedFormats={undefined}
+            showFileNames
+            onFilesSelected={(selectedFiles) => {
+              setFiles(Array.from(selectedFiles));
+            }}
+          />
+        </div>
+        {files !== undefined && files.length > 0 && (
+          <FilesPicked files={files} />
+        )}
     </Container.Full>
   );
 }
@@ -145,9 +152,9 @@ function FilesPicked({
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => 
+          .then(async ({ dataSet, attachments }) =>
             // Create SpDataSetAttachments for each attachment
-             f.all({
+            f.all({
               dataSetAttachments: createDataSetAttachments(
                 attachments,
                 dataSet
@@ -161,7 +168,10 @@ function FilesPicked({
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
-          dataSetAttachment.id.toString(),
+          attachmentsToCell(
+            [serializeResource(dataSetAttachment)],
+            BASE_TABLE_NAME
+          ),
         ]);
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);

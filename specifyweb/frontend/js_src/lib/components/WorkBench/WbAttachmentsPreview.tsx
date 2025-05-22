@@ -12,7 +12,6 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -36,6 +35,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { getAttachmentsFromCell } from '../WbImportAttachments/helpers';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -164,9 +164,11 @@ function fetchRowAttachments(
   // Each row should have comma-separated IDs for SpDataSetAttachments
   const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
     '') as string;
-  const dataSetAttachmentIds = (selectedCell?.split(',') ?? [])
-    .map((rawId) => f.parseInt(rawId))
-    .filter((id): id is number => id !== undefined);
+  const cellData = getAttachmentsFromCell(selectedCell);
+  const dataSetAttachmentIds =
+    cellData === undefined
+      ? []
+      : cellData.attachments.map((attachment) => attachment.id);
 
   if (dataSetAttachmentIds.length === 0) {
     setAttachments([]);

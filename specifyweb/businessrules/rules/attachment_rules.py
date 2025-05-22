@@ -3,7 +3,8 @@ import re
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
-from specifyweb.specify.models_by_table_id import models_iterator
+from specifyweb.specify.models_by_table_id import get_model_by_table_id, models_iterator
+from specifyweb.workbench.models import Spdataset, Spdatasetattachment
 from django.db import transaction
 from django.apps import apps
 
@@ -36,6 +37,19 @@ def attachment_jointable_save(sender, obj):
 @orm_signal_handler('post_delete')
 def attachment_jointable_deletion(sender, obj):
     if sender in attachment_tables:
+        # Uploaded data sets have attachments that are also referenced by the uploaded records.
+        # Do not delete the attachment if it being referenced by a dataset.
+        # And do not delete the attachment if it is being referenced by an attachment table.
+        if sender == Spdatasetattachment:
+            if obj.attachment.tableid != Spdataset.specify_model.tableId:
+                parent_model = get_model_by_table_id(obj.attachment.tableid)
+                if parent_model.objects.filter(attachment_id=obj.attachment_id).count() > 0:
+                    return
+        else:
+            if Spdatasetattachment.objects.filter(attachment_id=obj.attachment_id).count() > 0:
+                obj.attachment.tableid = Spdataset.specify_model.tableId
+                obj.attachment.save()
+                return
         obj.attachment.delete()
 
 
