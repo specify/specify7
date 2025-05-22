@@ -72,7 +72,7 @@ msgstr ""
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du Kansas. "
+"Spécifiez 7, Copyright 2025, Centre de recherche de l'Université du Kansas. "
 "Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel "
 "gratuit et open source sous licence GNU General Public License v2."
 

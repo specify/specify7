@@ -60,7 +60,7 @@ msgstr ""
 #. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7, Copyright 2023, University of Kansas Center for Research. "
+"Specify 7, Copyright 2025, University of Kansas Center for Research. "
 "Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source "
 "software licensed under GNU General Public License v2."
 

@@ -71,7 +71,7 @@ msgstr ""
 #. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7 Copyright © 2023 University of Kansas Center for Research. "
+"Specify 7 Copyright © 2025 University of Kansas Center for Research. "
 "Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, "
 "bajo licencia GNU General Public License 2 (GPL2)."
 

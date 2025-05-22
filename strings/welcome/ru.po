@@ -60,7 +60,7 @@ msgstr ""
 #. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7, Авторские права 2023, University of Kansas для исследования. "
+"Specify 7, Авторские права 2025, University of Kansas для исследования. "
 "Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное "
 "программное обеспечение с открытым исходным кодом под лицензией GNU General "
 "Public License v2."
