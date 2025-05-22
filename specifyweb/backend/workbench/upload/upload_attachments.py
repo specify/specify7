@@ -6,7 +6,7 @@ from .uploadable import Row, Uploadable
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
 from .column_options import ColumnOptions
 from .upload_table import UploadTable
-from ..models import Spdataset, Spdatasetattachment
+from ..models import Attachment, Spdataset, Spdatasetattachment
 
 logger = logging.getLogger(__name__)
 
@@ -126,14 +126,15 @@ def add_attachments_to_plan(
             else:
                 # We only want attachments to be matched. New attachment records should not be created.
                 # Any attachment fields will be overwritten on purpose. Perhaps this should also result in an error?
-                attachment_table_record_plan = attachment_table_plan[index]
+                attachment_table_record_plan = cast(UploadTable, attachment_table_plan[index])
                 if attachment_table_record_plan.toOne.get("attachment") is not None:
                     raise ValueError("There cannot be any Attachment fields in the upload plan when uploading attachments.")
-                attachment_table_plan[index].wbcols = {
+
+                attachment_table_record_plan.wbcols = {
                     "ordinal": ordinal_column,
-                    **attachment_table_plan[index].wbcols,
+                    **attachment_table_record_plan.wbcols,
                 }
-                attachment_table_plan[index].toOne = {
+                attachment_table_record_plan.toOne = {
                     "attachment": attachment_uploadable
                 }
     return new_row, new_upload_plan
@@ -143,6 +144,6 @@ def unlink_attachments(
 ) -> None:
     spdatasetattachments = Spdatasetattachment.objects.filter(spdataset=ds.id)
     for spdatasetattachment in spdatasetattachments:
-        attachment = spdatasetattachment.attachment
+        attachment = cast(Attachment, spdatasetattachment.attachment)
         attachment.tableid = ds.specify_model.tableId
         attachment.save()
