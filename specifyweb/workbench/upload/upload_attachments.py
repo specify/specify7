@@ -129,14 +129,20 @@ def add_attachments_to_plan(
                 attachment_table_record_plan = cast(UploadTable, attachment_table_plan[index])
                 if attachment_table_record_plan.toOne.get("attachment") is not None:
                     raise ValueError("There cannot be any Attachment fields in the upload plan when uploading attachments.")
-
-                attachment_table_record_plan.wbcols = {
-                    "ordinal": ordinal_column,
-                    **attachment_table_record_plan.wbcols,
-                }
-                attachment_table_record_plan.toOne = {
-                    "attachment": attachment_uploadable
-                }
+                
+                attachment_table_plan[index] = UploadTable(
+                    name=attachment_table_record_plan.name,
+                    wbcols={
+                        "ordinal": ordinal_column,
+                        **attachment_table_record_plan.wbcols,
+                    },
+                    static=attachment_table_record_plan.static,
+                    toOne={
+                        "attachment": attachment_uploadable
+                    },
+                    toMany=attachment_table_record_plan.toMany,
+                    overrideScope=attachment_table_record_plan.overrideScope,
+                )
     return new_row, new_upload_plan
 
 def unlink_attachments(
@@ -144,6 +150,6 @@ def unlink_attachments(
 ) -> None:
     spdatasetattachments = Spdatasetattachment.objects.filter(spdataset=ds.id)
     for spdatasetattachment in spdatasetattachments:
-        attachment = cast(Attachment, spdatasetattachment.attachment)
-        attachment.tableid = ds.specify_model.tableId
+        attachment: Attachment = spdatasetattachment.attachment
+        attachment.tableid = ds.specify_model.tableId  # type: ignore[union-attr]
         attachment.save()
