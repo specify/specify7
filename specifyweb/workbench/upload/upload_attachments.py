@@ -154,4 +154,4 @@ def unlink_attachments(
     for spdatasetattachment in spdatasetattachments:
         attachment: Attachment = spdatasetattachment.attachment
         attachment.tableid = ds.specify_model.tableId  # type: ignore[union-attr]
-        attachment.save()  # type: ignore[attr-defined]
+        attachment.save()  # type: ignore

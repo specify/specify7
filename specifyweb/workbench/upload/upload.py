@@ -61,17 +61,11 @@ from .scope_context import ScopeContext
 from ..models import Spdataset
 
 from .upload_attachments import (
-    has_attachments,
-    validate_attachment,
-    add_attachments_to_plan,
-    unlink_attachments,
-)
-
-from .upload_attachments import (
     ATTACHMENTS_COLUMN,
     has_attachments,
     validate_attachment,
     add_attachments_to_plan,
+    unlink_attachments,
 )
 
 Rows = Union[list[Row], csv.DictReader]
