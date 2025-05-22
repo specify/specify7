@@ -72,13 +72,13 @@ def make_table_list(fs):
 
 
 def make_tree_fieldnames(table: Table, reverse=False):
-    mapping = {"ID": table.idFieldName.lower(), "": "fullname"}
+    mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
 
-def find_tree_and_field(table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str):
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
@@ -86,16 +86,19 @@ def find_tree_and_field(table, fieldname: str):
     tree_rank_and_field = fieldname.split(" ")
     mapping = make_tree_fieldnames(table)
 
-    # BUG: Edge case when there's no field AND rank name has a space?
     if len(tree_rank_and_field) == 1:
         return tree_rank_and_field[0], mapping[""]
     
     # Handles case where rank name contains spaces
-    if len(tree_rank_and_field) > 2:
-        tree_rank_and_field = [" ".join(tree_rank_and_field[:-1]), tree_rank_and_field[-1]]
+    field = tree_rank_and_field[-1]
+    if table.get_field(field) or field in mapping:
+        tree_rank = " ".join(tree_rank_and_field[:-1])
+    else:
+        # Edge case: rank name contains spaces, and no field exists (ie: fullname query)
+        tree_rank = " ".join(tree_rank_and_field)
+        field = ""
     
-    tree_rank, tree_field = tree_rank_and_field
-    return tree_rank, mapping.get(tree_field, tree_field)
+    return tree_rank, mapping.get(field, field)
 
 
 def make_stringid(fs, table_list):
@@ -152,7 +155,7 @@ class TreeRankQuery(Relationship):
 
 
 QueryNode = Union[Field, Relationship, TreeRankQuery]
-FieldSpecJoinPath = Tuple[QueryNode]
+FieldSpecJoinPath = tuple[QueryNode]
 
 
 class QueryFieldSpec(
@@ -501,7 +504,7 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
         and op_num == 1
         and get_cat_num_inheritance_setting(collection, user)
     ):
-        sibling_ids = cog_primary_co_sibling_ids(value)
+        sibling_ids = cog_primary_co_sibling_ids(value, collection)
         if sibling_ids:
             # Modify the query to filter operation and values for sibling collection objects
             value = ','.join(sibling_ids)
@@ -510,9 +513,9 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
 
     return op, orm_field, value
 
-def cog_primary_co_sibling_ids(cat_num):
+def cog_primary_co_sibling_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    co = Collectionobject.objects.filter(catalognumber=cat_num).first()
+    co = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
     if not co:
         return []
 
@@ -540,25 +543,25 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
         and op_num == 1
         and get_parent_cat_num_inheritance_setting(collection, user)
     ):
-        children_ids = co_children_ids(value)
-        if children_ids:
-            # Modify the query to filter operation and values for children collection objects
-            value = ','.join(children_ids)
+        components_ids = co_components_ids(value, collection)
+        if components_ids:
+            # Modify the query to filter operation and values for component collection objects
+            value = ','.join(components_ids)
             orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
             op = QueryOps(uiformatter).by_op_num(10)
 
     return op, orm_field, value
 
-def co_children_ids(cat_num):
+def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    parentco = Collectionobject.objects.filter(catalognumber=cat_num).first()
-    if not parentco:
+    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+    if not parentcomponent:
         return []
 
-    # Get child objects directly from the related name
-    children = parentco.children.filter(catalognumber=None)
+    # Get component objects directly from the related name
+    components = parentcomponent.components.filter(catalognumber=None)
 
     # Get their IDs
-    target_children_co_ids = children.values_list('id', flat=True)
+    target_component_co_ids = components.values_list('id', flat=True)
 
-    return [str(i) for i in [parentco.id] + list(target_children_co_ids)]
+    return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]

@@ -120,7 +120,7 @@ class Specifyuser(models.Model):
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        return save_auto_timestamp_field_with_override(super(Specifyuser, self).save, args, kwargs, self)
+        return save_auto_timestamp_field_with_override(super().save, args, kwargs, self)
 
     class Meta:
         abstract = True

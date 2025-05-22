@@ -179,3 +179,14 @@ MIGRATION_0027_UPDATE_FIELDS = {
         ('children', 'Children', 'Children'),
     ]
 }
+
+MIGRATION_0029_FIELDS = {
+    'CollectionObject': ['componentParent', 'components'],
+}
+
+MIGRATION_0029_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('componentParent', 'Component Parent', 'Parent of a component Collection Object'), 
+        ('components', 'Components', 'Component parts of a Collection Object'),
+    ]
+}

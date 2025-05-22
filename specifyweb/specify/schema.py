@@ -16,7 +16,7 @@ from .datamodel import (
 from .views import login_maybe_required
 
 
-def base_schema(title="Specify 7 API", description="") -> Dict:
+def base_schema(title="Specify 7 API", description="") -> dict:
     """Return base schema object that is shared between both Swagger UI's.
 
     returns:
@@ -357,7 +357,7 @@ def view(request, model: str) -> http.HttpResponse:
     return http.JsonResponse(table_to_schema(table))
 
 
-def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
+def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
     """Generate OpenAPI for several endpoints based on table.
 
     params:
@@ -771,11 +771,11 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                             "properties": {
                                                 "table": {
                                                     "type": "string",
-                                                    "example": get_first_valid_relationship_attr(cast(List[Relationship], table.relationships), "relatedModelName").lower().capitalize()
+                                                    "example": get_first_valid_relationship_attr(cast(list[Relationship], table.relationships), "relatedModelName").lower().capitalize()
                                                 },
                                                 "field": {
                                                     "type": "string",
-                                                    "example": get_first_valid_relationship_attr(cast(List[Relationship], table.relationships), "otherSideName"),
+                                                    "example": get_first_valid_relationship_attr(cast(list[Relationship], table.relationships), "otherSideName"),
                                                 },
                                                 "ids": {
                                                     "type": "array",
@@ -821,7 +821,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
     ]
 
 
-def table_to_schema(table: Table) -> Dict:
+def table_to_schema(table: Table) -> dict:
     """Generate the OpenAPI schema's schema object for a table.
 
     params:
@@ -841,7 +841,7 @@ def table_to_schema(table: Table) -> Dict:
     }
 
 
-def field_to_schema(field: Field) -> Dict:
+def field_to_schema(field: Field) -> dict:
     """Generate the OpenAPI schema's schema object for a field of a table.
 
     params:
@@ -925,10 +925,10 @@ def field_to_schema(field: Field) -> Dict:
         raise Exception(f"unexpected field type: {field.type}")
 
 
-def required_to_schema(field: Field, ftype: str) -> Dict:
+def required_to_schema(field: Field, ftype: str) -> dict:
     return {"type": ftype} if field.required else {"type": ftype, "nullable": True}
 
-def get_first_valid_relationship_attr(relationships: List[Relationship], attr_name: str) -> str:
+def get_first_valid_relationship_attr(relationships: list[Relationship], attr_name: str) -> str:
     for rel in relationships:
         if hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent:
             return getattr(rel, attr_name, 'Default')

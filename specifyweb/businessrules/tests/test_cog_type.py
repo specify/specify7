@@ -10,4 +10,3 @@ class COGTypeTest(DefaultsSetup):
 
         with self.assertRaises(BusinessRuleException), transaction.atomic():
             Collectionobjectgrouptype.objects.create(name='whole rock', type='Burrito', collection=self.collection)
-            

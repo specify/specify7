@@ -8,8 +8,8 @@ from specifyweb.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
 from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
-Row = Dict[str, str]
-Filter = Dict[str, Any]
+Row = dict[str, str]
+Filter = dict[str, Any]
 
 logger = logging.getLogger(__name__)
 
@@ -22,14 +22,14 @@ class PicklistAddition(NamedTuple):
 
 class WorkBenchParseFailure(NamedTuple):
     message: str
-    payload: Dict[str, Union[str, int, List[str], List[int]]]
+    payload: dict[str, Union[str, int, list[str], list[int]]]
     column: str
 
     @classmethod
     def from_parse_failure(cls, pf: ParseFailure, column: str):
         return cls(message=pf.message, payload=pf.payload, column=column)
 
-    def to_json(self) -> List:
+    def to_json(self) -> list:
         return list(self)
 
 class ParseResult(NamedTuple):
@@ -51,7 +51,7 @@ def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column, None)
 
 
-def parse_many(tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[WorkBenchParseFailure]]:
+def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: Row) -> tuple[list[ParseResult], list[WorkBenchParseFailure]]:
     results = [
         parse_value(tablename, fieldname,
                     row[colopts.column], colopts)
@@ -162,7 +162,7 @@ def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Un
 
     else:
         raise NotImplementedError(
-            "unknown picklist type {}".format(picklist.type))
+            f"unknown picklist type {picklist.type}")
 
 
 def assertNever(x: NoReturn) -> NoReturn:

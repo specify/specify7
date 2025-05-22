@@ -67,7 +67,7 @@ class Auditor(NamedTuple):
             self.audit_log.remove(deleted_obj, self.agent, parent_record)
 
     def update(
-        self, updated_obj: Any, parent_obj, dirty_fields: List[FieldChangeInfo]
+        self, updated_obj: Any, parent_obj, dirty_fields: list[FieldChangeInfo]
     ) -> None:
         self.pre_log(updated_obj, "update")
         if self.audit_log is not None:
