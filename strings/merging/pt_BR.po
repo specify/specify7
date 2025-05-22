@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-02-02 22:02+0000\n"
+"PO-Revision-Date: 2025-05-22 23:34+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/merging/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1674
@@ -26,7 +26,7 @@ msgstr "Mesclagem de registros"
 #: components/Router/OverlayRoutes.tsx:223
 #, fuzzy
 msgid "mergeRecords"
-msgstr "Mesclar Registros"
+msgstr "Mesclar registros"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:225
@@ -51,7 +51,7 @@ msgstr "Novo registro mesclado"
 #: components/Merging/Header.tsx:191
 #, fuzzy
 msgid "duplicateRecord"
-msgstr "Prévia {index:number|formatted}"
+msgstr "Pré-visualização {index:number|formatted}"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:111
@@ -115,8 +115,8 @@ msgid "warningMergeText"
 msgstr ""
 "Antes de prosseguir, observe que a ação a seguir pode interromper outros "
 "usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de "
-"certos recursos para usuários do Specify. Considere o impacto na experiência "
-"deles. Esta mesclagem não pode ser desfeita"
+"determinados recursos para usuários específicos. Considere o impacto na "
+"experiência deles. Esta fusão não pode ser desfeita."
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
