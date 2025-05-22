@@ -68,14 +68,7 @@ def _track_observed_ranks(
     new_columns = []
     for column in [*current.columns, *extra_columns]:
         column_field = column.field
-        new_field_spec = column_field.fieldspec._replace(
-            join_path=tuple(
-                [
-                    new_tree_rank_query if isinstance(node, TreeRankQuery) else node
-                    for node in column_field.fieldspec.join_path
-                ]
-            )
-        )
+        new_field_spec = BatchEditPack.replace_tree_rank(column_field.fieldspec, new_tree_rank_query)
         new_columns.append(
             column._replace(field=column_field._replace(fieldspec=new_field_spec))
         )
@@ -83,7 +76,7 @@ def _track_observed_ranks(
     return [*accum[0], current_rank["rankid"]], [
         *accum[1],
         # Making a copy here is important.
-        (relname, current._replace(columns=new_columns, tree_rank=new_tree_rank_query)),
+        (relname, current._replace(columns=new_columns, tree_rank=new_tree_rank_query, batch_edit_pack=current.batch_edit_pack.readjust_tree_rank(new_tree_rank_query))),
     ]
 
 

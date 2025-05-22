@@ -1079,7 +1079,12 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             # filter out control parameters
             continue
 
-        if param.endswith('__in') or param.endswith('__range'):
+        if param.endswith('__isnull'):
+            val = {
+                'true': True,
+                'false': False
+            }.get(val.lower(), val)
+        elif param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
 

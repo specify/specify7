@@ -315,7 +315,7 @@ def apply_scoping_to_uploadtable(
 
 
 def get_to_one_fields(collection) -> dict[str, list["str"]]:
-    return {
+    fields_collection = {
         "collectionobject": [
             *(["collectingevent"] if collection.isembeddedcollectingevent else []),
             "collectionobjectattribute",
@@ -324,12 +324,14 @@ def get_to_one_fields(collection) -> dict[str, list["str"]]:
         "attachment": ["attachmentimageattribute"],
         "collectingtrip": ["collectingtripattribute"],
         "preparation": ["preparationattribute"],
-        **(
-            {collection.discipline.paleocontextchildtable.lower(): ["paleocontext"]}
-            if collection.discipline.ispaleocontextembedded
-            else {}
-        ),
     }
+   
+    if collection.discipline.ispaleocontextembedded:
+        child = collection.discipline.paleocontextchildtable.lower()
+        # Done this way because child could be collectionobject and end up overriding the key in the dict above
+        fields_collection[child] = [*fields_collection.get(child, []), "paleocontext"]
+ 
+    return fields_collection
 
 
 def set_order_number(
