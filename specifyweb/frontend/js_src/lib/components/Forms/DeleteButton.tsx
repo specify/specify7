@@ -34,6 +34,16 @@ import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
 
+export type DeleteButtonProps<SCHEMA extends AnySchema> = {
+  readonly resource: SpecifyResource<SCHEMA>;
+  /**
+   * As a performance optimization, can defer checking for delete blockers
+   * until the button is clicked. This is used in the tree viewer as delete
+   * button's resource can change often.
+   */
+  readonly deferred?: boolean;
+};
+
 /**
  * A button to delele a resorce
  * Prompts before deletion
@@ -47,15 +57,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
-}: {
-  readonly resource: SpecifyResource<SCHEMA>;
+}: DeleteButtonProps<SCHEMA> & {
   readonly deletionMessage?: React.ReactNode;
-  /**
-   * As a performance optimization, can defer checking for delete blockers
-   * until the button is clicked. This is used in the tree viewer as delete
-   * button's resource can change often.
-   */
-  readonly deferred?: boolean;
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
