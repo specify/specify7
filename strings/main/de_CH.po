@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 14:39+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/main/de_CH/>\n"
 "Language: de_CH\n"
@@ -73,8 +73,8 @@ msgstr ""
 #, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
-"Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer "
-"sicheren Position neu beginnen - der Startseite."
+"Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer "
+"sicheren Stelle neu beginnen – der Startseite."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
