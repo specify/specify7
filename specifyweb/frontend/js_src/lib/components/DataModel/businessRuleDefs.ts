@@ -17,7 +17,7 @@ import {
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
 } from './businessRuleUtils';
-import { agentTypes, cogTypes } from './helpers';
+import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
