@@ -1,18 +1,20 @@
 import React from 'react';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { mergingText } from '../../localization/merging';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { localized } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
-import { DeleteButtonProps, fetchBlockers } from '../Forms/DeleteButton';
-import { Dialog, dialogClassNames } from './Dialog';
+import type { DeleteButtonProps } from '../Forms/DeleteButton';
+import { fetchBlockers } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
-import { AnySchema } from '../DataModel/helperTypes';
+import { Dialog, dialogClassNames } from './Dialog';
 
 /**
  * REFACTOR: Merge with Merging/Usages
@@ -38,15 +40,15 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
   return (
     <>
       <Button.Secondary
+        disabled={
+          !deferred && (blockers === undefined || blockers.length === 0)
+        }
         title={
           blockers === undefined
             ? commonText.loading()
-            : blockers.length == 0
+            : blockers.length === 0
               ? formsText.noLinkedRecords()
               : mergingText.linkedRecords()
-        }
-        disabled={
-          !deferred && (blockers === undefined || blockers.length === 0)
         }
         onClick={() => {
           handleOpen();
@@ -93,8 +95,8 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
            */
           <Dialog
             buttons={commonText.close()}
-            className={{ container: dialogClassNames.narrowContainer }}
             children={undefined}
+            className={{ container: dialogClassNames.narrowContainer }}
             header={formsText.noLinkedRecords()}
             icon={icons.documentSearch}
             onClose={handleClose}
