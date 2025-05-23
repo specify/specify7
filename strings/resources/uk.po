@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
 "Language: uk\n"
@@ -198,12 +198,12 @@ msgstr "Таблиці взаємодій"
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:190
 msgid "otherXmlResource"
-msgstr "Виберіть тип ресурсу"
+msgstr "Інший XML-ресурс"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
 msgid "otherJsonResource"
-msgstr "Інший ресурс JSON"
+msgstr "Інший JSON-ресурс"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
@@ -225,7 +225,7 @@ msgstr "Фільтри"
 #: components/AppResources/Filters.tsx:74
 #: components/AppResources/Filters.tsx:83
 msgid "custom"
-msgstr "Custom"
+msgstr "Спеціальні"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:119
@@ -363,7 +363,7 @@ msgstr "Видалити визначення"
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
 msgid "urlPart"
-msgstr "Інший ресурс JSON"
+msgstr "URL-адреса"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:212
@@ -420,7 +420,7 @@ msgstr "Опублікувати"
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
 msgid "fileName"
-msgstr "Спочатку виберіть таблицю"
+msgstr "Ім'я файлу"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
@@ -506,20 +506,17 @@ msgstr "Потрібне поточне визначення."
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:306
 #: components/DataModel/businessRuleDefs.ts:352
-#, fuzzy
 msgid "cogAddedToItself"
-msgstr "ЦОГ не можна додати до самого себе."
+msgstr "COG не можна додати до самого себе."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:338
-#, fuzzy
 msgid "coHasParent"
 msgstr "CO з батьківським елементом не можна додати до COG."
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:255
 #: components/DataModel/__tests__/businessRules.test.ts:339
-#, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
 "Консолідована група об'єктів колекції повинна мати дочірній об'єкт первинної "
@@ -527,44 +524,37 @@ msgstr ""
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:370
-#, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Основний запис CO неможливо видалити."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:696
-#, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Позичений препарат не можна видалити"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:704
-#, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Подарований препарат не можна видалити"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:712
-#, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Викинутий препарат не можна видалити"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:720
-#, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Обмінений препарат не можна видалити"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:728
-#, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Обмін, що готується, не можна видалити"
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:226
 #: components/DataModel/__tests__/businessRules.test.ts:154
-#, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта "
@@ -572,6 +562,5 @@ msgstr ""
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:677
-#, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Препарат використовується у позиці."
