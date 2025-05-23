@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
 "Language: uk\n"
@@ -22,7 +22,7 @@ msgstr "Уподобання"
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:54
 msgid "customization"
-msgstr "Налаштування"
+msgstr "Спеціальнізація"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:93
@@ -393,7 +393,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1041
 msgid "highlightMatch"
-msgstr "Виділіть відповідний підрядок"
+msgstr "Виділіть збіг підрядка"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:728
@@ -575,7 +575,7 @@ msgstr "Клавіша Enter починає редагування клітин�
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1780
 msgid "tabMoveDirection"
-msgstr "Напрямок руху при натисканні клавіші <key>Tab</key>."
+msgstr "Напрямок руху при натисканні клавіші <key>Tab</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1781
@@ -601,12 +601,14 @@ msgstr "рядок"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1797
 msgid "enterMoveDirection"
-msgstr "Напрямок руху, коли натиснуто клавішу <key>Enter</key>."
+msgstr "Напрямок руху, коли натиснуто клавішу <key>Enter</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1798
 msgid "enterMoveDirectionDescription"
-msgstr "Синонім кольору."
+msgstr ""
+"Ви можете рухатися у протилежному напрямку, натискаючи "
+"<key>Shift</key>+<key>Enter</key>."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1823
@@ -642,12 +644,12 @@ msgstr "Регістр не враховується"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1566
 msgid "showNoReadTables"
-msgstr "Показувати таблиці без доступу «Читання»."
+msgstr "Показувати таблиці без доступу «Читання»"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1900
 msgid "showNoAccessTables"
-msgstr "Показувати таблиці без доступу «Створити»."
+msgstr "Показувати таблиці без доступу «Створити»"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:741
@@ -672,7 +674,7 @@ msgstr "Показувати фільтри запитів під час зап�
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1048
 msgid "autoGrowAutoComplete"
-msgstr "Напрямок руху при натисканні клавіші [X27X]Tab[X35X]."
+msgstr "Дозволити автозаповнення розширюватися настільки, наскільки потрібно"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:756
@@ -727,7 +729,7 @@ msgstr "Гнучка ширина стовпця сітки вкладеного
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:472
 msgid "closeOnEsc"
-msgstr "Значок і назва таблиці"
+msgstr "Закриття натисканням клавіші <key>ESC</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:479
@@ -794,7 +796,9 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:506
 msgid "altClickToSupressNewTabDescription"
-msgstr "Використовуйте доступний засіб вибору місяця."
+msgstr ""
+"<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай "
+"відкривається в новій вкладці, щоб відкрити його в поточній вкладці."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:790
@@ -808,7 +812,6 @@ msgstr "Автоматичне прокручування дерева до ви
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1356
-#, fuzzy
 msgid "sortByField"
 msgstr "Сортувати за полем"
 
@@ -859,7 +862,6 @@ msgstr "Пошук з урахуванням регістру"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1380
-#, fuzzy
 msgid "searchField"
 msgstr "Поле пошуку"
 
@@ -964,7 +966,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1694
 msgid "autoCreateVariants"
-msgstr "Автоматично створювати записи {agentVariantTable:string}."
+msgstr "Автоматично створювати записи {agentVariantTable:string}"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1698
@@ -1110,13 +1112,11 @@ msgstr "Відобразити базовий вигляд"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1643
-#, fuzzy
 msgid "showComparisonOperatorsForString"
 msgstr "Показати оператори порівняння для текстових полів"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1644
-#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
 "Дозволяє застосовувати до текстових полів такі фільтри: «Більше ніж», «Менше "
@@ -1156,7 +1156,6 @@ msgstr "Додайте рядок пошуку на головну сторін�
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:99
-#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
 "Увімкнути успадкування основного каталожного номера його порожнім братам і "
@@ -1164,7 +1163,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:118
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Увімкнути успадкування батьківського каталожного номера його порожнім "
