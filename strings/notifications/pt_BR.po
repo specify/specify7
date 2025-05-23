@@ -1,46 +1,46 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 14:20+0000\n"
+"PO-Revision-Date: 2025-01-19 11:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) "
-"<https://hosted.weblate.org/projects/specify-7/notifications/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/notifications/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
-#: components/Notifications/Notifications.tsx:96
 #. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:96
 #, fuzzy
 msgid "notifications"
-msgstr ""
+msgstr "Notificações"
 
-#: components/Notifications/Notifications.tsx:42
 #. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:42
 #, fuzzy
 msgid "notificationsCount"
-msgstr ""
+msgstr "Notificações: {count:number|formatted}"
 
-#: components/Notifications/Notifications.tsx:45
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:45
 #, fuzzy
 msgid "notificationsLoading"
-msgstr ""
+msgstr "Notificações: …"
 
-#: components/Notifications/Notifications.tsx:125
 #. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:125
 #, fuzzy
 msgid "mostRecentNotificationsTop"
-msgstr ""
+msgstr "(Ordenados do mais recente para o mais antigo.)"
 
 #: components/Notifications/NotificationRenderers.tsx:64
 #: components/Notifications/NotificationRenderers.tsx:94
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "exception"
-msgstr ""
+msgstr "Erro"
 
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
@@ -52,46 +52,48 @@ msgstr ""
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "download"
-msgstr ""
+msgstr "Download"
 
-#: components/Notifications/NotificationRenderers.tsx:40
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:40
 #, fuzzy
 msgid "feedItemUpdated"
-msgstr ""
+msgstr "O feed de exportação RSS foi atualizado."
 
 #: components/Notifications/NotificationRenderers.tsx:58
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "updateFeedFailed"
-msgstr ""
+msgstr "Falha na atualização do feed de exportação."
 
 #: components/Notifications/NotificationRenderers.tsx:72
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dwcaExportCompleted"
-msgstr ""
+msgstr "Exportação do DwCA concluída."
 
 #: components/Notifications/NotificationRenderers.tsx:88
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dwcaExportFailed"
-msgstr ""
+msgstr "Falha na exportação do DwCA."
 
 #: components/Notifications/NotificationRenderers.tsx:102
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "queryExportToCsvCompleted"
-msgstr ""
+msgstr "Exportação de consulta para CSV concluída."
 
 #: components/Notifications/NotificationRenderers.tsx:118
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "queryExportToKmlCompleted"
-msgstr ""
+msgstr "Exportação de consulta para KML concluída."
 
 #: components/Notifications/NotificationRenderers.tsx:144
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dataSetOwnershipTransferred"
 msgstr ""
+"<userName /> transferiu a propriedade do conjunto de dados <dataSetName /> "
+"para você."

@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-11-22 16:00+0000\n"
+"PO-Revision-Date: 2025-04-28 18:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/preferences/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"preferences/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: components/Header/userToolDefinitions.ts:56
 #: components/Preferences/index.tsx:71
@@ -23,13 +23,13 @@ msgstr "Préférences"
 msgid "customization"
 msgstr "Personnalisation"
 
-#: components/AppResources/types.tsx:93
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:93
 msgid "userPreferences"
 msgstr "Préférences de l'utilisateur"
 
-#: components/AppResources/types.tsx:103
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:103
 msgid "defaultUserPreferences"
 msgstr "Préférences utilisateur par défaut"
 
@@ -150,15 +150,15 @@ msgstr "Famille de polices"
 #, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
-"Vous pouvez spécifier n'importe quelle police présente sur votre "
-"ordinateur, même si elle ne figure pas dans la liste. Une liste de polices "
-"séparées par des virgules est également prise en charge, la deuxième police "
-"étant utilisée si la première n'est pas disponible, etc."
+"Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, "
+"même si elle ne figure pas dans la liste. Une liste de polices séparées par "
+"des virgules est également prise en charge ; chaque police suivante sera "
+"utilisée si la précédente n'est pas disponible."
 
+#. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
 #: components/Preferences/Renderers.tsx:221
-#. Used in: Components > Preferences > Renderers
 msgid "defaultFont"
 msgstr "(police par défaut)"
 
@@ -442,23 +442,23 @@ msgstr "Page d'accueil"
 msgid "content"
 msgstr "Contenu"
 
-#: components/Preferences/Renderers.tsx:242
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:242
 msgid "defaultImage"
 msgstr "Spécifier le logo"
 
-#: components/Preferences/Renderers.tsx:250
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:250
 msgid "customImage"
 msgstr "Image personnalisée"
 
-#: components/Preferences/Renderers.tsx:256
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:256
 msgid "embeddedWebpage"
 msgstr "Page Web intégrée"
 
-#: components/Preferences/Renderers.tsx:257
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:257
 msgid "embeddedWebpageDescription"
 msgstr "Une URL vers une page qui serait intégrée à la page d'accueil :"
 
@@ -505,8 +505,8 @@ msgstr ""
 "données ou une corruption de la base de données. Veuillez vous assurer que "
 "vous savez ce que vous faites."
 
-#: components/Preferences/index.tsx:245
 #. Used in: Components > Preferences > Index
+#: components/Preferences/index.tsx:245
 msgid "adminsOnlyPreference"
 msgstr "Vous n'êtes pas autorisé à modifier cette option"
 
@@ -749,7 +749,7 @@ msgstr "Largeur de colonne flexible"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largeur de colonne de grille de sous-vue flexible"
+msgstr "Largeur de colonne de la grille de sous-vue flexible"
 
 #: components/Preferences/UserDefinitions.tsx:472
 #. Used in: Components > Preferences > User Definitions
@@ -944,6 +944,7 @@ msgstr "Utiliser"
 msgid "dontUse"
 msgstr "Zoom avec la molette de défilement"
 
+
 #: components/Preferences/UserDefinitions.tsx:572
 #: components/Preferences/UserDefinitions.tsx:584
 #. Used in: Components > Preferences > User Definitions
@@ -1001,8 +1002,8 @@ msgstr ""
 "Lors de la fusion d'agents, créez automatiquement des enregistrements "
 "{agentVariantTable:string} en fonction des variations du prénom/nom."
 
-#: components/AppResources/types.tsx:110
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:110
 msgid "collectionPreferences"
 msgstr "Personnalisation"
 
@@ -1044,23 +1045,23 @@ msgstr "Localiser les noms des ressources d'application reconnues"
 msgid "splitLongXml"
 msgstr "Diviser les longues lignes de XML en plusieurs lignes"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:91
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:91
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:85
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:85
 msgid "pickAttachment"
 msgstr "Choisissez une pièce jointe"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:113
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:113
 msgid "attachmentFailed"
 msgstr "La pièce jointe n'a pas pu être chargée."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:58
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:58
 msgid "pickImage"
 msgstr "Choisissez une image"
 
@@ -1068,7 +1069,7 @@ msgstr "Choisissez une image"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "customLogo"
-msgstr "URL de l'image développée"
+msgstr "URL de l'image étendue"
 
 #: components/Preferences/UserDefinitions.tsx:603
 #. Used in: Components > Preferences > User Definitions
@@ -1109,14 +1110,14 @@ msgstr "Couleur du bouton secondaire"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "secondaryLightButtonColor"
-msgstr "Couleur du bouton d’éclairage secondaire"
+msgstr "Couleur du bouton lumineux secondaire"
 
 #: components/Preferences/UserDefinitions.tsx:316
 #: components/Preferences/UserDefinitions.tsx:377
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dangerButtonColor"
-msgstr "Couleur du bouton Danger"
+msgstr "Couleur du bouton de danger"
 
 #: components/Preferences/UserDefinitions.tsx:332
 #: components/Preferences/UserDefinitions.tsx:393
@@ -1137,7 +1138,7 @@ msgstr "Couleur du bouton d'avertissement"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "successButtonColor"
-msgstr "Couleur du bouton Succès"
+msgstr "Couleur du bouton de réussite"
 
 #: components/Preferences/UserDefinitions.tsx:797
 #. Used in: Components > Preferences > User Definitions
@@ -1180,7 +1181,7 @@ msgstr "Vue détaillée"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr "Mode aperçu des pièces jointes"
+msgstr "Mode d'aperçu des pièces jointes"
 
 #: components/Preferences/UserDefinitions.tsx:1321
 #. Used in: Components > Preferences > User Definitions
