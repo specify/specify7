@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:39+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 21:03+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "schema/uk/>\n"
 "Language: uk\n"
@@ -26,20 +26,17 @@ msgstr "Таблиця"
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:399
 #: components/SchemaConfig/Tables.tsx:49
-#, fuzzy
 msgid "tables"
 msgstr "Столи"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/Preferences/UserDefinitions.tsx:781
 #: components/WbPlanView/MapperComponents.tsx:452
-#, fuzzy
 msgid "tableName"
 msgstr "Назва таблиці"
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:52
-#, fuzzy
 msgid "withoutTable"
 msgstr "Без столу"
 
@@ -50,20 +47,17 @@ msgstr "Без столу"
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
-#, fuzzy
 msgid "schemaConfig"
 msgstr "Конфігурація схеми"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:75
-#, fuzzy
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Зміни схеми не збережено"
 
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
 #: components/WbPlanView/MapperComponents.tsx:335
-#, fuzzy
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"
 
@@ -73,7 +67,6 @@ msgstr "Змінити базову таблицю"
 #: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:25
-#, fuzzy
 msgid "field"
 msgstr "Поле"
 
@@ -84,7 +77,6 @@ msgstr "Поле"
 #: components/SchemaConfig/Fields.tsx:60
 #: components/SchemaConfig/UniquenessRuleRow.tsx:253
 #: components/SchemaViewer/Fields.tsx:43
-#, fuzzy
 msgid "fields"
 msgstr "Поля"
 
@@ -94,7 +86,6 @@ msgstr "Поля"
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
 #: components/SchemaViewer/Relationships.tsx:45
-#, fuzzy
 msgid "relationships"
 msgstr "Стосунки"
 
@@ -103,21 +94,18 @@ msgstr "Стосунки"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:200
 #: components/SchemaConfig/UniquenessRuleRow.tsx:311
 #: components/SchemaConfig/UniquenessRuleScope.tsx:43
-#, fuzzy
 msgid "database"
 msgstr "База даних"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Scope
 #: components/SchemaConfig/UniquenessRuleScope.tsx:176
 #: components/SchemaConfig/UniquenessRuleScope.tsx:178
-#, fuzzy
 msgid "setScope"
 msgstr "Встановити область дії"
 
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:56
-#, fuzzy
 msgid "caption"
 msgstr "Підпис"
 
@@ -131,57 +119,48 @@ msgstr "Підпис"
 #: components/SchemaViewer/schemaToTsv.tsx:22
 #: components/Security/Role.tsx:141
 #: components/WebLinks/Element.tsx:30
-#, fuzzy
 msgid "description"
 msgstr "Опис"
 
 #. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:104
-#, fuzzy
 msgid "hideTable"
 msgstr "Приховати таблицю"
 
 #. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:88
-#, fuzzy
 msgid "hideField"
 msgstr "Приховати поле"
 
 #. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 #: components/Formatters/Types.tsx:56
 #: components/SchemaConfig/Table.tsx:147
-#, fuzzy
 msgid "tableFormat"
 msgstr "Формат таблиці"
 
 #. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 #: components/Formatters/Types.tsx:60
 #: components/SchemaConfig/Table.tsx:148
-#, fuzzy
 msgid "tableAggregation"
 msgstr "Агрегація таблиць"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:85
-#, fuzzy
 msgid "oneToOne"
 msgstr "Один на один"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:86
-#, fuzzy
 msgid "oneToMany"
 msgstr "Один до багатьох"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:87
-#, fuzzy
 msgid "manyToOne"
 msgstr "Багато до одного"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:88
-#, fuzzy
 msgid "manyToMany"
 msgstr "багато-до-багатьох"
 
@@ -189,7 +168,6 @@ msgstr "багато-до-багатьох"
 #: components/SchemaConfig/Field.tsx:69
 #: components/SchemaViewer/Fields.tsx:64
 #: components/SchemaViewer/schemaToTsv.tsx:28
-#, fuzzy
 msgid "fieldLength"
 msgstr "Довжина"
 
@@ -198,39 +176,33 @@ msgstr "Довжина"
 #: components/SchemaViewer/Fields.tsx:61
 #: components/SchemaViewer/Relationships.tsx:98
 #: components/SchemaViewer/schemaToTsv.tsx:24
-#, fuzzy
 msgid "readOnly"
 msgstr "Тільки для читання"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:66
-#, fuzzy
 msgid "fieldFormat"
 msgstr "Формат поля"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:83
-#, fuzzy
 msgid "uiFormattersForField"
 msgstr "Форматування полів для {fieldLabel:string}"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:76
 #: components/SchemaConfig/Format.tsx:65
-#, fuzzy
 msgid "formatted"
 msgstr "Відформатовано"
 
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Format.tsx:123
 #: components/WebLinks/Element.tsx:26
-#, fuzzy
 msgid "webLink"
-msgstr "Веб-посилання"
+msgstr "Веб-посиланні"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:151
-#, fuzzy
 msgid "userDefined"
 msgstr "Визначено користувачем"
 
@@ -238,7 +210,6 @@ msgstr "Визначено користувачем"
 #: components/Router/Routes.tsx:388
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
-#, fuzzy
 msgid "addLanguage"
 msgstr "Додати мову"
 
@@ -246,21 +217,18 @@ msgstr "Додати мову"
 #: components/SchemaViewer/Fields.tsx:65
 #: components/SchemaViewer/Relationships.tsx:101
 #: components/SchemaViewer/schemaToTsv.tsx:29
-#, fuzzy
 msgid "databaseColumn"
 msgstr "Стовпець бази даних"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:102
 #: components/SchemaViewer/schemaToTsv.tsx:30
-#, fuzzy
 msgid "relatedTable"
 msgstr "Пов'язана модель"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:103
 #: components/SchemaViewer/schemaToTsv.tsx:31
-#, fuzzy
 msgid "otherSideName"
 msgstr "Інша назва сторони"
 
@@ -268,50 +236,42 @@ msgstr "Інша назва сторони"
 #: components/SchemaViewer/Relationships.tsx:61
 #: components/SchemaViewer/Relationships.tsx:104
 #: components/SchemaViewer/schemaToTsv.tsx:32
-#, fuzzy
 msgid "dependent"
 msgstr "Утриманець"
 
 #. Used in: Components > Schema Viewer > Relationships
 #: components/SchemaViewer/Relationships.tsx:77
-#, fuzzy
 msgid "independent"
 msgstr "Незалежний"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
-#, fuzzy
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:51
-#, fuzzy
 msgid "downloadAsXml"
 msgstr "Завантажити як XML"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
-#, fuzzy
 msgid "downloadAsTsv"
 msgstr "Завантажити як TSV"
 
 #. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Table.tsx:61
 #: components/SchemaViewer/schemaToTsv.tsx:19
-#, fuzzy
 msgid "tableId"
 msgstr "Ідентифікатор таблиці"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
-#, fuzzy
 msgid "fieldCount"
 msgstr "Кількість полів"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:63
-#, fuzzy
 msgid "relationshipCount"
 msgstr "Кількість зв'язків"
 
@@ -319,63 +279,53 @@ msgstr "Кількість зв'язків"
 #: components/Header/userToolDefinitions.ts:138
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
-#, fuzzy
 msgid "databaseSchema"
 msgstr "Схема бази даних"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:83
-#, fuzzy
 msgid "selectedTables"
 msgstr "Вибрані таблиці"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:81
-#, fuzzy
 msgid "possibleTables"
 msgstr "Можливі таблиці"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:45
-#, fuzzy
 msgid "goToTop"
 msgstr "Перейти на початок"
 
 #. Used in: Components > Schema Viewer > Fields
 #: components/SchemaViewer/Fields.tsx:31
-#, fuzzy
 msgid "idField"
 msgstr "Поле ідентифікатора"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:145
-#, fuzzy
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Правила унікальності"
 
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #: components/Router/OverlayRoutes.tsx:237
 #: components/SchemaConfig/Table.tsx:93
-#, fuzzy
 msgid "uniquenessRules"
 msgstr "Правила унікальності"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/TableUniquenessRules.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:247
-#, fuzzy
 msgid "uniqueFields"
 msgstr "Унікальні поля"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:136
-#, fuzzy
 msgid "addUniquenessRule"
 msgstr "Додати правило унікальності"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:240
-#, fuzzy
 msgid "configureUniquenessRule"
 msgstr "Налаштувати правило унікальності"
 
@@ -383,55 +333,46 @@ msgstr "Налаштувати правило унікальності"
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
 #: components/SchemaConfig/UniquenessRuleRow.tsx:300
 #: components/SchemaViewer/Fields.tsx:38
-#, fuzzy
 msgid "scope"
 msgstr "Сфера застосування"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
-#, fuzzy
 msgid "uniquenessDuplicatesFound"
 msgstr "У базі даних знайдено дублікати"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
-#, fuzzy
 msgid "exportDuplicates"
 msgstr "Експорт дублікатів"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
-#, fuzzy
 msgid "numberOfDuplicates"
 msgstr "Кількість дублікатів"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
-#, fuzzy
 msgid "schemaViewTitle"
 msgstr "Конфігурація схеми: {tableName:string}"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:57
-#, fuzzy
 msgid "schemaExportFileName"
-msgstr "Вкажіть 7 моделей даних"
+msgstr "Specify 7 моделей даних"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:78
-#, fuzzy
 msgid "sortByHiddenFields"
 msgstr "Сортувати за прихованими полями"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:93
-#, fuzzy
 msgid "hidden"
 msgstr "прихований"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:70
-#, fuzzy
 msgid "customFieldFormat"
 msgstr "Формат користувацького поля"
