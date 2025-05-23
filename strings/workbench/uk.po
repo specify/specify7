@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:35+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
 "Language: uk\n"
@@ -55,7 +55,7 @@ msgstr "Перевірка"
 #: components/Molecules/SyncAttachmentPicker.tsx:94
 #: components/WbUtils/datasetVariants.tsx:41
 msgid "upload"
-msgstr "Завантажити"
+msgstr "Вавантаження"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:86
@@ -342,12 +342,11 @@ msgstr "Помилка завантаження через одну або кі�
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:353
-#, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Перевірте набір даних і перегляньте підказки при наведенні курсора миші для "
-"кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть "
-"та повторіть спробу {type:string}."
+"Перевірте набір даних і перегляньте підказки під час наведення курсора миші "
+"для кожної клітинки з помилкою, потім внесіть відповідні виправлення. "
+"Збережіть і повторіть спробу {type:string}."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:360
@@ -654,7 +653,6 @@ msgstr "Новий набір даних {date}"
 #: components/WbUtils/datasetVariants.tsx:30
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "dataSets"
 msgstr "{variant:string} Набори даних"
 
@@ -768,7 +766,7 @@ msgstr "Не вдалося перервати {operationName:string}. Будь-
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:123
 msgid "wbStatusOperationNoProgress"
-msgstr "{operationName:string}..."
+msgstr "{operationName:string}'..."
 
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:127
@@ -819,66 +817,55 @@ msgstr "{node:string} {author:string} (у {parent:string})"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:137
-#, fuzzy
 msgid "updatedCells"
 msgstr "Оновлені комірки"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:143
-#, fuzzy
 msgid "deletedCells"
 msgstr "Видалені клітинки"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:54
-#, fuzzy
 msgid "affectedResults"
 msgstr "Зафіксовані записи"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:55
-#, fuzzy
 msgid "potentialAffectedResults"
 msgstr "Потенційно постраждалі записи"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:59
-#, fuzzy
 msgid "wbAffectedDescription"
 msgstr "Кількість нових записів, на які впливає кожна таблиця:"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:60
-#, fuzzy
 msgid "wbAffectedPotentialDescription"
 msgstr "Кількість нових записів у кожній таблиці, на які це вплине:"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:27
-#, fuzzy
 msgid "recordsCreated"
 msgstr "Створені записи"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:30
-#, fuzzy
 msgid "recordsUpdated"
 msgstr "Записи оновлено"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:28
-#, fuzzy
 msgid "recordsDeleted"
 msgstr "Записи видалено (без урахування утриманців)"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:29
-#, fuzzy
 msgid "recordsMatchedAndChanged"
 msgstr "Зіставлені записи відрізняються від поточних пов'язаних"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:149
-#, fuzzy
 msgid "matchAndChanged"
 msgstr "Зіставлені та змінені клітинки"
