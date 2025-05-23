@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-23 05:01+0000\n"
+"PO-Revision-Date: 2025-05-23 14:35+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.1-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -59,8 +59,8 @@ msgstr "Gemeldet von {provider:string}"
 msgid "collectionDate"
 msgstr "Abholdatum"
 
-#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
+#: components/SpecifyNetwork/Map.tsx:221
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
@@ -75,9 +75,9 @@ msgstr ""
 "In iDigBio erfasste Vorkommen werden als runde grüne Punkte dargestellt, mit "
 "Ausnahme der in iDigBio erfassten Vorkommen, die als runde rote Punkte "
 "dargestellt werden. Beim Vergrößern der roten Punkte wird eine blaue "
-"Stecknadel angezeigt. Ein Klick auf diese Stecknadel führt eine Ortsabfrage "
-"in Specify aus, die alle an diesem Ort erfassten Arten der aktuellen Specify-"
-"Datenbank anzeigt."
+"Stecknadel angezeigt. Ein Klick darauf führt eine Ortsabfrage in Specify "
+"aus, die alle an diesem Ort erfassten Arten der aktuellen Specify-Datenbank "
+"anzeigt."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
