@@ -462,6 +462,8 @@ class BoundTreeRecord(NamedTuple):
         should_defer_match: bool,
         to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
+        is_origin=False,
+        origin_is_editable=False
     ) -> DjangoPredicates:
         # Everything is so complicated around here. In an initial implementation, I naively returned SkippablePredicates,
         # but that'll potentially cause null records to be actually processed. (although, there doesn't seem to be a realizable user mapping to do it)

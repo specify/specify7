@@ -97,6 +97,9 @@ class BoundUploadable(Protocol):
         should_defer_match: bool,
         to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
+        #TODO: Refactor to make this always required.
+        is_origin=False,
+        origin_is_editable=False
     ) -> DjangoPredicates: ...
 
     def get_to_remove(self) -> ToRemove: ...
