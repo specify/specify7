@@ -120,13 +120,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       },
     },
   },
-  Agent: {
-    customInit: (agent) => {
-      if (agent.isNew() && agent.get('agentType') === undefined) {
-        agent.set('agentType', agentTypes.PERSON);
-      }
-    },
-  },
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (

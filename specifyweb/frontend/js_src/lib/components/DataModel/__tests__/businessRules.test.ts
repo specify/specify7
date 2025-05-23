@@ -383,27 +383,6 @@ describe('Address business rules', () => {
   });
 });
 
-describe('Agent business rules', () => {
-  test('Agent type default to person', () => {
-    const newAgent = new tables.Agent.Resource();
-    expect(newAgent.get('agentType')).toBe(agentTypes.PERSON);
-
-    const newWithValue = new tables.Agent.Resource({
-      agenttype: agentTypes.GROUP,
-    });
-    expect(newWithValue.get('agentType')).toBe(agentTypes.GROUP);
-
-    const existingAgent = new tables.Agent.Resource({ id: 1 });
-    expect(existingAgent.get('agentType')).toBeUndefined();
-
-    const existingWithValue = new tables.Agent.Resource({
-      id: 1,
-      agentType: agentTypes.GROUP,
-    });
-    expect(existingWithValue.get('agentType')).toBe(agentTypes.GROUP);
-  });
-});
-
 describe('Determiner business rules', () => {
   test('isPrimary being automatically set', () => {
     const determination = new tables.Determination.Resource();
