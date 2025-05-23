@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 02:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/uk/>\n"
 "Language: uk\n"
@@ -85,7 +85,6 @@ msgstr "довгота має бути між -180 і 180. Поточна: {valu
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:242
-#, fuzzy
 msgid "formatMismatch"
 msgstr "значення {value:string} не відповідає формату {formatter:string}"
 
@@ -176,7 +175,6 @@ msgstr ""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:181
-#, fuzzy
 msgid "operationAcrossTrees"
 msgstr "{operation:string} поміж деревами"
 
@@ -247,7 +245,6 @@ msgstr "Таблиця уже завантажена"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:275
-#, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
 "У цьому рядку виявлено зміну області застосування. Рекомендується видалити "
@@ -255,12 +252,10 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:277
-#, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Кілька визначень дерев у рядку"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:278
-#, fuzzy
 msgid "invalidCotype"
 msgstr "Недійсний тип для вибраного(их) рангу(ів) дерева"
