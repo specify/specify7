@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-30 16:45+0000\n"
+"PO-Revision-Date: 2025-03-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/interactions/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"interactions/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:61
@@ -28,6 +28,7 @@ msgstr "Ajouter des objets"
 
 #: components/Interactions/InteractionDialog.tsx:372
 #. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:331
 msgid "recordReturn"
 msgstr "{table:string} Retour"
 
@@ -82,18 +83,18 @@ msgstr "Ajouter un objet non associé"
 msgid "preparations"
 msgstr "Preparations"
 
-#: components/FormCommands/index.tsx:101
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:101
 msgid "preparationsCanNotBeReturned"
 msgstr "Les preparations ne peuvent être renvoyées dans ce contexte."
 
-#: components/Interactions/LoanReturn.tsx:75
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:75
 msgid "noUnresolvedPreparations"
 msgstr "Il n’y a pas de preparations non retournées pour ce prêt."
 
-#: components/Interactions/LoanReturn.tsx:300
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:300
 msgid "unresolved"
 msgstr "Non résolu"
 
@@ -102,13 +103,13 @@ msgstr "Non résolu"
 msgid "return"
 msgstr "Retour"
 
-#: components/Interactions/LoanReturn.tsx:306
 #. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:306
 msgid "resolve"
 msgstr "Résoudre"
 
-#: components/Interactions/LoanReturn.tsx:164
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:164
 msgid "returnAllPreparations"
 msgstr "Retourner toutes les préparations"
 
@@ -134,6 +135,7 @@ msgstr "Sélectionnez toutes les préparations disponibles"
 msgid "selectAll"
 msgstr "Tout sélectionner"
 
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 #: components/Interactions/LoanReturn.tsx:260
 #: components/Interactions/LoanReturn.tsx:264
 #: components/Interactions/LoanReturn.tsx:274
@@ -146,15 +148,15 @@ msgstr "Tout sélectionner"
 msgid "selectedAmount"
 msgstr "Quantité sélectionnée"
 
+#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:101
 #: components/Interactions/PrepReturnRow.tsx:105
-#. Used in: Components > Interactions > Prep Return Row
 msgid "returnedAmount"
 msgstr "Quantité retournée"
 
+#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:121
 #: components/Interactions/PrepReturnRow.tsx:125
-#. Used in: Components > Interactions > Prep Return Row
 #, fuzzy
 msgid "resolvedAmount"
 msgstr "Montant résolu"
@@ -163,34 +165,34 @@ msgstr "Montant résolu"
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 #, fuzzy
 msgid "prepReturnFormatter"
-msgstr "{tableName:string} : {resource:string}"
+msgstr "{tableName:string}: {resource:string}"
 
-#: components/FormCommands/ShowTransactions.tsx:136
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:136
 #, fuzzy
 msgid "resolvedLoans"
-msgstr "Enregistrements {loanTable:string} résolus"
+msgstr "Enregistrements résolus {loanTable:string}"
 
-#: components/FormCommands/ShowTransactions.tsx:125
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:125
 #, fuzzy
 msgid "openLoans"
 msgstr "Ouvrir les enregistrements {loanTable:string}"
 
-#: components/FormCommands/ShowTransactions.tsx:147
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:147
 #, fuzzy
 msgid "gifts"
 msgstr "{giftTable:string} enregistrements"
 
-#: components/FormCommands/ShowTransactions.tsx:159
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:159
 #, fuzzy
 msgid "exchanges"
-msgstr "Enregistrements {exhangeInTable:string} / {exhangeOutTable:string}"
+msgstr "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements"
 
-#: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:41
 #, fuzzy
 msgid "unCataloged"
 msgstr "non catalogué"
@@ -207,8 +209,8 @@ msgstr "Enregistrements {tablePreparation:string} renvoyés"
 #, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
-"Les enregistrements {count:number|formatted} {tablePreparation:string} ont "
-"été renvoyés et enregistrés"
+"{count:number|formatted} {tablePreparation:string} enregistrements ont été "
+"renvoyés et enregistrés"
 
 #: components/FormMeta/CarryForward.tsx:332
 #: components/Interactions/LoanReturn.tsx:191
@@ -217,7 +219,7 @@ msgstr ""
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"
-msgstr "Tout déselectionner"
+msgstr "Désélectionner tout"
 
 #: components/Interactions/PrepDialog.tsx:253
 #. Used in: Components > Interactions > Prep Dialog
@@ -248,7 +250,7 @@ msgstr "Créer {table:string}"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Aucun de ces objets n'a de préparation. Voulez-vous continuer?"
+msgstr "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53

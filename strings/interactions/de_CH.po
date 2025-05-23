@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-21 21:01+0000\n"
+"PO-Revision-Date: 2025-04-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/interactions/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/interactions/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:61
@@ -32,20 +32,20 @@ msgstr "Elemente hinzufügen"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "recordReturn"
-msgstr "{table:string} Datensätze"
+msgstr "{table:string} Rückkehr"
 
 #: components/Interactions/InteractionDialog.tsx:420
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "Für folgende Datensätze wurden keine Präparate gefunden:"
+msgstr "Für die folgenden Datensätze wurden keine Präparate gefunden:"
 
 #: components/Interactions/InteractionDialog.tsx:429
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"
 msgstr ""
-"Für mindestens eine Präparationsart sind in folgenden Datensätzen keine "
+"Für mindestens eine Präparateart sind in folgenden Datensätzen keine "
 "Präparate vorhanden:"
 
 #: components/Interactions/InteractionDialog.tsx:410
@@ -73,7 +73,7 @@ msgstr "Ohne Präparate"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "continueWithoutPreparations"
-msgstr "Weiter ohne Vorbereitungen"
+msgstr "Ohne Vorbereitungen weitermachen"
 
 #: components/Interactions/InteractionDialog.tsx:346
 #. Used in: Components > Interactions > Interaction Dialog
@@ -85,18 +85,18 @@ msgstr "Nicht assoziierter Gegenstand hinzufügen"
 msgid "preparations"
 msgstr "Präparate"
 
-#: components/FormCommands/index.tsx:101
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:101
 msgid "preparationsCanNotBeReturned"
 msgstr "Präparate können in diesem Kontext nicht zurückgegeben werden."
 
-#: components/Interactions/LoanReturn.tsx:75
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:75
 msgid "noUnresolvedPreparations"
 msgstr "Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen."
 
-#: components/Interactions/LoanReturn.tsx:300
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:300
 msgid "unresolved"
 msgstr "Ungelöst"
 
@@ -105,13 +105,13 @@ msgstr "Ungelöst"
 msgid "return"
 msgstr "Rückgabe"
 
-#: components/Interactions/LoanReturn.tsx:306
 #. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:306
 msgid "resolve"
 msgstr "Lösen"
 
-#: components/Interactions/LoanReturn.tsx:164
 #. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:164
 msgid "returnAllPreparations"
 msgstr "Alle Präparate zurückgeben"
 
@@ -122,6 +122,7 @@ msgstr "Ausgewählte Präparate zurückgeben"
 
 #: components/Interactions/PrepDialog.tsx:115
 #. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:96
 msgid "selectAllAvailablePreparations"
 msgstr "Alle verfügbaren Präparate auswählen"
 
@@ -149,15 +150,15 @@ msgstr "Alle auswählen"
 msgid "selectedAmount"
 msgstr "Ausgewählte Anzahl"
 
+#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:101
 #: components/Interactions/PrepReturnRow.tsx:105
-#. Used in: Components > Interactions > Prep Return Row
 msgid "returnedAmount"
 msgstr "Zurückgegebene Anzahl"
 
+#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:121
 #: components/Interactions/PrepReturnRow.tsx:125
-#. Used in: Components > Interactions > Prep Return Row
 msgid "resolvedAmount"
 msgstr "Gelöste Anzahl"
 
@@ -166,32 +167,32 @@ msgstr "Gelöste Anzahl"
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
 
-#: components/FormCommands/ShowTransactions.tsx:136
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:136
 #, fuzzy
 msgid "resolvedLoans"
 msgstr "Aufgelöste {loanTable:string}-Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:125
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:125
 #, fuzzy
 msgid "openLoans"
-msgstr "Offene {loanTable:string}-Datensätze"
+msgstr "Öffnen Sie {loanTable:string}-Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:147
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:147
 #, fuzzy
 msgid "gifts"
 msgstr "{giftTable:string} Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:159
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:159
 #, fuzzy
 msgid "exchanges"
 msgstr "{exhangeInTable:string} / {exhangeOutTable:string} Datensätze"
 
-#: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:41
 #, fuzzy
 msgid "unCataloged"
 msgstr "nicht katalogisiert"

@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-01 18:09+0000\n"
+"PO-Revision-Date: 2025-04-28 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/wbPlan/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/wbPlan/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: components/Preferences/UserDefinitions.tsx:1873
 #: components/WbToolkit/DevShowPlan.tsx:119
@@ -21,7 +21,6 @@ msgstr "Datenzuordnung"
 
 #: components/WbActions/WbNoUploadPlan.tsx:49
 #: components/WbPlanView/State.tsx:35
-#. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "noUploadPlan"
 msgstr "Es wurde kein Uploadplan definiert"
 
@@ -38,19 +37,19 @@ msgstr ""
 msgid "unmappedColumn"
 msgstr "Nicht gemappte Spalte"
 
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:617
 #: components/WbPlanView/CustomSelectElement.tsx:646
-#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notSelected"
 msgstr "Nicht kartiert"
 
-#: components/Molecules/TableIcon.tsx:96
 #. Used in: Components > Molecules > Table Icon
+#: components/Molecules/TableIcon.tsx:96
 msgid "unmapped"
 msgstr "Zuordnung ist erforderlich"
 
-#: components/Molecules/TableIcon.tsx:109
 #. Used in: Components > Molecules > Table Icon
+#: components/Molecules/TableIcon.tsx:109
 msgid "mapped"
 msgstr "Kartiert"
 
@@ -72,6 +71,7 @@ msgstr "Vorgeschlagene Zuordnungen:"
 
 #: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Line Components
+#: components/WbPlanView/LineComponents.tsx:212
 msgid "requiredFields"
 msgstr "Erforderliche Felder"
 
@@ -102,6 +102,7 @@ msgstr "Zuordnungsoptionen"
 
 #: components/WbPlanView/MapperComponents.tsx:248
 #. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:233
 msgid "ignoreWhenBlank"
 msgstr "Bei leer ignorieren"
 
@@ -180,7 +181,7 @@ msgstr ""
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #, fuzzy
 msgid "mappingIsRequired"
-msgstr "Zuordnung ist erforderlich"
+msgstr "Mapping ist erforderlich"
 
 #: components/WbPlanView/MapperComponents.tsx:98
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -197,8 +198,8 @@ msgstr "Unvollendet speichern"
 msgid "map"
 msgstr "Datenzuordnung erstellen"
 
-#: components/WbPlanView/CustomSelectElement.tsx:328
 #. Used in: Components > Wb Plan View > Custom Select Element
+#: components/WbPlanView/CustomSelectElement.tsx:328
 msgid "unmap"
 msgstr "Datenzuordnung auflösen"
 
@@ -207,19 +208,19 @@ msgstr "Datenzuordnung auflösen"
 msgid "mapButtonDescription"
 msgstr "Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen"
 
+#. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
 #: components/WbPlanView/CustomSelectElement.tsx:340
-#. Used in: Components > Wb Plan View > Custom Select Element
 msgid "relationshipWithTable"
 msgstr "Beziehung zur Tabelle {tableName:string}"
 
-#: components/WbPlanView/State.tsx:101
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:101
 msgid "selectBaseTable"
 msgstr "Basistabelle auswählen"
 
-#: components/WbPlanView/State.tsx:94
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:94
 msgid "chooseExistingPlan"
 msgstr "Bestehenden Plan auswählen"
 
@@ -364,8 +365,8 @@ msgstr "Dieses Mapping wurde nicht gespeichert."
 msgid "newHeaderName"
 msgstr "Neue Spalte {index:number}"
 
-#: components/WbPlanView/headerHelper.ts:19
 #. Used in: Components > Wb Plan View > Header Helper
+#: components/WbPlanView/headerHelper.ts:19
 msgid "noHeader"
 msgstr "(keine Kopfzeile)"
 
@@ -379,8 +380,8 @@ msgstr "Plan aus vorhandenem Datenset kopieren"
 msgid "noPlansToCopyFrom"
 msgstr "Es sind keine Pläne verfügbar, bitte erstellen Sie einen Upload-Plan."
 
-#: components/WbPlanView/State.tsx:38
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:38
 msgid "invalidTemplatePlan"
 msgstr ""
 "Das ausgewählte Datenset hat keinen Upload-Plan. Bitte wählen Sie einen "

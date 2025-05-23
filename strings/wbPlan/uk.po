@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-28 16:45+0000\n"
+"PO-Revision-Date: 2024-11-28 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/wbPlan/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"wbPlan/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: components/Preferences/UserDefinitions.tsx:1873
 #: components/WbToolkit/DevShowPlan.tsx:119
@@ -40,21 +40,21 @@ msgstr "Для цього набору даних не визначено пла
 msgid "unmappedColumn"
 msgstr "Невідповідний стовпець"
 
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:617
 #: components/WbPlanView/CustomSelectElement.tsx:646
-#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "notSelected"
 msgstr "НЕ ВИБРАНО"
 
-#: components/Molecules/TableIcon.tsx:96
 #. Used in: Components > Molecules > Table Icon
+#: components/Molecules/TableIcon.tsx:96
 #, fuzzy
 msgid "unmapped"
 msgstr "Не зіставлений"
 
-#: components/Molecules/TableIcon.tsx:109
 #. Used in: Components > Molecules > Table Icon
+#: components/Molecules/TableIcon.tsx:109
 #, fuzzy
 msgid "mapped"
 msgstr "Нанесено на карту"
@@ -82,7 +82,7 @@ msgstr "Пропоновані зіставлення:"
 #. Used in: Components > Wb Plan View > Line Components
 #, fuzzy
 msgid "requiredFields"
-msgstr "обов'язкові поля"
+msgstr "Обов'язкові поля"
 
 #: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
@@ -103,7 +103,7 @@ msgstr "Приховані поля"
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Порожній набір даних"
+msgstr "Відкрийте приховані поля форми"
 
 #: components/WbPlanView/Mapper.tsx:644
 #: components/WbPlanView/Mapper.tsx:646
@@ -146,7 +146,7 @@ msgstr ""
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreNever"
-msgstr "НЕ ВИБРАНО"
+msgstr "Ніколи не ігноруйте"
 
 #: components/WbPlanView/MapperComponents.tsx:257
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -223,10 +223,10 @@ msgstr "Зберегти незавершене"
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "map"
-msgstr "AutoMapper"
+msgstr "Карта"
 
-#: components/WbPlanView/CustomSelectElement.tsx:328
 #. Used in: Components > Wb Plan View > Custom Select Element
+#: components/WbPlanView/CustomSelectElement.tsx:328
 #, fuzzy
 msgid "unmap"
 msgstr "Відмінити карту"
@@ -235,26 +235,23 @@ msgstr "Відмінити карту"
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr ""
-"У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні "
-"для завантаження вашою конфігурацією Specify. Додайте відсутні відображення "
-"або збережіть цей план завантаження як незавершений."
+msgstr "Зіставити вибране поле з вибраним заголовком"
 
+#. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
 #: components/WbPlanView/CustomSelectElement.tsx:340
-#. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "relationshipWithTable"
 msgstr "Відношення до таблиці {tableName:string}."
 
-#: components/WbPlanView/State.tsx:101
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:101
 #, fuzzy
 msgid "selectBaseTable"
 msgstr "Виберіть базову таблицю"
 
-#: components/WbPlanView/State.tsx:94
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:94
 #, fuzzy
 msgid "chooseExistingPlan"
 msgstr "Виберіть існуючий план"
@@ -409,7 +406,7 @@ msgstr "Логіка зіставлення недоступна для пото
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "mustMatch"
-msgstr "Повинні відповідати"
+msgstr "Має відповідати"
 
 #: components/WbPlanView/Mapper.tsx:181
 #. Used in: Components > Wb Plan View > Mapper
@@ -423,8 +420,8 @@ msgstr "Це відображення не збережено."
 msgid "newHeaderName"
 msgstr "Нова колонка {index:number}"
 
-#: components/WbPlanView/headerHelper.ts:19
 #. Used in: Components > Wb Plan View > Header Helper
+#: components/WbPlanView/headerHelper.ts:19
 #, fuzzy
 msgid "noHeader"
 msgstr "(без заголовка)"
@@ -441,8 +438,8 @@ msgstr "Скопіюйте план із наявного набору дани�
 msgid "noPlansToCopyFrom"
 msgstr "Немає доступних планів, продовжуйте створювати план завантаження."
 
-#: components/WbPlanView/State.tsx:38
 #. Used in: Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:38
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr "Вибраний набір даних не має плану завантаження. Виберіть інший."

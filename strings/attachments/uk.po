@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-26 15:09+0000\n"
+"PO-Revision-Date: 2025-01-26 13:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/attachments/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"attachments/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: components/Attachments/RecordSetAttachment.tsx:145
 #: components/Attachments/RecordSetAttachment.tsx:147
@@ -26,22 +26,22 @@ msgstr ""
 msgid "attachments"
 msgstr "Прикріплення"
 
-#: components/Attachments/index.tsx:224
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:224
 msgid "scale"
 msgstr "масштаб"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
 #: components/Attachments/Plugin.tsx:39
 #: components/Attachments/Plugin.tsx:117
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
 msgid "attachmentServerUnavailable"
 msgstr "Сервер прикріплень недоступний"
 
-#: components/Attachments/index.tsx:57
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:57
 msgid "attachmentServerUnavailableDescription"
 msgstr "Налаштуйте сервер прикріплень"
 
@@ -52,8 +52,8 @@ msgstr "Налаштуйте сервер прикріплень"
 msgid "orderBy"
 msgstr "Сортувати по"
 
-#: components/Attachments/Plugin.tsx:121
 #. Used in: Components > Attachments > Plugin
+#: components/Attachments/Plugin.tsx:121
 msgid "uploadingInline"
 msgstr "Завантаження…"
 
@@ -74,32 +74,32 @@ msgstr "Неможливо знайти відповідний запис"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не вдалося знайти запис, до якого відноситься це вкладення."
 
-#: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:87
 msgid "showForm"
 msgstr "Показати форму"
 
-#: components/Molecules/FilePicker.tsx:51
 #. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:51
 #, fuzzy
 msgid "multipleFilesSelected"
 msgstr "Вибрано декілька файлів"
 
-#: components/AttachmentsBulkImport/Import.tsx:205
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:205
 #, fuzzy
 msgid "fileSize"
 msgstr "Розмір файлу"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/Rollback.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:469
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "deleted"
 msgstr "Видалено"
 
-#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:467
 #, fuzzy
 msgid "noFile"
 msgstr "Немає файлу"
@@ -110,150 +110,150 @@ msgstr "Немає файлу"
 msgid "pleaseReselectAllFiles"
 msgstr "Перед завантаженням повторно виберіть усі файли."
 
-#: components/AttachmentsBulkImport/utils.ts:466
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:466
 #, fuzzy
 msgid "incorrectFormatter"
 msgstr "Неправильно відформатований"
 
-#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:470
 #, fuzzy
 msgid "alreadyUploaded"
 msgstr "Вже завантажено"
 
-#: components/AttachmentsBulkImport/utils.ts:471
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:471
 #, fuzzy
 msgid "skipped"
 msgstr "Пропущено"
 
-#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:472
 #, fuzzy
 msgid "cancelled"
 msgstr "Скасовано"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:475
 #: components/AttachmentsBulkImport/utils.ts:478
-#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
 msgstr "Виконувався {action:string}, коли сталася перерва"
 
-#: components/AttachmentsBulkImport/utils.ts:473
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:473
 #, fuzzy
 msgid "matchError"
 msgstr "Помилка збігу"
 
-#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:481
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Виберіть файли або перетягніть їх сюди, щоб почати."
+msgstr "Помилка читання файлу"
 
-#: components/AttachmentsBulkImport/utils.ts:483
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:483
 #, fuzzy
 msgid "unhandledFatalResourceError"
 msgstr "Необроблена критична помилка ресурсу:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
 msgstr "Набори даних імпорту вкладених файлів ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #, fuzzy
 msgid "newAttachmentDataset"
 msgstr "Новий набір даних вкладення {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #, fuzzy
 msgid "newAttachmentDatasetBase"
 msgstr "Новий набір даних вкладення"
 
-#: components/AttachmentsBulkImport/Import.tsx:393
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:393
 #, fuzzy
 msgid "uploadInterrupted"
 msgstr "Завантаження перервано"
 
-#: components/AttachmentsBulkImport/Import.tsx:399
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:399
 #, fuzzy
 msgid "uploadInterruptedDescription"
 msgstr "Під час завантаження виникла перерва. Можливо, деякі файли було завантажено."
 
-#: components/AttachmentsBulkImport/Import.tsx:404
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:404
 #, fuzzy
 msgid "rollbackInterrupted"
 msgstr "Відкат перервано"
 
-#: components/AttachmentsBulkImport/Import.tsx:410
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:410
 #, fuzzy
 msgid "rollbackInterruptedDescription"
-msgstr "Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено"
+msgstr "Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені"
 
-#: components/AttachmentsBulkImport/Import.tsx:227
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:227
 #, fuzzy
 msgid "attachmentId"
 msgstr "ID вкладення"
 
+#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
-#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #, fuzzy
 msgid "choosePath"
 msgstr "Виберіть шлях"
 
-#: components/AttachmentsBulkImport/Upload.tsx:240
 #. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:240
 #, fuzzy
 msgid "beginAttachmentUpload"
 msgstr "Почати завантаження вкладених файлів?"
 
-#: components/AttachmentsBulkImport/Upload.tsx:243
 #. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
 "Завантаження вкладень призведе до створення вкладень на сервері активів і в "
 "базі даних Specify"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:59
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:59
 #, fuzzy
 msgid "interrupted"
 msgstr "Перерваний"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:55
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:55
 #, fuzzy
 msgid "tryNow"
-msgstr "Спробуємо зараз"
+msgstr "Спробуйте зараз"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:62
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:62
 #, fuzzy
 msgid "interruptedTime"
 msgstr "Перерваний. Повторна спроба через {remainingTime:string}"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:137
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:137
 #, fuzzy
 msgid "rollbackDescription"
 msgstr "Відкат видалить вкладення з бази даних Specify і сервера ресурсів"
 
-#: components/AttachmentsBulkImport/utils.ts:485
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:485
 #, fuzzy
 msgid "noMatch"
 msgstr "Немає відповідності"
@@ -270,14 +270,14 @@ msgstr "У перших записах {halt:number} вкладень не зн�
 msgid "fetchNextAttachments"
 msgstr "Шукайте більше вкладень"
 
-#: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:87
 #, fuzzy
 msgid "hideForm"
 msgstr "Сховати форму"
 
-#: components/AttachmentsBulkImport/utils.ts:486
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:486
 #, fuzzy
 msgid "multipleMatches"
 msgstr "Кілька збігів"
@@ -294,14 +294,14 @@ msgstr "Кілька збігів. Натисніть, щоб усунути н�
 msgid "totalFiles"
 msgstr "Всього файлів"
 
-#: components/AttachmentsBulkImport/utils.ts:487
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:487
 #, fuzzy
 msgid "correctlyFormatted"
 msgstr "Правильно відформатований"
 
-#: components/AttachmentsBulkImport/utils.ts:488
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:488
 #, fuzzy
 msgid "stoppedByUser"
 msgstr "Зупинено користувачем"
@@ -312,47 +312,48 @@ msgstr "Зупинено користувачем"
 msgid "importAttachments"
 msgstr "Імпорт вкладень"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:30
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:30
 #, fuzzy
 msgid "onFile"
 msgstr "У файлі"
 
-#: components/AttachmentsBulkImport/Import.tsx:416
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:416
 #, fuzzy
 msgid "duplicateFilesFound"
 msgstr "Знайдено дублікати файлів"
 
-#: components/AttachmentsBulkImport/Import.tsx:421
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:421
 #, fuzzy
 msgid "duplicateFilesDescription"
-msgstr "Скасовано"
+msgstr ""
+"Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних."
 
-#: components/AttachmentsBulkImport/utils.ts:490
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:490
 #, fuzzy
 msgid "errorFetchingRecord"
 msgstr "Помилка отримання запису"
 
-#: components/AttachmentsBulkImport/utils.ts:491
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:491
 #, fuzzy
 msgid "errorSavingRecord"
 msgstr "Помилка збереження запису"
 
-#: components/AttachmentsBulkImport/utils.ts:489
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:489
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Шукайте більше вкладень"
+msgstr "Зупинено через помилку завантаження попереднього файлу"
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
-msgstr "Виберіть файли або перетягніть їх сюди, щоб почати."
+msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
@@ -360,29 +361,29 @@ msgstr "Виберіть файли або перетягніть їх сюди,
 msgid "selectIdentifier"
 msgstr "Виберіть ідентифікатор, який буде відповідати назві файлів."
 
-#: components/AttachmentsBulkImport/Import.tsx:224
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:224
 #, fuzzy
 msgid "progress"
 msgstr "Прогрес"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:143
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:143
 #, fuzzy
 msgid "rollbackResults"
 msgstr "Результати відкату"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:267
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "resultValue"
 msgstr ""
 "{success: number} із {total: number} вкладень у наборі даних було {action: "
 "string}."
 
-#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
+#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
@@ -390,8 +391,8 @@ msgstr ""
 "Крім того, після видалення відкат більше не буде доступним для "
 "завантаженого набору даних."
 
-#: components/AttachmentsBulkImport/utils.ts:492
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:492
 #, fuzzy
 msgid "attachmentUploadError"
 msgstr ""
