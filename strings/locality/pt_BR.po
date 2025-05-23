@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-27 06:02+0000\n"
+"PO-Revision-Date: 2025-05-23 14:35+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/locality/pt_BR/>\n"
@@ -54,8 +54,8 @@ msgstr "Limites de polígonos"
 msgid "errorRadius"
 msgstr "Raio de erro"
 
-#: components/FormPlugins/Leaflet.tsx:83
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:83
 #, fuzzy
 msgid "showMap"
 msgstr "Mostrar mapa"
@@ -91,7 +91,7 @@ msgstr "Polígonos"
 #: components/WbToolkit/GeoLocate.tsx:60
 #, fuzzy
 msgid "geoLocate"
-msgstr "GEOLocar"
+msgstr "GEOLocate"
 
 #. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:113
@@ -257,38 +257,38 @@ msgstr "Analisando o conjunto de dados de localidade"
 msgid "localityUpdateProgressing"
 msgstr "Importando conjunto de dados de localidade"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:293
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParsed"
 msgstr "Conjunto de dados de atualização de localidade analisado"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:467
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:261
-#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Falha na atualização de localidade"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:237
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParseFailure"
 msgstr "Falha na análise da atualização de localidade"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:282
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Atualização de localidade cancelada"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:305
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateSucceeded"
 msgstr "Atualização de localidade bem-sucedida"
@@ -352,34 +352,34 @@ msgstr ""
 "O seguinte número de registros {localityTabelLabel: string} foi atualizado e "
 "os registros {geoCoordDetailTableLabel: string} foram criados:"
 
-#: components/Notifications/NotificationRenderers.tsx:225
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:225
 #, fuzzy
 msgid "localityUpdateStarted"
 msgstr "O processo de atualização da localidade foi iniciado"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:336
 #: components/Notifications/NotificationRenderers.tsx:307
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
 msgstr "Resultados da atualização de localidade"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:397
 #: components/Notifications/NotificationRenderers.tsx:239
 #: components/Notifications/NotificationRenderers.tsx:263
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailureResults"
 msgstr "Resultados de falha na atualização de localidade"
 
+#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:227
 #: components/Notifications/NotificationRenderers.tsx:251
 #: components/Notifications/NotificationRenderers.tsx:273
 #: components/Notifications/NotificationRenderers.tsx:284
 #: components/Notifications/NotificationRenderers.tsx:295
 #: components/Notifications/NotificationRenderers.tsx:324
-#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "taskId"
 msgstr "ID da tarefa"
