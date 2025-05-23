@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -180,7 +180,6 @@ msgstr "Виразний"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:54
-#, fuzzy
 msgid "series"
 msgstr "Серія"
 
@@ -199,7 +198,7 @@ msgstr "Створіть KML"
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:43
 msgid "createRecordSet"
-msgstr "Створити {modelName:string}"
+msgstr "Створити {recordSetTable:string}"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:122
@@ -213,7 +212,6 @@ msgstr "(будь-який ранг)"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:381
-#, fuzzy
 msgid "anyTree"
 msgstr "(будь-яке дерево)"
 
@@ -531,50 +529,42 @@ msgstr "Виберіть форматер"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:553
-#, fuzzy
 msgid "range"
 msgstr "Діапазон"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
 #: components/QueryBuilder/FieldFilterTool.tsx:145
-#, fuzzy
 msgid "strict"
 msgstr "Суворий"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:138
 #: components/QueryBuilder/FieldFilterTool.tsx:146
-#, fuzzy
 msgid "nonStrict"
 msgstr "Не суворий"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:93
-#, fuzzy
 msgid "catalogNumberInheritance"
 msgstr "Успадкування каталожних номерів"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:112
-#, fuzzy
 msgid "catalogNumberParentCOInheritance"
 msgstr "Успадкування батьківського об'єкта колекції за номером каталогу"
 
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:127
-#, fuzzy
 msgid "formatInputAs"
 msgstr "Форматувати як: {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:207
-#, fuzzy
 msgid "unsavedChangesInQuery"
 msgstr "Запит містить незбережені зміни"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:210
-#, fuzzy
 msgid "unsavedChangesInQueryDescription"
 msgstr "Будь ласка, збережіть запит перед запуском пакетного редагування"
