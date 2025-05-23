@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 14:39+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/main/"
 "uk/>\n"
 "Language: uk\n"
@@ -71,8 +71,8 @@ msgstr ""
 #, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
-"Щоб уникнути пошкодження записів даних, нам потрібно почати знову з "
-"безпечного місця – домашньої сторінки."
+"Щоб уникнути пошкодження записів даних, вам потрібно почати знову з "
+"безпечного місця – головної сторінки."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
