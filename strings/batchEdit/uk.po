@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 16:07+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 21:03+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.12-dev\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/BatchEdit/index.tsx:187
@@ -19,26 +19,22 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "batchEdit"
 msgstr "Пакетне редагування"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
-#, fuzzy
 msgid "batchEditPrefs"
 msgstr "Налаштування пакетного редагування"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2042
-#, fuzzy
 msgid "numberOfRecords"
 msgstr "Кількість записів, вибраних із запиту"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
-#, fuzzy
 msgid "removeField"
 msgstr ""
 "Поле не підтримується для пакетного редагування. Видаліть поле або "
@@ -46,40 +42,34 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
-#, fuzzy
 msgid "addTreeRank"
 msgstr ""
 "Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
-#, fuzzy
 msgid "pickTreesToFilter"
 msgstr ""
 "Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для "
-"пакетного редагування."
+"пакетного редагування"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:160
-#, fuzzy
 msgid "datasetName"
-msgstr "{queryName:string} {datePart:string}"
+msgstr "{queryName:string} {datePart:string}'"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
-#, fuzzy
 msgid "errorInQuery"
 msgstr "У запиті виявлено такі помилки"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
-#, fuzzy
 msgid "missingRanksInQuery"
 msgstr "Запит потребує додаткових рангів для пакетного редагування"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
-#, fuzzy
 msgid "createUpdateDataSetInstructions"
 msgstr ""
 "Використовуйте конструктор запитів для створення нового набору даних для "
@@ -87,13 +77,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2065
-#, fuzzy
 msgid "showRollback"
 msgstr "Показати кнопку відкату"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2070
-#, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
 "Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр "
@@ -101,13 +89,11 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
-#, fuzzy
 msgid "commit"
 msgstr "Здійснити"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
-#, fuzzy
 msgid "startCommitDescription"
 msgstr ""
 "Запис набору даних призведе до оновлення, додавання та видалення даних з "
@@ -115,55 +101,47 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
-#, fuzzy
 msgid "startRevertDescription"
 msgstr ""
 "Відкат набору даних призведе до повторного оновлення значень, видалення "
-"створених записів та створення нових записів."
+"створених записів та створення нових записів"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
-#, fuzzy
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Натисніть кнопку «Результати», щоб побачити кількість записів, на які "
-"вплинула зміна, у кожній таблиці бази даних."
+"вплинула зміна, у кожній таблиці бази даних"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
-#, fuzzy
 msgid "dateSetRevertDescription"
 msgstr ""
 "Цей відкочений набір даних збережено, проте його не можна редагувати. Будь "
-"ласка, повторіть запит."
+"ласка, повторіть запит"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
-#, fuzzy
 msgid "committing"
 msgstr "Здійснення"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
-#, fuzzy
 msgid "beStatusCommit"
 msgstr "Стан фіксації набору даних"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
-#, fuzzy
 msgid "startCommit"
 msgstr "Почати фіксацію набору даних?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
-#, fuzzy
 msgid "commitErrors"
 msgstr "Не вдалося виконати фіксацію через комірки з помилками"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
-#, fuzzy
 msgid "commitErrorsDescription"
 msgstr ""
 "Фіксацію не вдалося виконати через одну або декілька помилок у значенні "
@@ -171,37 +149,31 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
-#, fuzzy
 msgid "commitCancelled"
 msgstr "Зміна фіксації"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
-#, fuzzy
 msgid "commitCancelledDescription"
 msgstr "Опис скасованого підтвердження"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
-#, fuzzy
 msgid "commitSuccessful"
 msgstr "Коміт завершено без помилок"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
-#, fuzzy
 msgid "batchEditRecordSetName"
 msgstr "BE коміт \"{dataSet:string}\""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
-#, fuzzy
 msgid "deferForMatch"
 msgstr "Використовувати лише видимі поля для збігу"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:519
-#, fuzzy
 msgid "deferForMatchDescription"
 msgstr ""
 "Якщо значення true, невидимі поля бази даних не використовуватимуться для "
@@ -209,13 +181,11 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:524
-#, fuzzy
 msgid "deferForNullCheck"
 msgstr "Використовуйте лише видимі поля для перевірки порожніх записів"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
-#, fuzzy
 msgid "deferForNullCheckDescription"
 msgstr ""
 "Якщо значення true, невидимі поля бази даних не використовуватимуться для "
@@ -224,7 +194,6 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:181
-#, fuzzy
 msgid "batchEditDisabled"
 msgstr ""
 "Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії "
@@ -232,7 +201,6 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:382
-#, fuzzy
 msgid "cannotEditAfterRollback"
 msgstr ""
 "(Набори даних пакетного редагування не можна редагувати після відкату – лише "
@@ -240,14 +208,12 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2057
-#, fuzzy
 msgid "enableRelationships"
 msgstr "Увімкнути зв'язки"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2062
-#, fuzzy
 msgid "enableRelationshipsDescription"
 msgstr ""
 "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо "
-"зв'язки ввімкнено."
+"зв'язки ввімкнено"
