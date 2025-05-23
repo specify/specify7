@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-03-16 08:04+0000\n"
+"PO-Revision-Date: 2025-05-23 14:38+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Table.tsx:51
@@ -30,9 +30,9 @@ msgstr "Mesa"
 msgid "tables"
 msgstr "Tablas"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/Preferences/UserDefinitions.tsx:781
 #: components/WbPlanView/MapperComponents.tsx:452
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "tableName"
 msgstr "Nombre de la tabla"
@@ -43,13 +43,13 @@ msgstr "Nombre de la tabla"
 msgid "withoutTable"
 msgstr "Sin mesa"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:61
 #: components/Preferences/UserDefinitions.tsx:724
 #: components/Router/Routes.tsx:373
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #, fuzzy
 msgid "schemaConfig"
 msgstr "Configuración del esquema"
@@ -60,9 +60,9 @@ msgstr "Configuración del esquema"
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Los cambios de esquema no se han guardado"
 
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
 #: components/WbPlanView/MapperComponents.tsx:335
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"
 msgstr "Cambiar la tabla base"
@@ -77,23 +77,23 @@ msgstr "Cambiar la tabla base"
 msgid "field"
 msgstr "Campo"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/FormMeta/CarryForward.tsx:355
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
 #: components/SchemaConfig/UniquenessRuleRow.tsx:253
 #: components/SchemaViewer/Fields.tsx:43
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #, fuzzy
 msgid "fields"
 msgstr "Campos"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #: components/FormMeta/CarryForward.tsx:364
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
 #: components/SchemaViewer/Relationships.tsx:45
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #, fuzzy
 msgid "relationships"
 msgstr "Relaciones"
@@ -193,42 +193,43 @@ msgstr "de muchos a muchos"
 msgid "fieldLength"
 msgstr "Longitud"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:75
 #: components/SchemaViewer/Fields.tsx:61
 #: components/SchemaViewer/Relationships.tsx:98
 #: components/SchemaViewer/schemaToTsv.tsx:24
-#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "readOnly"
 msgstr "Sólo lectura"
 
-#: components/SchemaConfig/Format.tsx:66
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:66
 #, fuzzy
 msgid "fieldFormat"
 msgstr "Formato de campo"
 
+#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:83
-#. Used in: Components > Schema Config > Format
+#, fuzzy
 msgid "uiFormattersForField"
-msgstr ""
+msgstr "Formateadores de campos para {fieldLabel:string}"
 
-#: components/SchemaConfig/Format.tsx:76
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:76
 #: components/SchemaConfig/Format.tsx:65
 #, fuzzy
 msgid "formatted"
 msgstr "Formateado"
 
+#. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Format.tsx:123
 #: components/WebLinks/Element.tsx:26
-#. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 #, fuzzy
 msgid "webLink"
 msgstr "Enlace web"
 
-#: components/SchemaConfig/Format.tsx:151
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:151
 #, fuzzy
 msgid "userDefined"
 msgstr "Definido por el usuario"
@@ -314,10 +315,10 @@ msgstr "Recuento de campos"
 msgid "relationshipCount"
 msgstr "Recuento de relaciones"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:138
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "databaseSchema"
 msgstr "Esquema de base de datos"
@@ -352,9 +353,9 @@ msgstr "Campo de identificación"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Reglas de unicidad"
 
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #: components/Router/OverlayRoutes.tsx:237
 #: components/SchemaConfig/Table.tsx:93
-#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "uniquenessRules"
 msgstr "Reglas de unicidad"
