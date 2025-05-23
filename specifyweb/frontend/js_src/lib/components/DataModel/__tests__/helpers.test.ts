@@ -27,7 +27,7 @@ describe('serializeResource', () => {
       agentAttachments: [],
       agentGeographies: [],
       agentSpecialties: [],
-      agentType: 1,
+      agentType: 0,
       collContentContact: null,
       collTechContact: null,
       createdByAgent: null,

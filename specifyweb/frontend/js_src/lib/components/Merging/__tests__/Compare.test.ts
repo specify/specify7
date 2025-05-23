@@ -33,7 +33,6 @@ describe('findDiffering', () => {
     expect(
       findDiffering(true, tables.Agent, getResources()).map(({ name }) => name)
     ).toEqual([
-      'agentType',
       'date1',
       'date2',
       'date1Precision',
