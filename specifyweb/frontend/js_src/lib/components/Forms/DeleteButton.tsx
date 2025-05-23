@@ -5,7 +5,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
@@ -35,8 +34,18 @@ import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
 
+export type DeleteButtonProps<SCHEMA extends AnySchema> = {
+  readonly resource: SpecifyResource<SCHEMA>;
+  /**
+   * As a performance optimization, can defer checking for delete blockers
+   * until the button is clicked. This is used in the tree viewer as delete
+   * button's resource can change often.
+   */
+  readonly deferred?: boolean;
+};
+
 /**
- * A button to delete a resource
+ * A button to delele a resorce
  * Prompts before deletion
  * Checks for delete blockers (other resources depending on this one) before
  * deletion
@@ -48,20 +57,11 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
-  showUsages = false,
-}: {
-  readonly resource: SpecifyResource<SCHEMA>;
+}: DeleteButtonProps<SCHEMA> & {
   readonly deletionMessage?: React.ReactNode;
-  /**
-   * As a performance optimization, can defer checking for delete blockers
-   * until the button is clicked. This is used in the tree viewer as delete
-   * button's resource can change often.
-   */
-  readonly deferred?: boolean;
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
-  readonly showUsages?: boolean;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
@@ -95,173 +95,94 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
-  const handleButtonClick = (): void => {
-    handleOpen();
-    setDeferred(false);
-  };
-
-  // Determine if the button should be disabled
-  const noUsages = showUsages && blockers !== undefined && blockers.length === 0;
-
   return (
     <>
       {isIcon ? (
         <Button.Icon
-          disabled={noUsages}
-          icon={
-            showUsages
-              ? 'informationCircle'
-              : 'trash'
-          }
-          title={
-            blockers === undefined
-              ? commonText.loading()
-              : showUsages && !noUsages
-              ? mergingText.linkedRecords()
-              : showUsages && noUsages
-              ? formsText.noLinkedRecords()
-              : isBlocked
-              ? formsText.deleteBlocked()
-              : commonText.delete()
-          }
-          onClick={handleButtonClick}
+          icon="trash"
+          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
         />
       ) : (
         <ButtonComponent
-          disabled={noUsages}
-          title={
-            blockers === undefined
-              ? commonText.loading()
-              : showUsages && !noUsages
-              ? mergingText.linkedRecords()
-              : showUsages && noUsages
-              ? formsText.noLinkedRecords()
-              : isBlocked
-              ? formsText.deleteBlocked()
-              : commonText.delete()
-          }
-          onClick={handleButtonClick}
+          title={isBlocked ? formsText.deleteBlocked() : undefined}
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
         >
-          {isBlocked && !showUsages ? (
-            <>
-              {icons.exclamation}
-              {commonText.delete()}
-            </>
-          ) : // If we are showing usages, show the number of linked records 
-          showUsages ? (
-            <>
-              {icons.documentSearch}
-              {blockers
-              ? blockers
-                .reduce(
-                  (sum, blocker) =>
-                  sum +
-                  blocker.blockers.reduce(
-                    (innerSum, { ids }) => innerSum + ids.length,
-                    0
-                  ),
-                  0
-                )
-                .toLocaleString() // This formats the count nicely.
-              : undefined}
-            </>
-          ) : (
-            commonText.delete()
-          )}
+          {isBlocked ? icons.exclamation : undefined}
+          {commonText.delete()}
         </ButtonComponent>
       )}
       {isOpen ? (
         blockers === undefined ? (
-          // This dialog is shown while the delete blockers are being fetched
           <Dialog
             buttons={commonText.cancel()}
             className={{ container: dialogClassNames.narrowContainer }}
             header={commonText.loading()}
             onClose={handleClose}
           >
-            {showUsages 
-              ? formsText.checkingIfResourceIsUsed() 
-              : formsText.checkingIfResourceCanBeDeleted()}
+            {formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
         ) : blockers.length === 0 ? (
-          showUsages ? (
-            /* 
-             * This dialog is shown when there are no linked records.
-             * In most cases, the user will not see this, but if it takes some
-             * time to fetch the linked records, this dialog will be shown once
-             * fetching is done.
-             */
-            <Dialog
-              buttons={commonText.close()}
-              className={{ container: dialogClassNames.narrowContainer }}
-              header={formsText.noLinkedRecords()}
-              icon={icons.documentSearch}
-              onClose={handleClose}
-            >
-              <></>
-            </Dialog>
-          ) : (
-            // This dialog is only shown when the resource can be deleted
-            <Dialog
-              buttons={
-                <>
-                  <Button.Danger
-                    onClick={(): void => {
-                      overwriteReadOnly(resource, 'needsSaved', false);
-                      loading(resource.destroy().then(handleDeleted));
-                    }}
-                  >
-                    {commonText.delete()}
-                  </Button.Danger>
-                  <span className="-ml-2 flex-1" />
-                  <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                </>
-              }
-              className={{
-                container: dialogClassNames.narrowContainer,
-              }}
-              header={formsText.deleteConfirmation({
-                tableName: resource.specifyTable.label,
-              })}
-              onClose={handleClose}
-            >
-              {deletionMessage}
-              <div>
-                <StringToJsx
-                  components={{
-                    wrap: (
-                      <i className="flex items-center gap-2">
-                        <TableIcon label={false} name={iconName} />
-                        <FormattedResource asLink={false} resource={resource} />
-                      </i>
-                    ),
+          <Dialog
+            buttons={
+              <>
+                <Button.Danger
+                  onClick={(): void => {
+                    /*
+                     * REFACTOR: move this into ResourceApi.js
+                     */
+                    overwriteReadOnly(resource, 'needsSaved', false);
+                    loading(resource.destroy().then(handleDeleted));
                   }}
-                  string={commonText.jsxColonLine({
-                    label: treeText.resourceToDelete(),
-                  })}
-                />
-              </div>
-            </Dialog>
-          )
+                >
+                  {commonText.delete()}
+                </Button.Danger>
+                <span className="-ml-2 flex-1" />
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              </>
+            }
+            className={{
+              container: dialogClassNames.narrowContainer,
+            }}
+            header={formsText.deleteConfirmation({
+              tableName: resource.specifyTable.label,
+            })}
+            onClose={handleClose}
+          >
+            {deletionMessage}
+            <div>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i className="flex items-center gap-2">
+                      <TableIcon label={false} name={iconName} />
+                      <FormattedResource asLink={false} resource={resource} />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: treeText.resourceToDelete(),
+                })}
+              />
+            </div>
+          </Dialog>
         ) : (
-          // This dialog is shown when the resource cannot be deleted or when the resource is being used
           <Dialog
             buttons={commonText.close()}
             className={{
               container: dialogClassNames.wideContainer,
             }}
-            header={
-              showUsages
-                ? mergingText.linkedRecords()
-                : formsText.deleteBlocked()
-            }
-            icon={showUsages ? icons.documentSearch : icons.exclamation}
+            header={formsText.deleteBlocked()}
             onClose={handleClose}
           >
-            {showUsages
-              ? formsText.recordUsedDescription()
-              : formsText.deleteBlockedDescription()}
+            {formsText.deleteBlockedDescription()}
             <DeleteBlockers
               blockers={[blockers, setBlockers]}
               resource={resource}
