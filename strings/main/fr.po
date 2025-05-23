@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:36+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 14:39+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/main/fr/"
 ">\n"
 "Language: fr\n"
@@ -70,8 +70,8 @@ msgstr ""
 #, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
-"Pour éviter de corrompre les enregistrements de données, nous devons "
-"recommencer à partir d'un endroit sûr : la page d'accueil."
+"Pour éviter de corrompre les enregistrements de données, vous devez "
+"recommencer à partir d'un endroit sûr : la page d'accueil."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
