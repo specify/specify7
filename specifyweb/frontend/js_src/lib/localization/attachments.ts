@@ -240,7 +240,7 @@ export const attachmentsText = createDictionary({
     "es-es": "Nuevo conjunto de datos adjuntos {date: string}",
     "fr-fr": "Nouveau jeu de données de pièces jointes {date: string}",
     "ru-ru": "Новый набор данных вложений {дата: строка}",
-    "uk-ua": "Новий набір даних вкладення {date: string}",
+    "uk-ua": "Новий набір даних вкладень {date: string}",
     "pt-br": "Novo conjunto de dados de anexo {data: string}",
   },
   newAttachmentDatasetBase: {
