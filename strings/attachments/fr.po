@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-26 13:02+0000\n"
+"PO-Revision-Date: 2025-05-23 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
@@ -11,6 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:145
 #: components/Attachments/RecordSetAttachment.tsx:147
 #: components/Attachments/index.tsx:161
@@ -21,7 +22,6 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:110
 #: components/Preferences/UserDefinitions.tsx:1301
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Pièces jointes"
 
@@ -44,10 +44,10 @@ msgstr "Serveur de pièces jointes indisponible"
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configurez votre serveur de pièces jointes"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1288
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Trier par"
 
@@ -56,20 +56,20 @@ msgstr "Trier par"
 msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:155
 #: components/AttachmentsBulkImport/utils.ts:474
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
 
-#: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:147
 msgid "unableToFindRelatedRecord"
 msgstr "Impossible de trouver l'enregistrement lié"
 
-#: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:150
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Impossible de trouver un enregistrement auquel cette pièce jointe est liée."
 
@@ -100,8 +100,8 @@ msgstr "Supprimé"
 msgid "noFile"
 msgstr "Pas de fichier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 msgid "pleaseReselectAllFiles"
 msgstr "Veuillez resélectionner tous les fichiers avant de les télécharger."
 
@@ -239,15 +239,15 @@ msgstr ""
 msgid "noMatch"
 msgstr "Aucune correspondance"
 
-#: components/Attachments/RecordSetAttachment.tsx:158
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:158
 msgid "attachmentHaltLimit"
 msgstr ""
 "Aucune pièce jointe n'a été trouvée dans les premiers enregistrements "
 "{halt:number}."
 
-#: components/Attachments/RecordSetAttachment.tsx:166
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:166
 msgid "fetchNextAttachments"
 msgstr "Rechercher plus de pièces jointes"
 
@@ -262,13 +262,13 @@ msgstr "Masquer le formulaire"
 msgid "multipleMatches"
 msgstr "Plusieurs correspondances"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 msgid "multipleMatchesClick"
 msgstr "Plusieurs correspondances. Cliquez pour clarifier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 msgid "totalFiles"
 msgstr "Total des fichiers"
 
@@ -282,8 +282,8 @@ msgstr "Correctement formaté"
 msgid "stoppedByUser"
 msgstr "Arrêté par l'utilisateur"
 
-#: components/Router/OverlayRoutes.tsx:229
 #. Used in: Components > Router > Overlay Routes
+#: components/Router/OverlayRoutes.tsx:229
 msgid "importAttachments"
 msgstr "Importer des pièces jointes"
 
@@ -320,13 +320,13 @@ msgstr "Erreur lors de la sauvegarde de l'enregistrement"
 msgid "interruptionStopped"
 msgstr "Arrêté à cause d'une erreur de téléchargement du précédent fichier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 msgid "chooseFilesToGetStarted"
 msgstr "Choisissez des fichiers ou faites-les glisser ici pour commencer."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 msgid "selectIdentifier"
 msgstr "Sélectionnez un identifiant pour faire correspondre le nom des fichiers."
 
@@ -364,24 +364,28 @@ msgstr ""
 "jointes est peut-être indisponible ou une erreur s'est produite lors de la "
 "lecture du fichier."
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAll"
-msgstr ""
+msgstr "Télécharger tout"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:124
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAllDescription"
-msgstr ""
+msgstr "Télécharger toutes les pièces jointes trouvées"
 
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#. Used in: Components > Form Sliders > Attachment Warning Deletion
+#, fuzzy
 msgid "deleteAttachmentWarning"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?"
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#, fuzzy
 msgid "attachmentDelition"
-msgstr ""
+msgstr "Suppression des pièces jointes"

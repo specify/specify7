@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-26 13:02+0000\n"
+"PO-Revision-Date: 2025-05-23 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -12,6 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:145
 #: components/Attachments/RecordSetAttachment.tsx:147
 #: components/Attachments/index.tsx:161
@@ -22,7 +23,6 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:110
 #: components/Preferences/UserDefinitions.tsx:1301
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Anhänge"
 
@@ -45,10 +45,10 @@ msgstr "Attachment-Server nicht verfügbar"
 msgid "attachmentServerUnavailableDescription"
 msgstr "Richten Sie Ihren Attachment-Server ein"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1288
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Sortiere nach"
 
@@ -57,20 +57,20 @@ msgstr "Sortiere nach"
 msgid "uploadingInline"
 msgstr "Am Hochladen…"
 
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:155
 #: components/AttachmentsBulkImport/utils.ts:474
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Es gibt keine Anhänge"
 
-#: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:147
 msgid "unableToFindRelatedRecord"
 msgstr "Verknüpfter Datensatz kann nicht gefunden werden"
 
-#: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:150
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
 "Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang "
@@ -106,8 +106,8 @@ msgstr "Gelöscht"
 msgid "noFile"
 msgstr "Keine Datei"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #, fuzzy
 msgid "pleaseReselectAllFiles"
 msgstr "Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus."
@@ -264,14 +264,14 @@ msgstr "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server."
 msgid "noMatch"
 msgstr "Keine Übereinstimmung"
 
-#: components/Attachments/RecordSetAttachment.tsx:158
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:158
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "In den ersten {halt:number}-Datensätzen wurden keine Anhänge gefunden."
 
-#: components/Attachments/RecordSetAttachment.tsx:166
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:166
 #, fuzzy
 msgid "fetchNextAttachments"
 msgstr "Suchen Sie nach weiteren Anhängen"
@@ -288,16 +288,16 @@ msgstr "Formular ausblenden"
 msgid "multipleMatches"
 msgstr "Mehrere Übereinstimmungen"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr ""
 "Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit "
 "aufzuheben."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #, fuzzy
 msgid "totalFiles"
 msgstr "Gesamtzahl der Dateien"
@@ -314,8 +314,8 @@ msgstr "Korrekt formatiert"
 msgid "stoppedByUser"
 msgstr "Vom Benutzer gestoppt"
 
-#: components/Router/OverlayRoutes.tsx:229
 #. Used in: Components > Router > Overlay Routes
+#: components/Router/OverlayRoutes.tsx:229
 #, fuzzy
 msgid "importAttachments"
 msgstr "Anhänge importieren"
@@ -358,14 +358,14 @@ msgstr "Fehler beim Speichern des Datensatzes"
 msgid "interruptionStopped"
 msgstr "Gestoppt wegen eines Fehlers beim Hochladen einer vorherigen Datei"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #, fuzzy
 msgid "selectIdentifier"
 msgstr "Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden soll."
@@ -408,24 +408,28 @@ msgstr ""
 "Fehler beim Hochladen des Anhangs. Der Anhangsserver ist möglicherweise "
 "nicht verfügbar oder beim Lesen der Datei ist ein Fehler aufgetreten."
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAll"
-msgstr ""
+msgstr "Alles herunterladen"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:124
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAllDescription"
-msgstr ""
+msgstr "Alle gefundenen Anhänge herunterladen"
 
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#. Used in: Components > Form Sliders > Attachment Warning Deletion
+#, fuzzy
 msgid "deleteAttachmentWarning"
-msgstr ""
+msgstr "Möchten Sie diesen Anhang wirklich löschen?"
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#, fuzzy
 msgid "attachmentDelition"
-msgstr ""
+msgstr "Löschen von Anhängen"

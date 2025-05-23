@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-26 13:02+0000\n"
+"PO-Revision-Date: 2025-05-23 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -10,8 +10,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:145
 #: components/Attachments/RecordSetAttachment.tsx:147
 #: components/Attachments/index.tsx:161
@@ -22,7 +23,6 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:110
 #: components/Preferences/UserDefinitions.tsx:1301
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Прикріплення"
 
@@ -45,10 +45,10 @@ msgstr "Сервер прикріплень недоступний"
 msgid "attachmentServerUnavailableDescription"
 msgstr "Налаштуйте сервер прикріплень"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1288
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Сортувати по"
 
@@ -57,20 +57,20 @@ msgstr "Сортувати по"
 msgid "uploadingInline"
 msgstr "Завантаження…"
 
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:155
 #: components/AttachmentsBulkImport/utils.ts:474
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Прикріплень нема"
 
-#: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:147
 msgid "unableToFindRelatedRecord"
 msgstr "Неможливо знайти відповідний запис"
 
-#: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:150
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не вдалося знайти запис, до якого відноситься це вкладення."
 
@@ -104,8 +104,8 @@ msgstr "Видалено"
 msgid "noFile"
 msgstr "Немає файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #, fuzzy
 msgid "pleaseReselectAllFiles"
 msgstr "Перед завантаженням повторно виберіть усі файли."
@@ -258,14 +258,14 @@ msgstr "Відкат видалить вкладення з бази даних 
 msgid "noMatch"
 msgstr "Немає відповідності"
 
-#: components/Attachments/RecordSetAttachment.tsx:158
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:158
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "У перших записах {halt:number} вкладень не знайдено."
 
-#: components/Attachments/RecordSetAttachment.tsx:166
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:166
 #, fuzzy
 msgid "fetchNextAttachments"
 msgstr "Шукайте більше вкладень"
@@ -282,14 +282,14 @@ msgstr "Сховати форму"
 msgid "multipleMatches"
 msgstr "Кілька збігів"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr "Кілька збігів. Натисніть, щоб усунути неоднозначність"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #, fuzzy
 msgid "totalFiles"
 msgstr "Всього файлів"
@@ -306,8 +306,8 @@ msgstr "Правильно відформатований"
 msgid "stoppedByUser"
 msgstr "Зупинено користувачем"
 
-#: components/Router/OverlayRoutes.tsx:229
 #. Used in: Components > Router > Overlay Routes
+#: components/Router/OverlayRoutes.tsx:229
 #, fuzzy
 msgid "importAttachments"
 msgstr "Імпорт вкладень"
@@ -349,17 +349,17 @@ msgstr "Помилка збереження запису"
 msgid "interruptionStopped"
 msgstr "Зупинено через помилку завантаження попереднього файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #, fuzzy
 msgid "selectIdentifier"
-msgstr "Виберіть ідентифікатор, який буде відповідати назві файлів."
+msgstr "Виберіть ідентифікатор для відповідності імені файлу."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:224
@@ -399,24 +399,28 @@ msgstr ""
 "Помилка завантаження вкладення. Можливо, сервер вкладень недоступний або "
 "під час читання файлу сталася помилка."
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAll"
-msgstr ""
+msgstr "Завантажити все"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:124
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#, fuzzy
 msgid "downloadAllDescription"
-msgstr ""
+msgstr "Завантажити всі знайдені вкладення"
 
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#. Used in: Components > Form Sliders > Attachment Warning Deletion
+#, fuzzy
 msgid "deleteAttachmentWarning"
-msgstr ""
+msgstr "Ви впевнені, що хочете видалити цей вкладений файл?"
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#, fuzzy
 msgid "attachmentDelition"
-msgstr ""
+msgstr "Видалення вкладень"

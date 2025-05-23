@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-01-21 08:00+0000\n"
+"PO-Revision-Date: 2025-05-23 02:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/ru/>\n"
@@ -10,100 +10,100 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
-#: components/WorkBench/resultsParser.ts:203
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:203
 msgid "failedParsingBoolean"
 msgstr "значение \"{value:string}\" не разрешается to True or False"
 
-#: components/WorkBench/resultsParser.ts:205
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:205
 msgid "failedParsingDecimal"
 msgstr "значение \"{value:string}\" не является допустимым чеслом"
 
-#: components/WorkBench/resultsParser.ts:207
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:207
 msgid "failedParsingFloat"
 msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
 
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
 #: components/WorkBench/resultsParser.ts:258
-#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} не является допустимым значением в этом списке.\n"
 "Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
-#: components/WorkBench/resultsParser.ts:209
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:209
 msgid "failedParsingAgentType"
 msgstr ""
 "неверный {agentTypeField:string}: \"{badType:string}\". Ожидается один из "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:262
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:262
 msgid "pickListValueTooLong"
 msgstr ""
 "значение из {pickListTable:string} {pickList:string} длиннее максимального "
 "значения {maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:217
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:217
 msgid "valueTooLong"
 msgstr "значение не должно быть длиннее {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:221
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:221
 msgid "invalidYear"
 msgstr "значение даты должно содержать четырехзначный год: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:225
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:225
 msgid "badDateFormat"
 msgstr "неверное значение даты: {value:string}. ожидается: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:230
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:230
 msgid "coordinateBadFormat"
 msgstr "неверное значение широты или долготы: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:234
 msgid "latitudeOutOfRange"
 msgstr "широта должна быть между -90 и 90. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:238
 msgid "longitudeOutOfRange"
 msgstr "долгота должна быть между -180 и 180. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:242
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:242
 #, fuzzy
 msgid "formatMismatch"
 msgstr "значение {value:string} не соответствует форматеру {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:268
 msgid "invalidPartialRecord"
 msgstr "это поле должно быть пустым, если {column:string} пусто"
 
-#: components/WorkBench/resultsParser.ts:272
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:272
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле обязательно для загрузки плана"
 
-#: components/WorkBench/resultsParser.ts:274
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:274
 msgid "invalidTreeStructure"
 msgstr "В дереве есть несколько веток с именем \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:280
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:280
 msgid "missingRequiredTreeParent"
 msgstr ""
 "Отсутствует или не сопоставлено необходимое значение родительского ранга "
@@ -269,17 +269,22 @@ msgstr ""
 msgid "datasetAlreadyUploaded"
 msgstr "Набор данных уже загружен"
 
-#: components/WorkBench/resultsParser.ts:275
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:275
+#, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
+"Изменение области действия обнаружено в этой строке. Рекомендуется удалить "
+"эту строку из набора данных"
 
+#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:277
-#. Used in: Components > Work Bench > Results Parser
+#, fuzzy
 msgid "multipleTreeDefsInRow"
-msgstr ""
+msgstr "Несколько определений деревьев в строке"
 
-#: components/WorkBench/resultsParser.ts:278
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:278
+#, fuzzy
 msgid "invalidCotype"
-msgstr ""
+msgstr "Недопустимый тип для выбранного ранга(ов) дерева"
