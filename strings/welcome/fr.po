@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-27 00:01+0000\n"
+"PO-Revision-Date: 2025-05-23 14:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
 "fr/>\n"
@@ -17,10 +17,10 @@ msgstr ""
 msgid "pageTitle"
 msgstr "Accueillir"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:121
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:198
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "À propos de Spécifier 7"
 
@@ -72,9 +72,9 @@ msgstr ""
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Spécifiez 7, Copyright 2025, Centre de recherche de l'Université du Kansas. "
-"Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel "
-"gratuit et open source sous licence GNU General Public License v2."
+"Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. "
+"Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et "
+"open source, sous licence GNU General Public License v2."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
