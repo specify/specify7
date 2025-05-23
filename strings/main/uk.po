@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:39+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/main/"
 "uk/>\n"
 "Language: uk\n"
@@ -68,7 +68,6 @@ msgstr ""
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:188
-#, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Щоб уникнути пошкодження записів даних, вам потрібно почати знову з "
@@ -96,7 +95,7 @@ msgstr ""
 #: components/LocalityUpdate/Status.tsx:375
 #: components/LocalityUpdate/Status.tsx:422
 msgid "errorMessage"
-msgstr "Помилка"
+msgstr "Повідомлення про помилку"
 
 #. Used in: Components > Router > Unload Protect
 #: components/Router/UnloadProtect.tsx:33
@@ -109,7 +108,7 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89
 msgid "leavePageConfirmationDescription"
-msgstr "Натисніть, щоб переглянути деталі"
+msgstr "Незбережені зміни будуть втрачені, якщо ви залишите цю сторінку."
 
 #. Used in: Components > Router > Unload Protect
 #: components/Router/UnloadProtect.tsx:28
