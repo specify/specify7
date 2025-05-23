@@ -142,7 +142,7 @@ export const headerText = createDictionary({
     "es-es": "Herramienta de actualización de localidad",
     "fr-fr": "Outil de mise à jour de la localité",
     "ru-ru": "Инструмент обновления местоположения",
-    "uk-ua": "Ресурс DwCA",
+    "uk-ua": "Інструмент оновлення місцевості",
     "pt-br": "Ferramenta de atualização de localidade",
   },
   labelName: {
@@ -205,7 +205,7 @@ export const headerText = createDictionary({
     "es-es": "Elegir",
     "fr-fr": "Choisir",
     "ru-ru": "Выбирать",
-    "uk-ua": "Ресурс DwCA",
+    "uk-ua": "Виберіте",
     "pt-br": "Escolher",
   },
   chooseDwca: {
@@ -223,7 +223,7 @@ export const headerText = createDictionary({
     "es-es": "Recurso DwCA",
     "fr-fr": "Ressource DwCA",
     "ru-ru": "Ресурс DwCA",
-    "uk-ua": "Ресурс DwCA",
+    "uk-ua": "Ресурси DwCA",
     "pt-br": "Recurso DwCA",
   },
   chooseMetadataResource: {

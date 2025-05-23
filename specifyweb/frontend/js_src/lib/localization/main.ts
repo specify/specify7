@@ -164,7 +164,7 @@ export const mainText = createDictionary({
     "ru-ru": "Описание ошибки",
     "es-es": "Mensaje de error",
     "fr-fr": "Message d'erreur",
-    "uk-ua": "Помилка",
+    "uk-ua": "Повідомлення про помилку",
     "de-ch": "Fehlermeldung",
     "pt-br": "Mensagem de erro",
   },
@@ -184,7 +184,7 @@ export const mainText = createDictionary({
     "es-es": "Los cambios no guardados se perderán si abandona esta página.",
     "fr-fr":
       "Les modifications non enregistrées seront perdues si vous quittez cette page.",
-    "uk-ua": "Натисніть, щоб переглянути деталі",
+    "uk-ua": "Незбережені зміни будуть втрачені, якщо ви залишите цю сторінку.",
     "de-ch":
       "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite verlassen.",
     "pt-br":

@@ -82,7 +82,7 @@ export const treeText = createDictionary({
       "L'opération n'a pas pu être terminée en raison des erreurs suivantes :",
     "de-ch":
       "Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:",
-    "uk-ua": "Прямий підрахунок [X7X].",
+    "uk-ua": "Операцію не вдалося завершити через такі помилки:",
     "pt-br": "A operação não pôde ser concluída devido aos seguintes erros:",
   },
   moveNode: {
@@ -108,7 +108,7 @@ export const treeText = createDictionary({
     "ru-ru": 'Переместите "{nodeName:string}" сюда',
     "es-es": 'Mueva "{nodeName:string}" aquí',
     "fr-fr": "Déplacer « {nodeName:string} » ici",
-    "uk-ua": 'Перемістіть сюди "{nodeName:string}".',
+    "uk-ua": 'Перемістіть сюди "{nodeName:string}"',
     "de-ch": 'Verschiebe "{nodeName:string}" hierhin',
     "pt-br": 'Mova "{nodeName:string}" aqui',
   },
@@ -118,7 +118,7 @@ export const treeText = createDictionary({
     "es-es": 'Mueva todas las preparaciones "{nodeName:string}" aquí',
     "fr-fr": "Déplacer toutes les préparations « {nodeName:string} » ici",
     "ru-ru": 'Переместить все препараты "{nodeName:string}" сюда',
-    "uk-ua": 'Перемістіть сюди всі препарати "{nodeName:string}".',
+    "uk-ua": 'Перемістіть сюди всі препарати "{nodeName:string}"',
     "pt-br": 'Mova todos os preparativos "{nodeName:string}" aqui',
   },
   nodeMoveMessage: {
@@ -148,7 +148,8 @@ export const treeText = createDictionary({
       "Les préparations du nœud {treeName:string} « {nodeName:string} » seront placées sous le nouvel emplacement « {parentName:string} ».",
     "ru-ru":
       'Подготовка узла {treeName:string} "{nodeName:string}" будет размещена в новом месте "{parentName:string}".',
-    "uk-ua": "Скасувати синонімію",
+    "uk-ua":
+      'Підготовка вузла {treeName:string} "{nodeName:string}" буде розміщена в новому місці розташування "{parentName:string}".',
     "pt-br":
       'Os preparativos do nó {treeName:string} "{nodeName:string}" serão colocados no novo local "{parentName:string}".',
   },
@@ -272,7 +273,7 @@ export const treeText = createDictionary({
     "ru-ru": "Синонимизировать узел",
     "es-es": "Sinónimos de nodo",
     "fr-fr": "Synonymiser le nœud",
-    "uk-ua": 'Вузол [X4X] "[X28X]" стане синонімом "[X74X]".',
+    "uk-ua": "Синонімізувати вузол",
     "de-ch": "Knoten synonymisieren",
     "pt-br": "Sinonímia de nó",
   },
@@ -407,7 +408,7 @@ export const treeText = createDictionary({
     "ru-ru": "({directCount:number|formatted}, {childCount:number|formatted})",
     "es-es": "({directCount:number|formatted}, {childCount:number|formatted})",
     "fr-fr": "({directCount:number|formatted}, {childCount:number|formatted})",
-    "uk-ua": "({directCount:number|formatted}, {childCount:number|formatted})",
+    "uk-ua": "({directCount:number|formatted}', {childCount:number|formatted})",
     "de-ch": "({directCount:number|formatted}, {childCount:number|formatted})",
     "pt-br": "({directCount:number|formatted}, {childCount:number|formatted})",
   },
@@ -417,7 +418,7 @@ export const treeText = createDictionary({
     "ru-ru": "({directCount:number|formatted})",
     "es-es": "({directCount:number|formatted})",
     "fr-fr": "({directCount:number|formatted})",
-    "uk-ua": "({directCount:number|formatted})",
+    "uk-ua": "({directCount:number|formatted})'",
     "de-ch": "({directCount:number|formatted})",
     "pt-br": "({directCount:number|formatted})",
   },
@@ -428,7 +429,7 @@ export const treeText = createDictionary({
     "es-es": "Recuento directo {collectionObjectTable:string}",
     "de-ch": "Direkte {collectionObjectTable:string} Anzahl",
     "fr-fr": "Compte direct {collectionObjectTable:string}",
-    "uk-ua": "Прямий підрахунок {collectionObjectTable:string}.",
+    "uk-ua": "Прямий підрахунок {collectionObjectTable:string}",
     "pt-br": "Contagem direta {collectionObjectTable:string}",
   },
   indirectCollectionObjectCount: {
@@ -437,7 +438,7 @@ export const treeText = createDictionary({
     "ru-ru": "Косвенный {collectionObjectTable:string} Количество",
     "es-es": "Recuento indirecto {collectionObjectTable:string}",
     "fr-fr": "Compte indirect {collectionObjectTable:string}",
-    "uk-ua": "Непрямий підрахунок {collectionObjectTable:string}.",
+    "uk-ua": "Непрямий підрахунок {collectionObjectTable:string}",
     "de-ch": "Indirekte {collectionObjectTable:string} Anzahl",
     "pt-br": "Contagem indireta {collectionObjectTable:string}",
   },

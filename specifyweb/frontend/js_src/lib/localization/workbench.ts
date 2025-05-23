@@ -60,7 +60,7 @@ export const wbText = createDictionary({
     "ru-ru": "Загрузка",
     "es-es": "Cargar",
     "fr-fr": "Télécharger",
-    "uk-ua": "Завантажити",
+    "uk-ua": "Вавантаження",
     "de-ch": "Hochladen",
     "pt-br": "Carregar",
   },
@@ -600,7 +600,7 @@ export const wbText = createDictionary({
     "ru-ru":
       "Проверьте набор данных и просмотрите подсказки при наведении мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите {type:string}.",
     "uk-ua":
-      "Перевірте набір даних і перегляньте підказки при наведенні курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть та повторіть спробу {type:string}.",
+      "Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.",
   },
   dataSetRollback: {
     "en-us": "Data Set was rolled back successfully",
@@ -1334,7 +1334,7 @@ export const wbText = createDictionary({
     "ru-ru": "{operationName:string}...",
     "es-es": "{operationName:string}...",
     "fr-fr": "{operationName:string}...",
-    "uk-ua": "{operationName:string}...",
+    "uk-ua": "{operationName:string}'...",
     "de-ch": "{operationName:string}...",
     "pt-br": "{operationName:string}...",
   },
