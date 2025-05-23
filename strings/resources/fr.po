@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-04-20 23:01+0000\n"
+"PO-Revision-Date: 2025-05-23 14:39+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.11.1-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -22,12 +22,12 @@ msgstr ""
 msgid "appResources"
 msgstr "Ressources de l'application"
 
+#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:284
 #: components/FormEditor/Create.tsx:265
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:806
-#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formDefinition"
 msgstr "Définition du formulaire"
@@ -130,9 +130,9 @@ msgstr "Recherches de type"
 msgid "webLinks"
 msgstr "Liens Web"
 
+#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:159
 #: components/SchemaConfig/Format.tsx:100
-#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Formateurs de champs"
@@ -251,7 +251,7 @@ msgstr "Autres propriétés"
 #: components/AppResources/types.tsx:211
 #, fuzzy
 msgid "otherAppResource"
-msgstr "Autre ressource"
+msgstr "Autres ressources"
 
 #. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:48
@@ -322,9 +322,9 @@ msgstr "Préférences à distance"
 msgid "failedParsingXml"
 msgstr "Échec de l'analyse XML"
 
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
 #: components/QueryBuilder/FieldFilter.tsx:545
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "name"
 msgstr "Nom"
@@ -364,10 +364,10 @@ msgstr "Suffixe"
 msgid "limit"
 msgstr "Limite"
 
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
 #: components/QueryBuilder/Formatter.tsx:212
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #, fuzzy
 msgid "defaultInline"
 msgstr "(défaut)"
@@ -539,14 +539,14 @@ msgstr "Copier la définition de la vue par défaut"
 msgid "copyDefaultForms"
 msgstr "Copier les formulaires par défaut"
 
-#: components/FormMeta/index.tsx:114
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:114
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Enregistrer d'abord le formulaire"
 
-#: components/FormMeta/index.tsx:117
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:117
 #, fuzzy
 msgid "saveFormFirstDescription"
 msgstr "Vous devez enregistrer ce formulaire avant d'en modifier un autre"
@@ -587,67 +587,82 @@ msgstr "Valeur du champ conditionnel"
 msgid "formatPreview"
 msgstr "Aperçu du format"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:465
 #: components/DataModel/businessRuleDefs.ts:483
-#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Une détermination actuelle est requise."
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:306
 #: components/DataModel/businessRuleDefs.ts:352
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "cogAddedToItself"
-msgstr ""
+msgstr "Un COG ne peut pas être ajouté à lui-même."
 
-#: components/DataModel/businessRuleDefs.ts:338
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:338
+#, fuzzy
 msgid "coHasParent"
-msgstr ""
+msgstr "Un CO avec un parent ne peut pas être ajouté à un COG."
 
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:255
 #: components/DataModel/__tests__/businessRules.test.ts:339
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
+#, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
+"Un groupe d'objets de collection consolidé doit avoir un objet de collection "
+"enfant principal"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:370
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deletePrimaryRecord"
-msgstr ""
+msgstr "L'enregistrement principal CO ne peut pas être supprimé."
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:696
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteLoanedPrep"
-msgstr ""
+msgstr "Une préparation prêtée ne peut pas être supprimée"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:704
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteGiftedPrep"
-msgstr ""
+msgstr "Une préparation surdouée ne peut pas être supprimée"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:712
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteDisposedPrep"
-msgstr ""
+msgstr "Une préparation éliminée ne peut pas être supprimée"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:720
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteExchangeOutPrep"
-msgstr ""
+msgstr "Une préparation échangée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:728
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:728
+#, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr ""
+msgstr "Un échange en préparation ne peut pas être supprimé"
 
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:226
 #: components/DataModel/__tests__/businessRules.test.ts:154
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
+#, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
+"La détermination n'appartient pas à l'arbre taxonomique associé au type "
+"d'objet de collection"
 
-#: components/DataModel/businessRuleDefs.ts:677
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:677
+#, fuzzy
 msgid "preparationUsedInLoan"
-msgstr ""
+msgstr "La préparation est utilisée dans un prêt."
