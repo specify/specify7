@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:35+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 14:39+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -836,8 +836,9 @@ msgstr "Arbre de défilement automatique vers le nœud ciblé"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1356
+#, fuzzy
 msgid "sortByField"
-msgstr ""
+msgstr "Trier par champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1929
@@ -1155,13 +1156,17 @@ msgstr "Afficher la vue de base"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1643
+#, fuzzy
 msgid "showComparisonOperatorsForString"
-msgstr ""
+msgstr "Afficher les opérateurs de comparaison pour les champs textuels"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1644
+#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
+"Permet d'appliquer les filtres suivants aux champs de texte : Supérieur à, "
+"Inférieur à, Supérieur ou égal à et Inférieur ou égal à"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:110
@@ -1203,10 +1208,13 @@ msgstr "Ajouter une barre de recherche sur la page d'accueil"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:99
+#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
+"Activez l'héritage du numéro de catalogue principal vers ses frères vides."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:118
+#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
-msgstr ""
+msgstr "Activer l'héritage du numéro de catalogue parent à ses enfants vides."
