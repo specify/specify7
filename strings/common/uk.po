@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:35+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -103,7 +103,7 @@ msgstr "Скасувати"
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
 msgid "back"
-msgstr "Виберіть файли або перетягніть їх сюди"
+msgstr "Назад"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -303,7 +303,6 @@ msgstr "Очистити все"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:68
-#, fuzzy
 msgid "deleteUnmapped"
 msgstr "Видалити незіставлені стовпці"
 
@@ -399,7 +398,7 @@ msgstr "Попередній"
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:86
 msgid "tool"
-msgstr "Завантаження…"
+msgstr "Інструмент"
 
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 #: components/WbToolkit/index.tsx:65
@@ -471,7 +470,7 @@ msgstr "Інструменти"
 #: components/TreeView/Row.tsx:226
 #: components/WorkBench/Disambiguation.tsx:124
 msgid "loading"
-msgstr "Завантаження…"
+msgstr "Завантажуємо…"
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Upload.tsx:270
@@ -749,7 +748,7 @@ msgstr "Країна"
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:186
 msgid "viewRecord"
-msgstr "Країна"
+msgstr "Переглянути запис"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/AppResources/Aside.tsx:400
@@ -944,12 +943,12 @@ msgstr "Немає доступних"
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
 msgid "countLine"
-msgstr "{resource:string} ({count:number|formatted})"
+msgstr "{resource:string}({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
 msgid "jsxCountLine"
-msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
+msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>'"
 
 #. 🟥Example usage: "Choose collection:". Used only if there is nothing else on this line after the colon heading. Used in: Components > Choose Collection > Index ⬤ Components > Formatters > List ⬤ Components > Home Page > About Specify ⬤ Components > Security > Role Template ⬤ Components > Web Links > Definition ⬤ Components > Work Bench > Data Set Meta
 #: components/ChooseCollection/index.tsx:138
@@ -961,7 +960,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:222
 msgid "colonHeader"
-msgstr "{header:string}:"
+msgstr "{header:string}':"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 #: components/AttachmentsBulkImport/ActionState.tsx:29
@@ -1001,7 +1000,7 @@ msgstr "{header:string}:"
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
 msgid "colonLine"
-msgstr "{label:string}: {value:string}"
+msgstr "{label:string}: {value:string}'"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Statistics > Delete Category ⬤ Components > Work Bench > Data Set Meta
 #: components/Forms/DeleteButton.tsx:167
@@ -1019,7 +1018,7 @@ msgstr "{label:string}: <wrap />"
 #: components/Interactions/PrepDialog.tsx:148
 #: components/Interactions/PrepDialog.tsx:129
 msgid "bulkSelect"
-msgstr "Завантаження…"
+msgstr "Масовий вибір"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:258
@@ -1059,12 +1058,10 @@ msgstr "Виберіть файли або перетягніть їх сюди"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:61
-#, fuzzy
 msgid "zoom"
-msgstr "Збільшити"
+msgstr "Збільшити масштаб"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:66
-#, fuzzy
 msgid "unzoom"
 msgstr "Зменшити масштаб"
