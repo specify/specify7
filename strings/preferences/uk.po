@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:35+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-05-23 14:36+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
 "Language: uk\n"
@@ -808,8 +808,9 @@ msgstr "Автоматичне прокручування дерева до ви
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1356
+#, fuzzy
 msgid "sortByField"
-msgstr ""
+msgstr "Сортувати за полем"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1929
@@ -1109,13 +1110,17 @@ msgstr "Відобразити базовий вигляд"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1643
+#, fuzzy
 msgid "showComparisonOperatorsForString"
-msgstr ""
+msgstr "Показати оператори порівняння для текстових полів"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1644
+#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
+"Дозволяє застосовувати до текстових полів такі фільтри: «Більше ніж», «Менше "
+"ніж», «Більше або дорівнює» та «Менше або дорівнює»"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:110
@@ -1151,10 +1156,16 @@ msgstr "Додайте рядок пошуку на головну сторін�
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:99
+#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
+"Увімкнути успадкування основного каталожного номера його порожнім братам і "
+"сестрам."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:118
+#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
+"Увімкнути успадкування батьківського каталожного номера його порожнім "
+"дочірнім елементам."
