@@ -1,178 +1,253 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2025-05-23 16:07+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
+"batchEdit/ru/>\n"
+"Language: ru\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.12-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/BatchEdit/index.tsx:187
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "batchEdit"
-msgstr ""
+msgstr "Пакетное редактирование"
 
+#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
-#. Used in: Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "batchEditPrefs"
-msgstr ""
+msgstr "Пакетное редактирование настроек"
 
-#: components/Preferences/UserDefinitions.tsx:2042
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2042
+#, fuzzy
 msgid "numberOfRecords"
-msgstr ""
+msgstr "Количество записей, выбранных из запроса"
 
-#: components/BatchEdit/QueryError.tsx:42
 #. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:42
+#, fuzzy
 msgid "removeField"
 msgstr ""
+"Поле не поддерживается для пакетного редактирования. Либо удалите поле, либо "
+"сделайте его скрытым."
 
-#: components/BatchEdit/MissingRanks.tsx:73
 #. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:73
+#, fuzzy
 msgid "addTreeRank"
 msgstr ""
+"Следующие ранги будут добавлены в запрос для включения пакетного "
+"редактирования"
 
-#: components/BatchEdit/MissingRanks.tsx:89
 #. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:89
+#, fuzzy
 msgid "pickTreesToFilter"
 msgstr ""
+"Выбранные ранги найдены в нескольких деревьях. Выберите дерево(а) для "
+"пакетного редактирования с"
 
-#: components/BatchEdit/index.tsx:160
 #. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:160
+#, fuzzy
 msgid "datasetName"
-msgstr ""
+msgstr "{queryName:string} {datePart:string}"
 
-#: components/BatchEdit/QueryError.tsx:24
 #. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:24
+#, fuzzy
 msgid "errorInQuery"
-msgstr ""
+msgstr "В запросе обнаружены следующие ошибки"
 
-#: components/BatchEdit/MissingRanks.tsx:48
 #. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:48
+#, fuzzy
 msgid "missingRanksInQuery"
-msgstr ""
+msgstr "Запрос требует дополнительных рангов для пакетного редактирования"
 
-#: components/WbUtils/datasetVariants.tsx:111
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:111
+#, fuzzy
 msgid "createUpdateDataSetInstructions"
 msgstr ""
+"Используйте конструктор запросов для создания нового набора данных пакетного "
+"редактирования."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2065
-#. Used in: Components > Preferences > User Definitions
+#, fuzzy
 msgid "showRollback"
-msgstr ""
+msgstr "Показать кнопку отката"
 
-#: components/Preferences/UserDefinitions.tsx:2070
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2070
+#, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
+"Откат в пакетном редактировании — экспериментальная функция. Эта настройка "
+"скроет кнопку"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "commit"
-msgstr ""
+msgstr "Совершить"
 
-#: components/WbUtils/datasetVariants.tsx:121
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:121
+#, fuzzy
 msgid "startCommitDescription"
 msgstr ""
+"При фиксации набора данных данные будут обновлены, добавлены и удалены из "
+"электронной таблицы в базу данных Specify."
 
-#: components/WbUtils/datasetVariants.tsx:125
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:125
+#, fuzzy
 msgid "startRevertDescription"
 msgstr ""
+"Откат набора данных приведет к повторному обновлению значений, удалению "
+"созданных записей и созданию новых записей."
 
-#: components/WbUtils/datasetVariants.tsx:126
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:126
+#, fuzzy
 msgid "commitSuccessfulDescription"
 msgstr ""
+"Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в "
+"каждой таблице базы данных."
 
-#: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:127
+#, fuzzy
 msgid "dateSetRevertDescription"
 msgstr ""
+"Этот откатный набор данных сохранен, однако его нельзя редактировать. "
+"Пожалуйста, повторите запрос"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "committing"
-msgstr ""
+msgstr "Совершение"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "beStatusCommit"
-msgstr ""
+msgstr "Статус фиксации набора данных"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "startCommit"
-msgstr ""
+msgstr "Начать фиксацию набора данных?"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "commitErrors"
-msgstr ""
+msgstr "Фиксация не удалась из-за ошибок ячеек"
 
-#: components/WbUtils/datasetVariants.tsx:120
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:120
+#, fuzzy
 msgid "commitErrorsDescription"
 msgstr ""
+"Фиксация не удалась из-за одной или нескольких ошибок в значениях ячеек."
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "commitCancelled"
-msgstr ""
+msgstr "Фиксация отменена"
 
+#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
-#. Used in: Components > Wb Utils > Dataset Variants
+#, fuzzy
 msgid "commitCancelledDescription"
-msgstr ""
+msgstr "Описание отмены фиксации"
 
-#: components/WbUtils/datasetVariants.tsx:130
 #. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:130
+#, fuzzy
 msgid "commitSuccessful"
-msgstr ""
+msgstr "Фиксация завершена без ошибок"
 
-#: components/WorkBench/RecordSet.tsx:78
 #. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:78
+#, fuzzy
 msgid "batchEditRecordSetName"
-msgstr ""
+msgstr "BE-коммит \"{dataSet:string}\""
 
+#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
-#. Used in: Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "deferForMatch"
-msgstr ""
+msgstr "Использовать только видимые поля для сопоставления"
 
-#: components/WbPlanView/MapperComponents.tsx:519
 #. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:519
+#, fuzzy
 msgid "deferForMatchDescription"
 msgstr ""
+"Если true, невидимые поля базы данных не будут использоваться для "
+"сопоставления. Значение по умолчанию {default:boolean}"
 
+#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:524
-#. Used in: Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "deferForNullCheck"
-msgstr ""
+msgstr "Использовать только видимые поля для проверки пустых записей"
 
-#: components/WbPlanView/MapperComponents.tsx:525
 #. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:525
+#, fuzzy
 msgid "deferForNullCheckDescription"
 msgstr ""
+"Если true, невидимые поля базы данных не будут использоваться для "
+"определения того, пуста ли запись или нет. Значение по умолчанию — {default: "
+"boolean}"
 
-#: components/BatchEdit/index.tsx:181
 #. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:181
+#, fuzzy
 msgid "batchEditDisabled"
 msgstr ""
+"Пакетное редактирование отключено для системных таблиц и таблиц иерархии "
+"области действия."
 
-#: components/WorkBench/DataSetMeta.tsx:382
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:382
+#, fuzzy
 msgid "cannotEditAfterRollback"
 msgstr ""
+"(Пакетное редактирование наборов данных невозможно после отката — только "
+"чтение)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2057
-#. Used in: Components > Preferences > User Definitions
+#, fuzzy
 msgid "enableRelationships"
-msgstr ""
+msgstr "Включить отношения"
 
-#: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2062
+#, fuzzy
 msgid "enableRelationshipsDescription"
 msgstr ""
+"Позволяет пакетное редактирование связей базовой таблицы. Откат отключен, "
+"если связи включены"
