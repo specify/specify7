@@ -114,15 +114,15 @@ export const mainText = createDictionary({
     "en-us":
       "To avoid corrupting data records, you need to start again from a safe spot--the Home page.",
     "ru-ru":
-      "Чтобы избежать повреждения записей данных, нам нужно начать заново с безопасного места — домашней страницы.",
+      "Чтобы избежать повреждения записей данных, вам необходимо начать заново с безопасного места — с домашней страницы.",
     "es-es":
-      "Para evitar corromper los registros de datos, tenemos que empezar de nuevo desde un punto seguro--la página de inicio.",
+      "Para evitar corromper los registros de datos, debe comenzar de nuevo desde un lugar seguro: la página de inicio.",
     "fr-fr":
-      "Pour éviter de corrompre les enregistrements de données, nous devons recommencer à partir d'un endroit sûr : la page d'accueil.",
+      "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr : la page d'accueil.",
     "uk-ua":
-      "Щоб уникнути пошкодження записів даних, нам потрібно почати знову з безпечного місця – домашньої сторінки.",
+      "Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.",
     "de-ch":
-      "Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer sicheren Position neu beginnen - der Startseite.",
+      "Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer sicheren Stelle neu beginnen – der Startseite.",
     "pt-br":
       "Para evitar corromper registros de dados, você precisa começar novamente em um local seguro: a página inicial.",
   },

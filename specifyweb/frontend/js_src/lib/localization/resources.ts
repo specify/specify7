@@ -309,7 +309,7 @@ export const resourcesText = createDictionary({
   otherXmlResource: {
     "en-us": "Other XML Resource",
     "ru-ru": "Выберите тип ресурса",
-    "es-es": "Otro recurso XML",
+    "es-es": "Otros recursos XML",
     "fr-fr": "Autre ressource XML",
     "uk-ua": "Виберіть тип ресурсу",
     "de-ch": "Andere XML-Ressource",
@@ -337,7 +337,7 @@ export const resourcesText = createDictionary({
     "en-us": "Other Resource",
     "ru-ru": "Другой ресурс",
     "es-es": "Otros recursos",
-    "fr-fr": "Autre ressource",
+    "fr-fr": "Autres ressources",
     "uk-ua": "Інший ресурс",
     "de-ch": "Andere Ressource",
     "pt-br": "Outros recursos",
@@ -835,18 +835,19 @@ export const resourcesText = createDictionary({
   },
   cogAddedToItself: {
     "en-us": "A COG cannot be added to itself.",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Ein Schwerpunkt kann nicht zu sich selbst addiert werden.",
+    "es-es": "No se puede agregar un COG a sí mismo.",
+    "fr-fr": "Un COG ne peut pas être ajouté à lui-même.",
     "pt-br": "Um COG não pode ser adicionado a si mesmo.",
     "ru-ru": "COG не может быть добавлен сам к себе.",
     "uk-ua": "ЦОГ не можна додати до самого себе.",
   },
   coHasParent: {
     "en-us": "A CO with a parent cannot be added to a COG.",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch":
+      "Eine CO mit einem übergeordneten Element kann nicht zu einer COG hinzugefügt werden.",
+    "es-es": "No es posible agregar un CO con un padre a un COG.",
+    "fr-fr": "Un CO avec un parent ne peut pas être ajouté à un COG.",
     "pt-br": "Um CO com um pai não pode ser adicionado a um COG.",
     "ru-ru": "CO с родительским элементом не может быть добавлен в COG.",
     "uk-ua": "CO з батьківським елементом не можна додати до COG.",
@@ -854,9 +855,12 @@ export const resourcesText = createDictionary({
   primaryCogChildRequired: {
     "en-us":
       "A Consolidated Collection Object Group must have a primary Collection Object child",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch":
+      "Eine konsolidierte Sammlungsobjektgruppe muss ein primäres Sammlungsobjekt-Unterobjekt haben",
+    "es-es":
+      "Un grupo de objetos de colección consolidada debe tener un objeto de colección secundario principal",
+    "fr-fr":
+      "Un groupe d'objets de collection consolidé doit avoir un objet de collection enfant principal",
     "pt-br":
       "Um Grupo de Objetos de Coleção Consolidada deve ter um filho de Objeto de Coleção primário",
     "ru-ru":
@@ -866,54 +870,55 @@ export const resourcesText = createDictionary({
   },
   deletePrimaryRecord: {
     "en-us": "Primary record CO cannot be deleted.",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Der Primärdatensatz CO kann nicht gelöscht werden.",
+    "es-es": "El registro primario CO no se puede eliminar.",
+    "fr-fr": "L'enregistrement principal CO ne peut pas être supprimé.",
     "pt-br": "O registro primário CO não pode ser excluído.",
     "ru-ru": "Первичная запись CO не может быть удалена.",
     "uk-ua": "Основний запис CO неможливо видалити.",
   },
   deleteLoanedPrep: {
     "en-us": "A loaned preparation cannot be deleted",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Eine ausgeliehene Zubereitung kann nicht gelöscht werden",
+    "es-es": "No se puede eliminar una preparación prestada",
+    "fr-fr": "Une préparation prêtée ne peut pas être supprimée",
     "pt-br": "Uma preparação emprestada não pode ser apagada",
     "ru-ru": "Заимствованный препарат не может быть удален",
     "uk-ua": "Позичений препарат не можна видалити",
   },
   deleteGiftedPrep: {
     "en-us": "A gifted preparation cannot be deleted",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Eine geschenkte Vorbereitung kann nicht gelöscht werden",
+    "es-es": "Una preparación dotada no se puede eliminar",
+    "fr-fr": "Une préparation surdouée ne peut pas être supprimée",
     "pt-br": "Uma preparação talentosa não pode ser apagada",
     "ru-ru": "Подаренный препарат не может быть удален",
     "uk-ua": "Подарований препарат не можна видалити",
   },
   deleteDisposedPrep: {
     "en-us": "A disposed preparation cannot be deleted",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Eine verworfene Zubereitung kann nicht gelöscht werden",
+    "es-es": "No se puede eliminar una preparación desechada",
+    "fr-fr": "Une préparation éliminée ne peut pas être supprimée",
     "pt-br": "Uma preparação descartada não pode ser excluída",
     "ru-ru": "Утилизированный препарат не может быть удален",
     "uk-ua": "Викинутий препарат не можна видалити",
   },
   deleteExchangeOutPrep: {
     "en-us": "A exchanged out preparation cannot be deleted",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Ein ausgetauschtes Präparat kann nicht gelöscht werden",
+    "es-es": "No se puede eliminar una preparación intercambiada",
+    "fr-fr": "Une préparation échangée ne peut pas être supprimée",
     "pt-br": "Uma preparação trocada não pode ser excluída",
     "ru-ru": "Замененный препарат не может быть удален",
     "uk-ua": "Обмінений препарат не можна видалити",
   },
   deleteExchangeInPrep: {
     "en-us": "A exchanged in preparation cannot be deleted",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch":
+      "Ein in Vorbereitung befindlicher Austausch kann nicht gelöscht werden",
+    "es-es": "No se puede eliminar un intercambio en preparación",
+    "fr-fr": "Un échange en préparation ne peut pas être supprimé",
     "pt-br": "Uma troca em preparação não pode ser excluída",
     "ru-ru": "Обмен в стадии подготовки не может быть удален",
     "uk-ua": "Обмін, що готується, не можна видалити",
@@ -921,9 +926,12 @@ export const resourcesText = createDictionary({
   invalidDeterminationTaxon: {
     "en-us":
       "Determination does not belong to the taxon tree associated with the Collection Object Type",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch":
+      "Die Bestimmung gehört nicht zum Taxonbaum, der mit dem Sammlungsobjekttyp verknüpft ist",
+    "es-es":
+      "La determinación no pertenece al árbol taxonómico asociado con el tipo de objeto de colección",
+    "fr-fr":
+      "La détermination n'appartient pas à l'arbre taxonomique associé au type d'objet de collection",
     "pt-br":
       "A determinação não pertence à árvore de táxons associada ao Tipo de Objeto de Coleção",
     "ru-ru":
@@ -933,9 +941,9 @@ export const resourcesText = createDictionary({
   },
   preparationUsedInLoan: {
     "en-us": "The preparation is used in a loan.",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
+    "de-ch": "Das Präparat dient der Kreditvergabe.",
+    "es-es": "La preparación se utiliza en un préstamo.",
+    "fr-fr": "La préparation est utilisée dans un prêt.",
     "pt-br": "A preparação é usada em um empréstimo.",
     "ru-ru": "Препарат используется при кредитовании.",
     "uk-ua": "Препарат використовується у позиці.",
