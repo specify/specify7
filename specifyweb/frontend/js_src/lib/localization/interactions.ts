@@ -250,7 +250,7 @@ export const interactionsText = createDictionary({
     "ru-ru": "{tableName:string}: {resource:string}",
     "es-es": "{tableName:string}: {resource:string}",
     "fr-fr": "{tableName:string}: {resource:string}",
-    "uk-ua": "{tableName:string}: {resource:string}",
+    "uk-ua": "{tableName:string}': {resource:string}",
     "de-ch": "{tableName:string}: {resource:string}",
     "pt-br": "{tableName:string}: {resource:string}",
   },
@@ -405,6 +405,6 @@ export const interactionsText = createDictionary({
     "fr-fr": "Pas disponible",
     "pt-br": "Não disponível",
     "ru-ru": "Нет в наличии",
-    "uk-ua": "Недоступно",
+    "uk-ua": "Не доступно",
   },
 } as const);
