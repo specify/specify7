@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-05-23 14:35+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-05-25 21:01+0000\n"
+"Last-Translator: Maksim_220 Кабанов <law820314@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/common/"
 "ru/>\n"
 "Language: ru\n"
@@ -14,7 +14,6 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:26
-#, fuzzy
 msgid "specifySeven"
 msgstr "Укажите 7"
 
@@ -22,7 +21,6 @@ msgstr "Укажите 7"
 #: components/Preferences/UserDefinitions.tsx:1830
 #: components/WorkBench/DataSetMeta.tsx:286
 #: utils/parser/definitions.ts:120
-#, fuzzy
 msgid "no"
 msgstr "Нет"
 
@@ -98,20 +96,17 @@ msgstr "Нет"
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:155
 #: components/WorkBench/Disambiguation.tsx:40
-#, fuzzy
 msgid "cancel"
 msgstr "Отмена"
 
 #. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
-#, fuzzy
 msgid "back"
 msgstr "Назад"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
-#, fuzzy
 msgid "skip"
 msgstr "Пропускать"
 
