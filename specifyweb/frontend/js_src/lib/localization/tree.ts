@@ -703,4 +703,10 @@ export const treeText = createDictionary({
     "ru-ru": "Метеориты",
     "uk-ua": "Метеорити",
   },
+  populatedTrees: {
+    'en-us': 'Populated trees',
+  },
+  emptyTrees: {
+    'en-us': 'Empty Trees',
+  },
 } as const);
