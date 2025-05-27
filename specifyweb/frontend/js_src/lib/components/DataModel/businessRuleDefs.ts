@@ -328,7 +328,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         if (CO !== undefined) {
           coParent = CO.get('componentParent');
         }
-        return coParent === null
+        return coParent === null || coParent === undefined
           ? {
               isValid: true,
               saveBlockerKey: CO_HAS_PARENT,
