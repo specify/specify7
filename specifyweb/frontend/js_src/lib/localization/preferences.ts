@@ -19,13 +19,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Preferências',
   },
   customization: {
-    "en-us": "Customization",
-    "ru-ru": "Настройка",
-    "es-es": "Personalización",
-    "fr-fr": "Personnalisation",
-    "uk-ua": "Спеціальнізація",
-    "de-ch": "Anpassung",
-    "pt-br": "Personalização",
+    'en-us': 'Customization',
+    'ru-ru': 'Настройка',
+    'es-es': 'Personalización',
+    'fr-fr': 'Personnalisation',
+    'uk-ua': 'Спеціальнізація',
+    'de-ch': 'Anpassung',
+    'pt-br': 'Personalização',
   },
   userPreferences: {
     'en-us': 'User Preferences',
@@ -640,13 +640,13 @@ export const preferencesText = createDictionary({
       'Pode usar _ para corresponder a qualquer caractere único ou % para corresponder a qualquer número de caracteres.',
   },
   highlightMatch: {
-    "en-us": "Highlight matched substring",
-    "ru-ru": "Выделить совпавшую подстроку",
-    "es-es": "Resaltar la subcadena coincidente",
-    "fr-fr": "Mettre en surbrillance la sous-chaîne correspondante",
-    "uk-ua": "Виділіть збіг підрядка",
-    "de-ch": "Markieren Sie übereinstimmende Teilzeichenfolgen",
-    "pt-br": "Destacar substring correspondente",
+    'en-us': 'Highlight matched substring',
+    'ru-ru': 'Выделить совпавшую подстроку',
+    'es-es': 'Resaltar la subcadena coincidente',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
+    'uk-ua': 'Виділіть збіг підрядка',
+    'de-ch': 'Markieren Sie übereinstimmende Teilzeichenfolgen',
+    'pt-br': 'Destacar substring correspondente',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions.',
@@ -958,15 +958,15 @@ export const preferencesText = createDictionary({
     'pt-br': 'A tecla Enter inicia a edição da célula',
   },
   tabMoveDirection: {
-    "en-us": "Direction of movement when <key>Tab</key> key is pressed",
-    "ru-ru": "Направление движения при нажатии клавиши <key>Tab</key>",
-    "es-es":
-      "Dirección de movimiento cuando se presiona la tecla <key>Tab</key>",
-    "fr-fr":
-      "Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée",
-    "uk-ua": "Напрямок руху при натисканні клавіші <key>Tab</key>",
-    "de-ch": "Bewegungsrichtung beim Drücken der Taste <key>Tab</key>",
-    "pt-br": "Direção do movimento quando a tecla <key>Tab</key> é pressionada",
+    'en-us': 'Direction of movement when <key>Tab</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Tab</key>',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
+    'fr-fr':
+      'Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée',
+    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>',
+    'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Tab</key>',
+    'pt-br': 'Direção do movimento quando a tecla <key>Tab</key> é pressionada',
   },
   tabMoveDirectionDescription: {
     'en-us':
@@ -1003,31 +1003,31 @@ export const preferencesText = createDictionary({
     'pt-br': 'Linha',
   },
   enterMoveDirection: {
-    "en-us": "Direction of movement when <key>Enter</key> key is pressed",
-    "ru-ru": "Направление движения при нажатии клавиши <key>Enter</key>",
-    "es-es":
-      "Dirección de movimiento cuando se presiona la tecla <key>Enter</key>",
-    "uk-ua": "Напрямок руху, коли натиснуто клавішу <key>Enter</key>",
-    "de-ch": "Bewegungsrichtung beim Drücken der Taste <key>Enter</key>",
-    "fr-fr":
-      "Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée",
-    "pt-br":
-      "Direção do movimento quando a tecla <key>Enter</key> é pressionada",
+    'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
+    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
+    'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Enter</key>',
+    'fr-fr':
+      'Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée',
+    'pt-br':
+      'Direção do movimento quando a tecla <key>Enter</key> é pressionada',
   },
   enterMoveDirectionDescription: {
-    "en-us":
-      "You can move in the opposite direction by pressing <key>Shift</key>+<key>Enter</key>.",
-    "ru-ru":
-      "Вы можете двигаться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.",
-    "es-es":
-      "Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Enter</key>.",
-    "fr-fr": "Synonyme couleur.",
-    "uk-ua":
-      "Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.",
-    "de-ch":
-      "Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie <key>Umschalt</key>+<key>Eingabe</key> drücken.",
-    "pt-br":
-      "Você pode mover na direção oposta pressionando <key>Shift</key>+<key>Enter</key>.",
+    'en-us':
+      'You can move in the opposite direction by pressing <key>Shift</key>+<key>Enter</key>.',
+    'ru-ru':
+      'Вы можете двигаться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.',
+    'es-es':
+      'Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Enter</key>.',
+    'fr-fr': 'Synonyme couleur.',
+    'uk-ua':
+      'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.',
+    'de-ch':
+      'Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie <key>Umschalt</key>+<key>Eingabe</key> drücken.',
+    'pt-br':
+      'Você pode mover na direção oposta pressionando <key>Shift</key>+<key>Enter</key>.',
   },
   filterPickLists: {
     'en-us': 'Filter pick list items',
@@ -1089,22 +1089,22 @@ export const preferencesText = createDictionary({
     'pt-br': 'Não diferencia maiúsculas de minúsculas',
   },
   showNoReadTables: {
-    "en-us": 'Show tables without "Read" access',
-    "ru-ru": "Показать таблицы без доступа «Чтение»",
-    "es-es": 'Mostrar tablas sin acceso de "Lectura"',
-    "fr-fr": 'Afficher les tableaux sans accès "Lecture"',
-    "uk-ua": "Показувати таблиці без доступу «Читання»",
-    "de-ch": "Tabellen ohne Lesezugriff anzeigen",
-    "pt-br": 'Mostrar tabelas sem acesso de "Leitura"',
+    'en-us': 'Show tables without "Read" access',
+    'ru-ru': 'Показать таблицы без доступа «Чтение»',
+    'es-es': 'Mostrar tablas sin acceso de "Lectura"',
+    'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
+    'uk-ua': 'Показувати таблиці без доступу «Читання»',
+    'de-ch': 'Tabellen ohne Lesezugriff anzeigen',
+    'pt-br': 'Mostrar tabelas sem acesso de "Leitura"',
   },
   showNoAccessTables: {
-    "en-us": 'Show tables without "Create" access',
-    "ru-ru": "Показать таблицы без права «Создать»",
-    "es-es": 'Mostrar tablas sin acceso "Crear"',
-    "fr-fr": 'Afficher les tableaux sans accès "Créer"',
-    "uk-ua": "Показувати таблиці без доступу «Створити»",
-    "de-ch": "Tabellen ohne „Erstellen“-Zugriff anzeigen",
-    "pt-br": 'Mostrar tabelas sem acesso "Criar"',
+    'en-us': 'Show tables without "Create" access',
+    'ru-ru': 'Показать таблицы без права «Создать»',
+    'es-es': 'Mostrar tablas sin acceso "Crear"',
+    'fr-fr': 'Afficher les tableaux sans accès "Créer"',
+    'uk-ua': 'Показувати таблиці без доступу «Створити»',
+    'de-ch': 'Tabellen ohne „Erstellen“-Zugriff anzeigen',
+    'pt-br': 'Mostrar tabelas sem acesso "Criar"',
   },
   textAreaAutoGrow: {
     'en-us': 'Text boxes grow automatically',
@@ -1151,18 +1151,18 @@ export const preferencesText = createDictionary({
       'Mostrar filtros de consulta ao executar um relatório de um formulário',
   },
   autoGrowAutoComplete: {
-    "en-us": "Allow autocomplete to grow as wide as need",
-    "ru-ru":
-      "Разрешить автозаполнению расширяться настолько, насколько это необходимо",
-    "es-es": "Permitir que el autocompletado crezca tanto como sea necesario",
-    "fr-fr":
-      "Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée",
-    "uk-ua":
-      "Дозволити автозаповнення розширюватися настільки, наскільки потрібно",
-    "de-ch":
-      "Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen",
-    "pt-br":
-      "Permitir que o preenchimento automático cresça o quanto for necessário",
+    'en-us': 'Allow autocomplete to grow as wide as need',
+    'ru-ru':
+      'Разрешить автозаполнению расширяться настолько, насколько это необходимо',
+    'es-es': 'Permitir que el autocompletado crezca tanto como sea necesario',
+    'fr-fr':
+      'Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée',
+    'uk-ua':
+      'Дозволити автозаповнення розширюватися настільки, наскільки потрібно',
+    'de-ch':
+      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
+    'pt-br':
+      'Permitir que o preenchimento automático cresça o quanto for necessário',
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -1257,13 +1257,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Largura flexível da coluna da grade de subvisualização',
   },
   closeOnEsc: {
-    "en-us": "Close on <key>ESC</key> key press",
-    "ru-ru": "Закрыть при нажатии клавиши <key>ESC</key>",
-    "es-es": "Cerrar al presionar la tecla <key>ESC</key>",
-    "fr-fr": "Icône et nom de la table",
-    "uk-ua": "Закриття натисканням клавіші <key>ESC</key>",
-    "de-ch": "Schließen durch Drücken der Taste <key>ESC</key>",
-    "pt-br": "Fechar ao pressionar a tecla <key>ESC</key>",
+    'en-us': 'Close on <key>ESC</key> key press',
+    'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
+    'es-es': 'Cerrar al presionar la tecla <key>ESC</key>',
+    'fr-fr': 'Icône et nom de la table',
+    'uk-ua': 'Закриття натисканням клавіші <key>ESC</key>',
+    'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>',
+    'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
   },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
@@ -1381,19 +1381,19 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Clique em</key> para suprimir a nova guia',
   },
   altClickToSupressNewTabDescription: {
-    "en-us":
-      "<key>{altKeyName:string}</key>+<key>Click</key> a link that usually opens in a new tab to open it in the current tab.",
-    "ru-ru":
-      "<key>{altKeyName:string}</key>+<key>Нажмите</key> на ссылку, которая обычно открывается в новой вкладке, чтобы открыть ее в текущей вкладке.",
-    "es-es":
-      "<key>{altKeyName:string}</key>+<key>Haga clic</key> en un enlace que normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual.",
-    "fr-fr": "Utiliser le sélecteur de mois accessible.",
-    "uk-ua":
-      "<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай відкривається в новій вкладці, щоб відкрити його в поточній вкладці.",
-    "de-ch":
-      "<key>{altKeyName:string}</key>+<key>Klicken Sie auf</key> einen Link, der normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen Tab zu öffnen.",
-    "pt-br":
-      "<key>{altKeyName:string}</key>+<key>Clique</key> em um link que geralmente abre em uma nova aba para abri-lo na aba atual.",
+    'en-us':
+      '<key>{altKeyName:string}</key>+<key>Click</key> a link that usually opens in a new tab to open it in the current tab.',
+    'ru-ru':
+      '<key>{altKeyName:string}</key>+<key>Нажмите</key> на ссылку, которая обычно открывается в новой вкладке, чтобы открыть ее в текущей вкладке.',
+    'es-es':
+      '<key>{altKeyName:string}</key>+<key>Haga clic</key> en un enlace que normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual.',
+    'fr-fr': 'Utiliser le sélecteur de mois accessible.',
+    'uk-ua':
+      '<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай відкривається в новій вкладці, щоб відкрити його в поточній вкладці.',
+    'de-ch':
+      '<key>{altKeyName:string}</key>+<key>Klicken Sie auf</key> einen Link, der normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen Tab zu öffnen.',
+    'pt-br':
+      '<key>{altKeyName:string}</key>+<key>Clique</key> em um link que geralmente abre em uma nova aba para abri-lo na aba atual.',
   },
   makeFormDialogsModal: {
     'en-us': 'Make form dialogs gray out the background',
@@ -1696,14 +1696,14 @@ export const preferencesText = createDictionary({
       'Preencha automaticamente o registro mesclado com valores de duplicatas ao abrir a caixa de diálogo de mesclagem.',
   },
   autoCreateVariants: {
-    "en-us": "Automatically create {agentVariantTable:string} records",
-    "ru-ru": "Автоматически создавать записи {agentVariantTable:string}",
-    "de-ch": "{agentVariantTable:string}-Datensätze automatisch erstellen",
-    "es-es": "Crear automáticamente registros {agentVariantTable:string}",
-    "fr-fr":
-      "Créer automatiquement des enregistrements {agentVariantTable:string}",
-    "uk-ua": "Автоматично створювати записи {agentVariantTable:string}",
-    "pt-br": "Criar automaticamente registros {agentVariantTable:string}",
+    'en-us': 'Automatically create {agentVariantTable:string} records',
+    'ru-ru': 'Автоматически создавать записи {agentVariantTable:string}',
+    'de-ch': '{agentVariantTable:string}-Datensätze automatisch erstellen',
+    'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
+    'fr-fr':
+      'Créer automatiquement des enregistrements {agentVariantTable:string}',
+    'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}',
+    'pt-br': 'Criar automaticamente registros {agentVariantTable:string}',
   },
   autoCreateVariantsDescription: {
     'en-us':

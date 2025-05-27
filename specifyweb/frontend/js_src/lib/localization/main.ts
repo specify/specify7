@@ -160,13 +160,13 @@ export const mainText = createDictionary({
       'Usuários de <memberLink>instituições membros</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.',
   },
   errorMessage: {
-    "en-us": "Error Message",
-    "ru-ru": "Описание ошибки",
-    "es-es": "Mensaje de error",
-    "fr-fr": "Message d'erreur",
-    "uk-ua": "Повідомлення про помилку",
-    "de-ch": "Fehlermeldung",
-    "pt-br": "Mensagem de erro",
+    'en-us': 'Error Message',
+    'ru-ru': 'Описание ошибки',
+    'es-es': 'Mensaje de error',
+    'fr-fr': "Message d'erreur",
+    'uk-ua': 'Повідомлення про помилку',
+    'de-ch': 'Fehlermeldung',
+    'pt-br': 'Mensagem de erro',
   },
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
@@ -178,17 +178,17 @@ export const mainText = createDictionary({
     'pt-br': 'Tem certeza de que deseja sair desta página?',
   },
   leavePageConfirmationDescription: {
-    "en-us": "Unsaved changes will be lost if you leave this page.",
-    "ru-ru":
-      "Несохраненные изменения будут потеряны, если вы покинете эту страницу.",
-    "es-es": "Los cambios no guardados se perderán si abandona esta página.",
-    "fr-fr":
-      "Les modifications non enregistrées seront perdues si vous quittez cette page.",
-    "uk-ua": "Незбережені зміни будуть втрачені, якщо ви залишите цю сторінку.",
-    "de-ch":
-      "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite verlassen.",
-    "pt-br":
-      "As alterações não salvas serão perdidas se você sair desta página.",
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
+    'ru-ru':
+      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+    'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
+    'fr-fr':
+      'Les modifications non enregistrées seront perdues si vous quittez cette page.',
+    'uk-ua': 'Незбережені зміни будуть втрачені, якщо ви залишите цю сторінку.',
+    'de-ch':
+      'Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite verlassen.',
+    'pt-br':
+      'As alterações não salvas serão perdidas se você sair desta página.',
   },
   leave: {
     'en-us': 'Leave',
