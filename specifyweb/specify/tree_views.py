@@ -1,10 +1,14 @@
+import csv
 from functools import wraps
+import json
+from os import read
 from django import http
-from typing import Literal, Tuple
+from typing import Iterator, Literal, Tuple, TypedDict, Any, Dict, List
 from django.db import connection, transaction
 from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
+import requests
 from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 
@@ -15,7 +19,7 @@ from specifyweb.permissions.permissions import PermissionTarget, PermissionTarge
 from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.specify.tree_utils import add_default_taxon, get_search_filters, initialize_defualt_taxon_tree
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
@@ -535,6 +539,47 @@ def all_tree_information(request):
             })
 
     return HttpResponse(toJson(result), content_type='application/json')
+
+def create_default_trees_view(request):
+    # Default tree files copied
+    # from https://files.specifysoftware.org/taxonfiles/
+    # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
+    tree_csv_files = {
+        'fish': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
+        'herpetology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_herps.csv',
+        'bird': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
+        'mammal': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
+        'insect': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv',
+        'botany': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_poales.csv',
+        'invertebrate': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_inverts.csv'
+    }
+
+    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+        with requests.get(url, stream=True) as resp:
+            resp.raise_for_status()
+            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+            reader = csv.DictReader(lines)
+
+            rank_names_lst = reader.fieldnames[:rank_count]
+            initialize_defualt_taxon_tree('Taxon', discipline_name, rank_names_lst)
+            
+            for row in reader:
+                yield row
+
+    data = json.loads(request.body)
+    url = tree_csv_files.get(data.get('discipline'))
+    discipline_name = data.get('discipline', '').capitalize()
+    rank_count = int(tree_rank_count('Taxon', 8))
+    if not url:
+        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
+
+    try:
+        for row in stream_csv_from_url(url, discipline_name, rank_count):
+            add_default_taxon(row, discipline_name)
+    except requests.HTTPError:
+        return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
+
+    return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
