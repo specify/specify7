@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-01-24 04:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/header/"
-"ru/>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/specify-7/header/ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,15 +17,15 @@ msgstr ""
 msgid "skipToContent"
 msgstr "Перейти к содержанию"
 
-#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
+#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #, fuzzy
 msgid "main"
 msgstr "Основной"
 
-#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
 msgstr "Текущая {collectionTable:string}"
 
@@ -48,35 +48,35 @@ msgstr "Создать архив DwC"
 msgid "updateExportFeed"
 msgstr "Обновить RSS-канал"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
+#. Used in: Components > Export Feed > Force Update
 msgid "updateExportFeedConfirmation"
 msgstr "Обновить фид экспорта?"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
+#. Used in: Components > Export Feed > Force Update
 msgid "updateExportFeedConfirmationDescription"
 msgstr "Обновить все элементы RSS-канала экспорта сейчас?"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
+#. Used in: Components > Export Feed > Force Update
 msgid "feedExportStarted"
 msgstr "Начато обновление фида экспорта"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
+#. Used in: Components > Export Feed > Force Update
 msgid "feedExportStartedDescription"
 msgstr ""
 "Обновление запущено. Вы будете получать уведомление о каждом обновлении "
 "элемента фида."
 
-#. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
+#. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStarted"
 msgstr "Начат экспорт DwCA"
 
-#. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
+#. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr "Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен."
 
@@ -114,61 +114,61 @@ msgstr "Создать новый отчет"
 msgid "repairTree"
 msgstr "Ремонтное дерево"
 
-#. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
+#. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
 msgstr "Ремонт дерева завершен."
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "choose"
 msgstr "Выбирать"
 
-#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
 #: components/ExportFeed/Editor.tsx:323
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseDwca"
 msgstr "Выберите ДвКА"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "dwcaResource"
 msgstr "Ресурс DwCA"
 
-#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:52
 #: components/ExportFeed/Editor.tsx:324
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "metadataResource"
 msgstr "Ресурс метаданных"
 
-#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 #: components/Header/ExpressSearchTask.tsx:53
 #: components/Header/ExpressSearchTask.tsx:124
 #: components/Router/OverlayRoutes.tsx:51
 #: components/Router/Routes.tsx:33
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Экспресс-поиск"
 
-#. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
+#. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Основной поиск"
 
-#. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:140
+#. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Вторичный поиск"
 
-#. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:123
+#. Used in: Components > Preferences > Renderers
 msgid "menuItems"
 msgstr "Элементы меню"
 
@@ -180,37 +180,37 @@ msgstr "Элементы меню"
 msgid "userTools"
 msgstr "Инструменты"
 
-#. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:78
+#. Used in: Components > Header > User Tools
 msgid "userToolsForUser"
 msgstr "Инструменты ({userName:string})"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:80
 #: components/Toolbar/Language.tsx:155
+#. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Помогите локализовать Укажите 7"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
+#. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
 "Мы будем очень признательны за вашу поддержку в локализации "
 "пользовательского интерфейса Specify 7. Если вы заинтересованы, отправьте "
 "электронное письмо по адресу <link>см. Инструкции</link>."
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
+#. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(неполный)"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:115
+#. Used in: Components > Toolbar > Language
 msgid "incompleteLocalization"
 msgstr "Неполная локализация"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
+#. Used in: Components > Toolbar > Language
 msgid "incompleteLocalizationDescription"
 msgstr ""
 "Перевод на этот язык еще не завершен. У некоторых элементов может "
@@ -253,16 +253,16 @@ msgstr "Ресурсы для разработчиков"
 msgid "forum"
 msgstr "форум сообщества"
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:152
 #: components/Header/userToolDefinitions.ts:143
 #: components/Router/Routes.tsx:435
 #: components/RouterCommands/CacheBuster.tsx:39
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
 msgstr "Очистить кеш браузера"
 
-#. Used in: Components > Router Commands > Cache Buster
 #: components/RouterCommands/CacheBuster.tsx:42
+#. Used in: Components > Router Commands > Cache Buster
 msgid "cacheCleared"
 msgstr "Кэш очищен. Пожалуйста, перезагрузите страницу."
 
@@ -271,8 +271,8 @@ msgstr "Кэш очищен. Пожалуйста, перезагрузите с
 msgid "technicalDocumentation"
 msgstr "Технические документы"
 
-#. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:33
+#. Used in: Components > Attachments > Chrono Chart
 #, fuzzy
 msgid "chronostratigraphicChart"
 msgstr "Хроностратиграфическая карта"

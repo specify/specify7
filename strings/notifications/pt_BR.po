@@ -3,34 +3,34 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-01-19 11:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"specify-7/notifications/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) "
+"<https://hosted.weblate.org/projects/specify-7/notifications/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.10-dev\n"
 
-#. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:96
+#. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notifications"
 msgstr "Notificações"
 
-#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:42
+#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notificationsCount"
 msgstr "Notificações: {count:number|formatted}"
 
-#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:45
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notificationsLoading"
 msgstr "Notificações: …"
 
-#. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:125
+#. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "mostRecentNotificationsTop"
 msgstr "(Ordenados do mais recente para o mais antigo.)"
@@ -54,8 +54,8 @@ msgstr "Erro"
 msgid "download"
 msgstr "Download"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:40
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "feedItemUpdated"
 msgstr "O feed de exportação RSS foi atualizado."

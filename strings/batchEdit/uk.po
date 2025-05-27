@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-05-23 21:03+0000\n"
 "Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"batchEdit/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/batchEdit/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,208 +12,207 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/BatchEdit/index.tsx:187
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2036
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Пакетне редагування"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Налаштування пакетного редагування"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2042
+#. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Кількість записів, вибраних із запиту"
 
-#. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
+#. Used in: Components > Batch Edit > Query Error
 msgid "removeField"
 msgstr ""
 "Поле не підтримується для пакетного редагування. Видаліть поле або "
 "приховайте його."
 
-#. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
-msgid "addTreeRank"
-msgstr ""
-"Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування"
-
 #. Used in: Components > Batch Edit > Missing Ranks
+msgid "addTreeRank"
+msgstr "Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування"
+
 #: components/BatchEdit/MissingRanks.tsx:89
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "pickTreesToFilter"
 msgstr ""
 "Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для "
 "пакетного редагування"
 
-#. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:160
+#. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}'"
 
-#. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
+#. Used in: Components > Batch Edit > Query Error
 msgid "errorInQuery"
 msgstr "У запиті виявлено такі помилки"
 
-#. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "missingRanksInQuery"
 msgstr "Запит потребує додаткових рангів для пакетного редагування"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr ""
 "Використовуйте конструктор запитів для створення нового набору даних для "
 "пакетного редагування"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2065
+#. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Показати кнопку відкату"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2070
+#. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
 "Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр "
 "приховає кнопку"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr "Здійснити"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 "Запис набору даних призведе до оновлення, додавання та видалення даних з "
 "електронної таблиці до бази даних Specify."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 "Відкат набору даних призведе до повторного оновлення значень, видалення "
 "створених записів та створення нових записів"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Натисніть кнопку «Результати», щоб побачити кількість записів, на які "
 "вплинула зміна, у кожній таблиці бази даних"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 "Цей відкочений набір даних збережено, проте його не можна редагувати. Будь "
 "ласка, повторіть запит"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr "Здійснення"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr "Стан фіксації набору даних"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr "Почати фіксацію набору даних?"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr "Не вдалося виконати фіксацію через комірки з помилками"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr ""
 "Фіксацію не вдалося виконати через одну або декілька помилок у значенні "
 "клітинки."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr "Зміна фіксації"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr "Опис скасованого підтвердження"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr "Коміт завершено без помилок"
 
-#. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
+#. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
 msgstr "BE коміт \"{dataSet:string}\""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatch"
 msgstr "Використовувати лише видимі поля для збігу"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:519
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatchDescription"
 msgstr ""
 "Якщо значення true, невидимі поля бази даних не використовуватимуться для "
 "зіставлення. Значення за замовчуванням — {default:boolean}"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:524
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheck"
 msgstr "Використовуйте лише видимі поля для перевірки порожніх записів"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheckDescription"
 msgstr ""
 "Якщо значення true, невидимі поля бази даних не використовуватимуться для "
 "визначення того, чи є запис порожнім. Значення за замовчуванням: {default: "
 "boolean}"
 
-#. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:181
+#. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""
 "Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії "
 "області видимості"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:382
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr ""
-"(Набори даних пакетного редагування не можна редагувати після відкату – лише "
-"для читання)"
+"(Набори даних пакетного редагування не можна редагувати після відкату – "
+"лише для читання)"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2057
+#. Used in: Components > Preferences > User Definitions
 msgid "enableRelationships"
 msgstr "Увімкнути зв'язки"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2062
+#. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""
-"Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо "
-"зв'язки ввімкнено"
+"Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, "
+"якщо зв'язки ввімкнено"

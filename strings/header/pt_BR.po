@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-04-24 04:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"specify-7/header/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) "
+"<https://hosted.weblate.org/projects/specify-7/header/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,15 +17,15 @@ msgstr ""
 msgid "skipToContent"
 msgstr "Pular para o conteúdo"
 
-#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
+#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #, fuzzy
 msgid "main"
 msgstr "Principal"
 
-#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #, fuzzy
 msgid "currentCollection"
 msgstr "Atual {collectionTable:string}"
@@ -52,40 +52,40 @@ msgstr "Criar arquivo DwC"
 msgid "updateExportFeed"
 msgstr "Atualizar Feed RSS"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "updateExportFeedConfirmation"
 msgstr "Atualizar feed de exportação?"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
 msgstr "Atualizar todos os itens do feed de exportação RSS agora?"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "feedExportStarted"
 msgstr "Atualização do feed de exportação iniciada"
 
-#. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
 "Atualização iniciada. Você receberá uma notificação para cada item de feed "
 "atualizado."
 
-#. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
+#. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStarted"
 msgstr "Exportação DwCA iniciada"
 
-#. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
+#. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStartedDescription"
 msgstr ""
@@ -131,67 +131,67 @@ msgstr "Criar novo relatório"
 msgid "repairTree"
 msgstr "Árvore de reparo"
 
-#. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
+#. Used in: Components > Toolbar > Tree Repair
 #, fuzzy
 msgid "treeRepairComplete"
 msgstr "O reparo da árvore foi concluído."
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "choose"
 msgstr "Escolher"
 
-#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
 #: components/ExportFeed/Editor.tsx:323
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #, fuzzy
 msgid "chooseDwca"
 msgstr "Escolha DwCA"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "dwcaResource"
 msgstr "Recurso DwCA"
 
-#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:52
 #: components/ExportFeed/Editor.tsx:324
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #, fuzzy
 msgid "chooseMetadataResource"
 msgstr "Escolha o recurso de metadados"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "metadataResource"
 msgstr "Recurso de metadados"
 
-#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 #: components/Header/ExpressSearchTask.tsx:53
 #: components/Header/ExpressSearchTask.tsx:124
 #: components/Router/OverlayRoutes.tsx:51
 #: components/Router/Routes.tsx:33
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 #, fuzzy
 msgid "simpleSearch"
 msgstr "Pesquisa simples"
 
-#. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
+#. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "primarySearch"
 msgstr "Pesquisa primária"
 
-#. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:140
+#. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "secondarySearch"
 msgstr "Pesquisa secundária"
 
-#. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:123
+#. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "menuItems"
 msgstr "Itens do menu"
@@ -205,41 +205,41 @@ msgstr "Itens do menu"
 msgid "userTools"
 msgstr "Ferramentas do usuário"
 
-#. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:78
+#. Used in: Components > Header > User Tools
 #, fuzzy
 msgid "userToolsForUser"
 msgstr "Ferramentas do usuário ({userName:string})"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:80
 #: components/Toolbar/Language.tsx:155
+#. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "helpLocalizeSpecify"
 msgstr "Ajudar a localizar especificar 7"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
+#. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Ficaremos muito gratos pelo seu apoio na localização da Interface de Usuário "
-"do Specify 7. Caso tenha interesse, consulte as instruções."
+"Ficaremos muito gratos pelo seu apoio na localização da Interface de "
+"Usuário do Specify 7. Caso tenha interesse, consulte as instruções."
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
+#. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "incompleteInline"
 msgstr "(incompleto)"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:115
+#. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "incompleteLocalization"
 msgstr "Localização incompleta"
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
+#. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "incompleteLocalizationDescription"
 msgstr ""
@@ -289,17 +289,17 @@ msgstr "Recursos para desenvolvedores"
 msgid "forum"
 msgstr "Fórum da Comunidade"
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:152
 #: components/Header/userToolDefinitions.ts:143
 #: components/Router/Routes.tsx:435
 #: components/RouterCommands/CacheBuster.tsx:39
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "clearCache"
 msgstr "Limpar cache do navegador"
 
-#. Used in: Components > Router Commands > Cache Buster
 #: components/RouterCommands/CacheBuster.tsx:42
+#. Used in: Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "cacheCleared"
 msgstr "O cache foi limpo. Recarregue a página."
@@ -310,8 +310,8 @@ msgstr "O cache foi limpo. Recarregue a página."
 msgid "technicalDocumentation"
 msgstr "Documentação Técnica"
 
-#. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:33
+#. Used in: Components > Attachments > Chrono Chart
 #, fuzzy
 msgid "chronostratigraphicChart"
 msgstr "Carta Cronoestratigráfica"

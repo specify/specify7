@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-04-28 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/wbPlan/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,21 +41,21 @@ msgstr ""
 msgid "unmappedColumn"
 msgstr "Colonne non mappée"
 
-#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:617
 #: components/WbPlanView/CustomSelectElement.tsx:646
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "notSelected"
 msgstr "AUCUN SÉLECTIONNÉ"
 
-#. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:96
+#. Used in: Components > Molecules > Table Icon
 #, fuzzy
 msgid "unmapped"
 msgstr "Non cartographié"
 
-#. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
+#. Used in: Components > Molecules > Table Icon
 #, fuzzy
 msgid "mapped"
 msgstr "Cartographié"
@@ -125,9 +125,9 @@ msgstr "Ignorer lorsque vide"
 #, fuzzy
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Si l'option « Ignorer si vide » est sélectionnée, les valeurs vides de cette "
-"colonne ne seront pas prises en compte pour la correspondance. Elles sont "
-"ignorées lors de la correspondance, même si une valeur par défaut est "
+"Si l'option « Ignorer si vide » est sélectionnée, les valeurs vides de "
+"cette colonne ne seront pas prises en compte pour la correspondance. Elles "
+"sont ignorées lors de la correspondance, même si une valeur par défaut est "
 "fournie."
 
 #: components/WbPlanView/MapperComponents.tsx:252
@@ -228,8 +228,8 @@ msgstr "Enregistrer inachevé"
 msgid "map"
 msgstr "Carte"
 
-#. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
+#. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "unmap"
 msgstr "Démapper"
@@ -240,21 +240,21 @@ msgstr "Démapper"
 msgid "mapButtonDescription"
 msgstr "Mapper le champ sélectionné à l'en-tête sélectionné"
 
-#. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
 #: components/WbPlanView/CustomSelectElement.tsx:340
+#. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "relationshipWithTable"
 msgstr "Relation avec la table {tableName:string}"
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:101
+#. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "selectBaseTable"
 msgstr "Sélectionnez une table de base"
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:94
+#. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "chooseExistingPlan"
 msgstr "Choisir un plan existant"
@@ -294,7 +294,8 @@ msgstr "Table de base"
 #, fuzzy
 msgid "goToBaseTable"
 msgstr ""
-"Modifier la table de base pour mapper les colonnes de l'ensemble de données ?"
+"Modifier la table de base pour mapper les colonnes de l'ensemble de données "
+"?"
 
 #: components/WbPlanView/MapperComponents.tsx:340
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -302,9 +303,9 @@ msgstr ""
 msgid "goToBaseTableDescription"
 msgstr ""
 "Choisir une autre table de base pour le téléchargement d'un ensemble de "
-"données fera de cette table le nouveau point de départ des mappages colonnes-"
-"champs de données et effacera les mappages existants. L'AutoMapper tentera "
-"de mapper les colonnes aux nouveaux champs de la table de base."
+"données fera de cette table le nouveau point de départ des mappages "
+"colonnes-champs de données et effacera les mappages existants. L'AutoMapper "
+"tentera de mapper les colonnes aux nouveaux champs de la table de base."
 
 #: components/WbPlanView/LineComponents.tsx:152
 #: components/WbPlanView/LineComponents.tsx:155
@@ -426,8 +427,8 @@ msgstr "Ce mappage n'a pas été enregistré."
 msgid "newHeaderName"
 msgstr "Nouvelle colonne {index:number}"
 
-#. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
+#. Used in: Components > Wb Plan View > Header Helper
 #, fuzzy
 msgid "noHeader"
 msgstr "(pas d'en-tête)"
@@ -446,8 +447,8 @@ msgstr ""
 "Il n'y a aucun plan disponible, veuillez continuer à créer un plan de "
 "téléchargement."
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:38
+#. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""

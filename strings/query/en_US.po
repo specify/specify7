@@ -403,27 +403,27 @@ msgstr "Define report based on query"
 msgid "exportQueryAsLabel"
 msgstr "Define label based on query"
 
-#: components/PickLists/definitions.ts:44
+#: components/PickLists/definitions.ts:46
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Tree Merge"
 
-#: components/PickLists/definitions.ts:45
+#: components/PickLists/definitions.ts:47
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Tree Move"
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:48
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Tree Synonymize"
 
-#: components/PickLists/definitions.ts:47
+#: components/PickLists/definitions.ts:49
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Tree Desynonymize"
 
-#: components/PickLists/definitions.ts:48
+#: components/PickLists/definitions.ts:50
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeBulkMove"
 msgstr "Tree Bulk Move"

@@ -355,37 +355,37 @@ msgstr "Required Format: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Value must be a number"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:30
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Organization"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:31
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Person"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:32
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Other"
 
-#: components/PickLists/definitions.ts:31
+#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Group"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:37
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "User Defined Items"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:38
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Entire Table"
 
-#: components/PickLists/definitions.ts:37
+#: components/PickLists/definitions.ts:39
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Field From Table"
@@ -420,12 +420,12 @@ msgstr "Creating new record"
 msgid "createNewRecordSet"
 msgstr "Create a new record set"
 
-#: components/PickLists/definitions.ts:152
+#: components/PickLists/definitions.ts:154
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Forward"
 
-#: components/PickLists/definitions.ts:151
+#: components/PickLists/definitions.ts:153
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Reverse"

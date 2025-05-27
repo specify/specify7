@@ -111,7 +111,7 @@ msgstr "Skip"
 
 #: components/FormEditor/Create.tsx:60
 #: components/FormEditor/Create.tsx:262
-#: components/PickLists/definitions.ts:41
+#: components/PickLists/definitions.ts:43
 #: components/QueryBuilder/Edit.tsx:175
 #: components/Security/Institution.tsx:104
 #: components/Security/Institution.tsx:185
@@ -369,7 +369,7 @@ msgstr "Open"
 #: components/Forms/DeleteButton.tsx:142
 #: components/Molecules/SyncAttachmentPicker.tsx:70
 #: components/Notifications/Notifications.tsx:166
-#: components/PickLists/definitions.ts:43
+#: components/PickLists/definitions.ts:45
 #: components/SchemaConfig/UniquenessRuleRow.tsx:188
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
@@ -599,7 +599,7 @@ msgstr "End"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
 #: components/Interactions/InteractionDialog.tsx:404
-#: components/PickLists/definitions.ts:42
+#: components/PickLists/definitions.ts:44
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
 msgid "update"
@@ -782,7 +782,7 @@ msgstr "All"
 msgid "unused"
 msgstr "Unused"
 
-#: components/PickLists/definitions.ts:54
+#: components/PickLists/definitions.ts:56
 #. Used in: Components > Pick Lists > Definitions
 msgid "ordinal"
 msgstr "Ordinal"
@@ -905,7 +905,7 @@ msgstr "Reset"
 msgid "select"
 msgstr "Select"
 
-#: components/PickLists/definitions.ts:52
+#: components/PickLists/definitions.ts:54
 #: components/Preferences/Renderers.tsx:158
 #: components/SchemaConfig/Components.tsx:77
 #: components/SchemaConfig/Format.tsx:69
