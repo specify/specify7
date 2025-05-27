@@ -56,13 +56,13 @@ export const wbText = createDictionary({
     'pt-br': 'Validação',
   },
   upload: {
-    'en-us': 'Upload',
-    'ru-ru': 'Загрузка',
-    'es-es': 'Cargar',
-    'fr-fr': 'Télécharger',
-    'uk-ua': 'Завантажити',
-    'de-ch': 'Hochladen',
-    'pt-br': 'Carregar',
+    "en-us": "Upload",
+    "ru-ru": "Загрузка",
+    "es-es": "Cargar",
+    "fr-fr": "Télécharger",
+    "uk-ua": "Вавантаження",
+    "de-ch": "Hochladen",
+    "pt-br": "Carregar",
   },
   rollingBack: {
     'en-us': 'Rolling Back',
@@ -595,12 +595,12 @@ export const wbText = createDictionary({
       'Valide el conjunto de datos y revise las sugerencias al pasar el ratón por cada celda con error. Luego, realice las correcciones pertinentes. Guarde y vuelva a intentar la operación {type:string}.',
     'fr-fr':
       "Validez l'ensemble de données et examinez les indications de survol de chaque cellule d'erreur, puis apportez les corrections appropriées. Enregistrez et réessayez {type:string}.",
-    'pt-br':
-      'Valide o conjunto de dados e revise as dicas de mouseover para cada célula de erro. Em seguida, faça as correções apropriadas. Salve e tente novamente o {type:string}.',
-    'ru-ru':
-      'Проверьте набор данных и просмотрите подсказки при наведении мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите {type:string}.',
-    'uk-ua':
-      'Перевірте набір даних і перегляньте підказки при наведенні курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть та повторіть спробу {type:string}.',
+    "pt-br":
+      "Valide o conjunto de dados e revise as dicas de mouseover para cada célula de erro. Em seguida, faça as correções apropriadas. Salve e tente novamente o {type:string}.",
+    "ru-ru":
+      "Проверьте набор данных и просмотрите подсказки при наведении мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите {type:string}.",
+    "uk-ua":
+      "Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.",
   },
   dataSetRollback: {
     'en-us': 'Data Set was rolled back successfully',
@@ -1329,14 +1329,14 @@ export const wbText = createDictionary({
       'Falha ao abortar {operationName:string}. Tente novamente mais tarde.',
   },
   wbStatusOperationNoProgress: {
-    comment: 'E.x, Validating...',
-    'en-us': '{operationName:string}...',
-    'ru-ru': '{operationName:string}...',
-    'es-es': '{operationName:string}...',
-    'fr-fr': '{operationName:string}...',
-    'uk-ua': '{operationName:string}...',
-    'de-ch': '{operationName:string}...',
-    'pt-br': '{operationName:string}...',
+    comment: "E.x, Validating...",
+    "en-us": "{operationName:string}...",
+    "ru-ru": "{operationName:string}...",
+    "es-es": "{operationName:string}...",
+    "fr-fr": "{operationName:string}...",
+    "uk-ua": "{operationName:string}'...",
+    "de-ch": "{operationName:string}...",
+    "pt-br": "{operationName:string}...",
   },
   wbStatusOperationProgress: {
     comment: 'E.x, Validating row 999/1,000',

@@ -67,29 +67,29 @@ export const batchEditText = createDictionary({
       'Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування',
   },
   pickTreesToFilter: {
-    'en-us':
-      'The selected rank(s) are found in multiple trees. Pick tree(s) to batch edit with',
-    'de-ch':
-      'Die ausgewählten Ränge sind in mehreren Bäumen vorhanden. Wählen Sie Bäume für die Stapelbearbeitung aus.',
-    'es-es':
-      'Los rangos seleccionados se encuentran en varios árboles. Seleccione los árboles para editarlos por lotes.',
-    'fr-fr':
-      'Les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez les arbres à modifier par lots.',
-    'pt-br':
-      'A(s) classificação(ões) selecionada(s) são encontradas em várias árvores. Selecione a(s) árvore(s) para edição em lote',
-    'ru-ru':
-      'Выбранные ранги найдены в нескольких деревьях. Выберите дерево(а) для пакетного редактирования с',
-    'uk-ua':
-      'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування.',
+    "en-us":
+      "The selected rank(s) are found in multiple trees. Pick tree(s) to batch edit with",
+    "de-ch":
+      "Die ausgewählten Ränge sind in mehreren Bäumen vorhanden. Wählen Sie Bäume für die Stapelbearbeitung aus.",
+    "es-es":
+      "Los rangos seleccionados se encuentran en varios árboles. Seleccione los árboles para editarlos por lotes.",
+    "fr-fr":
+      "Les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez les arbres à modifier par lots.",
+    "pt-br":
+      "A(s) classificação(ões) selecionada(s) são encontradas em várias árvores. Selecione a(s) árvore(s) para edição em lote",
+    "ru-ru":
+      "Выбранные ранги найдены в нескольких деревьях. Выберите дерево(а) для пакетного редактирования с",
+    "uk-ua":
+      "Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування",
   },
   datasetName: {
-    'en-us': '{queryName:string} {datePart:string}',
-    'de-ch': '{queryName:string} {datePart:string}',
-    'es-es': '{queryName:string} {datePart:string}',
-    'fr-fr': '{queryName:string} {datePart:string}',
-    'pt-br': '{queryName:string} {datePart:string}',
-    'ru-ru': '{queryName:string} {datePart:string}',
-    'uk-ua': '{queryName:string} {datePart:string}',
+    "en-us": "{queryName:string} {datePart:string}",
+    "de-ch": "{queryName:string} {datePart:string}",
+    "es-es": "{queryName:string} {datePart:string}",
+    "fr-fr": "{queryName:string} {datePart:string}",
+    "pt-br": "{queryName:string} {datePart:string}",
+    "ru-ru": "{queryName:string} {datePart:string}",
+    "uk-ua": "{queryName:string} {datePart:string}'",
   },
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
@@ -186,12 +186,12 @@ export const batchEditText = createDictionary({
       'Al revertir el conjunto de datos se volverán a actualizar los valores, se eliminarán los registros creados y se crearán nuevos registros.',
     'fr-fr':
       "La restauration de l'ensemble de données mettra à jour les valeurs, supprimera les enregistrements créés et créera de nouveaux enregistrements.",
-    'pt-br':
-      'Reverter o conjunto de dados atualizará novamente os valores, excluirá os registros criados e criará novos registros',
-    'ru-ru':
-      'Откат набора данных приведет к повторному обновлению значений, удалению созданных записей и созданию новых записей.',
-    'uk-ua':
-      'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
+    "pt-br":
+      "Reverter o conjunto de dados atualizará novamente os valores, excluirá os registros criados e criará novos registros",
+    "ru-ru":
+      "Откат набора данных приведет к повторному обновлению значений, удалению созданных записей и созданию новых записей.",
+    "uk-ua":
+      "Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів",
   },
   commitSuccessfulDescription: {
     'en-us':
@@ -204,26 +204,26 @@ export const batchEditText = createDictionary({
       "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements affectés dans chaque table de base de données",
     'pt-br':
       'Clique no botão "Resultados" para ver o número de registros afetados em cada tabela do banco de dados',
-    'ru-ru':
-      'Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в каждой таблице базы данных.',
-    'uk-ua':
-      'Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних.',
+    "ru-ru":
+      "Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в каждой таблице базы данных.",
+    "uk-ua":
+      "Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних",
   },
   dateSetRevertDescription: {
-    'en-us':
-      'This rolled-back Data Set is saved, however, it cannot be edited. Please re-run the query',
-    'de-ch':
-      'Dieser zurückgesetzte Datensatz ist gespeichert, kann jedoch nicht bearbeitet werden. Bitte führen Sie die Abfrage erneut aus.',
-    'es-es':
-      'Este conjunto de datos revertido se ha guardado, pero no se puede editar. Vuelva a ejecutar la consulta.',
-    'fr-fr':
-      'Cet ensemble de données restauré est enregistré, mais non modifiable. Veuillez relancer la requête.',
-    'pt-br':
-      'Este conjunto de dados revertido foi salvo, mas não pode ser editado. Execute a consulta novamente.',
-    'ru-ru':
-      'Этот откатный набор данных сохранен, однако его нельзя редактировать. Пожалуйста, повторите запрос',
-    'uk-ua':
-      'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит.',
+    "en-us":
+      "This rolled-back Data Set is saved, however, it cannot be edited. Please re-run the query",
+    "de-ch":
+      "Dieser zurückgesetzte Datensatz ist gespeichert, kann jedoch nicht bearbeitet werden. Bitte führen Sie die Abfrage erneut aus.",
+    "es-es":
+      "Este conjunto de datos revertido se ha guardado, pero no se puede editar. Vuelva a ejecutar la consulta.",
+    "fr-fr":
+      "Cet ensemble de données restauré est enregistré, mais non modifiable. Veuillez relancer la requête.",
+    "pt-br":
+      "Este conjunto de dados revertido foi salvo, mas não pode ser editado. Execute a consulta novamente.",
+    "ru-ru":
+      "Этот откатный набор данных сохранен, однако его нельзя редактировать. Пожалуйста, повторите запрос",
+    "uk-ua":
+      "Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит",
   },
   committing: {
     'en-us': 'Committing',
@@ -406,19 +406,19 @@ export const batchEditText = createDictionary({
     'uk-ua': "Увімкнути зв'язки",
   },
   enableRelationshipsDescription: {
-    'en-us':
-      'Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled',
-    'de-ch':
-      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind.',
-    'es-es':
-      'Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.',
-    'fr-fr':
-      'Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.',
-    'pt-br':
-      'Permite a edição em lote de relacionamentos da tabela base. O rollback é desabilitado quando os relacionamentos são habilitados.',
-    'ru-ru':
-      'Позволяет пакетное редактирование связей базовой таблицы. Откат отключен, если связи включены',
-    'uk-ua':
-      "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено.",
+    "en-us":
+      "Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled",
+    "de-ch":
+      "Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind.",
+    "es-es":
+      "Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.",
+    "fr-fr":
+      "Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.",
+    "pt-br":
+      "Permite a edição em lote de relacionamentos da tabela base. O rollback é desabilitado quando os relacionamentos são habilitados.",
+    "ru-ru":
+      "Позволяет пакетное редактирование связей базовой таблицы. Откат отключен, если связи включены",
+    "uk-ua":
+      "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
   },
 } as const);
