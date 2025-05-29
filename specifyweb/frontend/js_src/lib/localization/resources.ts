@@ -948,4 +948,7 @@ export const resourcesText = createDictionary({
     "ru-ru": "Препарат используется при кредитовании.",
     "uk-ua": "Препарат використовується у позиці.",
   },
+  preparationMissingCO: {
+    'en-us': 'Preparation requires a CO',
+  },
 } as const);
