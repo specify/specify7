@@ -1,5 +1,7 @@
 # [Specify 7](https://www.specifysoftware.org/products/specify-7/)
 
+current workshop demo version
+
 The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased
 to offer Specify 7, the web implementation of our biological collections data
 management platform.
