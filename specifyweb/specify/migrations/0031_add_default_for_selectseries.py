@@ -12,6 +12,9 @@ def make_selectseries_false(apps):
     spquery = apps.get_model('specify', 'Spquery')
     spquery.objects.filter(selectseries=None).update(selectseries=False)
 
+def revert_selectseries(apps, schema_editor):
+    pass
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -28,5 +31,5 @@ class Migration(migrations.Migration):
             field=models.BooleanField(blank=True, db_column='SelectSeries', default=False, null=True),
         ),
         # No revert function added since this patches faulty data
-        migrations.RunPython(apply_migration, None, atomic=True)
+        migrations.RunPython(apply_migration, revert_selectseries, atomic=True)
     ]
