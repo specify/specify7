@@ -76,12 +76,17 @@ export function SchemaConfigField({
       <Label.Block>
         {schemaText.dwcConcept()}
         <Input.Text
-          isReadOnly={isReadOnly}
-          maxLength={maxSchemaValueLength}
-          required
-          // To chnage once we have item.dwcConcept !== null &&
+          isReadOnly
+          /*
+           * MaxLength={maxSchemaValueLength}
+           * required
+           * To chnage once we have item.dwcConcept !== null &&
+           */
           value={item.dwcConcept === null ? 'DWC Concept' : item.dwcConcept}
-          onValueChange={(value): void => handleChange('dwcConcept', value)}
+          /*
+           * To uncomment if we want to allow redefinition
+           *  onValueChange={(value): void => handleChange('dwcConcept', value)}
+           */
         />
       </Label.Block>
       {/* )} */}
@@ -91,13 +96,18 @@ export function SchemaConfigField({
         {schemaText.dwcDescription()}
         <AutoGrowTextArea
           className="resize-y"
-          isReadOnly={isReadOnly}
-          maxLength={maxSchemaValueLength}
-          // To chnage once we add the condition rendering
+          isReadOnly
+          /*
+           * MaxLength={maxSchemaValueLength}
+           * To chnage once we add the condition rendering
+           */
           value={
             item.dwcDescription === null ? 'DwC desc' : item.dwcDescription
           }
-          onValueChange={(value): void => handleChange('dwcDescription', value)}
+          /*
+           * To uncomment if we want to allow redefinition
+           * onValueChange={(value): void => handleChange('dwcDescription', value)}
+           */
         />
       </Label.Block>
       {/* )} */}
