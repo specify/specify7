@@ -61,7 +61,7 @@ export function useTypeSearch(
 
       found ||= {
         table: relatedTable,
-        title: localized(mainfields?.[0].name ?? ''),
+        title: localized(mainfields?.[0] ? mainfields?.[0].name : ''),
         searchFields: [mainfields?.slice(0, 1) ?? []],
         name: localized(relatedTable?.name),
         formatter: localized(''),
