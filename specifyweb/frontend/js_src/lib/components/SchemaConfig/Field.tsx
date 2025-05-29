@@ -32,8 +32,11 @@ export function SchemaConfigField({
   readonly onChange: (
     field:
       | 'desc'
-      | 'dwcConcept'
-      | 'dwcDescription'
+      /*
+       * To uncomment if we want to allow redefinition
+       *  | 'dwcConcept'
+       *  | 'dwcDescription'
+       */
       | 'isHidden'
       | 'isRequired'
       | 'name',
