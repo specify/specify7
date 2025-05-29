@@ -26,6 +26,19 @@ export function SchemaViewer(): JSX.Element {
   const tables = React.useMemo(getSchemaViewerTables, []);
   const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
 
+  // Scroll to hash target after render
+  React.useEffect(() => {
+    if (window.location.hash) {
+      setTimeout(() => {
+        const id = window.location.hash.slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [tables]);
+
   return (
     <Container.Full className="pt-0">
       <div className="flex items-center gap-2 pt-4">
