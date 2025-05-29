@@ -6470,7 +6470,9 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='webLinkName', column='WebLinkName', indexed=False, unique=False, required=False, type='java.lang.String', length=32)
+            Field(name='webLinkName', column='WebLinkName', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
+            Field(name='dwcConcept', column='DwcConcept', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='dwcDescription', column='DwcConcept', indexed=False, unique=False, required=False, type='java.lang.String', length=2048),
         ],
         indexes=[
             Index(name='SpLocaleContainerItemNameIDX', column_names=['Name'])

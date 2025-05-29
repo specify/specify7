@@ -6148,6 +6148,8 @@ class Splocalecontaineritem(models.Model):
     type = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     weblinkname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='WebLinkName', db_index=False)
+    dwcconcept = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DwcConcept', db_index=False)
+    dwcdescription = models.CharField(blank=True, max_length=2048, null=True, unique=False, db_column='DwcDescription', db_index=False)
 
     # Relationships: Many-to-One
     container = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerID', related_name='items', null=False, on_delete=protect_with_blockers)
