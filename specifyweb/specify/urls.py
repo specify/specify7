@@ -47,7 +47,7 @@ urlpatterns = [
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         path('repair/', tree_views.repair_tree),
     ])),
-    path('create_default_trees_view/', tree_views.create_default_trees_view),
+    re_path(r'^create_default_trees_view/(?P<file_name>[.\w]+)$', tree_views.create_default_trees_view),
 
     # locality set import endpoints
     path('localityset/', include([

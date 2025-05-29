@@ -540,42 +540,74 @@ def all_tree_information(request):
 
     return HttpResponse(toJson(result), content_type='application/json')
 
-def create_default_trees_view(request):
+def create_default_trees_view(request, file_name):
     # Default tree files copied
     # from https://files.specifysoftware.org/taxonfiles/
     # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
-    tree_csv_files = {
-        'fish': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
+    discipline_tree_csv_files = {
+        'ictheology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
         'herpetology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_herps.csv',
-        'bird': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
-        'mammal': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
-        'insect': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv',
+        'ornothology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
+        'mammology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
+        'entomology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv',
         'botany': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_poales.csv',
         'invertebrate': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_inverts.csv'
     }
+    title_to_discipline = {
+        'fishes': 'ictheology',
+        'herps': 'herpetology',
+        'aves': 'ornothology',
+        'mammalia': 'mammology',
+        'orthoptera': 'entomology',
+        'poales': 'botany',
+        'inverts': 'invertebrate'
+    }
 
-    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+    def parse_file_name_to_discipline(file_name: str) -> str:
+        """Extracts the discipline name from the file name."""
+        # Assuming the file name is in the format 'col2008_<discipline>.csv'
+        parts = file_name.split('_')
+        title = ''
+        if len(parts) > 1:
+            title = parts[1].replace('.csv', '').lower()
+        else:
+            return title
+        discipline_name = title_to_discipline.get(title, '')
+        if discipline_name:
+            # return discipline_name.capitalize()
+            return discipline_name
+        else:
+            raise ValueError(f"Unknown discipline in file name: {file_name}")
+    
+    discipline_name = parse_file_name_to_discipline(file_name)
+    if discipline_name not in discipline_tree_csv_files:
+        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
+
+    def stream_csv_from_url(url: str, tree_name: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
         with requests.get(url, stream=True) as resp:
             resp.raise_for_status()
             lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
             reader = csv.DictReader(lines)
 
             rank_names_lst = reader.fieldnames[:rank_count]
-            initialize_defualt_taxon_tree('Taxon', discipline_name, rank_names_lst)
+            initialize_defualt_taxon_tree(tree_name, discipline_name, rank_names_lst)
             
             for row in reader:
                 yield row
 
     data = json.loads(request.body)
-    url = tree_csv_files.get(data.get('discipline'))
-    discipline_name = data.get('discipline', '').capitalize()
-    rank_count = int(tree_rank_count('Taxon', 8))
+    url = discipline_tree_csv_files.get(discipline_name)
+    # discipline_name = data.get('discipline', '').capitalize()
+    tree_name = discipline_name.capitalize()
+    rank_count = int(tree_rank_count(tree_name, 8))
+
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
     try:
-        for row in stream_csv_from_url(url, discipline_name, rank_count):
-            add_default_taxon(row, discipline_name)
+        for row in stream_csv_from_url(url, tree_name, discipline_name, rank_count):
+            add_default_taxon(row, tree_name, discipline_name)
+            pass
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
 

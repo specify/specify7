@@ -87,37 +87,6 @@ def get_models(name: str):
     
     return tree_def_model, tree_rank_model, tree_node_model
 
-# def add_default_taxon(
-#     collection: spmodels.Collection,
-#     tree_name: str,
-#     node_name: str,
-#     node_number: int,
-#     rank_id: int,
-#     parent_id: int = None
-# )
-    
-#     # Get the default TreeDef for the collection
-#     tree_def = get_default_treedef(tree_def_model, collection)
-    
-#     # Create the new TreeDefItem
-#     tree_rank = tree_rank_model.objects.create(
-#         name=node_name,
-#         treedef=tree_def,
-#         rankid=rank_id
-#     )
-    
-#     # Create the new TreeNode
-#     tree_node = tree_node_model.objects.create(
-#         name=node_name,
-#         nodenumber=node_number,
-#         definition=tree_def,
-#         definitionitem=tree_rank,
-#         parent_id=parent_id
-#     )
-    
-#     node = None
-#     # adding_node(node)
-
 # fishes      kingdom,phylum,class,order,family,genus,species,subspecies,family common name,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
 # herps       kingdom,phylum,class,order,family,genus,species,subspecies,family common name,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
 # inverts     kingdom,phylum,class,order,family,genus,species,subspecies,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
@@ -308,10 +277,21 @@ def initialize_defualt_taxon_tree(taxon_tree_name, discipline_name, rank_names_l
     discipline = spmodels.Discipline.objects.filter(name=discipline_name).first()
     if not discipline:
         discipline = spmodels.Discipline.objects.all().first()
-    tree_def = spmodels.TaxonTreeDef.objects.get_or_create(
-        name=taxon_tree_name,
-        discipline=discipline
-    )
+    
+    tree_def = None
+    if spmodels.TaxonTreeDef.objects.filter(name=taxon_tree_name).exists():
+        i = 1
+        while spmodels.TaxonTreeDef.objects.filter(name=f"{taxon_tree_name} ({i})").exists():
+            i += 1
+        tree_def = spmodels.TaxonTreeDef.objects.get_or_create(
+            name=f"{taxon_tree_name}_{i}",
+            discipline=discipline
+        )
+    else:
+        tree_def = spmodels.TaxonTreeDef.objects.get_or_create(
+            name=taxon_tree_name,
+            discipline=discipline
+        )
     
     tree_rank = spmodels.Taxontreedefitem.objects.get_or_create(
         name="Root",
@@ -336,99 +316,17 @@ def initialize_defualt_taxon_tree(taxon_tree_name, discipline_name, rank_names_l
         parent=None
     )
 
-# def add_default_taxon(taxon_data, discpline_name, tree_name, taxon_tree_def, rank_count=8):
-#     collection = taxon_data['collection']
-#     tree_name = taxon_data['tree_name']
-#     node_name = taxon_data['node_name']
-#     node_number = taxon_data['node_number']
-#     rank_id = taxon_data['rank_id']
-#     parent_id = taxon_data.get('parent_id', None)
-
-#     kingdom = taxon_data.get('kingdom', None)
-#     phylum = taxon_data.get('phylum', None)
-#     class_ = taxon_data.get('class_', None)
-#     order = taxon_data.get('order', None)
-#     family = taxon_data.get('family', None)
-#     genus = taxon_data.get('genus', None)
-#     species = taxon_data.get('species', None)
-#     subspecies = taxon_data.get('subspecies', None)
-#     family_common_name = taxon_data.get('family common name', None)
-#     species_author = taxon_data.get('species author', None)
-#     species_source = taxon_data.get('species source', None)
-#     species_lsid = taxon_data.get('species lsid', None)
-#     species_common_name = taxon_data.get('species common name', None)
-#     subspecies_author = taxon_data.get('subspecies author', None)
-#     subspecies_source = taxon_data.get('subspecies source', None)
-#     subspecies_lsid = taxon_data.get('subspecies lsid', None)
-#     subspecies_common_name = taxon_data.get('subspecies common name', None)
-#     division = taxon_data.get('division', None)
-#     superfamily = taxon_data.get('superfamily', None)
-#     variety = taxon_data.get('variety', None)
-#     variety_author = taxon_data.get('variety author', None)
-#     variety_source = taxon_data.get('variety source', None)
-#     variety_lsid = taxon_data.get('variety lsid', None)
-#     variety_common_name = taxon_data.get('variety common name', None)
-
-#     taxon_tree_def_items = taxon_tree_def.treedefitems.all()
-#     rank_names = [rank.name for rank in taxon_tree_def_items]
-
-#     # for taxon_rank_dict in discipline_columns[discpline_name]['taxon_ranks']:
-#     #     for rank_name, rank_dict in taxon_rank_dict.items():
-#     #         if rank in taxon_tree_def_items:
-#     #             pass
-                    
-#     #         tree_node = spmodels.Taxon.objects.get_or_create(
-#     #             name=rank_name,
-#     #             nodenumber=node_number,
-#     #             definition=taxon_tree_def,
-#     #             definitionitem=tree_rank,
-#     #             parent_id=parent_id
-#     #         )
-
-#     taxon_dict = {}
-#     # for col, value in taxon_data.items():
-#     #     taxon_values_dict = DISCIPLINE_TAXON_CSV_COLUMNS[discpline_name]['taxon_ranks'][col]
-#     #     for col_name, field_name in taxon_values_dict.items():
-#     #         if field_name in rank_names:
-#     #             taxon_dict[field_name] = field_value
-
-#     for col_name, field_name in taxon_values_dict.items():
-#         if field_name in rank_names:
-#             taxon_dict[field_name] = taxon_data[col_name]
-
-
-#     rank_iter = 1
-#     for parent_taxon_dict in DISCIPLINE_TAXON_CSV_COLUMNS[discpline_name]['taxon_ranks']:
-#         parent_taxon_info = {}
-#         for rank_name, fields_dict in parent_taxon_dict.items():
-#             for csv_field_name, taxon_field_name in fields_dict.items():
-#                 field_value = taxon_dict[csv_field_name]
-#                 if field_value and field_value != '':
-#                     parent_taxon_info[taxon_field_name] = field_value
-
-#         spmodels.Taxon.objects.get_or_create(
-#             name=parent_taxon_info['name'],
-#             nodenumber=node_number,
-#             definition=taxon_tree_def,
-#             definitionitem=tree_rank,
-#             parent_id=parent_id
-#         )
-    
-#     for csv_field_name, csv_value in taxon_data.items():
-#         pass
-
-def add_default_taxon(row, discipline_name):
+def add_default_taxon(row, tree_name, discipline_name):
     """
     Given one CSV row and the discipline (must match a key in DISCIPLINE_TAXON_CSV_COLUMNS),
     walk through the taxon_ranks in order, creating or updating each Taxon and linking
     it to its parent.
     """
     cfg = DISCIPLINE_TAXON_CSV_COLUMNS[discipline_name]
-    tree_def = spmodels.TaxonTreeDef.objects.get(name='Taxon')
+    tree_def = spmodels.TaxonTreeDef.objects.get(name=tree_name)
     parent = spmodels.Taxon.objects.get(name='Root', definition=tree_def)
 
     for rank_map in cfg['taxon_ranks']:
-        # rank_map is e.g. {'family': {'family': 'name', 'family common name': 'commonname'}}
         rank = next(iter(rank_map))
         fields_map = rank_map[rank]
 
@@ -463,4 +361,3 @@ def add_default_taxon(row, discipline_name):
             taxon_obj.save()
 
         parent = taxon_obj
-            
