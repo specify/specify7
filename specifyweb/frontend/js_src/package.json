@@ -26,7 +26,7 @@
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
     "unitTests:watch": "jest --watch",
-    "validateWeblate": "node --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/__tests__/validateWeblate.ts"
+    "validateWeblate": "node --import ./weblateLoader.js --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/__tests__/validateWeblate.ts"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
