@@ -64,7 +64,7 @@
     "typesafe-i18n": "^5.17.1",
     "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",
-    "xlsx": "~0.16.8"
+    "xlsx": "~0.18.5"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
