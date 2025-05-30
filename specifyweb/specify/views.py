@@ -1525,3 +1525,8 @@ def create_collection_view(request):
 
 def create_specifyuser_view(request):
     return api.create_specifyuser(request, direct=True)
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
