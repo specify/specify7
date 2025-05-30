@@ -2,6 +2,8 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { DeepPartial, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -66,10 +68,21 @@ export function CreateTree<
       });
   }, []);
 
-  const handleClick = (resourceFile: string): void => {
-    console.log(resourceFile);
-    // Pass resource file name to backend
-  };
+  const handleClick = async (resourceFile: string): Promise<void> =>
+    ajax('/api/create_default_trees/', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: { fileName: resourceFile },
+    })
+      .then(({ data, status }) => {
+        if (status === Http.OK) {
+          console.log(`${resourceFile} created successfully:`, data);
+        }
+      })
+      .catch((error) => {
+        console.error(`Request failed for ${resourceFile}:`, error);
+        throw error;
+      });
 
   const handleClickEmptyTree = (
     resource: DeepPartial<SerializedResource<TaxonTreeDef>>
@@ -115,7 +128,9 @@ export function CreateTree<
               : treeOptions.map((resource, index) => (
                   <li key={index}>
                     <Button.LikeLink
-                      onClick={(): void => handleClick(resource.file)}
+                      onClick={(): void => {
+                        handleClick(resource.file).catch(console.error);
+                      }}
                     >
                       {localized(resource.title)}
                     </Button.LikeLink>
