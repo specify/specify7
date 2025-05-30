@@ -34,6 +34,11 @@ export function ConfigurationTool(): JSX.Element {
 
   const navigate = useNavigate();
 
+  /*
+   * Call fetchContext in a useAsyncState
+   * display a loading bar if fetchContext is udnefined
+   */
+
   const onResourceSaved = async (
     endpoint: string,
     resourceLabel: string,

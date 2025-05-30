@@ -434,6 +434,7 @@ def available_related_searches(request):
 datamodel_json = None
 
 @require_http_methods(['GET', 'HEAD'])
+## need to remove login required
 @login_maybe_required
 @cache_control(max_age=86400, public=True)
 def datamodel(request):
@@ -446,6 +447,8 @@ def datamodel(request):
     return HttpResponse(datamodel_json, content_type='application/json')
 
 @require_http_methods(['GET', 'HEAD'])
+## need to remove login required
+## need to chnage the def for collection to be optional because when we setup no collection exists yet
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def schema_localization(request):
