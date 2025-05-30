@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { configurationText } from '../../localization/configuration';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -10,7 +11,7 @@ import { Container, H2 } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { fetchContext, tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import {
   adminUser,
@@ -20,6 +21,7 @@ import {
   institution,
 } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { LoadingScreen } from '../Molecules/Dialog';
 
 type ConfigResourceType = {
   readonly resource: SpecifyResource<AnySchema>;
@@ -34,10 +36,7 @@ export function ConfigurationTool(): JSX.Element {
 
   const navigate = useNavigate();
 
-  /*
-   * Call fetchContext in a useAsyncState
-   * display a loading bar if fetchContext is udnefined
-   */
+  const [contextTables] = useAsyncState(async () => fetchContext, true);
 
   const onResourceSaved = async (
     endpoint: string,
@@ -66,6 +65,8 @@ export function ConfigurationTool(): JSX.Element {
         console.error(`Request failed for ${resourceLabel}:`, error);
         throw error;
       });
+
+  if (!contextTables) return <LoadingScreen />;
 
   const resources: RA<ConfigResourceType> = [
     {
@@ -123,7 +124,6 @@ export function ConfigurationTool(): JSX.Element {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{configurationText.specifySetUp()}</H2>
-
       {currentStep < resources.length ? (
         <ResourceView
           dialog={false}
