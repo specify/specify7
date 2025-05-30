@@ -94,7 +94,7 @@ def get_models(name: str):
 # orthptera   kingdom,phylum,class,order,superfamily,family,genus,species,subspecies,species author,species source,species lsid,species common name,family common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
 # poales      kingdom,division,class,order,family,genus,species,subspecies,variety,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name,variety author,variety source,variety lsid,variety common name
 DISCIPLINE_TAXON_CSV_COLUMNS = {
-    'fishes': {
+    'ictheology': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -122,7 +122,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'herps': {
+    'herpetology': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -150,7 +150,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'inverts': {
+    'invertebrate': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -177,7 +177,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'mammalia': {
+    'mammology': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -205,7 +205,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'orthoptera': {
+    'entomology': {
         'all_columns': ['kingdom','phylum','class','order','superfamily','family','genus','species','subspecies','species author','species source','species lsid','species common name','family common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -234,7 +234,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'poales': {
+    'botany': {
         'all_columns': ['kingdom','division','class','order','family','genus','species','subspecies','variety','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name','variety author','variety source','variety lsid','variety common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -279,21 +279,21 @@ def initialize_defualt_taxon_tree(taxon_tree_name, discipline_name, rank_names_l
         discipline = spmodels.Discipline.objects.all().first()
     
     tree_def = None
-    if spmodels.TaxonTreeDef.objects.filter(name=taxon_tree_name).exists():
+    if spmodels.Taxontreedef.objects.filter(name=taxon_tree_name).exists():
         i = 1
-        while spmodels.TaxonTreeDef.objects.filter(name=f"{taxon_tree_name} ({i})").exists():
+        while spmodels.Taxontreedef.objects.filter(name=f"{taxon_tree_name}_{i}").exists():
             i += 1
-        tree_def = spmodels.TaxonTreeDef.objects.get_or_create(
+        tree_def, _ = spmodels.Taxontreedef.objects.get_or_create(
             name=f"{taxon_tree_name}_{i}",
             discipline=discipline
         )
     else:
-        tree_def = spmodels.TaxonTreeDef.objects.get_or_create(
+        tree_def = spmodels.Taxontreedef.objects.create(
             name=taxon_tree_name,
             discipline=discipline
         )
     
-    tree_rank = spmodels.Taxontreedefitem.objects.get_or_create(
+    tree_rank, _ = spmodels.Taxontreedefitem.objects.get_or_create(
         name="Root",
         treedef=tree_def,
         rankid=0
@@ -308,13 +308,17 @@ def initialize_defualt_taxon_tree(taxon_tree_name, discipline_name, rank_names_l
         )
         rank_id += 10
 
-    tree_node = spmodels.Taxon.objects.get_or_create(
+    tree_node, _ = spmodels.Taxon.objects.get_or_create(
         name="Root",
+        fullname="Root",
         nodenumber=1,
         definition=tree_def,
         definitionitem=tree_rank,
         parent=None
     )
+
+    tree_name = tree_def.name
+    return tree_name
 
 def add_default_taxon(row, tree_name, discipline_name):
     """
@@ -323,8 +327,9 @@ def add_default_taxon(row, tree_name, discipline_name):
     it to its parent.
     """
     cfg = DISCIPLINE_TAXON_CSV_COLUMNS[discipline_name]
-    tree_def = spmodels.TaxonTreeDef.objects.get(name=tree_name)
-    parent = spmodels.Taxon.objects.get(name='Root', definition=tree_def)
+    tree_def = spmodels.Taxontreedef.objects.get(name=tree_name)
+    parent = spmodels.Taxon.objects.get(name='Root', fullname='Root', definition=tree_def)
+    rank_id = 10
 
     for rank_map in cfg['taxon_ranks']:
         rank = next(iter(rank_map))
@@ -342,13 +347,15 @@ def add_default_taxon(row, tree_name, discipline_name):
             if v:
                 defaults[model_field] = v
 
-        treedef_item = spmodels.Taxontreedefitem.objects.get(
+        treedef_item, _ = spmodels.Taxontreedefitem.objects.get_or_create(
             name=rank.capitalize(),
-            treedef=tree_def
+            treedef=tree_def,
+            rankid=rank_id
         )
 
         taxon_obj, created = spmodels.Taxon.objects.get_or_create(
             name=value,
+            fullname=value,
             definition=tree_def,
             definitionitem=treedef_item,
             parent=parent,
@@ -361,3 +368,4 @@ def add_default_taxon(row, tree_name, discipline_name):
             taxon_obj.save()
 
         parent = taxon_obj
+        rank_id += 10

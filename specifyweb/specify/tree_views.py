@@ -1,11 +1,9 @@
 import csv
 from functools import wraps
 import json
-from os import read
 from django import http
 from typing import Iterator, Literal, Tuple, TypedDict, Any, Dict, List
 from django.db import connection, transaction
-from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 import requests
@@ -540,7 +538,10 @@ def all_tree_information(request):
 
     return HttpResponse(toJson(result), content_type='application/json')
 
-def create_default_trees_view(request, file_name):
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def create_default_trees_view(request):
     # Default tree files copied
     # from https://files.specifysoftware.org/taxonfiles/
     # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
@@ -569,7 +570,7 @@ def create_default_trees_view(request, file_name):
         parts = file_name.split('_')
         title = ''
         if len(parts) > 1:
-            title = parts[1].replace('.csv', '').lower()
+            title = parts[1].replace('.csv', '').replace('.xls', '').lower()
         else:
             return title
         discipline_name = title_to_discipline.get(title, '')
@@ -579,35 +580,36 @@ def create_default_trees_view(request, file_name):
         else:
             raise ValueError(f"Unknown discipline in file name: {file_name}")
     
+    data = json.loads(request.body)
+    file_name = data.get('fileName', '').strip()
     discipline_name = parse_file_name_to_discipline(file_name)
     if discipline_name not in discipline_tree_csv_files:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
-    def stream_csv_from_url(url: str, tree_name: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+    url = discipline_tree_csv_files.get(discipline_name)
+    # discipline_name = data.get('discipline', '').capitalize()
+    tree_name = discipline_name.capitalize()
+    rank_count = int(tree_rank_count(tree_name, 8))
+
+    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+        nonlocal tree_name
         with requests.get(url, stream=True) as resp:
             resp.raise_for_status()
             lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
             reader = csv.DictReader(lines)
 
             rank_names_lst = reader.fieldnames[:rank_count]
-            initialize_defualt_taxon_tree(tree_name, discipline_name, rank_names_lst)
+            tree_name = initialize_defualt_taxon_tree(tree_name, discipline_name, rank_names_lst)
             
             for row in reader:
                 yield row
-
-    data = json.loads(request.body)
-    url = discipline_tree_csv_files.get(discipline_name)
-    # discipline_name = data.get('discipline', '').capitalize()
-    tree_name = discipline_name.capitalize()
-    rank_count = int(tree_rank_count(tree_name, 8))
 
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
     try:
-        for row in stream_csv_from_url(url, tree_name, discipline_name, rank_count):
+        for row in stream_csv_from_url(url, discipline_name, rank_count):
             add_default_taxon(row, tree_name, discipline_name)
-            pass
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
 
