@@ -6,8 +6,10 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -97,8 +99,27 @@ export function Header({
 
   const activeMenuItem = React.useContext(MenuContext);
 
-  // To chnage once we added the feature for setup detection
-  const isSetupMode = false
+  const [isNewUser] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<boolean>(`/api/specify/is_new_user/`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.error('Failed to fetch isNewUser:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
+  const isSetupMode = isNewUser;
 
   return (
     <header
@@ -127,7 +148,7 @@ export function Header({
         className={`
           flex flex-1 overflow-auto
           ${isHorizontal ? '' : 'flex-col'}
-          ${isSetupMode? 'invisible': ''}
+          ${isSetupMode === true ? 'invisible' : ''}
         `}
       >
         <HeaderItems
