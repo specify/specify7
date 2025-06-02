@@ -1,6 +1,7 @@
 import json
 import logging
 from typing import Tuple, cast
+import copy
 
 from .uploadable import Row, Uploadable
 from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
@@ -50,7 +51,7 @@ def add_attachments_to_plan(
     base_table = upload_plan.name
 
     # Create copy of upload plan and row for modification
-    new_upload_plan = upload_plan._replace()
+    new_upload_plan = copy.deepcopy(upload_plan)
     new_row = row.copy()
     logger.debug("Attachments: %s", attachments)
 
