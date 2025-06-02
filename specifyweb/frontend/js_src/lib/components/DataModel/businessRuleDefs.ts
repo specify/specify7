@@ -328,7 +328,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         if (CO !== undefined) {
           coParent = CO.get('componentParent');
         }
-        return coParent === null
+        return coParent === null || coParent === undefined
           ? {
               isValid: true,
               saveBlockerKey: CO_HAS_PARENT,
@@ -503,6 +503,39 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       );
     },
   },
+  Determiner: {
+    customInit: (determiner) => {
+      if (determiner.isNew()) {
+        const setPrimary = (): void => {
+          determiner.set('isPrimary', true);
+          if (determiner.collection !== undefined) {
+            determiner.collection.models.forEach((other) => {
+              if (other.cid !== determiner.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        determiner.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (determiner) => {
+        if (determiner.get('isPrimary')) {
+          determiner.collection?.models.forEach((other) => {
+            if (other.cid !== determiner.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          determiner.collection !== undefined &&
+          !determiner.collection?.models.some((other) => other.get('isPrimary'))
+        ) {
+          determiner.set('isPrimary', true);
+        }
+        return { isValid: true };
+      },
+    },
+  },
   DisposalPreparation: {
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -513,33 +546,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-        for (let i = 0; i < current.length; i++) {
-          const char = current.at(i)?.toLowerCase().trim();
-          if (char !== '') {
-            switch (char) {
-              case 'a': {
-                countObject.a += 1;
-                break;
-              }
-              case 't': {
-                countObject.t += 1;
-                break;
-              }
-              case 'g': {
-                countObject.g += 1;
-                break;
-              }
-              case 'c': {
-                countObject.c += 1;
-                break;
-              }
-              default: {
-                countObject.ambiguous += 1;
-              }
-            }
-          }
-        }
+
+        const countObject = Array.from(current).reduce(
+          (accumulator, currentString) => {
+            const trimmed = currentString.toLowerCase().trim();
+            if (trimmed === '') return accumulator;
+            return trimmed === 'a'
+              ? { ...accumulator, a: accumulator.a + 1 }
+              : trimmed === 't'
+                ? { ...accumulator, t: accumulator.t + 1 }
+                : trimmed === 'g'
+                  ? { ...accumulator, g: accumulator.g + 1 }
+                  : trimmed === 'c'
+                    ? { ...accumulator, c: accumulator.c + 1 }
+                    : { ...accumulator, ambiguous: accumulator.ambiguous + 1 };
+          },
+          { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 }
+        );
         dnaSequence.set('compA', countObject.a);
         dnaSequence.set('compT', countObject.t);
         dnaSequence.set('compG', countObject.g);
@@ -547,12 +570,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObject.a +
-            countObject.t +
-            countObject.g +
-            countObject.c +
-            countObject.ambiguous
+          Object.values(countObject).reduce(
+            (previous, current) => previous + current,
+            0
+          )
         );
+      },
+    },
+  },
+  FundingAgent: {
+    customInit: (fundingAgent) => {
+      if (fundingAgent.isNew()) {
+        const setPrimary = (): void => {
+          fundingAgent.set('isPrimary', true);
+          if (fundingAgent.collection !== undefined) {
+            fundingAgent.collection.models.forEach((other) => {
+              if (other.cid !== fundingAgent.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        fundingAgent.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (fundingAgent) => {
+        if (fundingAgent.get('isPrimary')) {
+          fundingAgent.collection?.models.forEach((other) => {
+            if (other.cid !== fundingAgent.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          fundingAgent.collection !== undefined &&
+          !fundingAgent.collection?.models.some((other) =>
+            other.get('isPrimary')
+          )
+        ) {
+          fundingAgent.set('isPrimary', true);
+        }
+        return { isValid: true };
       },
     },
   },
