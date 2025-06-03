@@ -10,7 +10,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
-import { ListOfBaseTables, ListOfTablesWithAttachments } from './Components';
+import { ListOfBaseTables } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
@@ -102,31 +102,6 @@ export function BaseTableSelection({
       onClose={handleClose}
     >
       <ListOfBaseTables onClick={handleSelected} />
-    </Dialog>
-  );
-}
-
-export function AttachmentBaseTableSelection({
-  onClose: handleClose,
-  onSelected: handleSelected,
-}: {
-  readonly onClose: () => void;
-  readonly onSelected: (baseTableName: keyof Tables) => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-        </>
-      }
-      className={{
-        container: `${dialogClassNames.narrowContainer} h-1/2`,
-      }}
-      header={wbPlanText.selectTableToUploadAttachmentsTo()}
-      onClose={handleClose}
-    >
-      <ListOfTablesWithAttachments onClick={handleSelected} />
     </Dialog>
   );
 }
