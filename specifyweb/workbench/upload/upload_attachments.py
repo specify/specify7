@@ -30,10 +30,8 @@ def has_attachments(row: Row) -> bool:
 
 # upload_plan can either be an UploadTable or an Uploadable (so it can be one of two types)
 def validate_attachment(
-    row: Row, upload_plan: Union[UploadTable, Uploadable]
+    row: Row, upload_plan: UploadTable
 ) -> Tuple[bool, Union[None, UploadResult]]:
-    if not isinstance(upload_plan, UploadTable):
-        raise Exception("Attachments column found, but upload plan is not an UploadTable")
     if has_attachments(row):
         data = get_attachments(row)
         if data and isinstance(data, dict):
