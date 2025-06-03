@@ -357,9 +357,9 @@ def do_upload(
 
                 if has_attachments(row):
                     # If there's an attachments column, add attachments to upload plan
-                    attachments_valid, result = validate_attachment(row, upload_plan)
+                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
                     if not attachments_valid:
-                        results.append(result)
+                        results.append(result) # type: ignore
                         cache = _cache
                         raise Rollback("failed row")
                     row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
