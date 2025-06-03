@@ -45,8 +45,6 @@ from .upload_result import (
     Uploaded,
     UploadResult,
     ParseFailures,
-    NoMatch,
-    ReportInfo,
 )
 from .uploadable import (
     BatchEditSelf,
@@ -63,7 +61,6 @@ from .scope_context import ScopeContext
 from ..models import Spdataset
 
 from .upload_attachments import (
-    ATTACHMENTS_COLUMN,
     has_attachments,
     validate_attachment,
     add_attachments_to_plan,
@@ -360,11 +357,9 @@ def do_upload(
 
                 if has_attachments(row):
                     # If there's an attachments column, add attachments to upload plan
-                    if not isinstance(upload_plan, UploadTable):
-                        raise Exception("Attachments column found, but upload plan is not an UploadTable")
-                    if not validate_attachment(row, upload_plan):
-                        info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN], treeInfo=None)
-                        results.append(UploadResult(NoMatch(info), {}, {}))
+                    attachments_valid, result = validate_attachment(row, upload_plan)
+                    if not attachments_valid:
+                        results.append(result)
                         cache = _cache
                         raise Rollback("failed row")
                     row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
