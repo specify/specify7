@@ -66,6 +66,11 @@ class UploadResultsTests(unittest.TestCase):
         j = json.dumps(matchedAndChanged.to_json())
         self.assertEqual(matchedAndChanged, MatchedAndChanged.from_json(json.loads(j)))
 
+    @given(attachmentFailure=infer)
+    def testAttachmentFailure(self, attachmentFailure: AttachmentFailure):
+        j = json.dumps(attachmentFailure.to_json())
+        self.assertEqual(attachmentFailure, AttachmentFailure.from_json(json.loads(j)))
+
     @settings(suppress_health_check=[HealthCheck.too_slow])
     @given(record_result=infer, toOne=infer, toMany=infer)
     def testUploadResult(self, record_result: RecordResult, toOne: Dict[str, RecordResult], toMany: Dict[str, List[RecordResult]]):

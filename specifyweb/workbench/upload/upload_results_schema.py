@@ -49,6 +49,7 @@ schema = {
                 { '$ref': '#/definitions/Updated' },
                 { '$ref': '#/definitions/Deleted' },
                 { '$ref': '#/definitions/MatchedAndChanged' },
+                { '$ref': '#/definitions/AttachmentFailure' }
             ]
         },
 
