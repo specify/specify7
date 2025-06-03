@@ -296,9 +296,9 @@ class AttachmentFailure(NamedTuple):
         return {"AttachmentFailure": dict(message=self.message, info=self.info.to_json())}
 
     @staticmethod
-    def from_json(json: dict) -> "NoMatch":
+    def from_json(json: dict) -> "AttachmentFailure":
         r = json["AttachmentFailure"]
-        return NoMatch(
+        return AttachmentFailure(
             message=r["message"],
             info=json_to_ReportInfo(r["info"])
         )

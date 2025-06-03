@@ -29,7 +29,6 @@ import type {
   Spdataset,
   SpDataSetAttachment,
 } from '../DataModel/types';
-import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
