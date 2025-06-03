@@ -21,54 +21,54 @@ msgstr ""
 msgid "interactions"
 msgstr "Взаємодії"
 
-#: components/Interactions/InteractionDialog.tsx:370
+#: components/Interactions/InteractionDialog.tsx:374
 #: components/Interactions/PrepDialog.tsx:133
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Додати елементи"
 
-#: components/Interactions/InteractionDialog.tsx:372
+#: components/Interactions/InteractionDialog.tsx:376
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "{table:string} Повернення"
 
-#: components/Interactions/InteractionDialog.tsx:420
+#: components/Interactions/InteractionDialog.tsx:424
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "Для наступних записів не знайдено жодних підготовчих матеріалів:"
 
-#: components/Interactions/InteractionDialog.tsx:429
+#: components/Interactions/InteractionDialog.tsx:433
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr "У наступних записах відсутні препарати принаймні для одного типу препарату:"
 
-#: components/Interactions/InteractionDialog.tsx:410
+#: components/Interactions/InteractionDialog.tsx:414
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Є проблеми зі вступом:"
 
-#: components/Interactions/InteractionDialog.tsx:379
+#: components/Interactions/InteractionDialog.tsx:383
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
 msgstr "Вибравши набір записів (доступно {{count:none | one | ??}})"
 
-#: components/Interactions/InteractionDialog.tsx:385
+#: components/Interactions/InteractionDialog.tsx:389
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "Ввівши {fieldName:string}s"
 
-#: components/Interactions/InteractionDialog.tsx:350
+#: components/Interactions/InteractionDialog.tsx:354
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Без підготовки"
 
-#: components/Interactions/InteractionDialog.tsx:307
 #: components/Interactions/InteractionDialog.tsx:311
+#: components/Interactions/InteractionDialog.tsx:315
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "continueWithoutPreparations"
 msgstr "Продовжуйте без підготовки"
 
-#: components/Interactions/InteractionDialog.tsx:346
+#: components/Interactions/InteractionDialog.tsx:350
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Додати непов'язаний елемент"
@@ -184,13 +184,13 @@ msgstr "Записи {exhangeInTable:string} / {exhangeOutTable:string}"
 msgid "unCataloged"
 msgstr "некаталогізований"
 
-#: components/Interactions/InteractionDialog.tsx:276
-#: components/Interactions/InteractionDialog.tsx:317
+#: components/Interactions/InteractionDialog.tsx:280
+#: components/Interactions/InteractionDialog.tsx:321
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedPreparations"
 msgstr "Повернуто записів {tablePreparation:string}"
 
-#: components/Interactions/InteractionDialog.tsx:281
+#: components/Interactions/InteractionDialog.tsx:285
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedAndSaved"
 msgstr ""
@@ -220,20 +220,20 @@ msgstr "Недоступно"
 msgid "returnLoan"
 msgstr "Повернути записи {tableLoan:string}"
 
-#: components/Interactions/InteractionDialog.tsx:373
+#: components/Interactions/InteractionDialog.tsx:377
 #: components/Interactions/PrepDialog.tsx:134
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
 msgstr "Створити {table:string}"
 
-#: components/Interactions/InteractionDialog.tsx:322
+#: components/Interactions/InteractionDialog.tsx:326
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "noPreparationsWarning"
 msgstr "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
-#: components/Interactions/InteractionDialog.tsx:362
+#: components/Interactions/InteractionDialog.tsx:366
 #: components/TreeView/AddRank.tsx:62
 #. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 msgid "continue"
