@@ -43,7 +43,8 @@ def attachment_jointable_deletion(sender, obj):
         if sender == Spdatasetattachment:
             if obj.attachment.tableid != Spdataset.specify_model.tableId:
                 parent_model = get_model_by_table_id(obj.attachment.tableid)
-                if parent_model.objects.filter(attachment_id=obj.attachment_id).count() > 0:
+                jointable_model = get_jointable_model(parent_model)
+                if jointable_model.objects.filter(attachment_id=obj.attachment_id).count() > 0:
                     return
         else:
             if Spdatasetattachment.objects.filter(attachment_id=obj.attachment_id).count() > 0:
@@ -72,3 +73,8 @@ def get_attachee(jointable_inst):
     main_table_name = JOINTABLE_NAME_RE.match(
         jointable_inst.__class__.__name__).group(1)
     return getattr(jointable_inst, main_table_name.lower())
+
+
+def get_jointable_model(main_table_model):
+    jointable_name = f"{main_table_model.__name__}attachment"
+    return apps.get_model(main_table_model._meta.app_label, jointable_name)
