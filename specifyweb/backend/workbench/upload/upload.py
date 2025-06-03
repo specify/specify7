@@ -362,7 +362,7 @@ def do_upload(
                         results.append(result) # type: ignore
                         cache = _cache
                         raise Rollback("failed row")
-                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan)
+                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
                     scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
                 elif cached_scope_table is None:
                     scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
