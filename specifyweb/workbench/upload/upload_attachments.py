@@ -50,7 +50,7 @@ def validate_attachment(
                     spdatasetattachment = Spdatasetattachment.objects.get(id=attachment["id"])
                     if spdatasetattachment.attachment is None:
                         return False, makeAttachmentResult('attachmentNotFound')
-                    if spdatasetattachment.attachment.tableid != Spdataset.specify_model.tableId:
+                    if spdatasetattachment.attachment.tableid != Spdataset.specify_model.tableId: # type: ignore
                         return False, makeAttachmentResult('attachmentAlreadyLinked')
                 
                     return True, None
