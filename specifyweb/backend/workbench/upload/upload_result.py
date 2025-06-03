@@ -406,5 +406,7 @@ def json_to_record_result(json: dict) -> RecordResult:
             return Deleted.from_json(json)
         elif record_type == "MatchedAndChanged":
             return MatchedAndChanged.from_json(json)
+        elif record_type == "AttachmentFailure":
+            return AttachmentFailure.from_json(json)
         assert False, f"record_result is unknown type: {record_type}"
     assert False, f"record_result contains no data: {json}"

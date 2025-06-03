@@ -306,6 +306,8 @@ export function resolveAttachmentValidationMessage(
     return backEndText.attachmentNotFound();
   } else if (key === 'tableDoesNotSupportAttachments') {
     return backEndText.tableDoesNotSupportAttachments();
+  } else if (key === 'attachmentAlreadyLinked') {
+    return backEndText.attachmentAlreadyLinked();
   } else {
     return backEndText.attachmentNotFound();
   }
