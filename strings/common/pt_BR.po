@@ -44,7 +44,7 @@ msgstr "Não"
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:303
 #: components/Interactions/InteractionsDialog.tsx:56
-#: components/Interactions/LoanReturn.tsx:161
+#: components/Interactions/LoanReturn.tsx:167
 #: components/Interactions/PrepDialog.tsx:112
 #: components/LocalityUpdate/Status.tsx:142
 #: components/LocalityUpdate/Status.tsx:188
@@ -281,7 +281,7 @@ msgid "close"
 msgstr "Fechar"
 
 #: components/DataEntryTables/Edit.tsx:47
-#: components/Interactions/LoanReturn.tsx:197
+#: components/Interactions/LoanReturn.tsx:203
 #: components/Interactions/PrepDialog.tsx:139
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:429
@@ -300,7 +300,7 @@ msgstr "Aplicar"
 msgid "applyAll"
 msgstr "Aplicar tudo"
 
-#: components/Interactions/LoanReturn.tsx:180
+#: components/Interactions/LoanReturn.tsx:186
 #: components/Interactions/PrepDialog.tsx:124
 #: components/Notifications/Notifications.tsx:85
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
@@ -1098,13 +1098,13 @@ msgstr "{label:string}: <wrap />"
 msgid "bulkSelect"
 msgstr "Seleção em massa"
 
-#: components/Interactions/LoanReturn.tsx:258
+#: components/Interactions/LoanReturn.tsx:273
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkReturn"
 msgstr "Devolução em massa"
 
-#: components/Interactions/LoanReturn.tsx:272
+#: components/Interactions/LoanReturn.tsx:287
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkResolve"

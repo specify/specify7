@@ -102,31 +102,31 @@ msgstr "В этом контексте препараты не подлежат 
 msgid "noUnresolvedPreparations"
 msgstr "По данному кредиту нет нерешенных вопросов подготовки."
 
-#: components/Interactions/LoanReturn.tsx:300
+#: components/Interactions/LoanReturn.tsx:315
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "unresolved"
 msgstr "Нерешенный"
 
-#: components/Interactions/LoanReturn.tsx:303
+#: components/Interactions/LoanReturn.tsx:318
 #. 🟥Verb. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "return"
 msgstr "Возвращаться"
 
-#: components/Interactions/LoanReturn.tsx:306
+#: components/Interactions/LoanReturn.tsx:321
 #. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "resolve"
 msgstr "Решать"
 
-#: components/Interactions/LoanReturn.tsx:164
+#: components/Interactions/LoanReturn.tsx:170
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "returnAllPreparations"
 msgstr "Вернуть все препараты"
 
-#: components/Interactions/LoanReturn.tsx:195
+#: components/Interactions/LoanReturn.tsx:201
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "returnSelectedPreparations"
@@ -139,7 +139,7 @@ msgid "selectAllAvailablePreparations"
 msgstr "Выбрать все доступные препараты"
 
 #: components/FormMeta/CarryForward.tsx:311
-#: components/Interactions/LoanReturn.tsx:176
+#: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:120
 #: components/Interactions/PrepDialog.tsx:241
 #: components/Interactions/PrepDialogRow.tsx:64
@@ -151,10 +151,10 @@ msgstr "Выбрать все доступные препараты"
 msgid "selectAll"
 msgstr "Выбрать все"
 
-#: components/Interactions/LoanReturn.tsx:260
-#: components/Interactions/LoanReturn.tsx:264
-#: components/Interactions/LoanReturn.tsx:274
-#: components/Interactions/LoanReturn.tsx:278
+#: components/Interactions/LoanReturn.tsx:275
+#: components/Interactions/LoanReturn.tsx:279
+#: components/Interactions/LoanReturn.tsx:289
+#: components/Interactions/LoanReturn.tsx:293
 #: components/Interactions/PrepDialog.tsx:150
 #: components/Interactions/PrepDialog.tsx:154
 #: components/Interactions/PrepDialogRow.tsx:97
@@ -230,7 +230,7 @@ msgstr ""
 "и сохранены"
 
 #: components/FormMeta/CarryForward.tsx:332
-#: components/Interactions/LoanReturn.tsx:191
+#: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:127
 #: components/QueryBuilder/Results.tsx:211
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results

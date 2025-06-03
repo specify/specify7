@@ -92,27 +92,27 @@ msgstr "Les preparations ne peuvent être renvoyées dans ce contexte."
 msgid "noUnresolvedPreparations"
 msgstr "Il n’y a pas de preparations non retournées pour ce prêt."
 
-#: components/Interactions/LoanReturn.tsx:300
+#: components/Interactions/LoanReturn.tsx:315
 #. Used in: Components > Interactions > Loan Return
 msgid "unresolved"
 msgstr "Non résolu"
 
-#: components/Interactions/LoanReturn.tsx:303
+#: components/Interactions/LoanReturn.tsx:318
 #. 🟥Verb. Used in: Components > Interactions > Loan Return
 msgid "return"
 msgstr "Retour"
 
-#: components/Interactions/LoanReturn.tsx:306
+#: components/Interactions/LoanReturn.tsx:321
 #. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
 msgid "resolve"
 msgstr "Résoudre"
 
-#: components/Interactions/LoanReturn.tsx:164
+#: components/Interactions/LoanReturn.tsx:170
 #. Used in: Components > Interactions > Loan Return
 msgid "returnAllPreparations"
 msgstr "Retourner toutes les préparations"
 
-#: components/Interactions/LoanReturn.tsx:195
+#: components/Interactions/LoanReturn.tsx:201
 #. Used in: Components > Interactions > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Retourner les préparations sélectionnées"
@@ -123,7 +123,7 @@ msgid "selectAllAvailablePreparations"
 msgstr "Sélectionnez toutes les préparations disponibles"
 
 #: components/FormMeta/CarryForward.tsx:311
-#: components/Interactions/LoanReturn.tsx:176
+#: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:120
 #: components/Interactions/PrepDialog.tsx:241
 #: components/Interactions/PrepDialogRow.tsx:64
@@ -134,10 +134,10 @@ msgstr "Sélectionnez toutes les préparations disponibles"
 msgid "selectAll"
 msgstr "Tout sélectionner"
 
-#: components/Interactions/LoanReturn.tsx:260
-#: components/Interactions/LoanReturn.tsx:264
-#: components/Interactions/LoanReturn.tsx:274
-#: components/Interactions/LoanReturn.tsx:278
+#: components/Interactions/LoanReturn.tsx:275
+#: components/Interactions/LoanReturn.tsx:279
+#: components/Interactions/LoanReturn.tsx:289
+#: components/Interactions/LoanReturn.tsx:293
 #: components/Interactions/PrepDialog.tsx:150
 #: components/Interactions/PrepDialog.tsx:154
 #: components/Interactions/PrepDialogRow.tsx:97
@@ -211,7 +211,7 @@ msgstr ""
 "renvoyés et enregistrés"
 
 #: components/FormMeta/CarryForward.tsx:332
-#: components/Interactions/LoanReturn.tsx:191
+#: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:127
 #: components/QueryBuilder/Results.tsx:211
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
