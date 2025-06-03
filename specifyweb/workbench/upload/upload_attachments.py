@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Tuple, cast
+from typing import Tuple, Union, cast
 import copy
 
 from .uploadable import Row, Uploadable
@@ -8,6 +8,12 @@ from specifyweb.businessrules.rules.attachment_rules import tables_with_attachme
 from .column_options import ColumnOptions
 from .upload_table import UploadTable
 from ..models import Attachment, Spdataset, Spdatasetattachment
+
+from .upload_result import (
+    UploadResult,
+    AttachmentFailure,
+    ReportInfo,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +28,12 @@ def get_attachments(row: Row):
 def has_attachments(row: Row) -> bool:
     return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
 
+# upload_plan can either be an UploadTable or an Uploadable (so it can be one of two types)
 def validate_attachment(
-    row: Row, upload_plan: UploadTable
-) -> bool:
+    row: Row, upload_plan: Union[UploadTable, Uploadable]
+) -> Tuple[bool, Union[None, UploadResult]]:
+    if not isinstance(upload_plan, UploadTable):
+        raise Exception("Attachments column found, but upload plan is not an UploadTable")
     if has_attachments(row):
         data = get_attachments(row)
         if data and isinstance(data, dict):
@@ -38,8 +47,20 @@ def validate_attachment(
                     supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
                     # TODO: When not uploading to the base table, make sure the target table exists in the upload plan.
                         
-                    return supports_attachments
-    return False
+                    if not supports_attachments:
+                        return False, makeAttachmentResult('tableDoesNotSupportAttachments')
+                    if not Spdatasetattachment.objects.filter(id=attachment["id"]).exists():
+                        return False, makeAttachmentResult('attachmentNotFound')
+                
+                    return True, None
+
+    return False, makeAttachmentResult('attachmentNotFound')
+
+def makeAttachmentResult(
+    message: str,
+):
+    info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN], treeInfo=None)
+    return UploadResult(AttachmentFailure(info=info, message=message), {}, {})
 
 def add_attachments_to_plan(
     row: Row, upload_plan: UploadTable

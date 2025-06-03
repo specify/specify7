@@ -282,6 +282,25 @@ class PropagatedFailure(NamedTuple):
         return PropagatedFailure()
 
 
+class AttachmentFailure(NamedTuple):
+    message: str
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {"AttachmentFailure": dict(message=self.message, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "NoMatch":
+        r = json["AttachmentFailure"]
+        return NoMatch(
+            message=r["message"],
+            info=json_to_ReportInfo(r["info"])
+        )
+
+
 RecordResult = Union[
     Uploaded,
     NoMatch,
@@ -295,6 +314,7 @@ RecordResult = Union[
     Updated,
     Deleted,
     MatchedAndChanged,
+    AttachmentFailure,
 ]
 
 
