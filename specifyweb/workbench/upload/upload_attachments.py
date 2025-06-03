@@ -46,9 +46,9 @@ def validate_attachment(
                     # Check if table supports attachments (e.g. CollectionObject must have CollectionObjectAttachment)
                     supports_attachments = any(model.__name__.lower() == table_name.lower() for model in tables_with_attachments)
                     # TODO: When not uploading to the base table, make sure the target table exists in the upload plan.
-                        
                     if not supports_attachments:
                         return False, makeAttachmentResult('tableDoesNotSupportAttachments')
+                    
                     if not Spdatasetattachment.objects.filter(id=attachment["id"]).exists():
                         return False, makeAttachmentResult('attachmentNotFound')
                 
