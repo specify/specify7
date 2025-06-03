@@ -10,6 +10,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
+import { getIcon } from '../InitialContext/icons';
 
 const comments = { displayDelay: 100 };
 
@@ -68,11 +69,16 @@ export function useHotProps({
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
+      const isAttachmentsColumn =
+        dataset.columns[physicalCol] === ATTACHMENTS_COLUMN;
       const columnName =
-        dataset.columns[physicalCol] === ATTACHMENTS_COLUMN
+        isAttachmentsColumn
           ? attachmentsText.attachments()
           : dataset.columns[physicalCol];
-      const tableIconUrl = mappings?.mappedHeaders?.[physicalCol];
+      const tableIconUrl = 
+        isAttachmentsColumn
+          ? getIcon('Attachment')
+          : mappings?.mappedHeaders?.[physicalCol];
       const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
       const tableName =
