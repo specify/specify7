@@ -697,4 +697,13 @@ export const backEndText = createDictionary({
   invalidCotype: {
     'en-us': 'Invalid type for selected tree rank(s)',
   },
+  attachmentNotFound: {
+    'en-us': 'One or more attachments do not exist. They may have been deleted.'
+  },
+  tableDoesNotSupportAttachments: {
+    'en-us': 'The attachment\'s destination table does not support attachments.',
+  },
+  attachmentAlreadyLinked: {
+    'en-us': 'One or more attachments are already associated with an uploaded record.',
+  }
 } as const);

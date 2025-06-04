@@ -10,7 +10,6 @@ from typing import (
     Union,
     Callable,
     Optional,
-    Tuple,
 )
 from collections.abc import Sized
 
@@ -54,8 +53,16 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
+from .upload_table import UploadTable
 from .scope_context import ScopeContext
 from ..models import Spdataset
+
+from .upload_attachments import (
+    has_attachments,
+    validate_attachment,
+    add_attachments_to_plan,
+    unlink_attachments,
+)
 
 Rows = Union[list[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -107,6 +114,8 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress] = None) 
             current += 1
             if progress is not None:
                 progress(current, total)
+        # Un-link attachments, if any
+        unlink_attachments(ds)
         ds.uploadresult = None
         ds.save(update_fields=["uploadresult"])
 
@@ -340,7 +349,16 @@ def do_upload(
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
-                if cached_scope_table is None:
+                if has_attachments(row):
+                    # If there's an attachments column, add attachments to upload plan
+                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
+                    if not attachments_valid:
+                        results.append(result) # type: ignore
+                        cache = _cache
+                        raise Rollback("failed row")
+                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
+                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
+                elif cached_scope_table is None:
                     scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable

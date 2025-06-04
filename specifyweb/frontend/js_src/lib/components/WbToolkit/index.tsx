@@ -18,6 +18,8 @@ import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { attachmentsText } from '../../localization/attachments';
 
 export function WbToolkit({
   dataset,
@@ -47,10 +49,21 @@ export function WbToolkit({
       'exportFileDelimiter'
     );
 
+    let datasetColumns = dataset.columns;
+    // Don't export attachments column
+    if (datasetColumns.includes(ATTACHMENTS_COLUMN)) {
+      datasetColumns = dataset.columns.map(
+        (col) =>
+          col === ATTACHMENTS_COLUMN
+            ? attachmentsText.attachments()
+            : col
+      )
+    }
+
     downloadDataSet(
       dataset.name,
       dataset.rows,
-      dataset.columns,
+      datasetColumns,
       delimiter
     ).catch(raise);
   };

@@ -161,7 +161,7 @@ function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
               col,
               property,
               typeof value === 'string'
-                ? (value.match(/,/gu) ?? '').length + 1
+                ? JSON.parse(value)?.formatted
                 : undefined,
               ...rest
             );
