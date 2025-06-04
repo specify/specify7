@@ -73,7 +73,9 @@ function regenerate(): string {
           .map(
             ([group, fields]) =>
               `readonly ${group}: ${
-                typeof fields === 'string' ? fields : `{${fields.join(';')}}`
+                typeof fields === 'string'
+                  ? fields
+                  : `{${fields.sort(sortFunction((field) => field)).join(';')}}`
               }`
           )
           .join(';')}}`
