@@ -43,7 +43,7 @@ import {
   BASE_TABLE_NAME,
 } from './helpers';
 
-export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
+export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');

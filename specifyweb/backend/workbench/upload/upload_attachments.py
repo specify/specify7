@@ -18,7 +18,7 @@ from .upload_result import (
 logger = logging.getLogger(__name__)
 
 BASE_TABLE_NAME = "baseTable"
-ATTACHMENTS_COLUMN = "UPLOADED_ATTACHMENTS"
+ATTACHMENTS_COLUMN = "_UPLOADED_ATTACHMENTS"
 
 def get_attachments(row: Row):
     if has_attachments(row):
