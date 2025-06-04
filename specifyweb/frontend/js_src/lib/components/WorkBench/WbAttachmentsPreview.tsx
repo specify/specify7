@@ -251,8 +251,7 @@ function AttachmentViewerDialog({
   >(undefined);
 
   return (
-    <>
-      <Dialog
+    <Dialog
         buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
         className={{
           container: dialogClassNames.wideContainer,
@@ -276,6 +275,5 @@ function AttachmentViewerDialog({
             />
           ))}
       </Dialog>
-    </>
   );
 }
