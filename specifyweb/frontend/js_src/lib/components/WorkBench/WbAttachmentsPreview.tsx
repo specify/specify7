@@ -132,7 +132,7 @@ export function WbAttachmentsPreview({
           </div>
         </div>
       </ErrorBoundary>
-      {showAttachment && selectedAttachment !== undefined && (
+      {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
           onClose={handleHideAttachment}
@@ -252,19 +252,17 @@ function AttachmentViewerDialog({
 
   return (
     <>
-      {attachment !== undefined && (
-        <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          className={{
-            container: dialogClassNames.wideContainer,
-          }}
-          header={attachmentsText.attachments()}
-          modal={false}
-          onClose={onClose}
-        >
-          {isImage ? (
+      <Dialog
+        buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+        className={{
+          container: dialogClassNames.wideContainer,
+        }}
+        header={attachmentsText.attachments()}
+        modal={false}
+        onClose={onClose}
+      >
+        {attachment !== undefined &&
+          (isImage ? (
             <ImageViewer
               alt={attachment?.title ?? ''}
               src={attachmentUrl ?? ''}
@@ -276,9 +274,8 @@ function AttachmentViewerDialog({
               showMeta={false}
               onViewRecord={undefined}
             />
-          )}
-        </Dialog>
-      )}
+          ))}
+      </Dialog>
     </>
   );
 }
