@@ -3,7 +3,7 @@
   "contextname": "CollectionObject",
   "contexttableid": 1,
   "selectdistinct": false,
-  "selectseries": false,
+  "smushed": false,
   "countonly": true,
   "formatauditrecids": false,
   "specifyuser": "/api/specify/specifyuser/1/",
