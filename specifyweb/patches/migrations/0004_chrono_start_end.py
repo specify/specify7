@@ -10,22 +10,21 @@ def reverse_faulty_end_start_period(apps, schema_editor):
             FROM information_schema.tables
             WHERE table_name = 'geologictimeperiod' AND table_schema = DATABASE();
         """)
-        if cursor.fetchone()[0] == 1:
-            # If the table exists, perform the update
-            cursor.execute("""
-                UPDATE geologictimeperiod AS gtp
-                JOIN (
-                    SELECT GeologicTimePeriodID, StartPeriod AS orig_start
-                    FROM geologictimeperiod
-                    WHERE StartPeriod < EndPeriod
-                ) AS sub ON gtp.GeologicTimePeriodID = sub.GeologicTimePeriodID
-                SET 
-                    gtp.StartPeriod = gtp.EndPeriod,
-                    gtp.EndPeriod = sub.orig_start;
-            """)
-        else:
-            print("Table 'geologictimeperiod' does not exist. Skipping update.")
+        if cursor.fetchone()[0] != 1:
+            raise RuntimeError("Expected table 'geologictimeperiod' does not exist. Migration cannot proceed.")
 
+        # Perform the update if the table exists
+        cursor.execute("""
+            UPDATE geologictimeperiod AS gtp
+            JOIN (
+                SELECT GeologicTimePeriodID, StartPeriod AS orig_start
+                FROM geologictimeperiod
+                WHERE StartPeriod < EndPeriod
+            ) AS sub ON gtp.GeologicTimePeriodID = sub.GeologicTimePeriodID
+            SET 
+                gtp.StartPeriod = gtp.EndPeriod,
+                gtp.EndPeriod = sub.orig_start;
+        """)
 class Migration(migrations.Migration):
 
     dependencies = [
