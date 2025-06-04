@@ -68,9 +68,10 @@ export function useHotProps({
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
-      const columnName = dataset.columns[physicalCol] === ATTACHMENTS_COLUMN
-        ? attachmentsText.attachments()
-        : dataset.columns[physicalCol];
+      const columnName =
+        dataset.columns[physicalCol] === ATTACHMENTS_COLUMN
+          ? attachmentsText.attachments()
+          : dataset.columns[physicalCol];
       const tableIconUrl = mappings?.mappedHeaders?.[physicalCol];
       const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
