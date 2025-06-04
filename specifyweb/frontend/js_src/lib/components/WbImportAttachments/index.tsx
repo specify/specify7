@@ -210,7 +210,7 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
-      <FilesPreview files={files} header="Attachment" />
+      <FilesPreview files={files} header={attachmentsText.attachments()} />
     </>
   );
 }
