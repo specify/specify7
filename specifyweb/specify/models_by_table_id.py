@@ -470,7 +470,6 @@ def import_model(model_name):
         if model_name in model_names:
             def get_model():
                 from importlib import import_module
-                # TODO: Update module import paths once all apps are moved under 'backend'
                 if app_name == 'accounts':
                     module = import_module("specifyweb.backend.accounts.models")
                 else:
