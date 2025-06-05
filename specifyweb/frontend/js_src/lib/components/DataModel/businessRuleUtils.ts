@@ -16,6 +16,7 @@ export const PREPARATION_EXCHANGED_OUT_KEY = 'preparation-isExchangedOut';
 export const PREPARATION_EXCHANGED_IN_KEY = 'preparation-isExchangedIn';
 export const COJO_PRIMARY_DELETE_KEY = 'primary-cojo-delete';
 export const CO_HAS_PARENT = ' co-has-parent';
+export const PREP_MISSING_CO = 'prep-missing-CO';
 
 /**
  *
