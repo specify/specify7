@@ -10,6 +10,11 @@ env:
 jobs:
   prep:
     runs-on: ubuntu-latest
+    # "push" event is not triggered for forks, so need to listen for
+    # pull_requests, but only for external ones, so as not to run the action
+    # twice
+    if: github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.fork == true
     outputs:
       tags: ${{ steps.prep.outputs.tags }}
       version: ${{ steps.prep.outputs.version }}
