@@ -6279,14 +6279,6 @@ class Spquery(models.Model):
             models.Index(fields=['name'], name='SpQueryNameIDX')
         ]
 
-    @property
-    def selectSeries(self):
-        return self.smushed
-
-    @selectSeries.setter
-    def selectSeries(self, value):
-        self.smushed = value
-
     save = partialmethod(custom_save)
 
 class Spqueryfield(models.Model):
