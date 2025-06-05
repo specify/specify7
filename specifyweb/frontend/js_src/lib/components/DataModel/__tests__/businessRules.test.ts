@@ -3,11 +3,12 @@ import { act, renderHook } from '@testing-library/react';
 import { resourcesText } from '../../../localization/resources';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { overwriteReadOnly, RA } from '../../../utils/types';
+import type { RA } from '../../../utils/types';
+import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
-import { SpecifyResource } from '../legacyTypes';
+import type { SpecifyResource } from '../legacyTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
@@ -215,8 +216,10 @@ describe('Collection Object business rules', () => {
     const collectionObject = new tables.CollectionObject.Resource({
       determinations: [
         {
-          // We don't directly use IDs because then the determinations will not be 'new' and the
-          // businessrule not executed
+          /*
+           * We don't directly use IDs because then the determinations will not be 'new' and the
+           * businessrule not executed
+           */
           guid: '1',
         },
       ],
