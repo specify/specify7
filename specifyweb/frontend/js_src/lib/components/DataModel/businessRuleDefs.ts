@@ -406,6 +406,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Determination: {
+    customInit: (determinaton: SpecifyResource<Determination>): void => {
+      if (determinaton.isNew()) {
+        const setCurrent = () => {
+          determinaton.set('isCurrent', true);
+          if (determinaton.collection !== undefined) {
+            determinaton.collection.models.forEach(
+              (other: SpecifyResource<Determination>) => {
+                if (other.cid !== determinaton.cid)
+                  other.set('isCurrent', false);
+              }
+            );
+          }
+        };
+        if (determinaton.collection !== null) setCurrent();
+        determinaton.on('add', setCurrent);
+      }
+    },
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
