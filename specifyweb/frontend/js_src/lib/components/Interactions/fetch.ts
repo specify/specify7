@@ -42,3 +42,7 @@ export const defaultInteractionTables: RA<keyof Tables> = [
   'RepositoryAgreement',
   'Appraisal',
 ];
+
+export const defaultInteractionTablesId: RA<number> = [
+  7, 34, 6, 52, 55, 131, 39, 40, 18, 50, 70, 67,
+];

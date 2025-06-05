@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { Ul } from '../Atoms';
-import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -14,7 +12,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { EditFormTables } from './Edit';
 import { useDataEntryTables } from './fetchTables';
 
 export function FormsDialogOverlay(): JSX.Element {
@@ -33,16 +30,12 @@ export function FormsDialog({
   readonly onClose: () => void;
 }): JSX.Element | null {
   const tables = useDataEntryTables('form');
-  const [isEditing, handleEditing] = useBooleanState();
 
-  return isEditing ? (
-    <EditFormTables type="form" onClose={handleClose} />
-  ) : Array.isArray(tables) ? (
+  return Array.isArray(tables) ? (
     <Dialog
       buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
       header={headerText.dataEntry()}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={icons.pencilAt}
       onClose={handleClose}
     >

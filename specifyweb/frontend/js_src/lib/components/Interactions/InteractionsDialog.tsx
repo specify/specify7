@@ -1,15 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
-import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { EditFormTables } from '../DataEntryTables/Edit';
 import { useDataEntryTables } from '../DataEntryTables/fetchTables';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -48,17 +45,13 @@ function Interactions({
   readonly onClose: () => void;
   readonly entries: RA<SpecifyTable>;
 }): JSX.Element {
-  const [isEditing, handleEditing] = useBooleanState();
-  return isEditing ? (
-    <EditFormTables type="interactions" onClose={handleClose} />
-  ) : (
+  return (
     <Dialog
       buttons={commonText.cancel()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
       header={interactionsText.interactions()}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={icons.chat}
       onClose={handleClose}
     >
