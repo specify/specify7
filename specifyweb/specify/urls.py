@@ -20,7 +20,7 @@ urlpatterns = [
     re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
 
     # check if the user is new at login
-    url(r'^specify/is_new_user/$', views.is_new_user),
+    re_path(r'^specify/is_new_user/$', views.is_new_user),
 
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
