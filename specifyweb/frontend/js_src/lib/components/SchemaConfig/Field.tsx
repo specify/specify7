@@ -30,7 +30,16 @@ export function SchemaConfigField({
   readonly field: LiteralField | Relationship;
   readonly item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings;
   readonly onChange: (
-    field: 'desc' | 'isHidden' | 'isRequired' | 'name',
+    field:
+      | 'desc'
+      /*
+       * To uncomment if we want to allow redefinition
+       *  | 'dwcConcept'
+       *  | 'dwcDescription'
+       */
+      | 'isHidden'
+      | 'isRequired'
+      | 'name',
     value: boolean | string
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
@@ -65,6 +74,46 @@ export function SchemaConfigField({
           onValueChange={(value): void => handleChange('desc', value)}
         />
       </Label.Block>
+      {/* Add back after testing*/}
+      {/* {item.dwcConcept !== null && ( */}
+      <Label.Block>
+        {schemaText.dwcConcept()}
+        <Input.Text
+          isReadOnly
+          /*
+           * MaxLength={maxSchemaValueLength}
+           * required
+           * To chnage once we have item.dwcConcept !== null &&
+           */
+          value={item.dwcConcept === null ? 'DWC Concept' : item.dwcConcept}
+          /*
+           * To uncomment if we want to allow redefinition
+           *  onValueChange={(value): void => handleChange('dwcConcept', value)}
+           */
+        />
+      </Label.Block>
+      {/* )} */}
+      {/* Add back after testing*/}
+      {/* {item.dwcDescription !== null && ( */}
+      <Label.Block>
+        {schemaText.dwcDescription()}
+        <AutoGrowTextArea
+          className="resize-y"
+          isReadOnly
+          /*
+           * MaxLength={maxSchemaValueLength}
+           * To chnage once we add the condition rendering
+           */
+          value={
+            item.dwcDescription === null ? 'DwC desc' : item.dwcDescription
+          }
+          /*
+           * To uncomment if we want to allow redefinition
+           * onValueChange={(value): void => handleChange('dwcDescription', value)}
+           */
+        />
+      </Label.Block>
+      {/* )} */}
       <Label.Block>
         {schemaText.fieldLength()}
         <Input.Integer isReadOnly value={field.length ?? ''} />

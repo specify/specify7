@@ -190,3 +190,14 @@ MIGRATION_0029_UPDATE_FIELDS = {
         ('components', 'Components', 'Component parts of a Collection Object'),
     ]
 }
+
+MIGRATION_0032_FIELDS = {
+    'SpLocaleContainerItem': ['dwcConcept', 'dwcDescription'],
+}
+
+MIGRATION_0032_UPDATE_FIELDS = {
+    'SpLocaleContainerItem': [
+        ('dwcConcept', 'Darwin Core Concept', 'Linked Darwin Core Concept'), 
+        ('dwcDescription', 'Darwin Core Concept Description', 'Description of the linked Darwin Core Concept'),
+    ]
+}

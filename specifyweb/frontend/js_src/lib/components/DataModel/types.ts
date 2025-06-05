@@ -5212,6 +5212,8 @@ export type SpLocaleContainerItem = {
     readonly type: string | null;
     readonly version: number | null;
     readonly webLinkName: string | null;
+    readonly dwcConcept: string | null;
+    readonly dwcDescription: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
