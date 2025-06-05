@@ -16,7 +16,7 @@ msgstr ""
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:160
+#: components/Login/index.tsx:188
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -24,12 +24,12 @@ msgstr ""
 msgid "logIn"
 msgstr "Anmelden"
 
-#: components/Login/index.tsx:136
+#: components/Login/index.tsx:164
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Benutzername"
 
-#: components/Login/index.tsx:148
+#: components/Login/index.tsx:176
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -99,7 +99,7 @@ msgstr ""
 "einen Agenten zu"
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:121
+#: components/Login/index.tsx:149
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #, fuzzy
 msgid "helloMessage"
@@ -120,7 +120,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Mit „Konto angeben“ anmelden"
 
-#: components/Login/index.tsx:123
+#: components/Login/index.tsx:151
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "unknownOicUser"

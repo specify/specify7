@@ -731,7 +731,7 @@ msgid "unknown"
 msgstr "Desconocido"
 
 #: components/ExportFeed/Editor.tsx:74
-#: components/Login/index.tsx:116
+#: components/Login/index.tsx:144
 #: components/Preferences/UserDefinitions.tsx:88
 #: components/Preferences/UserDefinitions.tsx:727
 #: components/SchemaConfig/Languages.tsx:39
