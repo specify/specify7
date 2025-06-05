@@ -9,6 +9,7 @@ env:
 
 jobs:
   prep:
+    name: prepare tag names
     runs-on: ubuntu-latest
     # "push" event is not triggered for forks, so need to listen for
     # pull_requests, but only for external ones, so as not to run the action
