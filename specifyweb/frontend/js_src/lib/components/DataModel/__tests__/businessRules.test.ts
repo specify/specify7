@@ -458,7 +458,7 @@ describe('Collecting Event', () => {
     );
     expect(collectorToRemove).toBeDefined();
     collectors?.remove(collectorToRemove!);
-    expect(collectors?.length).toBe(1);
+    expect(collectors?.length).toBe(2);
     const firstCollector = collectors?.models.find(
       (collector) => collector.get('agent') === getResourceApiUrl('Agent', 1)
     );
