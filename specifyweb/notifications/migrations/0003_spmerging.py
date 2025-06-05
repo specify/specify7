@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('specify', '__first__'),
+        # ('specify', '__first__'),
         ('notifications', '0002_message_read'),
     ]
 

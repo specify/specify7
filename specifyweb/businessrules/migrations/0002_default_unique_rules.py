@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('specify', '__first__'),
+        # ('specify', '__first__'),
         ('businessrules', '0001_initial'),
     ]
 

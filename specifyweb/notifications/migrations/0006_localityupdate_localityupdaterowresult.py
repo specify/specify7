@@ -9,8 +9,8 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '__first__'),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        # ('specify', '__first__'),
+        # migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('notifications', '0005_auto_20240530_1512'),
     ]
 
