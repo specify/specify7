@@ -46,6 +46,8 @@ jobs:
           elif [ "${{ github.event_name }}" = "push" ]; then
             TAGS="$TAGS,${DOCKER_IMAGE}"
           fi
+          echo "Tags: ${TAGS}"
+          echo "Version: ${VERSION}"
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
@@ -123,10 +125,9 @@ jobs:
         env:
           TAGS: ${{needs.prep.outputs.tags}}
         run: |
-          TAG_ARGS=$(echo "$TAGS" | tr ',' '\n' | sed 's/^/-t /')
+          TAG_ARGS=$(echo "$TAGS" | tr ',' '\n' | sed 's/^/-t /' | xargs)
           echo "$TAG_ARGS"
-          exit 1
-          docker buildx imagetools create $TAG_ARGS \
+          docker buildx imagetools create --dry-run $TAG_ARGS \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect image
