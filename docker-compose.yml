@@ -67,7 +67,7 @@ services:
     build:
       context: ./.
       target: run-development
-    command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q $DATABASE_NAME"
+    command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1"
     init: true
     volumes:
       - "./config:/opt/Specify/config:ro"
