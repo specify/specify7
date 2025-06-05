@@ -54,6 +54,10 @@ export const defaultFormTablesConfig: RA<keyof Tables> = [
   'ReferenceWork',
 ];
 
+export const defaultFormTablesConfigId: RA<number> = [
+  1, 10, 2, 4, 5, 3, 121, 69,
+];
+
 export const exportsForTests = {
   fetchLegacyForms,
 };
