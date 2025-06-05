@@ -161,9 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
-      isSeries: query.smushed,
+      isSeries: query.selectSeries,
     });
-  }, [state, query.selectDistinct, query.smushed]);
+  }, [state, query.selectDistinct, query.selectSeries]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -314,7 +314,7 @@ function Wrapped({
     if (!showSeries)
       setQuery({
         ...query,
-        smushed: false,
+        selectSeries: false,
       });
   }, [showSeries]);
 
@@ -578,7 +578,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
-                isSeries={query.smushed ?? false}
+                isSeries={query.selectSeries ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
@@ -598,7 +598,7 @@ function Wrapped({
                 onToggleSeries={(): void =>
                   setQuery({
                     ...query,
-                    smushed: !(query.smushed ?? false),
+                    selectSeries: !(query.selectSeries ?? false),
                   })
                 }
               />
