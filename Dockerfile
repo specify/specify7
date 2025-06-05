@@ -4,30 +4,24 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN set -eux; \
-    for i in 1 2 3; do \
-      apt-get update && \
-      apt-get -y install --no-install-recommends \
-        gettext \
-        python3.9 \
-        libldap-2.4-2 \
-        libmariadb3 \
-        rsync \
-        tzdata \
-      && break; \
-      echo "apt-get install failed (attempt $i), retrying in 5s…"; \
-      sleep 5; \
-    done; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends \
+  gettext \
+  python3.9 \
+  libldap-2.4-2 \
+  libmariadb3 \
+  rsync \
+  tzdata \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g 999 specify \
- && useradd -r -u 999 -g specify specify
+  && useradd -r -u 999 -g specify specify
 
 RUN mkdir -p /home/specify \
- && chown specify.specify /home/specify
+  && chown specify.specify /home/specify
 RUN mkdir -p /opt/specify7 \
- && chown specify.specify /opt/specify7
+  && chown specify.specify /opt/specify7
 
 
 #####################################################################
@@ -53,49 +47,35 @@ FROM common AS build-backend
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Retry loop to help GitHub arm64 build
-RUN set -eux; \
-    for i in 1 2 3; do \
-      apt-get update && \
-      apt-get -y install --no-install-recommends \
-            build-essential \
-            ca-certificates \
-            curl \
-            git \
-            libsasl2-dev \
-            libsasl2-modules \
-            libldap2-dev \
-            libssl-dev \
-            libgmp-dev \
-            libffi-dev \
-            python3.9-venv \
-            python3.9-distutils \
-            python3.9-dev \
-            libmariadbclient-dev && break; \
-      echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
-    done; \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends \
+  build-essential \
+  ca-certificates \
+  curl \
+  git \
+  libsasl2-dev \
+  libsasl2-modules \
+  libldap2-dev \
+  libssl-dev \
+  libgmp-dev \
+  libffi-dev \
+  python3.9-venv \
+  python3.9-distutils \
+  python3.9-dev \
+  libmariadbclient-dev \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-# Retry loop to help GitHub arm64 build
-RUN set -eux; \
-    for i in 1 2 3; do \
-        python3.9 -m venv ve && \
-        ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
-        ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
-        break; \
-        echo "pip install failed, retrying in 5 seconds..."; sleep 5; \
-    done
 
-# Retry loop for gunicorn installation
-RUN set -eux; \
-    for i in 1 2 3; do \
-        ve/bin/pip install --no-cache-dir gunicorn && break; \
-        echo "gunicorn install failed, retrying in 5 seconds..."; sleep 5; \
-    done
+RUN python3.9 -m venv ve && \
+  ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+  ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt
+
+RUN ve/bin/pip install --no-cache-dir gunicorn
 
 COPY --from=build-frontend /home/node/dist specifyweb/frontend/static/js
 COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
@@ -129,19 +109,13 @@ COPY --chown=specify:specify specifyweb/settings/__init__.py /opt/specify7/speci
 
 FROM common AS run-common
 
-RUN set -eux; \
-    for i in 1 2 3; do \
-      apt-get update && \
-      apt-get -y install --no-install-recommends rsync && \
-      break; \
-      echo "apt-get install rsync failed (attempt $i), retrying in 5s…"; \
-      sleep 5; \
-    done; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends rsync && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /volumes/static-files/depository \
- && chown -R specify.specify /volumes/static-files
+  && chown -R specify.specify /volumes/static-files
 
 USER specify
 COPY --from=build-backend /opt/specify7 /opt/specify7
@@ -150,33 +124,33 @@ WORKDIR /opt/specify7
 RUN cp -r specifyweb/settings .
 
 RUN echo \
-        "import os" \
-        "\nDATABASE_NAME = os.environ['DATABASE_NAME']" \
-        "\nDATABASE_HOST = os.environ['DATABASE_HOST']" \
-        "\nDATABASE_PORT = os.environ.get('DATABASE_PORT', '')" \
-        "\nMASTER_NAME = os.environ['MASTER_NAME']" \
-        "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
-        "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
-        "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
-        "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
-        "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
-        "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
-        "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', DATABASE_NAME) or DATABASE_NAME" \
-        "\nSEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)" \
-        "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
-        "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
-        "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
-        "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
-        "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
-        "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
-        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
-        > settings/local_specify_settings.py
+  "import os" \
+  "\nDATABASE_NAME = os.environ['DATABASE_NAME']" \
+  "\nDATABASE_HOST = os.environ['DATABASE_HOST']" \
+  "\nDATABASE_PORT = os.environ.get('DATABASE_PORT', '')" \
+  "\nMASTER_NAME = os.environ['MASTER_NAME']" \
+  "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
+  "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
+  "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
+  "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
+  "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
+  "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
+  "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', DATABASE_NAME) or DATABASE_NAME" \
+  "\nSEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)" \
+  "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
+  "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
+  "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
+  "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
+  "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
+  "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
+  "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
+  > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
-        > settings/debug.py
+  > settings/debug.py
 
 RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
-        > settings/secret_key.py
+  > settings/secret_key.py
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
@@ -193,19 +167,13 @@ FROM run-common AS run-development
 
 USER root
 
-RUN set -eux; \
-    for i in 1 2 3; do \
-      apt-get update && \
-      apt-get -y install --no-install-recommends \
-        python3.9-distutils \
-        ca-certificates \
-        make && \
-      break; \
-      echo "apt-get install (python3.9-distutils, ca-certificates, make) failed (attempt $i), retrying in 5s…"; \
-      sleep 5; \
-    done; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends \
+  python3.9-distutils \
+  ca-certificates \
+  make && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 USER specify
 
