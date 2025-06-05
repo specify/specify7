@@ -1,0 +1,66 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 80,
+  "typescript.tsdk": "./specifyweb/frontend/js_src/node_modules/typescript/lib",
+  "eslint.useFlatConfig": true,
+  "eslint.debug": true,
+  "eslint.workingDirectories": ["./specifyweb/frontend/js_src/"],
+  "jest.runMode": {
+    "runAllTestsOnStartup": true,
+    "type": "on-demand"
+  },
+  "jest.jestCommandLine": "npm run unitTests --",
+  "jest.rootPath": "./specifyweb/frontend/js_src/",
+  "better-comments.multilineComments": true,
+  "better-comments.tags": [
+    {
+      "tag": "REFACTOR",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "FIXME",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "BUG",
+      "color": "#15a32d",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "FEATURE",
+      "color": "#d47d2c",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    }
+  ],
+  "sqltools.format": {
+    "linesBetweenQueries": 2
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.formatOnSave": false
+  },
+  "python.analysis.typeCheckingMode": "off",
+  "editor.formatOnSave": true
+}

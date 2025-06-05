@@ -11,24 +11,24 @@
 # Docker compositions. Please contact us at support@specifysoftware.org
 # if you would like to get access
 #
-version: "3.7"
 
 services:
-  mariadb:
-    image: mariadb:10.11
-    volumes:
-      - "database:/var/lib/mysql" # the data directory for mariadb
-      - "./seed-database:/docker-entrypoint-initdb.d"
-    ports:
-      - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
-    command: --max_allowed_packet=1073741824
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DATABASE_NAME}
-      - MYSQL_USER=${MASTER_NAME}
-      - MYSQL_PASSWORD=${MASTER_PASSWORD}
+  # mysql:
+  #   platform: linux/x86_64
+  #   image: mysql:5.7
+  #   volumes:
+  #     - "database:/var/lib/mysql" # the data directory for mysql
+  #   ports:
+  #     - "3307:3306" # map host port 3307 to container port 3306
+  #   command: --max_allowed_packet=1073741824
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_DATABASE=root
+  # - MYSQL_USER=root
+  # - MYSQL_PASSWORD=root
 
   specify7:
+    # image: specifyconsortium/specify7-service:v7
     build:
       context: ./.
       target: run-development
@@ -42,7 +42,7 @@ services:
       # node user in the webpack container. Adding webpack to the
       # depends_on will hopefully stop that.
       - webpack
-      - mariadb
+      # - mysql
     volumes:
       - "./config:/opt/Specify/config:ro" # provides Specify 6 files to Specify 7 and the web server
       - "static-files:/volumes/static-files" # provides Specify 7 static files to the web server
@@ -67,7 +67,7 @@ services:
     build:
       context: ./.
       target: run-development
-    command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q $DATABASE_NAME"
+    command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1"
     init: true
     volumes:
       - "./config:/opt/Specify/config:ro"
@@ -104,8 +104,17 @@ services:
   report-runner:
     image: specifyconsortium/report-runner
 
+  # keycloak:
+  #   image: quay.io/keycloak/keycloak:latest
+  #   command: start-dev
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 8080:8080
+
 volumes:
   attachments: # the asset-servers attachment files
-  database: # the data directory for mariadb
+  # database: # the data directory for mariadb
+  specify6: # provides Specify 6 files to Specify 7 and the web server
   static-files: # provides Specify 7 static files to the web server
   webpack-output:
