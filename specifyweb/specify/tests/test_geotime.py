@@ -496,7 +496,7 @@ class GeoTimeTests(ApiTests):
                 "_tablename": "SpQuery",
                 "remarks": None,
                 "searchsynonymy": None,
-                "smushed": None,
+                "selectseries": False,
                 "sqlstr": None,
                 "timestampcreated": "2024-11-06",
                 "timestampmodified": None,

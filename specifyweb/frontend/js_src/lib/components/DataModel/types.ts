@@ -5299,7 +5299,7 @@ export type SpQuery = {
     readonly remarks: string | null;
     readonly searchSynonymy: boolean | null;
     readonly selectDistinct: boolean | null;
-    readonly smushed: boolean | null;
+    readonly selectSeries: boolean | null;
     readonly sqlStr: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;

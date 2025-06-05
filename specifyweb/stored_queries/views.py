@@ -83,7 +83,7 @@ def query(request, id):
     with models.session_context() as session:
         sp_query = session.query(models.SpQuery).get(int(id))
         distinct = sp_query.selectDistinct
-        series = sp_query.smushed
+        series = sp_query.selectSeries
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
