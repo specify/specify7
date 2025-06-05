@@ -3,15 +3,21 @@ import { act, renderHook } from '@testing-library/react';
 import { resourcesText } from '../../../localization/resources';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { overwriteReadOnly } from '../../../utils/types';
+import { overwriteReadOnly, RA } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
+import { SpecifyResource } from '../legacyTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type { CollectionObjectType, Taxon, TaxonTreeDefItem } from '../types';
+import type {
+  CollectionObjectType,
+  Collector,
+  Taxon,
+  TaxonTreeDefItem,
+} from '../types';
 
 mockTime();
 requireContext();
@@ -373,6 +379,90 @@ describe('CollectionObjectGroup business rules', () => {
     expect(result.current[0]).toStrictEqual([
       resourcesText.primaryCogChildRequired(),
     ]);
+  });
+});
+
+describe('Collecting Event', () => {
+  test('Adding sole Collector sets isPrimary', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+    const collector = new tables.Collector.Resource();
+    expect(collector.get('isPrimary')).toBeUndefined();
+    collectingEvent.set('collectors', [collector]);
+    expect(collector.get('isPrimary')).toBe(true);
+    expect(
+      collectingEvent
+        .getDependentResource('collectors')
+        ?.models[0]?.get('isPrimary')
+    ).toBe(true);
+  });
+  test('Collector isPrimary set on initailization', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource({
+      collectors: [
+        {
+          agent: getResourceApiUrl('Agent', 1),
+        },
+      ],
+    });
+    const collectors = collectingEvent.getDependentResource('collectors');
+    expect(collectors?.length).toBe(1);
+    expect(collectors?.models[0].get('isPrimary')).toBe(true);
+  });
+  test('Adding Collector to existing Collection does not override isPrimary', () => {
+    const collectors: RA<SpecifyResource<Collector>> = [
+      new tables.Collector.Resource({
+        _tableName: 'Collector',
+        agent: getResourceApiUrl('Agent', 1),
+      }),
+      new tables.Collector.Resource({
+        _tableName: 'Collector',
+        agent: getResourceApiUrl('Agent', 2),
+      }),
+    ];
+    const collectingEvent = new tables.CollectingEvent.Resource({
+      collectors: [collectors[0]],
+    });
+    collectingEvent.set('collectors', collectors);
+    expect(collectors[0].get('isPrimary')).toBe(true);
+    expect(
+      collectingEvent
+        .getDependentResource('collectors')
+        ?.models[0]?.get('isPrimary')
+    ).toBe(true);
+    expect(collectors[1].get('isPrimary')).toBe(false);
+    expect(
+      collectingEvent
+        .getDependentResource('collectors')
+        ?.models[1]?.get('isPrimary')
+    ).toBe(false);
+  });
+  test('Removing Collector sets first Collector as primary', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource({
+      collectors: [
+        {
+          isPrimary: false,
+          agent: getResourceApiUrl('Agent', 1),
+        },
+        {
+          isPrimary: true,
+          agent: getResourceApiUrl('Agent', 2),
+        },
+        {
+          isPrimary: false,
+          agent: getResourceApiUrl('Agent', 3),
+        },
+      ],
+    });
+    const collectors = collectingEvent.getDependentResource('collectors');
+    const collectorToRemove = collectors?.models.find(
+      (collector) => collector.get('agent') === getResourceApiUrl('Agent', 2)
+    );
+    expect(collectorToRemove).toBeDefined();
+    collectors?.remove(collectorToRemove!);
+    expect(collectors?.length).toBe(1);
+    const firstCollector = collectors?.models.find(
+      (collector) => collector.get('agent') === getResourceApiUrl('Agent', 1)
+    );
+    expect(firstCollector?.get('isPrimary')).toBe(true);
   });
 });
 
