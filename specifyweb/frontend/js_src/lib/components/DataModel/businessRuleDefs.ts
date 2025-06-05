@@ -407,10 +407,21 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
   Determination: {
     customInit: (determinaton: SpecifyResource<Determination>): void => {
+      /**
+       * Theoretically if the user could add an existing Determination to a
+       * (Backbone) Collection in the UI we still want to set it as current in
+       * the Collection and uncheck any existing current, though we would also
+       * want to make sure the existing Collection the Determination is leaving
+       * contains a current Determination and prevent the operation
+       * (via saveblocker?) if so.
+       */
       if (determinaton.isNew()) {
         const setCurrent = () => {
           determinaton.set('isCurrent', true);
-          if (determinaton.collection !== undefined) {
+          if (
+            determinaton.collection !== undefined &&
+            determinaton.collection !== null
+          ) {
             determinaton.collection.models.forEach(
               (other: SpecifyResource<Determination>) => {
                 if (other.cid !== determinaton.cid)
@@ -419,7 +430,17 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             );
           }
         };
-        if (determinaton.collection !== null) setCurrent();
+        if (
+          determinaton.collection !== null &&
+          determinaton.collection !== undefined
+        ) {
+          determinaton.collection.models.at(-1)?.set('isCurrent', true);
+          determinaton.collection.models
+            .slice(0, -1)
+            .forEach((determination) => {
+              determination.set('isCurrent', false);
+            });
+        }
         determinaton.on('add', setCurrent);
       }
     },

@@ -204,7 +204,42 @@ describe('Collection Object business rules', () => {
     await collectionObject.businessRuleManager?.pendingPromise;
   });
 
-  test('CollectionObject -> determinations: New determinations are current by default', async () => {
+  test('CollectionObject -> determinations: determinations on initializtion is current by default', () => {
+    // We don't directly use the base because the determination is marked as current by default
+    const collectionObject = new tables.CollectionObject.Resource({
+      determinations: [
+        {
+          // We don't directly use IDs because then the determinations will not be 'new' and the
+          // businessrule not executed
+          guid: '1',
+        },
+      ],
+    });
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    expect(determinations?.length).toBe(1);
+    expect(determinations?.models[0].get('isCurrent')).toBe(true);
+  });
+
+  test('CollectionObject -> determinations: multiple determinations on intialization handled', () => {
+    const collectionObject = new tables.CollectionObject.Resource({
+      determinations: [
+        {
+          guid: '1',
+        },
+        {
+          guid: '2',
+        },
+      ],
+    });
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    expect(determinations?.length).toBe(2);
+    expect(determinations?.models[0]?.get('isCurrent')).toBe(false);
+    expect(determinations?.models[1]?.get('isCurrent')).toBe(true);
+  });
+
+  test('CollectionObject -> determinations: Newly added determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
     const determinations =
       collectionObject.getDependentResource('determinations');
