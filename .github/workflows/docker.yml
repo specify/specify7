@@ -10,11 +10,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.prep.outputs.tags }}
     # "push" event is not triggered for forks, so need to listen for
     # pull_requests, but only for external ones, so as not to run the action
     # twice
-    if:
-      github.event_name != 'pull_request' ||
+    if: github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.fork == true
     strategy:
       fail-fast: false
@@ -22,7 +23,6 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-      # max-parallel: 1
     steps:
       - name: Prepare
         id: prep
@@ -87,7 +87,7 @@ jobs:
             BUILD_VERSION=${{ steps.prep.outputs.version }}
             GIT_SHA=${{ github.sha }}
           tags: ${{ steps.prep.outputs.tags }}
-          push: true
+          push: false
 
       - name: Export digest
         run: |
@@ -133,7 +133,9 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          echo "${{needs.build.outputs.tags}}"
+          exit 1
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "${{ needs.build.outputs.tags }}") \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect image
