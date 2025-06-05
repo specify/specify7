@@ -7,7 +7,10 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
@@ -86,7 +89,17 @@ export async function format<SCHEMA extends AnySchema>(
   if (typeof resource !== 'object' || resource === null || resource.deleted)
     return undefined;
   if (hasTablePermission(resource.specifyTable.name, 'read'))
-    await resource.fetch();
+    /*
+     * Handle the case for when the resource has been deleted from the database
+     * instead of throwing a NOT FOUND Error.
+     * This will use the 'naive' formatter for the resource
+     */
+    await hijackBackboneAjax(
+      [Http.NOT_FOUND],
+      async () => resource.fetch(),
+      f.void
+    );
+
   const resolvedDefaultFormatter =
     defaultFormatter ?? resource.specifyTable.getFormat();
 
