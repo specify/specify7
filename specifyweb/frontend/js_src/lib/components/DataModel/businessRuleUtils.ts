@@ -1,5 +1,5 @@
-import { BusinessRuleDefs } from './businessRuleDefs';
-import { AnySchema, TableFields } from './helperTypes';
+import type { BusinessRuleDefs } from './businessRuleDefs';
+import type { AnySchema, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { Collection } from './specifyTable';
 import type { CollectionObjectGroupJoin, Determination } from './types';
