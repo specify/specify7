@@ -12,10 +12,13 @@ import type { SpecifyResource } from '../legacyTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
+import { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
 import type {
+  CollectingEvent,
   CollectionObjectType,
   Collector,
+  Tables,
   Taxon,
   TaxonTreeDefItem,
 } from '../types';
@@ -385,59 +388,78 @@ describe('CollectionObjectGroup business rules', () => {
   });
 });
 
+describe('Dependent Collections isPrimary', () => {
+  const testCases: RA<
+    readonly [parentTable: keyof Tables, table: string, fieldName: string]
+  > = [
+    ['CollectingEvent', 'collectors', 'isPrimary'],
+    ['Agent', 'addresses', 'isPrimary'],
+    ['Determination', 'determiners', 'isPrimary'],
+    ['CollectingTrip', 'fundingAgents', 'isPrimary'],
+  ];
+  testCases.forEach(([parentTableName, childFieldName, primaryField]) => {
+    describe(`${parentTableName} -> ${childFieldName}`, () => {
+      test(`Adding sole ${childFieldName} sets ${primaryField} `, () => {
+        const parentTable = tables[parentTableName];
+        const childTable =
+          parentTable.strictGetRelationship(childFieldName).relatedTable;
+        const parentResource =
+          new parentTable.Resource() as SpecifyResource<CollectingEvent>;
+        const resource =
+          new childTable.Resource() as SpecifyResource<Collector>;
+        expect(resource.get(primaryField as 'isPrimary')).toBeUndefined();
+        parentResource.set(childFieldName as 'collectors', [resource]);
+        expect(resource.get(primaryField as 'isPrimary')).toBe(true);
+        expect(
+          parentResource
+            .getDependentResource(childFieldName as 'collectors')
+            ?.models[0].get(primaryField as 'isPrimary')
+        ).toBe(true);
+      });
+      test(`${primaryField} set on initailization`, () => {
+        const parentTable = tables[parentTableName];
+        const parentResource = new parentTable.Resource({
+          [childFieldName]: [{}],
+        }) as SpecifyResource<CollectingEvent>;
+        const dependentCollection = parentResource.getDependentResource(
+          childFieldName as 'collectors'
+        );
+        expect(dependentCollection?.length).toBe(1);
+        expect(
+          dependentCollection?.models[0].get(primaryField as 'isPrimary')
+        ).toBe(true);
+      });
+      test(`Adding to existing Collection doesn't override ${primaryField}`, () => {
+        const parentTable = tables[
+          parentTableName
+        ] as SpecifyTable<CollectingEvent>;
+        const childTable = parentTable.strictGetRelationship(childFieldName)
+          .relatedTable as SpecifyTable<Collector>;
+        const dependents = [
+          new childTable.Resource(),
+          new childTable.Resource(),
+        ];
+        const parentResource = new parentTable.Resource({
+          [childFieldName]: [dependents[0]],
+        });
+        parentResource.set(childFieldName as 'collectors', dependents);
+        const dependentsOnParent = parentResource.getDependentResource(
+          childFieldName as 'collectors'
+        )?.models;
+        expect(dependents[0].get(primaryField as 'isPrimary')).toBe(true);
+        expect(dependentsOnParent?.[0].get(primaryField as 'isPrimary')).toBe(
+          true
+        );
+        expect(dependents[1].get(primaryField as 'isPrimary')).toBe(false);
+        expect(dependentsOnParent?.[1].get(primaryField as 'isPrimary')).toBe(
+          false
+        );
+      });
+    });
+  });
+});
+
 describe('Collecting Event', () => {
-  test('Adding sole Collector sets isPrimary', () => {
-    const collectingEvent = new tables.CollectingEvent.Resource();
-    const collector = new tables.Collector.Resource();
-    expect(collector.get('isPrimary')).toBeUndefined();
-    collectingEvent.set('collectors', [collector]);
-    expect(collector.get('isPrimary')).toBe(true);
-    expect(
-      collectingEvent
-        .getDependentResource('collectors')
-        ?.models[0]?.get('isPrimary')
-    ).toBe(true);
-  });
-  test('Collector isPrimary set on initailization', () => {
-    const collectingEvent = new tables.CollectingEvent.Resource({
-      collectors: [
-        {
-          agent: getResourceApiUrl('Agent', 1),
-        },
-      ],
-    });
-    const collectors = collectingEvent.getDependentResource('collectors');
-    expect(collectors?.length).toBe(1);
-    expect(collectors?.models[0].get('isPrimary')).toBe(true);
-  });
-  test('Adding Collector to existing Collection does not override isPrimary', () => {
-    const collectors: RA<SpecifyResource<Collector>> = [
-      new tables.Collector.Resource({
-        _tableName: 'Collector',
-        agent: getResourceApiUrl('Agent', 1),
-      }),
-      new tables.Collector.Resource({
-        _tableName: 'Collector',
-        agent: getResourceApiUrl('Agent', 2),
-      }),
-    ];
-    const collectingEvent = new tables.CollectingEvent.Resource({
-      collectors: [collectors[0]],
-    });
-    collectingEvent.set('collectors', collectors);
-    expect(collectors[0].get('isPrimary')).toBe(true);
-    expect(
-      collectingEvent
-        .getDependentResource('collectors')
-        ?.models[0]?.get('isPrimary')
-    ).toBe(true);
-    expect(collectors[1].get('isPrimary')).toBe(false);
-    expect(
-      collectingEvent
-        .getDependentResource('collectors')
-        ?.models[1]?.get('isPrimary')
-    ).toBe(false);
-  });
   test('Removing Collector sets first Collector as primary', () => {
     const collectingEvent = new tables.CollectingEvent.Resource({
       collectors: [
