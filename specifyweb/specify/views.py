@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 def login_maybe_required(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated and not spmodels.Collection.objects.exists():
+        if not request.user.is_authenticated and spmodels.Collection.objects.exists():
             return http.HttpResponseForbidden()
         return view(request, *args, **kwargs)
     return wrapped
