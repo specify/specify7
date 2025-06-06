@@ -86,7 +86,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Los Angeles County\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -161,7 +161,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Cabinet 1\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -236,7 +236,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Carpiodes velifer\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -311,7 +311,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Paleocene\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -386,7 +386,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Cretaceous\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -461,7 +461,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Plate\\"",
     "ordinal": 32767,
     "selectdistinct": false,
-    "smushed": false,
+    "selectseries": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
 ]
