@@ -105,7 +105,6 @@ overrideAjax(
       resource_uri: undefined,
       searchsynonymy: null,
       selectdistinct: false,
-      selectseries: false,
       smushed: null,
       specifyuser: '/api/specify/specifyuser/2/',
       sqlstr: null,
