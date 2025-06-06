@@ -1979,7 +1979,7 @@ class Migration(migrations.Migration):
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
                 ('searchsynonymy', models.BooleanField(blank=True, db_column='SearchSynonymy', null=True)),
                 ('selectdistinct', models.BooleanField(blank=True, db_column='SelectDistinct', null=True)),
-                ('selectseries', models.BooleanField(blank=True, db_column='selectseries', null=True)),
+                ('smushed', models.BooleanField(blank=True, db_column='Smushed', null=True)),
                 ('sqlstr', models.TextField(blank=True, db_column='SqlStr', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
