@@ -5016,7 +5016,6 @@ class Spquery(models.Model):
     modifiedbyagentid = models.ForeignKey(Agent, models.DO_NOTHING, db_column='ModifiedByAgentID', blank=True, null=True)  # Field name made lowercase.
     specifyuserid = models.ForeignKey(Specifyuser, models.DO_NOTHING, db_column='SpecifyUserID')  # Field name made lowercase.
     createdbyagentid = models.ForeignKey(Agent, models.DO_NOTHING, db_column='CreatedByAgentID', blank=True, null=True)  # Field name made lowercase.
-    smushed = models.BooleanField(db_column='Smushed', blank=True, null=True)  # Field name made lowercase.
     formatauditrecids = models.BooleanField(db_column='FormatAuditRecIds', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:

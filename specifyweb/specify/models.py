@@ -6262,7 +6262,6 @@ class Spquery(models.Model):
     searchsynonymy = models.BooleanField(blank=True, null=True, unique=False, db_column='SearchSynonymy', db_index=False)
     selectdistinct = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectDistinct', db_index=False)
     selectseries = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectSeries', db_index=False, default=False)
-    smushed = models.BooleanField(blank=True, null=True, unique=False, db_column='Smushed', db_index=False)
     sqlstr = models.TextField(blank=True, null=True, unique=False, db_column='SqlStr', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True

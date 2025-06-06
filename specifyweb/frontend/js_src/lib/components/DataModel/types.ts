@@ -5300,7 +5300,6 @@ export type SpQuery = {
     readonly searchSynonymy: boolean | null;
     readonly selectDistinct: boolean | null;
     readonly selectSeries: boolean | null;
-    readonly smushed: boolean | null;
     readonly sqlStr: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;

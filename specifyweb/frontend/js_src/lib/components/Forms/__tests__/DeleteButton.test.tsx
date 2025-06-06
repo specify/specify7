@@ -106,7 +106,6 @@ overrideAjax(
       searchsynonymy: null,
       selectdistinct: false,
       selectseries: false,
-      smushed: null,
       specifyuser: '/api/specify/specifyuser/2/',
       sqlstr: null,
       timestampcreated: '2022-08-31',

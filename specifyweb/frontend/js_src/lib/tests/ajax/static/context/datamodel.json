@@ -31087,14 +31087,6 @@
         "type": "java.lang.Boolean"
       },
       {
-        "name": "smushed",
-        "column": "Smushed",
-        "indexed": false,
-        "unique": false,
-        "required": false,
-        "type": "java.lang.Boolean"
-      },
-      {
         "name": "sqlStr",
         "column": "SqlStr",
         "indexed": false,

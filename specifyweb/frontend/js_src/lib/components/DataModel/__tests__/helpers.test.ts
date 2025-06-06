@@ -124,7 +124,6 @@ describe('serializeResource', () => {
       searchSynonymy: null,
       selectDistinct: null,
       selectSeries: null,
-      smushed: null,
       specifyUser: null,
       sqlStr: null,
       timestampCreated: '2022-08-31',

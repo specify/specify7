@@ -6596,7 +6596,6 @@ datamodel = Datamodel(tables=[
             Field(name='searchSynonymy', column='SearchSynonymy', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='selectDistinct', column='SelectDistinct', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='selectSeries', column='SelectSeries', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='smushed', column='Smushed', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='sqlStr', column='SqlStr', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
