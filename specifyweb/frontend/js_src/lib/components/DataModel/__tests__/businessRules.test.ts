@@ -12,7 +12,7 @@ import type { SpecifyResource } from '../legacyTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
-import { SpecifyTable } from '../specifyTable';
+import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
 import type {
   CollectingEvent,
@@ -404,9 +404,9 @@ describe('Dependent Collections isPrimary', () => {
         const childTable =
           parentTable.strictGetRelationship(childFieldName).relatedTable;
         const parentResource =
-          new parentTable.Resource() as SpecifyResource<CollectingEvent>;
+          new parentTable.Resource() ;
         const resource =
-          new childTable.Resource() as SpecifyResource<Collector>;
+          new childTable.Resource() ;
         expect(resource.get(primaryField as 'isPrimary')).toBeUndefined();
         parentResource.set(childFieldName as 'collectors', [resource]);
         expect(resource.get(primaryField as 'isPrimary')).toBe(true);
@@ -420,7 +420,7 @@ describe('Dependent Collections isPrimary', () => {
         const parentTable = tables[parentTableName];
         const parentResource = new parentTable.Resource({
           [childFieldName]: [{}],
-        }) as SpecifyResource<CollectingEvent>;
+        }) ;
         const dependentCollection = parentResource.getDependentResource(
           childFieldName as 'collectors'
         );
