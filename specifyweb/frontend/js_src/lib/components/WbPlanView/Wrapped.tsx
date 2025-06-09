@@ -20,7 +20,7 @@ import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
 import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
-import { BaseTableSelection, AttachmentBaseTableSelection } from './State';
+import { BaseTableSelection } from './State';
 import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { UploadPlan } from './uploadPlanParser';
 

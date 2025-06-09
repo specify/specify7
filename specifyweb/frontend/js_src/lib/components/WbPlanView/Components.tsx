@@ -12,8 +12,10 @@ import { tablesWithAttachments } from '../Attachments/utils';
 
 export function ListOfBaseTables({
   onClick: handleClick,
+  onlyAttachmentTables = false,
 }: {
   readonly onClick: (table: keyof Tables) => void;
+  readonly onlyAttachmentTables?: boolean;
 }): JSX.Element {
   const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
@@ -27,40 +29,23 @@ export function ListOfBaseTables({
   );
 
   const filter = React.useCallback(
-    (showAdvancedTables: boolean, table: SpecifyTable) =>
-      tablesFilter(
-        isNoRestrictionMode,
-        showNoAccessTables,
-        showAdvancedTables,
-        table
-      ),
+    (showAdvancedTables: boolean, table: SpecifyTable) => {
+      return (
+        tablesFilter(
+          isNoRestrictionMode,
+          showNoAccessTables,
+          showAdvancedTables,
+          table
+        ) &&
+        (!onlyAttachmentTables ||
+          tablesWithAttachments().find(
+            (module) => module.name === table.name
+          ) !== undefined)
+      );
+    },
     [isNoRestrictionMode, showNoAccessTables]
   );
 
-  return (
-    <TableList
-      cacheKey="wbPlanViewUi"
-      filter={filter}
-      getAction={({ name }) =>
-        () =>
-          handleClick(name)
-        }
-    />
-  );
-}
-
-export function ListOfTablesWithAttachments({
-  onClick: handleClick,
-}: {
-  readonly onClick: (table: keyof Tables) => void;
-}): JSX.Element {
-  const filter = React.useCallback(
-    (_showAdvancedTables: boolean, table: SpecifyTable): boolean =>
-      {
-        return tablesWithAttachments().find(module => module.name === table.name) !== undefined
-      },
-    []
-  );
   return (
     <TableList
       cacheKey="wbPlanViewUi"
