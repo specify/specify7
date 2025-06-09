@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react';
+
 import { tables } from '../../components/DataModel/tables';
 import { requireContext } from '../../tests/helpers';
-import { Parser } from '../../utils/parser/definitions';
+import type { Parser } from '../../utils/parser/definitions';
 import { useParser } from '../resource';
 import { useParserDefaultValue } from '../useParserDefaultValue';
 
@@ -45,7 +46,7 @@ test("Doesn't override an existing resource's values", () => {
   };
   renderHook(() => useParserDefaultValue(resource, field, parser));
 
-  expect(resource.get(field.name as never)).toBe(undefined);
+  expect(resource.get(field.name as never)).toBeUndefined();
 });
 
 test("Doesn't assume default value", () => {
