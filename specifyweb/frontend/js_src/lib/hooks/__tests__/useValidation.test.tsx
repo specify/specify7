@@ -1,14 +1,13 @@
 // The idea is to "build up" tests to useResourceValue
 
+import { renderHook } from '@testing-library/react';
 import React from 'react';
 
-
-import { renderHook } from '@testing-library/react';
-import { useValidation } from '../useValidation';
-import { mount } from '../../tests/reactUtils';
 import { Input } from '../../components/Atoms/Form'
-import { RA } from '../../utils/types';
 import { InFormEditorContext } from '../../components/FormEditor/Context';
+import { mount } from '../../tests/reactUtils';
+import type { RA } from '../../utils/types';
+import { useValidation } from '../useValidation';
 
 /**
  * The unit tests below are added chronologically.
@@ -22,8 +21,8 @@ import { InFormEditorContext } from '../../components/FormEditor/Context';
 
 
 /*
-useValidation.tsx           |   87.12 |       60 |     100 |   87.12 | 48-55,62-63,76-82 
-*/
+ *UseValidation.tsx           |   87.12 |       60 |     100 |   87.12 | 48-55,62-63,76-82 
+ */
 test("custom validation and hook use (simple errors)", async () => {
     // TODO: Make a better wrapper around renderhook
     const customError = "Input must be multiple of two!";
