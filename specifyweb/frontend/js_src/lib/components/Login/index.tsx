@@ -36,7 +36,7 @@ export function Login(): JSX.Element {
         })
           .then(({ data }) => data)
           .catch((error) => {
-            console.error("Failed to fetch isNewUser:", error);
+            console.error('Failed to fetch isNewUser:', error);
             return undefined;
           }),
       []
@@ -49,7 +49,7 @@ export function Login(): JSX.Element {
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
     if (isNewUser === true || isNewUser === undefined) {
-      // Display here the new setup pages 
+      // Display here the new setup pages
       return <p>Welcome! No institutions are available at the moment.</p>;
     }
 
@@ -85,7 +85,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [isNewUser]); 
+  }, [isNewUser]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
