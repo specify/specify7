@@ -107,7 +107,7 @@ msgid "databaseVersion"
 msgstr "Версія бази даних:"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/SchemaViewer/index.tsx:34
+#: components/SchemaViewer/index.tsx:47
 #. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 msgid "schemaVersion"
 msgstr "Версія схеми БД"

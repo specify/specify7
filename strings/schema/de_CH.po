@@ -245,17 +245,17 @@ msgstr "Abhängig"
 msgid "independent"
 msgstr "Unabhängig"
 
-#: components/SchemaViewer/index.tsx:44
+#: components/SchemaViewer/index.tsx:57
 #. Used in: Components > Schema Viewer > Index
 msgid "downloadAsJson"
 msgstr "Als JSON herunterladen"
 
-#: components/SchemaViewer/index.tsx:51
+#: components/SchemaViewer/index.tsx:64
 #. Used in: Components > Schema Viewer > Index
 msgid "downloadAsXml"
 msgstr "Als XML herunterladen"
 
-#: components/SchemaViewer/index.tsx:64
+#: components/SchemaViewer/index.tsx:77
 #. Used in: Components > Schema Viewer > Index
 msgid "downloadAsTsv"
 msgstr "Als TSV herunterladen"
@@ -363,7 +363,7 @@ msgstr "Anzahl Duplikate"
 msgid "schemaViewTitle"
 msgstr "Schema-Konfiguration: {tableName:string}"
 
-#: components/SchemaViewer/index.tsx:57
+#: components/SchemaViewer/index.tsx:70
 #. Used in: Components > Schema Viewer > Index
 msgid "schemaExportFileName"
 msgstr "Specify 7 Datenmodell"

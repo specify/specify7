@@ -988,7 +988,7 @@ msgstr "{header:string}:"
 #: components/SchemaConfig/Table.tsx:50
 #: components/SchemaViewer/Fields.tsx:30
 #: components/SchemaViewer/Fields.tsx:37
-#: components/SchemaViewer/index.tsx:33
+#: components/SchemaViewer/index.tsx:46
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116

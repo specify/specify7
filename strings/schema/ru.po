@@ -278,19 +278,19 @@ msgstr "Зависимый"
 msgid "independent"
 msgstr "Независимый"
 
-#: components/SchemaViewer/index.tsx:44
+#: components/SchemaViewer/index.tsx:57
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsJson"
 msgstr "Скачать как JSON"
 
-#: components/SchemaViewer/index.tsx:51
+#: components/SchemaViewer/index.tsx:64
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsXml"
 msgstr "Загрузить как XML"
 
-#: components/SchemaViewer/index.tsx:64
+#: components/SchemaViewer/index.tsx:77
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsTsv"
@@ -412,7 +412,7 @@ msgstr "Количество дубликатов"
 msgid "schemaViewTitle"
 msgstr "Конфигурация схемы: {tableName:string}"
 
-#: components/SchemaViewer/index.tsx:57
+#: components/SchemaViewer/index.tsx:70
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaExportFileName"
