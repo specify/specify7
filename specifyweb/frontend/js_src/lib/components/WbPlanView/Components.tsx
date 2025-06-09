@@ -3,12 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
+import { tablesWithAttachments } from '../Attachments/utils';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { TableList, tablesFilter } from '../SchemaConfig/Tables';
-import { tablesWithAttachments } from '../Attachments/utils';
 
 export function ListOfBaseTables({
   onClick: handleClick,
@@ -29,8 +29,7 @@ export function ListOfBaseTables({
   );
 
   const filter = React.useCallback(
-    (showAdvancedTables: boolean, table: SpecifyTable) => {
-      return (
+    (showAdvancedTables: boolean, table: SpecifyTable) => (
         tablesFilter(
           isNoRestrictionMode,
           showNoAccessTables,
@@ -41,8 +40,7 @@ export function ListOfBaseTables({
           tablesWithAttachments().find(
             (module) => module.name === table.name
           ) !== undefined)
-      );
-    },
+      ),
     [isNoRestrictionMode, showNoAccessTables]
   );
 

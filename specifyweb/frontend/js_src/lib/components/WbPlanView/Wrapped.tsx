@@ -15,13 +15,13 @@ import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
 import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { UploadPlan } from './uploadPlanParser';
 
 // General definitions
@@ -127,7 +127,7 @@ export function WbPlanView({
   useErrorContext('state', state);
 
   const hasAttachments = React.useMemo(
-    () => dataset.columns.includes(ATTACHMENTS_COLUMN), 
+    () => dataset.columns.includes(ATTACHMENTS_COLUMN),
     [dataset.columns]
   );
 
@@ -136,6 +136,7 @@ export function WbPlanView({
     <ProtectedAction action="update" resource="/workbench/dataset">
       <BaseTableSelection
         headers={headers}
+        onlyAttachmentTables={hasAttachments}
         onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
         onSelected={(baseTableName): void =>
           setState({
@@ -157,7 +158,6 @@ export function WbPlanView({
             ...getLinesFromUploadPlan(headers, uploadPlan),
           })
         }
-        onlyAttachmentTables={hasAttachments}
       />
     </ProtectedAction>
   ) : (

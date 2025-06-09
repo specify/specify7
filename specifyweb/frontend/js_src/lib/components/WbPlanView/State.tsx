@@ -106,8 +106,8 @@ export function BaseTableSelection({
       onClose={handleClose}
     >
       <ListOfBaseTables
-        onClick={handleSelected}
         onlyAttachmentTables={onlyAttachmentTables}
+        onClick={handleSelected}
       />
     </Dialog>
   );
