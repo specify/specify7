@@ -185,9 +185,11 @@ export function PrepDialog({
                 getResourceApiUrl('Preparation', preparation.preparationId)
               );
               result.set('quantity', selected[index]);
+
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
+
               return result;
             })
           );

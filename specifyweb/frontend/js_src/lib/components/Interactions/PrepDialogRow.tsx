@@ -14,7 +14,7 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { genericTables, tables } from '../DataModel/tables';
-import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import type { Disposal, ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import type { PreparationData } from './helpers';
@@ -39,7 +39,7 @@ export function PrepDialogRow({
         'ItemSelection',
         {
           readonly items: RR<
-            'ExchangeOut' | 'Gift' | 'Loan',
+            'Disposal' | 'ExchangeOut' | 'Gift' | 'Loan',
             RA<{
               readonly id: number;
               readonly label: LocalizedString;
@@ -50,7 +50,9 @@ export function PrepDialogRow({
     | State<
         'ResourceDialog',
         {
-          readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
+          readonly resource: SpecifyResource<
+            Disposal | ExchangeOut | Gift | Loan
+          >;
         }
       >
     | State<'Main'>
@@ -116,18 +118,22 @@ export function PrepDialogRow({
                         getInteractionsForPrepId(
                           preparation.preparationId
                         ).then(([_id, ...rawItems]) => {
-                          const [loans, gifts, exchangeOuts] = rawItems.map(
-                            (preparations) =>
-                              preparations
-                                ?.split(',')
-                                .map((object) => object.split('>|<'))
-                                .map(([id, label]) => ({
-                                  id: Number.parseInt(id),
-                                  label: localized(label),
-                                })) ?? []
-                          );
+                          const [loans, gifts, exchangeOuts, disposals] =
+                            rawItems.map(
+                              (preparations) =>
+                                preparations
+                                  ?.split(',')
+                                  .map((object) => object.split('>|<'))
+                                  .map(([id, label]) => ({
+                                    id: Number.parseInt(id),
+                                    label: localized(label),
+                                  })) ?? []
+                            );
                           const count =
-                            loans.length + gifts.length + exchangeOuts.length;
+                            loans.length +
+                            gifts.length +
+                            exchangeOuts.length +
+                            disposals.length;
                           setState(
                             count === 1
                               ? {
@@ -136,10 +142,16 @@ export function PrepDialogRow({
                                     ? tables.Loan
                                     : gifts.length === 1
                                       ? tables.Gift
-                                      : tables.ExchangeOut
+                                      : exchangeOuts.length === 1
+                                        ? tables.ExchangeOut
+                                        : tables.Disposal
                                   ).Resource({
-                                    id: [...loans, ...gifts, ...exchangeOuts][0]
-                                      .id,
+                                    id: [
+                                      ...loans,
+                                      ...gifts,
+                                      ...exchangeOuts,
+                                      ...disposals,
+                                    ][0].id,
                                   }),
                                 }
                               : {
@@ -148,6 +160,7 @@ export function PrepDialogRow({
                                     Loan: loans,
                                     Gift: gifts,
                                     ExchangeOut: exchangeOuts,
+                                    Disposal: disposals,
                                   },
                                 }
                           );
