@@ -68,3 +68,107 @@ test('CatalogNumber parser', () => {
 
   expect(resource.get(field.name as never)).toBe('#########');
 });
+
+test('Regex parser', () => {
+  const resource = new tables.CollectingEvent.Resource();
+  const field = tables.CollectingEvent.strictGetLiteralField('text1');
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const parser: Parser = {
+    type: 'text',
+    value: 'ResourceValue-3',
+    pattern: new RegExp("^ResourceValue-\d+$", 'u')
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe('ResourceValue-3');
+});
+
+/**
+ * Notes:
+ * The following tests are added to improve branch and statement coverage within 
+ * the useParserDefaultValue.
+ */
+
+
+test('Checkbox parser', () => {
+  const resource = new tables.CollectingEventAttribute.Resource();
+  const field = tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const parser: Parser = {
+    type: 'checkbox',
+    value: true,
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe(true);
+});
+
+test('Checkbox parser overrides empty value', () => {
+  const resource = new tables.CollectingEventAttribute.Resource();
+  const field = tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+  resource.set(field.name as never, undefined as never);
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const parser: Parser = {
+    type: 'checkbox',
+    value: true,
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe(true);
+});
+
+test('Date parser sets value', () => {
+  const resource = new tables.CollectingTrip.Resource();
+  const field = tables.CollectingTrip.strictGetLiteralField('date1');
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const parser: Parser = {
+    type: 'date',
+    value: '2025-06-09',
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe("2025-06-09");
+});
+
+test('Date parser overrides empty value', () => {
+  const resource = new tables.CollectingTrip.Resource({
+    date1: "",
+  });
+  const field = tables.CollectingTrip.strictGetLiteralField('date1');
+  expect(resource.get(field.name as never)).toBe("");
+  const parser: Parser = {
+    type: 'date',
+    value: '2025-06-09',
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe("2025-06-09");
+});
+
+test('Date parser sets current date on incorrect value', () => {
+  const resource = new tables.CollectingTrip.Resource();
+  const field = tables.CollectingTrip.strictGetLiteralField('date1');
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const dateToBeSet = new Date();
+  const parser: Parser = {
+    type: 'date',
+    value: 'this is not a correct date!',
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe(dateToBeSet.toISOString().slice(0, 10));
+});
+
+test('Date parser sets current date on empty parser value', () => {
+  const resource = new tables.CollectingTrip.Resource();
+  const field = tables.CollectingTrip.strictGetLiteralField('date1');
+  expect(resource.get(field.name as never)).toBeUndefined();
+  const dateToBeSet = new Date();
+  const parser: Parser = {
+    type: 'date',
+    value: "",
+  };
+  renderHook(() => useParserDefaultValue(resource, field, parser));
+
+  expect(resource.get(field.name as never)).toBe(dateToBeSet.toISOString().slice(0, 10));
+});
