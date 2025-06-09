@@ -1,10 +1,13 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
-import { Dialog } from '../Molecules/Dialog';
+import { Input, Label } from '../Atoms/Form';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
@@ -40,6 +43,20 @@ export function WbUpload({
     closeUpload();
   };
 
+  const isFromBatchEdit = viewerLocalization.do === 'Commit';
+
+  const [
+    warningDialog,
+    _,
+    handleCloseWarningDialog,
+    handleToggleWarningDialog,
+  ] = useBooleanState(false);
+
+  const [noShowWarning = false, setNoShowWarning] = useCachedState(
+    'batchEdit',
+    'warningBatchEditDialog'
+  );
+
   return (
     <>
       <Button.Small
@@ -52,10 +69,50 @@ export function WbUpload({
               ? wbText.uploadUnavailableWhileHasErrors()
               : undefined
         }
-        onClick={handleUpload}
+        onClick={
+          // HandleUpload
+          handleToggleWarningDialog
+        }
       >
         {viewerLocalization.do}
       </Button.Small>
+
+      {warningDialog && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Warning onClick={handleToggleWarningDialog}>
+                {commonText.cancel()}
+              </Button.Warning>
+              <span className="-ml-2 flex-1" />
+              <Label.Inline>
+                <Input.Checkbox
+                  checked={noShowWarning}
+                  onValueChange={(): void => setNoShowWarning(!noShowWarning)}
+                />
+                {commonText.dontShowAgain()}
+              </Label.Inline>
+              <Button.Info
+                onClick={(): void => {
+                  handleCloseWarningDialog();
+                  handleUpload();
+                }}
+              >
+                {commonText.proceed()}
+              </Button.Info>
+            </>
+          }
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+          dimensionsKey="merging-warning"
+          header={batchEditText.commitDataSet()}
+          onClose={undefined}
+        >
+          {batchEditText.warningBatchEditText()}
+        </Dialog>
+      )}
+
       {showUpload && (
         <Dialog
           buttons={
