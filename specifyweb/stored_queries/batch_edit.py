@@ -250,6 +250,23 @@ class BatchEditPack(NamedTuple):
             return False
         return isinstance(join_path[-2], TreeRankQuery)
     
+    @staticmethod
+    def replace_tree_rank(fieldspec: QueryFieldSpec, tree_rank: TreeRankQuery) -> QueryFieldSpec:
+        return fieldspec._replace(
+            join_path=tuple(
+                [
+                    tree_rank if isinstance(node, TreeRankQuery) else node
+                    for node in fieldspec.join_path
+                ]
+            )
+        )
+    
+    def readjust_tree_rank(self, tree_rank: TreeRankQuery):
+        id_field = self.id._replace(field=self.id.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.id.field.fieldspec, tree_rank))) if self.id.field is not None else self.id
+        order_field = self.order._replace(field=self.order.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.order.field.fieldspec, tree_rank))) if self.order.field is not None else self.order
+        version_field  = self.version._replace(field=self.version.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.version.field.fieldspec, tree_rank))) if self.version.field is not None else self.version
+        return BatchEditPack(id=id_field, order=order_field, version=version_field)
+    
 def get_tree_rank_record(key) -> TreeRankRecord:
     from specifyweb.workbench.upload.treerecord import RANK_KEY_DELIMITER
 
@@ -1021,7 +1038,7 @@ def run_batch_edit(collection, user, spquery, agent):
         recordsetid=spquery.get("recordsetid", None),
         fields=fields_from_json(spquery["fields"]),
         session_maker=models.session_context,
-        omit_relationships=False,
+        omit_relationships=spquery.get("omitrelationships", False),
         treedefsfilter=spquery.get("treedefsfilter", None)
     )
     (headers, rows, packs, json_upload_plan, visual_order) = run_batch_edit_query(props)
@@ -1109,6 +1126,7 @@ def run_batch_edit_query(props: BatchEditProps):
             user=props["user"],
             tableid=tableid,
             distinct=True,
+            series=False,
             count_only=False,
             field_specs=query_with_hidden,
             limit=limit,
