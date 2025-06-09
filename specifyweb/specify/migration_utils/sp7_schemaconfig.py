@@ -202,3 +202,7 @@ MIGRATION_0032_UPDATE_FIELDS = {
         ('quantityReturned', 'Quantity Returned', 'Number of specimens returned. (necessary for Lots)'),
     ]
 }
+
+MIGRATION_0033_TABLES = [
+    ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
+]
