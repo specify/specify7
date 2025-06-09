@@ -158,7 +158,7 @@ class TreeMatchingTests(UploadTreeSetup):
         for r in results:
             assert isinstance(r.record_result, MatchedMultiple)
             self.assertEqual(
-                set([self.springmo.id, self.springill.id]), set(r.record_result.ids)
+                {self.springmo.id, self.springill.id}, set(r.record_result.ids)
             )
 
     def test_match_higher(self) -> None:
@@ -1063,13 +1063,13 @@ class UploadTests(UploadTestsBase):
             None,
         )
         self.assertEqual(
-            set(
+            {
                 ce.stationfieldnumber
                 for ce in get_table("Collectingevent").objects.filter(
                     collectors__agent__lastname="Garcia"
                 )
-            ),
-            set([None, "D-7(1)", "D-4(1)"]),
+            },
+            {None, "D-7(1)", "D-4(1)"},
         )
 
         # Check the collectors for some collection objects.
@@ -1094,12 +1094,11 @@ class UploadTests(UploadTestsBase):
         )
 
         self.assertEqual(
-            set(
+            {
                 co.collectingevent.collectors.get(ordernumber=0).agent.lastname
                 for co in cos
-            ),
-            set(
-                (
+            },
+            {
                     "Raines",
                     "Palmer",
                     "Weddle",
@@ -1107,18 +1106,16 @@ class UploadTests(UploadTestsBase):
                     "Garcia",
                     "Sealink",
                     "Moller",
-                )
-            ),
+            },
         )
 
         # Check that localities got uploaded.
         self.assertEqual(
-            set(
+            {
                 (l.localityname, l.latitude1, l.lat1text, l.longitude1, l.long1text)
                 for l in [co.collectingevent.locality for co in cos]
-            ),
-            set(
-                [
+            },
+            {
                     (
                         "Off Hanga-Teo, on N. coast",
                         Decimal("-27.0602777778"),
@@ -1224,8 +1221,7 @@ class UploadTests(UploadTestsBase):
                         Decimal("-81.4837833333"),
                         "81° 29.027' W",
                     ),
-                ]
-            ),
+            },
         )
 
         # Check that taxa got uploaded without dupes.
@@ -1296,12 +1292,12 @@ class UploadTests(UploadTestsBase):
 
         # Check some determination dates.
         self.assertEqual(
-            set(co.determinations.get().determineddate for co in cos),
-            set((None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0))),
+            {co.determinations.get().determineddate for co in cos},
+            {None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0)},
         )
         self.assertEqual(
-            set(co.determinations.get().determineddateprecision for co in cos),
-            set((None, 2)),
+            {co.determinations.get().determineddateprecision for co in cos},
+            {None, 2},
         )
 
         # Check some collectingevent dates.
@@ -1456,7 +1452,7 @@ class UploadTests(UploadTestsBase):
         assert isinstance(matched, Matched)
         self.assertEqual(state.id, matched.id)
         self.assertEqual(
-            set(["State/Prov/Pref", "Country", "Continent/Ocean"]),
+            {"State/Prov/Pref", "Country", "Continent/Ocean"},
             set(matched.info.columns),
         )
 
@@ -1481,7 +1477,7 @@ class UploadTests(UploadTestsBase):
         assert isinstance(matched, Matched)
         self.assertEqual(uploaded.id, matched.id)
         self.assertEqual(
-            set(["Region", "State/Prov/Pref", "Country", "Continent/Ocean"]),
+            {"Region", "State/Prov/Pref", "Country", "Continent/Ocean"},
             set(matched.info.columns),
         )
 

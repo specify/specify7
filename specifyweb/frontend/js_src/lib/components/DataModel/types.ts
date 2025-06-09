@@ -4,7 +4,7 @@
  * "NOTE:" comments
  *
  * Schema version: 2.13
- * Date generated: March 3, 2025
+ * Date generated: May 20, 2025
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -1444,6 +1444,7 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
+    readonly componentParent: CollectionObject | null;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
@@ -1454,7 +1455,6 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    readonly parentCO: CollectionObject | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
@@ -1462,6 +1462,7 @@ export type CollectionObject = {
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
     readonly collectionObjectProperties: RA<CollectionObjectProperty>;
+    readonly components: RA<CollectionObject>;
     readonly conservDescriptions: RA<ConservDescription>;
     readonly determinations: RA<Determination>;
     readonly dnaSequences: RA<DNASequence>;
@@ -1473,7 +1474,6 @@ export type CollectionObject = {
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;
-    readonly children: RA<CollectionObject>;
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
@@ -3424,6 +3424,8 @@ export type GiftPreparation = {
     readonly inComments: string | null;
     readonly outComments: string | null;
     readonly quantity: number | null;
+    readonly quantityResolved: number | null;
+    readonly quantityReturned: number | null;
     readonly receivedComments: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
@@ -4389,11 +4391,11 @@ export type Preparation = {
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
-    readonly isOnLoan: boolean | null;
-    readonly isOnGift: boolean | null;
     readonly isOnDisposal: boolean | null;
-    readonly isOnExchangeOut: boolean | null;
     readonly isOnExchangeIn: boolean | null;
+    readonly isOnExchangeOut: boolean | null;
+    readonly isOnGift: boolean | null;
+    readonly isOnLoan: boolean | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly preparedDate: string | null;
@@ -5299,6 +5301,7 @@ export type SpQuery = {
     readonly remarks: string | null;
     readonly searchSynonymy: boolean | null;
     readonly selectDistinct: boolean | null;
+    readonly selectSeries: boolean | null;
     readonly smushed: boolean | null;
     readonly sqlStr: string | null;
     readonly timestampCreated: string;
@@ -5324,11 +5327,11 @@ export type SpQueryField = {
     readonly endValue: string | null;
     readonly fieldName: string;
     readonly formatName: string | null;
-    readonly isStrict: boolean;
     readonly isDisplay: boolean;
     readonly isNot: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
+    readonly isStrict: boolean;
     readonly operEnd: number | null;
     readonly operStart: number;
     readonly position: number;
@@ -5538,8 +5541,8 @@ export type Storage = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly timestampVersion: string | null;
-    readonly version: number | null;
     readonly uniqueIdentifier: string | null;
+    readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

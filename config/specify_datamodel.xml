@@ -4169,6 +4169,7 @@
       <field column="Remarks" name="remarks" type="text" length="4096" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
       <field column="SearchSynonymy" name="searchSynonymy" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
       <field column="SelectDistinct" name="selectDistinct" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
+      <field column="SelectSeries" name="SelectSeries" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
       <field column="Smushed" name="smushed" type="java.lang.Boolean" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
       <field column="SqlStr" name="sqlStr" type="text" length="4096" updatable="true" required="false" unique="false" indexed="false" partialDate="false"/>
       <field column="TimestampCreated" name="timestampCreated" type="java.sql.Timestamp" updatable="false" required="true" unique="false" indexed="false" partialDate="false"/>

@@ -133,9 +133,9 @@ function Field({
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasParentCO = isCO
-    ? resource.get('parentCO') !== null &&
-      resource.get('parentCO') !== undefined
+  const hasComponentParent = isCO
+    ? resource.get('componentParent') !== null &&
+      resource.get('componentParent') !== undefined
     : false;
 
   const isCatNumberField = field?.name === 'catalogNumber';
@@ -164,7 +164,7 @@ function Field({
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
     isCO &&
-    hasParentCO &&
+    hasComponentParent &&
     isCatNumberField &&
     displayParentCatNumberPref;
 
@@ -212,6 +212,7 @@ function Field({
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
+      max={Number.MAX_SAFE_INTEGER}
       name={name}
       placeholder={
         displayPrimaryCatNumberPlaceHolder &&

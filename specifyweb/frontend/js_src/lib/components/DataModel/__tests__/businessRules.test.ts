@@ -359,6 +359,14 @@ describe('DNASequence business rules', () => {
 });
 
 describe('Address business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const agent = new tables.Agent.Resource();
+    const address = new tables.Address.Resource();
+    // Doing this initializes the DependentCollection
+    agent.set('addresses', []);
+    agent.getDependentResource('addresses')?.add(address);
+    expect(address.get('isPrimary')).toBe(true);
+  });
   test('only one isPrimary', () => {
     const agent = new tables.Agent.Resource();
 
@@ -372,6 +380,59 @@ describe('Address business rules', () => {
 
     expect(address1.get('isPrimary')).toBe(false);
     expect(address2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('Determiner business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const determination = new tables.Determination.Resource();
+    const determiner = new tables.Determiner.Resource();
+    // Doing this initializes the DependentCollection
+    determination.set('determiners', []);
+    determination.getDependentResource('determiners')?.add(determiner);
+
+    expect(determiner.get('isPrimary')).toBe(true);
+  });
+  test('Only one is primary', () => {
+    const determination = new tables.Determination.Resource();
+
+    const determiner1 = new tables.Determiner.Resource({
+      isPrimary: true,
+    });
+    const determiner2 = new tables.Determiner.Resource();
+
+    determination.set('determiners', [determiner1, determiner2]);
+    determiner2.set('isPrimary', true);
+
+    expect(determiner1.get('isPrimary')).toBe(false);
+    expect(determiner2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('Funding Agent business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const collectingTrip = new tables.CollectingTrip.Resource();
+    const fundingAgent = new tables.FundingAgent.Resource();
+    // Doing this initializes the DependentCollection
+    collectingTrip.set('fundingAgents', []);
+
+    collectingTrip.getDependentResource('fundingAgents')?.add(fundingAgent);
+
+    expect(fundingAgent.get('isPrimary')).toBe(true);
+  });
+  test('Only one is primary', () => {
+    const collectingTrip = new tables.CollectingTrip.Resource();
+
+    const fundingAgent1 = new tables.FundingAgent.Resource({
+      isPrimary: true,
+    });
+    const fundingAgent2 = new tables.FundingAgent.Resource();
+
+    collectingTrip.set('fundingAgents', [fundingAgent1, fundingAgent2]);
+    fundingAgent2.set('isPrimary', true);
+
+    expect(fundingAgent1.get('isPrimary')).toBe(false);
+    expect(fundingAgent2.get('isPrimary')).toBe(true);
   });
 });
 

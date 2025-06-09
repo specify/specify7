@@ -3,10 +3,10 @@ from django.db import migrations
 from django.db.models import F
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-MIGRATION_0028_TABLES
+MIGRATION_0033_TABLES
 )
 
-CONTAINER_MIGRATIONS = MIGRATION_0028_TABLES
+CONTAINER_MIGRATIONS = MIGRATION_0033_TABLES
 
 def fix_table_description(apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -25,7 +25,7 @@ def schemaconfig_fixes(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0027_CO_children'),
+        ('specify', '0032_add_quantities_gift'),
     ]
 
     operations = [
