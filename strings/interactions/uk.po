@@ -22,7 +22,7 @@ msgid "interactions"
 msgstr "Взаємодії"
 
 #: components/Interactions/InteractionDialog.tsx:374
-#: components/Interactions/PrepDialog.tsx:133
+#: components/Interactions/PrepDialog.tsx:146
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Додати елементи"
@@ -73,7 +73,7 @@ msgstr "Продовжуйте без підготовки"
 msgid "addUnassociated"
 msgstr "Додати непов'язаний елемент"
 
-#: components/Interactions/PrepDialog.tsx:144
+#: components/Interactions/PrepDialog.tsx:157
 #. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
 msgstr "Підготовка"
@@ -113,15 +113,15 @@ msgstr "Поверніть усі заготовки"
 msgid "returnSelectedPreparations"
 msgstr "Повернути вибрані препарати"
 
-#: components/Interactions/PrepDialog.tsx:115
+#: components/Interactions/PrepDialog.tsx:128
 #. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
 msgstr "Виберіть усі доступні препарати"
 
 #: components/FormMeta/CarryForward.tsx:311
 #: components/Interactions/LoanReturn.tsx:182
-#: components/Interactions/PrepDialog.tsx:120
-#: components/Interactions/PrepDialog.tsx:241
+#: components/Interactions/PrepDialog.tsx:133
+#: components/Interactions/PrepDialog.tsx:257
 #: components/Interactions/PrepDialogRow.tsx:64
 #: components/Interactions/PrepDialogRow.tsx:66
 #: components/Interactions/PrepReturnRow.tsx:80
@@ -134,8 +134,8 @@ msgstr "Вибрати все"
 #: components/Interactions/LoanReturn.tsx:279
 #: components/Interactions/LoanReturn.tsx:289
 #: components/Interactions/LoanReturn.tsx:293
-#: components/Interactions/PrepDialog.tsx:150
-#: components/Interactions/PrepDialog.tsx:154
+#: components/Interactions/PrepDialog.tsx:163
+#: components/Interactions/PrepDialog.tsx:167
 #: components/Interactions/PrepDialogRow.tsx:97
 #: components/Interactions/PrepDialogRow.tsx:100
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
@@ -199,18 +199,18 @@ msgstr ""
 
 #: components/FormMeta/CarryForward.tsx:332
 #: components/Interactions/LoanReturn.tsx:197
-#: components/Interactions/PrepDialog.tsx:127
+#: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:211
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Зняти вибір усіх"
 
-#: components/Interactions/PrepDialog.tsx:253
+#: components/Interactions/PrepDialog.tsx:269
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Доступно"
 
-#: components/Interactions/PrepDialog.tsx:254
+#: components/Interactions/PrepDialog.tsx:270
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Недоступно"
@@ -221,7 +221,7 @@ msgid "returnLoan"
 msgstr "Повернути записи {tableLoan:string}"
 
 #: components/Interactions/InteractionDialog.tsx:377
-#: components/Interactions/PrepDialog.tsx:134
+#: components/Interactions/PrepDialog.tsx:147
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
 msgstr "Створити {table:string}"

@@ -21,7 +21,7 @@ msgid "interactions"
 msgstr "Interactions"
 
 #: components/Interactions/InteractionDialog.tsx:374
-#: components/Interactions/PrepDialog.tsx:133
+#: components/Interactions/PrepDialog.tsx:146
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Ajouter des objets"
@@ -77,7 +77,7 @@ msgstr "Continuer sans préparation"
 msgid "addUnassociated"
 msgstr "Ajouter un objet non associé"
 
-#: components/Interactions/PrepDialog.tsx:144
+#: components/Interactions/PrepDialog.tsx:157
 #. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
 msgstr "Preparations"
@@ -117,15 +117,15 @@ msgstr "Retourner toutes les préparations"
 msgid "returnSelectedPreparations"
 msgstr "Retourner les préparations sélectionnées"
 
-#: components/Interactions/PrepDialog.tsx:115
+#: components/Interactions/PrepDialog.tsx:128
 #. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
 msgstr "Sélectionnez toutes les préparations disponibles"
 
 #: components/FormMeta/CarryForward.tsx:311
 #: components/Interactions/LoanReturn.tsx:182
-#: components/Interactions/PrepDialog.tsx:120
-#: components/Interactions/PrepDialog.tsx:241
+#: components/Interactions/PrepDialog.tsx:133
+#: components/Interactions/PrepDialog.tsx:257
 #: components/Interactions/PrepDialogRow.tsx:64
 #: components/Interactions/PrepDialogRow.tsx:66
 #: components/Interactions/PrepReturnRow.tsx:80
@@ -138,8 +138,8 @@ msgstr "Tout sélectionner"
 #: components/Interactions/LoanReturn.tsx:279
 #: components/Interactions/LoanReturn.tsx:289
 #: components/Interactions/LoanReturn.tsx:293
-#: components/Interactions/PrepDialog.tsx:150
-#: components/Interactions/PrepDialog.tsx:154
+#: components/Interactions/PrepDialog.tsx:163
+#: components/Interactions/PrepDialog.tsx:167
 #: components/Interactions/PrepDialogRow.tsx:97
 #: components/Interactions/PrepDialogRow.tsx:100
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
@@ -212,20 +212,20 @@ msgstr ""
 
 #: components/FormMeta/CarryForward.tsx:332
 #: components/Interactions/LoanReturn.tsx:197
-#: components/Interactions/PrepDialog.tsx:127
+#: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:211
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"
 msgstr "Désélectionner tout"
 
-#: components/Interactions/PrepDialog.tsx:253
+#: components/Interactions/PrepDialog.tsx:269
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "available"
 msgstr "Disponible"
 
-#: components/Interactions/PrepDialog.tsx:254
+#: components/Interactions/PrepDialog.tsx:270
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "unavailable"
@@ -238,7 +238,7 @@ msgid "returnLoan"
 msgstr "Renvoyer les enregistrements {tableLoan:string}"
 
 #: components/Interactions/InteractionDialog.tsx:377
-#: components/Interactions/PrepDialog.tsx:134
+#: components/Interactions/PrepDialog.tsx:147
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "createRecord"
