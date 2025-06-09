@@ -2,6 +2,8 @@ FROM ubuntu:20.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \

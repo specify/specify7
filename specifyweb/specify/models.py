@@ -1471,7 +1471,7 @@ class Collectionobject(models.Model):
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
-    parentco = models.ForeignKey('CollectionObject', db_column='ParentCOID', related_name='children', null=True, on_delete=models.CASCADE)
+    componentParent = models.ForeignKey('CollectionObject', db_column='ComponentParentID', related_name='components', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobject'
@@ -3904,6 +3904,8 @@ class Giftpreparation(models.Model):
     incomments = models.TextField(blank=True, null=True, unique=False, db_column='InComments', db_index=False)
     outcomments = models.TextField(blank=True, null=True, unique=False, db_column='OutComments', db_index=False)
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
+    quantityresolved = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityResolved', db_index=False)
+    quantityreturned = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityReturned', db_index=False)
     receivedcomments = models.TextField(blank=True, null=True, unique=False, db_column='ReceivedComments', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
@@ -6261,7 +6263,7 @@ class Spquery(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     searchsynonymy = models.BooleanField(blank=True, null=True, unique=False, db_column='SearchSynonymy', db_index=False)
     selectdistinct = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectDistinct', db_index=False)
-    selectseries = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectSeries', db_index=False)
+    selectseries = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectSeries', db_index=False, default=False)
     smushed = models.BooleanField(blank=True, null=True, unique=False, db_column='Smushed', db_index=False)
     sqlstr = models.TextField(blank=True, null=True, unique=False, db_column='SqlStr', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)

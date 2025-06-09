@@ -50,7 +50,7 @@ ReadPermChecker = Callable[[Any], None]
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-def strict_get_model(name: str):
+def strict_get_model(name: str, apps = apps):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
@@ -65,9 +65,9 @@ def strict_get_model(name: str):
                     return model
         raise e
 
-def get_model(name: str): 
+def get_model(name: str, apps=apps): 
     try: 
-        return strict_get_model(name)
+        return strict_get_model(name, apps)
     except AttributeError: 
         return None
 
@@ -1096,7 +1096,12 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
             # filter out control parameters
             continue
 
-        if param.endswith('__in') or param.endswith('__range'):
+        if param.endswith('__isnull'):
+            val = {
+                'true': True,
+                'false': False
+            }.get(val.lower(), val)
+        elif param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
 

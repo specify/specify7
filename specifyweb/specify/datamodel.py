@@ -1602,8 +1602,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
-            Relationship(name='parentCO', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ParentCOID', otherSideName='children'),
-            Relationship(name='children', type='one-to-many', required=False, relatedModelName='CollectionObject', otherSideName='parentCO', dependent=True),
+            Relationship(name='componentParent', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ComponentParentID', otherSideName='components'),
+            Relationship(name='components', type='one-to-many', required=False, relatedModelName='CollectionObject', otherSideName='componentParent', dependent=True),
         ],
         fieldAliases=[
 
@@ -4149,6 +4149,8 @@ datamodel = Datamodel(tables=[
             Field(name='inComments', column='InComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='outComments', column='OutComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityResolved', column='QuantityResolved', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityReturned', column='QuantityReturned', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='receivedComments', column='ReceivedComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),

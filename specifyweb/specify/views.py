@@ -1416,6 +1416,12 @@ def parse_locality_set_foreground(collection, column_headers: list[str], data: l
 
     return 200, parsed
 
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
+
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
@@ -1466,7 +1472,7 @@ def catalog_number_for_sibling(request: http.HttpRequest):
 @require_POST
 def catalog_number_from_parent(request: http.HttpRequest):
     """
-    Returns the catalog number of the parent CO
+    Returns the catalog number of the parent component
     """
     try:
         request_data = json.loads(request.body)
@@ -1486,7 +1492,7 @@ def catalog_number_from_parent(request: http.HttpRequest):
         child = spmodels.Collectionobject.objects.get(id=object_id)
 
         # Get the parent CO
-        parent = child.parentco
+        parent = child.componentParent
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
