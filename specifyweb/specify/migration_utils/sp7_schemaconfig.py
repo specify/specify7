@@ -190,3 +190,15 @@ MIGRATION_0029_UPDATE_FIELDS = {
         ('components', 'Components', 'Component parts of a Collection Object'),
     ]
 }
+
+
+MIGRATION_0032_FIELDS = {
+    'GiftPreparation': ['quantityResolved', 'quantityReturned'],
+}
+
+MIGRATION_0032_UPDATE_FIELDS = {
+    'GiftPreparation': [
+        ('quantityResolved','Quantity Resolved', 'Number of specimens returned, deaccessioned or otherwise accounted for. (necessary for Lots).'), 
+        ('quantityReturned', 'Quantity Returned', 'Number of specimens returned. (necessary for Lots)'),
+    ]
+}
