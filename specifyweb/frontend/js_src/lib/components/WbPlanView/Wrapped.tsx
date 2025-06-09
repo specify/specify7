@@ -20,7 +20,8 @@ import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
 import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
-import { BaseTableSelection } from './State';
+import { BaseTableSelection, AttachmentBaseTableSelection } from './State';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { UploadPlan } from './uploadPlanParser';
 
 // General definitions
@@ -125,6 +126,11 @@ export function WbPlanView({
   );
   useErrorContext('state', state);
 
+  const hasAttachments = React.useMemo(
+    () => dataset.columns.includes(ATTACHMENTS_COLUMN), 
+    [dataset.columns]
+  );
+
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <ProtectedAction action="update" resource="/workbench/dataset">
@@ -151,6 +157,7 @@ export function WbPlanView({
             ...getLinesFromUploadPlan(headers, uploadPlan),
           })
         }
+        onlyAttachmentTables={hasAttachments}
       />
     </ProtectedAction>
   ) : (

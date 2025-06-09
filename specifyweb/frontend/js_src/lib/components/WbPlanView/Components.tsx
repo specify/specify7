@@ -8,6 +8,7 @@ import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { TableList, tablesFilter } from '../SchemaConfig/Tables';
+import { tablesWithAttachments } from '../Attachments/utils';
 
 export function ListOfBaseTables({
   onClick: handleClick,
@@ -36,6 +37,30 @@ export function ListOfBaseTables({
     [isNoRestrictionMode, showNoAccessTables]
   );
 
+  return (
+    <TableList
+      cacheKey="wbPlanViewUi"
+      filter={filter}
+      getAction={({ name }) =>
+        () =>
+          handleClick(name)
+        }
+    />
+  );
+}
+
+export function ListOfTablesWithAttachments({
+  onClick: handleClick,
+}: {
+  readonly onClick: (table: keyof Tables) => void;
+}): JSX.Element {
+  const filter = React.useCallback(
+    (_showAdvancedTables: boolean, table: SpecifyTable): boolean =>
+      {
+        return tablesWithAttachments().find(module => module.name === table.name) !== undefined
+      },
+    []
+  );
   return (
     <TableList
       cacheKey="wbPlanViewUi"

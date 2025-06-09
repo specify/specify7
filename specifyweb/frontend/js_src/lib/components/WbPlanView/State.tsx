@@ -10,7 +10,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
-import { ListOfBaseTables } from './Components';
+import { ListOfBaseTables, ListOfTablesWithAttachments } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
@@ -67,6 +67,7 @@ export function BaseTableSelection({
   onSelectTemplate: handleSelectTemplate,
   onSelected: handleSelected,
   headers,
+  onlyAttachmentTables = false,
 }: {
   readonly onClose: () => void;
   readonly onSelectTemplate: (
@@ -75,6 +76,7 @@ export function BaseTableSelection({
   ) => void;
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
+  readonly onlyAttachmentTables?: boolean;
 }): JSX.Element {
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();
@@ -101,7 +103,11 @@ export function BaseTableSelection({
       header={wbPlanText.selectBaseTable()}
       onClose={handleClose}
     >
-      <ListOfBaseTables onClick={handleSelected} />
+      {onlyAttachmentTables ? (
+        <ListOfTablesWithAttachments onClick={handleSelected} />
+      ) : (
+        <ListOfBaseTables onClick={handleSelected} />
+      )}
     </Dialog>
   );
 }
