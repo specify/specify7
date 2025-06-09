@@ -100,7 +100,9 @@ export function BaseTableSelection({
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbPlanText.selectBaseTable()}
+      header={onlyAttachmentTables
+        ? wbPlanText.selectBaseTableWithAttachments()
+        : wbPlanText.selectBaseTable()}
       onClose={handleClose}
     >
       <ListOfBaseTables
