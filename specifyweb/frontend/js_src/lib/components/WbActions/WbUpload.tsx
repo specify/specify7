@@ -102,7 +102,7 @@ export function WbUpload({
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          dimensionsKey="merging-warning"
+          dimensionsKey="batchEdit-warning"
           header={batchEditText.commitDataSet()}
           onClose={undefined}
         >
