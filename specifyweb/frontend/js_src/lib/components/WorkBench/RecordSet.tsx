@@ -31,8 +31,13 @@ export function CreateRecordSetButton({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ButtonComponent = small ? Button.Small : Button.Info;
+  const wbVariant = isUpdate ? 'batch_edit' : 'workbench';
+
   return (
-    <ProtectedAction action="create_recordset" resource="/workbench/dataset">
+    <ProtectedAction
+      action="create_recordset"
+      resource={`/${wbVariant}/dataset`}
+    >
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
           {queryText.createRecordSet({
@@ -89,7 +94,10 @@ function CreateRecordSetDialog({
             ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
               method: 'POST',
               headers: { Accept: 'application/json' },
-              body: formData({ name: recordSet.get('name') }),
+              body: formData({
+                name: recordSet.get('name'),
+                remarks: recordSet.get('remarks') ?? '',
+              }),
               errorMode: 'dismissible',
             }).then(({ data }) =>
               unsafeNavigate(`/specify/record-set/${data}/`)

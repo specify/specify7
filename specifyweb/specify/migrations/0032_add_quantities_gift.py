@@ -7,7 +7,7 @@ import django.db.models.deletion
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
 import specifyweb.specify.models
 
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0028_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0028_UPDATE_FIELDS as SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0032_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0032_UPDATE_FIELDS as SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS
 
 def update_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -77,7 +77,7 @@ def revert_update_schema_field(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0027_CO_children'),
+        ('specify', '0031_add_default_for_selectseries'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
