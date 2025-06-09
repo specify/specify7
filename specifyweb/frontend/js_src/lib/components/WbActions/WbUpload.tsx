@@ -69,10 +69,7 @@ export function WbUpload({
               ? wbText.uploadUnavailableWhileHasErrors()
               : undefined
         }
-        onClick={
-          // HandleUpload
-          handleToggleWarningDialog
-        }
+        onClick={isFromBatchEdit ? handleToggleWarningDialog : handleUpload}
       >
         {viewerLocalization.do}
       </Button.Small>
