@@ -61,7 +61,7 @@ msgid "disciplineResources"
 msgstr "Ressources disciplinaires"
 
 #: components/AppResources/Create.tsx:96
-#: components/SchemaConfig/Field.tsx:73
+#: components/SchemaConfig/Field.tsx:72
 #: components/WebLinks/Definition.tsx:49
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #, fuzzy

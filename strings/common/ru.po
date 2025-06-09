@@ -1023,7 +1023,7 @@ msgstr "{header:string}:"
 #: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
-#: components/SchemaConfig/Field.tsx:43
+#: components/SchemaConfig/Field.tsx:42
 #: components/SchemaConfig/Table.tsx:50
 #: components/SchemaViewer/Fields.tsx:30
 #: components/SchemaViewer/Fields.tsx:37
