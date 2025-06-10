@@ -15,7 +15,7 @@ import type { MappingLine } from './Mapper';
 import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { getAttachmentsColumnIndexFromHeaders } from '../WorkBench/attachmentHelpers';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -135,5 +135,6 @@ function removeHiddenColumnHeaders(
   headers: RA<string>,
 ): RA<string> {
   // Remove attachments column header so it cannot be mapped
-  return headers.filter((headerName) => headerName !== ATTACHMENTS_COLUMN);
+  const attachmentsColumnIndex = getAttachmentsColumnIndexFromHeaders(headers);
+  return headers.filter((_, index) => index !== attachmentsColumnIndex);
 }

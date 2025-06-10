@@ -34,8 +34,8 @@ import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
-import { getAttachmentsFromCell } from '../WbImportAttachments/helpers';
+import { getAttachmentsColumnIndex, getAttachmentsFromCell } from '../WorkBench/attachmentHelpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -44,11 +44,11 @@ type WbAttachmentPreviewCell = {
 
 export function WbAttachmentsPreview({
   hot,
-  datasetColumns,
+  dataset,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
-  readonly datasetColumns: RA<string>;
+  readonly dataset: Dataset;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
@@ -81,7 +81,7 @@ export function WbAttachmentsPreview({
 
     fetchRowAttachments(
       hot,
-      datasetColumns,
+      dataset,
       selectedRow,
       setAttachments,
       setSelectedAttachment
@@ -144,7 +144,7 @@ export function WbAttachmentsPreview({
 
 function fetchRowAttachments(
   hot: Handsontable,
-  datasetColumns: RA<string>,
+  dataset: Dataset,
   row: number,
   setAttachments: (
     attachments:
@@ -158,7 +158,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
+  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments

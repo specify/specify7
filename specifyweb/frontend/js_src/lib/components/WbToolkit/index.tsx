@@ -18,7 +18,7 @@ import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import { attachmentsText } from '../../localization/attachments';
 
 export function WbToolkit({
@@ -51,10 +51,11 @@ export function WbToolkit({
 
     let datasetColumns = dataset.columns;
     // Don't export attachments column
-    if (datasetColumns.includes(ATTACHMENTS_COLUMN)) {
+    let attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+    if (attachmentsColumnIndex !== -1) {
       datasetColumns = dataset.columns.map(
-        (col) =>
-          col === ATTACHMENTS_COLUMN
+        (col, index) =>
+          index === attachmentsColumnIndex
             ? attachmentsText.attachments()
             : col
       )

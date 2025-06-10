@@ -1,3 +1,4 @@
+import type { RA } from "../../utils/types";
 import type { WritableArray } from '../../utils/types';
 import type { SerializedResource } from "../DataModel/helperTypes";
 import type {
@@ -5,8 +6,11 @@ import type {
   SpDataSetAttachment,
   Tables,
 } from "../DataModel/types";
+import type { Dataset } from '../WbPlanView/Wrapped';
 
+export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
+
 type AttachmentTargetTable = keyof Tables | typeof BASE_TABLE_NAME;
 
 type CellAttachment = {
@@ -53,4 +57,33 @@ export function getAttachmentsFromCell(
     return data;
   }
   return undefined;
+}
+
+export function usesAttachments(
+  dataset: Dataset,
+): boolean {
+  return dataset.columns.includes(ATTACHMENTS_COLUMN);
+}
+
+export function getAttachmentsColumnIndex(
+  dataset: Dataset,
+): number {
+  if (!usesAttachments(dataset)) {
+    return -1;
+  }
+  return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+}
+
+/**
+ * In contexts where the dataset is not known, this function can be modified to
+ * accept an uploadPlan to determine where the attachments column is.
+ * Right now this function doesn't do anything different.
+ */
+export function getAttachmentsColumnIndexFromHeaders(
+  headers: RA<string>,
+): number {
+  if (!headers.includes(ATTACHMENTS_COLUMN)) {
+    return -1;
+  }
+  return headers.indexOf(ATTACHMENTS_COLUMN);
 }
