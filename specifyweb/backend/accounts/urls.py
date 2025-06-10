@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from specifyweb.permissions.permissions import skip_collection_access_check
+from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from . import views
 
 urlpatterns = [
