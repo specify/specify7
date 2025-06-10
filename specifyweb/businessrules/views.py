@@ -3,16 +3,15 @@ import json
 
 from django import http
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.businessrules.models import UniquenessRule
-from specifyweb.businessrules.uniqueness_rules import rule_is_global
+from specifyweb.businessrules.uniqueness_rules import rule_is_global, check_uniqueness
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
 
 UniquenessRuleSchema = {
@@ -258,40 +257,14 @@ def uniqueness_rule(request, discipline_id):
 @require_POST
 def validate_uniqueness(request):
     data = json.loads(request.body)
-    table = datamodel.get_table_strict(data['table'])
-    django_model = getattr(models, table.django_name, None)
-
-    if table is None or django_model is None:
-        return http.HttpResponseBadRequest('Invalid table name in request')
-
+    table_name = data['table']
     uniqueness_rule = data['rule']
     fields = [field.lower() for field in uniqueness_rule['fields']]
     scopes = [rule.lower() for rule in uniqueness_rule['scopes']]
+    
+    result = check_uniqueness(table_name, fields, scopes)
 
-    required_fields = {field: table.get_field(
-        field).required for field in fields}
+    if result is None:
+        return http.HttpResponseBadRequest('Invalid table name in request')
 
-    strict_filters = Q()
-    for field, is_required in required_fields.items():
-        if not is_required:
-            strict_filters &= (~Q(**{f"{field}": None}))
-
-    for scope in scopes:
-        strict_filters &= (~Q(**{f"{scope}": None}))
-
-    all_fields = [*fields, *scopes]
-
-    duplicates_field = '__duplicates'
-
-    duplicates = django_model.objects.values(
-        *all_fields).annotate(**{duplicates_field: Count('id')}).filter(strict_filters).filter(**{f"{duplicates_field}__gt": 1}).order_by(f'-{duplicates_field}')
-
-    total_duplicates = sum(duplicate[duplicates_field]
-                           for duplicate in duplicates)
-
-    final = {
-        "totalDuplicates": total_duplicates,
-        "fields": [{"duplicates": duplicate[duplicates_field], "fields": {field: value for field, value in duplicate.items() if field != duplicates_field}}
-                   for duplicate in duplicates]}
-
-    return http.JsonResponse(final, safe=False)
+    return http.JsonResponse(result, safe=False)

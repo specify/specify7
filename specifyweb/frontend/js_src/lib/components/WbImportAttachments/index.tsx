@@ -43,7 +43,7 @@ export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
-  const [files, setFiles] = React.useState<readonly File[] | undefined>();
+  const [files, setFiles] = React.useState<RA<File> | undefined>();
 
   return (
     <Container.Full>
@@ -63,9 +63,9 @@ export function WbImportAttachmentsView(): JSX.Element {
 }
 
 function uploadFiles(
-  files: readonly File[],
+  files: RA<File>,
   handleProgress: (progress: (progress: number | undefined) => number) => void
-): readonly Promise<SpecifyResource<Attachment>>[] {
+): RA<Promise<SpecifyResource<Attachment>>> {
   return files.map(async (file) =>
     uploadFile(file)
       .then(async (attachment) =>
@@ -117,7 +117,7 @@ async function saveDataSetAttachments(
 function FilesPicked({
   files,
 }: {
-  readonly files: readonly File[];
+  readonly files: RA<File>;
 }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
@@ -126,7 +126,7 @@ function FilesPicked({
   const [isFailed, setFailed] = useBooleanState(false);
 
   const handleFilesSelected = async (
-    files: readonly File[],
+    files: RA<File>,
     dataSetName: string
   ): Promise<void> => {
     setFileUploadProgress(0);
@@ -210,7 +210,7 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
-      <FilesPreview files={files} header="Attachment" />
+      <FilesPreview files={files} header={attachmentsText.attachments()} />
     </>
   );
 }
@@ -220,7 +220,7 @@ function FilesPreview({
   files,
 }: {
   readonly header: string;
-  readonly files: readonly File[];
+  readonly files: RA<File>;
 }): JSX.Element {
   const previewData = React.useMemo(() => {
     const preview: RA<RA<string>> = [
