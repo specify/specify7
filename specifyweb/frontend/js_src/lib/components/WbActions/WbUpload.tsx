@@ -59,20 +59,39 @@ export function WbUpload({
 
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
-        title={
-          hasUnsavedChanges
-            ? wbText.unavailableWhileEditing()
-            : cellCounts.invalidCells > 0
-              ? wbText.uploadUnavailableWhileHasErrors()
-              : undefined
-        }
-        onClick={isFromBatchEdit ? handleToggleWarningDialog : handleUpload}
-      >
-        {viewerLocalization.do}
-      </Button.Small>
+      <>
+        {noShowWarning || !isFromBatchEdit ? (
+          <Button.Small
+            aria-haspopup="dialog"
+            disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+            title={
+              hasUnsavedChanges
+                ? wbText.unavailableWhileEditing()
+                : cellCounts.invalidCells > 0
+                  ? wbText.uploadUnavailableWhileHasErrors()
+                  : undefined
+            }
+            onClick={handleUpload}
+          >
+            {viewerLocalization.do}
+          </Button.Small>
+        ) : (
+          <Button.Small
+            aria-haspopup="dialog"
+            disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+            title={
+              hasUnsavedChanges
+                ? wbText.unavailableWhileEditing()
+                : cellCounts.invalidCells > 0
+                  ? wbText.uploadUnavailableWhileHasErrors()
+                  : undefined
+            }
+            onClick={handleToggleWarningDialog}
+          >
+            {viewerLocalization.do}
+          </Button.Small>
+        )}
+      </>
 
       {warningDialog && (
         <Dialog
