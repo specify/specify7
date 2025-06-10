@@ -11,11 +11,12 @@ import { createDictionary } from './utils';
 export const mergingText = createDictionary({
   recordMerging: {
     'en-us': 'Record Merging',
-    'ru-ru': 'Объединение записей',
+    'ru-ru': 'Слияние записей',
     'de-ch': 'Datensatzzusammenführung',
     'es-es': 'Fusión de registros',
     'fr-fr': "Fusion d'enregistrements",
     'uk-ua': "Об'єднання записів",
+    'pt-br': 'Mesclagem de registros',
   },
   mergeRecords: {
     'en-us': 'Merge Records',
@@ -24,6 +25,7 @@ export const mergingText = createDictionary({
     'es-es': 'Fusionar registros',
     'fr-fr': 'Fusionner les enregistrements',
     'uk-ua': 'Об’єднати записи',
+    'pt-br': 'Mesclar registros',
   },
   mergedRecord: {
     'en-us': 'Merged Record',
@@ -32,14 +34,16 @@ export const mergingText = createDictionary({
     'es-es': 'Registro fusionado',
     'fr-fr': 'Enregistrement fusionné',
     'uk-ua': 'Об’єднаний запис',
+    'pt-br': 'Registro mesclado',
   },
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показывать только конфликтующие поля',
-    'de-ch': 'Nur in Konflikt stehende Felder anzeigen',
+    'de-ch': 'Nur widersprüchliche Felder anzeigen',
     'es-es': 'Mostrar solo campos en conflicto',
     'fr-fr': 'Afficher uniquement les champs en conflit',
     'uk-ua': 'Показувати лише конфліктуючі поля',
+    'pt-br': 'Mostrar apenas campos conflitantes',
   },
   newMergedRecord: {
     'en-us': 'New merged record',
@@ -48,6 +52,7 @@ export const mergingText = createDictionary({
     'es-es': 'Nuevo registro fusionado',
     'fr-fr': 'Nouvel enregistrement fusionné',
     'uk-ua': "Новий об'єднаний запис",
+    'pt-br': 'Novo registro mesclado',
   },
   duplicateRecord: {
     'en-us': 'Preview {index:number|formatted}',
@@ -56,22 +61,25 @@ export const mergingText = createDictionary({
     'es-es': 'Vista previa de {index:number|formatted}',
     'fr-fr': 'Aperçu {index:number|formatted}',
     'uk-ua': 'Попередній перегляд {index:number|formatted}',
+    'pt-br': 'Pré-visualização {index:number|formatted}',
   },
   nRecords: {
     'en-us': '{count:number|formatted} records',
-    'ru-ru': '{count:number|formatted} записи',
+    'ru-ru': '{count:number|formatted} записей',
     'de-ch': '{count:number|formatted} Datensätze',
     'es-es': '{count:number|formatted} registros',
     'fr-fr': '{count:number|formatted} enregistrements',
     'uk-ua': '{count:number|formatted} записи',
+    'pt-br': '{count:number|formatted} registros',
   },
   subViewControls: {
     'en-us': 'Sub-view Controls',
-    'ru-ru': 'Элементы управления подпредставлением',
+    'ru-ru': 'Элементы управления подвидом',
     'de-ch': 'Unteransichtssteuerung',
     'es-es': 'Controles de vista parcial',
-    'fr-fr': 'Contrôles de sous-vue',
+    'fr-fr': 'Contrôles de la sous-vue',
     'uk-ua': 'Елементи керування вкладеним переглядом',
+    'pt-br': 'Controles de subvisualização',
   },
   mergeFields: {
     comment: 'Example: "Merge Addresses"',
@@ -81,14 +89,16 @@ export const mergingText = createDictionary({
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
     'uk-ua': "Об'єднати {field:string}",
+    'pt-br': 'Mesclar {field:string}',
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
     'de-ch': 'Automatisch ausfüllen',
     'es-es': 'Autocompletar',
     'fr-fr': 'Remplir automatiquement',
-    'ru-ru': 'Автозаполнение',
+    'ru-ru': 'Автоматическое заполнение',
     'uk-ua': 'Автоматичне заповнення',
+    'pt-br': 'Preenchimento automático',
   },
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
@@ -97,14 +107,16 @@ export const mergingText = createDictionary({
     'fr-fr': 'Interdire la fusion',
     'ru-ru': 'Отклонить от слияния',
     'uk-ua': 'Відхилити від об’єднання',
+    'pt-br': 'Descartar da fusão',
   },
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
     'es-es': 'Los agentes contienen miembros de grupo',
-    'de-ch': 'Zusammengeführter Datensatz',
+    'de-ch': 'Agenten enthalten Gruppenmitglieder',
     'fr-fr': 'Enregistrement fusionné',
-    'ru-ru': 'Объединенная запись',
+    'ru-ru': 'Агенты содержат членов группы',
     'uk-ua': 'Об’єднаний запис',
+    'pt-br': 'Os agentes contêm membros do grupo',
   },
   recordNotBeMergedReason: {
     'en-us': 'The following records cannot be merged. Reason:',
@@ -113,83 +125,61 @@ export const mergingText = createDictionary({
     'es-es': 'Los siguientes registros no se pueden fusionar. Razón:',
     'fr-fr':
       'Les enregistrements suivants ne peuvent pas être fusionnés. Raison:',
-    'ru-ru': 'Следующие записи невозможно объединить. Причина:',
+    'ru-ru': 'Следующие записи не могут быть объединены. Причина:',
     'uk-ua': 'Наступні записи не можна об’єднати. Причина:',
+    'pt-br': 'Os seguintes registros não podem ser mesclados. Motivo:',
   },
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
     'es-es': 'Algunos registros no se pueden fusionar',
-    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
+    'de-ch': 'Einige Datensätze können nicht zusammengeführt werden',
     'fr-fr': "Quelque chose s'est mal passé pendant le processus de fusion.",
-    'ru-ru': 'Что-то пошло не так в процессе слияния.',
+    'ru-ru': 'Некоторые записи не могут быть объединены',
     'uk-ua': 'Щось пішло не так під час процесу об’єднання.',
+    'pt-br': 'Alguns registros não podem ser mesclados',
   },
   mergeOthers: {
     'en-us': 'Merge others',
     'de-ch': 'Andere zusammenführen',
     'es-es': 'Fusionar otros',
     'fr-fr': 'Fusionner les autres',
-    'ru-ru': 'Объединить других',
+    'ru-ru': 'Объединить другие',
     'uk-ua': 'Об’єднати інші',
+    'pt-br': 'Mesclar outros',
   },
   warningMergeText: {
-    'en-us': `
-      Before proceeding, please note that the following action may interrupt
-      other users. This action may cause delays or temporary unavailability of
-      certain features for Specify users. Please consider the impact on their
-      experience. This merge cannot be undone
-    `,
-    'de-ch': `
-      Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere
-      Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder einer
-      vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für
-      Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren
-      Benutzererfahrung. Diese Zusammenführung kann nicht rückgängig gemacht
-      werden.
-    `,
-    'es-es': `
-      Antes de continuar, tenga en cuenta que la siguiente acción puede
-      interrumpir a otros usuarios. Esta acción puede provocar retrasos o
-      indisponibilidad temporal de determinadas funciones para los usuarios de
-      Specify. Tenga en cuenta las repercusiones que puedan experimentar. Esta
-      fusión no se puede deshacer
-    `,
-    'fr-fr': `
-      Avant de continuer, veuillez noter que l'action suivante peut interrompre
-      les autres utilisateurs. Cette action peut entraîner des retards ou une
-      indisponibilité temporaire de certaines fonctionnalités pour les
-      utilisateurs Specify. Veuillez considérer l’impact sur leur expérience.
-      Cette fusion est irréversible
-    `,
-    'ru-ru': `
-      Прежде чем продолжить, обратите внимание, что следующее действие может
-      помешать другим пользователям. Это действие может привести к задержкам или
-      временной недоступности определенных функций для пользователей Specify.
-      Пожалуйста, учтите влияние на их опыт. Это объединение невозможно
-      отменить.
-    `,
-    'uk-ua': `
-      Перш ніж продовжити, зауважте, що наступна дія може перешкодити іншим
-      користувачам. Ця дія може призвести до затримок або тимчасової
-      недоступності певних функцій для користувачів Specify. Будь ласка,
-      врахуйте вплив на їхній досвід. Це об’єднання не можна скасувати
-    `,
+    'en-us':
+      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This merge cannot be undone',
+    'de-ch':
+      'Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder zur vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren Benutzererfahrung. Diese Zusammenführung kann nicht rückgängig gemacht werden.',
+    'es-es':
+      'Antes de continuar, tenga en cuenta que la siguiente acción puede interrumpir a otros usuarios. Esta acción puede provocar retrasos o indisponibilidad temporal de determinadas funciones para los usuarios de Specify. Tenga en cuenta las repercusiones que puedan experimentar. Esta fusión no se puede deshacer',
+    'fr-fr':
+      "Avant de continuer, veuillez noter que l'action suivante peut interrompre les autres utilisateurs. Cette action peut entraîner des retards ou une indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs Specify. Veuillez considérer l’impact sur leur expérience. Cette fusion est irréversible",
+    'ru-ru':
+      'Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может вызвать задержки или временную недоступность определенных функций для пользователей Specify. Пожалуйста, учтите влияние на их опыт. Это объединение не может быть отменено',
+    'uk-ua':
+      'Перш ніж продовжити, зауважте, що наступна дія може перешкодити іншим користувачам. Ця дія може призвести до затримок або тимчасової недоступності певних функцій для користувачів Specify. Будь ласка, врахуйте вплив на їхній досвід. Це об’єднання не можна скасувати',
+    'pt-br':
+      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de determinados recursos para usuários específicos. Considere o impacto na experiência deles. Esta fusão não pode ser desfeita.',
   },
   mergeFailed: {
     'en-us': 'Merge Failed',
     'de-ch': 'Zusammenführung fehlgeschlagen',
     'es-es': 'Fusión fallida',
     'fr-fr': 'Échec de la fusion',
-    'ru-ru': 'Слияние не удалось',
+    'ru-ru': 'Объединение не удалось',
     'uk-ua': 'Не вдалося злити',
+    'pt-br': 'Falha na mesclagem',
   },
   mergeSucceeded: {
     'en-us': 'Merge Succeeded',
     'de-ch': 'Zusammenführung erfolgreich',
     'es-es': 'Fusión exitosa',
     'fr-fr': 'Fusion réussie',
-    'ru-ru': 'Слияние выполнено успешно',
+    'ru-ru': 'Слияние успешно выполнено',
     'uk-ua': 'Злиття виконано',
+    'pt-br': 'Mesclagem bem-sucedida',
   },
   merging: {
     'en-us': 'Merging',
@@ -198,6 +188,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Fusion',
     'ru-ru': 'Слияние',
     'uk-ua': 'Злиття',
+    'pt-br': 'Mesclando',
   },
   mergingHasStarted: {
     'en-us': 'The merge process has started.',
@@ -206,14 +197,16 @@ export const mergingText = createDictionary({
     'fr-fr': 'Le processus de fusion a commencé.',
     'ru-ru': 'Процесс слияния начался.',
     'uk-ua': 'Процес об’єднання розпочато.',
+    'pt-br': 'O processo de fusão foi iniciado.',
   },
   mergingHasSucceeded: {
     'en-us': 'The merge process has succeeded.',
     'de-ch': 'Der Zusammenführungsprozess war erfolgreich.',
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
-    'ru-ru': 'Процесс слияния завершился успешно.',
+    'ru-ru': 'Процесс слияния прошел успешно.',
     'uk-ua': 'Процес об’єднання завершився успішно.',
+    'pt-br': 'O processo de mesclagem foi bem-sucedido.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
@@ -222,30 +215,34 @@ export const mergingText = createDictionary({
     'fr-fr': 'Le processus de fusion a échoué.',
     'ru-ru': 'Процесс слияния не удался.',
     'uk-ua': 'Помилка процесу об’єднання.',
+    'pt-br': 'O processo de mesclagem falhou.',
   },
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
     'de-ch': 'Der Zusammenführungsprozess wurde abgebrochen.',
     'es-es': 'Se ha cancelado el proceso de fusión.',
     'fr-fr': 'Le processus de fusion a été annulé.',
-    'ru-ru': 'Процесс слияния отменен.',
+    'ru-ru': 'Процесс слияния был отменен.',
     'uk-ua': 'Процес об’єднання скасовано.',
+    'pt-br': 'O processo de mesclagem foi cancelado.',
   },
   retryMerge: {
     'en-us': 'Retry merge.',
     'de-ch': 'Zusammenführung erneut versuchen.',
     'es-es': 'Reintentar la fusión.',
     'fr-fr': 'Réessayez la fusion.',
-    'ru-ru': 'Повторите попытку объединения.',
+    'ru-ru': 'Повторите попытку слияния.',
     'uk-ua': 'Повторити об’єднання.',
+    'pt-br': 'Tentar mesclar novamente.',
   },
   mergingWentWrong: {
     'en-us': 'Something went wrong during the merging process.',
-    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
+    'de-ch': 'Beim Zusammenführungsprozess ist ein Fehler aufgetreten.',
     'es-es': 'Algo salió mal durante el proceso de fusión.',
     'fr-fr': "Quelque chose s'est mal passé pendant le processus de fusion.",
-    'ru-ru': 'Что-то пошло не так в процессе слияния.',
+    'ru-ru': 'В процессе слияния что-то пошло не так.',
     'uk-ua': 'Щось пішло не так під час процесу об’єднання.',
+    'pt-br': 'Algo deu errado durante o processo de mesclagem.',
   },
   linkedRecords: {
     'en-us': 'Linked Records',
@@ -254,5 +251,6 @@ export const mergingText = createDictionary({
     'fr-fr': 'Enregistrements liés',
     'ru-ru': 'Связанные записи',
     'uk-ua': "Пов'язані записи",
+    'pt-br': 'Registros vinculados',
   },
 } as const);

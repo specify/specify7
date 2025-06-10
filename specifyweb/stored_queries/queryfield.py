@@ -14,13 +14,13 @@ EphemeralField = namedtuple(
 )
 
 
-def fields_from_json(json_fields) -> List["QueryField"]:
+def fields_from_json(json_fields) -> list["QueryField"]:
     """Given deserialized json data representing an array of SpQueryField
     records, return an array of QueryField objects that can build the
     corresponding sqlalchemy query.
     """
 
-    def ephemeral_field_from_json(json: Dict[str, Any]):
+    def ephemeral_field_from_json(json: dict[str, Any]):
         return EphemeralField(
             **{field: json.get(field.lower(), None) for field in EphemeralField._fields}
         )

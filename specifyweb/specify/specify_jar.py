@@ -18,10 +18,10 @@ def find_jar(filename='specify.jar', search_dirs=['/']):
 def open_jar(paths):
     for path in paths:
         try:
-            return ZipFile(path)
+            return ZipFile(path), path
         except (FileNotFoundError, KeyError, BadZipFile):
             continue
-    return None
+    return None, None
 
 specify_jar_paths = [
     os.path.join(settings.SPECIFY_THICK_CLIENT, 'config/specify.jar')
@@ -32,7 +32,7 @@ if found_jar_path:
     specify_jar_paths.append(found_jar_path)
 
 specify_jar_paths.extend(DEFAULT_SPECIFY_JAR_PATHS)
-specify_jar = open_jar(specify_jar_paths)
+specify_jar, specify_jar_path = open_jar(specify_jar_paths)
 
 if specify_jar is None:
     raise FileNotFoundError("Specify JAR file not found in any of the specified paths.")
