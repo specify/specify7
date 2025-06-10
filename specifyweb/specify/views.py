@@ -39,7 +39,7 @@ def login_maybe_required(view):
             if request.user.is_authenticated:
                 return view(request, *args, **kwargs)
             
-            if not spmodels.Collection.objects.exists():
+            if not spmodels.Institution.objects.exists():
                 return view(request, *args, **kwargs)
 
         return http.HttpResponseForbidden()
