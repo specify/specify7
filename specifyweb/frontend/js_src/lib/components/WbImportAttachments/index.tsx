@@ -38,12 +38,11 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import {
+import { 
+  ATTACHMENTS_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
-} from './helpers';
-
-export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
+} from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');

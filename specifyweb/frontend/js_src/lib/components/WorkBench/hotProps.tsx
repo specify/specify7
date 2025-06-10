@@ -7,7 +7,7 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
 import { getIcon } from '../InitialContext/icons';
@@ -67,10 +67,12 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
       const isAttachmentsColumn =
-        dataset.columns[physicalCol] === ATTACHMENTS_COLUMN;
+        physicalCol === attachmentsColumnIndex;
       const columnName =
         isAttachmentsColumn
           ? attachmentsText.attachments()
