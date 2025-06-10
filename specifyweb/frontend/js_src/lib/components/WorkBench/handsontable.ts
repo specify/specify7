@@ -6,8 +6,8 @@ import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
 import { getPhysicalColToMappingCol } from './hotHelpers';
@@ -217,7 +217,7 @@ function setColumnWidths(
   hot: Handsontable,
   dataset: Dataset
 ): void {
-  let colWidths: number[] | undefined = undefined;
+  let colWidths: readonly number[] | undefined = undefined;
   /**
    * The attachments column contains text that is different from what is actually displayed.
    * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
@@ -229,6 +229,6 @@ function setColumnWidths(
     colWidths[attachmentsColumnIndex] = Math.min(hot.getColWidth(attachmentsColumnIndex), attachmentColumnMaxWidth)
   }
   hot.updateSettings({
-    colWidths: colWidths
+    colWidths
   });
 }
