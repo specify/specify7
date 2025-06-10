@@ -470,8 +470,8 @@ def import_model(model_name):
         if model_name in model_names:
             def get_model():
                 from importlib import import_module
-                if app_name == 'accounts':
-                    module = import_module("specifyweb.backend.accounts.models")
+                if app_name in ['accounts', 'permissions']:
+                    module = import_module(f"specifyweb.backend.{app_name}.models")
                 else:
                     module = import_module(f"specifyweb.{app_name}.models")
                 return getattr(module, model_name)
