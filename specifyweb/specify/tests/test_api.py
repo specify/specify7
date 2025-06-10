@@ -10,7 +10,7 @@ from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
+from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
 from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
@@ -45,7 +45,7 @@ def get_table(name: str):
 class MainSetupTearDown:
     def setUp(self):
         disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
-        connect_signal('pre_save', check_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
+        connect_signal('pre_save', validate_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
         self.institution = Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
