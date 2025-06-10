@@ -114,11 +114,7 @@ async function saveDataSetAttachments(
   );
 }
 
-function FilesPicked({
-  files,
-}: {
-  readonly files: RA<File>;
-}): JSX.Element {
+function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
@@ -145,9 +141,9 @@ function FilesPicked({
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => 
+          .then(async ({ dataSet, attachments }) =>
             // Create SpDataSetAttachments for each attachment
-             f.all({
+            f.all({
               dataSetAttachments: createDataSetAttachments(
                 attachments,
                 dataSet
