@@ -9,7 +9,27 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
+            UPDATE geographytreedefitem
+            SET Title = Name
+            WHERE Title IS NULL;
+
             UPDATE taxontreedefitem
+            SET Title = Name
+            WHERE Title IS NULL;
+
+            UPDATE storagetreedefitem
+            SET Title = Name
+            WHERE Title IS NULL;
+
+            UPDATE tectonicunittreedefitem
+            SET Title = Name
+            WHERE Title IS NULL;
+
+            UPDATE lithostrattreedefitem
+            SET Title = Name
+            WHERE Title IS NULL;
+
+            UPDATE geologictimeperiodtreedefitem
             SET Title = Name
             WHERE Title IS NULL;
             """,
