@@ -55,7 +55,7 @@ export function WbAttachmentsPreview({
     undefined
   );
   const [attachments, setAttachments] = React.useState<
-    readonly WbAttachmentPreviewCell[]
+    RA<WbAttachmentPreviewCell>
   >([]);
   const [selectedAttachment, setSelectedAttachment] = React.useState<
     SerializedResource<Attachment> | undefined
@@ -148,10 +148,10 @@ function fetchRowAttachments(
   row: number,
   setAttachments: (
     attachments:
-      | readonly WbAttachmentPreviewCell[]
+      | RA<WbAttachmentPreviewCell>
       | ((
-          attachments: readonly WbAttachmentPreviewCell[]
-        ) => readonly WbAttachmentPreviewCell[])
+          attachments: RA<WbAttachmentPreviewCell>
+        ) => RA<WbAttachmentPreviewCell>)
   ) => void,
   setSelectedAttachment: (
     attachment: SerializedResource<Attachment> | undefined
