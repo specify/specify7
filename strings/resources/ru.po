@@ -322,13 +322,13 @@ msgid "sortField"
 msgstr "Сортировать поле"
 
 #: components/FormEditor/Create.tsx:214
-#: components/Formatters/Preview.tsx:70
+#: components/Formatters/Preview.tsx:71
 #: components/Merging/Header.tsx:164
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 msgid "preview"
 msgstr "Предварительный просмотр"
 
-#: components/Formatters/Preview.tsx:71
+#: components/Formatters/Preview.tsx:72
 #. Used in: Components > Formatters > Preview
 msgid "previewExplainer"
 msgstr ""

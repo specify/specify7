@@ -38,7 +38,7 @@ msgstr "Нет"
 #: components/FormSliders/RecordSelectorFromIds.tsx:273
 #: components/Forms/DeleteButton.tsx:121
 #: components/Forms/DeleteButton.tsx:145
-#: components/Forms/ResourceView.tsx:361
+#: components/Forms/ResourceView.tsx:362
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:307
@@ -197,7 +197,7 @@ msgstr "Создать"
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:175
 #: components/Forms/ResourceView.tsx:213
-#: components/Forms/ResourceView.tsx:364
+#: components/Forms/ResourceView.tsx:365
 #: components/Forms/Save.tsx:352
 #: components/Forms/Save.tsx:387
 #: components/Header/UserTools.tsx:75
@@ -416,8 +416,8 @@ msgstr "Инструменты"
 #: components/FormFields/Field.tsx:84
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
 #: components/FormPlugins/CollectionRelOneToOne.tsx:43
-#: components/Formatters/Preview.tsx:102
-#: components/Formatters/Preview.tsx:143
+#: components/Formatters/Preview.tsx:103
+#: components/Formatters/Preview.tsx:146
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:123
 #: components/Forms/SubView.tsx:196
@@ -504,7 +504,7 @@ msgid "remove"
 msgstr "Удалить"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Formatters/Preview.tsx:74
+#: components/Formatters/Preview.tsx:75
 #: components/Header/ExpressSearchTask.tsx:50
 #: components/Header/ExpressSearchTask.tsx:90
 #: components/Header/ExpressSearchTask.tsx:95

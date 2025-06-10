@@ -377,14 +377,14 @@ msgid "sortField"
 msgstr "Campo de classificação"
 
 #: components/FormEditor/Create.tsx:214
-#: components/Formatters/Preview.tsx:70
+#: components/Formatters/Preview.tsx:71
 #: components/Merging/Header.tsx:164
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #, fuzzy
 msgid "preview"
 msgstr "Visualização"
 
-#: components/Formatters/Preview.tsx:71
+#: components/Formatters/Preview.tsx:72
 #. Used in: Components > Formatters > Preview
 #, fuzzy
 msgid "previewExplainer"
