@@ -110,27 +110,32 @@ test("custom validation and hook use (complex errors)", async () => {
 
 });
 
-test.skip("custom validation in form editor context", async () => {
-    const customError = "the value should be a!";
-    const { result } = renderHook(() => useValidation());
-    const initialValue = "";
+function TestComponent({ customError }: { readonly customError: string }) {
 
-    const { getByRole, user } = mount(
-        <InFormEditorContext.Provider value>
-            <Input.Text forwardRef={result.current.validationRef} value={initialValue} onValueChange={(rawValue) => {
-                if (rawValue === "a") result.current.setValidation("");
-                result.current.setValidation(customError);
-            }} />
-        </InFormEditorContext.Provider>
-    );
+    const { validationRef, setValidation } = useValidation();
+    return <Input.Text forwardRef={validationRef} value="" onValueChange={(rawValue) => {
+        if (rawValue === "a") setValidation("");
+        setValidation(customError);
+    }} />
+}
+
+
+test("custom validation in form editor context", async () => {
+    const customError = "the value should be a!";
+
+    const { getByRole, user } = mount(<InFormEditorContext.Provider value><TestComponent customError={customError} /></InFormEditorContext.Provider>);
 
     const textbox = getByRole("textbox") as HTMLTextAreaElement;
 
     // Since the form editor context is being used, the set validation won't do anything.
-
     await user.type(textbox, "b");
 
     expect(textbox.validationMessage).toBe("");
     expect(textbox.validity.valid).toBe(true);
 
 })
+
+/**
+ * Final coverage report:
+ * useValidation.tsx           |   94.77 |    78.78 |     100 |   94.77 | 52-54,79-82 
+ */
