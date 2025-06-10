@@ -34,8 +34,11 @@ import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
-import { getAttachmentsColumnIndex, getAttachmentsFromCell } from '../WorkBench/attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import {
+  getAttachmentsColumnIndex,
+  getAttachmentsFromCell,
+} from '../WorkBench/attachmentHelpers';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -254,28 +257,28 @@ function AttachmentViewerDialog({
 
   return (
     <Dialog
-        buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        header={attachmentsText.attachments()}
-        modal={false}
-        onClose={onClose}
-      >
-        {attachment !== undefined &&
-          (isImage ? (
-            <ImageViewer
-              alt={attachment?.title ?? ''}
-              src={attachmentUrl ?? ''}
-            />
-          ) : (
-            <AttachmentViewer
-              attachment={deserializeResource(attachment)}
-              related={[related, setRelated]}
-              showMeta={false}
-              onViewRecord={undefined}
-            />
-          ))}
-      </Dialog>
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header={attachmentsText.attachments()}
+      modal={false}
+      onClose={onClose}
+    >
+      {attachment !== undefined &&
+        (isImage ? (
+          <ImageViewer
+            alt={attachment?.title ?? ''}
+            src={attachmentUrl ?? ''}
+          />
+        ) : (
+          <AttachmentViewer
+            attachment={deserializeResource(attachment)}
+            related={[related, setRelated]}
+            showMeta={false}
+            onViewRecord={undefined}
+          />
+        ))}
+    </Dialog>
   );
 }
