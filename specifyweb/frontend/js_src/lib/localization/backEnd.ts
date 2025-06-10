@@ -573,12 +573,14 @@ export const backEndText = createDictionary({
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
   },
   attachmentNotFound: {
-    'en-us': 'One or more attachments do not exist. They may have been deleted.'
+    'en-us':
+      'One or more attachments do not exist. They may have been deleted.',
   },
   tableDoesNotSupportAttachments: {
-    'en-us': 'The attachment\'s destination table does not support attachments.',
+    'en-us': "The attachment's destination table does not support attachments.",
   },
   attachmentAlreadyLinked: {
-    'en-us': 'One or more attachments are already associated with an uploaded record.',
-  }
+    'en-us':
+      'One or more attachments are already associated with an uploaded record.',
+  },
 } as const);

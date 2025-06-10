@@ -38,7 +38,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-import { 
+import {
   ATTACHMENTS_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
@@ -50,19 +50,17 @@ export function WbImportAttachmentsView(): JSX.Element {
 
   return (
     <Container.Full>
-        <H2>{commonText.multipleFilePickerMessage()}</H2>
-        <div className="w-96">
-          <FilePicker
-            acceptedFormats={undefined}
-            showFileNames
-            onFilesSelected={(selectedFiles) => {
-              setFiles(Array.from(selectedFiles));
-            }}
-          />
-        </div>
-        {files !== undefined && files.length > 0 && (
-          <FilesPicked files={files} />
-        )}
+      <H2>{commonText.multipleFilePickerMessage()}</H2>
+      <div className="w-96">
+        <FilePicker
+          acceptedFormats={undefined}
+          showFileNames
+          onFilesSelected={(selectedFiles) => {
+            setFiles(Array.from(selectedFiles));
+          }}
+        />
+      </div>
+      {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
     </Container.Full>
   );
 }
