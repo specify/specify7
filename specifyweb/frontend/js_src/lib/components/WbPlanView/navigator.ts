@@ -131,7 +131,12 @@ function navigator({
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
-  const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
+  const geoPaleoDisciplines = [
+    'geology',
+    'invertpaleo',
+    'vertpaleo',
+    'paleobotany',
+  ];
   const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
 
   if (
