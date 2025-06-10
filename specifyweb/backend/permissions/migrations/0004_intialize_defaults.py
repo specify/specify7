@@ -3,7 +3,7 @@
 from django.db import migrations
 
 def initialize(apps, schema_editor):
-    from specifyweb.permissions.initialize import initialize as init
+    from specifyweb.backend.permissions.initialize import initialize as init
     init(wipe=True, apps=apps)
 
 class Migration(migrations.Migration):
