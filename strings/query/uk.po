@@ -204,12 +204,12 @@ msgstr "Створити {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Зберегти як"
 
-#: components/WbPlanView/navigator.ts:429
+#: components/WbPlanView/navigator.ts:447
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(будь-який ранг)"
 
-#: components/WbPlanView/navigator.ts:381
+#: components/WbPlanView/navigator.ts:399
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr "(будь-яке дерево)"
@@ -262,12 +262,12 @@ msgstr "Заперечувати"
 msgid "showButtonDescription"
 msgstr "Показати в результатах"
 
-#: components/WbPlanView/navigator.ts:486
+#: components/WbPlanView/navigator.ts:504
 #. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(узагальнено)"
 
-#: components/WbPlanView/navigator.ts:487
+#: components/WbPlanView/navigator.ts:505
 #. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(відформатований)"
