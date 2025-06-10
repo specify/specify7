@@ -18,7 +18,7 @@ from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
     return_loan_preps as rlp
 from .queryfield import QueryField
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+from ..backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from ..specify.api import toJson, uri_for_model
 from ..specify.models import Collection, Recordset, Recordsetitem, \
