@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react"
+
 import { useStateForContext } from "../useStateForContext"
 
 /**
@@ -9,11 +10,12 @@ import { useStateForContext } from "../useStateForContext"
  * each test does something useful.
  * Format is
  * File                          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
- * */
+ * 
+ */
 
 
 /*
- * useStateForContext.tsx |     100 |      100 |     100 |     100 |
+ * UseStateForContext.tsx |     100 |      100 |     100 |     100 |
  */
 
 test("Verify returned array stable", () => {
