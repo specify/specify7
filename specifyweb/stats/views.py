@@ -1,6 +1,6 @@
 from django import http
 
-from specifyweb.permissions.permissions import check_table_permissions
+from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse, Http404
 

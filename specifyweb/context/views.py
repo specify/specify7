@@ -21,7 +21,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
 from specifyweb.middleware.general import require_http_methods
-from specifyweb.permissions.permissions import PermissionTarget, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
