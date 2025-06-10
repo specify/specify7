@@ -28,7 +28,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
-from specifyweb.permissions.permissions import (
+from specifyweb.backend.permissions.permissions import (
     enforce,
     check_table_permissions,
     check_field_permissions,

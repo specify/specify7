@@ -201,7 +201,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware',
-    'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.backend.permissions.middleware.PermissionsMiddleware',
     'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
@@ -209,7 +209,7 @@ ROOT_URLCONF = 'specifyweb.urls'
 
 SPECIFY_APPS  = [
     'specifyweb.specify',
-    'specifyweb.permissions',
+    'specifyweb.backend.permissions',
     'specifyweb.backend.accounts',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
