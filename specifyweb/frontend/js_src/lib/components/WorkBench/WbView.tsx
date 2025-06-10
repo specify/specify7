@@ -32,7 +32,7 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { usesAttachments } from './attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
@@ -156,7 +156,7 @@ export function WbView({
     useBooleanState();
 
   const useAttachments = React.useMemo(
-    () => dataset.columns.includes(ATTACHMENTS_COLUMN),
+    () => usesAttachments(dataset),
     [dataset]
   );
   const [
@@ -286,7 +286,7 @@ export function WbView({
           ) : showAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
-                datasetColumns={dataset.columns}
+                dataset={dataset}
                 hot={hot}
                 onClose={toggleAttachments}
               />

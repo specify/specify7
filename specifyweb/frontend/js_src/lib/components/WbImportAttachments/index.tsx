@@ -38,8 +38,11 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
-
-export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
+import {
+  ATTACHMENTS_COLUMN,
+  attachmentsToCell,
+  BASE_TABLE_NAME,
+} from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -157,7 +160,10 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
         const data = dataSetAttachments.map((dataSetAttachment) => [
-          dataSetAttachment.id.toString(),
+          attachmentsToCell(
+            [serializeResource(dataSetAttachment)],
+            BASE_TABLE_NAME
+          ),
         ]);
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);
