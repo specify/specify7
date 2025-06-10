@@ -1,4 +1,4 @@
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction
+from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction
 
 
 class DataSetPT(PermissionTarget):
