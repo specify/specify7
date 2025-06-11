@@ -460,6 +460,10 @@ def schema_localization(request):
     """
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     collection = getattr(request, 'specify_collection', None)
+    try:
+        collection.name
+    except Exception:
+        collection = None
     if not collection:
         return JsonResponse({})
     return JsonResponse(get_schema_localization(collection, 0, lang))
