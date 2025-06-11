@@ -461,12 +461,7 @@ def schema_localization(request):
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     collection = getattr(request, 'specify_collection', None)
     if not collection:
-        json_path = "/opt/specify7/config/common/default_schema_localization.json"
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        return JsonResponse(data, safe=isinstance(data, dict))
-
+        return JsonResponse({})
     return JsonResponse(get_schema_localization(collection, 0, lang))
 
 view_parameters_schema = [

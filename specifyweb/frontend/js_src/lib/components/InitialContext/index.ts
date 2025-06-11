@@ -52,6 +52,7 @@ export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
 
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   contextUnlockedPromise.then(async (entrypoint) => {
+    // TODO: chnage back at some point
     if (entrypoint !== 'main' && entrypoint !== 'login')
       return foreverFetch<T>();
 
