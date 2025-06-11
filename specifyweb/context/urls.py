@@ -6,7 +6,7 @@ from django.urls import path, re_path
 from django.urls import path
 
 from . import views, user_resources, collection_resources
-from ..attachment_gw.views import get_settings as attachment_settings
+from ..backend.attachment_gw.views import get_settings as attachment_settings
 from ..report_runner.views import get_status as report_runner_status
 
 urlpatterns = [

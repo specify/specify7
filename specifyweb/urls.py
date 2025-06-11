@@ -2,7 +2,7 @@ from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 
 from specifyweb.backend.accounts import urls as accounts_urls
-from .attachment_gw import urls as attachment_urls
+from specifyweb.backend.attachment_gw import urls as attachment_urls
 from .barvis import urls as tt_urls
 from .businessrules import urls as bus_urls
 from .context import urls as context_urls
