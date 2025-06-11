@@ -1,15 +1,16 @@
+import { act, renderHook } from "@testing-library/react";
 import React from "react";
 
+import { Input } from '../../components/Atoms/Form'
+import { getFieldBlockers } from "../../components/DataModel/saveBlockers";
 import { tables } from "../../components/DataModel/tables";
+import { formsText } from "../../localization/forms";
 import { requireContext } from "../../tests/helpers";
 import { mount } from "../../tests/reactUtils";
-import { Input } from '../../components/Atoms/Form'
-import { getValidationAttributes, Parser } from "../../utils/parser/definitions";
-import { act, renderHook } from "@testing-library/react";
+import type { Parser } from "../../utils/parser/definitions";
+import { getValidationAttributes } from "../../utils/parser/definitions";
+import type { RA } from "../../utils/types";
 import { useResourceValue } from "../useResourceValue";
-import { getFieldBlockers } from "../../components/DataModel/saveBlockers";
-import { RA } from "../../utils/types";
-import { formsText } from "../../localization/forms";
 
 requireContext();
 
@@ -20,11 +21,11 @@ describe("useResourceValue", () => {
 
     // TODO: make this part of utils?
     const expectArrayEqual = (base: RA<unknown>, compare: RA<unknown>) => {
-        expect(base.length).toBe(compare.length);
+        expect(base).toHaveLength(compare.length);
         base.forEach((baseElement, index) => expect(baseElement).toBe(compare[index]));
     }
 
-    it("sets saveblockers on incorrect values (regex)", async () => {
+    test("sets saveblockers on incorrect values (regex)", async () => {
         const collectionObject = new tables.CollectionObject.Resource({
             id: 5
         });
@@ -51,10 +52,10 @@ describe("useResourceValue", () => {
 
         const { getByRole, user } = mount(
             <Input.Text {...validationAttributes}
-                value={result.current.value?.toString()}
                 forwardRef={result.current.validationRef}
-                onValueChange={(value) => result.current.updateValue(value, false)}
+                value={result.current.value?.toString()}
                 onChange={(event): void => result.current.updateValue(event.target.value, false)}
+                onValueChange={(value) => result.current.updateValue(value, false)}
             />
         );
 
@@ -80,7 +81,7 @@ describe("useResourceValue", () => {
 
     });
 
-    it("sets saveblockers on incorrect values (integer)", async () => {
+    test("sets saveblockers on incorrect values (integer)", async () => {
         const collectionObject = new tables.CollectionObject.Resource({
             id: 5
         });
@@ -111,10 +112,10 @@ describe("useResourceValue", () => {
         const { getByRole, user } = mount(
             <Input.Integer
                 {...validationAttributes}
-                value={result.current.value?.toString()}
                 forwardRef={result.current.validationRef}
-                onValueChange={(value) => result.current.updateValue(value, false)}
+                value={result.current.value?.toString()}
                 onChange={(event): void => result.current.updateValue(event.target.value, false)}
+                onValueChange={(value) => result.current.updateValue(value, false)}
             />
         );
 
@@ -134,7 +135,7 @@ describe("useResourceValue", () => {
         expect(collectionObject.get("integer1")).toBe('7');
     });
 
-    it("updates value on backbone set events", async () => {
+    test("updates value on backbone set events", async () => {
 
         const collectionObject = new tables.CollectionObject.Resource({
             id: 5
@@ -188,9 +189,11 @@ describe("useResourceValue", () => {
         expectArrayEqual(getFieldBlockers(collectionObject, integerField), []);
     });
 
-    it("handles undefined resource, field, and parser", async () => {
-        // Maybe this test is not practically needed.
-        // But, needed for code coverage.
+    test("handles undefined resource, field, and parser", async () => {
+        /*
+         * Maybe this test is not practically needed.
+         * But, needed for code coverage.
+         */
 
         renderHook((props) => useResourceValue(props.resource, props.field, props.defaultParser),
             {
