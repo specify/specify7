@@ -26,12 +26,14 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
   name,
+  recordSetId,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
   readonly name: string | undefined;
+  readonly recordSetId: number | undefined;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -137,7 +139,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                   loading(
                     downloadAllAttachments(
                       attachmentsRef.current?.attachments ?? [],
-                      name
+                      recordSetId,
+                      name,
                     )
                   )
                 }

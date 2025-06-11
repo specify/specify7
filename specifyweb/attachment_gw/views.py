@@ -10,6 +10,7 @@ from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
 from datetime import datetime
+from django.apps import apps
 
 import requests
 from django.conf import settings
@@ -22,6 +23,9 @@ from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify import models
+from specifyweb.specify.models import Recordsetitem
+from specifyweb.specify.models_by_table_id import get_model_by_table_id
 
 from .dataset_views import dataset_view, datasets_view
 logger = logging.getLogger(__name__)
@@ -319,6 +323,27 @@ def download_all(request):
 
     attachmentLocations = r['attachmentlocations']
     origFileNames = r['origfilenames']
+
+    # Optional record set parameter
+    # Fetches all the attachment locations instead of using the ones provided by the frontend
+    recordSetId = r.get('recordsetid', None)
+    if recordSetId is not None:
+        attachmentLocations = []
+        recordset = models.Recordset.objects.get(id=recordSetId)
+        tableid = recordset.dbtableid
+        table = get_model_by_table_id(tableid)
+
+        join_table = apps.get_model(table._meta.app_label, table.__name__ + 'attachment')
+
+        # Reach all attachments
+        recordsetitem_ids = models.Recordsetitem.objects.filter(recordset__id=recordSetId)
+        for rsi in recordsetitem_ids:
+            record_id = rsi.recordid
+            join_records = join_table.objects.filter(**{table.__name__: record_id})
+            for join_record in join_records:
+                attachment = join_record.attachment
+                if attachment.attachmentlocation is not None:
+                    attachmentLocations.append(attachment.attachmentlocation)
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)

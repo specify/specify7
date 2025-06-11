@@ -43,6 +43,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
+  recordSetId,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
@@ -68,6 +69,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
+  readonly recordSetId?: number | undefined;
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
@@ -239,6 +241,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   name={title as string}
                   records={records}
                   onFetch={handleFetch}
+                  recordSetId={
+                    isInRecordSet ?  : false
+                  }
                 />
               ) : undefined}
               {table.view === 'GeologicTimePeriod' ? (
