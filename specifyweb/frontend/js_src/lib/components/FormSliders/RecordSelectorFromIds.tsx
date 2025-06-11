@@ -240,10 +240,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 <RecordSetAttachments
                   name={title as string}
                   records={records}
-                  onFetch={handleFetch}
                   recordSetId={
                     isInRecordSet ? recordSetId : undefined
                   }
+                  onFetch={handleFetch}
                 />
               ) : undefined}
               {table.view === 'GeologicTimePeriod' ? (
