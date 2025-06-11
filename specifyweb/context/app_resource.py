@@ -55,6 +55,18 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     """Fetch the named app resource in the context of the given user and collection.
     Returns the resource data and mimetype as a pair.
     """
+    try:
+        collection.collectionname
+        collection.discipline
+    except Exception:
+        collection = None
+        
+    try:
+        user.usertype
+    except Exception:
+        user = None
+
+
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
 
@@ -234,7 +246,7 @@ def get_app_resource_dirs_for_level(collection, user, level):
 
     filters = {key: value
                for (key, value) in raw_filters.items()
-               if value != IGNORE}
+               if value is not None and value != IGNORE}
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
