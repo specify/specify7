@@ -1228,7 +1228,7 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_loan_return_sibling_preps(obj, data)
     return data
     
-def _wizard_condition(request):
+def _guided_setup_condition(request):
     from specifyweb.specify.models import Specifyuser
     if Specifyuser.objects.exists():
         is_auth = request.user.is_authenticated
@@ -1239,11 +1239,11 @@ def _wizard_condition(request):
 
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
-    if Institution.objects.exists() and not _wizard_condition(request):
+    if Institution.objects.exists() and not _guided_setup_condition(request):
         return JsonResponse({"error": "Institution already exists"}, status=400)
     if request.method == 'POST':
         if Institution.objects.exists():
-            if not _wizard_condition(request):
+            if not _guided_setup_condition(request):
                 return JsonResponse({"error": "Not permitted"}, status=401)
             data = json.loads(request.body)
             institution = Institution.objects.first()
@@ -1272,7 +1272,7 @@ def create_institution(request, direct=False):
 
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
-    if not _wizard_condition(request):
+    if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -1297,7 +1297,7 @@ def create_division(request, direct=False):
 
 def create_discipline(request, direct=False):
     from specifyweb.specify.models import Discipline
-    if not _wizard_condition(request):
+    if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -1324,7 +1324,7 @@ def create_discipline(request, direct=False):
 
 def create_collection(request, direct=False):
     from specifyweb.specify.models import Collection
-    if not _wizard_condition(request):
+    if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -1354,7 +1354,7 @@ def create_collection(request, direct=False):
     
 def create_specifyuser(request, direct=False):
     from specifyweb.specify.models import Specifyuser
-    if not _wizard_condition(request):
+    if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     if request.method == 'POST':
         data = json.loads(request.body)
