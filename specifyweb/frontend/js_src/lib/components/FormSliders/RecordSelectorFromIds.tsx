@@ -237,9 +237,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 <RecordSetAttachments
                   name={title as string}
                   records={records}
-                  recordSetId={
-                    isInRecordSet ? recordSetId : undefined
-                  }
+                  recordSetId={isInRecordSet ? recordSetId : undefined}
                   onFetch={handleFetch}
                 />
               ) : undefined}
