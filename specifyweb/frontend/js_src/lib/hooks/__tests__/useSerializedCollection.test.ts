@@ -6,15 +6,18 @@ import { CollectionObject } from "../../components/DataModel/types";
 import { useSerializedCollection } from "../useSerializedCollection";
 import { AnySchema, SerializedResource } from "../../components/DataModel/helperTypes";
 import { defined, RA } from "../../utils/types";
+import { requireContext } from "../../tests/helpers";
 
+requireContext();
 
 type Fetcher = (offset: number) => Promise<SerializedCollection<CollectionObject>>;
 
+
 describe("use serialized collection", ()=>{
 
-    const makeFakeResources = (count: number) => Array(count).map((_, index)=>{
+    const makeFakeResources = (count: number) => Array.from({ length: count }, (_, index) => {
         const resource = new tables.CollectionObject.Resource({
-            id: index + 1
+        id: index + 1
         });
         const value = serializeResource(resource);
         return value;
@@ -45,10 +48,10 @@ describe("use serialized collection", ()=>{
 
     const singleFetchCount = 5;
     
-    const singleFetchResources: SerializedCollection<CollectionObject> = {
+    const singleFetchResources: ()=>SerializedCollection<CollectionObject> = () => ({
             records: makeFakeResources(singleFetchCount), 
             totalCount: singleFetchCount
-    };
+    });
 
     const typeCastCall = (value: unknown) => (value as ()=>Promise<void>)();
 
@@ -60,7 +63,7 @@ describe("use serialized collection", ()=>{
     it("fetches resources initially", async ()=>{
 
         const fetcher = jest.fn();
-        fetcher.mockReturnValue(Promise.resolve(singleFetchResources));
+        fetcher.mockReturnValue(Promise.resolve(singleFetchResources()));
 
         const { result } = renderHook((_fetcher: Fetcher)=>useSerializedCollection(_fetcher), {
             initialProps: fetcher
@@ -72,7 +75,7 @@ describe("use serialized collection", ()=>{
         }
         );
 
-        verifyCollections(singleFetchResources, result.current?.at(0));
+        verifyCollections(singleFetchResources(), result.current?.at(0));
         expect(fetcher).toBeCalledTimes(1);
 
     });
@@ -85,7 +88,7 @@ describe("use serialized collection", ()=>{
             inFlightResolver = resolve;
         });
 
-        const mockFetch = ()=>inFlightPromise.then(()=>Promise.resolve(singleFetchResources));
+        const mockFetch = ()=>inFlightPromise.then(()=>Promise.resolve(singleFetchResources()));
 
         const fetcher = jest.fn();
         fetcher.mockImplementation(mockFetch);
@@ -116,11 +119,11 @@ describe("use serialized collection", ()=>{
         }
         );
 
-        verifyCollections(singleFetchResources, result.current?.at(0));
+        verifyCollections(singleFetchResources(), result.current?.at(0));
         expect(fetcher).toBeCalledTimes(1);
     });
 
-    it.skip("keeps fetching till total count is reached", async () => {
+    it("keeps fetching till total count is reached", async () => {
 
         const totalCount = 16;
         const fakeResources = makeFakeResources(totalCount);
@@ -143,10 +146,12 @@ describe("use serialized collection", ()=>{
         });
 
         // This will create the function that, on each, call, returns the next chunk.
-        const fetcher = jest.fn().mockReturnValueOnce(chunks[0]).mockReturnValueOnce(chunks[1]).mockReturnValueOnce(chunks[2]);
-        
-        // chunks.reduce((previousFetcher, currentValue)=>previousFetcher.mockReturnValueOnce(currentValue), jest.fn())
 
+        const fetcher = chunks.reduce((previousFunction, currentChunk)=>
+            previousFunction.mockReturnValueOnce(Promise.resolve(makeCollection(currentChunk, totalCount))), 
+            jest.fn()
+        );
+        
         const { result } = renderHook((_fetcher: Fetcher)=>useSerializedCollection(_fetcher), {
             initialProps: fetcher
         });
@@ -155,14 +160,18 @@ describe("use serialized collection", ()=>{
         await waitFor(()=>{
             expect(result.current?.at(0)).toBeDefined();
             // This needs to be done before verifying the collection
-            assertRecordLength(result.current?.at(0), lengths[1]);
+            if (result.current?.at(0) !== undefined){
+                // Need to do this because the result can be undefined at this before.
+                assertRecordLength(result.current?.at(0), lengths[1]);
+            }
+            
         }
         );
 
         verifyCollections(makeCollection(chunks[0], totalCount), result.current?.at(0));
         expect(fetcher).toBeCalledTimes(1);
 
-        act(async ()=>{
+        await act(async ()=>{
             await typeCastCall(result.current?.at(2));
         });
 
@@ -173,7 +182,7 @@ describe("use serialized collection", ()=>{
         verifyCollections(makeCollection([...chunks[0], ...chunks[1]], totalCount), result.current?.at(0));
         expect(fetcher).toBeCalledTimes(2);
 
-        act(async ()=>{
+        await act(async ()=>{
             await typeCastCall(result.current?.at(2));
         });
 
@@ -185,7 +194,7 @@ describe("use serialized collection", ()=>{
         expect(fetcher).toBeCalledTimes(3);
 
         // This call should never even happen.
-        act(async ()=>{
+        await act(async ()=>{
             await typeCastCall(result.current?.at(2));
         });
 
