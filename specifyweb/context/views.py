@@ -314,6 +314,18 @@ def collection(request):
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
+    if request.specify_user._wrapped is None:
+        # User is not logged in, return empty user data
+        data = {
+            'id': None,
+            'name': None,
+            'usertype': None,
+            'isauthenticated': False,
+            'available_collections': [],
+            'agent': None
+        }
+        return HttpResponse(toJson({}), content_type='application/json')
+        # return HttpResponse(toJson(data), content_type='application/json')
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
     data['available_collections'] = [
@@ -331,7 +343,13 @@ def user(request):
 @never_cache
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
-    collection = request.specify_collection
+    # collection = request.specify_collection if request.specify_collection._wrapped is None else None
+    try:
+        collection.id
+    except Exception:
+        collection = None
+    if collection is None:
+        return HttpResponse(json.dumps({}), content_type='application/json')
     domain = {
         'collection': collection.id,
         'discipline': collection.discipline.id,
@@ -465,7 +483,12 @@ def schema_localization(request):
     except Exception:
         collection = None
     if not collection:
-        return JsonResponse({})
+        # return JsonResponse({})
+        json_path = "/opt/specify7/config/common/default_schema_localization.json"
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+
+        return JsonResponse(data, safe=isinstance(data, dict))
     return JsonResponse(get_schema_localization(collection, 0, lang))
 
 view_parameters_schema = [
@@ -649,25 +672,29 @@ def remote_prefs(request):
 @skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
-    spversion = Spversion.objects.get()
+    spversion = Spversion.objects.get() if Spversion.objects.exists() else None
     collection = request.specify_collection
+    try:
+        collection.id
+    except Exception:
+        collection = None
     discipline = collection.discipline if collection is not None else None
-    institution = Institution.objects.get()
+    institution = Institution.objects.get() if Institution.objects.exists() else None
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
-        database_version=spversion.appversion,
-        schema_version=spversion.schemaversion,
+        database_version=spversion.appversion if spversion else None,
+        schema_version=spversion.schemaversion if spversion else None,
         stats_url=settings.STATS_URL,
         database=settings.DATABASE_NAME,
-        institution=institution.name,
-        institution_guid=institution.guid,
-        discipline=discipline and discipline.name,
-        collection=collection and collection.collectionname,
-        collection_guid=collection and collection.guid,
-        isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type
+        institution=institution.name if institution else None,
+        institution_guid=institution.guid if institution else None,
+        discipline=discipline and discipline.name if discipline else None,
+        collection=collection and collection.collectionname if collection else None,
+        collection_guid=collection and collection.guid if collection else None,
+        isa_number=collection and collection.isanumber if collection else None,
+        discipline_type=discipline and discipline.type if discipline else None
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 
