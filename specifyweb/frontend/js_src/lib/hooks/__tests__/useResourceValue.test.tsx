@@ -188,6 +188,20 @@ describe("useResourceValue", () => {
         expectArrayEqual(getFieldBlockers(collectionObject, integerField), []);
     });
 
+    it("handles undefined resource, field, and parser", async () => {
+        // Maybe this test is not practically needed.
+        // But, needed for code coverage.
+
+        renderHook((props) => useResourceValue(props.resource, props.field, props.defaultParser),
+            {
+                initialProps: {
+                    resource: undefined,
+                    field: undefined,
+                    defaultParser: undefined
+                }
+            }
+        );
+    });
 
 
 });
