@@ -48,6 +48,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         return { attachments: [], related: [] };
       }
 
+      console.log("Number of records");
+      console.log(records.length);
+      console.log(records);
+
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
@@ -58,6 +62,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             )
         )
       );
+
+      console.log("Number of relatedAttachmentRecords");
+      console.log(relatedAttachmentRecords.length);
+      console.log(relatedAttachmentRecords);
 
       const fetchCount = filterArray(records).findIndex(
         (record) => !record.populated
@@ -75,6 +83,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           })
         )
       );
+
+      console.log("Number of attachments");
+      console.log(attachments.length);
 
       return {
         attachments: attachments.map(({ attachment }) => attachment),
