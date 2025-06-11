@@ -87,7 +87,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const previousIds = React.useRef(ids);
 
   React.useEffect(() => {
-    console.log("ID counts");
+    console.log('ID counts');
     console.log(ids.length);
     setRecords((records) =>
       ids.map((id, index) => {
