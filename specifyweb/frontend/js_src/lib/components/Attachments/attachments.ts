@@ -307,11 +307,13 @@ export function downloadAttachment(
       const fileName = cleanAttachmentDownloadName(
         attachment.origFilename ?? attachment.attachmentLocation
       );
-      downloadFile(
-        fileName,
-        `/attachment_gw/proxy/${new URL(url).search}`,
-        true
-      );
+      // Cannot use downloadFile because of iframe restrictions
+      const element = document.createElement('a');
+      element.href = `/attachment_gw/proxy/${new URL(url).search}`;
+      element.download = fileName;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
     }
   });
 }
