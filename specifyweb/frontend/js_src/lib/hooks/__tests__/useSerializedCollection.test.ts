@@ -1,12 +1,14 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { SerializedCollection } from "../../components/DataModel/collection";
+
+import type { SerializedCollection } from "../../components/DataModel/collection";
+import type { AnySchema, SerializedResource } from "../../components/DataModel/helperTypes";
 import { serializeResource } from "../../components/DataModel/serializers";
 import { tables } from "../../components/DataModel/tables"
-import { CollectionObject } from "../../components/DataModel/types";
-import { useSerializedCollection } from "../useSerializedCollection";
-import { AnySchema, SerializedResource } from "../../components/DataModel/helperTypes";
-import { defined, RA } from "../../utils/types";
+import type { CollectionObject } from "../../components/DataModel/types";
 import { requireContext } from "../../tests/helpers";
+import type { RA } from "../../utils/types";
+import { defined } from "../../utils/types";
+import { useSerializedCollection } from "../useSerializedCollection";
 
 requireContext();
 
@@ -19,8 +21,7 @@ describe("use serialized collection", ()=>{
         const resource = new tables.CollectionObject.Resource({
         id: index + 1
         });
-        const value = serializeResource(resource);
-        return value;
+        return serializeResource(resource);
     });
 
     function makeCollection(records: RA<SerializedResource<CollectionObject>>, totalCount: number): SerializedCollection<CollectionObject> {
@@ -35,10 +36,10 @@ describe("use serialized collection", ()=>{
         unsafeCompareCollection: ReturnType<typeof useSerializedCollection<CollectionObject>>[number]
     ){
         const compareCollection = unsafeCompareCollection as SerializedCollection<CollectionObject>;
-        expect(compareCollection).not.toBe(undefined);
+        expect(compareCollection).toBeDefined();
 
         expect(baseCollection.totalCount).toBe(compareCollection?.totalCount);
-        expect(baseCollection.records.length).toBe(compareCollection?.records.length);
+        expect(baseCollection.records).toHaveLength(compareCollection?.records.length);
         
         baseCollection.records.map((record, index)=>{
             expect(record.id).toBe(compareCollection?.records[index].id);
@@ -53,17 +54,17 @@ describe("use serialized collection", ()=>{
             totalCount: singleFetchCount
     });
 
-    const typeCastCall = (value: unknown) => (value as ()=>Promise<void>)();
+    const typeCastCall = async (value: unknown) => (value as ()=>Promise<void>)();
 
     const assertRecordLength = (record: ReturnType<typeof useSerializedCollection<CollectionObject>>[number] | undefined, expectedLength: number) => {
         expect(record).toBeDefined();
-        expect((record as unknown as SerializedCollection<CollectionObject>).records.length).toBe(expectedLength);
+        expect((record as unknown as SerializedCollection<CollectionObject>).records).toHaveLength(expectedLength);
     }
 
-    it("fetches resources initially", async ()=>{
+    test("fetches resources initially", async ()=>{
 
         const fetcher = jest.fn();
-        fetcher.mockReturnValue(Promise.resolve(singleFetchResources()));
+        fetcher.mockResolvedValue(singleFetchResources());
 
         const { result } = renderHook((_fetcher: Fetcher)=>useSerializedCollection(_fetcher), {
             initialProps: fetcher
@@ -76,11 +77,11 @@ describe("use serialized collection", ()=>{
         );
 
         verifyCollections(singleFetchResources(), result.current?.at(0));
-        expect(fetcher).toBeCalledTimes(1);
+        expect(fetcher).toHaveBeenCalledTimes(1);
 
     });
 
-    it("does not call the fetch function if in-flight", async () => {
+    test("does not call the fetch function if in-flight", async () => {
         
         let inFlightResolver: ((value: undefined)=>void) | undefined;
 
@@ -88,7 +89,7 @@ describe("use serialized collection", ()=>{
             inFlightResolver = resolve;
         });
 
-        const mockFetch = ()=>inFlightPromise.then(()=>Promise.resolve(singleFetchResources()));
+        const mockFetch = async ()=>inFlightPromise.then(async ()=>singleFetchResources());
 
         const fetcher = jest.fn();
         fetcher.mockImplementation(mockFetch);
@@ -97,20 +98,20 @@ describe("use serialized collection", ()=>{
             initialProps: fetcher
         });
 
-        // first wait for the first fetch to be called (there is a possibler race condition that prevents it)
+        // First wait for the first fetch to be called (there is a possibler race condition that prevents it)
 
         await waitFor(()=>{
-            expect(fetcher).toBeCalledTimes(1);
+            expect(fetcher).toHaveBeenCalledTimes(1);
         });
 
         // Now, the first fetch is in-flight. call fetchMore.
         typeCastCall(result.current?.at(2));
 
         // There could, theoretically, be a false alarm here.
-        expect(fetcher).toBeCalledTimes(1);
+        expect(fetcher).toHaveBeenCalledTimes(1);
         
         // Now, assert that the resources have not been fetched yet.
-        expect(result.current?.at(0)).not.toBeDefined();
+        expect(result.current?.at(0)).toBeUndefined();
 
         inFlightResolver?.(undefined);
 
@@ -120,10 +121,10 @@ describe("use serialized collection", ()=>{
         );
 
         verifyCollections(singleFetchResources(), result.current?.at(0));
-        expect(fetcher).toBeCalledTimes(1);
+        expect(fetcher).toHaveBeenCalledTimes(1);
     });
 
-    it("keeps fetching till total count is reached", async () => {
+    test("keeps fetching till total count is reached", async () => {
 
         const totalCount = 16;
         const fakeResources = makeFakeResources(totalCount);
@@ -141,14 +142,12 @@ describe("use serialized collection", ()=>{
             [0]
         );
 
-        const chunks = lengths.slice(0, -1).map((start, index)=>{
-            return fakeResources.slice(start, lengths[index+1]);
-        });
+        const chunks = lengths.slice(0, -1).map((start, index)=>fakeResources.slice(start, lengths[index+1]));
 
         // This will create the function that, on each, call, returns the next chunk.
 
         const fetcher = chunks.reduce((previousFunction, currentChunk)=>
-            previousFunction.mockReturnValueOnce(Promise.resolve(makeCollection(currentChunk, totalCount))), 
+            previousFunction.mockResolvedValueOnce(makeCollection(currentChunk, totalCount)), 
             jest.fn()
         );
         
@@ -169,7 +168,7 @@ describe("use serialized collection", ()=>{
         );
 
         verifyCollections(makeCollection(chunks[0], totalCount), result.current?.at(0));
-        expect(fetcher).toBeCalledTimes(1);
+        expect(fetcher).toHaveBeenCalledTimes(1);
 
         await act(async ()=>{
             await typeCastCall(result.current?.at(2));
@@ -180,7 +179,7 @@ describe("use serialized collection", ()=>{
         });
 
         verifyCollections(makeCollection([...chunks[0], ...chunks[1]], totalCount), result.current?.at(0));
-        expect(fetcher).toBeCalledTimes(2);
+        expect(fetcher).toHaveBeenCalledTimes(2);
 
         await act(async ()=>{
             await typeCastCall(result.current?.at(2));
@@ -191,14 +190,14 @@ describe("use serialized collection", ()=>{
         });
 
         verifyCollections(makeCollection([...chunks[0], ...chunks[1], ...chunks[2]], totalCount), result.current?.at(0));
-        expect(fetcher).toBeCalledTimes(3);
+        expect(fetcher).toHaveBeenCalledTimes(3);
 
         // This call should never even happen.
         await act(async ()=>{
             await typeCastCall(result.current?.at(2));
         });
 
-        expect(fetcher).toBeCalledTimes(3);
+        expect(fetcher).toHaveBeenCalledTimes(3);
 
 
     });
