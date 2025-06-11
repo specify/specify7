@@ -242,7 +242,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   records={records}
                   onFetch={handleFetch}
                   recordSetId={
-                    isInRecordSet ?  : false
+                    isInRecordSet ? recordSetId : undefined
                   }
                 />
               ) : undefined}

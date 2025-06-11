@@ -327,6 +327,7 @@ def download_all(request):
     # Optional record set parameter
     # Fetches all the attachment locations instead of using the ones provided by the frontend
     recordSetId = r.get('recordsetid', None)
+    print(f"Recordset ID: {recordSetId}")
     if recordSetId is not None:
         attachmentLocations = []
         recordset = models.Recordset.objects.get(id=recordSetId)
@@ -335,15 +336,18 @@ def download_all(request):
 
         join_table = apps.get_model(table._meta.app_label, table.__name__ + 'attachment')
 
+        print(f"Table: {table.__name__}, Join table: {join_table.__name__}")
+
         # Reach all attachments
         recordsetitem_ids = models.Recordsetitem.objects.filter(recordset__id=recordSetId)
         for rsi in recordsetitem_ids:
             record_id = rsi.recordid
-            join_records = join_table.objects.filter(**{table.__name__: record_id})
+            join_records = join_table.objects.filter(**{table.__name__.lower() + '_id': record_id})
             for join_record in join_records:
                 attachment = join_record.attachment
                 if attachment.attachmentlocation is not None:
                     attachmentLocations.append(attachment.attachmentlocation)
+        print(attachmentLocations)
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
