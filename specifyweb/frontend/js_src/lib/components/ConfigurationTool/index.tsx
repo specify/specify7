@@ -36,6 +36,26 @@ export function ConfigurationTool(): JSX.Element {
 
   const navigate = useNavigate();
 
+  const [isNewUser] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<boolean>(`/api/specify/is_new_user/`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.error('Failed to fetch isNewUser:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   const [contextTables] = useAsyncState(async () => fetchContext, true);
 
   const onResourceSaved = async (
@@ -66,7 +86,7 @@ export function ConfigurationTool(): JSX.Element {
         throw error;
       });
 
-  if (!contextTables) return <LoadingScreen />;
+  if (!contextTables && isNewUser === true) return <LoadingScreen />;
 
   const resources: RA<ConfigResourceType> = [
     {
