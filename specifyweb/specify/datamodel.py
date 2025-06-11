@@ -4149,6 +4149,8 @@ datamodel = Datamodel(tables=[
             Field(name='inComments', column='InComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='outComments', column='OutComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityResolved', column='QuantityResolved', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityReturned', column='QuantityReturned', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='receivedComments', column='ReceivedComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
