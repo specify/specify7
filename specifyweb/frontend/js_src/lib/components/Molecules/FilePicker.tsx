@@ -137,7 +137,7 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  data: Blob | string,
+  data: Blob | string
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;

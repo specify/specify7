@@ -311,9 +311,9 @@ export function downloadAttachment(
       const element = document.createElement('a');
       element.href = `/attachment_gw/proxy/${new URL(url).search}`;
       element.download = fileName;
-      document.body.appendChild(element);
+      document.body.append(element);
       element.click();
-      document.body.removeChild(element);
+      element.remove();
     }
   });
 }
