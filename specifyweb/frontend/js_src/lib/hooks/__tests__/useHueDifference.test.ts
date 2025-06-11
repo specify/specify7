@@ -1,6 +1,7 @@
 import { renderHook } from "@testing-library/react";
-import { useHueDifference } from "../useHueDifference";
+
 import { userPreferences } from "../../components/Preferences/userPreferences";
+import { useHueDifference } from "../useHueDifference";
 
 describe("useHueDifference", ()=>{
 
