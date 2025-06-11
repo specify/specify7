@@ -1412,6 +1412,12 @@ def parse_locality_set_foreground(collection, column_headers: list[str], data: l
 
     return 200, parsed
 
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
+
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
