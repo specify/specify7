@@ -42,6 +42,7 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
     resource_uri: determinationUrl,
     id: 123,
     number1: null,
+    iscurrent: true,
   },
 ];
 
@@ -423,6 +424,22 @@ test('save', async () => {
   const newDetermination =
     resource.getDependentResource('determinations')!.models[0];
   expect(newDetermination.get('number1')).toBe(2);
+});
+
+describe('resource initialization', () => {
+  test('Initialization with dependent resources does not trigger saveRequired', () => {
+    const resource = new tables.CollectionObject.Resource({
+      determinations: [
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ],
+    });
+    expect(resource.needsSaved).toBe(false);
+  });
 });
 
 describe('set', () => {
