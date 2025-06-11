@@ -22,7 +22,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.permissions.permissions import PermissionTarget, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response

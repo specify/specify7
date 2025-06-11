@@ -11,7 +11,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+from ..backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from ..specify.api import obj_to_data, toJson, \
     HttpResponseCreated, objs_to_data_, _obj_to_data

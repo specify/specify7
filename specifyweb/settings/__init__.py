@@ -201,20 +201,16 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware',
-    'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.backend.permissions.middleware.PermissionsMiddleware',
     'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
 
-INSTALLED_APPS = (
-    'django.contrib.sessions',
-    'django.contrib.staticfiles',
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
+SPECIFY_APPS  = [
     'specifyweb.specify',
-    'specifyweb.permissions',
-    'specifyweb.accounts',
+    'specifyweb.backend.permissions',
+    'specifyweb.backend.accounts',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
     'specifyweb.express_search',
@@ -229,6 +225,14 @@ INSTALLED_APPS = (
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
+]
+
+INSTALLED_APPS = (
+    'django.contrib.sessions',
+    'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    *SPECIFY_APPS,
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
