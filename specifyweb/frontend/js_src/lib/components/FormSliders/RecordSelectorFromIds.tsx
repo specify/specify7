@@ -67,7 +67,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly canRemove?: boolean;
   readonly totalCount?: number;
   readonly isLoading?: boolean;
-  // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
   readonly recordSetId?: number | undefined;
   readonly onClose: () => void;
@@ -89,8 +88,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const previousIds = React.useRef(ids);
 
   React.useEffect(() => {
-    console.log('ID counts');
-    console.log(ids.length);
     setRecords((records) =>
       ids.map((id, index) => {
         if (id === undefined) return undefined;

@@ -321,22 +321,18 @@ def download_all(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
-    attachmentLocations = r['attachmentlocations']
-    origFileNames = r['origfilenames']
+    attachment_locations = r['attachmentlocations']
+    orig_filenames = r['origfilenames']
 
     # Optional record set parameter
     # Fetches all the attachment locations instead of using the ones provided by the frontend
     recordSetId = r.get('recordsetid', None)
-    print(f"Recordset ID: {recordSetId}")
     if recordSetId is not None:
-        attachmentLocations = []
+        attachment_locations = []
+        orig_filenames = []
         recordset = models.Recordset.objects.get(id=recordSetId)
-        tableid = recordset.dbtableid
-        table = get_model_by_table_id(tableid)
-
+        table = get_model_by_table_id(recordset.dbtableid)
         join_table = apps.get_model(table._meta.app_label, table.__name__ + 'attachment')
-
-        print(f"Table: {table.__name__}, Join table: {join_table.__name__}")
 
         # Reach all attachments
         recordsetitem_ids = models.Recordsetitem.objects.filter(recordset__id=recordSetId)
@@ -346,14 +342,14 @@ def download_all(request):
             for join_record in join_records:
                 attachment = join_record.attachment
                 if attachment.attachmentlocation is not None:
-                    attachmentLocations.append(attachment.attachmentlocation)
-        print(attachmentLocations)
+                    attachment_locations.append(attachment.attachmentlocation)
+                    orig_filenames.append(os.path.basename(attachment.origfilename if attachment.origfilename else attachment.attachmentlocation))
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
 
     try:
-        make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
+        make_attachment_zip(attachment_locations, orig_filenames, get_collection(request), path)
     except Exception as e:
         return HttpResponseBadRequest(e)
     
@@ -372,26 +368,26 @@ def download_all(request):
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
-def make_attachment_zip(attachmentLocations, origFileNames, collection, output_file):
+def make_attachment_zip(attachment_locations, orig_filenames, collection, output_file):
     output_dir = mkdtemp()
     try:
-        fileNameAppearances = {}
-        for i, attachmentLocation in enumerate(attachmentLocations):
+        filename_appearances = {}
+        for i, attachment_location in enumerate(attachment_locations):
             data = {
-                'filename': attachmentLocation,
+                'filename': attachment_location,
                 'coll': collection,
                 'type': 'O',
-                'token': generate_token(get_timestamp(), attachmentLocation)
+                'token': generate_token(get_timestamp(), attachment_location)
             }
             response = requests.get(server_urls['read'], params=data)
             if response.status_code == 200:
-                downloadFileName = origFileNames[i] if i < len(origFileNames) else attachmentLocation
-                fileNameAppearances[downloadFileName] = fileNameAppearances.get(downloadFileName, 0) + 1
-                if fileNameAppearances[downloadFileName] > 1:
-                    downloadOrigName = os.path.splitext(downloadFileName)[0]
-                    downloadExtension = os.path.splitext(downloadFileName)[1]
-                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]-1}{downloadExtension}'
-                with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
+                download_filename = orig_filenames[i] if i < len(orig_filenames) else attachment_location
+                filename_appearances[download_filename] = filename_appearances.get(download_filename, 0) + 1
+                if filename_appearances[download_filename] > 1:
+                    download_orig_name = os.path.splitext(download_filename)[0]
+                    download_extension = os.path.splitext(download_filename)[1]
+                    download_filename = f'{download_orig_name}_{filename_appearances[download_filename]-1}{download_extension}'
+                with open(os.path.join(output_dir, download_filename), 'wb') as f:
                     f.write(response.content)
         
         basename = re.sub(r'\.zip$', '', output_file)
