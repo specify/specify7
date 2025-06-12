@@ -7,6 +7,8 @@ import { Input } from "../../components/Atoms/Form";
 import { useFieldParser } from "../useFieldParser";
 import { act } from "react-dom/test-utils";
 import { requireContext } from "../../tests/helpers";
+import { SpecifyResource } from "../../components/DataModel/legacyTypes";
+import { AnySchema } from "../../components/DataModel/helperTypes";
 
 requireContext();
 
@@ -262,6 +264,52 @@ describe("useFieldParser", () => {
 
         expect(fieldParserResult.current[0]).toBe(true);
         expect(resource.get("yesNo1")).toBe(true);
+
+    });
+
+
+    // This test is added to nudge branch coverage
+    it("handle undefined parser type, and resource, and field", () => {
+        let parser: Parser = {};
+        const { result: refResult } = renderHook(() => React.useRef(null));
+        const onParse = jest.fn();
+
+        let resource: SpecifyResource<AnySchema> | undefined = undefined;
+
+        const { result: fieldParserResult, rerender } = renderHook(() => useFieldParser(
+
+            {
+                resource,
+                parser,
+                field: undefined,
+                inputRef: refResult.current,
+                onParse
+            }
+        ));
+
+        expect(fieldParserResult.current[0]).toBe(undefined);
+
+        act(() => fieldParserResult.current[1](changed_value));
+
+        expect(fieldParserResult.current[0]).toBe(undefined);
+
+        const { collectionObject } = getCoField();
+
+        resource = collectionObject;
+
+        act(rerender);
+
+        act(() => fieldParserResult.current[1](changed_value));
+
+        expect(fieldParserResult.current[0]).toBe(undefined);
+
+        parser = { type: "text" }
+
+        act(rerender);
+
+        act(() => fieldParserResult.current[1](changed_value));
+
+        expect(fieldParserResult.current[0]).toBe(changed_value);
 
     });
 
