@@ -38,13 +38,10 @@ export function useFormTables(type: TableType): GetSet<RA<SpecifyTable>> {
     'shownTables'
   );
 
-  // Safe fallback if legacy was still present or tables is invalid
-  const tableIds = Array.isArray(tables) ? tables : [];
-
   const visibleTables =
-    tables.length === 0
-      ? filterArray(defaultVisibleForms[type].map(getTable))
-      : tableIds.map(getTableById);
+    Array.isArray(tables) && tables.length > 0
+      ? tables.map(getTableById)
+      : filterArray(defaultVisibleForms[type].map(getTable));
 
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
