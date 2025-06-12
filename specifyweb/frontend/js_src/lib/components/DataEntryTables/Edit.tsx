@@ -5,12 +5,10 @@ import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, getTableById } from '../DataModel/tables';
-import { defaultInteractionTablesId } from '../Interactions/fetch';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
-import { defaultFormTablesConfigId } from './fetch';
-import { defaultVisibleForms } from './fetchTables';
+import { defaultVisibleForms } from './defaults';
 
 export type TableType = 'form' | 'interactions';
 
@@ -39,15 +37,6 @@ export function useFormTables(type: TableType): GetSet<RA<SpecifyTable>> {
     'general',
     'shownTables'
   );
-
-  // One-time cleanup if user still has "legacy" in preferences
-  React.useEffect(() => {
-    if (tables === 'legacy') {
-      setTables(
-        type === 'form' ? defaultFormTablesConfigId : defaultInteractionTablesId
-      );
-    }
-  }, [tables, setTables, type]);
 
   // Safe fallback if legacy was still present or tables is invalid
   const tableIds = Array.isArray(tables) ? tables : [];

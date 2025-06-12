@@ -33,13 +33,11 @@ import {
 } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
-import { defaultFormTablesConfigId } from '../DataEntryTables/fetch';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
-import { defaultInteractionTablesId } from '../Interactions/fetch';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -622,7 +620,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: defaultInteractionTablesId,
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -716,7 +714,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: defaultFormTablesConfigId,
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
