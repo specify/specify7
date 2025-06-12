@@ -1,14 +1,16 @@
 import { renderHook } from "@testing-library/react";
-import { tables } from "../../components/DataModel/tables";
-import { getValidationAttributes, Parser, parsers } from "../../utils/parser/definitions";
 import React from "react";
-import { mount } from "../../tests/reactUtils";
-import { Input } from "../../components/Atoms/Form";
-import { useFieldParser } from "../useFieldParser";
 import { act } from "react-dom/test-utils";
+
+import { Input } from "../../components/Atoms/Form";
+import type { AnySchema } from "../../components/DataModel/helperTypes";
+import type { SpecifyResource } from "../../components/DataModel/legacyTypes";
+import { tables } from "../../components/DataModel/tables";
 import { requireContext } from "../../tests/helpers";
-import { SpecifyResource } from "../../components/DataModel/legacyTypes";
-import { AnySchema } from "../../components/DataModel/helperTypes";
+import { mount } from "../../tests/reactUtils";
+import type { Parser} from "../../utils/parser/definitions";
+import { getValidationAttributes, parsers } from "../../utils/parser/definitions";
+import { useFieldParser } from "../useFieldParser";
 
 requireContext();
 
@@ -33,11 +35,11 @@ describe("useFieldParser", () => {
 
     const changed_value = "changed value";
 
-    it("updates values from input correctly", () => {
+    test("updates values from input correctly", () => {
 
         const { collectionObject, textField } = getCoField();
 
-        // refResult is a ref that stores another ref :)
+        // RefResult is a ref that stores another ref :)
         const { result: refResult } = renderHook(() => React.useRef<HTMLInputElement>(null));
 
         const onParse = jest.fn();
@@ -54,8 +56,8 @@ describe("useFieldParser", () => {
 
         mount(
             <Input.Generic
-                value={""}
                 forwardRef={refResult.current}
+                value=""
             />
         );
 
@@ -64,7 +66,7 @@ describe("useFieldParser", () => {
         expect(refResult.current.current?.value).toBe(changed_value);
 
         // This should have happened.
-        expect(onParse).toBeCalledTimes(1);
+        expect(onParse).toHaveBeenCalledTimes(1);
         // Should have been called with one argument.
         expect(onParse.mock.calls.at(-1)).toEqual(
             [
@@ -84,7 +86,7 @@ describe("useFieldParser", () => {
 
     });
 
-    it("handles invalid values in onParse", () => {
+    test("handles invalid values in onParse", () => {
         const { collectionObject, textField } = getCoField();
         const { result: refResult } = renderHook(() => React.useRef(null));
         const onParse = jest.fn();
@@ -103,26 +105,27 @@ describe("useFieldParser", () => {
 
         mount(
             <Input.Generic
-                value={(fieldParserResult.current[0])?.toString()}
                 forwardRef={refResult.current}
+                value={(fieldParserResult.current[0])?.toString()}
                 {...validationAttributes}
             />
         );
 
         act(() => fieldParserResult.current[1](changed_value));
-        expect(onParse).toBeCalledTimes(1);
+        expect(onParse).toHaveBeenCalledTimes(1);
         expect(onParse.mock.calls.at(-1)).toEqual(
             [{ value: 'changed value', isValid: false, reason: 'Constraints not satisfied' }]
         );
 
     });
 
-    /* At this point, the hook has following code coverage:
+    /*
+     * At this point, the hook has following code coverage:
      *   useFieldParser.tsx          |    95.8 |    31.57 |     100 |    95.8 | 97,99-100,103-105 
      * So, next unit tests are used to improve the branch coverage.
      */
 
-    it("handles relationships", () => {
+    test("handles relationships", () => {
         const { collectionObject: resource } = getCoField();
         const field = tables.CollectionObject.strictGetRelationship("cataloger");
         const parser: Parser = {
@@ -152,11 +155,12 @@ describe("useFieldParser", () => {
 
     });
 
-    /* At this point, the hook has following code coverage:
+    /*
+     * At this point, the hook has following code coverage:
      *   useFieldParser.tsx          |    96.5 |    60.86 |     100 |    96.5 | 99-100,103-105 
      */
 
-    it('handles numeric fields', () => {
+    test('handles numeric fields', () => {
 
         const resource = new tables.CollectionObject.Resource({
             id: 5,
@@ -216,11 +220,12 @@ describe("useFieldParser", () => {
 
     });
 
-    /* At this point, the hook has following code coverage:
+    /*
+     * At this point, the hook has following code coverage:
      *   useFieldParser.tsx          |    98.6 |    69.23 |     100 |    98.6 | 99-100    
      */
 
-    it("handles boolean fields", () => {
+    test("handles boolean fields", () => {
 
         const { collectionObject: resource } = getCoField();
 
@@ -269,7 +274,7 @@ describe("useFieldParser", () => {
 
 
     // This test is added to nudge branch coverage
-    it("handle undefined parser type, and resource, and field", () => {
+    test("handle undefined parser type, and resource, and field", () => {
         let parser: Parser = {};
         const { result: refResult } = renderHook(() => React.useRef(null));
         const onParse = jest.fn();
@@ -287,11 +292,11 @@ describe("useFieldParser", () => {
             }
         ));
 
-        expect(fieldParserResult.current[0]).toBe(undefined);
+        expect(fieldParserResult.current[0]).toBeUndefined();
 
         act(() => fieldParserResult.current[1](changed_value));
 
-        expect(fieldParserResult.current[0]).toBe(undefined);
+        expect(fieldParserResult.current[0]).toBeUndefined();
 
         const { collectionObject } = getCoField();
 
@@ -301,7 +306,7 @@ describe("useFieldParser", () => {
 
         act(() => fieldParserResult.current[1](changed_value));
 
-        expect(fieldParserResult.current[0]).toBe(undefined);
+        expect(fieldParserResult.current[0]).toBeUndefined();
 
         parser = { type: "text" }
 
