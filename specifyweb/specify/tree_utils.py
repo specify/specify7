@@ -94,7 +94,7 @@ def get_models(name: str):
 # orthptera   kingdom,phylum,class,order,superfamily,family,genus,species,subspecies,species author,species source,species lsid,species common name,family common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
 # poales      kingdom,division,class,order,family,genus,species,subspecies,variety,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name,variety author,variety source,variety lsid,variety common name
 DISCIPLINE_TAXON_CSV_COLUMNS = {
-    'ictheology': {
+    'ichthyology': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -270,13 +270,15 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
     },
 }
 
-def initialize_defualt_taxon_tree(taxon_tree_name, discipline_name, rank_names_lst):
+def initialize_default_taxon_tree(taxon_tree_name, discipline_name, logged_in_discipline_name, rank_names_lst):
     """
     Initialize the default taxon tree for a given collection.
     """
     discipline = spmodels.Discipline.objects.filter(name=discipline_name).first()
     if not discipline:
-        discipline = spmodels.Discipline.objects.all().first()
+        discipline = spmodels.Discipline.objects.filter(name=logged_in_discipline_name).first()
+        if not discipline:
+            discipline = spmodels.Discipline.objects.all().first()
     
     tree_def = None
     if spmodels.Taxontreedef.objects.filter(name=taxon_tree_name).exists():
