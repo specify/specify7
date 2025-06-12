@@ -1,8 +1,9 @@
-import { renderHook, waitFor, act } from "@testing-library/react";
+import { act,renderHook, waitFor } from "@testing-library/react";
+
 import { tables } from "../../components/DataModel/tables";
-import { useFormatted } from "../useFormatted";
-import { requireContext } from "../../tests/helpers";
 import { overrideAjax } from "../../tests/ajax";
+import { requireContext } from "../../tests/helpers";
+import { useFormatted } from "../useFormatted";
 
 requireContext();
 
@@ -16,8 +17,10 @@ describe("useFormatted", ()=>{
         const collectionObject = new tables.CollectionObject.Resource({catalogNumber: "5"});
         const { result } = renderHook(()=>useFormatted(collectionObject));
 
-        // Here, the state update to result can occur after the unit test. 
-        // See https://github.com/testing-library/react-testing-library/issues/480#issuecomment-530008573
+        /*
+         * Here, the state update to result can occur after the unit test. 
+         * See https://github.com/testing-library/react-testing-library/issues/480#issuecomment-530008573
+         */
 
         waitFor(()=>expect(result).toBe("000000005"));
 
