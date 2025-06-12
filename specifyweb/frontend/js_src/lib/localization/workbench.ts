@@ -1520,14 +1520,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Записи видалено (без урахування утриманців)',
   },
   recordsMatchedAndChanged: {
-    'en-us': 'Records matched, different from current related',
-    'de-ch': 'Datensätze übereinstimmen, abweichend von aktuellen verwandten',
-    'es-es': 'Registros coincidentes, diferentes a los relacionados actuales',
-    'fr-fr':
-      'Enregistrements correspondants, différents des enregistrements actuellement liés',
-    'pt-br': 'Registros correspondentes, diferentes dos atuais relacionados',
-    'ru-ru': 'Записи сопоставлены, отличаются от текущих связанных',
-    'uk-ua': "Зіставлені записи відрізняються від поточних пов'язаних",
+    'en-us': 'Related records matched to different records',
   },
   matchAndChanged: {
     'en-us': 'Matched and changed cells',
