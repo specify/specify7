@@ -1,6 +1,7 @@
 import csv
 from functools import wraps
 import json
+from uuid import uuid4
 from django import http
 from typing import Iterator, Literal, Tuple, TypedDict, Any, Dict, List
 from django.db import connection, transaction
@@ -647,40 +648,47 @@ def create_default_trees_view(request):
             'discipline_name': logged_in_discipline_name,
         }))
 
+        task_id = str(uuid4())
         async_result = create_default_trees_task.apply_async(
             args=[url, discipline_name, logged_in_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id],
             task_id=f"create_default_trees_{discipline_name}",
-            queue='default'
+            taskid=task_id
+            # queue='default'
         )
         return http.JsonResponse({
             'message': 'Trees creation started in the background.',
             'task_id': async_result.id
         }, status=202)
 
-    # try:
-    #     for row in stream_csv_from_url(url, discipline_name, rank_count):
-    #         add_default_taxon(row, tree_name, discipline_name)
-    # except requests.HTTPError:
-    #     return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
-
     try:
-        with requests.get(url) as resp:
-            resp.raise_for_status()
-            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-            reader = csv.DictReader(lines)
-
-            rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
-            
-            for row in reader:
-                add_default_taxon(row, tree_name, discipline_name)
+        for row in stream_csv_from_url(url, discipline_name, rank_count):
+            add_default_taxon(row, tree_name, discipline_name)
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
+
+    # try:
+    #     with requests.get(url) as resp:
+    #         resp.raise_for_status()
+    #         lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+    #         reader = csv.DictReader(lines)
+
+    #         rank_names_lst = reader.fieldnames[:rank_count]
+    #         tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
+            
+    #         for row in reader:
+    #             add_default_taxon(row, tree_name, discipline_name)
+    # except requests.HTTPError:
+    #     return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
 
     return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_trees_task(self, url: str, discipline_name: str, logged_in_discipline_name: str, rank_count: int, specify_collection_id: int, specify_user_id: int):
+    logger.info(f'starting task {str(self.request.id)}')
+
+    specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
+    tree_name = discipline_name.capitalize()
+
     Message.objects.create(
         user=specify_user,
         content=json.dumps({
@@ -690,12 +698,10 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
             'discipline_name': logged_in_discipline_name,
         })
     )
-    # try:
-    #     for row in stream_csv_from_url(url, discipline_name, rank_count):
-    #         add_default_taxon(row, tree_name, discipline_name)
-    specify_user = spmodels.SpecifyUser.objects.get(id=specify_user_id)
-    try:
-        with requests.get(url) as resp:
+    
+    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+        nonlocal tree_name
+        with requests.get(url, stream=True) as resp:
             resp.raise_for_status()
             lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
             reader = csv.DictReader(lines)
@@ -704,19 +710,47 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
             tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
             
             for row in reader:
+                yield row
+
+    try:
+        with transaction.atomic():
+            for row in stream_csv_from_url(url, discipline_name, rank_count):
                 add_default_taxon(row, tree_name, discipline_name)
-    except Exception as e:
-        logger.error(f"Error in create_default_trees: {e}")
+    except requests.HTTPError:
         Message.objects.create(
             user=specify_user,
             content=json.dumps({
                 'type': 'create-default-tree-failed',
                 'name': "Create_Default_Tree_" + discipline_name,
                 'collection_id': specify_collection_id,
-                'discipline_name': logged_in_discipline_name,
-                'error': str(e)
+                'discipline_name': logged_in_discipline_name
+                # 'error': str(e)
             })
         )
+            
+    # try:
+    #     with requests.get(url) as resp:
+    #         resp.raise_for_status()
+    #         lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+    #         reader = csv.DictReader(lines)
+
+    #         rank_names_lst = reader.fieldnames[:rank_count]
+    #         tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
+            
+    #         for row in reader:
+    #             add_default_taxon(row, tree_name, discipline_name)
+    # except Exception as e:
+    #     logger.error(f"Error in create_default_trees: {e}")
+    #     Message.objects.create(
+    #         user=specify_user,
+    #         content=json.dumps({
+    #             'type': 'create-default-tree-failed',
+    #             'name': "Create_Default_Tree_" + discipline_name,
+    #             'collection_id': specify_collection_id,
+    #             'discipline_name': logged_in_discipline_name,
+    #             'error': str(e)
+    #         })
+    #     )
 
     Message.objects.create(
         user=specify_user,
