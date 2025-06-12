@@ -6,7 +6,8 @@ Supports autonumbering mechanism
 import logging
 import re
 from datetime import date
-from typing import NamedTuple, List, Optional, Sequence
+from typing import NamedTuple, List, Optional, Union, Callable
+from collections.abc import Sequence
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
@@ -16,12 +17,16 @@ from django.db import connection
 logger = logging.getLogger(__name__)
 
 from specifyweb.context.app_resource import get_app_resource
+from specifyweb.specify.datamodel import Table
+from specifyweb.specify import models
 
 from .models import Splocalecontaineritem as Item
 from .filter_by_col import filter_by_collection
 
 class AutonumberOverflowException(Exception):
     pass
+
+ScopedFormatter = Callable[[Table, str], str]
 
 class ScopeInfo(NamedTuple):
     db_id_field: str
@@ -77,7 +82,7 @@ class FormatMismatch(ValueError):
 class UIFormatter(NamedTuple):
     model_name: str
     field_name: str
-    fields: List
+    fields: list
     format_name: str
 
     def parse_regexp(self) -> str:
@@ -87,7 +92,7 @@ class UIFormatter(NamedTuple):
     def parse(self, value: str) -> Sequence[str]:
         match = re.match(self.parse_regexp(), value)
         if match is None:
-            raise FormatMismatch("value {} doesn't match formatter {}".format(repr(value), self.value()), value=repr(value), formatter=self.value())
+            raise FormatMismatch(f"value {repr(value)} doesn't match formatter {self.value()}", value=repr(value), formatter=self.value())
         return match.groups()
 
     def value(self) -> str:
@@ -103,11 +108,11 @@ class UIFormatter(NamedTuple):
 
     def autonumber_regexp(self, vals: Sequence[str]) -> str:
         return '^{}$'.format(''.join(
-            '({})'.format(field.value_regexp() if field.is_wild(val) else re.escape(val))
+            f'({field.value_regexp() if field.is_wild(val) else re.escape(val)})'
             for field, val in zip(self.fields, vals)
         ))
 
-    def fillin_year(self, vals: Sequence[str], year: Optional[int]=None) -> List[str]:
+    def fillin_year(self, vals: Sequence[str], year: Optional[int]=None) -> list[str]:
         if year is None:
             year = date.today().year
 
@@ -131,7 +136,7 @@ class UIFormatter(NamedTuple):
 
         return ''.join(filled_vals)
 
-    def _autonumber_queryset(self, collection, model, fieldname: str, with_year: List[str]):
+    def _autonumber_queryset(self, collection, model, fieldname: str, with_year: list[str]):
         group_filter = get_autonumber_group_filter(model, collection, self.format_name)
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
@@ -161,10 +166,10 @@ class UIFormatter(NamedTuple):
 
         return apply_autonumbering_to
 
-    def fill_vals_after(self, prior: str) -> List[str]:
+    def fill_vals_after(self, prior: str) -> list[str]:
 
         def inc_val(size: int, val: str) -> str:
-            format_code = "%0{}d".format(size)
+            format_code = f"%0{size}d"
             new_val = format_code % (1 + int(val))
             if len(new_val) > size:
                 raise AutonumberOverflowException(
@@ -177,7 +182,7 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, self.parse(prior))
         ]
 
-    def fill_vals_no_prior(self, vals: Sequence[str]) -> List[str]:
+    def fill_vals_no_prior(self, vals: Sequence[str]) -> list[str]:
         return [
             "1".zfill(field.size) if field.is_wild(val) else val
             for field, val in zip(self.fields, vals)
@@ -185,6 +190,20 @@ class UIFormatter(NamedTuple):
 
     def canonicalize(self, values: Sequence[str]) -> str:
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
+
+    def apply_scope(self, collection):
+        def parser(table: Table, value: str) -> str:
+            parsed = self.parse(value)
+            if self.needs_autonumber(parsed):
+                canonicalized = self.autonumber_now(
+                    collection,
+                    getattr(models, table.django_name),
+                    parsed
+                )
+            else:
+                canonicalized = self.canonicalize(parsed)
+            return canonicalized
+        return parser
 
 class Field(NamedTuple):
     size: int
@@ -208,7 +227,7 @@ class Field(NamedTuple):
 
     def wild_or_value_regexp(self) -> str:
         if self.can_autonumber():
-            return '%s|%s' % (self.wild_regexp(), self.value_regexp())
+            return f'{self.wild_regexp()}|{self.value_regexp()}'
         else:
             return self.value_regexp()
 
@@ -303,7 +322,8 @@ def new_field(node) -> Field:
         inc = node.attrib.get('inc', 'false') == 'true',
         by_year = node.attrib.get('byyear', 'false') == 'true')
 
-def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
+def get_uiformatters(collection, obj, user) -> list[UIFormatter]:
+    tablename = obj.__class__.__name__
     filters = dict(container__discipline=collection.discipline,
                    container__name=tablename.lower(),
                    format__isnull=False)
@@ -315,9 +335,6 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         .values_list('format', flat=True)
     )
 
-    if tablename.lower() == 'collectionobject':
-        formatter_names.append(collection.catalognumformatname)
-
     logger.debug("formatters for %s: %s", tablename, formatter_names)
 
     uiformatters = [
@@ -325,13 +342,18 @@ def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
         (get_uiformatter_by_name(collection, user, fn) for fn in formatter_names)
         if f is not None
     ]
+    if tablename.lower() == 'collectionobject':
+        cat_num_format = getattr(getattr(obj, 'collectionobjecttype', None), 'catalognumberformatname', None)
+        cat_num_formatter = get_catalognumber_format(collection, cat_num_format, user)
+        if cat_num_formatter: uiformatters.append(cat_num_formatter)
+
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
 def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_uiformatter_by_name(collection, None, collection.catalognumformatname)
+        return get_catalognumber_format(collection, None, None)
 
     try:
         field_format = Item.objects.get(
@@ -343,3 +365,11 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFo
         return None
     else:
         return get_uiformatter_by_name(collection, None, field_format)
+
+def get_catalognumber_format(collection, format_name: Optional[str], user) -> UIFormatter:
+    if format_name: 
+         formatter = get_uiformatter_by_name(collection, user, format_name)
+         if formatter:
+            return formatter
+
+    return get_uiformatter_by_name(collection, user, collection.catalognumformatname)

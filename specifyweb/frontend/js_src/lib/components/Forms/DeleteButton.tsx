@@ -56,7 +56,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
    * button's resource can change often.
    */
   readonly deferred?: boolean;
-  readonly component?: typeof Button['Secondary'];
+  readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
 }): JSX.Element {

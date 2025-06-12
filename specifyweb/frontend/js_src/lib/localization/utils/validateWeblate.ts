@@ -81,8 +81,8 @@ export const getComponentKind = (
   ignoredComponents.has(slug)
     ? undefined
     : slug.startsWith(schemaLocalizationName)
-    ? 'schema'
-    : 'userInterface';
+      ? 'schema'
+      : 'userInterface';
 
 function getToken(): string {
   const key = process.env.WEBLATE_API_TOKEN;
@@ -161,7 +161,7 @@ const createMissingComponents = async (
 /**
  * Note, if this fails with "File not found error", it means the *.po file for
  * a given component is not on the weblate-localization branch. The test.yml
- * GitHub action on production branch is responsible for creating the *.po
+ * GitHub action on the `main` branch is responsible for creating the *.po
  * file.
  */
 async function createComponent(

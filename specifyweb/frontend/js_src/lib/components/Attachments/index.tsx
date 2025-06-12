@@ -139,15 +139,15 @@ function Attachments({
           filter.type === 'unused'
             ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
-            ? {
-                tableId: genericTables[filter.tableName].tableId,
-              }
-            : allTablesWithAttachments().length ===
-              tablesWithAttachments().length
-            ? {}
-            : backendFilter('tableId').isIn(
-                tablesWithAttachments().map(({ tableId }) => tableId)
-              )
+              ? {
+                  tableId: genericTables[filter.tableName].tableId,
+                }
+              : allTablesWithAttachments().length ===
+                  tablesWithAttachments().length
+                ? {}
+                : backendFilter('tableId').isIn(
+                    tablesWithAttachments().map(({ tableId }) => tableId)
+                  )
         ),
       [order, filter]
     )

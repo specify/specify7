@@ -80,7 +80,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       ...this.checkUnique(processedFieldName),
-      this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
+      this.invokeRule('fieldChecks', processedFieldName, [
+        this.resource,
+        field,
+      ]),
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
@@ -496,8 +499,8 @@ export const runAllFieldChecks = async (
     (result === undefined || result === null
       ? []
       : result instanceof ResourceBase
-      ? [result]
-      : (result as Collection<AnySchema>).models) as unknown as RA<
+        ? [result]
+        : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
   // Running only on dependent resources. the order shouldn't matter.....

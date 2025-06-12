@@ -55,8 +55,8 @@ export const statsSpecTest: StatsSpec = {
                   prep === undefined
                     ? undefined
                     : showPreparationsTotal
-                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-                    : formatNumber(prep.lots),
+                      ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+                      : formatNumber(prep.lots),
             },
           },
         },

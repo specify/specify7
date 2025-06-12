@@ -9,7 +9,7 @@ import type {
 } from '../SchemaViewer/helpers';
 
 export function GenericSortedDataViewer<
-  DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>
+  DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>,
 >({
   headers,
   data,

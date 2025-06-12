@@ -15,7 +15,7 @@ export function useSerializedCollection<SCHEMA extends AnySchema>(
 ): readonly [
   SerializedCollection<SCHEMA> | undefined,
   GetOrSet<SerializedCollection<SCHEMA> | undefined>[1],
-  () => Promise<void>
+  () => Promise<void>,
 ] {
   const fetchRef = React.useRef<
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined

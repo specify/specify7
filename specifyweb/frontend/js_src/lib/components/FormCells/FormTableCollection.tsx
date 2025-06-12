@@ -14,6 +14,7 @@ export function FormTableCollection({
   onAdd: handleAdd,
   onDelete: handleDelete,
   onFetchMore: handleFetch,
+  disableRemove,
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
@@ -26,6 +27,7 @@ export function FormTableCollection({
   readonly onFetchMore?: (
     filters?: CollectionFetchFilters<AnySchema>
   ) => Promise<Collection<AnySchema> | undefined>;
+  readonly disableRemove?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
@@ -64,13 +66,13 @@ export function FormTableCollection({
   return (
     <FormTable
       collection={collection}
+      disableRemove={disableRemove}
       isDependent={isDependent}
       relationship={relationship}
       resources={records}
       totalCount={collection._totalCount}
       onAdd={disableAdding ? undefined : handleAdd}
       onDelete={(resource): void => {
-        collection.remove(resource);
         setRecords(Array.from(collection.models));
         handleDelete?.(resource, records.indexOf(resource));
       }}

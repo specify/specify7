@@ -40,8 +40,8 @@ const cellRenderers: {
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
-    readonly align: typeof cellAlign[number];
-    readonly verticalAlign: typeof cellVerticalAlign[number];
+    readonly align: (typeof cellAlign)[number];
+    readonly verticalAlign: (typeof cellVerticalAlign)[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -91,7 +91,7 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? genericTables[forClass].localization.desc ?? undefined
+            ? (genericTables[forClass].localization.desc ?? undefined)
             : undefined
         }
       >
@@ -338,10 +338,12 @@ export function FormCell({
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
-  readonly align: typeof cellAlign[number];
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly align: (typeof cellAlign)[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
+  const Render = cellRenderers[
+    cellData.type
+  ] as (typeof cellRenderers)['Field'];
   return (
     <Render
       align={align}

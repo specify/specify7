@@ -6,7 +6,8 @@ Autonumbering logic
 from .uiformatters import UIFormatter, get_uiformatters
 from .lock_tables import lock_tables
 import logging
-from typing import List, Tuple, Sequence, Set
+from typing import List, Tuple, Set
+from collections.abc import Sequence
 
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def autonumber_and_save(collection, user, obj) -> None:
-    uiformatters = get_uiformatters(collection, user, obj.__class__.__name__)
+    uiformatters = get_uiformatters(collection, obj, user)
 
     autonumber_fields = [(formatter, vals)
                          for formatter in uiformatters
@@ -32,7 +33,7 @@ def autonumber_and_save(collection, user, obj) -> None:
         obj.save()
 
 
-def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[str]]]) -> None:
+def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     # The autonumber action is prepared and thunked outside the locked table
@@ -52,7 +53,7 @@ def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[s
         obj.save()
 
 
-def get_tables_to_read_lock(collection, obj, field_names: List[str]) -> Set[str]:
+def get_tables_to_read_lock(collection, obj, field_names: list[str]) -> set[str]:
     obj_table = obj._meta.db_table
     scope_table = Scoping(obj).get_scope_model()
 
@@ -63,7 +64,7 @@ def get_tables_to_read_lock(collection, obj, field_names: List[str]) -> Set[str]
 
     return tables
 
-def get_uniqueness_rule_tables(collection, obj_table: str, field_names: List[str]) -> Set[str]: 
+def get_uniqueness_rule_tables(collection, obj_table: str, field_names: list[str]) -> set[str]: 
     from specifyweb.businessrules.models import UniquenessRule, UniquenessRuleField
     tables = set(['django_migrations', UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table, 'discipline'])
 
@@ -79,8 +80,9 @@ def get_uniqueness_rule_tables(collection, obj_table: str, field_names: List[str
                     obj_table, scope.fieldPath))
 
     return tables
-                
-def get_tables_from_field_path(model: str, field_path: str) -> List[str]:
+
+
+def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
     tables = []
     table = datamodel.get_table_strict(model)
     relationships = field_path.split('__')
@@ -93,5 +95,5 @@ def get_tables_from_field_path(model: str, field_path: str) -> List[str]:
 
     return tables
 
-def get_tree_tables_to_lock(tree_table: str) -> Set[str]: 
+def get_tree_tables_to_lock(tree_table: str) -> set[str]: 
     return set(['discipline', f'{tree_table}def', f'{tree_table}defitem'])

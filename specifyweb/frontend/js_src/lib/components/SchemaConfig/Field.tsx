@@ -36,8 +36,7 @@ export function SchemaConfigField({
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const canChangeIsRequired =
-    !field.overrides.isRequired && !field.isRelationship;
+  const canChangeIsRequired = !field.isRequired && !field.isRelationship;
   return (
     <SchemaConfigColumn
       header={commonText.colonLine({
@@ -90,7 +89,7 @@ export function SchemaConfigField({
       <Label.Inline>
         <Input.Checkbox
           checked={
-            canChangeIsRequired ? item.isRequired ?? false : field.isRequired
+            canChangeIsRequired ? (item.isRequired ?? false) : field.isRequired
           }
           disabled={!canChangeIsRequired}
           isReadOnly={isReadOnly}

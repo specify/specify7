@@ -6,6 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
@@ -64,9 +65,11 @@ const isDarkMode = ({
   isRedirecting,
 }: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
-  ? 'Option'
-  : 'Alt';
+// Navigator may not be defined in some environments, like non-browser environments
+const altKeyName =
+  typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
+    ? 'Option'
+    : 'Alt';
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
@@ -847,7 +850,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             setOnBlurOnly: true,
             visible: true,
-            defaultValue: 1200,
+            defaultValue: 1600,
             type: 'java.lang.Float',
             parser: {
               min: 100,
@@ -1103,7 +1106,7 @@ export const userPreferenceDefinitions = {
         },
       },
       recordSet: {
-        title: '_recordSet' as LocalizedString,
+        title: () => tableLabel('RecordSet'),
         items: {
           recordToOpen: definePref<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1347,6 +1350,32 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          orderByField: definePref<
+            'fullName' | 'name' | 'nodeNumber' | 'rankId'
+          >({
+            title: preferencesText.sortByField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'rankId',
+            values: [
+              {
+                value: 'name',
+                title: localized('_name'),
+              },
+              {
+                value: 'fullName',
+                title: localized('_fullName'),
+              },
+              {
+                value: 'rankId',
+                title: localized('_rankId'),
+              },
+              {
+                value: 'nodeNumber',
+                title: localized('_nodeNumber'),
+              },
+            ],
+          }),
           searchField: definePref<'fullName' | 'name'>({
             title: preferencesText.searchField(),
             requiresReload: false,
@@ -1388,13 +1417,13 @@ export const userPreferenceDefinitions = {
          * This would be replaced with labels from schema once
          * schema is loaded
          */
-        title: '_Geography' as LocalizedString,
+        title: () => tableLabel('Geography'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#662D91',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1409,13 +1438,13 @@ export const userPreferenceDefinitions = {
         },
       },
       taxon: {
-        title: '_Taxon' as LocalizedString,
+        title: () => tableLabel('Taxon'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#C1272D',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1430,13 +1459,13 @@ export const userPreferenceDefinitions = {
         },
       },
       storage: {
-        title: '_Storage' as LocalizedString,
+        title: () => tableLabel('Storage'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#0071BC',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1451,13 +1480,13 @@ export const userPreferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: '_GeologicTimePeriod' as LocalizedString,
+        title: () => tableLabel('GeologicTimePeriod'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#39B54A',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1472,13 +1501,13 @@ export const userPreferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: '_LithoStrat' as LocalizedString,
+        title: () => tableLabel('LithoStrat'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#C1272D',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1493,13 +1522,13 @@ export const userPreferenceDefinitions = {
         },
       },
       tectonicUnit: {
-        title: '_TectonicUnit' as LocalizedString,
+        title: () => tableLabel('TectonicUnit'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#f79245',
+            defaultValue: '#FFB728',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1605,6 +1634,14 @@ export const userPreferenceDefinitions = {
           }),
           displayBasicView: definePref<boolean>({
             title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          showComparisonOperatorsForString: definePref<boolean>({
+            title: preferencesText.showComparisonOperatorsForString(),
+            description: preferencesText.showComparisonOperatorsDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -1995,49 +2032,53 @@ export const userPreferenceDefinitions = {
       },
     },
   },
+  batchEdit: {
+    title: batchEditText.batchEdit(),
+    subCategories: {
+      query: {
+        title: queryText.query(),
+        items: {
+          limit: definePref<number>({
+            title: batchEditText.numberOfRecords(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 5000,
+            type: 'java.lang.Double',
+            parser: {
+              min: 0,
+            },
+          }),
+        },
+      },
+      editor: {
+        title: preferencesText.general(),
+        items: {
+          enableRelationships: definePref<boolean>({
+            title: batchEditText.enableRelationships(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.enableRelationshipsDescription(),
+          }),
+          showRollback: definePref<boolean>({
+            title: batchEditText.showRollback(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.showRollbackDescription(),
+          }),
+        },
+      },
+    },
+  },
 } as const;
 
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/tables')
   .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
-      const trees = userPreferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        getField(tables.Geography, 'name').label
-      );
-      overwriteReadOnly(
-        trees.taxon,
-        'title',
-        getField(tables.Taxon, 'name').label
-      );
-      overwriteReadOnly(
-        trees.storage,
-        'title',
-        getField(tables.Storage, 'name').label
-      );
-      overwriteReadOnly(
-        trees.geologicTimePeriod,
-        'title',
-        getField(tables.Geography, 'name').label
-      );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        getField(tables.LithoStrat, 'name').label
-      );
-      overwriteReadOnly(
-        trees.tectonicUnit,
-        'title',
-        getField(tables.TectonicUnit, 'name').label
-      );
-      overwriteReadOnly(
-        userPreferenceDefinitions.form.subCategories.recordSet,
-        'title',
-        getField(tables.RecordSet, 'name').label
-      );
-
       const treeSearchBehavior =
         userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;
@@ -2065,8 +2106,72 @@ import('../DataModel/tables')
           getField(tables.Taxon, 'fullName').label
         );
       } else softError('Unable to replace the tree preferences item title');
+
+      // TODO: Refactor this with a helper function since this is largely the same as above
+
+      // Update titles for orderByField
+      const treeOrderByBehavior =
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items
+          .orderByField;
+      if ('values' in treeOrderByBehavior) {
+        const orderByValues = treeOrderByBehavior.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+
+        const nameOrderBy = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'name'
+          ),
+          'Unable to find tree name value for orderByField'
+        );
+        const fullNameOrderBy = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'fullName'
+          ),
+          'Unable to find tree full name value for orderByField'
+        );
+        const rankId = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'rankId'
+          ),
+          'Unable to find tree rankId value'
+        );
+        const nodeNumber = defined(
+          orderByValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'nodeNumber'
+          ),
+          'Unable to find tree nodeNumber value'
+        );
+
+        overwriteReadOnly(
+          nameOrderBy,
+          'title',
+          getField(tables.Taxon, 'name').label
+        );
+        overwriteReadOnly(
+          fullNameOrderBy,
+          'title',
+          getField(tables.Taxon, 'fullName').label
+        );
+        overwriteReadOnly(
+          rankId,
+          'title',
+          getField(tables.Taxon, 'rankId').label
+        );
+        overwriteReadOnly(
+          nodeNumber,
+          'title',
+          getField(tables.Taxon, 'nodeNumber').label
+        );
+      } else {
+        softError(
+          'Unable to replace the tree preferences item title for orderByField'
+        );
+      }
     })
   )
+
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 

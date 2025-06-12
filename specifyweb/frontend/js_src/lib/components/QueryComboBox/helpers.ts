@@ -35,6 +35,7 @@ export function makeComboBoxQuery({
   query.set('contextName', table.name);
   query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
+  query.set('selectSeries', false);
   query.set('countOnly', false);
   query.set('specifyUser', userInformation.resource_uri);
   query.set('isFavorite', false);
@@ -143,11 +144,11 @@ export function getQueryComboBoxConditions({
     }
   }
 
-  if (
-    resource.specifyTable === tables.Determination &&
-    fieldName === 'fullName' &&
-    treeDefinition !== undefined
-  ) {
+  /**
+   * Filter values by tree definition if provided through context.
+   * Used for filtering Taxon values by COT tree definition.
+   */
+  if (treeDefinition !== undefined && relatedTable === tables.Taxon) {
     fields.push(
       QueryFieldSpec.fromPath(tables.Taxon.name, ['definition', 'id'])
         .toSpQueryField()
@@ -190,8 +191,8 @@ export const getRelatedCollectionId = (
   (fieldName === 'rightSide'
     ? left
     : fieldName === 'leftSide'
-    ? right
-    : undefined
+      ? right
+      : undefined
   )?.find(
     ({ id }) =>
       id ===
@@ -229,4 +230,59 @@ export function pendingValueToResource(
   return new relationship.relatedTable.Resource(
     typeof fieldName === 'string' ? { [fieldName]: pendingValue } : {}
   );
+}
+
+const DEFAULT_RECORD_PRESETS = {
+  CURRENT_AGENT: () => userInformation.agent.resource_uri,
+  CURRENT_USER: () => userInformation.resource_uri,
+  BLANK: () => null,
+} as const;
+type DefaultRecordPreset = keyof typeof DEFAULT_RECORD_PRESETS;
+
+export function useQueryComboBoxDefaults({
+  resource,
+  field,
+  defaultRecord,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
+  readonly defaultRecord?: string | undefined;
+}): void {
+  if (resource === undefined || !resource.isNew()) return;
+
+  if (defaultRecord !== undefined) {
+    const defaultUri: string | null =
+      defaultRecord in DEFAULT_RECORD_PRESETS
+        ? DEFAULT_RECORD_PRESETS[defaultRecord as DefaultRecordPreset]()
+        : defaultRecord;
+
+    resource.set(field.name, resource.get(field.name) ?? defaultUri, {
+      silent: true,
+    });
+    // The following cases need to be kept for outdated forms that do not use the defaultRecord property.
+  } else if (field.name === 'cataloger') {
+    const record = toTable(resource, 'CollectionObject');
+    record?.set(
+      'cataloger',
+      record?.get('cataloger') ?? userInformation.agent.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  } else if (field.name === 'specifyUser') {
+    const record = toTable(resource, 'RecordSet');
+    record?.set(
+      'specifyUser',
+      record?.get('specifyUser') ?? userInformation.resource_uri
+    );
+  } else if (field.name === 'receivedBy') {
+    const record = toTable(resource, 'LoanReturnPreparation');
+    record?.set(
+      'receivedBy',
+      record?.get('receivedBy') ?? userInformation.agent.resource_uri,
+      {
+        silent: true,
+      }
+    );
+  }
 }

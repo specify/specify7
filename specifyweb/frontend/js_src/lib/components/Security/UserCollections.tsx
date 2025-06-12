@@ -125,8 +125,8 @@ export function UserCollections({
           user === undefined
             ? commonText.loading()
             : user.isNew()
-            ? userText.saveUserFirst()
-            : undefined
+              ? userText.saveUserFirst()
+              : undefined
         }
         onClick={handleOpen}
       >

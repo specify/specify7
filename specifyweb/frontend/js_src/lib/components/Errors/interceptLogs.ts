@@ -27,7 +27,7 @@ const logTypes = [
 export type LogMessage = {
   readonly message: RA<unknown>;
   // Context is not a real type, but is used by deduplicateLogContext()
-  readonly type: typeof logTypes[number] | 'context';
+  readonly type: (typeof logTypes)[number] | 'context';
   readonly date: string;
   readonly context: IR<unknown>;
 };
