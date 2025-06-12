@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-06-12 16:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-06-12 18:01+0000\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
 "Language: uk\n"
@@ -862,7 +862,6 @@ msgstr "Записи видалено (без урахування утрима�
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:29
-#, fuzzy
 msgid "recordsMatchedAndChanged"
 msgstr "Пов’язані записи, що відповідають іншим записам"
 
