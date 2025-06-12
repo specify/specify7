@@ -5,12 +5,13 @@
  * in useResourceValue.
  * But, having an independent test for this important hook is worth it.
  */
-import { renderHook, act } from '@testing-library/react';
-import { useFieldValidation } from '../useFieldValidation';
-import { tables } from '../../components/DataModel/tables';
-import { RA } from '../../utils/types';
+import { act,renderHook } from '@testing-library/react';
+
 import { getFieldBlockers } from '../../components/DataModel/saveBlockers';
+import { tables } from '../../components/DataModel/tables';
 import { requireContext } from '../../tests/helpers';
+import type { RA } from '../../utils/types';
+import { useFieldValidation } from '../useFieldValidation';
 
 
 requireContext();
