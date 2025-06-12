@@ -355,19 +355,30 @@ def add_default_taxon(row, tree_name, discipline_name):
             rankid=rank_id
         )
 
-        taxon_obj, created = spmodels.Taxon.objects.get_or_create(
+        taxon_obj = spmodels.Taxon.objects.filter(
             name=value,
             fullname=value,
             definition=tree_def,
             definitionitem=treedef_item,
             parent=parent,
-            defaults=defaults
-        )
+        ).first()
+        if taxon_obj is None:
+            data = {
+                'name': value,
+                'fullname': value,
+                'definition': tree_def,
+                'definitionitem': treedef_item,
+                'parent': parent,
+                'rankid': treedef_item.rankid,
+                **defaults
+            }
+            taxon_obj = spmodels.Taxon(**data)
+            taxon_obj.save(skip_tree_extras=True)
 
-        if not created and defaults:
-            for f, v in defaults.items():
-                setattr(taxon_obj, f, v)
-            taxon_obj.save()
+        # if not taxon_obj and defaults:
+        #     for f, v in defaults.items():
+        #         setattr(taxon_obj, f, v)
+        #     taxon_obj.save()
 
         parent = taxon_obj
         rank_id += 10

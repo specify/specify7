@@ -548,14 +548,14 @@ def all_tree_information(request):
 
 @login_maybe_required
 @require_POST
-# @transaction.atomic
+@transaction.atomic
 def create_default_trees_view(request):
     # Default tree files copied
     # from https://files.specifysoftware.org/taxonfiles/
     # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
     discipline_tree_csv_files = {
-        # 'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
-        'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/test_fishes.csv',
+        'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
+        # 'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/test22_fishes.csv',
         'herpetology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_herps.csv',
         'ornothology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
         'mammology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
@@ -608,7 +608,6 @@ def create_default_trees_view(request):
     rank_count = int(tree_rank_count(tree_name, 8))
     
     background = True
-    # background = False
     if 'background' in data:
         background = data['background']
 
@@ -620,22 +619,11 @@ def create_default_trees_view(request):
             reader = csv.DictReader(lines)
 
             rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
+            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, 
+                                                      logged_in_discipline_name, rank_names_lst)
             
             for row in reader:
                 yield row
-
-    def read_csv_from_url(url: str, discipline_name: str, rank_count: int) -> List[Dict[str, str]]:
-        """Reads the CSV from the URL and returns a list of dictionaries."""
-        with requests.get(url) as resp:
-            resp.raise_for_status()
-            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-            reader = csv.DictReader(lines)
-
-            rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
-            
-            return [row for row in reader]
 
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
@@ -650,10 +638,10 @@ def create_default_trees_view(request):
 
         task_id = str(uuid4())
         async_result = create_default_trees_task.apply_async(
-            args=[url, discipline_name, logged_in_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id],
-            task_id=f"create_default_trees_{discipline_name}",
+            args=[url, discipline_name, logged_in_discipline_name, rank_count,
+                  request.specify_collection.id, request.specify_user.id],
+            task_id=f"create_default_trees_{discipline_name}_{task_id}",
             taskid=task_id
-            # queue='default'
         )
         return http.JsonResponse({
             'message': 'Trees creation started in the background.',
@@ -666,24 +654,11 @@ def create_default_trees_view(request):
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
 
-    # try:
-    #     with requests.get(url) as resp:
-    #         resp.raise_for_status()
-    #         lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-    #         reader = csv.DictReader(lines)
-
-    #         rank_names_lst = reader.fieldnames[:rank_count]
-    #         tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
-            
-    #         for row in reader:
-    #             add_default_taxon(row, tree_name, discipline_name)
-    # except requests.HTTPError:
-    #     return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
-
     return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
 
 @app.task(base=LogErrorsTask, bind=True)
-def create_default_trees_task(self, url: str, discipline_name: str, logged_in_discipline_name: str, rank_count: int, specify_collection_id: int, specify_user_id: int):
+def create_default_trees_task(self, url: str, discipline_name: str, logged_in_discipline_name: str, rank_count: int,
+                              specify_collection_id: int, specify_user_id: int):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
@@ -698,6 +673,23 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
             'discipline_name': logged_in_discipline_name,
         })
     )
+
+    def count_csv_rows(url: str) -> int:
+        with requests.get(url, stream=True) as resp:
+            resp.raise_for_status()
+            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+            reader = csv.DictReader(lines)
+            return sum(1 for _ in reader)
+
+    current = 0
+    total = 1
+    def progress(cur: int, additional_total: int=0) -> None:
+        nonlocal current, total
+        current += cur
+        total += additional_total
+        if current > total:
+            current = total
+        self.update_state(state='RUNNING', meta={'current': current, 'total': total})
     
     def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
         nonlocal tree_name
@@ -707,15 +699,19 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
             reader = csv.DictReader(lines)
 
             rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
+            tree_name = initialize_default_taxon_tree(tree_name, discipline_name,
+                                                      logged_in_discipline_name, rank_names_lst)
             
             for row in reader:
                 yield row
 
     try:
+        row_count = count_csv_rows(url) - 2
+        progress(0, row_count)
         with transaction.atomic():
             for row in stream_csv_from_url(url, discipline_name, rank_count):
                 add_default_taxon(row, tree_name, discipline_name)
+                progress(1, 0)
     except requests.HTTPError:
         Message.objects.create(
             user=specify_user,
@@ -727,30 +723,6 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
                 # 'error': str(e)
             })
         )
-            
-    # try:
-    #     with requests.get(url) as resp:
-    #         resp.raise_for_status()
-    #         lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-    #         reader = csv.DictReader(lines)
-
-    #         rank_names_lst = reader.fieldnames[:rank_count]
-    #         tree_name = initialize_default_taxon_tree(tree_name, discipline_name, logged_in_discipline_name, rank_names_lst)
-            
-    #         for row in reader:
-    #             add_default_taxon(row, tree_name, discipline_name)
-    # except Exception as e:
-    #     logger.error(f"Error in create_default_trees: {e}")
-    #     Message.objects.create(
-    #         user=specify_user,
-    #         content=json.dumps({
-    #             'type': 'create-default-tree-failed',
-    #             'name': "Create_Default_Tree_" + discipline_name,
-    #             'collection_id': specify_collection_id,
-    #             'discipline_name': logged_in_discipline_name,
-    #             'error': str(e)
-    #         })
-    #     )
 
     Message.objects.create(
         user=specify_user,
@@ -761,6 +733,20 @@ def create_default_trees_task(self, url: str, discipline_name: str, logged_in_di
             'discipline_name': logged_in_discipline_name,
         })
     )
+
+@require_GET
+def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
+    """Returns the task status for the default tree upload celery task"""
+
+    result = create_default_trees_task.AsyncResult(task_id)
+
+    status = {
+        'taskstatus': result.status,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': task_id
+    }
+
+    return http.JsonResponse(status)
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
