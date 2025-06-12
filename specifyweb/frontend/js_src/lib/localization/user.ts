@@ -253,7 +253,7 @@ export const userText = createDictionary({
     'fr-fr':
       "Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource via le compte actuellement connecté",
     'uk-ua':
-      'Ви не маєте доступу до жодного {collectionTable:string}, що містить цей ресурс, через обліковий запис, у який ви зараз увійшли.',
+      'Ви не маєте доступу до жодного {collectionTable:string}, що містить цей ресурс, через обліковий запис, у який ви зараз увійшли',
     'de-ch':
       'Sie haben über das aktuell angemeldete Konto keinen Zugriff auf {collectionTable:string}, das diese Ressource enthält',
     'pt-br':
@@ -646,7 +646,7 @@ export const userText = createDictionary({
     'fr-fr':
       "Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour le mettre à jour.",
     'uk-ua':
-      'Примітка: попередній перегляд може бути застарілим. Збережіть зміни, щоб оновити попередній перегляд.',
+      'Примітка: попередній перегляд може бути застарілим. Збережіть зміни, щоб оновити попередній перегляд',
     'de-ch':
       'Hinweis: Die Vorschau ist möglicherweise veraltet. Speichern Sie die Änderungen, um die Vorschau zu aktualisieren.',
     'pt-br':
@@ -840,7 +840,7 @@ export const userText = createDictionary({
     'fr-fr':
       "Aucun fournisseur d'identité externe n'est configuré. Vous pouvez en configurer certains dans les paramètres du serveur de Specify 7",
     'uk-ua':
-      'Зовнішнього постачальника ідентифікаційних даних не налаштовано. Ви можете налаштувати деякі з них у розділі «Вкажіть 7 параметрів сервера».',
+      'Зовнішнього постачальника ідентифікаційних даних не налаштовано. Ви можете налаштувати деякі з них у розділі «Specify 7 параметрів сервера»',
     'de-ch':
       'Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in den Servereinstellungen festlegen.',
     'pt-br':
@@ -851,7 +851,7 @@ export const userText = createDictionary({
     'ru-ru': 'Укажите 6 разрешений',
     'es-es': 'Permisos de Specify 6',
     'fr-fr': 'Autorisations de Specify 6',
-    'uk-ua': 'Вкажіть 6 дозволів',
+    'uk-ua': 'Specify 6 дозволів',
     'de-ch': 'Geben Sie 6 Berechtigungen an',
     'pt-br': 'Especifique 6 permissões',
   },
@@ -865,7 +865,7 @@ export const userText = createDictionary({
     'fr-fr':
       'Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs sans mot de passe ne pourront pas se connecter',
     'uk-ua':
-      'Спробуйте встановити пароль для цього користувача. Користувачі без пароля не зможуть увійти.',
+      'Спробуйте встановити пароль для цього користувача. Користувачі без пароля не зможуть увійти',
     'de-ch':
       'Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne Passwort können sich nicht anmelden.',
     'pt-br':
@@ -932,7 +932,7 @@ export const userText = createDictionary({
     'ru-ru': '(Укажите 7 Администратор)',
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Admin)',
-    'uk-ua': '(Вкажіть 7 Адміністратор)',
+    'uk-ua': '(Specify 7 Адміністратор)',
     'de-ch': '(Geben Sie 7 Admin an)',
     'pt-br': '(Especifique 7 Admin)',
   },
@@ -942,7 +942,7 @@ export const userText = createDictionary({
     'ru-ru': '(Укажите 6 Администратор)',
     'es-es': '(Administradores de Specify 6)',
     'fr-fr': '(Spécifiez 6 Admin)',
-    'uk-ua': '(Вкажіть 6 Адміністратор)',
+    'uk-ua': '(Specify 6 Адміністратор)',
     'de-ch': '(Geben Sie 6 Admin an)',
     'pt-br': '(Especifique 6 Admin)',
   },

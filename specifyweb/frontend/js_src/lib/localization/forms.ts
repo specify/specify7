@@ -84,6 +84,12 @@ export const formsText = createDictionary({
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if this record can be deleted…',
+    'ru-ru': 'Проверка возможности удаления ресурса…',
+    'es-es': 'Comprobando si el recurso se puede eliminar…',
+    'fr-fr': 'Vérification si la ressource peut être supprimée…',
+    'uk-ua': 'Перевірка можливості видалення ресурсу…',
+    'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
+    'pt-br': 'Verificando se o recurso pode ser excluído…',
   },
   checkingIfResourceIsUsed: {
     'en-us': 'Checking if this record is currently in use…',

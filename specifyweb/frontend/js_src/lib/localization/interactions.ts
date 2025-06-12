@@ -405,6 +405,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Pas disponible',
     'pt-br': 'Não disponível',
     'ru-ru': 'Нет в наличии',
-    'uk-ua': 'Недоступно',
+    'uk-ua': 'Не доступно',
   },
 } as const);

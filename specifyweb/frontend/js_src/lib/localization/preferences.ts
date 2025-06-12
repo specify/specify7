@@ -23,7 +23,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Настройка',
     'es-es': 'Personalización',
     'fr-fr': 'Personnalisation',
-    'uk-ua': 'Налаштування',
+    'uk-ua': 'Спеціальнізація',
     'de-ch': 'Anpassung',
     'pt-br': 'Personalização',
   },
@@ -644,7 +644,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Выделить совпавшую подстроку',
     'es-es': 'Resaltar la subcadena coincidente',
     'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
-    'uk-ua': 'Виділіть відповідний підрядок',
+    'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Markieren Sie übereinstimmende Teilzeichenfolgen',
     'pt-br': 'Destacar substring correspondente',
   },
@@ -964,7 +964,7 @@ export const preferencesText = createDictionary({
       'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
     'fr-fr':
       'Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée',
-    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>.',
+    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>',
     'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Tab</key>',
     'pt-br': 'Direção do movimento quando a tecla <key>Tab</key> é pressionada',
   },
@@ -1007,7 +1007,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
-    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>.',
+    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
     'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Enter</key>',
     'fr-fr':
       'Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée',
@@ -1021,8 +1021,8 @@ export const preferencesText = createDictionary({
       'Вы можете двигаться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.',
     'es-es':
       'Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Enter</key>.',
-    'fr-fr': 'Synonyme couleur.',
-    'uk-ua': 'Синонім кольору.',
+    'uk-ua':
+      'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.',
     'de-ch':
       'Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie <key>Umschalt</key>+<key>Eingabe</key> drücken.',
     'pt-br':
@@ -1092,7 +1092,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать таблицы без доступа «Чтение»',
     'es-es': 'Mostrar tablas sin acceso de "Lectura"',
     'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
-    'uk-ua': 'Показувати таблиці без доступу «Читання».',
+    'uk-ua': 'Показувати таблиці без доступу «Читання»',
     'de-ch': 'Tabellen ohne Lesezugriff anzeigen',
     'pt-br': 'Mostrar tabelas sem acesso de "Leitura"',
   },
@@ -1101,7 +1101,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать таблицы без права «Создать»',
     'es-es': 'Mostrar tablas sin acceso "Crear"',
     'fr-fr': 'Afficher les tableaux sans accès "Créer"',
-    'uk-ua': 'Показувати таблиці без доступу «Створити».',
+    'uk-ua': 'Показувати таблиці без доступу «Створити»',
     'de-ch': 'Tabellen ohne „Erstellen“-Zugriff anzeigen',
     'pt-br': 'Mostrar tabelas sem acesso "Criar"',
   },
@@ -1156,7 +1156,8 @@ export const preferencesText = createDictionary({
     'es-es': 'Permitir que el autocompletado crezca tanto como sea necesario',
     'fr-fr':
       'Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée',
-    'uk-ua': 'Напрямок руху при натисканні клавіші [X27X]Tab[X35X].',
+    'uk-ua':
+      'Дозволити автозаповнення розширюватися настільки, наскільки потрібно',
     'de-ch':
       'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
     'pt-br':
@@ -1259,7 +1260,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
     'es-es': 'Cerrar al presionar la tecla <key>ESC</key>',
     'fr-fr': 'Icône et nom de la table',
-    'uk-ua': 'Значок і назва таблиці',
+    'uk-ua': 'Закриття натисканням клавіші <key>ESC</key>',
     'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>',
     'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
   },
@@ -1386,7 +1387,8 @@ export const preferencesText = createDictionary({
     'es-es':
       '<key>{altKeyName:string}</key>+<key>Haga clic</key> en un enlace que normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual.',
     'fr-fr': 'Utiliser le sélecteur de mois accessible.',
-    'uk-ua': 'Використовуйте доступний засіб вибору місяця.',
+    'uk-ua':
+      '<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай відкривається в новій вкладці, щоб відкрити його в поточній вкладці.',
     'de-ch':
       '<key>{altKeyName:string}</key>+<key>Klicken Sie auf</key> einen Link, der normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen Tab zu öffnen.',
     'pt-br':
@@ -1699,7 +1701,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
     'fr-fr':
       'Créer automatiquement des enregistrements {agentVariantTable:string}',
-    'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
+    'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}',
     'pt-br': 'Criar automaticamente registros {agentVariantTable:string}',
   },
   autoCreateVariantsDescription: {

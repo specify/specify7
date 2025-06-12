@@ -258,6 +258,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const deleteButton =
     showResourceReferenceButtons &&
+    !isReadOnly &&
     hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
         <DeleteButton

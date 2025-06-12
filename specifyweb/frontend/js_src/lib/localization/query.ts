@@ -323,7 +323,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Создать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Créer {recordSetTable:string}',
-    'uk-ua': 'Створити {modelName:string}',
+    'uk-ua': 'Створити {recordSetTable:string}',
     'de-ch': 'Erstellen {recordSetTable:string}',
     'pt-br': 'Criar {recordSetTable:string}',
   },
@@ -723,7 +723,7 @@ export const queryText = createDictionary({
   treeBulkMove: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Bulk Move',
-    'de-ch': 'Massenbewegung von Bäumen',
+    'de-ch': 'Massenverschiebung von Bäumen',
     'es-es': 'Movimiento masivo de árboles',
     'fr-fr': "Déplacement d'arbres en vrac",
     'ru-ru': 'Массовая перевозка деревьев',
@@ -881,7 +881,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Faites défiler jusqu'à l'éditeur",
     'ru-ru': 'Прокрутите до редактора',
-    'pt-br': 'Rolar para o editor',
+    'pt-br': 'Vá até o editor',
   },
   viewRecords: {
     'en-us': 'View records',
