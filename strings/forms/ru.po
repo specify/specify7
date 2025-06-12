@@ -724,24 +724,6 @@ msgstr "Сетка"
 msgid "subviewConfiguration"
 msgstr "Подвид"
 
-#: components/DataEntryTables/Edit.tsx:50
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "selectSourceOfTables"
-msgstr "Выберите источник таблиц"
-
-#: components/DataEntryTables/Edit.tsx:71
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "inheritLegacySettings"
-msgstr "Копировать Укажите 6 настроек"
-
-#: components/DataEntryTables/Edit.tsx:79
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "useCustomSettings"
-msgstr "Использовать пользовательские настройки"
-
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
@@ -755,13 +737,13 @@ msgstr "Отключить режим только для чтения"
 msgid "enableReadOnly"
 msgstr "Включить режим только для чтения"
 
-#: components/DataEntryTables/Edit.tsx:129
+#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Настройте таблицы ввода данных"
 
-#: components/DataEntryTables/Edit.tsx:130
+#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureInteractionTables"

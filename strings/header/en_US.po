@@ -17,7 +17,7 @@ msgstr "Main"
 msgid "currentCollection"
 msgstr "Current {collectionTable:string}"
 
-#: components/DataEntryTables/index.tsx:44
+#: components/DataEntryTables/index.tsx:43
 #: components/Header/menuItemDefinitions.ts:43
 #: components/Router/OverlayRoutes.tsx:71
 #. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes

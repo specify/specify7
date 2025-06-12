@@ -725,24 +725,6 @@ msgstr "Netz"
 msgid "subviewConfiguration"
 msgstr "Unteransicht"
 
-#: components/DataEntryTables/Edit.tsx:50
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "selectSourceOfTables"
-msgstr "Wählen Sie die Quelle der Tabellen aus"
-
-#: components/DataEntryTables/Edit.tsx:71
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "inheritLegacySettings"
-msgstr "Kopieren Geben Sie 6 Einstellungen an"
-
-#: components/DataEntryTables/Edit.tsx:79
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "useCustomSettings"
-msgstr "Benutzerdefinierte Einstellungen verwenden"
-
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
@@ -756,13 +738,13 @@ msgstr "Deaktivieren Sie den Nur-Lese-Modus"
 msgid "enableReadOnly"
 msgstr "Aktivieren Sie den Nur-Lese-Modus"
 
-#: components/DataEntryTables/Edit.tsx:129
+#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Konfigurieren von Dateneingabetabellen"
 
-#: components/DataEntryTables/Edit.tsx:130
+#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureInteractionTables"

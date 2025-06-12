@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:61
-#: components/Interactions/InteractionsDialog.tsx:60
+#: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:614
 #: components/Router/OverlayRoutes.tsx:87
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
@@ -215,7 +215,7 @@ msgstr "Доступно"
 msgid "unavailable"
 msgstr "Недоступно"
 
-#: components/Interactions/InteractionsDialog.tsx:83
+#: components/Interactions/InteractionsDialog.tsx:81
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog
 msgid "returnLoan"
 msgstr "Повернути записи {tableLoan:string}"

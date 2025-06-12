@@ -620,21 +620,6 @@ msgstr "Сітка"
 msgid "subviewConfiguration"
 msgstr "Підвид"
 
-#: components/DataEntryTables/Edit.tsx:50
-#. Used in: Components > Data Entry Tables > Edit
-msgid "selectSourceOfTables"
-msgstr "Виберіть джерело таблиць"
-
-#: components/DataEntryTables/Edit.tsx:71
-#. Used in: Components > Data Entry Tables > Edit
-msgid "inheritLegacySettings"
-msgstr "Копіювати Вказати 6 налаштувань"
-
-#: components/DataEntryTables/Edit.tsx:79
-#. Used in: Components > Data Entry Tables > Edit
-msgid "useCustomSettings"
-msgstr "Використовуйте власні налаштування"
-
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
@@ -646,12 +631,12 @@ msgstr "Вимкнути режим лише для читання"
 msgid "enableReadOnly"
 msgstr "Увімкнути режим лише для читання"
 
-#: components/DataEntryTables/Edit.tsx:129
+#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
 msgid "configureDataEntryTables"
 msgstr "Налаштування таблиць для введення даних"
 
-#: components/DataEntryTables/Edit.tsx:130
+#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
 msgid "configureInteractionTables"
 msgstr "Налаштування таблиць взаємодії"

@@ -621,21 +621,6 @@ msgstr "Grid"
 msgid "subviewConfiguration"
 msgstr "Subview"
 
-#: components/DataEntryTables/Edit.tsx:50
-#. Used in: Components > Data Entry Tables > Edit
-msgid "selectSourceOfTables"
-msgstr "Select source of tables"
-
-#: components/DataEntryTables/Edit.tsx:71
-#. Used in: Components > Data Entry Tables > Edit
-msgid "inheritLegacySettings"
-msgstr "Copy Specify 6 settings"
-
-#: components/DataEntryTables/Edit.tsx:79
-#. Used in: Components > Data Entry Tables > Edit
-msgid "useCustomSettings"
-msgstr "Use custom settings"
-
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
@@ -647,12 +632,12 @@ msgstr "Disable read-only mode"
 msgid "enableReadOnly"
 msgstr "Enable read-only mode"
 
-#: components/DataEntryTables/Edit.tsx:129
+#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
 msgid "configureDataEntryTables"
 msgstr "Configure data entry tables"
 
-#: components/DataEntryTables/Edit.tsx:130
+#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
 msgid "configureInteractionTables"
 msgstr "Configure interaction tables"

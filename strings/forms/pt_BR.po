@@ -728,24 +728,6 @@ msgstr "Grade"
 msgid "subviewConfiguration"
 msgstr "Subvisualização"
 
-#: components/DataEntryTables/Edit.tsx:50
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "selectSourceOfTables"
-msgstr "Selecione a fonte das tabelas"
-
-#: components/DataEntryTables/Edit.tsx:71
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "inheritLegacySettings"
-msgstr "Copiar Especificar 6 configurações"
-
-#: components/DataEntryTables/Edit.tsx:79
-#. Used in: Components > Data Entry Tables > Edit
-#, fuzzy
-msgid "useCustomSettings"
-msgstr "Usar configurações personalizadas"
-
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
@@ -759,13 +741,13 @@ msgstr "Desativar modo somente leitura"
 msgid "enableReadOnly"
 msgstr "Habilitar modo somente leitura"
 
-#: components/DataEntryTables/Edit.tsx:129
+#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Configurar tabelas de entrada de dados"
 
-#: components/DataEntryTables/Edit.tsx:130
+#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
 #, fuzzy
 msgid "configureInteractionTables"
