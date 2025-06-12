@@ -1024,7 +1024,7 @@ msgstr "Registros excluídos (não incluindo dependentes)"
 #. Used in: Components > Work Bench > Results
 #, fuzzy
 msgid "recordsMatchedAndChanged"
-msgstr "Registros correspondentes, diferentes dos atuais relacionados"
+msgstr ""
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index

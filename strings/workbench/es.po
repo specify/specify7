@@ -883,7 +883,7 @@ msgstr "Registros eliminados (sin incluir dependientes)"
 #. Used in: Components > Work Bench > Results
 #, fuzzy
 msgid "recordsMatchedAndChanged"
-msgstr "Registros coincidentes, diferentes a los relacionados actuales"
+msgstr ""
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index

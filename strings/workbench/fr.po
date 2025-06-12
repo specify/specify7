@@ -913,8 +913,6 @@ msgstr "Enregistrements supprimés (sans compter les personnes à charge)"
 #, fuzzy
 msgid "recordsMatchedAndChanged"
 msgstr ""
-"Enregistrements correspondants, différents des enregistrements actuellement "
-"liés"
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index

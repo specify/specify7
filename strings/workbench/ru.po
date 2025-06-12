@@ -884,7 +884,7 @@ msgstr "Удаленные записи (не включая иждивенце�
 #. Used in: Components > Work Bench > Results
 #, fuzzy
 msgid "recordsMatchedAndChanged"
-msgstr "Записи сопоставлены, отличаются от текущих связанных"
+msgstr ""
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index

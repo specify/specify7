@@ -848,7 +848,7 @@ msgstr "Records deleted (not including dependents)"
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Work Bench > Results
 msgid "recordsMatchedAndChanged"
-msgstr "Records matched, different from current related"
+msgstr "Related records matched to different records"
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index

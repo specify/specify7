@@ -1023,7 +1023,7 @@ msgstr "Datensätze gelöscht (ohne Angehörige)"
 #. Used in: Components > Work Bench > Results
 #, fuzzy
 msgid "recordsMatchedAndChanged"
-msgstr "Datensätze übereinstimmen, abweichend von aktuellen verwandten"
+msgstr ""
 
 #: components/WbUtils/index.tsx:149
 #. Used in: Components > Wb Utils > Index
