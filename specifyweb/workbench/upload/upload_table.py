@@ -1,6 +1,6 @@
 from decimal import Decimal
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Literal, Tuple
+from typing import Any, NamedTuple, Union, Optional, Literal
 
 from django.db import transaction, IntegrityError
 
@@ -1123,11 +1123,19 @@ class BoundUpdateTable(BoundUploadTable):
     @staticmethod
     def _field_changed(reference_record, attrs: dict[str, Any]):
         def is_equal(old, new):
+            """
+            REFACTOR: This is largely re-using the logic of fld_change_info
+            from specifyweb/specify/api.py
+            Write a generic function and merge this and fld_change_info
+            See https://github.com/specify/specify7/pull/5417#issuecomment-2646052721
+            """
             if isinstance(old, Decimal):
-                return float(old) == new
-            
-            return old == new
-                
+                new = None if new is None else float(new)
+                # TEST: Ensure no precision errors can occur / improve
+                # precision handling
+                old = float(old)
+            return str(old) == str(new)
+
         return {
             key: FieldChangeInfo(field_name=key, old_value=getattr(reference_record, key), new_value=new_value)  # type: ignore
             for (key, new_value) in attrs.items()

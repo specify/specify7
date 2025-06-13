@@ -2,12 +2,10 @@
 Implements the RESTful business data API
 """
 
-from calendar import c
 import json
 import logging
 import re
-from typing import Any, Dict, List, Optional, Tuple, Union, \
-    Callable, TypedDict, Literal, cast
+from typing import Any, Optional, Union, Callable, TypedDict, cast
 from collections.abc import Iterable
 
 from urllib.parse import urlencode
