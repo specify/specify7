@@ -263,7 +263,7 @@ function ToggleHeader({
   );
 }
 
-function Preview({
+export function Preview({
   preview,
   hasHeader,
 }: {
