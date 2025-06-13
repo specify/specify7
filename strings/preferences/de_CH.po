@@ -709,7 +709,7 @@ msgstr "Groß- und Kleinschreibung beachten"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "caseInsensitive"
-msgstr "Groß- und Kleinschreibung wird nicht berücksichtigt"
+msgstr "Groß-/Kleinschreibung wird nicht beachtet"
 
 #: components/Preferences/UserDefinitions.tsx:1566
 #. Used in: Components > Preferences > User Definitions

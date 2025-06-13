@@ -230,7 +230,7 @@ msgstr "API des tableaux"
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
-msgstr "Opérations API"
+msgstr "API d'opérations"
 
 #: components/AppResources/Create.tsx:97
 #: components/AppResources/Create.tsx:133
@@ -270,7 +270,7 @@ msgstr "Vider le cache du navigateur"
 #. Used in: Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "cacheCleared"
-msgstr "Le cache a bien été vidé. Veuillez recharger la page."
+msgstr "Le cache a été vidé. Veuillez recharger la page."
 
 #: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions

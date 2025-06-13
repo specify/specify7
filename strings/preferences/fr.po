@@ -151,7 +151,7 @@ msgid "fontFamilyDescription"
 msgstr ""
 "Vous pouvez spécifier n'importe quelle police présente sur votre "
 "ordinateur, même si elle ne figure pas dans la liste. Une liste de polices "
-"séparées par des virgules est également prise en charge , où chaque police "
+"séparées par des virgules est également prise en charge ; chaque police "
 "suivante sera utilisée si la précédente n'est pas disponible."
 
 #: components/Preferences/Renderers.tsx:197
@@ -1135,7 +1135,7 @@ msgstr "Couleur du bouton de réussite"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "openAsReadOnly"
-msgstr "Ouvrir tous les enregistrements en lecture seule"
+msgstr "Ouvrir tous les enregistrements en mode lecture seule"
 
 #: components/Preferences/CollectionDefinitions.tsx:78
 #: components/Preferences/UserDefinitions.tsx:1636
