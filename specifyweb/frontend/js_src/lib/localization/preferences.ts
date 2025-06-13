@@ -208,15 +208,15 @@ export const preferencesText = createDictionary({
     'pt-br': 'Família de fontes',
   },
   fontFamilyDescription: {
-    'en-us':
-      'You can specify any font that is on your computer, even if it is not in the list. A comma-separated list of fonts is also supported, where each subsequent font will be used if the previous one is not available.',
-    'ru-ru':
-      'Вы можете указать любой шрифт, который есть на вашем компьютере, даже если его нет в списке. Также поддерживается список шрифтов, разделенных запятыми, где каждый последующий шрифт будет использоваться, если предыдущий недоступен.',
-    'es-es':
-      'Puede especificar cualquier fuente de su ordenador, incluso si no está en la lista. También se admite una lista de fuentes separadas por comas, donde se usará cada fuente subsiguiente si la anterior no está disponible.',
-    'fr-fr':
-      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge ; chaque police suivante sera utilisée si la précédente n'est pas disponible.",
-    'uk-ua':
+    "en-us":
+      "You can specify any font that is on your computer, even if it is not in the list. A comma-separated list of fonts is also supported, where each subsequent font will be used if the previous one is not available.",
+    "ru-ru":
+      "Вы можете указать любой шрифт, который есть на вашем компьютере, даже если его нет в списке. Также поддерживается список шрифтов, разделенных запятыми, где каждый последующий шрифт будет использоваться, если предыдущий недоступен.",
+    "es-es":
+      "Puede especificar cualquier fuente de su ordenador, incluso si no está en la lista. También se admite una lista de fuentes separadas por comas, donde se usará cada fuente subsiguiente si la anterior no está disponible.",
+    "fr-fr":
+      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge , où chaque police suivante sera utilisée si la précédente n'est pas disponible.",
+    "uk-ua":
       "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо його немає в списку. Також підтримується розділений комами список шрифтів, у якому використовуватиметься другий шрифт, якщо перший недоступний тощо.",
     'de-ch':
       'Sie können jede Schriftart angeben, die sich auf Ihrem Computer befindet, auch wenn diese nicht in der Liste enthalten ist. Eine durch Kommas getrennte Liste von Schriftarten wird ebenfalls unterstützt, wobei die zweite Schriftart verwendet wird, wenn die erste nicht verfügbar ist usw.',
@@ -1853,20 +1853,20 @@ export const preferencesText = createDictionary({
     'pt-br': 'URL da imagem recolhida',
   },
   customLogoDescription: {
-    'en-us':
-      'A URL to an image that would be displayed next to the Specify logo in the navigation menu.',
-    'de-ch':
-      'Eine URL zu einem Bild, das neben dem angegebenen Logo im Navigationsmenü angezeigt wird.',
-    'es-es':
-      'Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.',
-    'fr-fr':
-      'Une URL vers une image qui serait affichée à côté du logo Spécifier dans le menu de navigation.',
-    'ru-ru':
-      'URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.',
-    'uk-ua':
-      'URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.',
-    'pt-br':
-      'Um URL para uma imagem que seria exibida ao lado do logotipo Especificar no menu de navegação.',
+    "en-us":
+      "A URL to an image that would be displayed next to the Specify logo in the navigation menu.",
+    "de-ch":
+      "Eine URL zu einem Bild, das neben dem angegebenen Logo im Navigationsmenü angezeigt wird.",
+    "es-es":
+      "Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.",
+    "fr-fr":
+      "Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.",
+    "ru-ru":
+      "URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.",
+    "uk-ua":
+      "URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.",
+    "pt-br":
+      "Um URL para uma imagem que seria exibida ao lado do logotipo Especificar no menu de navegação.",
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
@@ -1878,13 +1878,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Mostrar número da linha do resultado da consulta',
   },
   saveButtonColor: {
-    'en-us': 'Save button color',
-    'de-ch': 'Farbe der Schaltfläche „Speichern“',
-    'es-es': 'Guardar el color del botón',
-    'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
-    'pt-br': 'Cor do botão Salvar',
+    "en-us": "Save button color",
+    "de-ch": "Farbe der Schaltfläche „Speichern“",
+    "es-es": "Guardar el color del botón",
+    "fr-fr": "Couleur du bouton Enregistrer",
+    "ru-ru": "Сохранить цвет кнопки",
+    "uk-ua": "Зберегти колір кнопки",
+    "pt-br": "Cor do botão Salvar",
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
@@ -1941,13 +1941,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Cor do botão de sucesso',
   },
   openAsReadOnly: {
-    'en-us': 'Open all records in read-only mode',
-    'de-ch': 'Alle Datensätze im schreibgeschützten Modus öffnen',
-    'es-es': 'Abrir todos los registros en modo de solo lectura',
-    'fr-fr': 'Ouvrir tous les enregistrements en mode lecture seule',
-    'ru-ru': 'Открыть все записи в режиме только для чтения',
-    'uk-ua': 'Відкрити всі записи в режимі лише для читання',
-    'pt-br': 'Abra todos os registros no modo somente leitura',
+    "en-us": "Open all records in read-only mode",
+    "de-ch": "Alle Datensätze im schreibgeschützten Modus öffnen",
+    "es-es": "Abrir todos los registros en modo de solo lectura",
+    "fr-fr": "Ouvrir tous les enregistrements en lecture seule",
+    "ru-ru": "Открыть все записи в режиме только для чтения",
+    "uk-ua": "Відкрити всі записи в режимі лише для читання",
+    "pt-br": "Abra todos os registros no modo somente leitura",
   },
   displayBasicView: {
     'en-us': 'Display basic view',
