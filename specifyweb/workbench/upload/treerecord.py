@@ -3,7 +3,7 @@ For uploading tree records.
 """
 
 import logging
-from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
+from typing import Any, NamedTuple, Optional, Union
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict

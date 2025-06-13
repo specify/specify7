@@ -253,7 +253,7 @@ class ParseSuccess(NamedTuple):
 
     @classmethod
     def from_base_parse_success(cls, parse_success: BaseParseSuccess, model: UpdateModel, locality_id: Optional[int], row_number: int):
-        return cls(parse_success.to_upload, model, locality_id, row_number)
+        return cls(parse_success.payload, model, locality_id, row_number)
 
 
 class UploadSuccessRow(TypedDict):

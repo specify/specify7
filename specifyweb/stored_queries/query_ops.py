@@ -1,5 +1,4 @@
 from collections import namedtuple
-import re
 import sqlalchemy
 from sqlalchemy.orm.query import Query
 
@@ -14,8 +13,29 @@ from sqlalchemy.orm.query import Query
 #     search_co_ids_in_time_range_mysql_with_age_range,
 # )
 from specifyweb.specify.geo_time import geo_time_query, geo_time_period_query
+from typing import Literal
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
+QUERYFIELD_OPERATION_NUMBER = Literal[
+    0,  # Like
+    1,  # Equals
+    2,  # Greater Than
+    3,  # Less Than
+    4,  # Greater Than or Equals
+    5,  # Less Than or Equals
+    6,  # True
+    7,  # False
+    8,  # Dont Care / Any
+    9,  # Between
+    10, # In
+    11, # Contains
+    12, # Null / Empty
+    13, # True or Null/Empty
+    14, # False ot Null/Empty
+    15, # Starts With
+    16, # Age Range
+    17  # Age Period
+]
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
     """Instances of this class turn Spqueryfield operation numbers into

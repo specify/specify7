@@ -1,32 +1,59 @@
 import re
 import math
 
-from typing import Dict, List, Tuple, Any, NamedTuple, Union, Optional, Literal
+from typing import Any, NamedTuple, Union, Optional, Literal, TypedDict
 from datetime import datetime
 from decimal import Decimal
 
-from specifyweb.specify import models
 from specifyweb.specify.agent_types import agent_types
 from specifyweb.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
-from specifyweb.specify.uiformatters import get_uiformatter, UIFormatter, FormatMismatch, ScopedFormatter
+from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter
+
+
+class ParseOptions(TypedDict):
+    """
+    When working with latitude and longitude values, people can values in a
+    variety of formats (such as Decimal Degrees, Degree Minutes Seconds,
+    Degrees and Decimal Minutes).
+    To facilitate supporting these differing formats, Specify records a textual
+    representation of the coordinates in a text field (lat1text, long1text,
+    lat2text, long2text) and parses the value to a decimal (the database format
+    of latitude1, longitude1, etc.).
+
+    To ease working with the software, components like the WorkBench treat
+    the coordimate decimal fields as the coordinate text fields -- allowing the
+    differing formats -- and do the conversion to a decimal format in the
+    "background"
+
+    Set this to True if the component should treat the coordinate decimal
+    fields as text, and False if the decimal coordinate fields should be parsed
+    as normal decimal fields
+    """
+    latlong_as_text: bool
+
+
+DEFAULT_PARSE_OPTIONS: ParseOptions = {
+    'latlong_as_text': True
+}
 
 ParseFailureKey = Literal[
-'valueTooLong',
-'formatMismatch',
+    'valueTooLong',
+    'formatMismatch',
 
-'failedParsingDecimal',
-'failedParsingFloat',
-'failedParsingBoolean',
-'failedParsingAgentType',
+    'failedParsingDecimal',
+    'failedParsingFloat',
+    'failedParsingBoolean',
+    'failedParsingAgentType',
 
-'invalidYear',
-'badDateFormat',
+    'invalidYear',
+    'badDateFormat',
 
-'coordinateBadFormat',
-'latitudeOutOfRange',
-'longitudeOutOfRange'
+    'coordinateBadFormat',
+    'latitudeOutOfRange',
+    'longitudeOutOfRange'
 ]
+
 
 class ParseFailure(NamedTuple):
     message: ParseFailureKey
@@ -37,13 +64,13 @@ class ParseFailure(NamedTuple):
 
 
 class ParseSucess(NamedTuple):
-    to_upload: dict[str, Any]
+    payload: dict[str, Any]
 
 
 ParseResult = Union[ParseSucess, ParseFailure]
 
 
-def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Optional[ScopedFormatter] = None) -> ParseResult:
+def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Optional[ScopedFormatter] = None, parse_options: ParseOptions = DEFAULT_PARSE_OPTIONS) -> ParseResult:
     table = datamodel.get_table_strict(table_name)
     field = table.get_field_strict(field_name)
 
@@ -53,7 +80,7 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Opt
     if formatter is not None:
         return parse_formatted(formatter, table, field, raw_value)
 
-    if is_latlong(table, field):
+    if is_latlong(table, field) and parse_options['latlong_as_text']:
         return parse_latlong(field, raw_value)
 
     if is_agenttype(table, field):

@@ -221,7 +221,7 @@ class ScopedUploadTable(NamedTuple):
             parseFails: list[WorkBenchParseFailure] = []
             current_id = None
         else:
-            parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
+            parsedFields, parseFails = parse_many(self.name, self.wbcols, row, is_update=current_id is not None)
 
         toOne: dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():

@@ -12,10 +12,7 @@ from typing import (
     List,
     NamedTuple,
     Optional,
-    Tuple,
     TypedDict,
-    Union,
-    Literal,
 )
 
 from specifyweb.permissions.permissions import has_target_permission
@@ -26,7 +23,7 @@ from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_informa
 from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.stored_queries.execution import execute
-from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
+from specifyweb.stored_queries.queryfield import QueryField, SORT_TYPES, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
     QueryFieldSpec,
     QueryNode,
@@ -34,7 +31,7 @@ from specifyweb.stored_queries.queryfieldspec import (
 )
 from specifyweb.workbench.models import Spdataset
 from specifyweb.workbench.permissions import BatchEditDataSetPT
-from specifyweb.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
+from specifyweb.workbench.upload.treerecord import TreeRecord, TreeRankRecord
 from specifyweb.workbench.upload.upload_plan_schema import parse_column_options
 from specifyweb.workbench.upload.upload_table import UploadTable
 from specifyweb.workbench.upload.uploadable import NULL_RECORD, Uploadable
@@ -145,7 +142,7 @@ class BatchEditPack(NamedTuple):
         if batch_edit_fields["id"][1] == 0 or batch_edit_fields["order"][1] == 0:
             raise Exception("the ID field should always be sorted!")
 
-        def extend_callback(sort_type):
+        def extend_callback(sort_type: SORT_TYPES):
             def _callback(field):
                 return BatchEditPack._query_field(
                     field_spec._replace(
@@ -175,7 +172,7 @@ class BatchEditPack(NamedTuple):
 
     # a basic query field spec to field
     @staticmethod
-    def _query_field(field_spec: QueryFieldSpec, sort_type: int):
+    def _query_field(field_spec: QueryFieldSpec, sort_type: SORT_TYPES):
         return QueryField(
             fieldspec=field_spec,
             op_num=8,

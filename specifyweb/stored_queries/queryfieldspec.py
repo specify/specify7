@@ -1,7 +1,7 @@
 import logging
 import re
 from collections import namedtuple, deque
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Iterable, TypedDict
 
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
@@ -14,7 +14,7 @@ from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
-from .query_ops import QueryOps
+from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
 from ..specify.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
@@ -43,8 +43,14 @@ PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
 }
 
+class SpQueryAttrs(TypedDict):
+    tablelist: str
+    stringid: str
+    fieldname: str
+    isrelfld: bool
 
-def extract_date_part(fieldname):
+
+def extract_date_part(fieldname: str) -> tuple[str, Optional[str]]:
     match = DATE_PART_RE.match(fieldname)
     if match:
         fieldname, date_part = match.groups()[:2]
@@ -78,7 +84,7 @@ def make_tree_fieldnames(table: Table, reverse=False):
     return mapping
 
 
-def find_tree_and_field(table: Table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str) -> Union[tuple[None, None], tuple[str, str]]:
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
@@ -101,7 +107,7 @@ def find_tree_and_field(table: Table, fieldname: str):
     return tree_rank, mapping.get(field, field)
 
 
-def make_stringid(fs, table_list):
+def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str], str, str]:
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
     if tree_ranks:
         field_name = tree_ranks
@@ -173,7 +179,7 @@ class QueryFieldSpec(
     tree_field: Optional[str]
 
     @classmethod
-    def from_path(cls, path_in, add_id=False):
+    def from_path(cls, path_in: Iterable[str], add_id: bool=False):
         path = deque(path_in)
         root_table = datamodel.get_table(path.popleft(), strict=True)
 
@@ -205,7 +211,7 @@ class QueryFieldSpec(
         )
 
     @classmethod
-    def from_stringid(cls, stringid, is_relation):
+    def from_stringid(cls, stringid: str, is_relation: bool):
         path_str, table_name, field_name = STRINGID_RE.match(stringid).groups()
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
@@ -292,7 +298,7 @@ class QueryFieldSpec(
                 },
             )
 
-    def to_spquery_attrs(self):
+    def to_spquery_attrs(self) -> SpQueryAttrs:
         table_list = make_table_list(self)
         stringid = make_stringid(self, table_list)
 
@@ -353,7 +359,7 @@ class QueryFieldSpec(
         field,
         table,
         value=None,
-        op_num=None,
+        op_num: Optional[QUERYFIELD_OPERATION_NUMBER]=None,
         negate=False,
         strict=False,
         collection=None,

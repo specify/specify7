@@ -4,6 +4,7 @@ from specifyweb.specify.models import datamodel
 from specifyweb.specify.func import Func
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.tree_views import TREE_INFORMATION
+from specifyweb.stored_queries.queryfield import QUERYFIELD_SORT_TYPE
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from .batch_edit import BatchEditFieldPack, BatchEditPack, RowPlanMap
 
@@ -55,7 +56,8 @@ def _track_observed_ranks(
     )
     extra_columns = [
         BatchEditFieldPack(
-            field=BatchEditPack._query_field(adjusted_field_spec(field_name), 0)
+            field=BatchEditPack._query_field(
+                adjusted_field_spec(field_name), QUERYFIELD_SORT_TYPE.NONE)
         )
         for field_name in required_missing
     ]
@@ -68,7 +70,8 @@ def _track_observed_ranks(
     new_columns = []
     for column in [*current.columns, *extra_columns]:
         column_field = column.field
-        new_field_spec = BatchEditPack.replace_tree_rank(column_field.fieldspec, new_tree_rank_query)
+        new_field_spec = BatchEditPack.replace_tree_rank(
+            column_field.fieldspec, new_tree_rank_query)
         new_columns.append(
             column._replace(field=column_field._replace(fieldspec=new_field_spec))
         )
@@ -76,7 +79,8 @@ def _track_observed_ranks(
     return [*accum[0], current_rank["rankid"]], [
         *accum[1],
         # Making a copy here is important.
-        (relname, current._replace(columns=new_columns, tree_rank=new_tree_rank_query, batch_edit_pack=current.batch_edit_pack.readjust_tree_rank(new_tree_rank_query))),
+        (relname, current._replace(columns=new_columns, tree_rank=new_tree_rank_query,
+         batch_edit_pack=current.batch_edit_pack.readjust_tree_rank(new_tree_rank_query))),
     ]
 
 
@@ -170,11 +174,13 @@ def _rewrite_multiple_trees(
     # It is not this function's responsibility to perform rewrites on next plans.
     return {key: value for (key, value) in new_rels}
 
+
 def _safe_table(key: str, table: Table):
     field = table.get_field(key)
     if field is None:
         return table
     return datamodel.get_table_strict(field.relatedModelName)
+
 
 def _batch_edit_rewrite(
     self: RowPlanMap, table: Table, all_tree_info: TREE_INFORMATION, running_path=[]
