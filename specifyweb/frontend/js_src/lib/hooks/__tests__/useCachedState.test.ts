@@ -1,8 +1,9 @@
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { f } from "../../utils/functools";
-import { R } from "../../utils/types";
-import { useCachedState } from "../useCachedState";
+import { act, renderHook, waitFor } from "@testing-library/react";
+
 import { getCache, setCache } from "../../utils/cache";
+import { f } from "../../utils/functools";
+import type { R } from "../../utils/types";
+import { useCachedState } from "../useCachedState";
 
 describe("useCachedState", () => {
 
@@ -12,8 +13,10 @@ describe("useCachedState", () => {
     const categoryValue = "showMatchingFields";
 
     beforeEach(()=>{
-        // Before running this test-suite, make a copy of all the previous values
-        // and then clear the local storage, to make tests deterministic.
+        /*
+         * Before running this test-suite, make a copy of all the previous values
+         * and then clear the local storage, to make tests deterministic.
+         */
         const entries = Array.from({length: global.localStorage.length}, (_, index)=>([
             localStorage.key(index), f.maybe((global.localStorage.key(index) ?? undefined), global.localStorage.getItem)
         ]));
