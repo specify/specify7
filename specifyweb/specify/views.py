@@ -35,9 +35,14 @@ logger = logging.getLogger(__name__)
 def login_maybe_required(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return http.HttpResponseForbidden()
-        return view(request, *args, **kwargs)
+        if hasattr(request, 'user') and request.user is not None:
+            if request.user.is_authenticated:
+                return view(request, *args, **kwargs)
+            
+            if not spmodels.Institution.objects.exists():
+                return view(request, *args, **kwargs)
+
+        return http.HttpResponseForbidden()
     return wrapped
 
 
@@ -87,7 +92,6 @@ resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
 collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
 collection_bulk = api_view(api.collection_dispatch_bulk)
-
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
@@ -1459,11 +1463,10 @@ def catalog_number_for_sibling(request: http.HttpRequest):
             primary_catalog_number = primary_cojo.childco.catalognumber
 
         return http.JsonResponse(primary_catalog_number, safe=False)
-
     except Exception as e:
         print(f"Error processing request: {e}")
-        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
-                                
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+
 
 @login_maybe_required
 @require_POST
@@ -1495,7 +1498,46 @@ def catalog_number_from_parent(request: http.HttpRequest):
             return http.JsonResponse(parent.catalognumber, safe=False)
         else:
             return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
-
     except Exception as e:
         print(f"Error processing request: {e}")
-        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+
+
+def create_institution(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_institution = spmodels.Institution.objects.create(**data)
+            return http.JsonResponse(
+                {"success": True, "institution_id": new_institution.id},
+                status=201
+            )
+        except Exception as e:
+            print(f"Error creating institution: {e}")
+            return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+    return http.JsonResponse({"error": "Invalid request"}, status=400)
+
+
+def create_institution_view(request):
+    return api.create_institution(request, direct=True)
+
+
+def create_division_view(request):
+    return api.create_division(request, direct=True)
+
+
+def create_discipline_view(request):
+    return api.create_discipline(request, direct=True)
+
+
+def create_collection_view(request):
+    return api.create_collection(request, direct=True)
+
+
+def create_specifyuser_view(request):
+    return api.create_specifyuser(request, direct=True)
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
