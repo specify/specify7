@@ -89,7 +89,7 @@ export const batchEditText = createDictionary({
     'fr-fr': '{queryName:string} {datePart:string}',
     'pt-br': '{queryName:string} {datePart:string}',
     'ru-ru': '{queryName:string} {datePart:string}',
-    'uk-ua': "{queryName:string} {datePart:string}'",
+    'uk-ua': '{queryName:string} {datePart:string}',
   },
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
