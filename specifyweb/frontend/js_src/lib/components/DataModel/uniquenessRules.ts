@@ -53,12 +53,18 @@ export const fetchContext = f
       async ({ fetchContext }) => fetchContext
     ),
   })
-  .then(async ({ schema }) =>
-    load<UniquenessRules>(
-      `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+  .then(async ({ schema }) => {
+    const disciplineId = schema.domainLevelIds.discipline;
+    if (!disciplineId) {
+      console.warn('Discipline ID is undefined. Skipping API call.');
+      return {};
+    }
+
+    return load<UniquenessRules>(
+      `/businessrules/uniqueness_rules/${disciplineId}/`,
       'application/json'
-    )
-  )
+    );
+  })
   .then((data) =>
     Object.fromEntries(
       filterArray(
