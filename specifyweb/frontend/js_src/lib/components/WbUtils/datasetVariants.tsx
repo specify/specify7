@@ -152,3 +152,8 @@ export const datasetVariants = {
 
 export const resolveVariantFromDataset = (dataset: Dataset) =>
   datasetVariants[dataset.isupdate ? 'batchEdit' : 'workbench'];
+
+export const resolveVariantNameFromDataset = (
+  dataset: Dataset
+): keyof typeof datasetVariants =>
+  dataset.isupdate ? 'batchEdit' : 'workbench';

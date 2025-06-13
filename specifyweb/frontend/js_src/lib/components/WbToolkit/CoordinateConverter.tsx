@@ -16,6 +16,10 @@ import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
+  datasetVariants,
+  resolveVariantNameFromDataset,
+} from '../WbUtils/datasetVariants';
+import {
   getSelectedCells,
   getSelectedLast,
   setHotData,
@@ -65,6 +69,7 @@ export function WbConvertCoordinates({
           columns={dataset.columns}
           coordinateColumns={mappings.coordinateColumns}
           data={data}
+          dataSetVariant={resolveVariantNameFromDataset(dataset)}
           hot={hot}
           onClose={closeConvertCoords}
         />
@@ -76,36 +81,43 @@ export function WbConvertCoordinates({
 const options: RA<{
   readonly label: string;
   readonly convertor: ConversionFunction;
+  supportedDataSets: RA<keyof typeof datasetVariants>;
   readonly showCardinalDirection: boolean;
 }> = [
   {
     label: localityText.degrees(),
     convertor: 'toDegs',
+    supportedDataSets: ['batchEdit', 'workbench'],
     showCardinalDirection: false,
   },
   {
     label: localityText.degreesMinutes(),
     convertor: 'toDegsMins',
+    supportedDataSets: ['workbench'],
     showCardinalDirection: false,
   },
   {
     label: localityText.degreesMinutesSeconds(),
     convertor: 'toDegsMinsSecs',
+    supportedDataSets: ['workbench'],
     showCardinalDirection: false,
   },
   {
     label: localityText.degreesWithDirection(),
     convertor: 'toDegs',
+    supportedDataSets: ['workbench'],
     showCardinalDirection: true,
   },
   {
     label: localityText.degreesMinutesWithDirection(),
     convertor: 'toDegsMins',
+    supportedDataSets: ['workbench'],
     showCardinalDirection: true,
   },
   {
     label: localityText.degreesMinutesSecondsWithDirection(),
     convertor: 'toDegsMinsSecs',
+    supportedDataSets: ['workbench'],
     showCardinalDirection: true,
   },
 ];
@@ -115,12 +127,14 @@ function CoordinateConverter({
   data,
   columns,
   coordinateColumns,
+  dataSetVariant,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable;
   readonly data: RA<RA<string | null>>;
   readonly columns: RA<string>;
   readonly coordinateColumns: RR<number, 'Lat' | 'Long'>;
+  readonly dataSetVariant: keyof typeof datasetVariants;
   readonly onClose: () => void;
 }): JSX.Element {
   const [applyAll = true, setApplyAll] = useCachedState(
@@ -158,10 +172,11 @@ function CoordinateConverter({
       hot.toPhysicalColumn(visualCol)
     );
 
-    const includeSymbolsFunction = includeSymbols
-      ? (coordinate: string): string => coordinate
-      : (coordinate: string): string =>
-          coordinate.replaceAll(/[^\s\w\-.]/gu, '');
+    const includeSymbolsFunction =
+      dataSetVariant !== 'batchEdit' && includeSymbols
+        ? (coordinate: string): string => coordinate
+        : (coordinate: string): string =>
+            coordinate.replaceAll(/[^\s\w\-.]/gu, '');
 
     const stripCardinalDirections = (finalValue: string): string =>
       showDirection
@@ -241,8 +256,14 @@ function CoordinateConverter({
     >
       {wbText.coordinateConverterDescription()}
       <Ul>
-        {Object.values(options).map(
-          ({ label, convertor, showCardinalDirection }, optionIndex) => (
+        {Object.values(options)
+          // FEATURE: Support WorkBench-like parsing of latitude and longitude
+          // when using BatchEdit
+          // See https://github.com/specify/specify7/issues/6251
+          .filter(({ supportedDataSets }) =>
+            supportedDataSets.includes(dataSetVariant)
+          )
+          .map(({ label, convertor, showCardinalDirection }, optionIndex) => (
             <li key={optionIndex}>
               <Label.Inline>
                 <Input.Radio
@@ -255,13 +276,13 @@ function CoordinateConverter({
                 {label}
               </Label.Inline>
             </li>
-          )
-        )}
+          ))}
         <br />
         <li>
           <Label.Inline>
             <Input.Checkbox
-              defaultChecked={includeSymbols}
+              disabled={dataSetVariant === 'batchEdit'}
+              defaultChecked={dataSetVariant !== 'batchEdit' && includeSymbols}
               onValueChange={setIncludeSymbols}
             />
             {wbText.includeDmsSymbols()}
