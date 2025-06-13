@@ -367,12 +367,14 @@ msgstr "Nome do plugin"
 msgid "illegalBool"
 msgstr "Valor ilegal para um campo Sim/Não"
 
+#: hooks/__tests__/useResourceValue.test.tsx:130
+#: hooks/__tests__/useResourceValue.test.tsx:177
 #: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:61
 #: utils/parser/__tests__/parse.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:207
 #: utils/parser/__tests__/parse.test.ts:209
-#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "requiredField"
 msgstr "Campo obrigatório."
@@ -401,11 +403,12 @@ msgstr "Valor inválido"
 msgid "requiredFormat"
 msgstr "Formato necessário: {format:string}."
 
+#: hooks/__tests__/useResourceValue.test.tsx:171
 #: utils/parser/definitions.ts:51
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
-#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "inputTypeNumber"
 msgstr "O valor deve ser um número"
