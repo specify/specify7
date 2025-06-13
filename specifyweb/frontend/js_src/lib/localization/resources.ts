@@ -957,4 +957,7 @@ export const resourcesText = createDictionary({
     "ru-ru": "Количество приготовлений не может быть отрицательным",
     "uk-ua": "Кількість підготовок не може бути від'ємним значенням",
   },
+  preparationMissingCO: {
+    'en-us': 'Preparation requires a CO',
+  },
 } as const);
