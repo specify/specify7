@@ -1,13 +1,14 @@
-import { renderHook, waitFor, act } from "@testing-library/react";
-import { tables } from "../../components/DataModel/tables";
-import { requireContext } from "../../tests/helpers";
-import { useCollection } from "../useCollection";
-import { overrideAjax } from "../../tests/ajax";
+import { act,renderHook, waitFor } from "@testing-library/react";
+
+import type { AnySchema } from "../../components/DataModel/helperTypes";
 import { getResourceApiUrl } from "../../components/DataModel/resource";
-import { AnySchema } from "../../components/DataModel/helperTypes";
-import { Collection } from "../../components/DataModel/specifyTable";
-import { RA } from "../../utils/types";
-import { SubViewSortField } from "../../components/FormParse/cells";
+import type { Collection } from "../../components/DataModel/specifyTable";
+import { tables } from "../../components/DataModel/tables";
+import type { SubViewSortField } from "../../components/FormParse/cells";
+import { overrideAjax } from "../../tests/ajax";
+import { requireContext } from "../../tests/helpers";
+import type { RA } from "../../utils/types";
+import { useCollection } from "../useCollection";
 
 
 requireContext();
@@ -84,13 +85,13 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(3);
+        expect(castAsCollection(result.current[0])).toHaveLength(3);
 
         await act(async ()=>{
             await result.current[2]({offset: 1});
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(3);
+        expect(castAsCollection(result.current[0])).toHaveLength(3);
 
     });
 
@@ -117,14 +118,14 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(20);
+        expect(castAsCollection(result.current[0])).toHaveLength(20);
 
         await act(async ()=>{
             await result.current[2]({offset: 20});
         });
 
         await waitFor(()=>{
-            expect(castAsCollection(result.current[0]).length).toBe(25);
+            expect(castAsCollection(result.current[0])).toHaveLength(25);
         });
     });
 
@@ -148,7 +149,7 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(3);
+        expect(castAsCollection(result.current[0])).toHaveLength(3);
 
         expect(castAsCollection(result.current[0]).models.map((resource)=>resource.get("text1"))).toEqual(
             ['text1', 'text2', 'text3' ]
@@ -185,17 +186,19 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(1);
+        expect(castAsCollection(result.current[0])).toHaveLength(1);
         expect(castAsCollection(result.current[0]).models[0].id).toBe(ctID);
 
-        // I'm not sure what the desired behavior here is
-        // That is, the query here itself wouldn't be reasonale.
+        /*
+         * I'm not sure what the desired behavior here is
+         * That is, the query here itself wouldn't be reasonale.
+         */
         await act(async ()=>{
             await result.current[2]({offset: 1});
         });
 
         await waitFor(()=>{
-            expect(castAsCollection(result.current[0]).length).toBe(1);
+            expect(castAsCollection(result.current[0])).toHaveLength(1);
         });
 
     });
@@ -239,13 +242,13 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(0);
+        expect(castAsCollection(result.current[0])).toHaveLength(0);
 
         await act(async ()=>{
             await result.current[2]();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(0);
+        expect(castAsCollection(result.current[0])).toHaveLength(0);
 
     });
 
@@ -262,7 +265,7 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(1);
+        expect(castAsCollection(result.current[0])).toHaveLength(1);
         expect(castAsCollection(result.current[0]).models[0].id).toBe(ceaID);
     });
 
@@ -279,7 +282,7 @@ describe("useCollection", ()=>{
             expect(result.current[0]).toBeDefined();
         });
 
-        expect(castAsCollection(result.current[0]).length).toBe(0);
+        expect(castAsCollection(result.current[0])).toHaveLength(0);
     });
 
 });
