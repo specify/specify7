@@ -34,11 +34,31 @@ json = dict(
                         )},
                         'taxon': { 'treeRecord': dict(
                             ranks = {
-                                'Class': 'Class',
-                                'Superfamily': 'Superfamily',
-                                'Family': 'Family',
-                                'Genus': 'Genus',
-                                'Subgenus': 'Subgenus',
+                                'Class': dict(
+                                    treeNodeCols = {
+                                        'name': 'Class',
+                                    },
+                                ),
+                                'Superfamily': dict(
+                                    treeNodeCols = {
+                                        'name': 'Superfamily',
+                                    },
+                                ),
+                                'Family': dict(
+                                    treeNodeCols = {
+                                        'name': 'Family',
+                                    },
+                                ),
+                                'Genus': dict(
+                                    treeNodeCols = {
+                                        'name': 'Genus',
+                                    },
+                                ),
+                                'Subgenus': dict(
+                                    treeNodeCols = {
+                                        'name': 'Subgenus',
+                                    },
+                                ),
                                 'Species': dict(
                                     treeNodeCols = {
                                         'name': 'Species',
@@ -77,10 +97,26 @@ json = dict(
                         toOne = {
                             'geography': { 'treeRecord': dict(
                                 ranks = {
-                                    'Continent': 'Continent/Ocean' ,
-                                    'Country': 'Country',
-                                    'State': 'State/Prov/Pref',
-                                    'County': 'Region',
+                                    'Continent': dict(
+                                        treeNodeCols = {
+                                            'name': 'Continent/Ocean',
+                                        },
+                                    ),
+                                    'Country': dict(
+                                        treeNodeCols = {
+                                            'name': 'Country',
+                                        },
+                                    ),
+                                    'State': dict(
+                                        treeNodeCols = {
+                                            'name': 'State/Prov/Pref',
+                                        },
+                                    ),
+                                    'County': dict(
+                                        treeNodeCols = {
+                                            'name': 'Region',
+                                        },
+                                    ),
                                 }
                             )},
                         },

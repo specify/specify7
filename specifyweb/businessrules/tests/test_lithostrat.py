@@ -1,4 +1,3 @@
-
 from unittest import skip
 
 from django.db.models import ProtectedError
@@ -8,7 +7,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 
 class LithostratTests(ApiTests):
     def setUp(self):
-        super(LithostratTests, self).setUp()
+        super().setUp()
 
         self.lithostrattreedef = models.Lithostrattreedef.objects.create(
             name="Test Lithostrat tree def")

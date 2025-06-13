@@ -11,8 +11,10 @@ from specifyweb.specify.models import (
     Collection,
     Specifyuser,
     Agent,
+    Attachment,
     datamodel,
     custom_save,
+    protect_with_blockers,
 )
 from specifyweb.specify.api import uri_for_model
 
@@ -143,6 +145,7 @@ class Spdataset(Dataset):
     rowresults = models.TextField(null=True)
 
     isupdate = models.BooleanField(default=False, null=True)
+    rolledback = models.BooleanField(default=False, null=True)
 
     # very complicated. Essentially, each batch-edit dataset gets backed by another dataset (for rollbacks).
     # This should be a one-to-one field, imagine the mess otherwise.
@@ -161,9 +164,40 @@ class Spdataset(Dataset):
                 "visualorder": self.visualorder,
                 "rowresults": self.rowresults and json.loads(self.rowresults),
                 "isupdate": self.isupdate == True,
+                "rolledback": self.rolledback == True,
             }
         )
         return ds_dict
 
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult["success"]
+
+class SpDataSetAttachment(models.Model):
+    specify_model = datamodel.get_table_strict('spdatasetattachment')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='SpDataSetAttachmentID')
+
+    # Fields
+    collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
+    ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    attachment = models.ForeignKey(Attachment, db_column='AttachmentID', related_name='spdatasetattachments', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey(Agent, db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spdataset = models.ForeignKey(Spdataset, db_column='SpDataSetID', related_name='spdatasetattachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey(Agent, db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'spdatasetattachment'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['collectionmemberid'], name='SpDataSetAttColMemIDX')
+        ]
+
+    
+    # save = partialmethod(custom_save)

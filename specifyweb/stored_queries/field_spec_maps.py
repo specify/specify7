@@ -1,4 +1,3 @@
-
 from specifyweb.stored_queries.queryfield import QueryField
 
 

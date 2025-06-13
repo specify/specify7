@@ -30,14 +30,14 @@ ParseFailureKey = Literal[
 
 class ParseFailure(NamedTuple):
     message: ParseFailureKey
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
 
-    def to_json(self) -> List:
+    def to_json(self) -> list:
         return list(self)
 
 
 class ParseSucess(NamedTuple):
-    to_upload: Dict[str, Any]
+    to_upload: dict[str, Any]
 
 
 ParseResult = Union[ParseSucess, ParseFailure]
@@ -216,7 +216,7 @@ def parse_latlong(field: Field, value: str) -> ParseResult:
                         field.name.lower().replace('itude', '') + 'text': parse_string(value)})
 
 
-def parse_coord(value: str) -> Optional[Tuple[float, int]]:
+def parse_coord(value: str) -> Optional[tuple[float, int]]:
     for p in LATLONG_PARSER_DEFS:
         match = re.compile(p.regex, re.I).match(value)
         if match and match.group(1):
@@ -239,7 +239,7 @@ def parse_coord(value: str) -> Optional[Tuple[float, int]]:
 
 class LatLongParserDef(NamedTuple):
     regex: str
-    comp_groups: List[int]
+    comp_groups: list[int]
     dir_group: int
     unit: int
 

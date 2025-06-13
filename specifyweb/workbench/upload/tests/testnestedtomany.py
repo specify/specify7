@@ -9,7 +9,7 @@ from specifyweb.specify.tests.test_api import get_table
 from django.conf import settings
 
 class NestedToManyTests(UploadTestsBase):
-    def plan(self) -> Dict:
+    def plan(self) -> dict:
         return dict(
             baseTableName = 'Collectingevent',
             uploadable = {
@@ -234,7 +234,7 @@ class NestedToManyTests(UploadTestsBase):
             1
             )
         
-        new_agents_created: Dict[Tuple[int, int], List[Any]] = {
+        new_agents_created: dict[tuple[int, int], list[Any]] = {
             (0, 0): [Uploaded]*4,
             (0, 1): [Uploaded]*3,
             (1, 0): [Uploaded, NullRecord, Uploaded, NullRecord],
@@ -254,4 +254,3 @@ class NestedToManyTests(UploadTestsBase):
                 get_table('Agentspecialty').objects.filter(agent_id=agent.record_result.get_id()).count(),
                 specialty_created
                 )
-        

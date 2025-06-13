@@ -39,7 +39,7 @@ The structure of DEFERRED_SCOPING is as following:
     See .upload_plan_schema.py for how this is used
 
 """
-DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
+DEFERRED_SCOPING: dict[tuple[str, str], tuple[str, str, str]] = {
     ("Collectionrelationship", "rightside"): (
         "collectionreltype",
         "name",
@@ -52,8 +52,8 @@ DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
     ),
 }
 
-def scoping_relationships(collection, table: Table) -> Dict[str, int]:
-    extra_static: Dict[str, int] = {}
+def scoping_relationships(collection, table: Table) -> dict[str, int]:
+    extra_static: dict[str, int] = {}
 
     try:
         table.get_field_strict("collectionmemberid")
@@ -109,7 +109,7 @@ def extend_columnoptions(
         tablename: str, 
         fieldname: str, 
         row: Optional[Row] = None,
-        toOne: Optional[Dict[str, Uploadable]] = None,
+        toOne: Optional[dict[str, Uploadable]] = None,
         context: Optional[ScopeContext] = None
     ) -> ExtendedColumnOptions:
 
@@ -124,6 +124,9 @@ def extend_columnoptions(
     scoped_formatter = (
         None if ui_formatter is None else ui_formatter.apply_scope(collection)
     )
+
+    if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
+        context.cache['cotype_column'] = colopts.column
 
     # REFACTOR: Make context always required and simply
     date_format = context.cache['date_format']
@@ -152,7 +155,7 @@ def get_deferred_scoping(
     key: str,
     table_name: str,
     uploadable: UploadTable,
-    row: Dict[str, Any],
+    row: dict[str, Any],
     base_ut,
     context: Optional[ScopeContext]
 ):
@@ -192,7 +195,7 @@ def get_or_defer_formatter(
         tablename: str, 
         fieldname: str, 
         row: Optional[Row],
-        _toOne: Dict[str, Uploadable],
+        _toOne: dict[str, Uploadable],
         context: Optional[ScopeContext] = None,
         ) -> Optional[UIFormatter]:
     """ The CollectionObject -> catalogNumber format can be determined by the 
@@ -210,7 +213,7 @@ def get_or_defer_formatter(
         uploadTable = toOne['collectionobjecttype']
 
         wb_col: Optional[ColumnOptions] = cast(UploadTable, uploadTable).wbcols.get('name', None)
-        co_type_cache : Dict[str, Optional[UIFormatter]] = {}
+        co_type_cache : dict[str, Optional[UIFormatter]] = {}
         # At this point, we are variable since we saw a co.
         if context:
             context.set_is_variable()
@@ -311,8 +314,8 @@ def apply_scoping_to_uploadtable(
     return scoped_table
 
 
-def get_to_one_fields(collection) -> Dict[str, List["str"]]:
-    return {
+def get_to_one_fields(collection) -> dict[str, list["str"]]:
+    fields_collection = {
         "collectionobject": [
             *(["collectingevent"] if collection.isembeddedcollectingevent else []),
             "collectionobjectattribute",
@@ -321,16 +324,18 @@ def get_to_one_fields(collection) -> Dict[str, List["str"]]:
         "attachment": ["attachmentimageattribute"],
         "collectingtrip": ["collectingtripattribute"],
         "preparation": ["preparationattribute"],
-        **(
-            {collection.discipline.paleocontextchildtable.lower(): ["paleocontext"]}
-            if collection.discipline.ispaleocontextembedded
-            else {}
-        ),
     }
+   
+    if collection.discipline.ispaleocontextembedded:
+        child = collection.discipline.paleocontextchildtable.lower()
+        # Done this way because child could be collectionobject and end up overriding the key in the dict above
+        fields_collection[child] = [*fields_collection.get(child, []), "paleocontext"]
+ 
+    return fields_collection
 
 
 def set_order_number(
-    i: int, tmr: ScopedUploadTable, to_ignore: List[str]
+    i: int, tmr: ScopedUploadTable, to_ignore: list[str]
 ) -> ScopedUploadTable:
     table = datamodel.get_table_strict(tmr.name)
     if table.get_field("ordernumber"):
@@ -338,7 +343,7 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     treedef = get_default_treedef(table, collection)
@@ -358,7 +363,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         )[:1]
     )  # assume there is only one
 
-    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+    scoped_ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]] = {
         (
             TreeRank.create(
                 r, table.name, treedef.id if treedef else None
@@ -383,5 +388,6 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         root=root[0] if root else None,
         disambiguation={},
         batch_edit_pack=None,
-        scoped_cotypes=scoped_cotypes
+        scoped_cotypes=scoped_cotypes,
+        cotype_column=context.cache['cotype_column'] if context else None
     )

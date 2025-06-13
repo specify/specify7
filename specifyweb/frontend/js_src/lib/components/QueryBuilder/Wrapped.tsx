@@ -27,7 +27,6 @@ import { useMenuItem } from '../Header/MenuContext';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
@@ -97,6 +96,7 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
+    readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -161,8 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
+      isSeries: query.selectSeries,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, query.selectSeries]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -217,15 +218,6 @@ function Wrapped({
       ): ReturnType<typeof unParseQueryFields> =>
         unParseQueryFields(state.baseTableName, fields)
     : undefined;
-
-  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
-  const [catalogNumberInherits] = collectionPreferences.use(
-    'catalogNumberInheritance',
-    'behavior',
-    'inheritance'
-  );
-  console.log('catalogNumberInherits: ', catalogNumberInherits);
-  // Pass it to backend to define query logic
 
   /*
    * REFACTOR: simplify this (move "executed query" state into this component
@@ -308,6 +300,23 @@ function Wrapped({
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
+
+  const showSeries = React.useMemo(
+    () =>
+      table.name === 'CollectionObject' &&
+      state.fields.some(
+        (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
+      ),
+    [state, table.name]
+  );
+
+  React.useEffect(() => {
+    if (!showSeries)
+      setQuery({
+        ...query,
+        selectSeries: false,
+      });
+  }, [showSeries]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -569,7 +578,9 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={query.selectSeries ?? false}
                 showHiddenFields={showHiddenFields}
+                showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
                 onSubmitClick={(): void =>
@@ -584,6 +595,12 @@ function Wrapped({
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
+                onToggleSeries={(): void =>
+                  setQuery({
+                    ...query,
+                    selectSeries: !(query.selectSeries ?? false),
+                  })
+                }
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
