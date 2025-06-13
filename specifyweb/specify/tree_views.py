@@ -37,12 +37,12 @@ logger = logging.getLogger(__name__)
 TREE_TABLE = Literal['Taxon', 'Storage',
                      'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
 
-GEO_TREES: Tuple[TREE_TABLE, ...] = ['Tectonicunit']
+GEO_TREES: tuple[TREE_TABLE, ...] = ['Tectonicunit']
 
-COMMON_TREES: Tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
+COMMON_TREES: tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
                                         'Geography']
 
-ALL_TREES: Tuple[TREE_TABLE, ...] = [
+ALL_TREES: tuple[TREE_TABLE, ...] = [
     *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
 
 
@@ -516,11 +516,21 @@ def tree_rank_item_count(request, tree, rankid):
 @login_maybe_required
 @require_GET
 def all_tree_information(request):
+    result = get_all_tree_information(request.specify_collection, request.specify_user.id)
+    return HttpResponse(toJson(result), content_type="application/json")
+
+class TREE_INFORMATION(TypedDict):
+    # TODO: Stricten all this.
+    definition: Dict[Any, Any]
+    ranks: List[Dict[Any, Any]] 
+
+# This is done to make tree fetching easier.
+def get_all_tree_information(collection, user_id) -> Dict[str, List[TREE_INFORMATION]]:
     def has_tree_read_permission(tree: TREE_TABLE) -> bool:
         return has_table_permission(
-            request.specify_collection.id, request.specify_user.id, tree, 'read')
+            collection.id, user_id, tree, 'read')
 
-    is_paleo_or_geo_discipline = request.specify_collection.discipline.is_paleo_geo()
+    is_paleo_or_geo_discipline = collection.discipline.is_paleo_geo()
 
     accessible_trees = tuple(filter(
         has_tree_read_permission, ALL_TREES if is_paleo_or_geo_discipline else COMMON_TREES))
@@ -531,7 +541,7 @@ def all_tree_information(request):
         result[tree] = []
 
         treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
-        tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree)).distinct()
+        tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')            
             result[tree].append({
@@ -539,7 +549,7 @@ def all_tree_information(request):
                 'ranks': [obj_to_data(rank) for rank in ranks]
             })
 
-    return HttpResponse(toJson(result), content_type='application/json')
+    return result
 
 # class DefaultTreePT(PermissionTarget):
 #     resource = "/tree/default"

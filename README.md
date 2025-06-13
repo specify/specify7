@@ -237,7 +237,7 @@ git clone https://github.com/specify/specify7.git
 
 You will now have a specify7 directory containing the source tree.
 
-Note, by default, `git clone` checks out the `production` branch of Specify 7.
+Note, by default, `git clone` checks out the `main` branch of Specify 7.
 That branch contains the latest tested features and bug fixes. If you prefer a
 more stable release, you can switch to one of our tagged released.
 
@@ -454,7 +454,7 @@ sudo systemctl restart httpd.service
 ### Nginx configuration
 
 Specify 7 is web-server agnostic. Example
-[nginx.conf](https://github.com/specify/specify7/blob/production/nginx.conf)
+[nginx.conf](https://github.com/specify/specify7/blob/main/nginx.conf)
 (note, you would have to adjust the host names and enable HTTPs).
 
 ## Updating Specify 7

@@ -3,6 +3,7 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
@@ -15,6 +16,7 @@ import {
   PREPARATION_EXCHANGED_OUT_KEY,
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
+  PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
@@ -27,6 +29,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -310,6 +313,33 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
+      childCo: async (
+        cojo: SpecifyResource<CollectionObjectGroupJoin>
+      ): Promise<BusinessRuleResult> => {
+        const childCO = cojo.get('childCo');
+        const childCOId = idFromUrl(childCO!);
+        const CO: SpecifyResource<CollectionObject> | void =
+          await new tables.CollectionObject.Resource({ id: childCOId })
+            .fetch()
+            .then((co) => co)
+            .catch((error) => {
+              console.error('Failed to fetch CollectionObject:', error);
+            });
+        let coParent;
+        if (CO !== undefined) {
+          coParent = CO.get('componentParent');
+        }
+        return coParent === null || coParent === undefined
+          ? {
+              isValid: true,
+              saveBlockerKey: CO_HAS_PARENT,
+            }
+          : {
+              isValid: false,
+              reason: resourcesText.coHasParent(),
+              saveBlockerKey: CO_HAS_PARENT,
+            };
+      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -474,6 +504,39 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       );
     },
   },
+  Determiner: {
+    customInit: (determiner) => {
+      if (determiner.isNew()) {
+        const setPrimary = (): void => {
+          determiner.set('isPrimary', true);
+          if (determiner.collection !== undefined) {
+            determiner.collection.models.forEach((other) => {
+              if (other.cid !== determiner.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        determiner.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (determiner) => {
+        if (determiner.get('isPrimary')) {
+          determiner.collection?.models.forEach((other) => {
+            if (other.cid !== determiner.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          determiner.collection !== undefined &&
+          !determiner.collection?.models.some((other) => other.get('isPrimary'))
+        ) {
+          determiner.set('isPrimary', true);
+        }
+        return { isValid: true };
+      },
+    },
+  },
   DisposalPreparation: {
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -484,33 +547,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-        for (let i = 0; i < current.length; i++) {
-          const char = current.at(i)?.toLowerCase().trim();
-          if (char !== '') {
-            switch (char) {
-              case 'a': {
-                countObject.a += 1;
-                break;
-              }
-              case 't': {
-                countObject.t += 1;
-                break;
-              }
-              case 'g': {
-                countObject.g += 1;
-                break;
-              }
-              case 'c': {
-                countObject.c += 1;
-                break;
-              }
-              default: {
-                countObject.ambiguous += 1;
-              }
-            }
-          }
-        }
+
+        const countObject = Array.from(current).reduce(
+          (accumulator, currentString) => {
+            const trimmed = currentString.toLowerCase().trim();
+            if (trimmed === '') return accumulator;
+            return trimmed === 'a'
+              ? { ...accumulator, a: accumulator.a + 1 }
+              : trimmed === 't'
+                ? { ...accumulator, t: accumulator.t + 1 }
+                : trimmed === 'g'
+                  ? { ...accumulator, g: accumulator.g + 1 }
+                  : trimmed === 'c'
+                    ? { ...accumulator, c: accumulator.c + 1 }
+                    : { ...accumulator, ambiguous: accumulator.ambiguous + 1 };
+          },
+          { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 }
+        );
         dnaSequence.set('compA', countObject.a);
         dnaSequence.set('compT', countObject.t);
         dnaSequence.set('compG', countObject.g);
@@ -518,12 +571,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObject.a +
-            countObject.t +
-            countObject.g +
-            countObject.c +
-            countObject.ambiguous
+          Object.values(countObject).reduce(
+            (previous, current) => previous + current,
+            0
+          )
         );
+      },
+    },
+  },
+  FundingAgent: {
+    customInit: (fundingAgent) => {
+      if (fundingAgent.isNew()) {
+        const setPrimary = (): void => {
+          fundingAgent.set('isPrimary', true);
+          if (fundingAgent.collection !== undefined) {
+            fundingAgent.collection.models.forEach((other) => {
+              if (other.cid !== fundingAgent.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        fundingAgent.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (fundingAgent) => {
+        if (fundingAgent.get('isPrimary')) {
+          fundingAgent.collection?.models.forEach((other) => {
+            if (other.cid !== fundingAgent.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          fundingAgent.collection !== undefined &&
+          !fundingAgent.collection?.models.some((other) =>
+            other.get('isPrimary')
+          )
+        ) {
+          fundingAgent.set('isPrimary', true);
+        }
+        return { isValid: true };
       },
     },
   },
@@ -630,6 +717,48 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepLoaned = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          totalPrepLoaned += quantity;
+        });
+
+        if (totalPrep < 0) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationIsNegative()],
+            PREPARATION_NEGATIVE_KEY
+          );
+        } else if (totalPrep < totalPrepLoaned) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
+          );
+        }
+        return undefined;
+      },
+    },
     onRemoved: (preparation, collection): void => {
       if (preparation.get('isOnLoan') === true) {
         setSaveBlockers(

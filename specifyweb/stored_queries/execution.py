@@ -12,10 +12,13 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
-from sqlalchemy import sql, orm, func, select
+from specifyweb.specify.models import Collectionobject
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+from sqlalchemy import sql, orm, func, select, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
@@ -38,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
 
+SERIES_MAX_ROWS = 10000
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
@@ -56,6 +60,7 @@ class BuildQueryProps(NamedTuple):
     replace_nulls: bool = False
     formatauditobjs: bool = False
     distinct: bool = False
+    series: bool = False
     implicit_or: bool = True
     format_agent_type: bool = False
     format_picklist: bool = False
@@ -203,6 +208,20 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict")
+
+def field_specs_from_json(json_fields):
+    """Given deserialized json data representing an array of SpQueryField
+    records, return an array of QueryField objects that can build the
+    corresponding sqlalchemy query.
+    """
+    def ephemeral_field_from_json(json):
+        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
+
+    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+            for data in sorted(json_fields, key=lambda field: field['position'])]
+
+    return field_specs
 
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
@@ -556,6 +575,7 @@ def run_ephemeral_query(collection, user, spquery):
     offset = spquery.get("offset", 0)
     recordsetid = spquery.get("recordsetid", None)
     distinct = spquery["selectdistinct"]
+    series = spquery.get('selectseries', None)
     tableid = spquery["contexttableid"]
     count_only = spquery["countonly"]
     format_audits = spquery.get("formatauditrecids", False)
@@ -568,6 +588,7 @@ def run_ephemeral_query(collection, user, spquery):
             user=user,
             tableid=tableid,
             distinct=distinct,
+            series=series,
             count_only=count_only,
             field_specs=field_specs,
             limit=limit,
@@ -577,7 +598,7 @@ def run_ephemeral_query(collection, user, spquery):
         )
 
 
-def augment_field_specs(field_specs: List[QueryField], formatauditobjs=False):
+def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
     print("augment_field_specs ######################################")
     new_field_specs = []
     for fs in field_specs:
@@ -729,7 +750,7 @@ def return_loan_preps(collection, user, agent, data):
             loans_to_close = (
                 Loan.objects.select_for_update()
                 .filter(
-                    pk__in=set((loan_id for _, _, loan_id, _ in to_return)),
+                    pk__in={loan_id for _, _, loan_id, _ in to_return},
                     isclosed=False,
                 )
                 .exclude(loanpreparations__isresolved=False)
@@ -751,13 +772,13 @@ def return_loan_preps(collection, user, agent, data):
                 )
         return to_return
 
-
 def execute(
     session,
     collection,
     user,
     tableid,
     distinct,
+    series,
     count_only,
     field_specs,
     limit,
@@ -780,23 +801,55 @@ def execute(
             recordsetid=recordsetid,
             formatauditobjs=formatauditobjs,
             distinct=distinct,
+            series=series,
             format_agent_type=format_agent_type,
             format_picklist=format_picklist,
         ),
     )
 
     if count_only:
-        return {"count": query.count()}
+        if series:
+            cat_num_sort_type = 0
+            for field_spec in field_specs:
+                if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                    cat_num_sort_type = field_spec.sort_type
+                    break
+            return {'count': len(series_post_query(query, limit=SERIES_MAX_ROWS, offset=0, sort_type=cat_num_sort_type, is_count=True))}
+        else:
+            return {'count': query.count()}
     else:
+        cat_num_col_id = None
+        cat_num_sort_type = None
+        idx = 0
+        for field_spec in field_specs:
+            if field_spec.fieldspec.get_field() and field_spec.fieldspec.get_field().name.lower() == 'catalognumber':
+                cat_num_col_id = idx
+                cat_num_sort_type = field_spec.sort_type
+                break
+            idx += 1
+        is_valid_series_query = series and \
+            cat_num_col_id is not None \
+            and tableid == get_table_id_by_model_name('Collectionobject')
+
+        if is_valid_series_query:
+            # order_by_exprs.insert(0, text("MIN(IFNULL(CAST(`CatalogNumber` AS DECIMAL(65)), NULL))")) # doesn't work if there are non-numeric catalog numbers
+            # if cat_num_sort_type in {0, 1}:
+            #     order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
+            # elif cat_num_sort_type == 2:
+            #     order_by_exprs.insert(0, text("collectionobject.`CatalogNumber` DESC"))
+            order_by_exprs.insert(0, text("collectionobject.`CatalogNumber`"))
+
+            # query = query.limit(SERIES_MAX_ROWS)
+            return {'results': series_post_query(query, limit=limit, offset=offset, sort_type=cat_num_sort_type)}
+        
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
+
         if limit:
             query = query.limit(limit)
 
-        log_sqlalchemy_query(query)
-        # return {"results": list(query)}
+        log_sqlalchemy_query(query) # Debugging
         return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
-
 
 def build_query(
     session,
@@ -830,15 +883,35 @@ def build_query(
     replace_nulls = if True, replace null values with ""
 
     distinct = if True, group by all display fields, and return all record IDs associated with a row
+
+    series = (only for CO) if True, group by all display fields.
+    Group catalog numbers that fall within the same range together.
+    Return all record IDs associated with a row.
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
+    catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
-    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
-    field_specs = [
-        apply_specify_user_name(field_spec, user) for field_spec in field_specs
-    ]
+    # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+    field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
+    query_construct_query = session.query(id_field)
+    if props.series and catalog_number_field:
+        query_construct_query = session.query(
+            func.group_concat(
+                func.concat(
+                    id_field,
+                    ':',
+                    catalog_number_field
+                ),
+                separator='|'
+            ).label('co_id_catnum_paired_values')
+        )
+    elif props.distinct:
+        query_construct_query = session.query(func.group_concat(id_field.distinct(), separator=','))
+    else:
+        query_construct_query = session.query(id_field)
+    
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(
@@ -848,22 +921,16 @@ def build_query(
             format_agent_type=props.format_agent_type,
             format_picklist=props.format_picklist,
         ),
-        query=(
-            session.query(func.group_concat(id_field.distinct(), separator=","))
-            if props.distinct
-            else session.query(id_field)
-        ),
+        query=query_construct_query
     )
 
-    tables_to_read = set(
-        [
+    tables_to_read = {
             table
             for fs in field_specs
             for table in query.tables_in_path(
                 fs.fieldspec.root_table, fs.fieldspec.join_path
             )
-        ]
-    )
+    }
 
     for table in tables_to_read:
         check_table_permissions(collection, user, table, "read")
@@ -891,18 +958,30 @@ def build_query(
     predicates_by_field = defaultdict(list)
     # augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
+        # sort_type = SORT_TYPES[fs.sort_type]
         sort_type = QuerySort.by_id(fs.sort_type)
+
+        if props.series and fs.fieldspec.get_field() and fs.fieldspec.get_field().name.lower() == 'catalognumber':
+            _, _, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
+            predicates_by_field[fs.fieldspec].append(predicate) if predicate is not None else None
+            continue
 
         query, field, predicate = fs.add_to_query(
             query, formatauditobjs=props.formatauditobjs, collection=collection, user=user
         )
+
         if field is None:
             continue
-        
+
+        formatted_field = None
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
+        
+        if hasattr(field, 'key') and field.key and field.key.lower() == 'catalognumber':
+            catalog_number_field = formatted_field
+
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -922,7 +1001,9 @@ def build_query(
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    if props.distinct:
+    if props.series:
+        query = group_by_displayed_fields(query, selected_fields, ignore_cat_num=True)
+    elif props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
     internal_predicate = query.get_internal_filters()
@@ -931,14 +1012,213 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
+def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
+    """Transform the query results by removing the co_id:catnum pair column
+    and adding a co_id colum and formatted catnum range column.
+    Sort the results by the first catnum in the range."""
+    log_sqlalchemy_query(query)  # Debugging
+
+    def group_consecutive_ranges(lst):
+        def group_consecutives(acc, x):
+            if not acc or int(acc[-1][-1][1]) + 1 != int(x[1]):
+                acc.append([x])
+            else:
+                acc[-1].append(x)
+            return acc
+
+        grouped = reduce(group_consecutives, lst, [])
+        return [
+            (','.join([x[0] for x in group]), f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
+            for group in grouped
+        ]
+
+    def process_row(row):
+        co_id_cat_num_consecutive_pairs = group_consecutive_ranges(
+            sorted(
+                (pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')),
+                key=lambda x: int(x[1])
+            )
+        )
+
+        return [
+            [co_id, cat_num_series] + list(
+                list(row[1:]) if co_id_cat_num_pair_col_index == 0
+                else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
+            )
+            for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
+        ]
+
+    MAX_ROWS = 500
+    return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
+
+def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
+    """Transform the query results by removing the co_id:catnum pair column
+    and adding a co_id colum and formatted catnum range column.
+    Sort the results by the first catnum in the range."""
+
+    log_sqlalchemy_query(query)  # Debugging
+
+    def parse_catalog_for_comparing(s):
+        def check_for_decimal(s):
+            decimal_match = re.search(r'\d+\.\d+', s)
+            if decimal_match:
+                return decimal_match.group()
+            return None
+
+        try:
+            num = int(s)
+            return (num, '', '')
+        except ValueError:
+            decimal_match_str = check_for_decimal(s)
+            if decimal_match_str:
+                num, dec = decimal_match_str.split('.')
+                match = re.search(rf'(\D*)({num}\.{dec})(.*)', s)
+                if match:
+                    prefix, number, postfix = match.groups()
+                    prefix = prefix if prefix else '' 
+                    postfix = postfix if postfix else '' 
+                    return (int(float(number)), prefix, postfix)
+            
+            # Match integer-integer string, like "1234-5678" so that the number 12345678 is parsed
+            match = re.search(r'^(\d+)-(\d+)$', s)
+            if match:
+                num1, num2 = match.groups()
+                combined_number = int(str(num1) + str(num2))  # Concatenate as strings, then convert to int
+                return (combined_number, '', '')
+            
+            # Match string-interger string, like "abc-1234" so that the number 1234 is parsed
+            match = re.search(r'(\D*)(\d+)', s)
+            if match:
+                prefix, number = match.groups()
+                prefix = prefix if prefix else '' 
+                return (int(number), prefix, '')
+
+            match = re.search(r'(\D*)(\d+)(.*)', s)
+            if match:
+                prefix, number, postfix = match.groups()
+                prefix = prefix if prefix else '' 
+                postfix = postfix if postfix else '' 
+                return (int(number), prefix, postfix)
+            
+            return (None, s, '')
+
+    def parse_catalog_for_sorting(catalog):
+        m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
+        if m:
+            return m.group(1), int(m.group(2))
+        else:
+            return catalog, None
+
+    def catalog_sort_key(x):
+        num, prefix, postfix = parse_catalog_for_comparing(x[1])
+        return (prefix, num, postfix if num is not None else x[1])
+
+    def are_adjacent(cat1, cat2):
+        num1, prefix1, postfix1 = parse_catalog_for_comparing(cat1)
+        num2, prefix2, postfix2 = parse_catalog_for_comparing(cat2)
+        return prefix1 == prefix2 and \
+               postfix1 == postfix2 and \
+               num1 is not None and \
+               num2 is not None and \
+               (num1 + 1 == num2 or num1 == num2)
+
+    def group_consecutive_ranges(lst):
+        def group_consecutives(acc, x):
+            if not acc or not are_adjacent(acc[-1][-1][1], x[1]):
+                acc.append([x])
+            else:
+                acc[-1].append(x)
+            return acc
+
+        grouped = reduce(group_consecutives, lst, [])
+        return [
+            (','.join([x[0] for x in group]),
+             f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
+            for group in grouped
+        ]
+
+    def process_row(row):
+        co_id_cat_num_seq = row[co_id_cat_num_pair_col_index]
+        if row[co_id_cat_num_pair_col_index] is None:
+            return []
+
+        sorted_pairs = sorted(
+            [[item if item else '0'
+              for item in pair.split(':')]
+              for pair in co_id_cat_num_seq.split(',') if isinstance(co_id_cat_num_seq, str)],
+            key=catalog_sort_key
+        )
+        co_id_cat_num_consecutive_pairs = group_consecutive_ranges(sorted_pairs)
+        return [
+            [co_id, cat_num_series] + (
+                list(row[1:]) if co_id_cat_num_pair_col_index == 0
+                else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
+            )
+            for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
+        ]
+
+    # Process and flatten the results
+    results = [item for sublist in map(process_row, list(query)) for item in sublist]
+
+    # Reorder the final results based on sort_type
+    if sort_type == 2:
+        results = results[::-1]
+
+    if is_count:
+        return results
+
+    series_limit = limit if limit else SERIES_MAX_ROWS
+    offset = offset if offset else 0
+    return results[offset:offset + series_limit]
+
+def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    
+    if parent_inheritance_pref:
+        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    else: 
+        query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    
+    if should_list_query:
+        return list(query)
+    return query
+
+def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+        if not get_parent_cat_num_inheritance_setting(collection, user):
+            return list(query)
+
+        # Get the catalogNumber field index
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+
+        if field_specs[catalog_number_field_index - 1].op_num != 1:
+            return list(query)
+
+        results = list(query)
+        updated_results = []
+
+        # Map results, replacing null catalog numbers with the parent catalog number
+        for result in results:
+            result = list(result)
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+                component_id = result[0]  # Assuming the first column is the child's ID
+                component_obj = Collectionobject.objects.filter(id=component_id).first()
+                if component_obj and component_obj.componentParent:
+                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
+            updated_results.append(tuple(result))
+
+        return updated_results
+
+    return query
+
+def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:
         if not get_cat_num_inheritance_setting(collection, user):
             # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
             return list(query)
 
         # Get the catalogNumber field index
-        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path].index('catalogNumber') + 1
 
         if field_specs[catalog_number_field_index - 1].op_num != 1:
             return list(query)
@@ -960,11 +1240,4 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
 
         return updated_results
 
-    return query
-
-def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
-    query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
-    
-    if should_list_query:
-        return list(query)
     return query

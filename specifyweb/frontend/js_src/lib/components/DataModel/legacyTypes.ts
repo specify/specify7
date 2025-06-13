@@ -79,7 +79,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    prePopulate?: boolean
+    prePopulate?: boolean,
+    strict?: boolean // Whether to trigger 404 on resource not found
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -99,6 +100,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     options?: {
       readonly prePop?: boolean;
       readonly noBusinessRules?: boolean;
+      readonly strict?: boolean;
     }
   ): readonly [VALUE] extends readonly [never]
     ? never
@@ -115,7 +117,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    filters?: CollectionFetchFilters<VALUE[number]>
+    filters?: CollectionFetchFilters<VALUE[number]> & {
+      readonly strict?: boolean;
+    }
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
