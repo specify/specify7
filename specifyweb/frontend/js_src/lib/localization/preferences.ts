@@ -215,7 +215,7 @@ export const preferencesText = createDictionary({
     "es-es":
       "Puede especificar cualquier fuente de su ordenador, incluso si no está en la lista. También se admite una lista de fuentes separadas por comas, donde se usará cada fuente subsiguiente si la anterior no está disponible.",
     "fr-fr":
-      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge , où chaque police suivante sera utilisée si la précédente n'est pas disponible.",
+      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge ; chaque police suivante sera utilisée si la précédente n'est pas disponible.",
     "uk-ua":
       "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо його немає в списку. Також підтримується розділений комами список шрифтів, у якому використовуватиметься другий шрифт, якщо перший недоступний тощо.",
     "de-ch":
@@ -1085,7 +1085,7 @@ export const preferencesText = createDictionary({
     "es-es": "No distingue entre mayúsculas y minúsculas",
     "fr-fr": "Insensible à la casse",
     "uk-ua": "Регістр не враховується",
-    "de-ch": "Groß- und Kleinschreibung wird nicht berücksichtigt",
+    "de-ch": "Groß-/Kleinschreibung wird nicht beachtet",
     "pt-br": "Não diferencia maiúsculas de minúsculas",
   },
   showNoReadTables: {
@@ -1944,7 +1944,7 @@ export const preferencesText = createDictionary({
     "en-us": "Open all records in read-only mode",
     "de-ch": "Alle Datensätze im schreibgeschützten Modus öffnen",
     "es-es": "Abrir todos los registros en modo de solo lectura",
-    "fr-fr": "Ouvrir tous les enregistrements en lecture seule",
+    "fr-fr": "Ouvrir tous les enregistrements en mode lecture seule",
     "ru-ru": "Открыть все записи в режиме только для чтения",
     "uk-ua": "Відкрити всі записи в режимі лише для читання",
     "pt-br": "Abra todos os registros no modo somente leitura",
