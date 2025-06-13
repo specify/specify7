@@ -1,6 +1,7 @@
-import { renderHook, act } from "@testing-library/react";
-import { errorContext, useErrorContext } from "../useErrorContext";
+import { act,renderHook } from "@testing-library/react";
+
 import { mockTime } from "../../tests/helpers";
+import { errorContext, useErrorContext } from "../useErrorContext";
 
 mockTime();
 
@@ -8,10 +9,12 @@ let errorContextCopy: typeof errorContext | undefined = undefined;
 
 describe("useErrorContext", ()=>{
 
-    // BeforeAll and AfterAll make sure the state is reverted back to orginal set.
-    // Technically, if tests are parallelized this might break..
+    /*
+     * BeforeAll and AfterAll make sure the state is reverted back to orginal set.
+     * Technically, if tests are parallelized this might break..
+     */
     beforeEach(()=>{
-        // create a copy of the errorContext
+        // Create a copy of the errorContext
         errorContextCopy = new Set(errorContext);
         errorContext.clear();
     });
@@ -29,10 +32,10 @@ describe("useErrorContext", ()=>{
         payload
         })
     
-    const getValue = (set: Set<unknown>) => set.values().next().value;
+    const getValue = (set: ReadonlySet<unknown>) => set.values().next().value;
 
 
-    it("adds and removes value from the set", async ()=>{
+    test("adds and removes value from the set", async ()=>{
 
         const name = "testname";
         const data = {
@@ -59,7 +62,7 @@ describe("useErrorContext", ()=>{
 
     });
 
-    it("updates the context when name or data changes", async () =>{
+    test("updates the context when name or data changes", async () =>{
 
         const initialName = "initialName";
         const changedName = "changedName";
