@@ -206,3 +206,19 @@ MIGRATION_0032_UPDATE_FIELDS = {
 MIGRATION_0033_TABLES = [
     ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
 ]
+
+MIGRATION_0034_FIELDS = {
+    'Accession': ['dateAccessionedPrecision', 'dateAcknowledgedPrecision', 'dateReceivedPrecision', 'date1', 'date1Precision', 'date2', 'date2Precision'],
+}
+
+MIGRATION_0034_UPDATE_FIELDS = {
+    'Accession': [
+        ('dateAccessionedPrecision',    'Date Accessioned Precision',    'Date Accessioned Precision'),
+        ('dateAcknowledgedPrecision',   'Date Acknowledged Precision',   'Date Acknowledged Precision'),
+        ('dateReceivedPrecision',       'Date Received Precision',       'Date Received Precision'),
+        ('date1',                       'Date 1',                        'Date 1'),
+        ('date1Precision',              'Date 1 Precision',              'Date 1 Precision'),
+        ('date2',                       'Date 2',                        'Date 2'),
+        ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
+    ]
+}
