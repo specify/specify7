@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
-from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure, ParseOptions
+from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
 Row = dict[str, str]
 Filter = dict[str, Any]
@@ -52,11 +52,10 @@ def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column, None)
 
 
-def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: Row, is_update=False) -> tuple[list[ParseResult], list[WorkBenchParseFailure]]:
+def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: Row) -> tuple[list[ParseResult], list[WorkBenchParseFailure]]:
     results = [
         parse_value(tablename, fieldname,
-                    row[colopts.column], colopts,
-                    is_update)
+                    row[colopts.column], colopts)
         for fieldname, colopts in mapping.items()
     ]
     return (
@@ -65,7 +64,7 @@ def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: R
     )
 
 
-def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions, is_update=False) -> Union[ParseResult, WorkBenchParseFailure]:
+def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
     required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
     result: Union[ParseResult, WorkBenchParseFailure]
@@ -80,11 +79,9 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
             result = ParseResult({fieldname: None}, {fieldname: None},
                                  None, colopts.column, missing_required)
         else:
-            result = _parse(tablename, fieldname, colopts,
-                            colopts.default, is_update)
+            result = _parse(tablename, fieldname, colopts, colopts.default)
     else:
-        result = _parse(tablename, fieldname, colopts,
-                        value_in.strip(), is_update)
+        result = _parse(tablename, fieldname, colopts, value_in.strip())
 
     if isinstance(result, WorkBenchParseFailure):
         return result
@@ -102,7 +99,7 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
         assertNever(colopts.matchBehavior)
 
 
-def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str, is_update=False) -> Union[ParseResult, WorkBenchParseFailure]:
+def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
@@ -120,13 +117,9 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
                 )
             return result
 
-    # FEATURE: Support WorkBench-like parsing of latitude and longitude when
-    # using BatchEdit
-    # See https://github.com/specify/specify7/issues/6251
-    parse_options: ParseOptions = {'latlong_as_text': not is_update}
-    parsed = parse_field(tablename, fieldname, value, colopts.uiformatter, parse_options)
+    parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)
 
-    if not is_update and is_latlong(table, field) and isinstance(parsed, ParseSucess):
+    if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text'
         filter_on = {coord_text_field: parsed.payload[coord_text_field]}
         return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
