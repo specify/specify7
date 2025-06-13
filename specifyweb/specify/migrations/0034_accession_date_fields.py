@@ -49,6 +49,8 @@ def update_0034_schema_config_field_desc(apps, schema_editor):
                     name=field_name.lower()
                 )
                 for item in items:
+                    item.ishidden = True
+                    item.save()
                     desc_str = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
                     name_str = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
                     if not desc_str or not name_str:
