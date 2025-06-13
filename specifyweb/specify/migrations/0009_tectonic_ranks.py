@@ -94,6 +94,7 @@ def create_root_tectonic_node(apps):
 
         root, _ = TectonicUnit.objects.get_or_create(
             name="Root",
+            fullname="Root",
             isaccepted=1,
             nodenumber=1,
             rankid=0,
