@@ -215,7 +215,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Puede especificar cualquier fuente de su ordenador, incluso si no está en la lista. También se admite una lista de fuentes separadas por comas, donde se usará cada fuente subsiguiente si la anterior no está disponible.',
     'fr-fr':
-      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge ; chaque police suivante sera utilisée si la précédente n'est pas disponible.",
+      "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, même si elle ne figure pas dans la liste. Une liste de polices séparées par des virgules est également prise en charge , où chaque police suivante sera utilisée si la précédente n'est pas disponible.",
     'uk-ua':
       "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо його немає в списку. Також підтримується розділений комами список шрифтів, у якому використовуватиметься другий шрифт, якщо перший недоступний тощо.",
     'de-ch':
@@ -1860,7 +1860,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.',
     'fr-fr':
-      'Une URL vers une image qui serait affichée à côté du logo Spécifier dans le menu de navigation.',
+      'Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.',
     'ru-ru':
       'URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.',
     'uk-ua':
@@ -1881,7 +1881,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Save button color',
     'de-ch': 'Farbe der Schaltfläche „Speichern“',
     'es-es': 'Guardar el color del botón',
-    'fr-fr': 'Enregistrer la couleur du bouton',
+    'fr-fr': 'Couleur du bouton Enregistrer',
     'ru-ru': 'Сохранить цвет кнопки',
     'uk-ua': 'Зберегти колір кнопки',
     'pt-br': 'Cor do botão Salvar',
@@ -1944,7 +1944,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Open all records in read-only mode',
     'de-ch': 'Alle Datensätze im schreibgeschützten Modus öffnen',
     'es-es': 'Abrir todos los registros en modo de solo lectura',
-    'fr-fr': 'Ouvrir tous les enregistrements en mode lecture seule',
+    'fr-fr': 'Ouvrir tous les enregistrements en lecture seule',
     'ru-ru': 'Открыть все записи в режиме только для чтения',
     'uk-ua': 'Відкрити всі записи в режимі лише для читання',
     'pt-br': 'Abra todos os registros no modo somente leitura',
