@@ -9,8 +9,8 @@ import { useParserDefaultValue } from '../useParserDefaultValue';
 mockTime();
 requireContext();
 
-describe("useParserDefaultValue", ()=>{
-  const getFakeDate = ()=>(new Date()).toISOString().slice(0, 10);
+describe('useParserDefaultValue', () => {
+  const getFakeDate = () => new Date().toISOString().slice(0, 10);
 
   test('Simple parser', () => {
     const resource = new tables.ExchangeOut.Resource();
@@ -24,7 +24,6 @@ describe("useParserDefaultValue", ()=>{
 
     expect(resource.get(field.name as never)).toBe('2');
   });
-
 
   test('Only overwrites when needed', () => {
     const resource = new tables.ExchangeOut.Resource({
@@ -67,7 +66,8 @@ describe("useParserDefaultValue", ()=>{
 
   test('CatalogNumber parser', () => {
     const resource = new tables.CollectionObject.Resource();
-    const field = tables.CollectionObject.strictGetLiteralField('catalogNumber');
+    const field =
+      tables.CollectionObject.strictGetLiteralField('catalogNumber');
     expect(resource.get('catalogNumber')).toBeUndefined();
     const { result } = renderHook(() => useParser(field, resource));
     renderHook(() => useParserDefaultValue(resource, field, result.current));
@@ -82,7 +82,7 @@ describe("useParserDefaultValue", ()=>{
     const parser: Parser = {
       type: 'text',
       value: 'ResourceValue-3',
-      pattern: new RegExp("^ResourceValue-\d+$", 'u')
+      pattern: new RegExp('^ResourceValue-\d+$', 'u'),
     };
     renderHook(() => useParserDefaultValue(resource, field, parser));
 
@@ -91,14 +91,14 @@ describe("useParserDefaultValue", ()=>{
 
   /**
    * Notes:
-   * The following tests are added to improve branch and statement coverage within 
+   * The following tests are added to improve branch and statement coverage within
    * the useParserDefaultValue.
    */
 
-
   test('Checkbox parser', () => {
     const resource = new tables.CollectingEventAttribute.Resource();
-    const field = tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+    const field =
+      tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
     expect(resource.get(field.name as never)).toBeUndefined();
     const parser: Parser = {
       type: 'checkbox',
@@ -111,7 +111,8 @@ describe("useParserDefaultValue", ()=>{
 
   test('Checkbox parser overrides empty value', () => {
     const resource = new tables.CollectingEventAttribute.Resource();
-    const field = tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
+    const field =
+      tables.CollectingEventAttribute.strictGetLiteralField('yesno1');
     resource.set(field.name as never, undefined as never);
     expect(resource.get(field.name as never)).toBeUndefined();
     const parser: Parser = {
@@ -138,10 +139,10 @@ describe("useParserDefaultValue", ()=>{
 
   test('Date parser overrides empty value', () => {
     const resource = new tables.CollectingTrip.Resource({
-      date1: "",
+      date1: '',
     });
     const field = tables.CollectingTrip.strictGetLiteralField('date1');
-    expect(resource.get(field.name as never)).toBe("");
+    expect(resource.get(field.name as never)).toBe('');
     const parser: Parser = {
       type: 'date',
       value: getFakeDate(),
@@ -172,11 +173,10 @@ describe("useParserDefaultValue", ()=>{
 
     const parser: Parser = {
       type: 'date',
-      value: "",
+      value: '',
     };
     renderHook(() => useParserDefaultValue(resource, field, parser));
 
     expect(resource.get(field.name as never)).toBe(getFakeDate());
   });
-
 });
