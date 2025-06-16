@@ -1,10 +1,9 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 
-import { tables } from "../../components/DataModel/tables";
-import { useResource } from "../resource";
-import { requireContext } from "../../tests/helpers";
-
 import { serializeResource } from "../../components/DataModel/serializers";
+import { tables } from "../../components/DataModel/tables";
+import { requireContext } from "../../tests/helpers";
+import { useResource } from "../resource";
 
 
 requireContext();
@@ -34,7 +33,7 @@ describe("useResource", ()=>{
         const { result } = renderHook(()=>useResource(collectionObject));
 
         await waitFor(()=>{
-            expect(result.current[0].text3).toBe(null);
+            expect(result.current[0].text3).toBeNull();
             expect(result.current[0].text1).toBe( "Some text value");
         });
 
