@@ -50,16 +50,18 @@ describe("useAsyncState", () => {
         await waitFor(() => {
             expect(onStateSet.mock.calls.length).toBeGreaterThanOrEqual(1);
             const stateSet = onStateSet.mock.calls.at(-1).at(0);
-            expect(stateSet).toEqual("First Promise");
+            expect(stateSet).toBe("First Promise");
         });
 
         expect(promiseHandler).toHaveBeenCalled();
 
     });
 
-    // Below tests don't work because of the async nature.
-    // The cleanest way would be a slight refactor and adding callbacks
-    // to the useAsyncState and useMultipleAsyncState.
+    /*
+     * Below tests don't work because of the async nature.
+     * The cleanest way would be a slight refactor and adding callbacks
+     * to the useAsyncState and useMultipleAsyncState.
+     */
     test.skip("destructor call is obeyed", async () => {
 
         const firstPromise = new Promise(() => { });
@@ -68,11 +70,11 @@ describe("useAsyncState", () => {
             "Second Value"
         );
 
-        let promise = () => firstPromise;
+        let promise = async () => firstPromise;
 
         const { result, rerender } = renderHook(() => useAsyncState(promise, false));
 
-        promise = () => secondPromise;
+        promise = async () => secondPromise;
 
         await act(rerender);
 
@@ -91,7 +93,7 @@ describe("useAsyncState", () => {
         const firstPromise = Promise.resolve("First Promise");
         const secondPromise = Promise.resolve("Second Promise");
 
-        let promise: () => Promise<string> = () => firstPromise;
+        let promise: () => Promise<string> = async () => firstPromise;
 
         const { result, rerender } = renderHook(() => useAsyncState(promise, false));
 
@@ -99,7 +101,7 @@ describe("useAsyncState", () => {
             expect(result.current[0]).toBe("First Promise");
         });
 
-        promise = () => secondPromise;
+        promise = async () => secondPromise;
 
         await act(rerender);
 
