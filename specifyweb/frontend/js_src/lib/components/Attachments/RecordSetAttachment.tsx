@@ -144,7 +144,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 disabled={downloadAllAttachmentsDisabled}
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
-                  (isPartialRecords || !isComplete) ? 
+                  ((isPartialRecords || !isComplete) && recordSetId !== undefined) ? 
                   setShowCreateRecordSetDialog(true)
                   :
                   loading(
