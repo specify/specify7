@@ -57,6 +57,39 @@ describe("useAsyncState", () => {
 
     });
 
+    // Below tests don't work because of the async nature.
+    // The cleanest way would be a slight refactor and adding callbacks
+    // to the useAsyncState and useMultipleAsyncState.
+    test.skip("destructor call is obeyed", async () => {
+
+        let resolver: (args: string) => void;
+
+        const firstPromise = new Promise((resolve) => {
+            resolver = resolve;
+        });
+
+        const secondPromise = Promise.resolve(
+            "Second Value"
+        );
+
+        let promise = () => firstPromise;
+
+        const { result, rerender } = renderHook(() => useAsyncState(promise, false));
+
+        promise = () => secondPromise;
+
+        await act(rerender);
+
+        await waitFor(() => {
+            expect(result.current[0]).toBeDefined();
+        })
+
+        expect(result.current[0]).toBe(
+            "Second Value"
+        );
+
+    });
+
     test.skip("state changes when promise changes", async () => {
 
         const firstPromise = Promise.resolve("First Promise");
@@ -79,4 +112,5 @@ describe("useAsyncState", () => {
         });
 
     });
+
 });
