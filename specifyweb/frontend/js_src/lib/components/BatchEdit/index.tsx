@@ -238,9 +238,11 @@ const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
 const DISALLOWED_FIELDS: DeepPartial<{
   readonly [TABLE in keyof Tables]: RA<keyof Tables[TABLE]['fields']>;
 }> = {
-  // FEATURE: Remove these when lat/long is officially supported
-  // See https://github.com/specify/specify7/issues/6251 and
-  // https://github.com/specify/specify7/issues/6655
+  /*
+   * FEATURE: Remove these when lat/long is officially supported
+   * See https://github.com/specify/specify7/issues/6251 and
+   * https://github.com/specify/specify7/issues/6655
+   */
   Locality: [
     'latitude1',
     'longitude1',
