@@ -324,7 +324,7 @@ def user(request):
             'available_collections': [],
             'agent': None
         }
-        return HttpResponse(toJson({}), content_type='application/json')
+        return HttpResponse(toJson(data), content_type='application/json')
         # return HttpResponse(toJson(data), content_type='application/json')
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
