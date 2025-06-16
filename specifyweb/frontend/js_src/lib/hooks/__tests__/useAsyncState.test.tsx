@@ -62,11 +62,7 @@ describe("useAsyncState", () => {
     // to the useAsyncState and useMultipleAsyncState.
     test.skip("destructor call is obeyed", async () => {
 
-        let resolver: (args: string) => void;
-
-        const firstPromise = new Promise((resolve) => {
-            resolver = resolve;
-        });
+        const firstPromise = new Promise(() => { });
 
         const secondPromise = Promise.resolve(
             "Second Value"
