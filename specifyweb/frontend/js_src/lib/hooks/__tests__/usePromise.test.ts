@@ -6,7 +6,7 @@ describe("usePromise", ()=>{
 
     test("promise gets resolved and state set", async ()=>{
 
-        let promise = Promise.resolve(10);
+        const promise = Promise.resolve(10);
 
         const {result } = renderHook(()=>usePromise(promise, false));
 
