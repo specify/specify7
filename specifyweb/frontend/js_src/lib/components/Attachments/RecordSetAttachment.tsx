@@ -108,11 +108,11 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === recordCount;
+  const isPartialRecords = recordCount !== records.length;
   const downloadAllAttachmentsDisabled =
-    !isComplete || attachments?.attachments.length === 0;
+    attachments?.attachments.length === 0;
 
-  // const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
-  //   useState(false);
+  const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] = React.useState(false);
 
   return (
     <>
@@ -122,6 +122,20 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         title="attachments"
         onClick={handleShowAttachments}
       />
+      {showCreateRecordSetDialog && (
+        <Dialog
+          buttons={
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
+          header={attachmentsText.downloadAll()}
+          onClose={(): void => setShowCreateRecordSetDialog(false)}
+        >
+          {attachmentsText.createRecordSetToDownloadAll()}
+        </Dialog>
+      )}
       {showAttachments && (
         <Dialog
           buttons={
@@ -130,6 +144,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 disabled={downloadAllAttachmentsDisabled}
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
+                  (isPartialRecords || !isComplete) ? 
+                  setShowCreateRecordSetDialog(true)
+                  :
                   loading(
                     downloadAllAttachments(
                       attachmentsRef.current?.attachments ?? [],
