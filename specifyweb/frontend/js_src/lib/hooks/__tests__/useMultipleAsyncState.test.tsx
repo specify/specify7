@@ -1,10 +1,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-
-import { useMultipleAsyncState } from "../useAsyncState";
-import { IR } from "../../utils/types";
 import React from "react";
-import { mount } from "../../tests/reactUtils";
+
 import { LoadingContext } from "../../components/Core/Contexts";
+import { mount } from "../../tests/reactUtils";
+import type { IR } from "../../utils/types";
+import { useMultipleAsyncState } from "../useAsyncState";
 
 describe("useMultipleAsyncState", () => {
 
@@ -12,8 +12,8 @@ describe("useMultipleAsyncState", () => {
         { promises, callback, showLoading }:
             {
                 readonly promises: IR<() => Promise<string>>,
-                callback: (state: IR<string | undefined> | undefined) => void,
-                showLoading: boolean
+                readonly callback: (state: IR<string | undefined> | undefined) => void,
+                readonly showLoading: boolean
             }
     ) {
         const [state] = useMultipleAsyncState(promises, showLoading);
@@ -26,8 +26,8 @@ describe("useMultipleAsyncState", () => {
     test("promise gets resolved and state set", async () => {
 
         const promises = {
-            firstItem: () => Promise.resolve("First Promise"),
-            secondItem: () => Promise.resolve("Second Promise")
+            firstItem: async () => "First Promise",
+            secondItem: async () => "Second Promise"
         };
 
         const { result } = renderHook(() => useMultipleAsyncState(promises, false));
@@ -42,14 +42,14 @@ describe("useMultipleAsyncState", () => {
     test("Loading screen appears", async () => {
 
         const promises = {
-            firstItem: () => Promise.resolve("First Promise"),
-            secondItem: () => Promise.resolve("Second Promise")
+            firstItem: async () => "First Promise",
+            secondItem: async () => "Second Promise"
         };
 
         const promiseHandler = jest.fn();
         const onStateSet = jest.fn();
 
-        mount(<LoadingContext.Provider value={promiseHandler}><TestLoading promises={promises} callback={onStateSet} showLoading /></LoadingContext.Provider>)
+        mount(<LoadingContext.Provider value={promiseHandler}><TestLoading callback={onStateSet} promises={promises} showLoading /></LoadingContext.Provider>)
 
         await waitFor(() => {
             expect(onStateSet.mock.calls.length).toBeGreaterThanOrEqual(1);
@@ -60,7 +60,7 @@ describe("useMultipleAsyncState", () => {
             });
         });
 
-        expect(promiseHandler).toBeCalled();
+        expect(promiseHandler).toHaveBeenCalled();
 
     });
 
@@ -71,8 +71,8 @@ describe("useMultipleAsyncState", () => {
         const thirdPromise = Promise.resolve("Third Promise");
 
         let promises: IR<() => Promise<string>> = {
-            firstItem: () => firstPromise,
-            secondItem: () => secondPromise
+            firstItem: async () => firstPromise,
+            secondItem: async () => secondPromise
         };
 
         const { result, rerender } = renderHook(() => useMultipleAsyncState(promises, false));
@@ -82,7 +82,7 @@ describe("useMultipleAsyncState", () => {
             expect(result.current[0]?.secondItem).toBe("Second Promise");
         });
 
-        promises = { ...promises, thirdItem: () => thirdPromise };
+        promises = { ...promises, thirdItem: async () => thirdPromise };
 
         await act(rerender);
 
