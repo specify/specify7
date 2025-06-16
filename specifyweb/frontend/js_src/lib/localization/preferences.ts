@@ -1080,13 +1080,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Maiúsculas e minúsculas',
   },
   caseInsensitive: {
-    'en-us': 'Case-insensitive',
-    'ru-ru': 'Без учета регистра',
-    'es-es': 'No distingue entre mayúsculas y minúsculas',
-    'fr-fr': 'Insensible à la casse',
-    'uk-ua': 'Регістр не враховується',
-    'de-ch': 'Groß- und Kleinschreibung wird nicht berücksichtigt',
-    'pt-br': 'Não diferencia maiúsculas de minúsculas',
+    "en-us": "Case-insensitive",
+    "ru-ru": "Без учета регистра",
+    "es-es": "No distingue entre mayúsculas y minúsculas",
+    "fr-fr": "Insensible à la casse",
+    "uk-ua": "Регістр не враховується",
+    "de-ch": "Groß-/Kleinschreibung wird nicht beachtet",
+    "pt-br": "Não diferencia maiúsculas de minúsculas",
   },
   showNoReadTables: {
     'en-us': 'Show tables without "Read" access',
@@ -1853,6 +1853,7 @@ export const preferencesText = createDictionary({
     'pt-br': 'URL da imagem recolhida',
   },
   customLogoDescription: {
+<<<<<<< HEAD
     'en-us':
       'A URL to an image that would be displayed next to the Specify logo in the navigation menu.',
     'de-ch':
@@ -1867,6 +1868,22 @@ export const preferencesText = createDictionary({
       'URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.',
     'pt-br':
       'Um URL para uma imagem que seria exibida ao lado do logotipo Especificar no menu de navegação.',
+=======
+    "en-us":
+      "A URL to an image that would be displayed next to the Specify logo in the navigation menu.",
+    "de-ch":
+      "Eine URL zu einem Bild, das neben dem angegebenen Logo im Navigationsmenü angezeigt wird.",
+    "es-es":
+      "Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.",
+    "fr-fr":
+      "Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.",
+    "ru-ru":
+      "URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.",
+    "uk-ua":
+      "URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.",
+    "pt-br":
+      "Um URL para uma imagem que seria exibida ao lado do logotipo Especificar no menu de navegação.",
+>>>>>>> origin/main
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
@@ -1878,13 +1895,13 @@ export const preferencesText = createDictionary({
     'pt-br': 'Mostrar número da linha do resultado da consulta',
   },
   saveButtonColor: {
-    'en-us': 'Save button color',
-    'de-ch': 'Farbe der Schaltfläche „Speichern“',
-    'es-es': 'Guardar el color del botón',
-    'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
-    'pt-br': 'Cor do botão Salvar',
+    "en-us": "Save button color",
+    "de-ch": "Farbe der Schaltfläche „Speichern“",
+    "es-es": "Guardar el color del botón",
+    "fr-fr": "Couleur du bouton Enregistrer",
+    "ru-ru": "Сохранить цвет кнопки",
+    "uk-ua": "Зберегти колір кнопки",
+    "pt-br": "Cor do botão Salvar",
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',

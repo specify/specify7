@@ -22,7 +22,7 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'Плохая структура дерева.',
     'es-es': 'Mala estructura de árbol.',
-    'fr-fr': "Mauvaise structure de l'arbre.",
+    'fr-fr': 'Mauvaise arborescence.',
     'uk-ua': 'Погана структура дерева.',
     'de-ch': 'Fehlerhafte Baumstruktur.',
     'pt-br': 'Estrutura de árvore ruim.',
@@ -31,7 +31,7 @@ export const treeText = createDictionary({
     'en-us': 'Move',
     'ru-ru': 'Двигаться',
     'es-es': 'Mover',
-    'fr-fr': 'Se déplacer',
+    'fr-fr': 'Déplacer',
     'uk-ua': 'рухатися',
     'de-ch': 'Verschieben',
     'pt-br': 'Mover',
@@ -230,7 +230,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Выберите новую цель для слияния с "{nodeName:string}"',
     'es-es': 'Seleccione un nuevo objetivo para fusionar "{nodeName:string}"',
     'fr-fr':
-      'Sélectionnez une nouvelle cible dans laquelle « {nodeName:string} » doit être fusionné',
+      'Sélectionnez une nouvelle cible avec laquelle « {nodeName:string} » doit être fusionné',
     'uk-ua':
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
@@ -244,7 +244,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un nuevo objetivo para los preparativos "{nodeName:string}" que se trasladarán a',
     'fr-fr':
-      'Sélectionnez une nouvelle cible pour les préparations « {nodeName:string} » à déplacer',
+      'Sélectionnez une nouvelle cible dans laquelle les préparations « {nodeName:string} » doivent être déplacées',
     'ru-ru':
       'Выберите новую цель для препаратов "{nodeName:string}", которые будут перемещены',
     'uk-ua':
@@ -293,7 +293,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
     'fr-fr':
-      'Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonyme',
+      'Sélectionnez une cible avec laquelle « {nodeName:string} » doit être synonyme',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
     'pt-br': 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',
@@ -306,7 +306,7 @@ export const treeText = createDictionary({
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de "{synonymName:string}".',
     'fr-fr':
-      'Le nœud {treeName:string} « {nodeName:string} » deviendra synonyme de « {synonymName:string} ».',
+      'Le nœud « {nodeName:string} » de {treeName:string} deviendra synonyme de « {synonymName:string} ».',
     'de-ch':
       'Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von "{synonymName:string}".',
     'uk-ua':
@@ -370,7 +370,7 @@ export const treeText = createDictionary({
     'en-us': 'Search Tree',
     'ru-ru': 'Дерево поиска',
     'es-es': 'Árbol de búsqueda',
-    'fr-fr': 'Arbre de recherche',
+    'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
     'de-ch': 'Baum durchsuchen',
     'pt-br': 'Árvore de Pesquisa',
@@ -428,7 +428,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Прямой {collectionObjectTable:string} счет',
     'es-es': 'Recuento directo {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
-    'fr-fr': 'Compte direct {collectionObjectTable:string}',
+    'fr-fr': 'Nombre de {collectionObjectTable:string} direct(s)',
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}',
     'pt-br': 'Contagem direta {collectionObjectTable:string}',
   },
@@ -437,7 +437,7 @@ export const treeText = createDictionary({
     'en-us': 'Indirect {collectionObjectTable:string} Count',
     'ru-ru': 'Косвенный {collectionObjectTable:string} Количество',
     'es-es': 'Recuento indirecto {collectionObjectTable:string}',
-    'fr-fr': 'Compte indirect {collectionObjectTable:string}',
+    'fr-fr': 'Nombre de {collectionObjectTable:string} indirect(s)',
     'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}',
     'de-ch': 'Indirekte {collectionObjectTable:string} Anzahl',
     'pt-br': 'Contagem indireta {collectionObjectTable:string}',
@@ -491,7 +491,7 @@ export const treeText = createDictionary({
     'en-us': 'Vertical',
     'de-ch': 'Vertikal',
     'es-es': 'Vertical',
-    'fr-fr': 'Verticale',
+    'fr-fr': 'Vertical',
     'ru-ru': 'Вертикальный',
     'uk-ua': 'Вертикальний',
     'pt-br': 'Vertical',

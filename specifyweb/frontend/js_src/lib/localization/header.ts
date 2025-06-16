@@ -214,7 +214,7 @@ export const headerText = createDictionary({
     'es-es': 'Elige DwCA',
     'uk-ua': 'Виберіть DwCA',
     'de-ch': 'DwCA wählen',
-    'fr-fr': 'Choisissez DwCA',
+    'fr-fr': 'Choisissez la DwCA',
     'pt-br': 'Escolha DwCA',
   },
   dwcaResource: {
@@ -442,7 +442,7 @@ export const headerText = createDictionary({
     'en-us': 'Chronostratigraphic Chart',
     'de-ch': 'Chronostratigraphisches Diagramm',
     'es-es': 'Carta cronoestratigráfica',
-    'fr-fr': 'Carte chronostratigraphique',
+    'fr-fr': 'Charte chronostratigraphique',
     'pt-br': 'Carta Cronoestratigráfica',
     'ru-ru': 'Хроностратиграфическая карта',
     'uk-ua': 'Хроностратиграфічна діаграма',
