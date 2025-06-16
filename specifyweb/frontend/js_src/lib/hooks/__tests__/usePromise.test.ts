@@ -6,17 +6,17 @@ describe("usePromise", ()=>{
 
     test("promise gets resolved and state set", async ()=>{
 
-        const {result} = renderHook(()=>usePromise(Promise.resolve(10), false));
+        let promise = Promise.resolve(10);
 
-        waitFor(()=>{
+        const {result } = renderHook(()=>usePromise(promise, false));
+
+        await waitFor(()=>{
             expect(result.current[0]).toBe(10);
         });
 
-        // TODO: Investigate why the below crashes the environment.
-        // I think the it is related to a previous bug in useMultipleAsyncState
-        // await act(()=>result.current[1](11));
+        await act(()=>result.current[1](11));
 
-        // expect(result.current[0]).toBe(11);
+        expect(result.current[0]).toBe(11);
 
     });
 
@@ -26,14 +26,14 @@ describe("usePromise", ()=>{
 
         const {result, rerender} = renderHook(()=>usePromise(promise, false));
 
-        waitFor(()=>{
+        await waitFor(()=>{
             expect(result.current[0]).toBe(10);
         });
 
         promise = Promise.resolve(11);
         act(rerender);
 
-        waitFor(()=>{
+        await waitFor(()=>{
             expect(result.current[0]).toBe(11);
         });
 
