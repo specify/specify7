@@ -24,11 +24,13 @@ const haltIncrementSize = 300;
 
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
+  recordCount,
   onFetch: handleFetch,
   name,
   recordSetId,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
+  readonly recordCount: number;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
@@ -105,9 +107,12 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
-  const isComplete = fetchedCount.current === records.length;
+  const isComplete = fetchedCount.current === recordCount;
   const downloadAllAttachmentsDisabled =
     !isComplete || attachments?.attachments.length === 0;
+
+  // const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
+  //   useState(false);
 
   return (
     <>
