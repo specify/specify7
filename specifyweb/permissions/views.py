@@ -129,7 +129,7 @@ class PoliciesUserPT(PermissionTarget):
 
 
 class AllUserPolicies(LoginRequiredMixin, View):
-    def get(self, request, collectionid: Optional[int]) -> http.HttpResponse:
+    def get(self, request, collectionid: int | None) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
 
         data: dict[int, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
@@ -211,7 +211,7 @@ def all_user_policies_institution(request) -> http.HttpResponse:
     return all_user_policies(request, None)
 
 class UserPolicies(LoginRequiredMixin, View):
-    def get(self, request, collectionid: Optional[int], userid: int) -> http.HttpResponse:
+    def get(self, request, collectionid: int | None, userid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
 
         data = defaultdict(list)
@@ -223,7 +223,7 @@ class UserPolicies(LoginRequiredMixin, View):
 
         return http.JsonResponse(data, safe=False)
 
-    def put(self, request, collectionid: Optional[int], userid: int) -> http.HttpResponse:
+    def put(self, request, collectionid: int | None, userid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.update])
 
         data = json.loads(request.body)
@@ -531,7 +531,7 @@ user_roles = openapi(schema={
     }
 })(UserRoles.as_view())
 
-def serialize_role(role: Union[models.Role, models.LibraryRole]) -> dict:
+def serialize_role(role: models.Role | models.LibraryRole) -> dict:
     policies = defaultdict(list)
     for p in role.policies.all():
         policies[p.resource].append(p.action)

@@ -1,4 +1,5 @@
-from typing import List, Dict, Union, Optional, TypeVar, Callable, cast
+from typing import List, Dict, Union, Optional, TypeVar, cast
+from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
 import os
@@ -27,7 +28,7 @@ T = TypeVar("T")
 U = TypeVar("U")
 
 
-def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional[T]:
+def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
     try:
         warnings.warn("deprecated. use strict version.", DeprecationWarning)
         return f(lookup)
@@ -85,8 +86,8 @@ class Table:
     idColumn: str
     idFieldName: str
     idField: "Field"
-    view: Optional[str]
-    searchDialog: Optional[str]
+    view: str | None
+    searchDialog: str | None
     fields: list["Field"]
     indexes: list["Index"]
     relationships: list["Relationship"]
@@ -103,8 +104,8 @@ class Table:
         idColumn: str = None,
         idFieldName: str = None,
         idField: "Field" = None,
-        view: Optional[str] = None,
-        searchDialog: Optional[str] = None,
+        view: str | None = None,
+        searchDialog: str | None = None,
         fields: list["Field"] = None,
         indexes: list["Index"] = None,
         relationships: list["Relationship"] = None,
@@ -222,12 +223,12 @@ class Table:
 class Field:
     is_relationship: bool = False
     name: str
-    column: Optional[str]
+    column: str | None
     indexed: bool
     unique: bool
     required: bool = False
-    type: Optional[str]
-    length: Optional[int]
+    type: str | None
+    length: int | None
 
     def __init__(
         self,
@@ -314,8 +315,8 @@ class Relationship(Field):
     type: str
     required: bool
     relatedModelName: str
-    column: Optional[str]
-    otherSideName: Optional[str]
+    column: str | None
+    otherSideName: str | None
 
     def __init__(
         self,
@@ -444,7 +445,7 @@ def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
     return alias
 
 
-def load_datamodel() -> Optional[Datamodel]:
+def load_datamodel() -> Datamodel | None:
     try:
         datamodeldef = ElementTree.parse(
             os.path.join(settings.SPECIFY_CONFIG_DIR, "specify_datamodel.xml")

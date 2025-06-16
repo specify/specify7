@@ -1,6 +1,7 @@
 import traceback
 import json
-from typing import Any, Optional, Union, Dict, FrozenSet, List, Callable, Literal
+from typing import Any, Optional, Union, Dict, FrozenSet, List, Literal
+from collections.abc import Callable
 from django import http
 from django.core import serializers
 from django.db import models
@@ -57,7 +58,7 @@ class GeneralMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         pass
 
-    def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
+    def process_exception(self, request, exception) -> http.HttpResponse | None:
         from ..permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
@@ -78,7 +79,7 @@ class GeneralMiddleware:
                 return http.HttpResponse(exception.to_json(), status=exception.status_code)
 
 
-def serialize_django_obj(django_obj: frozenset[Union[models.QuerySet, models.Model]]) -> list[dict[str, Any]] or dict[str, Any]:
+def serialize_django_obj(django_obj: frozenset[models.QuerySet | models.Model]) -> list[dict[str, Any]] or dict[str, Any]:
     """Attempt to serialize two common objects in Django, a Queryset or a Model. 
     If the object is a Queryset, return a list of dictonaries containing the important (non-null) fields
     Similarly, if the object is a single Model, return a dictonary containing every field

@@ -4,7 +4,8 @@ A few non-business data resource end points
 
 import json
 from itertools import groupby
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
+from collections.abc import Callable
 import traceback
 
 from django import http
@@ -162,7 +163,7 @@ RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
-                    progress: Optional[Progress]=None,
+                    progress: Progress | None=None,
                     new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.

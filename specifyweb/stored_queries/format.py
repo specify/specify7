@@ -54,19 +54,19 @@ class ObjectFormatter:
         self.format_agent_type = format_agent_type
         self.format_picklist = format_picklist
 
-    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
-        def lookup(attr: str, val: str) -> Optional[Element]:
+    def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
+        def lookup(attr: str, val: str) -> Element | None:
             return self.formattersDom.find(
                 f'format[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Optional[Element]:
+        def lookup_default(attr: str, val: str) -> Element | None:
             elements = self.formattersDom.findall(f'format[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
             return None
         
-        def lookup_name(name: str) -> Optional[Element]:
+        def lookup_name(name: str) -> Element | None:
             elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
             for element in elements:
                 if element.get('class') == specify_model.classname:
@@ -120,11 +120,11 @@ class ObjectFormatter:
                 return True
         return False
 
-    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
-        def lookup(attr: str, val: str) -> Optional[Element]:
+    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Element | None:
+        def lookup(attr: str, val: str) -> Element | None:
             return self.formattersDom.find(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Optional[Element]:
+        def lookup_default(attr: str, val: str) -> Element | None:
             elements = self.formattersDom.findall(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
@@ -215,7 +215,7 @@ class ObjectFormatter:
                 cycle_detector is not None) else None
 
         def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
-            QueryConstruct, Optional[str], blank_nulls]:
+            QueryConstruct, str | None, blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
@@ -252,7 +252,7 @@ class ObjectFormatter:
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
-                  field: Union[Field, Relationship], rel_table: SQLTable,
+                  field: Field | Relationship, rel_table: SQLTable,
                   aggregator_formatter_name,
                   cycle_detector=[]) -> Label:
 
@@ -370,7 +370,7 @@ class ObjectFormatter:
         return func.date_format(field, format_expr)
 
     def _fieldformat(self, table: Table, specify_field: Field,
-                     field: Union[InstrumentedAttribute, Extract]):
+                     field: InstrumentedAttribute | Extract):
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
             cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]

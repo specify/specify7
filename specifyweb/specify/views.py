@@ -539,7 +539,7 @@ def record_merge(
     request: http.HttpRequest,
     model_name: str,
     new_model_id: int
-) -> Union[http.HttpResponse, http.JsonResponse]:
+) -> http.HttpResponse | http.JsonResponse:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """

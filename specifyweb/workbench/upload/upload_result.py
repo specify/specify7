@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, NamedTuple, Optional, Union
 
-from typing_extensions import Literal
+from typing import Literal
 
 from .parsing import WorkBenchParseFailure
 
@@ -16,7 +16,7 @@ class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
     tableName: str
     columns: list[str]
-    treeInfo: Optional[TreeInfo]
+    treeInfo: TreeInfo | None
 
     def to_json(self) -> dict:
         return {
@@ -213,7 +213,7 @@ class Deleted(NamedTuple):
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: dict[str, Union[str, int, list[str], list[int]]]
+    payload: dict[str, str | int | list[str] | list[int]]
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -303,7 +303,7 @@ class UploadResult(NamedTuple):
     toOne: dict[str, Any]
     toMany: dict[str, list[Any]]
 
-    def get_id(self) -> Union[int, None, Failure]:
+    def get_id(self) -> int | None | Failure:
         return self.record_result.get_id()
 
     def contains_failure(self) -> bool:

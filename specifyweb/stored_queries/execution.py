@@ -39,7 +39,7 @@ from specifyweb.stored_queries.queryfield import fields_from_json
 
 logger = logging.getLogger(__name__)
 
-SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
+SORT_LITERAL: Literal["asc"] | Literal["desc"] | None
 
 SERIES_MAX_ROWS = 10000
 
@@ -56,7 +56,7 @@ class QuerySort:
 
 
 class BuildQueryProps(NamedTuple):
-    recordsetid: Optional[int] = None
+    recordsetid: int | None = None
     replace_nulls: bool = False
     formatauditobjs: bool = False
     distinct: bool = False

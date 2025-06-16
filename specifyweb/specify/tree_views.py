@@ -516,11 +516,11 @@ def all_tree_information(request):
 
 class TREE_INFORMATION(TypedDict):
     # TODO: Stricten all this.
-    definition: Dict[Any, Any]
-    ranks: List[Dict[Any, Any]] 
+    definition: dict[Any, Any]
+    ranks: list[dict[Any, Any]] 
 
 # This is done to make tree fetching easier.
-def get_all_tree_information(collection, user_id) -> Dict[str, List[TREE_INFORMATION]]:
+def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMATION]]:
     def has_tree_read_permission(tree: TREE_TABLE) -> bool:
         return has_table_permission(
             collection.id, user_id, tree, 'read')
