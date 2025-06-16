@@ -3,6 +3,7 @@ Implements the RESTful business data API
 """
 
 from calendar import c
+import http
 import json
 import logging
 import re
@@ -12,7 +13,7 @@ from collections.abc import Iterable
 
 from urllib.parse import urlencode
 
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
@@ -21,10 +22,10 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
-from django.db.models import F, Model
+from django.db.models import F, Model, Max
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, QueryDict)
+                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -261,9 +262,25 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
+        from specifyweb.specify.models import Division
+        data = json.loads(request.body)
+        if '_tableName' in data:
+            # TODO: Add flag in request body to indicate intitialization
+            # TODO: Add condition to make sure this only runs during configuration tool
+            if data['_tableName'] == 'Institution':
+                return create_institution(request)
+            elif data['_tableName'] == 'Division':
+                return create_division(request)
+            elif data['_tableName'] == 'Discipline':
+                return create_discipline(request)
+            elif data['_tableName'] == 'Collection':
+                return create_collection(request)
+            elif data['_tableName'] == 'SpecifyUser':
+                return create_specifyuser(request)
+
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.loads(request.body),
+                            model, data,
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -1056,6 +1073,7 @@ class CollectionPayloadMeta(TypedDict):
 class CollectionPayload(TypedDict):
     objects: list[dict[str, Any]]
     meta: CollectionPayloadMeta
+    _tableName: NotRequired[str]
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
@@ -1210,3 +1228,175 @@ def _handle_special_update_priors(obj, data):
     data = modify_update_of_interaction_sibling_preps(obj, data)
     data = modify_update_of_loan_return_sibling_preps(obj, data)
     return data
+
+def _guided_setup_condition(request):
+    from specifyweb.specify.models import Specifyuser
+    if Specifyuser.objects.exists():
+        is_auth = request.user.is_authenticated
+        user = Specifyuser.objects.filter(id=request.user.id).first()
+        if not user or not is_auth or not user.usertype in ('Admin', 'Manager'):
+            return False
+    return True
+
+def create_institution(request, direct=False):
+    from specifyweb.specify.models import Institution
+    if Institution.objects.exists() and not _guided_setup_condition(request):
+        return JsonResponse({"error": "Institution already exists"}, status=400)
+    if request.method == 'POST':
+        if Institution.objects.exists():
+            if not _guided_setup_condition(request):
+                return JsonResponse({"error": "Not permitted"}, status=401)
+            data = json.loads(request.body)
+            institution = Institution.objects.first()
+            fields_to_update = [
+                'name',
+                'code',
+                'isaccessionsglobal',
+                'issecurityon',
+                'isserverbased',
+                'issinglegeographytree',
+            ]
+
+            for field in fields_to_update:
+                if field in data:
+                    setattr(institution, field, data[field])
+            institution.save()
+            return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
+        try:
+            data = json.loads(request.body)
+            key_map = {
+                'isAccessionsGlobal': 'isaccessionsglobal',
+                'isSecurityOn': 'issecurityon',
+                'isServerBased': 'isserverbased',
+                'isSingleGeographyTree': 'issinglegeographytree',
+            }
+            normalized_data = {}
+            for key, value in data.items():
+                normalized_key = key_map.get(key, key.lower() if key.isupper() else key)
+                normalized_data[normalized_key] = value
+
+            ## should be institutionid?
+            normalized_data['id'] = 1
+            new_institution = Institution.objects.create(**normalized_data)
+            return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
+            # data['id'] = 1
+            # new_institution = Institution.objects.create(**data)
+            # return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_division(request, direct=False):
+    from specifyweb.specify.models import Division, Institution
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+        data['id'] = max_id + 1
+        data['abbrev'] = data.get('abbreviation', data.get('abbrev', ''))
+        if 'institution' not in data:
+            data['institution_id'] = Institution.objects.last().id
+        else:
+            institution_url = data['institution']
+            institution = strict_uri_to_model(institution_url, 'institution')
+            data['institution_id'] = institution[1]
+            data.pop('institution', None)
+        data.pop('abbreviation', None)
+        data.pop('_tableName', None)
+        try:
+            new_division = Division.objects.create(**data)
+            return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_discipline(request, direct=False):
+    from specifyweb.specify.models import Discipline, Division
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Discipline.objects.exists():
+            max_id = int(Discipline.objects.aggregate(Max('id'))['id__max']) if Discipline.objects.exists() else 0
+            data['id'] = max_id + 1
+            data['division_id'] = Division.objects.last().id
+            ##create those here do not hard code (datatype - geo - geologic)
+            data['datatype_id'] = 1
+            data['geographytreedef_id'] = 1
+            data['geologictimeperiodtreedef_id'] = 1
+            try:
+                new_discipline = Discipline.objects.create(**data)
+                return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            discipline = Discipline.objects.first()
+            fields_to_update = [
+                'name',
+                'type',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(discipline, field, data[field])
+            discipline.save()
+            return JsonResponse({"success": True, "discipline_id": discipline.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_collection(request, direct=False):
+    from specifyweb.specify.models import Collection
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Collection.objects.exists():
+            max_id = int(Collection.objects.aggregate(Max('id'))['id__max']) if Collection.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_collection = Collection.objects.create(**data)
+                return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            collection = Collection.objects.first()
+            fields_to_update = [
+                'collectionname',
+                'code',
+                'catalognumformatname',
+                'isserverbased',
+                'issinglegeographytree',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(collection, field, data[field])
+            collection.save()
+            return JsonResponse({"success": True, "collection_id": collection.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def create_specifyuser(request, direct=False):
+    from specifyweb.specify.models import Specifyuser
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if not Specifyuser.objects.exists():
+            max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
+            data['id'] = max_id + 1
+            try:
+                new_user = Specifyuser.objects.create(**data)
+                return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            user = Specifyuser.objects.first()
+            fields_to_update = [
+                'name',
+                'password',
+            ]
+            for field in fields_to_update:
+                if field in data:
+                    setattr(user, field, data[field])
+            if not Specifyuser.objects.filter(name=data['name']).exists():
+                user.save()
+            return JsonResponse({"success": True, "user_id": user.id}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)
