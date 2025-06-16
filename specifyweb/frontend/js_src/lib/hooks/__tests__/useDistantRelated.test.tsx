@@ -1,13 +1,13 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 
-import { tables } from "../../components/DataModel/tables";
-import { useDistantRelated } from "../resource";
-import { requireContext } from "../../tests/helpers";
-import { overrideAjax } from "../../tests/ajax";
+import type { AnySchema, SerializedResource } from "../../components/DataModel/helperTypes";
 import { getResourceApiUrl } from "../../components/DataModel/resource";
-import { LiteralField, Relationship } from "../../components/DataModel/specifyField";
-import { RA } from "../../utils/types";
-import { AnySchema, SerializedResource } from "../../components/DataModel/helperTypes";
+import type { LiteralField, Relationship } from "../../components/DataModel/specifyField";
+import { tables } from "../../components/DataModel/tables";
+import { overrideAjax } from "../../tests/ajax";
+import { requireContext } from "../../tests/helpers";
+import type { RA } from "../../utils/types";
+import { useDistantRelated } from "../resource";
 
 
 requireContext();
@@ -15,8 +15,10 @@ requireContext();
 describe("useDistantRelated", () => {
 
 
-    // There are tests already for fetchDistantRelated.
-    //Some of the below is taken from tests for fetchDistantRelated.
+    /*
+     *  There are tests already for fetchDistantRelated.
+     * Some of the below is taken from tests for fetchDistantRelated.
+     */
 
     const collectorId = 1;
     const secondCollectorId = 2;
@@ -38,7 +40,7 @@ describe("useDistantRelated", () => {
 
     const validateCollector = (
         result: ReturnType<typeof useDistantRelated>,
-        fields: RA<Relationship | LiteralField> | undefined,
+        fields: RA<LiteralField | Relationship> | undefined,
         agent: Partial<SerializedResource<AnySchema>> | undefined
     ) => {
         expect(result).toBeDefined();
@@ -63,7 +65,7 @@ describe("useDistantRelated", () => {
     test("empty path, that gets set", async () => {
         const resource = new tables.Collector.Resource({ id: collectorId });
 
-        let fields: RA<Relationship | LiteralField> = [];
+        let fields: RA<LiteralField | Relationship> = [];
 
         const { result, rerender } = renderHook(() => useDistantRelated(resource, fields));
 
