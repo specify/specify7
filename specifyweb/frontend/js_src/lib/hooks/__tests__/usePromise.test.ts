@@ -1,6 +1,6 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from '@testing-library/react';
 
-import { usePromise } from "../useAsyncState";
+import { usePromise } from '../useAsyncState';
 
 describe("usePromise", ()=>{
 
@@ -18,24 +18,25 @@ describe("usePromise", ()=>{
 
         expect(result.current[0]).toBe(11);
 
+  });
+
+  test('state changes when promise changes', async () => {
+    let promise = Promise.resolve(10);
+
+    const { result, rerender } = renderHook(() => usePromise(promise, false));
+
+    await waitFor(() => {
+      expect(result.current[0]).toBe(10);
     });
 
-    test("state changes when promise changes", async ()=>{
+    promise = Promise.resolve(11);
 
-        let promise = Promise.resolve(10);
+    await act(rerender);
 
-        const {result, rerender} = renderHook(()=>usePromise(promise, false));
-
-        await waitFor(()=>{
-            expect(result.current[0]).toBe(10);
-        });
-
-        promise = Promise.resolve(11);
-        act(rerender);
-
-        await waitFor(()=>{
-            expect(result.current[0]).toBe(11);
-        });
-
+    await waitFor(() => {
+      expect(result.current[0]).toBe(11);
     });
+
+  });
+
 });
