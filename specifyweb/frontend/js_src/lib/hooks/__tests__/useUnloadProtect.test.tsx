@@ -1,10 +1,12 @@
-import { LocalizedString } from "typesafe-i18n";
-import { localized, RA } from "../../utils/types";
-import { useUnloadProtect } from "../navigation";
 import React from "react";
-import { mount } from "../../tests/reactUtils";
-import { SetUnloadProtectsContext } from "../../components/Router/UnloadProtect";
 import { act } from "react-dom/test-utils";
+import type { LocalizedString } from "typesafe-i18n";
+
+import { SetUnloadProtectsContext } from "../../components/Router/UnloadProtect";
+import { mount } from "../../tests/reactUtils";
+import type { RA } from "../../utils/types";
+import { localized } from "../../utils/types";
+import { useUnloadProtect } from "../navigation";
 
 
 describe("useUnloadProtect", () => {
