@@ -2,11 +2,11 @@ import { act, renderHook } from "@testing-library/react";
 import React from "react";
 
 import { SearchDialogContext } from "../../components/Core/Contexts";
-import { mount } from "../../tests/reactUtils";
 import { tables } from "../../components/DataModel/tables";
-import { useParser } from "../resource";
 import { requireContext } from "../../tests/helpers";
-import { Parser } from "../../utils/parser/definitions";
+import { mount } from "../../tests/reactUtils";
+import type { Parser } from "../../utils/parser/definitions";
+import { useParser } from "../resource";
 
 
 requireContext();
@@ -65,11 +65,11 @@ describe("useParser", () => {
 
         mount(
             <SearchDialogContext.Provider value>
-                <TestInSearchDialog field={numberField} callback={onParserSet} />
+                <TestInSearchDialog callback={onParserSet} field={numberField} />
             </SearchDialogContext.Provider>
         );
 
-        expect(onParserSet).toBeCalled();
+        expect(onParserSet).toHaveBeenCalled();
         expect(onParserSet.mock.calls.at(-1).at(0)).toEqual({ type: "text" });
 
     });
