@@ -236,8 +236,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               !resource?.isNew() ? (
                 <RecordSetAttachments
                   name={title as string}
-                  records={records}
                   recordCount={totalCount}
+                  records={records}
                   recordSetId={isInRecordSet ? recordSetId : undefined}
                   onFetch={handleFetch}
                 />

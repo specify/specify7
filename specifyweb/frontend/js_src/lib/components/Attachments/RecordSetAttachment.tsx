@@ -111,8 +111,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   const downloadAllAttachmentsDisabled =
     !isComplete || attachments?.attachments.length === 0;
 
-  // const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
-  //   useState(false);
+  /*
+   * Const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
+   *   useState(false);
+   */
 
   return (
     <>
