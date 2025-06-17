@@ -122,12 +122,20 @@ class TestGetCogConsolidatedPreps(DefaultsSetup):
         for _ in range(2):
             self._create_prep(self.collectionobjects[3], None)
 
+        # This CO doesn't have any preparations
         TestGetCogConsolidatedPreps._link_co_cog(
             self.collectionobjects[4], self.test_cog_consolidated
         )
 
-        for _ in range(2):
-            self._create_prep(self.collectionobjects[4], preparations)
+        great_grandchild_cog_consolidated = Collectionobjectgroup.objects.create(
+            collection=self.collection,
+            cogtype=self.cogtype_consolidated,
+        )
+
+        # This doesn't have any collection objects
+        TestGetCogConsolidatedPreps._link_cog_cog(
+            great_grandchild_cog_consolidated, self.test_cog_discrete
+        )
 
         consolidated_preps = get_cog_consolidated_preps(self.test_cog_consolidated)
 
