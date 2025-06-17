@@ -1412,7 +1412,7 @@ def create_specifyuser(request, direct=False):
             max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
 
             data['id'] = max_id + 1
-            
+
             agent = Agent.objects.last()
             if not agent:
                 agent = Agent.objects.create(
@@ -1424,6 +1424,9 @@ def create_specifyuser(request, direct=False):
 
             try:
                 new_user = Specifyuser.objects.create(**data)
+
+                new_user.set_password(new_user.password)
+                new_user.save()
 
                 agent.specifyuser = new_user
                 agent.save()
