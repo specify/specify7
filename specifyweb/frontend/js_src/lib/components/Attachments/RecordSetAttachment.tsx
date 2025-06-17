@@ -108,7 +108,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === recordCount;
-  const isRecordListIncomplete = recordCount !== records.length;
 
   const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] = React.useState(false);
 
@@ -134,7 +133,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               <Button.Info
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
-                  (recordSetId === undefined && (isRecordListIncomplete || !isComplete)) ? 
+                  (recordSetId === undefined && !isComplete) ? 
                   setShowCreateRecordSetDialog(true)
                   :
                   loading(
