@@ -91,7 +91,11 @@ export const DependentCollection = Base.extend({
         ),
         { table: this.table.name, records }
       );
-    Base.call(this, records, options);
+    Base.call(this, null, options);
+    // If models are passed during collection initializtion, manually add them
+    // to the collection after initialization.
+    // This ensures proper onAdd functionality is triggered on initialization
+    records.forEach((record) => this.add(record));
   },
   initialize(_tables, options) {
     setupToOne(this, options);
