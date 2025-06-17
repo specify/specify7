@@ -1,84 +1,104 @@
-import React from "react";
-import { act } from "react-dom/test-utils";
-import type { LocalizedString } from "typesafe-i18n";
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { SetUnloadProtectsContext } from "../../components/Router/UnloadProtect";
-import { mount } from "../../tests/reactUtils";
-import type { RA } from "../../utils/types";
-import { localized } from "../../utils/types";
-import { useUnloadProtect } from "../navigation";
+import { SetUnloadProtectsContext } from '../../components/Router/UnloadProtect';
+import { mount } from '../../tests/reactUtils';
+import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
+import { useUnloadProtect } from '../navigation';
 
+describe('useUnloadProtect', () => {
+  function TestUnloadProtect({
+    isEnabled,
+    message,
+  }: {
+    readonly isEnabled: boolean;
+    readonly message: LocalizedString;
+  }) {
+    useUnloadProtect(isEnabled, message);
+    return <></>;
+  }
 
-describe("useUnloadProtect", () => {
+  test('unload protect gets set', () => {
+    const message = localized('custom message');
+    let unloadProtects: RA<string> = [];
 
-    function TestUnloadProtect({ isEnabled, message }: { readonly isEnabled: boolean, readonly message: LocalizedString }) {
-        useUnloadProtect(isEnabled, message);
-        return <></>
-    }
+    const onUnloadProtectSet = (
+      newValue: RA<string> | ((old: RA<string>) => RA<string>)
+    ) => {
+      unloadProtects =
+        typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
+    };
 
-    test("unload protect gets set", () => {
-        const message = localized("custom message");
-        let unloadProtects: RA<string> = [];
+    mount(
+      <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
+        <TestUnloadProtect isEnabled message={message} />
+      </SetUnloadProtectsContext.Provider>
+    );
 
-        const onUnloadProtectSet = (newValue: RA<string> | ((old: RA<string>) => RA<string>)) => {
-            unloadProtects = typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
-        }
+    expect(unloadProtects).toEqual([message]);
+  });
 
-        mount(
-            <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
-                <TestUnloadProtect isEnabled message={message} />
-            </SetUnloadProtectsContext.Provider>
-        );
+  test('unload protect gets unset on message change', async () => {
+    const initialMessage = localized('custom message');
+    const newMessage = localized('new custom message');
+    let unloadProtects: RA<string> = [];
 
-        expect(unloadProtects).toEqual([message]);
+    const onUnloadProtectSet = (
+      newValue: RA<string> | ((old: RA<string>) => RA<string>)
+    ) => {
+      unloadProtects =
+        typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
+    };
 
-    });
+    const { rerender } = mount(
+      <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
+        <TestUnloadProtect isEnabled message={initialMessage} />
+      </SetUnloadProtectsContext.Provider>
+    );
 
-    test("unload protect gets unset on message change", async () => {
-        const initialMessage = localized("custom message");
-        const newMessage = localized("new custom message");
-        let unloadProtects: RA<string> = [];
+    expect(unloadProtects).toEqual([initialMessage]);
 
-        const onUnloadProtectSet = (newValue: RA<string> | ((old: RA<string>) => RA<string>)) => {
-            unloadProtects = typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
-        }
+    await act(() =>
+      rerender(
+        <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
+          <TestUnloadProtect isEnabled message={newMessage} />
+        </SetUnloadProtectsContext.Provider>
+      )
+    );
 
-        const { rerender } = mount(<SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
-            <TestUnloadProtect isEnabled message={initialMessage} />
-        </SetUnloadProtectsContext.Provider>);
+    expect(unloadProtects).toEqual([newMessage]);
+  });
 
-        expect(unloadProtects).toEqual([initialMessage]);
+  test('unload protect gets unset on disable change', async () => {
+    const initialMessage = localized('custom message');
 
-        await act(() => rerender(
-            <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
-                <TestUnloadProtect isEnabled message={newMessage} />
-            </SetUnloadProtectsContext.Provider>
-        ))
+    let unloadProtects: RA<string> = [];
 
-        expect(unloadProtects).toEqual([newMessage]);
-    });
+    const onUnloadProtectSet = (
+      newValue: RA<string> | ((old: RA<string>) => RA<string>)
+    ) => {
+      unloadProtects =
+        typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
+    };
 
-    test("unload protect gets unset on disable change", async () => {
-        const initialMessage = localized("custom message");
+    const { rerender } = mount(
+      <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
+        <TestUnloadProtect isEnabled message={initialMessage} />
+      </SetUnloadProtectsContext.Provider>
+    );
 
-        let unloadProtects: RA<string> = [];
+    expect(unloadProtects).toEqual([initialMessage]);
 
-        const onUnloadProtectSet = (newValue: RA<string> | ((old: RA<string>) => RA<string>)) => {
-            unloadProtects = typeof newValue === 'function' ? newValue(unloadProtects) : newValue;
-        }
+    await act(() =>
+      rerender(
+        <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
+          <TestUnloadProtect isEnabled={false} message={initialMessage} />
+        </SetUnloadProtectsContext.Provider>
+      )
+    );
 
-        const { rerender } = mount(<SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
-            <TestUnloadProtect isEnabled message={initialMessage} />
-        </SetUnloadProtectsContext.Provider>);
-
-        expect(unloadProtects).toEqual([initialMessage]);
-
-        await act(() => rerender(
-            <SetUnloadProtectsContext.Provider value={onUnloadProtectSet}>
-                <TestUnloadProtect isEnabled={false} message={initialMessage} />
-            </SetUnloadProtectsContext.Provider>
-        ))
-
-        expect(unloadProtects).toEqual([]);
-    });
-})
+    expect(unloadProtects).toEqual([]);
+  });
+});

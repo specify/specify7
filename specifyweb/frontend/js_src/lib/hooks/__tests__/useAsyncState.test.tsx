@@ -1,114 +1,105 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
-import React from "react";
+import { act, renderHook, waitFor } from '@testing-library/react';
+import React from 'react';
 
-import { LoadingContext } from "../../components/Core/Contexts";
-import { mount } from "../../tests/reactUtils";
-import { useAsyncState } from "../useAsyncState";
+import { LoadingContext } from '../../components/Core/Contexts';
+import { mount } from '../../tests/reactUtils';
+import { useAsyncState } from '../useAsyncState';
 
-describe("useAsyncState", () => {
+describe('useAsyncState', () => {
+  function TestLoading({
+    promise,
+    callback,
+    showLoading,
+  }: {
+    readonly promise: () => Promise<string>;
+    readonly callback: (state: string | undefined | undefined) => void;
+    readonly showLoading: boolean;
+  }) {
+    const [state] = useAsyncState(promise, showLoading);
+    React.useEffect(() => {
+      callback(state);
+    }, [state, callback]);
+    return <></>;
+  }
 
-    function TestLoading(
-        { promise, callback, showLoading }:
-            {
-                readonly promise: () => Promise<string>,
-                readonly callback: (state: string | undefined | undefined) => void,
-                readonly showLoading: boolean
-            }
-    ) {
-        const [state] = useAsyncState(promise, showLoading);
-        React.useEffect(() => {
-            callback(state);
-        }, [state, callback]);
-        return <></>
-    }
+  test('promise gets resolved and state set', async () => {
+    const promise = async () => 'First Promise';
 
-    test("promise gets resolved and state set", async () => {
+    const { result } = renderHook(() => useAsyncState(promise, false));
 
-        const promise = async () => "First Promise";
+    await waitFor(() => {
+      expect(result.current[0]).toBe('First Promise');
+    });
+  });
 
-        const { result } = renderHook(() => useAsyncState(promise, false));
+  test('Loading screen appears', async () => {
+    const promise = async () => 'First Promise';
 
-        await waitFor(() => {
-            expect(result.current[0]).toBe("First Promise");
-        });
+    const promiseHandler = jest.fn();
+    const onStateSet = jest.fn();
 
+    mount(
+      <LoadingContext.Provider value={promiseHandler}>
+        <TestLoading callback={onStateSet} promise={promise} showLoading />
+      </LoadingContext.Provider>
+    );
+
+    await waitFor(() => {
+      expect(onStateSet.mock.calls.length).toBeGreaterThanOrEqual(1);
+      const stateSet = onStateSet.mock.calls.at(-1).at(0);
+      expect(stateSet).toBe('First Promise');
     });
 
-    test("Loading screen appears", async () => {
+    expect(promiseHandler).toHaveBeenCalled();
+  });
 
-        const promise = async () => "First Promise";
+  /*
+   * Below tests don't work because of the async nature.
+   * The cleanest way would be a slight refactor and adding callbacks
+   * to the useAsyncState and useMultipleAsyncState.
+   */
+  test.skip('destructor call is obeyed', async () => {
+    const firstPromise = new Promise(() => {});
 
-        const promiseHandler = jest.fn();
-        const onStateSet = jest.fn();
+    const secondPromise = Promise.resolve('Second Value');
 
-        mount(
-            <LoadingContext.Provider value={promiseHandler}>
-                <TestLoading callback={onStateSet} promise={promise} showLoading />
-            </LoadingContext.Provider>
-        )
+    let promise = async () => firstPromise;
 
-        await waitFor(() => {
-            expect(onStateSet.mock.calls.length).toBeGreaterThanOrEqual(1);
-            const stateSet = onStateSet.mock.calls.at(-1).at(0);
-            expect(stateSet).toBe("First Promise");
-        });
+    const { result, rerender } = renderHook(() =>
+      useAsyncState(promise, false)
+    );
 
-        expect(promiseHandler).toHaveBeenCalled();
+    promise = async () => secondPromise;
 
+    await act(rerender);
+
+    await waitFor(() => {
+      expect(result.current[0]).toBeDefined();
     });
 
-    /*
-     * Below tests don't work because of the async nature.
-     * The cleanest way would be a slight refactor and adding callbacks
-     * to the useAsyncState and useMultipleAsyncState.
-     */
-    test.skip("destructor call is obeyed", async () => {
+    expect(result.current[0]).toBe('Second Value');
+  });
 
-        const firstPromise = new Promise(() => { });
+  test.skip('state changes when promise changes', async () => {
+    const firstPromise = Promise.resolve('First Promise');
+    const secondPromise = Promise.resolve('Second Promise');
 
-        const secondPromise = Promise.resolve(
-            "Second Value"
-        );
+    let promise: () => Promise<string> = async () => firstPromise;
 
-        let promise = async () => firstPromise;
+    const { result, rerender } = renderHook(() =>
+      useAsyncState(promise, false)
+    );
 
-        const { result, rerender } = renderHook(() => useAsyncState(promise, false));
-
-        promise = async () => secondPromise;
-
-        await act(rerender);
-
-        await waitFor(() => {
-            expect(result.current[0]).toBeDefined();
-        })
-
-        expect(result.current[0]).toBe(
-            "Second Value"
-        );
-
+    await waitFor(() => {
+      expect(result.current[0]).toBe('First Promise');
     });
 
-    test.skip("state changes when promise changes", async () => {
+    promise = async () => secondPromise;
 
-        const firstPromise = Promise.resolve("First Promise");
-        const secondPromise = Promise.resolve("Second Promise");
+    await act(rerender);
 
-        let promise: () => Promise<string> = async () => firstPromise;
-
-        const { result, rerender } = renderHook(() => useAsyncState(promise, false));
-
-        await waitFor(() => {
-            expect(result.current[0]).toBe("First Promise");
-        });
-
-        promise = async () => secondPromise;
-
-        await act(rerender);
-
-        await waitFor(() => {
-            expect(result.current[0]).toBe("Second Promise");
-        });
-
+    await waitFor(() => {
+      expect(result.current[0]).toBe('Second Promise');
     });
-
+  });
 });
