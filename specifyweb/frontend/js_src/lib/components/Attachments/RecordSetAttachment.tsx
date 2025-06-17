@@ -158,10 +158,15 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
-              : commonText.countLine({
+              : (!isComplete ? 
+                commonText.countLineOrMore({
                   resource: attachmentsText.attachments(),
-                  count: attachmentsRef.current.attachments.length,
-                })
+                  count: attachmentsRef.current.attachments.length
+                }) : 
+                commonText.countLine({
+                  resource: attachmentsText.attachments(),
+                  count: attachmentsRef.current.attachments.length
+                }))
           }
           onClose={handleHideAttachments}
         >
