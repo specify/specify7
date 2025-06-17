@@ -17,9 +17,9 @@ import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { ConfigurationTool } from '../ConfigurationTool';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
@@ -51,7 +51,7 @@ export function Login(): JSX.Element {
 
     if (isNewUser === true || isNewUser === undefined) {
       // Display here the new setup pages
-      return <ConfigurationTool />;
+      return <SetupTool />;
     }
 
     return providers.length > 0 ? (
