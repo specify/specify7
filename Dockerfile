@@ -10,7 +10,9 @@ RUN set -eux; \
       apt-get -y install --no-install-recommends \
         gettext \
         python3.12 \
-        libldap-2.5-0 \
+        python3.12-venv \
+        python3.12-dev \
+        libldap2 \
         libmariadb3 \
         rsync \
         tzdata \
@@ -70,7 +72,9 @@ RUN set -eux; \
             libffi-dev \
             python3.12-venv \
             python3.12-dev \
-            libmariadb-dev && break; \
+            libmariadb-dev \
+            tzdata \
+            && break; \
       echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
     done; \
     apt-get clean && rm -rf /var/lib/apt/lists/*
