@@ -138,6 +138,9 @@ export function ConfigurationTool(): JSX.Element {
           className="bg-white p-6 rounded shadow-md max-w-xl"
           onSubmit={handleSubmit}
         >
+          <h3 className="text-xl font-semibold mb-4">
+            {resources[currentStep].resourceName}
+          </h3>
           {renderFormFields()}
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded mt-4"

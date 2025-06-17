@@ -1312,19 +1312,37 @@ def create_division(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_discipline(request, direct=False):
-    from specifyweb.specify.models import Discipline, Division
+    from specifyweb.specify.models import Discipline, Division, Datatype, Geographytreedef, Geologictimeperiodtreedef
+
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
+
     if request.method == 'POST':
         data = json.loads(request.body)
+
         if not Discipline.objects.exists():
             max_id = int(Discipline.objects.aggregate(Max('id'))['id__max']) if Discipline.objects.exists() else 0
+
             data['id'] = max_id + 1
             data['division_id'] = Division.objects.last().id
-            ##create those here do not hard code (datatype - geo - geologic)
-            data['datatype_id'] = 1
-            data['geographytreedef_id'] = 1
-            data['geologictimeperiodtreedef_id'] = 1
+
+            datatype = Datatype.objects.last()
+            if not datatype:
+                datatype = Datatype.objects.create(id=1, name='Biota') 
+
+            geography_tree_def = Geographytreedef.objects.last()
+            if not geography_tree_def:
+                geography_tree_def = Geographytreedef.objects.create(id=1, name='Geography')
+
+            geologic_time_def = Geologictimeperiodtreedef.objects.last()
+            if not geologic_time_def:
+                geologic_time_def = Geologictimeperiodtreedef.objects.create(id=1, name='Chronostratigraphy')
+
+            data['division_id'] = Division.objects.last().id
+            data['datatype_id'] = datatype.id
+            data['geographytreedef_id'] = geography_tree_def.id
+            data['geologictimeperiodtreedef_id'] = geologic_time_def.id
+
             try:
                 new_discipline = Discipline.objects.create(**data)
                 return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
