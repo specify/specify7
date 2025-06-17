@@ -37,7 +37,7 @@ const resources: readonly ResourceConfig[] = [
   {
     resourceName: 'SpecifyUser',
     endpoint: '/api/specify/specifyuser/create/',
-    fields: ['name', 'password', 'agents'],
+    fields: ['name', 'password'],
   },
 ];
 
@@ -89,7 +89,7 @@ export function ConfigurationTool(): JSX.Element {
     onResourceSaved(endpoint, resourceName, formData)
       .then(() => {
         if (resourceName === 'SpecifyUser') {
-          navigate('/accounts/login/');
+          globalThis.location.reload();
         } else {
           setFormData({});
           setCurrentStep((previous) => previous + 1);

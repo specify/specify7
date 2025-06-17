@@ -1400,16 +1400,34 @@ def create_collection(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_specifyuser(request, direct=False):
-    from specifyweb.specify.models import Specifyuser
+    from specifyweb.specify.models import Specifyuser, Agent, Division
+
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
+
     if request.method == 'POST':
         data = json.loads(request.body)
+
         if not Specifyuser.objects.exists():
             max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
+
             data['id'] = max_id + 1
+            
+            agent = Agent.objects.last()
+            if not agent:
+                agent = Agent.objects.create(
+                    id=1, 
+                    agenttype=1, 
+                    firstname='spadmin', 
+                    division= Division.objects.last()
+                ) 
+
             try:
                 new_user = Specifyuser.objects.create(**data)
+
+                agent.specifyuser = new_user
+                agent.save()
+
                 return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
             except Exception as e:
                 return JsonResponse({"error": str(e)}, status=400)
