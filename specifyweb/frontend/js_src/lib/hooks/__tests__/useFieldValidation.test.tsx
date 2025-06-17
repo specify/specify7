@@ -5,7 +5,7 @@
  * in useResourceValue.
  * But, having an independent test for this important hook is worth it.
  */
-import { act,renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import { getFieldBlockers } from '../../components/DataModel/saveBlockers';
 import { tables } from '../../components/DataModel/tables';
@@ -13,44 +13,53 @@ import { requireContext } from '../../tests/helpers';
 import type { RA } from '../../utils/types';
 import { useFieldValidation } from '../useFieldValidation';
 
-
 requireContext();
 
-describe("useFieldValidation", () => {
+describe('useFieldValidation', () => {
+  // TODO: make this part of utils?
+  const expectArrayEqual = (base: RA<unknown>, compare: RA<unknown>) => {
+    expect(base).toHaveLength(compare.length);
+    base.forEach((baseElement, index) =>
+      expect(baseElement).toBe(compare[index])
+    );
+  };
 
-    // TODO: make this part of utils?
-    const expectArrayEqual = (base: RA<unknown>, compare: RA<unknown>) => {
-        expect(base).toHaveLength(compare.length);
-        base.forEach((baseElement, index) => expect(baseElement).toBe(compare[index]));
-    }
+  test('blocker(s) get set', () => {
+    const collectionObject = new tables.CollectionObject.Resource({ id: 1 });
 
-    test("blocker(s) get set", () => {
+    const textField = tables.CollectionObject.strictGetField('text1');
 
-        const collectionObject = new tables.CollectionObject.Resource(
-            { id: 1 }
-        );
+    const { result } = renderHook(() =>
+      useFieldValidation(collectionObject, textField)
+    );
 
-        const textField = tables.CollectionObject.strictGetField("text1");
+    // We don't bother mounting for testing this hook.
+    expectArrayEqual(getFieldBlockers(collectionObject, textField), []);
 
-        const { result } = renderHook(() => useFieldValidation(collectionObject, textField));
+    const simpleErrors = [
+      'value is not correct',
+      "value does not begin with 'A'",
+    ];
+    const customError = 'this is custom';
+    const customErrorKey = 'custom_blocker';
 
-        // We don't bother mounting for testing this hook.
-        expectArrayEqual(getFieldBlockers(collectionObject, textField), []);
+    act(() => result.current.setValidation(simpleErrors));
 
-        const simpleErrors = ["value is not correct", "value does not begin with 'A'"];
-        const customError = "this is custom";
-        const customErrorKey = "custom_blocker";
+    expectArrayEqual(
+      getFieldBlockers(collectionObject, textField),
+      simpleErrors
+    );
 
-        act(() => result.current.setValidation(simpleErrors));
+    act(() => result.current.setValidation(customError, customErrorKey));
 
-        expectArrayEqual(getFieldBlockers(collectionObject, textField), simpleErrors);
+    expectArrayEqual(
+      getFieldBlockers(collectionObject, textField, customErrorKey),
+      [customError]
+    );
 
-        act(() => result.current.setValidation(customError, customErrorKey));
-
-        expectArrayEqual(getFieldBlockers(collectionObject, textField,
-            customErrorKey
-        ), [customError]);
-
-        expectArrayEqual(getFieldBlockers(collectionObject, textField), [...simpleErrors, customError]);
-    });
+    expectArrayEqual(getFieldBlockers(collectionObject, textField), [
+      ...simpleErrors,
+      customError,
+    ]);
+  });
 });
