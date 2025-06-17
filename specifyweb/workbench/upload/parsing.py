@@ -121,7 +121,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
     parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
-        coord_text_field = field.name.replace('itude', '') + 'text'
+        coord_text_field = field.name.replace('itude', '') + 'text' if field.name else ''
         filter_on = {coord_text_field: parsed.to_upload[coord_text_field]}
         return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
 

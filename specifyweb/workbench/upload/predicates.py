@@ -92,7 +92,7 @@ class DjangoPredicates(NamedTuple):
             DjangoPredicates._map_reduce(values) for values in self.filters.values()
         )
 
-    def get_cache_key(self, basetable_name: str = None) -> str:
+    def get_cache_key(self, basetable_name: Optional[str] = None) -> str:
         filters = [
             # we don't care about table past the first one, since rels will uniquely denote the related table..
             (
@@ -265,7 +265,7 @@ def get_unique_predicate(pre="predicate-") -> Generator[str, None, None]:
 # This predicates is a magic predicate, and is completely ignored during query-building. If a uploadable returns this, it won't be considered for matching
 # NOTE: There's a difference between Skipping and returning a null filter (if within to-ones, null will really - correctly - filter for null).
 class SkippablePredicate(DjangoPredicates):
-    def get_cache_key(self, basetable_name: str = None) -> str:
+    def get_cache_key(self, basetable_name: Optional[str] = None) -> str:
         return repr(("Skippable", basetable_name))
 
     def apply_to_query(self, base_name: str) -> QuerySet:
