@@ -79,7 +79,7 @@ class GeneralMiddleware:
                 return http.HttpResponse(exception.to_json(), status=exception.status_code)
 
 
-def serialize_django_obj(django_obj: frozenset[models.QuerySet | models.Model]) -> Union[list[dict[str, Any]], dict[str, Any]]:
+def serialize_django_obj(django_obj: FrozenSet[Union[models.QuerySet, models.Model]]) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
     """Attempt to serialize two common objects in Django, a Queryset or a Model. 
     If the object is a Queryset, return a list of dictonaries containing the important (non-null) fields
     Similarly, if the object is a single Model, return a dictonary containing every field
