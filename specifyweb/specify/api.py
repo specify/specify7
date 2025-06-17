@@ -1362,14 +1362,22 @@ def create_discipline(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_collection(request, direct=False):
-    from specifyweb.specify.models import Collection
+    from specifyweb.specify.models import Collection, Discipline
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
+
     if request.method == 'POST':
-        data = json.loads(request.body)
+        # data = json.loads(request.body)
+        raw_data = json.loads(request.body)
+        # Lowercase all keys
+        data = {k.lower(): v for k, v in raw_data.items()}
+
         if not Collection.objects.exists():
             max_id = int(Collection.objects.aggregate(Max('id'))['id__max']) if Collection.objects.exists() else 0
+
             data['id'] = max_id + 1
+            data['discipline_id'] = Discipline.objects.last().id
+
             try:
                 new_collection = Collection.objects.create(**data)
                 return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
