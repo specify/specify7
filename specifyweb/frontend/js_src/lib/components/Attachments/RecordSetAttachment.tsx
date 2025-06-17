@@ -158,12 +158,12 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
-              : (!isComplete ? 
-                commonText.countLineOrMore({
+              : (isComplete ? 
+                commonText.countLine({
                   resource: attachmentsText.attachments(),
                   count: attachmentsRef.current.attachments.length
                 }) : 
-                commonText.countLine({
+                commonText.countLineOrMore({
                   resource: attachmentsText.attachments(),
                   count: attachmentsRef.current.attachments.length
                 }))
