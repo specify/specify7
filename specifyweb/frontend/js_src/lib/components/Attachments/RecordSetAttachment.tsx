@@ -63,8 +63,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const fetchCount = filterArray(records).findIndex(
-        (record) => !record.populated
+      const fetchCount = records.findIndex(
+        (record) => record === undefined || !record.populated
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
@@ -108,9 +108,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
 
   const isComplete = fetchedCount.current === recordCount;
-  const isPartialRecords = recordCount !== records.length;
-  const downloadAllAttachmentsDisabled =
-    attachments?.attachments.length === 0;
+  const isRecordListIncomplete = recordCount !== records.length;
 
   const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] = React.useState(false);
 
@@ -123,33 +121,25 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         onClick={handleShowAttachments}
       />
       {showCreateRecordSetDialog && (
-        <Dialog
-          buttons={
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          className={{
-            container: dialogClassNames.wideContainer,
+        <CreateRecordSetDialog
+          onClose={(): void => {
+            setShowCreateRecordSetDialog(false);
           }}
-          header={attachmentsText.downloadAll()}
-          onClose={(): void => setShowCreateRecordSetDialog(false)}
-        >
-          {attachmentsText.createRecordSetToDownloadAll()}
-        </Dialog>
+        />
       )}
       {showAttachments && (
         <Dialog
           buttons={
             <>
               <Button.Info
-                disabled={downloadAllAttachmentsDisabled}
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
-                  ((isPartialRecords || !isComplete) && recordSetId !== undefined) ? 
+                  (recordSetId === undefined && (isRecordListIncomplete || !isComplete)) ? 
                   setShowCreateRecordSetDialog(true)
                   :
                   loading(
                     downloadAllAttachments(
-                      attachmentsRef.current?.attachments ?? [],
+                      recordSetId ? [] : (attachmentsRef.current?.attachments ?? []),
                       name,
                       recordSetId,
                     )
@@ -211,5 +201,23 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         </Dialog>
       )}
     </>
+  );
+}
+
+function CreateRecordSetDialog({
+  onClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+      }
+      header={attachmentsText.downloadAll()}
+      onClose={onClose}
+    >
+      {attachmentsText.createRecordSetToDownloadAll()}
+    </Dialog>
   );
 }
