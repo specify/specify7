@@ -10,34 +10,57 @@ type ResourceFormData = Record<string, any>;
 type ResourceConfig = {
   readonly resourceName: string;
   readonly endpoint: string;
-  readonly fields: readonly string[];
+  readonly fields: readonly FieldConfig[];
+};
+
+type FieldConfig = {
+  readonly name: string;
+  readonly label: string;
 };
 
 const resources: readonly ResourceConfig[] = [
   {
     resourceName: 'Institution',
     endpoint: '/api/specify/institution/create/',
-    fields: ['name', 'code', 'isAccessionsGlobal', 'isSingleGeographyTree'],
+    fields: [
+      { name: 'name', label: 'Name' },
+      { name: 'code', label: 'Code' },
+      { name: 'isAccessionsGlobal', label: 'Define Accession Globally' },
+      { name: 'isSingleGeographyTree', label: 'Use Single Geography Tree' },
+    ],
   },
   {
     resourceName: 'Division',
     endpoint: '/api/specify/division/create/',
-    fields: ['name', 'abbrev'],
+    fields: [
+      { name: 'name', label: 'Name' },
+      { name: 'abbrev', label: 'Abbreviation' },
+    ],
   },
   {
     resourceName: 'Discipline',
     endpoint: '/api/specify/discipline/create/',
-    fields: ['name', 'type'],
+    fields: [
+      { name: 'name', label: 'Name' },
+      { name: 'type', label: 'Type' },
+    ],
   },
   {
     resourceName: 'Collection',
     endpoint: '/api/specify/collection/create/',
-    fields: ['collectionName', 'code', 'catalogNumFormatName'],
+    fields: [
+      { name: 'collectionName', label: 'Collection Name' },
+      { name: 'code', label: 'Code' },
+      { name: 'catalogNumFormatName', label: 'Catalog Number Format' },
+    ],
   },
   {
     resourceName: 'SpecifyUser',
     endpoint: '/api/specify/specifyuser/create/',
-    fields: ['name', 'password'],
+    fields: [
+      { name: 'name', label: 'Username' },
+      { name: 'password', label: 'Password' },
+    ],
   },
 ];
 
@@ -101,37 +124,49 @@ export function ConfigurationTool(): JSX.Element {
   };
 
   const renderFormFields = () =>
-    resources[currentStep].fields.map((field) => (
-      <div className="mb-4" key={field}>
-        <label className="block font-medium text-gray-700 mb-1" htmlFor={field}>
-          {field}
-        </label>
-        <input
-          checked={
-            typeof formData[field] === 'boolean' ? formData[field] : undefined
-          }
-          className="border rounded p-2 w-full"
-          id={field}
-          name={field}
-          type={
-            field.startsWith('is')
-              ? 'checkbox'
-              : field === 'password'
-                ? 'password'
-                : 'text'
-          }
-          value={
-            typeof formData[field] === 'boolean'
-              ? undefined
-              : formData[field] || ''
-          }
-          onChange={handleChange}
-        />
-      </div>
-    ));
+    resources[currentStep].fields.map(({ name, label }) => {
+      const isCheckbox = name.startsWith('is');
+
+      return (
+        <div className="mb-4" key={name}>
+          {isCheckbox ? (
+            <div className="flex items-center space-x-2">
+              <label className="font-medium text-gray-700" htmlFor={name}>
+                {label}
+              </label>
+              <input
+                checked={Boolean(formData[name])}
+                className="border border-gray-500 rounded-full"
+                id={name}
+                name={name}
+                type="checkbox"
+                onChange={handleChange}
+              />
+            </div>
+          ) : (
+            <>
+              <label
+                className="block font-medium text-gray-700 mb-1"
+                htmlFor={name}
+              >
+                {label}
+              </label>
+              <input
+                className="rounded-md p-2 w-full"
+                id={name}
+                name={name}
+                type={name === 'password' ? 'password' : 'text'}
+                value={formData[name] || ''}
+                onChange={handleChange}
+              />
+            </>
+          )}
+        </div>
+      );
+    });
 
   return (
-    <Container.FullGray>
+    <Container.FullGray className="overflow-auto">
       <H2 className="text-2xl mb-6">Specify Configuration Setup</H2>
       {currentStep < resources.length ? (
         <form
@@ -143,7 +178,7 @@ export function ConfigurationTool(): JSX.Element {
           </h3>
           {renderFormFields()}
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded mt-4"
+            className="bg-orange-500 text-white px-4 py-2 rounded mt-4"
             type="submit"
           >
             Save & Continue
