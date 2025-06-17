@@ -1273,7 +1273,7 @@
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row> 
-			<cell type="panel" colspan="4" initialize="align=left">
+			<cell type="panel" colspan="4">
 				<rows>
 					<row>
 						<cell type="label" labelfor="parent" initialize="align=left"/>
