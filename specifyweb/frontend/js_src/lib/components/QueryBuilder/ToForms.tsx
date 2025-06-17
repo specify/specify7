@@ -71,6 +71,14 @@ export function QueryToForms({
               handleDelete(unParseIndex(index));
             }
           }}
+          onFetch={
+            handleFetchMore
+              ? async (index) => {
+                  handleFetchMore(index);
+                  return undefined;
+                }
+              : undefined
+          }
           onSaved={f.void}
           onSlide={
             typeof handleFetchMore === 'function'
@@ -78,14 +86,6 @@ export function QueryToForms({
                   selectedRows.size === 0 && results[index] === undefined
                     ? handleFetchMore?.(index)
                     : undefined
-              : undefined
-          }
-          onFetch={
-            handleFetchMore
-              ? (index) => {
-                  handleFetchMore(index)
-                  return Promise.resolve(undefined);
-                }
               : undefined
           }
         />
@@ -105,8 +105,15 @@ function useSelectedResults(
       isOpen
         ? selectedRows.size === 0
           ? totalCount
-            ? ([...results.map((row) => row?.[queryIdField]), ...Array(totalCount - results.length).fill(undefined)] as RA<number | undefined>)
-            : results.map((row) => row?.[queryIdField]) as RA<number | undefined>
+            ? ([
+                ...results.map((row) => row?.[queryIdField]),
+                ...Array.from({ length: totalCount - results.length }).fill(
+                  undefined
+                ),
+              ] as RA<number | undefined>)
+            : (results.map((row) => row?.[queryIdField]) as RA<
+                number | undefined
+              >)
           : Array.from(selectedRows)
         : [],
     [results, isOpen, selectedRows]
