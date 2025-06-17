@@ -9,7 +9,7 @@ RUN set -eux; \
       apt-get update && \
       apt-get -y install --no-install-recommends \
         gettext \
-        python3.11 \
+        python3.12 \
         libldap-2.5-0 \
         libmariadb3 \
         rsync \
@@ -68,10 +68,9 @@ RUN set -eux; \
             libssl-dev \
             libgmp-dev \
             libffi-dev \
-            python3.11-venv \
-            python3.11-distutils \
-            python3.11-dev \
-            libmariadbclient-dev && break; \
+            python3.12-venv \
+            python3.12-dev \
+            libmariadb-dev && break; \
       echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
     done; \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -83,7 +82,7 @@ WORKDIR /opt/specify7
 # Retry loop to help GitHub arm64 build
 RUN set -eux; \
     for i in 1 2 3; do \
-        python3.11 -m venv ve && \
+        python3.12 -m venv ve && \
         ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
         ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
         break; \
@@ -197,7 +196,6 @@ RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \
       apt-get -y install --no-install-recommends \
-        python3.11-distutils \
         ca-certificates \
         make && \
       break; \

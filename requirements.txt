@@ -1,7 +1,7 @@
 setuptools>=50.0.0
 tzdata
 wheel
-backports.zoneinfo==0.2.1
+# backports.zoneinfo==0.2.1
 kombu==5.5.2
 celery[redis]==5.5.1
 Django==4.2.18
