@@ -50,7 +50,6 @@ export function Login(): JSX.Element {
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
     if (isNewUser === true || isNewUser === undefined) {
-      // Display here the new setup pages
       return <SetupTool />;
     }
 

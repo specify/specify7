@@ -1240,8 +1240,10 @@ def _guided_setup_condition(request):
 
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
+
     if Institution.objects.exists() and not _guided_setup_condition(request):
         return JsonResponse({"error": "Institution already exists"}, status=400)
+
     if request.method == 'POST':
         if Institution.objects.exists():
             if not _guided_setup_condition(request):
@@ -1261,9 +1263,11 @@ def create_institution(request, direct=False):
                 if field in data:
                     setattr(institution, field, data[field])
             institution.save()
+
             return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
         try:
             data = json.loads(request.body)
+
             key_map = {
                 'isAccessionsGlobal': 'isaccessionsglobal',
                 'isSecurityOn': 'issecurityon',
@@ -1271,30 +1275,32 @@ def create_institution(request, direct=False):
                 'isSingleGeographyTree': 'issinglegeographytree',
             }
             normalized_data = {}
+
             for key, value in data.items():
                 normalized_key = key_map.get(key, key.lower() if key.isupper() else key)
                 normalized_data[normalized_key] = value
 
-            ## should be institutionid?
             normalized_data['id'] = 1
             new_institution = Institution.objects.create(**normalized_data)
             return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
-            # data['id'] = 1
-            # new_institution = Institution.objects.create(**data)
-            # return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
+
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
+
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
+
     if request.method == 'POST':
         data = json.loads(request.body)
         max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+
         data['id'] = max_id + 1
         data['abbrev'] = data.get('abbreviation', data.get('abbrev', ''))
+
         if 'institution' not in data:
             data['institution_id'] = Institution.objects.last().id
         else:
@@ -1302,8 +1308,10 @@ def create_division(request, direct=False):
             institution = strict_uri_to_model(institution_url, 'institution')
             data['institution_id'] = institution[1]
             data.pop('institution', None)
+
         data.pop('abbreviation', None)
         data.pop('_tableName', None)
+
         try:
             new_division = Division.objects.create(**data)
             return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
@@ -1367,7 +1375,6 @@ def create_collection(request, direct=False):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
     if request.method == 'POST':
-        # data = json.loads(request.body)
         raw_data = json.loads(request.body)
         # Lowercase all keys
         data = {k.lower(): v for k, v in raw_data.items()}
@@ -1427,6 +1434,8 @@ def create_specifyuser(request, direct=False):
 
                 new_user.set_password(new_user.password)
                 new_user.save()
+
+                ## TODO: add here permission to the newly created collection
 
                 agent.specifyuser = new_user
                 agent.save()
