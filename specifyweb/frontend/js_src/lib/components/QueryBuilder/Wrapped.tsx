@@ -17,6 +17,7 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { BatchEditFromQuery } from '../BatchEdit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -40,6 +41,7 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
@@ -94,6 +96,7 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
+    readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -143,12 +146,13 @@ function Wrapped({
       throttle(
         () =>
           setSaveRequired(
-            state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)
+            (state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)) ||
+              autoRun
           ),
         200
       ),
-    [initialFields.current, state.fields]
+    [initialFields.current, state.fields, autoRun]
   );
 
   React.useEffect(checkForChanges, [state.fields]);
@@ -157,8 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
+      isSeries: query.selectSeries,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, query.selectSeries]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -295,6 +300,23 @@ function Wrapped({
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
+
+  const showSeries = React.useMemo(
+    () =>
+      table.name === 'CollectionObject' &&
+      state.fields.some(
+        (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
+      ),
+    [state, table.name]
+  );
+
+  React.useEffect(() => {
+    if (!showSeries)
+      setQuery({
+        ...query,
+        selectSeries: false,
+      });
+  }, [showSeries]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -556,7 +578,9 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={query.selectSeries ?? false}
                 showHiddenFields={showHiddenFields}
+                showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
                 onSubmitClick={(): void =>
@@ -571,6 +595,12 @@ function Wrapped({
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
+                onToggleSeries={(): void =>
+                  setQuery({
+                    ...query,
+                    selectSeries: !(query.selectSeries ?? false),
+                  })
+                }
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
@@ -588,17 +618,27 @@ function Wrapped({
                   ) : undefined
                 }
                 extraButtons={
-                  query.countOnly ? undefined : (
-                    <QueryExportButtons
-                      baseTableName={state.baseTableName}
-                      fields={state.fields}
-                      getQueryFieldRecords={getQueryFieldRecords}
-                      queryResource={queryResource}
-                      recordSetId={recordSet?.id}
-                      results={resultsRef}
-                      selectedRows={selectedRows}
-                    />
-                  )
+                  <>
+                    {datasetVariants.batchEdit.canCreate() && (
+                      <BatchEditFromQuery
+                        baseTableName={state.baseTableName}
+                        fields={state.fields}
+                        query={queryResource}
+                        recordSetId={recordSet?.id}
+                      />
+                    )}
+                    {query.countOnly ? undefined : (
+                      <QueryExportButtons
+                        baseTableName={state.baseTableName}
+                        fields={state.fields}
+                        getQueryFieldRecords={getQueryFieldRecords}
+                        queryResource={queryResource}
+                        recordSetId={recordSet?.id}
+                        results={resultsRef}
+                        selectedRows={selectedRows}
+                      />
+                    )}
+                  </>
                 }
                 fields={state.fields}
                 forceCollection={forceCollection}

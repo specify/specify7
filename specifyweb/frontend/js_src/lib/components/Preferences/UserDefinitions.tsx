@@ -6,6 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
@@ -64,9 +65,11 @@ const isDarkMode = ({
   isRedirecting,
 }: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
-  ? 'Option'
-  : 'Alt';
+// Navigator may not be defined in some environments, like non-browser environments
+const altKeyName =
+  typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
+    ? 'Option'
+    : 'Alt';
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
@@ -617,7 +620,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -711,7 +714,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
@@ -847,7 +850,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             setOnBlurOnly: true,
             visible: true,
-            defaultValue: 1200,
+            defaultValue: 1600,
             type: 'java.lang.Float',
             parser: {
               min: 100,
@@ -1636,6 +1639,14 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          showComparisonOperatorsForString: definePref<boolean>({
+            title: preferencesText.showComparisonOperatorsForString(),
+            description: preferencesText.showComparisonOperatorsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -2016,6 +2027,47 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  batchEdit: {
+    title: batchEditText.batchEdit(),
+    subCategories: {
+      query: {
+        title: queryText.query(),
+        items: {
+          limit: definePref<number>({
+            title: batchEditText.numberOfRecords(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 5000,
+            type: 'java.lang.Double',
+            parser: {
+              min: 0,
+            },
+          }),
+        },
+      },
+      editor: {
+        title: preferencesText.general(),
+        items: {
+          enableRelationships: definePref<boolean>({
+            title: batchEditText.enableRelationships(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.enableRelationshipsDescription(),
+          }),
+          showRollback: definePref<boolean>({
+            title: batchEditText.showRollback(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.showRollbackDescription(),
           }),
         },
       },

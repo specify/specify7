@@ -2650,6 +2650,7 @@ exports[`getMainTableFields 1`] = `
   "SpAuditLogField": [
     "fieldName",
   ],
+  "SpDataSetAttachment": [],
   "SpExportSchema": [],
   "SpExportSchemaItem": [],
   "SpExportSchemaItemMapping": [

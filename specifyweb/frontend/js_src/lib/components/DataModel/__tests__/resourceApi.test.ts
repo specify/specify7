@@ -1,6 +1,6 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import type { RA, WritableArray } from '../../../utils/types';
+import type { DeepPartial, RA, WritableArray } from '../../../utils/types';
 import { removeKey, replaceItem } from '../../../utils/utils';
 import { formatUrl } from '../../Router/queryString';
 import { addMissingFields } from '../addMissingFields';
@@ -10,7 +10,11 @@ import { getResourceApiUrl } from '../resource';
 import { deserializeResource, serializeResource } from '../serializers';
 import type { Collection } from '../specifyTable';
 import { tables } from '../tables';
-import type { CollectionObjectAttribute, Determination } from '../types';
+import type {
+  CollectionObject,
+  CollectionObjectAttribute,
+  Determination,
+} from '../types';
 
 requireContext();
 
@@ -52,11 +56,33 @@ const collectionObjectResponse = {
   determinations: determinationsResponse,
 };
 
+overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
+
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
   '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
   {
     objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
+
+const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
+const firstCollectionObject = {
+  id: 1,
+  resource_uri: firstCollectionObjectUrl,
+  catalognumber: '000011111',
+  collection: getResourceApiUrl('Collection', 4),
+};
+overrideAjax(firstCollectionObjectUrl, firstCollectionObject);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000011111&collection=4&offset=0',
+  {
+    objects: [],
     meta: {
       limit: 20,
       offset: 0,
@@ -250,7 +276,8 @@ describe('eventHandlerForToMany', () => {
       ?.models[0].set('text1', 'helloWorld');
 
     expect(resource.needsSaved).toBe(true);
-    expect(testFunction).toHaveBeenCalledTimes(1);
+    // Change to 2 in issue-6214
+    expect(testFunction).toHaveBeenCalledTimes(3);
   });
   test('changing collection propagates to related', () => {
     const resource = new tables.CollectionObject.Resource(
@@ -299,14 +326,14 @@ describe('eventHandlerForToMany', () => {
       { index: 1 }
     );
 
-    expect(onResourceChange).toHaveBeenCalledTimes(3);
+    expect(onResourceChange).toHaveBeenCalledTimes(4);
 
     resource.set('determinations', [
       addMissingFields('Determination', {
         taxon: getResourceApiUrl('Taxon', 1),
       }),
     ]);
-    expect(onResourceChange).toHaveBeenCalledTimes(4);
+    expect(onResourceChange).toHaveBeenCalledTimes(5);
     expect(onPrepChange).toHaveBeenCalledTimes(1);
     expect(onPrepAdd).toHaveBeenCalledTimes(1);
     expect(onPrepRemoval).toHaveBeenCalledTimes(1);
@@ -733,6 +760,65 @@ describe('set', () => {
     resource.set('accession', null);
     expect(resource.get('accession')).toBeNull();
     expect(resource.independentResources.accession).toBeNull();
+  });
+  test('bulk setting attributes', () => {
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const collectionObjectId = 1;
+    const catalogNumber = '000000001';
+    const options = undefined;
+    const accessionUrl = getResourceApiUrl('Accession', 1);
+    const attributeText1 = 'example text';
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      id: 1,
+      catalognumber: catalogNumber,
+      accession: accessionUrl,
+      determinations: Array.from(serializedDeterminations),
+      collectionobjectattribute: {
+        text1: attributeText1,
+      } as never,
+    };
+    resource.set(serializedAttributes as never, options as never);
+    expect(resource.id).toStrictEqual(collectionObjectId);
+    expect(resource.get('catalogNumber')).toEqual(catalogNumber);
+    expect(resource.get('accession')).toStrictEqual(accessionUrl);
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(
+      resource.getDependentResource('determinations')?.models.length
+    ).toStrictEqual(serializedDeterminations.length);
+    expect(
+      resource.getDependentResource('collectionObjectAttribute')?.get('text1')
+    ).toStrictEqual(attributeText1);
+  });
+  test('silent respected on bulk set', () => {
+    // See https://github.com/specify/specify7/issues/6488
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      determinations: serializedDeterminations,
+    };
+    resource.set(serializedAttributes as never, { silent: true } as never);
+    expect(resource.needsSaved).toBe(false);
+    resource.set(serializedAttributes as never, { silent: false } as never);
+    expect(resource.needsSaved).toBe(true);
   });
 });
 

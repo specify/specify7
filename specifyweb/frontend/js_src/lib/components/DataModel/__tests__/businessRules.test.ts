@@ -131,6 +131,79 @@ describe('Collection Object business rules', () => {
   };
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
+  test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 1)
+    );
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+    );
+
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([
+      resourcesText.invalidDeterminationTaxon(),
+    ]);
+
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    await act(async () => {
+      await collectionObject?.businessRuleManager?.checkField(
+        'collectionObjectType'
+      );
+    });
+    expect(result.current[0]).toStrictEqual([]);
+  });
+
+  // Uniqueness rule check
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=2022-%23%23%23%23%23%23&collection=4&offset=0',
+    {
+      objects: [],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 0,
+      },
+    }
+  );
+
+  test('CollectionObject -> catalogNumber is reset whenever new CollectionObject -> collectionObjectType changes', async () => {
+    const collectionObject = new tables.CollectionObject.Resource();
+    expect(collectionObject.get('catalogNumber')).toBeUndefined();
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    expect(collectionObject.get('catalogNumber')).toBe('2022-######');
+    // Wait for any pending promise to complete before test finishes
+    await collectionObject.businessRuleManager?.pendingPromise;
+  });
+
+  test('CollectionObject -> catalogNumber is not reset whenever existing CollectionObject -> collectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const expectedCatNumber = '123';
+    expect(collectionObject.get('catalogNumber')).toBe(expectedCatNumber);
+    collectionObject.set(
+      'collectionObjectType',
+      getResourceApiUrl('CollectionObjectType', 2)
+    );
+    expect(collectionObject.get('catalogNumber')).toBe(expectedCatNumber);
+    // Wait for any pending promise to complete before test finishes
+    await collectionObject.businessRuleManager?.pendingPromise;
+  });
+
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
     const determinations =
@@ -286,6 +359,14 @@ describe('DNASequence business rules', () => {
 });
 
 describe('Address business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const agent = new tables.Agent.Resource();
+    const address = new tables.Address.Resource();
+    // Doing this initializes the DependentCollection
+    agent.set('addresses', []);
+    agent.getDependentResource('addresses')?.add(address);
+    expect(address.get('isPrimary')).toBe(true);
+  });
   test('only one isPrimary', () => {
     const agent = new tables.Agent.Resource();
 
@@ -299,6 +380,59 @@ describe('Address business rules', () => {
 
     expect(address1.get('isPrimary')).toBe(false);
     expect(address2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('Determiner business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const determination = new tables.Determination.Resource();
+    const determiner = new tables.Determiner.Resource();
+    // Doing this initializes the DependentCollection
+    determination.set('determiners', []);
+    determination.getDependentResource('determiners')?.add(determiner);
+
+    expect(determiner.get('isPrimary')).toBe(true);
+  });
+  test('Only one is primary', () => {
+    const determination = new tables.Determination.Resource();
+
+    const determiner1 = new tables.Determiner.Resource({
+      isPrimary: true,
+    });
+    const determiner2 = new tables.Determiner.Resource();
+
+    determination.set('determiners', [determiner1, determiner2]);
+    determiner2.set('isPrimary', true);
+
+    expect(determiner1.get('isPrimary')).toBe(false);
+    expect(determiner2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('Funding Agent business rules', () => {
+  test('isPrimary being automatically set', () => {
+    const collectingTrip = new tables.CollectingTrip.Resource();
+    const fundingAgent = new tables.FundingAgent.Resource();
+    // Doing this initializes the DependentCollection
+    collectingTrip.set('fundingAgents', []);
+
+    collectingTrip.getDependentResource('fundingAgents')?.add(fundingAgent);
+
+    expect(fundingAgent.get('isPrimary')).toBe(true);
+  });
+  test('Only one is primary', () => {
+    const collectingTrip = new tables.CollectingTrip.Resource();
+
+    const fundingAgent1 = new tables.FundingAgent.Resource({
+      isPrimary: true,
+    });
+    const fundingAgent2 = new tables.FundingAgent.Resource();
+
+    collectingTrip.set('fundingAgents', [fundingAgent1, fundingAgent2]);
+    fundingAgent2.set('isPrimary', true);
+
+    expect(fundingAgent1.get('isPrimary')).toBe(false);
+    expect(fundingAgent2.get('isPrimary')).toBe(true);
   });
 });
 

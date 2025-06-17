@@ -233,7 +233,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {hasAttachments &&
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
-                <RecordSetAttachments records={records} onFetch={handleFetch} />
+                <RecordSetAttachments
+                  name={title as string}
+                  records={records}
+                  onFetch={handleFetch}
+                />
               ) : undefined}
               {table.view === 'GeologicTimePeriod' ? (
                 <ChronoChart />

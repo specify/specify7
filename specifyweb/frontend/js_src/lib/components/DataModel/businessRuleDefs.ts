@@ -1,15 +1,25 @@
 import { resourcesText } from '../../localization/resources';
-import { f } from '../../utils/functools';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
+  COJO_PRIMARY_DELETE_KEY,
   CURRENT_DETERMINATION_KEY,
+  DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
   hasNoCurrentDetermination,
+  PREPARATION_DISPOSED_KEY,
+  PREPARATION_EXCHANGED_IN_KEY,
+  PREPARATION_EXCHANGED_OUT_KEY,
+  PREPARATION_GIFTED_KEY,
+  PREPARATION_LOANED_KEY,
+  PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
-import type { AnySchema, TableFields } from './helperTypes';
+import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
@@ -19,9 +29,10 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { fetchResource, idFromUrl } from './resource';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
+import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -30,6 +41,7 @@ import type {
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Collector,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -50,7 +62,17 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
-      resource: SpecifyResource<SCHEMA>
+      resource: SpecifyResource<SCHEMA>,
+      field: (CommonFields &
+        SCHEMA['fields'] &
+        SCHEMA['toManyDependent'] &
+        SCHEMA['toManyIndependent'] &
+        SCHEMA['toOneDependent'] &
+        SCHEMA['toOneIndependent'])[FIELD_NAME] extends ValueOf<
+        AnySchema['fields']
+      >
+        ? LiteralField
+        : Relationship
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
 };
@@ -170,38 +192,43 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
-        /*
-         * TEST: write tests for this
-         *  Delete all determinations
-         */
+        if (resource.isNew()) {
+          const parser = resolveParser(
+            resource.specifyTable.strictGetLiteralField('catalogNumber'),
+            undefined,
+            resource
+          );
+          // REFACTOR: non-silent set causes infinite loop and silent set still triggers save blocker when parser value is empty string
+          resource.set('catalogNumber', parser.value as never, {
+            silent: (parser.value ?? '') === '',
+          });
+        }
+
         const determinations = resource.getDependentResource('determinations');
-        const currentDetermination = determinations?.models.find(
-          (determination) => determination.get('isCurrent')
+        if (determinations === undefined || determinations.models.length === 0)
+          return;
+
+        const taxons = await Promise.all(
+          determinations.models.map(async (det) => det.rgetPromise('taxon'))
         );
+        const coType = await resource.rgetPromise('collectionObjectType');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
 
-        const taxonId = idFromUrl(currentDetermination?.get('taxon') ?? '');
-        const COTypeID = idFromUrl(resource.get('collectionObjectType') ?? '');
-        if (
-          taxonId !== undefined &&
-          COTypeID !== undefined &&
-          currentDetermination !== undefined &&
-          determinations !== undefined
-        )
-          await f
-            .all({
-              fetchedTaxon: fetchResource('Taxon', taxonId),
-              fetchedCOType: fetchResource('CollectionObjectType', COTypeID),
-            })
-            .then(({ fetchedTaxon, fetchedCOType }) => {
-              const taxonTreeDefinition = fetchedTaxon.definition;
-              const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
+        // Block save when a Determination -> Taxon does not belong to the COType's tree definition
+        determinations.models.forEach((determination, index) => {
+          const taxon = taxons[index];
+          const taxonTreeDef = taxon?.get('definition');
+          const isValid =
+            typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
 
-              if (taxonTreeDefinition !== COTypeTreeDefinition)
-                resource.set('determinations', []);
-            })
-            .catch((error) => {
-              console.error('Error fetching resources:', error);
-            });
+          setSaveBlockers(
+            determination,
+            determination.specifyTable.field.taxon,
+            isValid ? [] : [resourcesText.invalidDeterminationTaxon()],
+            DETERMINATION_TAXON_KEY
+          );
+        });
+
         return undefined;
       },
     },
@@ -286,6 +313,33 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
+      childCo: async (
+        cojo: SpecifyResource<CollectionObjectGroupJoin>
+      ): Promise<BusinessRuleResult> => {
+        const childCO = cojo.get('childCo');
+        const childCOId = idFromUrl(childCO!);
+        const CO: SpecifyResource<CollectionObject> | void =
+          await new tables.CollectionObject.Resource({ id: childCOId })
+            .fetch()
+            .then((co) => co)
+            .catch((error) => {
+              console.error('Failed to fetch CollectionObject:', error);
+            });
+        let coParent;
+        if (CO !== undefined) {
+          coParent = CO.get('componentParent');
+        }
+        return coParent === null || coParent === undefined
+          ? {
+              isValid: true,
+              saveBlockerKey: CO_HAS_PARENT,
+            }
+          : {
+              isValid: false,
+              reason: resourcesText.coHasParent(),
+              saveBlockerKey: CO_HAS_PARENT,
+            };
+      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -308,12 +362,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         cog.businessRuleManager?.checkField('cogType');
       }
     },
-    onRemoved(_, collection) {
+    onRemoved(cojo, collection) {
       // Trigger Consolidated COGs field check when a child is deleted
+      if (cojo.get('isPrimary')) {
+        setSaveBlockers(
+          collection.related ?? cojo,
+          cojo.specifyTable.field.parentCog,
+          [resourcesText.deletePrimaryRecord()],
+          COJO_PRIMARY_DELETE_KEY
+        );
+      }
       if (collection?.related?.specifyTable === tables.CollectionObjectGroup) {
         const cog =
           collection.related as SpecifyResource<CollectionObjectGroup>;
         cog.businessRuleManager?.checkField('cogType');
+      }
+    },
+  },
+
+  Collector: {
+    fieldChecks: {
+      isPrimary: (collector: SpecifyResource<Collector>): void => {
+        if (collector.get('isPrimary') && collector.collection !== undefined) {
+          collector.collection.models.map(
+            (other: SpecifyResource<Collector>) => {
+              if (other.cid !== collector.cid) {
+                other.set('isPrimary', false);
+              }
+            }
+          );
+        }
+      },
+    },
+    onRemoved: (collector, collection): void => {
+      if (collector.get('isPrimary') && collection.models.length > 0) {
+        collection.models[0].set('isPrimary', true);
+      }
+    },
+    onAdded: (collector, collection): void => {
+      if (collection.models.length === 1) {
+        collector.set('isPrimary', true);
       }
     },
   },
@@ -416,6 +504,39 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       );
     },
   },
+  Determiner: {
+    customInit: (determiner) => {
+      if (determiner.isNew()) {
+        const setPrimary = (): void => {
+          determiner.set('isPrimary', true);
+          if (determiner.collection !== undefined) {
+            determiner.collection.models.forEach((other) => {
+              if (other.cid !== determiner.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        determiner.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (determiner) => {
+        if (determiner.get('isPrimary')) {
+          determiner.collection?.models.forEach((other) => {
+            if (other.cid !== determiner.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          determiner.collection !== undefined &&
+          !determiner.collection?.models.some((other) => other.get('isPrimary'))
+        ) {
+          determiner.set('isPrimary', true);
+        }
+        return { isValid: true };
+      },
+    },
+  },
   DisposalPreparation: {
     fieldChecks: {
       quantity: checkPrepAvailability,
@@ -426,33 +547,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-        for (let i = 0; i < current.length; i++) {
-          const char = current.at(i)?.toLowerCase().trim();
-          if (char !== '') {
-            switch (char) {
-              case 'a': {
-                countObject.a += 1;
-                break;
-              }
-              case 't': {
-                countObject.t += 1;
-                break;
-              }
-              case 'g': {
-                countObject.g += 1;
-                break;
-              }
-              case 'c': {
-                countObject.c += 1;
-                break;
-              }
-              default: {
-                countObject.ambiguous += 1;
-              }
-            }
-          }
-        }
+
+        const countObject = Array.from(current).reduce(
+          (accumulator, currentString) => {
+            const trimmed = currentString.toLowerCase().trim();
+            if (trimmed === '') return accumulator;
+            return trimmed === 'a'
+              ? { ...accumulator, a: accumulator.a + 1 }
+              : trimmed === 't'
+                ? { ...accumulator, t: accumulator.t + 1 }
+                : trimmed === 'g'
+                  ? { ...accumulator, g: accumulator.g + 1 }
+                  : trimmed === 'c'
+                    ? { ...accumulator, c: accumulator.c + 1 }
+                    : { ...accumulator, ambiguous: accumulator.ambiguous + 1 };
+          },
+          { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 }
+        );
         dnaSequence.set('compA', countObject.a);
         dnaSequence.set('compT', countObject.t);
         dnaSequence.set('compG', countObject.g);
@@ -460,12 +571,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObject.a +
-            countObject.t +
-            countObject.g +
-            countObject.c +
-            countObject.ambiguous
+          Object.values(countObject).reduce(
+            (previous, current) => previous + current,
+            0
+          )
         );
+      },
+    },
+  },
+  FundingAgent: {
+    customInit: (fundingAgent) => {
+      if (fundingAgent.isNew()) {
+        const setPrimary = (): void => {
+          fundingAgent.set('isPrimary', true);
+          if (fundingAgent.collection !== undefined) {
+            fundingAgent.collection.models.forEach((other) => {
+              if (other.cid !== fundingAgent.cid) other.set('isPrimary', false);
+            });
+          }
+        };
+        fundingAgent.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (fundingAgent) => {
+        if (fundingAgent.get('isPrimary')) {
+          fundingAgent.collection?.models.forEach((other) => {
+            if (other.cid !== fundingAgent.cid) {
+              other.set('isPrimary', false);
+            }
+          });
+        }
+        if (
+          fundingAgent.collection !== undefined &&
+          !fundingAgent.collection?.models.some((other) =>
+            other.get('isPrimary')
+          )
+        ) {
+          fundingAgent.set('isPrimary', true);
+        }
+        return { isValid: true };
       },
     },
   },
@@ -569,6 +714,92 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           resolved;
         updateLoanPrep(loanReturnPrep.collection);
       },
+    },
+  },
+  Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepLoaned = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          totalPrepLoaned += quantity;
+        });
+
+        if (totalPrep < 0) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationIsNegative()],
+            PREPARATION_NEGATIVE_KEY
+          );
+        } else if (totalPrep < totalPrepLoaned) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
+          );
+        }
+        return undefined;
+      },
+    },
+    onRemoved: (preparation, collection): void => {
+      if (preparation.get('isOnLoan') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnLoan,
+          [resourcesText.deleteLoanedPrep()],
+          PREPARATION_LOANED_KEY
+        );
+      }
+      if (preparation.get('isOnGift') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnGift,
+          [resourcesText.deleteGiftedPrep()],
+          PREPARATION_GIFTED_KEY
+        );
+      }
+      if (preparation.get('isOnDisposal') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnDisposal,
+          [resourcesText.deleteDisposedPrep()],
+          PREPARATION_DISPOSED_KEY
+        );
+      }
+      if (preparation.get('isOnExchangeOut') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnExchangeOut,
+          [resourcesText.deleteExchangeOutPrep()],
+          PREPARATION_EXCHANGED_OUT_KEY
+        );
+      }
+      if (preparation.get('isOnExchangeIn') === true) {
+        setSaveBlockers(
+          collection.related ?? preparation,
+          preparation.specifyTable.field.isOnExchangeIn,
+          [resourcesText.deleteExchangeInPrep()],
+          PREPARATION_EXCHANGED_IN_KEY
+        );
+      }
     },
   },
 };

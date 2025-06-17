@@ -51,22 +51,66 @@ FORM_RESOURCE_EXCLUDED_LST = [
 ]
 
 # get_app_resource is the main interface provided by this module
-def get_app_resource(collection, user, resource_name):
+def get_app_resource(collection, user, resource_name, additional_default=False):
     """Fetch the named app resource in the context of the given user and collection.
     Returns the resource data and mimetype as a pair.
     """
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
-    # Traverse the hierarchy.
-    for level in DIR_LEVELS:
-        # First look in the database.
-        from_db = get_app_resource_from_db(collection, user, level, resource_name)
-        if from_db is not None: return from_db
 
-        # If resource was not found, look on the filesystem.
-        from_fs = load_resource_at_level(collection, user, level, resource_name)
+    # Handling for DataObjFormatters to support fallback to defaults
+    if resource_name == 'DataObjFormatters':
+        custom_formatter = None
+        default_formatter = None
+        
+        # Try to search for the the custom formatter first
+        for level in DIR_LEVELS:
+            # First look in the database.
+            from_db = get_app_resource_from_db(collection, user, level, resource_name)
+            if from_db is not None:
+                custom_formatter = from_db
+                break
+
+            # If resource was not found, look on the filesystem.
+            from_fs = load_resource_at_level(collection, user, level, resource_name)
+            if from_fs is not None:
+                custom_formatter = from_fs
+                break
+        
+        # If custom formatter not found, try to load the default formatter from the backstop level
+        default_formatter = load_resource_at_level(collection, user, 'Backstop', resource_name)
+        
+        # If both custom and default formatters are found, merge them
+        if custom_formatter is not None and default_formatter is not None:
+            merged_formatter = merge_formatters(custom_formatter[0], default_formatter[0])
+            return merged_formatter, custom_formatter[1], custom_formatter[2]
+        
+        # Return the custom formatter if it exists, otherwise return the default
+        if custom_formatter is not None:
+            return custom_formatter
+        
+        if default_formatter is not None:
+            return default_formatter
+        
+        return None
+    
+    if not additional_default:
+        # Traverse the hierarchy.
+        for level in DIR_LEVELS:
+            # First look in the database.
+            from_db = get_app_resource_from_db(collection, user, level, resource_name)
+            if from_db is not None: return from_db
+
+            # If resource was not found, look on the filesystem.
+            from_fs = load_resource_at_level(collection, user, level, resource_name)
+            if from_fs is not None: return from_fs
+            # Continue to next higher level of hierarchy.
+
+    # If additional_default is True, add the resource from the Backstop level.
+    if additional_default:
+        # Then check the backstop level in the filesystem.
+        from_fs = load_resource_at_level(collection, user, 'Backstop', resource_name)
         if from_fs is not None: return from_fs
-        # Continue to next higher level of hierarchy.
 
     # resource was not found
     return None
@@ -110,7 +154,7 @@ def load_registry(path, registry_filename='app_resources.xml'):
     pathname = os.path.join(path, registry_filename)
     try:
         return ElementTree.parse(pathname)
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 
@@ -124,7 +168,7 @@ def load_resource(path, registry, resource_name):
     pathname = os.path.join(path, resource.attrib['file'])
     try:
         return open(pathname).read(), resource.attrib['mimetype'], None
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 
@@ -194,3 +238,29 @@ def get_app_resource_dirs_for_level(collection, user, level):
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
+
+def merge_formatters(custom_xml, default_xml):
+    """Merge custom and default XML formatters.
+    This function takes two XML strings, one for custom formatters and one for default formatters,
+    and merges them by adding any formatters from the default XML that are not already present in
+    the custom XML. It returns the merged XML as a string.
+    """
+    
+    custom_root = ElementTree.fromstring(custom_xml)
+    default_root = ElementTree.fromstring(default_xml)
+    
+    # Create a set of existing classes in the custom XML to avoid duplicates
+    custom_classes = set()
+    for format_elem in custom_root.findall('format'):
+        class_attr = format_elem.get('class')
+        if class_attr:
+            custom_classes.add(class_attr)
+
+    # Add formatters from default that don't exist in custom
+    for format_elem in default_root.findall('format'):
+        class_attr = format_elem.get('class')
+        if class_attr and class_attr not in custom_classes:
+            custom_root.append(format_elem)
+    
+    # Convert the merged XML tree back to a string
+    return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')
