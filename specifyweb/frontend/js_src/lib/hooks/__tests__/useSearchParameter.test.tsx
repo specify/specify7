@@ -1,10 +1,10 @@
-import { useSearchParameter } from "../navigation";
-
+import { act,waitFor } from "@testing-library/react";
 import type { SafeLocation } from 'history';
 import React from "react";
-import { mount } from "../../tests/reactUtils";
 import * as Router from "react-router-dom";
-import { waitFor, act } from "@testing-library/react";
+
+import { mount } from "../../tests/reactUtils";
+import { useSearchParameter } from "../navigation";
 
 
 let mockNavigate: jest.Mock;
@@ -60,7 +60,7 @@ describe("useSearchParameter", () => {
         const onSetterSet = jest.fn();
 
         mount(<Router.MemoryRouter initialEntries={[initialEntry]}>
-            <TestSearchParameter rawName="records" onStateSet={onStateSet} onSetterSet={onSetterSet} />
+            <TestSearchParameter rawName="records" onSetterSet={onSetterSet} onStateSet={onStateSet} />
         </Router.MemoryRouter>);
 
         await waitFor(() => {
@@ -73,7 +73,7 @@ describe("useSearchParameter", () => {
         const onSetterSet = jest.fn();
 
         mount(<Router.MemoryRouter initialEntries={[initialEntry]}>
-            <TestSearchParameter rawName="records" onStateSet={onStateSet} onSetterSet={onSetterSet} />
+            <TestSearchParameter rawName="records" onSetterSet={onSetterSet} onStateSet={onStateSet} />
         </Router.MemoryRouter>);
 
         await waitFor(() => {
@@ -100,14 +100,14 @@ describe("useSearchParameter", () => {
         const onSetterSet = jest.fn();
 
         mount(<Router.MemoryRouter initialEntries={[initialEntry]}>
-            <TestSearchParameter rawName={undefined} onStateSet={onStateSet} onSetterSet={onSetterSet} />
+            <TestSearchParameter rawName={undefined} onSetterSet={onSetterSet} onStateSet={onStateSet} />
         </Router.MemoryRouter>);
 
         await waitFor(() => {
             expect(onStateSet).toHaveBeenLastCalledWith(undefined);
         });
 
-        expect(() => onSetterSet.mock.calls.at(-1).at(0)("4,5,8")).toThrowError('Tried to change query string without providing a name');
+        expect(() => onSetterSet.mock.calls.at(-1).at(0)("4,5,8")).toThrow('Tried to change query string without providing a name');
 
     });
 
@@ -116,7 +116,7 @@ describe("useSearchParameter", () => {
         const onSetterSet = jest.fn();
 
         mount(<Router.MemoryRouter initialEntries={[initialEntry]}>
-            <TestSearchParameter rawName="records" onStateSet={onStateSet} onSetterSet={onSetterSet} />
+            <TestSearchParameter rawName="records" onSetterSet={onSetterSet} onStateSet={onStateSet} />
         </Router.MemoryRouter>);
 
         await waitFor(() => {
