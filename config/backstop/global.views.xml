@@ -1277,7 +1277,7 @@
 				<rows>
 					<row>
 						<cell type="label" labelfor="parent" initialize="align=left"/>
-						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false;editoncreate=true;align=left" name="parent" colspan="3"/>
+						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false;editoncreate=true;align=left" name="parent" colspan="80"/>
 					</row>
 				</rows>
 				<rows condition="definitionItem.rankId=0">
