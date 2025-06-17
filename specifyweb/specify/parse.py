@@ -81,7 +81,7 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Sco
     return ParseSucess({field_name.lower(): raw_value})
 
 
-def parse_string(value: str) -> str | None:
+def parse_string(value: str) -> Optional[str]:
     result = value.strip()
     if result == "":
         return None

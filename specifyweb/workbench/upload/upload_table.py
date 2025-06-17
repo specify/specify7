@@ -65,7 +65,7 @@ class UploadTable(NamedTuple):
     toOne: dict[str, Uploadable]
     toMany: dict[str, list[Uploadable]]
 
-    overrideScope: dict[Literal["collection"], int | None] | None = None
+    overrideScope: dict[Literal["collection"], Optional[int]] | None = None
 
     def apply_scoping(
         self, collection, context: ScopeContext | None = None, row=None
@@ -131,7 +131,7 @@ class ScopedUploadTable(NamedTuple):
     toOne: dict[str, ScopedUploadable]
     toMany: dict[str, list["ScopedUploadable"]]  # type: ignore
     scopingAttrs: dict[str, int]
-    disambiguation: int | None
+    disambiguation: Optional[int]
     to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
     match_payload: BatchEditSelf | None
     strong_ignore: list[str]
@@ -321,8 +321,8 @@ class BoundUploadTable(NamedTuple):
     toOne: dict[str, BoundUploadable]
     toMany: dict[str, list[BoundUploadable]]
     scopingAttrs: dict[str, int]
-    disambiguation: int | None
-    uploadingAgentId: int | None
+    disambiguation: Optional[int]
+    uploadingAgentId: Optional[int]
     auditor: Auditor
     cache: dict | None
     to_one_fields: dict[str, list[str]]
@@ -702,7 +702,7 @@ class BoundUploadTable(NamedTuple):
             },
         }
 
-        to_one_ids: dict[str, int | None] = {}
+        to_one_ids: dict[str, Optional[int]] = {}
         for field, result in to_one_results.items():
             id = result.get_id()
             if id == "Failure":

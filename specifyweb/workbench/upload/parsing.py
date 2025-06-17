@@ -37,10 +37,10 @@ class ParseResult(NamedTuple):
     upload: Filter
     add_to_picklist: PicklistAddition | None
     column: str
-    missing_required: str | None
+    missing_required: Optional[str]
 
     @classmethod
-    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: str | None):
+    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: Optional[str]):
         return cls(filter_on=filter_on, upload=ps.to_upload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
 
     def match_key(self) -> str:

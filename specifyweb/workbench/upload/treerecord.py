@@ -64,20 +64,20 @@ class TreeRankCell(NamedTuple):
 # REFACTOR: The create step can be added to TreeRankRecord directly to simplify things further
 class TreeRank(NamedTuple):
     rank_name: str
-    treedef_id: int | None # Allow NULL for legacy datasets (before MOTs)
+    treedef_id: Optional[int] # Allow NULL for legacy datasets (before MOTs)
     tree: str
 
     @staticmethod
     def create(
         rank_name: str,
         tree: str,
-        treedef_id: int | None = None,
+        treedef_id: Optional[int] = None,
     ) -> 'TreeRank':
         """
         Create a TreeRank instance with the given rank name, tree, and optional treedef IDs.
         """
 
-        def extract_treedef_name(rank_name: str) -> tuple[str, str | None]:
+        def extract_treedef_name(rank_name: str) -> tuple[str, Optional[str]]:
             """
             Extract treedef_name from rank_name if it exists in the format 'treedef_name~>rank_name'.
             """
@@ -108,7 +108,7 @@ class TreeRank(NamedTuple):
 
 class TreeRankRecord(NamedTuple):
     rank_name: str
-    treedef_id: int | None # Allow NULL for legacy datasets (before MOTs)
+    treedef_id: Optional[int] # Allow NULL for legacy datasets (before MOTs)
 
     # Create a TreeRankRecord instance
     def to_json(self) -> dict:
@@ -118,7 +118,7 @@ class TreeRankRecord(NamedTuple):
         }
 
     # Get the key for the TreeRankRecord instance
-    def to_key(self) -> tuple[str, int | None]:
+    def to_key(self) -> tuple[str, Optional[int]]:
         return (self.rank_name, self.treedef_id)
     
     def validate_rank(self, tableName: str) -> bool:
@@ -174,7 +174,7 @@ class ScopedTreeRecord(NamedTuple):
     disambiguation: dict[str, int]
     batch_edit_pack: dict[str, Any] | None
     scoped_cotypes: Any
-    cotype_column: str | None
+    cotype_column: Optional[str]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return (
@@ -310,7 +310,7 @@ class ScopedTreeRecord(NamedTuple):
     
     # Handle cases where there are multiple or no treedefs
     def _handle_multiple_or_no_treedefs(self,
-        unique_treedef_ids: set[int | None], targeted_treedefids: set[int], ranks_columns: list[TreeRankCell]
+        unique_treedef_ids: set[Optional[int]], targeted_treedefids: set[int], ranks_columns: list[TreeRankCell]
     ) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]] | None:
         if not targeted_treedefids:
             return self, None
@@ -353,7 +353,7 @@ class ScopedTreeRecord(NamedTuple):
     def bind(
         self,
         row: Row,
-        uploadingAgentId: int | None,
+        uploadingAgentId: Optional[int],
         auditor: Auditor,
         cache: dict | None = None,
     ) -> Union["BoundTreeRecord", ParseFailures]:
@@ -410,7 +410,7 @@ class ScopedMustMatchTreeRecord(ScopedTreeRecord):
     def bind(
         self,
         row: Row,
-        uploadingAgentId: int | None,
+        uploadingAgentId: Optional[int],
         auditor: Auditor,
         cache: dict | None = None,
     ) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
@@ -445,7 +445,7 @@ class BoundTreeRecord(NamedTuple):
     treedefitems: list
     root: Any | None
     parsedFields: dict[TreeRankRecord, list[ParseResult]]
-    uploadingAgentId: int | None
+    uploadingAgentId: Optional[int]
     auditor: Auditor
     cache: dict | None
     disambiguation: dict[str, int]

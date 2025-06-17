@@ -215,7 +215,7 @@ class ObjectFormatter:
                 cycle_detector is not None) else None
 
         def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
-            QueryConstruct, str | None, blank_nulls]:
+            QueryConstruct, Optional[str], blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)

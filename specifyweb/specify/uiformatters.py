@@ -113,7 +113,7 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, vals)
         ))
 
-    def fillin_year(self, vals: Sequence[str], year: int | None=None) -> list[str]:
+    def fillin_year(self, vals: Sequence[str], year: Optional[int]=None) -> list[str]:
         if year is None:
             year = date.today().year
 
@@ -122,7 +122,7 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, vals)
         ]
 
-    def autonumber_now(self, collection, model, vals: Sequence[str], year: int | None=None) -> str:
+    def autonumber_now(self, collection, model, vals: Sequence[str], year: Optional[int]=None) -> str:
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
@@ -142,7 +142,7 @@ class UIFormatter(NamedTuple):
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
 
-    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: int | None=None):
+    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: Optional[int]=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
@@ -367,7 +367,7 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter |
     else:
         return get_uiformatter_by_name(collection, None, field_format)
 
-def get_catalognumber_format(collection, format_name: str | None, user) -> UIFormatter:
+def get_catalognumber_format(collection, format_name: Optional[str], user) -> UIFormatter:
     if format_name: 
          formatter = get_uiformatter_by_name(collection, user, format_name)
          if formatter:

@@ -227,9 +227,9 @@ class JSONParseError(TypedDict):
 
 class ParseError(NamedTuple):
     message: ParseFailureKey | LocalityParseErrorMessageKey
-    field: str | None
+    field: Optional[str]
     payload: dict[str, Any] | None
-    row_number: int | None
+    row_number: Optional[int]
 
     @classmethod
     def from_parse_failure(cls, parse_failure: BaseParseFailure, field: str, row_number: int):
@@ -249,17 +249,17 @@ class ParsedRow(TypedDict):
 class ParseSuccess(NamedTuple):
     to_upload: dict[str, Any]
     model: UpdateModel
-    locality_id: int | None
-    row_number: str | None
+    locality_id: Optional[int]
+    row_number: Optional[str]
 
     @classmethod
-    def from_base_parse_success(cls, parse_success: BaseParseSuccess, model: UpdateModel, locality_id: int | None, row_number: int):
+    def from_base_parse_success(cls, parse_success: BaseParseSuccess, model: UpdateModel, locality_id: Optional[int], row_number: int):
         return cls(parse_success.to_upload, model, locality_id, row_number)
 
 
 class UploadSuccessRow(TypedDict):
     locality: int
-    geocoorddetail: int | None
+    geocoorddetail: Optional[int]
 
 
 class UploadSuccess(TypedDict):
@@ -371,7 +371,7 @@ def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]]
         geocoorddetail_values = [{'field': dict['field'], 'value': row[dict['index']].strip()}
                                  for dict in geocoorddetail_fields_index]
 
-        locality_id: int | None = None if len(
+        locality_id: Optional[int] = None if len(
             locality_query) != 1 else locality_query[0].id
 
         parsed_locality_fields = [parse_field(
@@ -393,7 +393,7 @@ def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]]
     return to_upload, errors
 
 
-def parse_field(collection, table_name: UpdateModel, field_name: str, field_value: str, locality_id: int | None, row_number: int):
+def parse_field(collection, table_name: UpdateModel, field_name: str, field_value: str, locality_id: Optional[int], row_number: int):
     ui_formatter = get_uiformatter(collection, table_name, field_name)
     scoped_formatter = None if ui_formatter is None else ui_formatter.apply_scope(collection)
     parsed = _parse_field(table_name, field_name, field_value, scoped_formatter)

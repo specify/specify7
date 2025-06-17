@@ -36,10 +36,10 @@ def fields_from_json(json_fields) -> list["QueryField"]:
 class QueryField(NamedTuple):
     fieldspec: QueryFieldSpec
     op_num: int
-    value: str | None
+    value: Optional[str]
     negate: bool
     display: bool
-    format_name: str | None
+    format_name: Optional[str]
     sort_type: int
     strict: bool = False
 

@@ -8,7 +8,7 @@ class DisambiguationInfo:
     def __init__(self, disambiguations: dict[tuple, int]):
         self.disambiguations = disambiguations
 
-    def disambiguate(self) -> int | None:
+    def disambiguate(self) -> Optional[int]:
         return self.disambiguations[()] if () in self.disambiguations else None
 
     def disambiguate_tree(self) -> dict[str, int]:

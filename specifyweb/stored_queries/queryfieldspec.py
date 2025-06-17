@@ -122,9 +122,9 @@ class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
     original_field: str
     # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
-    treedef_id: int | None
+    treedef_id: Optional[int]
     # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
-    treedef_name: str | None
+    treedef_name: Optional[str]
 
     def __hash__(self):
         return hash((TreeRankQuery, self.relatedModelName, self.name))
@@ -168,9 +168,9 @@ class QueryFieldSpec(
     root_sql_table: SQLTable
     join_path: FieldSpecJoinPath
     table: Table
-    date_part: str | None
-    tree_rank: str | None
-    tree_field: str | None
+    date_part: Optional[str]
+    tree_rank: Optional[str]
+    tree_field: Optional[str]
 
     @classmethod
     def from_path(cls, path_in, add_id=False):

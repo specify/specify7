@@ -12,8 +12,8 @@ class ScopingCache(TypedDict):
     # This stores UIFormatters for granular fields. This is used to handle the bad scenario where are in heavy-collection relationships
     # or cotypes but want to reuse as much as other field based info
     fields: dict[tuple[Any, str, str], UIFormatter | None]
-    date_format: str | None
-    cotype_column: str | None
+    date_format: Optional[str]
+    cotype_column: Optional[str]
 
 class ScopeContext:
     cache: ScopingCache

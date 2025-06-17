@@ -56,7 +56,7 @@ class QuerySort:
 
 
 class BuildQueryProps(NamedTuple):
-    recordsetid: int | None = None
+    recordsetid: Optional[int] = None
     replace_nulls: bool = False
     formatauditobjs: bool = False
     distinct: bool = False

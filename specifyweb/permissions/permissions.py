@@ -66,14 +66,14 @@ class PermissionTarget(metaclass=PermissionTargetMeta):
 
 
 class PermRequest(NamedTuple):
-    collectionid: int | None
+    collectionid: Optional[int]
     userid: int
     resource: str
     action: str
 
 
 def check_permission_targets(
-    collectionid: int | None, userid: int, targets: list[PermissionTargetAction]
+    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
 ) -> None:
     if not targets:
         return
@@ -90,7 +90,7 @@ def check_permission_targets(
 
 
 def has_target_permission(
-    collectionid: int | None, userid: int, targets: list[PermissionTargetAction]
+    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
 ):
     try:
         check_permission_targets(collectionid, userid, targets)
@@ -124,7 +124,7 @@ class NoAdminUsersException(PermissionsException):
 
 
 def enforce(
-    collection: int | Model | None, actor, resources: list[str], action: str
+    collection: Optional[Union[int, Model]], actor, resources: list[str], action: str
 ) -> None:
     if not resources:
         return
@@ -174,13 +174,13 @@ class QueryResult(NamedTuple):
 
 
 def query_pt(
-    collectionid: int | None, userid: int, target: PermissionTargetAction
+    collectionid: Optional[int], userid: int, target: PermissionTargetAction
 ) -> QueryResult:
     return query(collectionid, userid, target.resource(), target.action())
 
 
 def query(
-    collectionid: int | None, userid: int, resource: str, action: str
+    collectionid: Optional[int], userid: int, resource: str, action: str
 ) -> QueryResult:
     cursor = connection.cursor()
 

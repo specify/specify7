@@ -128,7 +128,7 @@ batch_edit_fields: dict[str, tuple[MaybeField, int]] = {
 
 class BatchEditFieldPack(NamedTuple):
     field: QueryField | None = None
-    idx: int | None = None  # default value not there, for type safety
+    idx: Optional[int] = None  # default value not there, for type safety
     value: Any = None  # stricten this?
 
 
@@ -890,7 +890,7 @@ class RowPlanCanonical(NamedTuple):
             for canonical in self.to_one.values()
         )
 
-        def _lookup_in_fields(_id: int | None, readonly_fields: list[str]):
+        def _lookup_in_fields(_id: Optional[int], readonly_fields: list[str]):
             assert _id is not None, "invalid lookup used!"
             field = query_fields[
                 _id - 1
@@ -1064,8 +1064,8 @@ class BatchEditProps(TypedDict):
     user: Any
     contexttableid: int
     captions: Any
-    limit: int | None
-    recordsetid: int | None
+    limit: Optional[int]
+    recordsetid: Optional[int]
     session_maker: Any
     fields: list[QueryField]
     omit_relationships: bool | None

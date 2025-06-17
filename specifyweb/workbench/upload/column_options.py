@@ -13,7 +13,7 @@ class ColumnOptions(NamedTuple):
     column: str
     matchBehavior: MatchBehavior
     nullAllowed: bool
-    default: str | None
+    default: Optional[str]
 
     def to_json(self) -> dict | str:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
@@ -25,8 +25,8 @@ class ExtendedColumnOptions(NamedTuple):
     column: str
     matchBehavior: MatchBehavior
     nullAllowed: bool
-    default: str | None
+    default: Optional[str]
     uiformatter: ScopedFormatter | None
     schemaitem: Any
     picklist: Any
-    dateformat: str | None
+    dateformat: Optional[str]

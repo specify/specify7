@@ -450,7 +450,7 @@ def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
     return alias
 
 
-def load_datamodel() -> Datamodel | None:
+def load_datamodel() -> Optional[Datamodel]:
     try:
         datamodeldef = ElementTree.parse(
             os.path.join(settings.SPECIFY_CONFIG_DIR, "specify_datamodel.xml")

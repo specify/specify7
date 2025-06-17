@@ -12,8 +12,8 @@ from .auditor import Auditor
 
 class BatchEditSelf(TypedDict):
     id: int
-    ordernumber: int | None
-    version: int | None
+    ordernumber: Optional[int]
+    version: Optional[int]
 
 
 class BatchEditJson(TypedDict):
@@ -55,7 +55,7 @@ class Uploadable(Protocol):
 
 
 class DisambiguationInfo(Protocol):
-    def disambiguate(self) -> int | None: ...
+    def disambiguate(self) -> Optional[int]: ...
 
     def disambiguate_tree(self) -> dict[str, int]: ...
 

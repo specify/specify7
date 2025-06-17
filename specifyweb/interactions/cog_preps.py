@@ -21,7 +21,7 @@ from specifyweb.specify import api
 logger = logging.getLogger(__name__)
 
 
-def is_consolidated_cog(cog: Collectionobjectgroup | None) -> bool:
+def is_consolidated_cog(cog: Optional[Collectionobjectgroup]) -> bool:
     """
     Check if the CollectionObjectGroup is consolidated.
     """
@@ -66,7 +66,7 @@ def get_cog_consolidated_preps(cog: Collectionobjectgroup) -> list[Preparation]:
     return consolidated_preps
 
 
-def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Collectionobjectgroup | None:
+def get_the_top_consolidated_parent_cog_of_prep(prep: Preparation) -> Optional[Collectionobjectgroup]:
     """
     Get the topmost consolidated parent CollectionObjectGroup of the preparation.
     """
@@ -132,7 +132,7 @@ def is_co_recordset(rs: Recordset) -> bool:
     return rs.dbtableid == get_table_id_by_model_name('Collectionobject')
 
 
-def get_cogs_from_co_recordset(rs: Recordset) -> QuerySet[Collectionobjectgroup] | None:
+def get_cogs_from_co_recordset(rs: Recordset) -> Optional[QuerySet[Collectionobjectgroup]]:
     """
     Get the CollectionObjectGroups from the CollectionObject recordset
     """
@@ -154,7 +154,7 @@ def get_cogs_from_co_recordset(rs: Recordset) -> QuerySet[Collectionobjectgroup]
     return cogs
 
 
-def get_cogs_from_co_ids(co_ids: list[int]) -> QuerySet[Collectionobjectgroup] | None:
+def get_cogs_from_co_ids(co_ids: list[int]) -> Optional[QuerySet[Collectionobjectgroup]]:
     """
     Get the CollectionObjectGroups from the CollectionObject IDs
     """
@@ -176,7 +176,7 @@ def get_cog_consolidated_preps_co_ids(cog: Collectionobjectgroup) -> set[Collect
     return {prep.collectionobject.id for prep in preps}
 
 
-def add_consolidated_sibling_co_ids(request_co_ids: list[Any], id_fld: str | None = None) -> list[Any]:
+def add_consolidated_sibling_co_ids(request_co_ids: list[Any], id_fld: Optional[str] = None) -> list[Any]:
     """
     Get the consolidated sibling CO IDs of the COs in the list
     """

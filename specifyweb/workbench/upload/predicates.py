@@ -113,7 +113,7 @@ class DjangoPredicates(NamedTuple):
         query: QuerySet,
         get_unique_alias: Generator[str, None, None],
         current_model: Model,
-        path: str | None = None,
+        path: Optional[str] = None,
         aliases: list[tuple[str, str]] = [],
         to_remove_node: "ToRemoveNode" = {},
     ):
