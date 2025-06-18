@@ -44,7 +44,7 @@ webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
 
 typecheck:
-	$(MYPY) --follow-imports silent --no-warn-no-untyped-def \
+	$(MYPY) --follow-imports silent \
 	specifyweb/permissions specifyweb/workbench specifyweb/accounts \
 	specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py \
 	specifyweb/specify/api.py specifyweb/context/user_resources.py
