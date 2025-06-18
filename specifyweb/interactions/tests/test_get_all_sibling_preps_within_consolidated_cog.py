@@ -43,7 +43,6 @@ class TestGetSiblingPrepsWithinConsolidatedCog(TestCogInteractions):
                 prep_list, get_all_sibling_preps_within_consolidated_cog(prep)
             )
 
-    @skip("currently skipped")
     def test_consolidated_cog_parent_indirect(self):
         # self.test_cog_consolidated is the "top"
         # TODO: Write some kind of automated way to make the COG and CO structure.
@@ -103,7 +102,7 @@ class TestGetSiblingPrepsWithinConsolidatedCog(TestCogInteractions):
 
         cog_discrete_grandchild = Collectionobjectgroup.objects.create(
             collection=self.collection,
-            cogtype=self.cogtype_consolidated,
+            cogtype=self.cogtype,
         )
 
         TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
@@ -121,4 +120,97 @@ class TestGetSiblingPrepsWithinConsolidatedCog(TestCogInteractions):
             # It should always return the same list.
             self._preps_match(
                 prep_list, get_all_sibling_preps_within_consolidated_cog(prep)
+            )
+
+    def test_consolidated_cog_parent_branched(self):
+        # In this case, the COG at the top is consolidated, but has a child COG discrete, which then has consolidated children
+
+        # So, there are two branches of preparation
+        branch_1_prep_list = []
+        branch_2_prep_list = []
+
+        # All of the below is first branch
+        for _ in range(5):
+            self._create_prep(self.collectionobjects[0], branch_1_prep_list)
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
+            self.collectionobjects[0], self.test_cog_consolidated
+        )
+
+        cog_consolidated_grandchild = Collectionobjectgroup.objects.create(
+            collection=self.collection,
+            cogtype=self.cogtype_consolidated,
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
+            self.collectionobjects[1], cog_consolidated_grandchild
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_cog_cog(
+            cog_consolidated_grandchild, self.test_cog_consolidated
+        )
+
+        for _ in range(5):
+            self._create_prep(self.collectionobjects[1], branch_1_prep_list)
+
+        # All of the below is second branch
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_cog_cog(
+            self.test_cog_discrete, self.test_cog_consolidated
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
+            self.collectionobjects[2], self.test_cog_discrete
+        )
+
+        for _ in range(5):
+            self._create_prep(self.collectionobjects[2], None)
+
+        # Below is branch 2
+
+        cog_consolidated_grandchild_branch_2 = Collectionobjectgroup.objects.create(
+            collection=self.collection,
+            cogtype=self.cogtype_consolidated,
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
+            self.collectionobjects[3], cog_consolidated_grandchild_branch_2
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_cog_cog(
+            cog_consolidated_grandchild_branch_2, self.test_cog_discrete
+        )
+
+        for _ in range(5):
+            self._create_prep(self.collectionobjects[3], branch_2_prep_list)
+
+        cog_consolidated_greatgrandchild_branch_2 = (
+            Collectionobjectgroup.objects.create(
+                collection=self.collection,
+                cogtype=self.cogtype_consolidated,
+            )
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_co_cog(
+            self.collectionobjects[4], cog_consolidated_greatgrandchild_branch_2
+        )
+
+        TestGetSiblingPrepsWithinConsolidatedCog._link_cog_cog(
+            cog_consolidated_greatgrandchild_branch_2,
+            cog_consolidated_grandchild_branch_2,
+        )
+
+        for _ in range(5):
+            self._create_prep(self.collectionobjects[4], branch_2_prep_list)
+
+        for prep in branch_2_prep_list:
+            # It should always return the same list.
+            self._preps_match(
+                branch_2_prep_list, get_all_sibling_preps_within_consolidated_cog(prep)
+            )
+
+        for prep in branch_1_prep_list:
+            # It should always return the same list.
+            self._preps_match(
+                branch_1_prep_list, get_all_sibling_preps_within_consolidated_cog(prep)
             )
