@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 def resolve_permission(
     dataset: models.Spdataset,
-) -> type[DataSetPT] | type[BatchEditDataSetPT]:
+) -> Union[type[DataSetPT], type[BatchEditDataSetPT]]:
     return BatchEditDataSetPT if dataset.isupdate else DataSetPT
 
 WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]

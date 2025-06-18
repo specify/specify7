@@ -54,7 +54,7 @@ class ToRemove(NamedTuple):
 
 
 class DjangoPredicates(NamedTuple):
-    filters: dict[str, Value | list[Any]] = {}  # type: ignore
+    filters: dict[str, Union[Value, list[Any]]] = {}  # type: ignore
     to_remove: Optional[ToRemove] = None
 
     def reduce_for_to_one(self):

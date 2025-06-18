@@ -213,7 +213,7 @@ class Deleted(NamedTuple):
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: dict[str, str | int | list[str] | list[int]]
+    payload: dict[str, Union[str, int, list[str], list[int]]]
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -303,7 +303,7 @@ class UploadResult(NamedTuple):
     toOne: dict[str, Any]
     toMany: dict[str, list[Any]]
 
-    def get_id(self) -> Optional[int] | Failure:
+    def get_id(self) -> Union[Optional[int], Failure]:
         return self.record_result.get_id()
 
     def contains_failure(self) -> bool:

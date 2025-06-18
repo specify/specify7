@@ -132,7 +132,7 @@ class TreeRankRecord(NamedTuple):
         
 class TreeRecord(NamedTuple):
     name: str
-    ranks: dict[str | TreeRankRecord, dict[str, ColumnOptions]]
+    ranks: dict[Union[str, TreeRankRecord], dict[str, ColumnOptions]]
 
     def apply_scoping(
         self, collection, context: Optional[ScopeContext] = None, row=None
@@ -721,7 +721,7 @@ class BoundTreeRecord(NamedTuple):
     def _upload(
         self,
         to_upload: list[TreeDefItemWithParseResults],
-        matched: Matched | NoMatch,
+        matched: Union[Matched, NoMatch],
         references=None,
     ) -> UploadResult:
         assert (

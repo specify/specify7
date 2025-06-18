@@ -252,7 +252,7 @@ class ObjectFormatter:
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
-                  field: Field | Relationship, rel_table: SQLTable,
+                  field: Union[Field, Relationship], rel_table: SQLTable,
                   aggregator_formatter_name,
                   cycle_detector=[]) -> Label:
 
@@ -370,7 +370,7 @@ class ObjectFormatter:
         return func.date_format(field, format_expr)
 
     def _fieldformat(self, table: Table, specify_field: Field,
-                     field: InstrumentedAttribute | Extract):
+                     field: Union[InstrumentedAttribute, Extract]):
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
             cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]

@@ -22,7 +22,7 @@ class PicklistAddition(NamedTuple):
 
 class WorkBenchParseFailure(NamedTuple):
     message: str
-    payload: dict[str, str | int | list[str] | list[int]]
+    payload: dict[str, Union[str, int, list[str], list[int]]]
     column: str
 
     @classmethod
@@ -63,10 +63,10 @@ def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: R
     )
 
 
-def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> ParseResult | WorkBenchParseFailure:
+def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
     required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
-    result: ParseResult | WorkBenchParseFailure
+    result: Union[ParseResult, WorkBenchParseFailure]
     was_blank = value_in.strip() == ""
     if was_blank:
         if colopts.default is None:
@@ -100,7 +100,7 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
         assertNever(colopts.matchBehavior)
 
 
-def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> ParseResult | WorkBenchParseFailure:
+def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 

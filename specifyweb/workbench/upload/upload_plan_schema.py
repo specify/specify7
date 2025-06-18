@@ -406,7 +406,7 @@ def parse_tree_record(table: Table, to_parse: dict) -> TreeRecord:
     )
 
 
-def parse_column_options(to_parse: str | dict) -> ColumnOptions:
+def parse_column_options(to_parse: Union[str, dict]) -> ColumnOptions:
     if isinstance(to_parse, str):
         return ColumnOptions(
             column=to_parse,

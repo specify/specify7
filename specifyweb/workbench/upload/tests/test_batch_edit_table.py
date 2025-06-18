@@ -574,7 +574,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         self,
         record_id,
         table,
-        audit_code: Literal["INSERT"] | Literal["UPDATE"] | Literal["REMOVE"],
+        audit_code: Union[Literal["INSERT"], Literal["UPDATE"], Literal["REMOVE"]],
     ):
         entries = lookup_in_auditlog(table, record_id)
         self.assertEqual(1, entries.count())

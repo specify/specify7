@@ -1042,7 +1042,7 @@ class BoundUpdateTable(BoundUploadTable):
                         FailedBusinessRule(str(e), {}, info), to_one_results, {}
                     )
 
-        record: Updated | NoChange = (
+        record: Union[Updated, NoChange] = (
             Updated(updated.pk, info, picklist_additions)
             if changed
             else NoChange(reference_record.pk, info)

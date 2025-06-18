@@ -15,7 +15,7 @@ class ColumnOptions(NamedTuple):
     nullAllowed: bool
     default: Optional[str]
 
-    def to_json(self) -> dict | str:
+    def to_json(self) -> Union[dict, str]:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
             return self.column
 

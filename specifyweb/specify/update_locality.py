@@ -409,7 +409,7 @@ def parse_field(collection, table_name: UpdateModel, field_name: str, field_valu
         return ParseSuccess.from_base_parse_success(parsed, table_name, locality_id, row_number)
 
 
-def merge_parse_results(results: list[ParseSuccess | ParseError], locality_id: int, row_number: int) -> tuple[ParsedRow, list[ParseError]]:
+def merge_parse_results(results: list[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> tuple[ParsedRow, list[ParseError]]:
     to_upload: ParsedRow = {
         "locality_id": locality_id,
         "row_number": row_number,
@@ -429,7 +429,11 @@ def merge_parse_results(results: list[ParseSuccess | ParseError], locality_id: i
     return to_upload, errors
 
 
-def upload_locality_set(collection, column_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> UploadSuccess | UploadParseError:
+def upload_locality_set(
+        collection,
+        column_headers: list[str],
+        data: list[list[str]],
+        progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
     to_upload, errors = parse_locality_set(
         collection, column_headers, data, progress)
 
