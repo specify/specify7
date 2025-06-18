@@ -7,7 +7,6 @@ from specifyweb.specify.models import (
     Collectionobjectgroupjoin,
     Collectionobject,
 )
-from unittest import skip
 
 
 class TestAddConsolidatedSiblingCoIds(TestCogConsolidatedPrepContext):
@@ -20,7 +19,7 @@ class TestAddConsolidatedSiblingCoIds(TestCogConsolidatedPrepContext):
         input_set = [getattr(co, field) for co in input_cos]
         expected_output = [getattr(co, field) for co in result_set]
         self.assertCountEqual(
-            add_consolidated_sibling_co_ids(input_set),
+            add_consolidated_sibling_co_ids(input_set, field),
             expected_output,
         )
 
@@ -89,7 +88,6 @@ class TestAddConsolidatedSiblingCoIds(TestCogConsolidatedPrepContext):
         for test_case in test_cases:
             self._check_siblings(test_case, self.collectionobjects, "catalognumber")
 
-    @skip("temp skip")
     def test_sibling_distant_co_preps_included(self):
         co_and_preps = self._distant_co_preps_included()
 
@@ -135,11 +133,38 @@ class TestAddConsolidatedSiblingCoIds(TestCogConsolidatedPrepContext):
 
         all_relevant_cos = [self.collectionobjects[2], *new_collectionobjects]
 
-        simple_test_cases = [
-            *[[new_co] for new_co in new_collectionobjects],
-            [self.collectionobjects[2]],
-        ]
+        test_cases = [[]]
 
-        for test_case in simple_test_cases:
-            self._check_siblings(test_case, all_relevant_cos, "id")
-            self._check_siblings(test_case, all_relevant_cos, "catalognumber")
+        def _append_and_run(test_case, result_set, field):
+            test_cases.append(test_case)
+            self._check_siblings([new_co], result_set, field)
+
+        for new_co in new_collectionobjects[:2]:
+            _append_and_run([new_co], new_collectionobjects, "id")
+            _append_and_run([new_co], new_collectionobjects, "catalognumber")
+
+        # Test the result set together
+        _append_and_run(new_collectionobjects[:2], new_collectionobjects, "id")
+        _append_and_run(
+            new_collectionobjects[:2], new_collectionobjects, "catalognumber"
+        )
+
+        for new_co in new_collectionobjects[2:]:
+            _append_and_run([new_co], new_collectionobjects[2:], "id")
+            _append_and_run([new_co], new_collectionobjects[2:], "catalognumber")
+
+        # Test the result set together
+        _append_and_run(new_collectionobjects[2:], new_collectionobjects[2:], "id")
+        _append_and_run(
+            new_collectionobjects[2:], new_collectionobjects[2:], "catalognumber"
+        )
+
+        for test_case in test_cases:
+            self._check_siblings(
+                [*test_case, self.collectionobjects[2]], all_relevant_cos, "id"
+            )
+            self._check_siblings(
+                [*test_case, self.collectionobjects[2]],
+                all_relevant_cos,
+                "catalognumber",
+            )
