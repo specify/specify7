@@ -28,6 +28,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
+from specifyweb.specify.models import Specifyuser
 
 from specifyweb.permissions.permissions import (
     enforce,
@@ -1407,7 +1408,7 @@ def create_collection(request, direct=False):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def create_specifyuser(request, direct=False):
-    from specifyweb.specify.models import Specifyuser, Agent, Division
+    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
 
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
@@ -1436,6 +1437,14 @@ def create_specifyuser(request, direct=False):
                 new_user.save()
 
                 ## TODO: add here permission to the newly created collection
+                actions = ['create', 'read', 'update', 'delete']
+                for action in actions:
+                    models.UserPolicy.objects.create(
+                        collection= Collection.objects.last(),
+                        specifyuser=new_user,
+                        resource='collection',
+                        action=action
+                    )
 
                 agent.specifyuser = new_user
                 agent.save()
