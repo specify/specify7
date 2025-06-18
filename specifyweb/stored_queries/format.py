@@ -7,9 +7,9 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect
+from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
-from sqlalchemy.sql.expression import case, func, cast, literal, Label
+from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
@@ -248,7 +248,7 @@ class ObjectFormatter:
             query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
             def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
             cases = [(case_value_convert(value), expr) for (value, expr) in cases]
-            expr = case(cases, formatted)
+            expr = case(*cases, value=formatted)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
