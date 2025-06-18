@@ -1,112 +1,106 @@
-import { act,renderHook } from "@testing-library/react";
+import { act, renderHook } from '@testing-library/react';
 
-import { mockTime } from "../../tests/helpers";
-import { errorContext, useErrorContext } from "../useErrorContext";
+import { mockTime } from '../../tests/helpers';
+import { errorContext, useErrorContext } from '../useErrorContext';
 
 mockTime();
 
 let errorContextCopy: typeof errorContext | undefined = undefined;
 
-describe("useErrorContext", ()=>{
+describe('useErrorContext', () => {
+  /*
+   * BeforeAll and AfterAll make sure the state is reverted back to orginal set.
+   * Technically, if tests are parallelized this might break..
+   */
+  beforeEach(() => {
+    // Create a copy of the errorContext
+    errorContextCopy = new Set(errorContext);
+    errorContext.clear();
+  });
 
-    /*
-     * BeforeAll and AfterAll make sure the state is reverted back to orginal set.
-     * Technically, if tests are parallelized this might break..
-     */
-    beforeEach(()=>{
-        // Create a copy of the errorContext
-        errorContextCopy = new Set(errorContext);
-        errorContext.clear();
+  afterEach(() => {
+    errorContext.clear();
+    errorContextCopy?.forEach((value) => {
+      errorContext.add(value);
     });
+  });
 
-    afterEach(()=>{
-        errorContext.clear();
-        errorContextCopy?.forEach((value)=>{
-            errorContext.add(value)
-        });
-    });
+  const makeErrorContextData = (name: string, payload: unknown) => ({
+    timestamp: new Date().toJSON(),
+    name,
+    payload,
+  });
 
-    const makeErrorContextData = (name: string, payload: unknown)=>({
-        timestamp: new Date().toJSON(),
-        name,
-        payload
-        })
-    
-    const getValue = (set: ReadonlySet<unknown>) => set.values().next().value;
+  const getValue = (set: ReadonlySet<unknown>) => set.values().next().value;
 
+  test('adds and removes value from the set', async () => {
+    const name = 'testname';
+    const data = {
+      varA: 20,
+      strA: 'this a test value',
+    };
 
-    test("adds and removes value from the set", async ()=>{
+    expect(errorContext.size).toBe(0);
 
-        const name = "testname";
-        const data = {
-            varA: 20,
-            strA: "this a test value"
-        };
+    const setObject = makeErrorContextData(name, data);
+    const { unmount, rerender } = renderHook(() => useErrorContext(name, data));
 
-        expect(errorContext.size).toBe(0);
+    expect(errorContext.size).toBe(1);
 
-        const setObject = makeErrorContextData(name, data);
-        const {unmount, rerender} = renderHook(()=>useErrorContext(name, data));
+    expect(getValue(errorContext)).toEqual(setObject);
 
-        expect(errorContext.size).toBe(1);
+    await act(rerender);
 
-        expect(getValue(errorContext)).toEqual(setObject);
+    expect(errorContext.size).toBe(1);
 
-        await act(rerender);
+    await act(unmount);
 
-        expect(errorContext.size).toBe(1);
+    expect(errorContext.size).toBe(0);
+  });
 
-        await act(unmount);
+  test('updates the context when name or data changes', async () => {
+    const initialName = 'initialName';
+    const changedName = 'changedName';
 
-        expect(errorContext.size).toBe(0);
+    const initialData = {
+      initKey: 'initialData',
+    };
 
-    });
+    const changedData = {
+      changedKey: 'changedData',
+    };
 
-    test("updates the context when name or data changes", async () =>{
+    const initialContent = makeErrorContextData(initialName, initialData);
+    const intermediateContent = makeErrorContextData(changedName, initialData);
+    const finalContent = makeErrorContextData(changedName, changedData);
 
-        const initialName = "initialName";
-        const changedName = "changedName";
+    let name = initialName;
+    let data: unknown = initialData;
 
-        const initialData = {
-            initKey: "initialData"
-        };
+    const { unmount, rerender } = renderHook(() => useErrorContext(name, data));
 
-        const changedData = {
-            changedKey: "changedData"
-        };
+    expect(errorContext.size).toBe(1);
 
-        const initialContent = makeErrorContextData(initialName, initialData);
-        const intermediateContent = makeErrorContextData(changedName, initialData);
-        const finalContent = makeErrorContextData(changedName, changedData);
+    expect(getValue(errorContext)).toEqual(initialContent);
 
-        let name = initialName;
-        let data: unknown = initialData;
+    name = changedName;
 
-        const {unmount, rerender} = renderHook(()=>useErrorContext(name, data));
+    await act(rerender);
 
-        expect(errorContext.size).toBe(1);
+    expect(errorContext.size).toBe(1);
 
-        expect(getValue(errorContext)).toEqual(initialContent);
+    expect(getValue(errorContext)).toEqual(intermediateContent);
 
-        name = changedName;
+    data = changedData;
 
-        await act(rerender);
+    await act(rerender);
 
-        expect(errorContext.size).toBe(1);
+    expect(errorContext.size).toBe(1);
 
-        expect(getValue(errorContext)).toEqual(intermediateContent);
+    expect(getValue(errorContext)).toEqual(finalContent);
 
-        data = changedData;
+    await act(unmount);
 
-        await act(rerender);
-
-        expect(errorContext.size).toBe(1);
-
-        expect(getValue(errorContext)).toEqual(finalContent);
-
-        await act(unmount);
-
-        expect(errorContext.size).toBe(0);
-
-    });
+    expect(errorContext.size).toBe(0);
+  });
 });
