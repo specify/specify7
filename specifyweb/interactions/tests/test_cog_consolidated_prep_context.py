@@ -91,6 +91,4 @@ class TestCogConsolidatedPrepContext(TestCogInteractions):
         TestCogConsolidatedPrepContext._link_cog_cog(
             great_grandchild_cog_consolidated, self.test_cog_discrete
         )
-        return CoAndPreps(
-            [self.collectionobjects[2], self.collectionobjects[4]], preparations
-        )
+        return CoAndPreps([self.collectionobjects[2]], preparations)
