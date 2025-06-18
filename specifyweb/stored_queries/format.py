@@ -54,19 +54,19 @@ class ObjectFormatter:
         self.format_agent_type = format_agent_type
         self.format_picklist = format_picklist
 
-    def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
-        def lookup(attr: str, val: str) -> Element | None:
+    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
+        def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
                 f'format[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Element | None:
+        def lookup_default(attr: str, val: str) -> Optional[Element]:
             elements = self.formattersDom.findall(f'format[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
             return None
         
-        def lookup_name(name: str) -> Element | None:
+        def lookup_name(name: str) -> Optional[Element]:
             elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
             for element in elements:
                 if element.get('class') == specify_model.classname:
@@ -120,11 +120,11 @@ class ObjectFormatter:
                 return True
         return False
 
-    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Element | None:
-        def lookup(attr: str, val: str) -> Element | None:
+    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
+        def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Element | None:
+        def lookup_default(attr: str, val: str) -> Optional[Element]:
             elements = self.formattersDom.findall(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':

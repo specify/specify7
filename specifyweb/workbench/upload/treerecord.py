@@ -135,7 +135,7 @@ class TreeRecord(NamedTuple):
     ranks: dict[str | TreeRankRecord, dict[str, ColumnOptions]]
 
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
@@ -170,9 +170,9 @@ class ScopedTreeRecord(NamedTuple):
     ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]]
     treedef: Any
     treedefitems: list
-    root: Any | None
+    root: Optional[Any] 
     disambiguation: dict[str, int]
-    batch_edit_pack: dict[str, Any] | None
+    batch_edit_pack: Optional[dict[str, Any]]
     scoped_cotypes: Any
     cotype_column: Optional[str]
 
@@ -184,7 +184,7 @@ class ScopedTreeRecord(NamedTuple):
         )
 
     def apply_batch_edit_pack(
-        self, batch_edit_pack: BatchEditJson | None
+        self, batch_edit_pack: Optional[BatchEditJson]
     ) -> "ScopedTreeRecord":
         if batch_edit_pack is None:
             return self
@@ -311,7 +311,7 @@ class ScopedTreeRecord(NamedTuple):
     # Handle cases where there are multiple or no treedefs
     def _handle_multiple_or_no_treedefs(self,
         unique_treedef_ids: set[Optional[int]], targeted_treedefids: set[int], ranks_columns: list[TreeRankCell]
-    ) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]] | None:
+    ) -> Optional[tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]]:
         if not targeted_treedefids:
             return self, None
         elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
@@ -355,7 +355,7 @@ class ScopedTreeRecord(NamedTuple):
         row: Row,
         uploadingAgentId: Optional[int],
         auditor: Auditor,
-        cache: dict | None = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: dict[TreeRankRecord, list[ParseResult]] = {}
         parseFails: list[WorkBenchParseFailure] = []
@@ -400,7 +400,7 @@ class ScopedTreeRecord(NamedTuple):
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTreeRecord":
         s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTreeRecord(*s)
@@ -412,7 +412,7 @@ class ScopedMustMatchTreeRecord(ScopedTreeRecord):
         row: Row,
         uploadingAgentId: Optional[int],
         auditor: Auditor,
-        cache: dict | None = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
@@ -443,13 +443,13 @@ class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
     treedefitems: list
-    root: Any | None
+    root: Optional[Any] 
     parsedFields: dict[TreeRankRecord, list[ParseResult]]
     uploadingAgentId: Optional[int]
     auditor: Auditor
-    cache: dict | None
+    cache: Optional[dict]
     disambiguation: dict[str, int]
-    batch_edit_pack: dict[str, Any] | None
+    batch_edit_pack: Optional[dict[str, Any]]
 
     def is_one_to_one(self) -> bool:
         return False
@@ -496,9 +496,9 @@ class BoundTreeRecord(NamedTuple):
     def _is_null(
         self,
     ) -> tuple[
-        UploadResult | None,
+        Optional[UploadResult],
         list[TreeDefItemWithParseResults],
-        dict[str, Any] | None,
+        Optional[dict[str, Any]],
     ]:
         references = self._get_reference()
         tdiwprs = self._to_match(references)
@@ -645,7 +645,7 @@ class BoundTreeRecord(NamedTuple):
 
     def _find_matching_descendent(
         self,
-        parent: MatchInfo | None,
+        parent: Optional[MatchInfo],
         to_match: TreeDefItemWithParseResults,
         reference=None,
     ) -> list[MatchInfo]:
@@ -680,7 +680,7 @@ class BoundTreeRecord(NamedTuple):
             reference_id,
         )
 
-        cached: list[MatchInfo] | None = (
+        cached: Optional[list[MatchInfo]] = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
         if cached is not None:
@@ -729,7 +729,7 @@ class BoundTreeRecord(NamedTuple):
         ), f"Invalid Error: {to_upload}, can not upload matched resluts: {matched}"
         model = getattr(models, self.name)
 
-        parent_info: dict | None
+        parent_info: Optional[dict] 
         if isinstance(matched, Matched):
             parent_info = model.objects.values(*FETCHED_ATTRS).get(id=matched.id)
             parent_result = {"parent": UploadResult(matched, {}, {})}
@@ -888,7 +888,7 @@ class BoundTreeRecord(NamedTuple):
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
 
-    def _get_reference(self) -> dict[str, Any] | None:
+    def _get_reference(self) -> Optional[dict[str, Any]]:
 
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null,
         # the "deferForNull" mess is not needed (that's redundant now). We, do, however need to look at deferForMatch, and we are done.

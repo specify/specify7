@@ -65,10 +65,10 @@ class UploadTable(NamedTuple):
     toOne: dict[str, Uploadable]
     toMany: dict[str, list[Uploadable]]
 
-    overrideScope: dict[Literal["collection"], Optional[int]] | None = None
+    overrideScope: Optional[dict[Literal["collection"], Optional[int]]] = None
 
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
 
@@ -133,7 +133,7 @@ class ScopedUploadTable(NamedTuple):
     scopingAttrs: dict[str, int]
     disambiguation: Optional[int]
     to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
-    match_payload: BatchEditSelf | None
+    match_payload: Optional[BatchEditSelf]
     strong_ignore: list[str]
 
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
@@ -160,7 +160,7 @@ class ScopedUploadTable(NamedTuple):
         )
 
     def apply_batch_edit_pack(
-        self, batch_edit_pack: BatchEditJson | None
+        self, batch_edit_pack: Optional[BatchEditJson]
     ) -> "ScopedUploadable":
         if batch_edit_pack is None:
             return self
@@ -209,7 +209,7 @@ class ScopedUploadTable(NamedTuple):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: dict | None = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundUploadTable", ParseFailures]:
 
         current_id = (
@@ -270,7 +270,7 @@ class ScopedUploadTable(NamedTuple):
 
 class OneToOneTable(UploadTable):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedOneToOneTable":
         s = super().apply_scoping(collection, context, row)
         return ScopedOneToOneTable(*s)
@@ -285,7 +285,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: dict | None = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -293,7 +293,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
 
 class MustMatchTable(UploadTable):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self, collection, context: Optional[ScopeContext] = None, row=None
     ) -> "ScopedMustMatchTable":
         s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTable(*s)
@@ -308,7 +308,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: dict | None = None,
+        cache: Optional[dict] = None,
     ) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -324,9 +324,9 @@ class BoundUploadTable(NamedTuple):
     disambiguation: Optional[int]
     uploadingAgentId: Optional[int]
     auditor: Auditor
-    cache: dict | None
+    cache: Optional[dict]
     to_one_fields: dict[str, list[str]]
-    match_payload: BatchEditSelf | None
+    match_payload: Optional[BatchEditSelf]
     strong_ignore: list[
         str
     ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See comment in "test_batch_edit_table.py/test_to_many_match_is_possible"
@@ -496,7 +496,7 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
+    def _get_reference(self, should_cache=True) -> Optional[models.ModelWithTable]:
         model: models.ModelWithTable = self.django_model
         current_id = self.current_id
 
@@ -623,11 +623,11 @@ class BoundUploadTable(NamedTuple):
 
     def _match(
         self, predicates: DjangoPredicates, info: ReportInfo
-    ) -> Matched | MatchedMultiple | None:
+    ) -> Optional[Union[Matched, MatchedMultiple]]:
 
         cache_key = predicates.get_cache_key(self.name)
 
-        cache_hit: list[int] | None = (
+        cache_hit: Optional[list[int]] = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
         if cache_hit is not None:
@@ -657,7 +657,7 @@ class BoundUploadTable(NamedTuple):
         else:
             return None
 
-    def _check_missing_required(self) -> ParseFailures | None:
+    def _check_missing_required(self) -> Optional[ParseFailures]:
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
@@ -817,7 +817,7 @@ class BoundUploadTable(NamedTuple):
 
         assert reference_record is not None
 
-        result: Deleted | FailedBusinessRule | None = None
+        result: Optional[Union[Deleted, FailedBusinessRule]] = None
 
         to_many_deleted: dict[str, list[UploadResult]] = {
             key: [record.delete_row() for record in records]

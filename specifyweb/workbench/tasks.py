@@ -22,7 +22,7 @@ def upload_data(
     ds_id: int,
     no_commit: bool,
     allow_partial: bool,
-    task: Task | None=None,
+    task: Optional[Task]=None,
     progress=None,
 ) -> None:
     with transaction.atomic():

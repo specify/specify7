@@ -39,7 +39,7 @@ from specifyweb.stored_queries.queryfield import fields_from_json
 
 logger = logging.getLogger(__name__)
 
-SORT_LITERAL: Literal["asc"] | Literal["desc"] | None
+SORT_LITERAL: Optional[Union[Literal["asc"], Literal["desc"]]] = None
 
 SERIES_MAX_ROWS = 10000
 

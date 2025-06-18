@@ -97,7 +97,7 @@ def get_readonly_fields(table: Table):
 FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
 
 
-def parse(value: Any | None, query_field: QueryField) -> Any:
+def parse(value: Optional[Any], query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
@@ -127,7 +127,7 @@ batch_edit_fields: dict[str, tuple[MaybeField, int]] = {
 
 
 class BatchEditFieldPack(NamedTuple):
-    field: QueryField | None = None
+    field: Optional[QueryField] = None
     idx: Optional[int] = None  # default value not there, for type safety
     value: Any = None  # stricten this?
 
@@ -289,7 +289,7 @@ class RowPlanMap(NamedTuple):
     to_one: dict[str, "RowPlanMap"] = {}
     to_many: dict[str, "RowPlanMap"] = {}
     is_naive: bool = True
-    tree_rank: TreeRankQuery | None = None
+    tree_rank: Optional[TreeRankQuery] = None
 
     @staticmethod
     def _merge(
@@ -831,7 +831,7 @@ class RowPlanCanonical(NamedTuple):
 
         return _flat
 
-    def flatten(self) -> tuple[list[Any], dict[str, Any] | None]:
+    def flatten(self) -> tuple[list[Any], Optional[dict[str, Any]]]:
         cols = [col.value for col in self.columns]
         base_pack = (
             self.batch_edit_pack.to_json()
@@ -1068,7 +1068,7 @@ class BatchEditProps(TypedDict):
     recordsetid: Optional[int]
     session_maker: Any
     fields: list[QueryField]
-    omit_relationships: bool | None
+    omit_relationships: Optional[bool] 
     treedefsfilter: Any
 
 def _get_table_and_field(field: QueryField):
@@ -1157,7 +1157,7 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows = visited_rows[1:]
     assert len(visited_rows) > 0, "nothing to return!"
 
-    raw_rows: list[tuple[list[Any], dict[str, Any] | None]] = []
+    raw_rows: list[tuple[list[Any], Optional[dict[str, Any]]]] = []
     for visited_row in visited_rows:
         extend_row = visited_row.extend(to_many_planner, indexed)
         row_data, row_batch_edit_pack = extend_row.flatten()

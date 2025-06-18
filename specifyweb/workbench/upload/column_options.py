@@ -26,7 +26,7 @@ class ExtendedColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: Optional[str]
-    uiformatter: ScopedFormatter | None
+    uiformatter: Optional[ScopedFormatter]
     schemaitem: Any
     picklist: Any
     dateformat: Optional[str]

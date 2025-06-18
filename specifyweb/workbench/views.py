@@ -38,7 +38,7 @@ WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
 def regularize_rows(ncols: int, rows: list[list], skip_empty=True) -> list[list[str]]:
     n = ncols + 1  # extra row info such as disambiguation in hidden col at end
 
-    def regularize(row: list) -> list | None:
+    def regularize(row: list) -> Optional[list]:
         data = (row + [""] * n)[:n]  # pad / trim row length to match columns
         cleaned = [
             "" if v is None else str(v).strip() for v in data

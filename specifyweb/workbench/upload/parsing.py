@@ -35,12 +35,12 @@ class WorkBenchParseFailure(NamedTuple):
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Filter
-    add_to_picklist: PicklistAddition | None
+    add_to_picklist: Optional[PicklistAddition]
     column: str
     missing_required: Optional[str]
 
     @classmethod
-    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: Optional[str]):
+    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: Optional[PicklistAddition], column: str, missing_required: Optional[str]):
         return cls(filter_on=filter_on, upload=ps.to_upload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
 
     def match_key(self) -> str:
@@ -131,7 +131,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
         return ParseResult.from_parse_success(parsed, parsed.to_upload, None, colopts.column, None)
 
 
-def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> ParseResult | WorkBenchParseFailure | None:
+def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Optional[Union[ParseResult, WorkBenchParseFailure]]:
     if picklist.type == 0:  # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)

@@ -16,7 +16,7 @@ class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
     tableName: str
     columns: list[str]
-    treeInfo: TreeInfo | None
+    treeInfo: Optional[TreeInfo]
 
     def to_json(self) -> dict:
         return {
