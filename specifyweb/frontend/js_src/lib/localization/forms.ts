@@ -1197,4 +1197,16 @@ export const formsText = createDictionary({
     "ru-ru": "Добавить детей COG",
     "uk-ua": "Додати дочірні елементи COG",
   },
+  seriesEntry: {
+    "en-us": "Series Entry",
+  },
+  seriesEntryDescription: {
+    "en-us": "Create a series of new records from a range of catalog numbers",
+  },
+  seriesEntryStart: {
+    "en-us": "Series Range Start",
+  },
+  seriesEntryEnd: {
+    "en-us": "Series Range End",
+  },
 } as const);

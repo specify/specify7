@@ -242,10 +242,91 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     !tableValidForBulkClone(resource.specifyTable, resource) ||
     formatter === undefined;
 
+  const showSeriesEntry = true;
+  const [seriesEntryStart, setSeriesEntryStart] = React.useState<string | undefined>(undefined);
+  const [seriesEntryEnd, setSeriesEntryEnd] = React.useState<string | undefined>(undefined);
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
+            {resource.specifyTable.name === 'CollectionObject' &&
+            (isInRecordSet === false || isInRecordSet === undefined) &&
+            showSeriesEntry && canSave && !isCOGorCOJO
+            ? 
+              <>
+                <Input.Text
+                  aria-label={formsText.seriesEntryStart()}
+                  className="!w-fit"
+                  placeholder={formatter.valueOrWild()}
+                  value={seriesEntryStart}
+                  disabled={isSaveDisabled || saveBlocked}
+                  onValueChange={(value): void =>
+                    setSeriesEntryStart(value)
+                  }
+                />
+                <Input.Text
+                  aria-label={formsText.seriesEntryEnd()}
+                  className="!w-fit"
+                  placeholder={formatter.valueOrWild()}
+                  value={seriesEntryEnd}
+                  disabled={isSaveDisabled || saveBlocked}
+                  onValueChange={(value): void =>
+                    setSeriesEntryEnd(value)
+                  }
+                />
+                <ButtonComponent
+                  className={saveBlocked ? '!cursor-not-allowed' : undefined}
+                  disabled={isSaveDisabled || saveBlocked}
+                  title={formsText.seriesEntryDescription()}
+                  onClick={(): void => {
+                    // Scroll to the top of the form on clone
+                    smoothScroll(form, 0);
+                    const handleClick = async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
+                      // Simple test, don't generate cns between start and end
+                      const catalogNumbers = [seriesEntryStart, seriesEntryEnd];
+
+                      const clonePromises = Array.from(
+                        { length: catalogNumbers.length },
+                        async (_, index) => {
+                          const clonedResource = await resource.clone(
+                            false,
+                            true
+                          );
+                          clonedResource.set(
+                            'catalogNumber',
+                            catalogNumbers[index] as never
+                          );
+                          return clonedResource;
+                        }
+                      );
+
+                      const clones = await Promise.all(clonePromises);
+
+                      const backendClones = await ajax<
+                        RA<SerializedRecord<SCHEMA>>
+                      >(
+                        `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+                        {
+                          method: 'POST',
+                          headers: { Accept: 'application/json' },
+                          body: clones,
+                        }
+                      ).then(({ data }) =>
+                        data.map((resource) =>
+                          deserializeResource(serializeResource(resource))
+                        )
+                      );
+
+                      return Promise.all([resource, ...backendClones]);
+                    }
+                    loading(handleClick().then(handleAdd));
+                  }}
+                >
+                  {formsText.seriesEntry()}
+                </ButtonComponent>
+              </>
+            : undefined}
           {resource.specifyTable.name === 'CollectionObject' &&
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
