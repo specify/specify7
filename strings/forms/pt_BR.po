@@ -367,8 +367,8 @@ msgstr "Nome do plugin"
 msgid "illegalBool"
 msgstr "Valor ilegal para um campo Sim/Não"
 
-#: hooks/__tests__/useResourceValue.test.tsx:130
-#: hooks/__tests__/useResourceValue.test.tsx:177
+#: hooks/__tests__/useResourceValue.test.tsx:146
+#: hooks/__tests__/useResourceValue.test.tsx:203
 #: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:61
 #: utils/parser/__tests__/parse.test.ts:79
@@ -403,7 +403,7 @@ msgstr "Valor inválido"
 msgid "requiredFormat"
 msgstr "Formato necessário: {format:string}."
 
-#: hooks/__tests__/useResourceValue.test.tsx:171
+#: hooks/__tests__/useResourceValue.test.tsx:195
 #: utils/parser/definitions.ts:51
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
