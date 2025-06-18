@@ -793,7 +793,7 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     to_remove.delete()
 
 class IndependentInline(TypedDict): 
-    update: list[str | dict[str, Any]]
+    update: list[Union[str, dict[str, Any]]]
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline): 
@@ -1010,7 +1010,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> dict[str, Any]:
     data.update(calculate_extra_fields(obj, data))
     return data
 
-def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, Any]]:
+def to_many_to_data(obj, rel, checker: ReadPermChecker) -> Union[str, list[dict[str, Any]]]:
     """Return the URI or nested data of the 'rel' collection
     depending on if the field is included in the 'inlined_fields' global.
     """

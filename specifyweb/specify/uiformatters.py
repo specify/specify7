@@ -287,7 +287,7 @@ class CNNField(NumericField):
     def canonicalize(self, value: str) -> str:
         return value.zfill(self.size)
 
-def get_uiformatter_by_name(collection, user, formatter_name: str) -> UIFormatter | None:
+def get_uiformatter_by_name(collection, user, formatter_name: str) -> Optional[UIFormatter]:
     xml, _, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
@@ -351,7 +351,7 @@ def get_uiformatters(collection, obj, user) -> list[UIFormatter]:
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
-def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter | None:
+def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
         return get_catalognumber_format(collection, None, None)

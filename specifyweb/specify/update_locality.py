@@ -226,9 +226,9 @@ class JSONParseError(TypedDict):
 
 
 class ParseError(NamedTuple):
-    message: ParseFailureKey | LocalityParseErrorMessageKey
+    message: Union[ParseFailureKey, LocalityParseErrorMessageKey]
     field: Optional[str]
-    payload: dict[str, Any] | None
+    payload: Optional[dict[str, Any]]
     row_number: Optional[int]
 
     @classmethod
@@ -242,7 +242,7 @@ class ParseError(NamedTuple):
 class ParsedRow(TypedDict):
     row_number: int
     locality: dict[str, Any]
-    geocoorddetail: dict[str, Any] | None
+    geocoorddetail: Optional[dict[str, Any]]
     locality_id: int
 
 
@@ -273,7 +273,12 @@ class UploadParseError(TypedDict):
 
 
 @transaction.atomic
-def resolve_localityupdate_result(taskid: str, results: tuple[list[ParsedRow], list[ParseError]] | UploadSuccess | UploadParseError, collection, create_recordset: bool = False) -> LocalityUpdate:
+def resolve_localityupdate_result(
+    taskid: str,
+    results: Union[Tuple[List[ParsedRow], List[ParseError]], UploadSuccess, UploadParseError],
+    collection,
+    create_recordset: bool = False
+) -> LocalityUpdate:
 
     lu = LocalityUpdate.objects.get(taskid=taskid)
 
@@ -333,7 +338,7 @@ def resolve_localityupdate_result(taskid: str, results: tuple[list[ParsedRow], l
     return lu
 
 
-def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]], progress: Progress | None = None) -> tuple[list[ParsedRow], list[ParseError]]:
+def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> tuple[list[ParsedRow], list[ParseError]]:
     errors: list[ParseError] = []
     to_upload: list[ParsedRow] = []
 
@@ -424,7 +429,7 @@ def merge_parse_results(results: list[ParseSuccess | ParseError], locality_id: i
     return to_upload, errors
 
 
-def upload_locality_set(collection, column_headers: list[str], data: list[list[str]], progress: Progress | None = None) -> UploadSuccess | UploadParseError:
+def upload_locality_set(collection, column_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> UploadSuccess | UploadParseError:
     to_upload, errors = parse_locality_set(
         collection, column_headers, data, progress)
 
@@ -437,7 +442,7 @@ def upload_locality_set(collection, column_headers: list[str], data: list[list[s
     return upload_from_parsed(to_upload, progress)
 
 
-def upload_from_parsed(uploadables: list[ParsedRow], progress: Progress | None = None) -> UploadSuccess:
+def upload_from_parsed(uploadables: list[ParsedRow], progress: Optional[Progress] = None) -> UploadSuccess:
     processed = 0
     total = len(uploadables)
 

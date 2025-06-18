@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Dict, List, Optional, Tuple, TypeVar
+from typing import Dict, List, Optional, Tuple, TypeVar, Union
 from collections.abc import Callable
 from collections.abc import Generator
 from django.db.models import Q
@@ -12,7 +12,7 @@ class Func:
     O = TypeVar("O")
 
     @staticmethod
-    def maybe(value: I | None, callback: Callable[[I], O]) -> Optional[O]:
+    def maybe(value: Optional[I], callback: Callable[[I], O]) -> Optional[O]:
         if value is None:
             return None
         return callback(value)
@@ -28,7 +28,7 @@ class Func:
     @staticmethod
     def make_ors(eprns: list[Q]) -> Q:
         assert len(eprns) > 0
-        return reduce(lambda accum, curr: accum | curr, eprns)
+        return reduce(lambda accum, curr: Union[accum, curr], eprns)
 
     @staticmethod
     def make_generator(step=1):
@@ -57,7 +57,7 @@ class Func:
         return [second for (_, second) in source]
     
     @staticmethod
-    def filter_list(source: list[I | None]) -> list[I]:
+    def filter_list(source: list[Optional[I]]) -> list[I]:
         return [item for item in source if item is not None]
 
 class CustomRepr:
