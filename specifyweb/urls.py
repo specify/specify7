@@ -11,7 +11,7 @@ from .express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
 from .frontend.views import open_search as search_view
 from .interactions import urls as interaction_urls
-from .notifications import urls as notification_urls
+from specifyweb.backend.notifications import urls as notification_urls
 from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from .report_runner import urls as report_urls

@@ -10,7 +10,7 @@ from django.conf import settings
 
 from .dwca import make_dwca
 from ..context.app_resource import get_app_resource, get_app_resource_from_db
-from ..notifications.models import Message
+from ..backend.notifications.models import Message
 from ..specify.models import Collection, Specifyuser
 
 logger = logging.getLogger(__name__)

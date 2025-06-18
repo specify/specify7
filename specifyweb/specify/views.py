@@ -16,7 +16,7 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
-from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
+from specifyweb.backend.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
