@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import logging
-from specifyweb.notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 from django.test import Client
 logger = logging.getLogger(__name__)
 
