@@ -28,7 +28,7 @@ def reverse_faulty_end_start_period(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('patches', '0003_coordinate_fields_fix'),
+        ('patches', '0004_add_title_tree_rank_fix'),
     ]
 
     operations = [
