@@ -246,6 +246,9 @@ def create_recordset(ds: Spdataset, name: str, remarks: str):
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
 
+    if table.tableId is None:
+        raise ValueError("tableId cannot be None when creating a Recordset")
+
     rs = models.Recordset.objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,

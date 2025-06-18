@@ -12,7 +12,7 @@ class Func:
     O = TypeVar("O")
 
     @staticmethod
-    def maybe(value: I | None, callback: Callable[[I], O]):
+    def maybe(value: I | None, callback: Callable[[I], O]) -> Optional[O]:
         if value is None:
             return None
         return callback(value)
