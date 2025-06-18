@@ -110,7 +110,7 @@ def extend_columnoptions(
         tablename: str, 
         fieldname: str, 
         row: Optional[Row] = None,
-        toOne: dict[str, UploadableOptional[]] = None,
+        toOne: Optional[dict[str, Uploadable]] = None,
         context: Optional[ScopeContext] = None
     ) -> ExtendedColumnOptions:
 
