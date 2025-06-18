@@ -40,7 +40,7 @@ describe('useMoment', () => {
     await waitFor(() => expect(result.current[GET]?.isValid()).toBe(false));
 
     // Can update moment
-    const otherDate = '2020-01-01 00:00:00.000';
+    const otherDate = '2020-01-01T00:00:00';
     const moment = dayjs(new Date(otherDate));
     act(() => setMoment(moment));
     await waitFor(() => expect(result.current[GET]).toEqual(moment));
@@ -51,7 +51,7 @@ describe('useMoment', () => {
     const resource = new tables.CollectionObject.Resource(undefined, {
       noBusinessRules: true,
     });
-    const date = '2020-01-01 00:00:00.000';
+    const date = '2020-01-01T00:00:00';
     const defaultValue = new Date(date);
 
     renderHook(() => useMoment(resource, dateFieldName, defaultValue));

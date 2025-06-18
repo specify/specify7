@@ -21,7 +21,7 @@ test('useDatePreferences', () => {
     {
       "dateSupported": true,
       "dateType": "date",
-      "inputFullFormat": "YYYY-MM-DD HH:mm:ss.SSS",
+      "inputFullFormat": "YYYY-MM-DDTHH:mm:ss",
       "inputMonthFormat": "YYYY-MM",
       "monthSupported": true,
       "monthType": "month",
