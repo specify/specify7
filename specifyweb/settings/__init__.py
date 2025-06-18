@@ -217,7 +217,7 @@ SPECIFY_APPS  = [
     'specifyweb.context',
     'specifyweb.backend.attachment_gw',
     'specifyweb.frontend',
-    'specifyweb.barvis',
+    'specifyweb.backend.barvis',
     'specifyweb.patches',
     'specifyweb.report_runner',
     'specifyweb.interactions',
