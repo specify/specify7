@@ -258,9 +258,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 <Input.Text
                   aria-label={formsText.seriesEntryStart()}
                   className="!w-fit"
+                  disabled={isSaveDisabled || saveBlocked}
                   placeholder={formatter.valueOrWild()}
                   value={seriesEntryStart}
-                  disabled={isSaveDisabled || saveBlocked}
                   onValueChange={(value): void =>
                     setSeriesEntryStart(value)
                   }
@@ -268,9 +268,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 <Input.Text
                   aria-label={formsText.seriesEntryEnd()}
                   className="!w-fit"
+                  disabled={isSaveDisabled || saveBlocked}
                   placeholder={formatter.valueOrWild()}
                   value={seriesEntryEnd}
-                  disabled={isSaveDisabled || saveBlocked}
                   onValueChange={(value): void =>
                     setSeriesEntryEnd(value)
                   }
