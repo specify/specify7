@@ -138,7 +138,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                   :
                   loading(
                     downloadAllAttachments(
-                      attachmentsRef.current?.attachments ?? [],
+                      (recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? [],
                       name,
                       recordSetId,
                     )
