@@ -46,6 +46,7 @@ class TestCogInteractions(DefaultsSetup):
         prep = Preparation.objects.create(collectionobject=co, preptype=self.prep_type)
         if prep_list is not None:
             prep_list.append(prep)
+        return prep
 
     def _preps_match(self, base, computed):
         self.assertCountEqual(
