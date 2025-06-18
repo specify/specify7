@@ -319,9 +319,9 @@ export function downloadAttachment(
 export async function downloadAllAttachments(
   attachments: RA<SerializedResource<Attachment>>,
   archiveName?: string,
-  recordSetId?: number | string
+  recordSetId?: number
 ): Promise<void> {
-  if (attachments.length === 0) return;
+  if (attachments.length === 0 && recordSetId === undefined) return;
   if (attachments.length === 1) {
     downloadAttachment(attachments[0]);
     return;
