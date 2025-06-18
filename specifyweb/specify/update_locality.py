@@ -11,7 +11,7 @@ import specifyweb.specify.models as spmodels
 
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.notifications.models import LocalityUpdate, LocalityUpdateRowResult, Message
+from specifyweb.backend.notifications.models import LocalityUpdate, LocalityUpdateRowResult, Message
 from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
 from specifyweb.specify.uiformatters import get_uiformatter
 
