@@ -5,7 +5,7 @@ from django.db import connection, transaction
 from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from sqlalchemy import sql, distinct
+from sqlalchemy import select, func, distinct, literal_column, literal
 from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
@@ -163,59 +163,49 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
-    node = getattr(sqlmodels, tree_table.name)
-    child = aliased(node)
+    node     = getattr(sqlmodels, tree_table.name)
+    child    = aliased(node)
     accepted = aliased(node)
-    synonym = aliased(node)
-    id_col = getattr(node, node._id)
-    child_id = getattr(child, node._id)
+    synonym  = aliased(node)
+
+    id_col      = getattr(node, node._id)
+    child_id    = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-    orderby = getattr(node, tree_table.get_field_strict(sortfield).name)
+    orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
 
-    col_args = [
-        node.name,
-        node.fullName,
-        node.nodeNumber,
-        node.highestChildNodeNumber,
-        node.rankId,
-        node.AcceptedID,
-        accepted.fullName,
-        node.author if include_author else "NULL",
-    ]
+    cols = [
+        id_col.label("id"),
+        func.min(node.name).label("name"),
+        func.min(node.fullName).label("full_name"),
+        func.min(node.nodeNumber).label("node_number"),
+        func.min(node.highestChildNodeNumber).label("highest_child_number"),
+        func.min(node.rankId).label("rank_id"),
 
-    apply_min = [
-        # for some reason, SQL is rejecting the group_by in some dbs
-        # due to "only_full_group_by". It is somehow not smart enough to see
-        # that there is no dependency in the columns going from main table to the to-manys (child, and syns)
-        # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
-        # I don't want to disable "only_full_group_by" in case someone misuses it...
-        # applying min to fool into thinking it is aggregated.
-        # these values are guarenteed to be the same
-        sql.func.min(arg)
-        for arg in col_args
-    ]
+        func.min(node.AcceptedID).label("accepted_id"),
+        func.min(accepted.fullName).label("accepted_fullname"),
 
-    grouped = [
-        *apply_min,
-        # syns are to-many, so child can be duplicated
-        sql.func.count(distinct(child_id)),
-        # child are to-many, so syn's full name can be duplicated
-        # FEATURE: Allow users to select a separator?? Maybe that's too nice
-        group_concat(distinct(synonym.fullName), separator=", "),
+        (
+            func.min(node.author)
+            if include_author
+            else func.min(literal("NULL"))
+        ).label("author"),
+
+        func.count(distinct(child_id)).label("child_count"),
+        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
     ]
 
     query = (
-        session.query(id_col, *grouped)
-        .outerjoin(child, child.ParentID == id_col)
+        select(*cols)
+        .outerjoin(child, child.ParentID  == id_col)
         .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id))
         .outerjoin(synonym, synonym.AcceptedID == id_col)
+        .where(treedef_col == int(treedef))
+        .where(node.ParentID == parentid)
         .group_by(id_col)
-        .filter(treedef_col == int(treedef))
-        .filter(node.ParentID == parentid)
         .order_by(orderby)
     )
-    results = list(query)
-    return results
+
+    return session.execute(query).all()
 
 @login_maybe_required
 @require_GET
