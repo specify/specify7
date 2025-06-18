@@ -79,7 +79,7 @@ overrideAjax(
       discipline: getResourceApiUrl('Discipline', 3),
       localityname: 'name',
       srclatlongunit: 0,
-      timestampcreated: '2022-08-31',
+      timestampcreated: '2022-08-31 03:37:10.400',
     },
   }
 );

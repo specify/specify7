@@ -10,7 +10,7 @@ const castMoment = (precision: PartialDatePrecision, date: Date): string =>
   cast(precision, dayjs(date)).format(databaseDateFormat);
 
 theories(castMoment, [
-  [['full', new Date('2020-02-02')], '2020-02-02'],
-  [['month-year', new Date('2020-02-03')], '2020-02-01'],
-  [['year', new Date('2020-02-04')], '2020-01-01'],
+  [['full', new Date('2020-02-02')], '2020-02-02 00:00:00.000'],
+  [['month-year', new Date('2020-02-03')], '2020-02-01 00:00:00.000'],
+  [['year', new Date('2020-02-04')], '2020-01-01 00:00:00.000'],
 ]);

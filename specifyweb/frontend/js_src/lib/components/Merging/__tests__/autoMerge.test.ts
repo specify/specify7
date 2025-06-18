@@ -40,7 +40,7 @@ const records: RA<DeepPartial<SerializedResource<Agent>>> = [
     lastName: '2',
     timestampCreated: '2023-01-28T00:36:28',
     timestampModified: '2023-01-29T00:36:28',
-    date1: '2020-01-01',
+    date1: '2020-01-01 00:00:00.000',
     /*
      * Even though other record has a non-null date1precision, since date1 value
      * from this record was used, the date1precision from this record will be
@@ -421,7 +421,7 @@ describe('autoMerge', () => {
         "collTechContact": null,
         "collectors": "/api/specify/collector/?agent=2305",
         "createdByAgent": "/api/specify/agent/1313/",
-        "date1": "2020-01-01",
+        "date1": "2020-01-01 00:00:00.000",
         "date1Precision": null,
         "date2": null,
         "date2Precision": null,
