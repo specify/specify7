@@ -158,7 +158,7 @@ def get_deferred_scoping(
     uploadable: UploadTable,
     row: dict[str, Any],
     base_ut,
-    context: Optional[ScopeContex] 
+    context: Optional[ScopeContext] 
 ):
     deferred_key = (table_name, key)
     deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
