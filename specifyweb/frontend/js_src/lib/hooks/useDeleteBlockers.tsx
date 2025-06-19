@@ -1,15 +1,15 @@
 import React from 'react';
-import { AnySchema } from '../components/DataModel/helperTypes';
-import { SpecifyResource } from '../components/DataModel/legacyTypes';
+
+import type { AnySchema } from '../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
+import type { DeleteBlocker } from '../components/Forms/DeleteBlocked';
 import { fetchDeleteBlockers } from '../components/Forms/DeleteButton';
-import { GetOrSet } from '../utils/types';
-import { SET } from '../utils/utils';
+import type { GetOrSet } from '../utils/types';
+import type { RA } from '../utils/types';
+import type { SET } from '../utils/utils';
 import { useAsyncState } from './useAsyncState';
 import { useLiveState } from './useLiveState';
-
-import { DeleteBlocker } from '../components/Forms/DeleteBlocked';
-import { RA } from '../utils/types';
 
 /**
  * REFACTOR (Performance): Store DeleteBlockers in a WeakMap with Resources as
@@ -17,10 +17,10 @@ import { RA } from '../utils/types';
  */
 
 /**
- * false if the blockers have not been fetched, undefined if the blockers are
+ * False if the blockers have not been fetched, undefined if the blockers are
  * being fetched
  */
-export type MaybeBlocker = RA<DeleteBlocker> | undefined | false;
+export type MaybeBlocker = RA<DeleteBlocker> | false | undefined;
 
 export function useDeleteBlockers(
   resource: SpecifyResource<AnySchema>,

@@ -1,12 +1,11 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
+
 import { tables } from '../../components/DataModel/tables';
-import { Tables } from '../../components/DataModel/types';
-import { DeleteBlocker } from '../../components/Forms/DeleteBlocked';
+import type { Tables } from '../../components/DataModel/types';
+import type { DeleteBlocker } from '../../components/Forms/DeleteBlocked';
 import { overrideAjax } from '../../tests/ajax';
-
 import { mockTime, requireContext } from '../../tests/helpers';
-
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { useDeleteBlockers } from '../useDeleteBlockers';
 
 mockTime();
@@ -136,13 +135,13 @@ overrideAjax(
  * serialize the tables and relationships to make it easier to compare results
  */
 type SerializedBlocker = {
-  table: keyof Tables;
-  blockers: RA<{
-    parentRelationship: string | undefined;
-    directRelationship: string;
-    ids: RA<{
-      direct: number;
-      parent: number | undefined;
+  readonly table: keyof Tables;
+  readonly blockers: RA<{
+    readonly parentRelationship: string | undefined;
+    readonly directRelationship: string;
+    readonly ids: RA<{
+      readonly direct: number;
+      readonly parent: number | undefined;
     }>;
   }>;
 };

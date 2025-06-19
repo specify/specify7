@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { mergingText } from '../../localization/merging';
@@ -12,7 +13,6 @@ import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import type { DeleteButtonProps } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
 import { Dialog, dialogClassNames } from './Dialog';
-import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 
 // REFACTOR: consider merging this with Merging/Usages
 export function LinkedRecords<SCHEMA extends AnySchema>({
