@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
@@ -97,7 +98,24 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         </ButtonComponent>
       )}
       {isOpen ? (
-        blockers === undefined || blockers === false ? (
+        /**
+         * This would be shown if the blockers aren't being fetched and aren't
+         * fetched.
+         * This branch should never be accessed, but just in case
+         */
+        blockers === false ? (
+          <Dialog
+            buttons={commonText.cancel()}
+            className={{ container: dialogClassNames.narrowContainer }}
+            header={mergingText.linkedRecords()}
+            onClose={handleClose}
+          >
+            <Button.Secondary onClick={() => fetchBlockers(true)}>
+              {mergingText.linkedRecords()}
+            </Button.Secondary>
+          </Dialog>
+        ) : // The blockers are being fetched
+        blockers === undefined ? (
           <Dialog
             buttons={commonText.cancel()}
             className={{ container: dialogClassNames.narrowContainer }}
@@ -107,7 +125,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
-        ) : blockers.length === 0 ? (
+        ) : // Blockers have finished fetching, and there are no blockers
+        blockers.length === 0 ? (
           <Dialog
             buttons={
               <>
@@ -152,6 +171,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             </div>
           </Dialog>
         ) : (
+          // There's one or more DeleteBlockers for the resource
           <Dialog
             buttons={commonText.close()}
             className={{

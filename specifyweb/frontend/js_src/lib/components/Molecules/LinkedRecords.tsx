@@ -30,10 +30,7 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
   return (
     <>
       <Button.Secondary
-        disabled={
-          blockers !== false &&
-          (blockers === undefined || blockers.length === 0)
-        }
+        disabled={blockers !== false && blockers?.length === 0}
         title={
           blockers === undefined
             ? commonText.loading()
@@ -66,7 +63,21 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
               )}
       </Button.Secondary>
       {isOpen ? (
-        blockers === undefined || blockers === false ? (
+        // This would be shown if the blockers aren't being fetched and aren't
+        // already fetched.
+        // This branch should never be accessed, but just in case
+        blockers === false ? (
+          <Dialog
+            buttons={commonText.cancel()}
+            header={mergingText.linkedRecords()}
+            className={{ container: dialogClassNames.narrowContainer }}
+            onClose={handleClose}
+          >
+            <Button.Secondary onClick={() => fetchBlockers(true)}>
+              {mergingText.linkedRecords()}
+            </Button.Secondary>
+          </Dialog>
+        ) : blockers === undefined ? (
           // This dialog is shown while the delete blockers are being fetched
           <Dialog
             buttons={commonText.cancel()}

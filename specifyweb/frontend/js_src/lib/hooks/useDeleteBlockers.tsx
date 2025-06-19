@@ -24,6 +24,32 @@ import { useLiveState } from './useLiveState';
  */
 export type MaybeBlocker = RA<DeleteBlocker> | false | undefined;
 
+/**
+ * Fetch the delete blockers for a given resource.
+ * If initialDeferred is true, the delete blockers will not be fetched until
+ * the fetchBlockers function is called. Fetching blockers which are already
+ * fetched will have no effect unless the forceFetch option is passed to
+ * fetchBlockers, i.e., `fetchBlockers(true)` is called.
+ *
+ *
+ * Example:
+ * ```js
+ * const {blockers, setBlockers, fetchBlockers} = useDeleteBlockers(resource);
+ * // blockers will be undefined if being fetched, and false if fetching was
+ * // deferred.
+ *
+ * blockers === false ?
+ *     // blockers were deferred
+ *     // ... prefetch logic
+ *     fetchBlockers();
+ * : blockers === undefined ?
+ *     // loading... logic
+ * : blockers.map... // we have the delete blocker array
+ * ```
+ *
+ * When the resource is saved, the delete blockers will automatically be
+ * refetched
+ */
 export function useDeleteBlockers(
   resource: SpecifyResource<AnySchema>,
   initialDeferred: boolean = false
@@ -35,21 +61,35 @@ export function useDeleteBlockers(
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
   );
+  const fetchingBlockers = React.useRef(!deferred);
+
+  const rawFetchBlockers = React.useCallback(async () => {
+    fetchingBlockers.current = true;
+    return fetchDeleteBlockers(resource).then((blockers) => {
+      fetchingBlockers.current = false;
+      return blockers;
+    });
+  }, [resource]);
+
   const [blockers, setBlockers] = useAsyncState(
     React.useCallback(
-      async () => (deferred ? false : fetchDeleteBlockers(resource)),
-      [resource, deferred]
+      async () => (deferred ? false : rawFetchBlockers()),
+      [rawFetchBlockers, deferred]
     ),
     false
   );
 
   const fetchBlockers = React.useCallback(
-    (forceRefetch: boolean = false) => {
-      if (deferred && !Array.isArray(blockers)) setDeferred(false);
-      else if (forceRefetch) {
-        setDeferred(false);
+    (forceRefetch: boolean = false): void => {
+      if (fetchingBlockers.current) {
+        return undefined;
+      }
+      if (deferred) {
         setBlockers(undefined);
-        fetchDeleteBlockers(resource).then(setBlockers);
+        setDeferred(false);
+      } else if (forceRefetch) {
+        setBlockers(undefined);
+        rawFetchBlockers().then(setBlockers);
       }
     },
     [blockers, deferred, setBlockers, setDeferred]
