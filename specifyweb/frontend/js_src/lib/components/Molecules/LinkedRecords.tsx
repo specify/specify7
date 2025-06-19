@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { mergingText } from '../../localization/merging';
@@ -12,51 +10,43 @@ import { icons } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import type { DeleteButtonProps } from '../Forms/DeleteButton';
-import { fetchBlockers } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
 import { Dialog, dialogClassNames } from './Dialog';
+import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 
-/**
- * REFACTOR: Merge with Merging/Usages
- */
+// REFACTOR: consider merging this with Merging/Usages
 export function LinkedRecords<SCHEMA extends AnySchema>({
   resource,
-  deferred: initialDeferred = false,
+  deferred = false,
 }: DeleteButtonProps<SCHEMA>): JSX.Element {
-  const [deferred, setDeferred] = useLiveState<boolean>(
-    React.useCallback(() => initialDeferred, [initialDeferred, resource])
-  );
-
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
-  const [blockers, setBlockers] = useAsyncState(
-    React.useCallback(
-      async () => (deferred ? undefined : fetchBlockers(resource)),
-      [resource, deferred]
-    ),
-    false
+  const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
+    resource,
+    deferred
   );
 
   return (
     <>
       <Button.Secondary
         disabled={
-          !deferred && (blockers === undefined || blockers.length === 0)
+          blockers !== false &&
+          (blockers === undefined || blockers.length === 0)
         }
         title={
           blockers === undefined
             ? commonText.loading()
-            : blockers.length === 0
+            : Array.isArray(blockers) && blockers.length === 0
               ? formsText.noLinkedRecords()
               : mergingText.linkedRecords()
         }
         onClick={() => {
           handleOpen();
-          setDeferred(false);
+          fetchBlockers();
         }}
       >
         {icons.documentSearch}
-        {deferred
+        {blockers === false
           ? undefined
           : blockers === undefined
             ? commonText.loading()
@@ -75,7 +65,7 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
               )}
       </Button.Secondary>
       {isOpen ? (
-        blockers === undefined ? (
+        blockers === undefined || blockers === false ? (
           // This dialog is shown while the delete blockers are being fetched
           <Dialog
             buttons={commonText.cancel()}
