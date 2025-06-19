@@ -63,14 +63,16 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
               )}
       </Button.Secondary>
       {isOpen ? (
-        // This would be shown if the blockers aren't being fetched and aren't
-        // already fetched.
-        // This branch should never be accessed, but just in case
+        /*
+         * This would be shown if the blockers aren't being fetched and aren't
+         * already fetched.
+         * This branch should never be accessed, but just in case
+         */
         blockers === false ? (
           <Dialog
             buttons={commonText.cancel()}
-            header={mergingText.linkedRecords()}
             className={{ container: dialogClassNames.narrowContainer }}
+            header={mergingText.linkedRecords()}
             onClose={handleClose}
           >
             <Button.Secondary onClick={() => fetchBlockers(true)}>
