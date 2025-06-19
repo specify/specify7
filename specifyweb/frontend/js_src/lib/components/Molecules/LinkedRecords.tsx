@@ -17,6 +17,7 @@ import { Dialog, dialogClassNames } from './Dialog';
 // REFACTOR: consider merging this with Merging/Usages
 export function LinkedRecords<SCHEMA extends AnySchema>({
   resource,
+  // Whether to defer fetching the Linked Records until the Button is clicked
   deferred = false,
 }: DeleteButtonProps<SCHEMA>): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();

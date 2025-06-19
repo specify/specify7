@@ -13,7 +13,9 @@ import { useLiveState } from './useLiveState';
 
 /**
  * REFACTOR (Performance): Store DeleteBlockers in a WeakMap with Resources as
- * keys
+ * keys.
+ *
+ * See components/DataModel/saveBlockers.tsx for inspiration
  */
 
 /**
