@@ -133,6 +133,13 @@ function Field({
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
+  /*
+   * Const hasComponentParent = isCO
+   *   ? resource.get('componentParent') !== null &&
+   *     resource.get('componentParent') !== undefined
+   *   : false;
+   */
+
   const isCatNumberField = field?.name === 'catalogNumber';
 
   // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
@@ -152,9 +159,9 @@ function Field({
   const displayPrimaryCatNumberPlaceHolder =
     isNew === false &&
     isCO &&
-    isPartOfCOG &&
+    // HasComponentParent &&
     isCatNumberField &&
-    displayPrimaryCatNumberPref;
+    displayParentCatNumberPref;
 
   const displayParentCatNumberPlaceHolder =
     isNew === false && isCO && isCatNumberField && displayParentCatNumberPref;
