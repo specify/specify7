@@ -2209,7 +2209,7 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.Component',
         table='component',
-        tableId=1028,
+        tableId=1029,
         idColumn='ComponentID',
         idFieldName='componentId',
         idField=IdField(name='componentId', column='ComponentID', type='java.lang.Integer'),
