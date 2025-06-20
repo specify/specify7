@@ -11,6 +11,7 @@ from collections.abc import Sequence
 
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.tree_extras import is_treetable
 
 logger = logging.getLogger(__name__)
 
@@ -43,22 +44,29 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
+    writing_to =  set([obj._meta.db_table])
+    reading_from = get_tables_to_read_lock(collection, obj, [formatter.field_name for formatter, _ in fields])
+    with lock_tables(read_tables=reading_from, write_tables=writing_to):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
 
         obj.save()
 
 
-def get_tables_to_lock(collection, obj, field_names) -> set[str]:
-    # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
-    from specifyweb.businessrules.models import UniquenessRule
-
+def get_tables_to_read_lock(collection, obj, field_names: list[str]) -> set[str]:
     obj_table = obj._meta.db_table
     scope_table = Scoping(obj).get_scope_model()
 
-    tables = {obj._meta.db_table, 'django_migrations', UniquenessRule._meta.db_table, 'discipline',
-              scope_table._meta.db_table}
+    tables = set([scope_table._meta.db_table, *get_uniqueness_rule_tables(collection, obj_table, field_names)])
+
+    if is_treetable(obj): 
+        tables.update(get_tree_tables_to_lock(obj_table))
+
+    return tables
+
+def get_uniqueness_rule_tables(collection, obj_table: str, field_names: list[str]) -> set[str]: 
+    from specifyweb.businessrules.models import UniquenessRule, UniquenessRuleField
+    tables = set(['django_migrations', UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table, 'discipline'])
 
     rules = UniquenessRule.objects.filter(
         modelName=obj_table, discipline=collection.discipline)
@@ -86,3 +94,6 @@ def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
         table = datamodel.get_table_strict(other_model)
 
     return tables
+
+def get_tree_tables_to_lock(tree_table: str) -> set[str]: 
+    return set(['discipline', f'{tree_table}def', f'{tree_table}defitem'])
