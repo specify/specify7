@@ -7,7 +7,6 @@
 from functools import reduce
 from typing import (
     Any,
-    Callable,
     Dict,
     List,
     NamedTuple,
@@ -17,6 +16,7 @@ from typing import (
     Union,
     Literal,
 )
+from collections.abc import Callable
 
 from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
@@ -1068,7 +1068,7 @@ class BatchEditProps(TypedDict):
     recordsetid: Optional[int]
     session_maker: Any
     fields: list[QueryField]
-    omit_relationships: Optional[bool]
+    omit_relationships: Optional[bool] 
     treedefsfilter: Any
 
 def _get_table_and_field(field: QueryField):
@@ -1253,7 +1253,7 @@ def make_dataset(
     return (ds_id, ds_name)
 
 
-def filter_tree_info(filters: Dict[str, List[int]], all_tree_info: Dict[str, List[TREE_INFORMATION]]):
+def filter_tree_info(filters: dict[str, list[int]], all_tree_info: dict[str, list[TREE_INFORMATION]]):
     for tablename in filters:
         treetable_key = tablename.title()
         if treetable_key in all_tree_info:

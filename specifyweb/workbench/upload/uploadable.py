@@ -1,4 +1,5 @@
-from typing import Dict, Callable, Any, List, Optional, TypedDict, Union, Set
+from typing import Dict, Any, List, Optional, TypedDict, Union, Set
+from collections.abc import Callable
 from typing_extensions import Protocol
 
 from specifyweb.workbench.upload.predicates import DjangoPredicates, ToRemove

@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Callable,
     Literal,
     Tuple,
     List,
@@ -9,6 +8,7 @@ from typing import (
     Optional,
     NamedTuple,
 )
+from collections.abc import Callable
 from collections.abc import Iterable
 
 import logging
@@ -124,7 +124,7 @@ class NoAdminUsersException(PermissionsException):
 
 
 def enforce(
-    collection: Union[int, Model, None], actor, resources: list[str], action: str
+    collection: Optional[Union[int, Model]], actor, resources: list[str], action: str
 ) -> None:
     if not resources:
         return

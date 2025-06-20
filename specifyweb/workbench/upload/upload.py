@@ -8,10 +8,10 @@ from typing import (
     List,
     Dict,
     Union,
-    Callable,
     Optional,
     Tuple,
 )
+from collections.abc import Callable
 from collections.abc import Sized
 
 from django.db import transaction
@@ -245,6 +245,9 @@ def create_recordset(ds: Spdataset, name: str, remarks: str):
     table, upload_plan = get_ds_upload_plan(ds.collection, ds)
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
+
+    if table.tableId is None:
+        raise ValueError("tableId cannot be None when creating a Recordset")
 
     rs = models.Recordset.objects.create(
         collectionmemberid=ds.collection.id,

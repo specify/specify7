@@ -834,10 +834,10 @@ def table_to_schema(table: Table) -> dict:
         "title": table.django_name,
         "type": "object",
         "properties": {
-            f.name.lower(): field_to_schema(f) for f in table.all_fields
+            f.name.lower(): field_to_schema(f) for f in table.all_fields if f.name
         },
         "additionalProperties": False,
-        "required": [f.name.lower() for f in table.all_fields],
+        "required": [f.name.lower() for f in table.all_fields if f.name],
     }
 
 
@@ -856,6 +856,8 @@ def field_to_schema(field: Field) -> dict:
                 f"Field '{field.name}' is not a Relationship",
                 {"field": field.name,
                  "localizaitonKey": "fieldNotRelationship"})
+        if not field.relatedModelName:
+            raise Exception(f"null relatedModelName: {field.type} for field: {field.name}")
         if field.dependent:
             if (
                 field.type == "one-to-one"
@@ -930,6 +932,6 @@ def required_to_schema(field: Field, ftype: str) -> dict:
 
 def get_first_valid_relationship_attr(relationships: list[Relationship], attr_name: str) -> str:
     for rel in relationships:
-        if hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent:
+        if hasattr(rel, 'otherSideName') and rel.type and rel.type.endswith('to-many') and not rel.dependent:
             return getattr(rel, attr_name, 'Default')
     return 'Default'

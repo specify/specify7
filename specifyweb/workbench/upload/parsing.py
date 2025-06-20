@@ -121,7 +121,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
     parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
-        coord_text_field = field.name.replace('itude', '') + 'text'
+        coord_text_field = field.name.replace('itude', '') + 'text' if field.name else ''
         filter_on = {coord_text_field: parsed.to_upload[coord_text_field]}
         return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
 
@@ -131,7 +131,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
         return ParseResult.from_parse_success(parsed, parsed.to_upload, None, colopts.column, None)
 
 
-def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Union[ParseResult, WorkBenchParseFailure, None]:
+def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Optional[Union[ParseResult, WorkBenchParseFailure]]:
     if picklist.type == 0:  # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)

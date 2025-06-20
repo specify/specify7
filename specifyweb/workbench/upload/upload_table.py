@@ -623,7 +623,7 @@ class BoundUploadTable(NamedTuple):
 
     def _match(
         self, predicates: DjangoPredicates, info: ReportInfo
-    ) -> Union[Matched, MatchedMultiple, None]:
+    ) -> Optional[Union[Matched, MatchedMultiple]]:
 
         cache_key = predicates.get_cache_key(self.name)
 
