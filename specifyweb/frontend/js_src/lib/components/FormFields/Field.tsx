@@ -163,9 +163,11 @@ function Field({
     string | null
   >(null);
 
-  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
-    string | null
-  >(null);
+  /*
+   * Const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+   *   string | null
+   * >(null);
+   */
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
@@ -209,15 +211,15 @@ function Field({
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
+      // placeholder={
+      //   displayPrimaryCatNumberPlaceHolder &&
+      //   typeof primaryCatalogNumber === 'string'
+      //     ? primaryCatalogNumber
+      //     : displayParentCatNumberPlaceHolder &&
+      //         typeof parentCatalogNumber === 'string'
+      //       ? parentCatalogNumber
+      //       : undefined
+      // }
       {...validationAttributes}
       className={
         /*
